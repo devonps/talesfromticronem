@@ -1,0 +1,30 @@
+*.swp
+*.pyc
+reserve_gfx
+todo*
+build/
+dist
+*.spec
+*.dll
+sdl2/
+.idea/*
+.mypy*
+logs/*
+*.idea
+*.png
+*.jpg
+## https://github.com/github/gitignore/blob/master/Python.gitignore
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+# pyenv
+.python-version
+
+# virtualenv
+.venv
+venv/
+ENV/
