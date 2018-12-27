@@ -16,9 +16,13 @@ def main():
     logger.info('* New game started *')
     logger.info('********************')
 
-    data = read_json_file(constants['Json_file_path'] + 'mobiles.json')
+    weapons = read_json_file(constants['Json_file_path'] + 'weapons.json')
+    for weapon in weapons['weapons']:
+        print(weapon['display_name'])
 
-    for mobile in data['mobiles']:
+    mobiles = read_json_file(constants['Json_file_path'] + 'mobiles.json')
+
+    for mobile in mobiles['mobiles']:
         print('The ' + mobile['name'] + ' is a type of ' + mobile['type'], )
         if 'variations' in mobile:
             print('The ' + mobile['name'] + ' has variations')
@@ -26,6 +30,9 @@ def main():
             for k in variations:
                 print('The ' + mobile['name'] + ' is now a ' + mobile['name'] + ' ' + k['suffix'] +
                       ' and is now equipped with a ' + k['equipment'])
+
+
+
 
 
 if __name__ == '__main__':

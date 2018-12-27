@@ -6,7 +6,7 @@
             "glyph": "g",
             "fg_colour": "light_green",
             "bg_colour": "black",
-            "description": "A goblin",
+            "description": "A small light green goblin",
             "ai_level": "simple",
             "starting_health": "10",
             "starting_xp_level": "1",

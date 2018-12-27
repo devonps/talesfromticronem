@@ -6,7 +6,7 @@ def read_json_file(filename):
 
     logger.info('Reading Json file {}', filename)
 
-    with open('static/data/mobiles.json') as f:
+    with open(filename) as f:
         data = json.loads(f.read())
         return data
 
