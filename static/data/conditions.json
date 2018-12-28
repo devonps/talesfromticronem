@@ -1,0 +1,308 @@
+{
+  "conditions": [
+    {
+      "name": "bleed_over_time",
+      "condition_display_name": "bleed",
+      "condition_status_effect": "bleeding",
+      "causes_damage": "True",
+      "damage_over_time": "True",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "10",
+      "stacks_intensity": "True",
+      "stacks_duration": "False",
+      "base_damage_per_stack": "2",
+      "condition_damage_modifier": "0.06",
+      "weapon_level_modifier": "0.25",
+      "converted_to_boon": "vigor",
+      "dialogue_options": [{
+        "default": "I'm bleeding",
+        "necromancer": "That's my blood!",
+        "witchdoctor": "",
+        "mesmer": "Losing blood",
+        "elementalist": "I'm hemorrhaging",
+        "druid": ""
+      }]
+    },
+       {
+      "name": "burn_over_time",
+      "condition_display_name": "burn",
+      "condition_status_effect": "burning",
+      "causes_damage": "True",
+      "damage_over_time": "True",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "10",
+      "stacks_intensity": "True",
+      "stacks_duration": "False",
+      "base_damage_per_stack": "7",
+      "condition_damage_modifier": "0.155",
+      "weapon_level_modifier": "1.55",
+      "converted_to_boon": "aegis",
+      "dialogue_options": [{
+        "default": "I'm burning",
+        "necromancer": "That's my blood!",
+        "witchdoctor": "it burns!",
+        "mesmer": "Fire burns!",
+        "elementalist": "",
+        "druid": ""
+      }]
+    },
+    {
+      "name": "confusion_over_time",
+      "condition_display_name": "confusion",
+      "condition_status_effect": "confused",
+      "causes_damage": "True",
+      "damage_over_time": "True",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "10",
+      "stacks_intensity": "True",
+      "stacks_duration": "False",
+      "base_damage_per_stack": "3.5",
+      "condition_damage_modifier": "0.0975",
+      "weapon_level_modifier": "0.575",
+      "converted_to_boon": "retaliation",
+      "dialogue_options": [{
+        "default": "Where am I?",
+        "necromancer": "",
+        "witchdoctor": "oh, what's happening",
+        "mesmer": "I can't remember anything",
+        "elementalist": "",
+        "druid": "Is this a dream?"
+      }]
+    },
+    {
+      "name": "poison_over_time",
+      "condition_display_name": "poison",
+      "condition_status_effect": "poisoned",
+      "causes_damage": "True",
+      "damage_over_time": "True",
+      "default_exists_for_turns": "05",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "10",
+      "stacks_intensity": "True",
+      "stacks_duration": "False",
+      "base_damage_per_stack": "3.5",
+      "condition_damage_modifier": "0.06",
+      "weapon_level_modifier": "0.375",
+      "converted_to_boon": "regeneration",
+      "heal_effectiveness_reduced": "33",
+      "dialogue_options": [{
+        "default": "It's poison!",
+        "necromancer": "The venom is too strong",
+        "witchdoctor": "I'm poisoned",
+        "mesmer": "Uggh, poison",
+        "elementalist": "I've been poisoned",
+        "druid": ""
+      }]
+    },
+    {
+      "name": "torment_over_time",
+      "condition_display_name": "torment",
+      "condition_status_effect": "tormented",
+      "causes_damage": "True",
+      "damage_over_time": "True",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "10",
+      "stacks_intensity": "True",
+      "stacks_duration": "False",
+      "base_damage_per_stack": "2",
+      "condition_damage_modifier": "0.06",
+      "weapon_level_modifier": "0.25",
+      "velocity_mod_base_damage": "3",
+      "velocity_mod_cond_damage": "0.09",
+      "velocity_mod_level_damage": "0.36",
+      "converted_to_boon": "might",
+      "dialogue_options": [{
+        "default": "What the...?",
+        "necromancer": "",
+        "witchdoctor": "",
+        "mesmer": "",
+        "elementalist": "",
+        "druid": ""
+      }]
+    },
+      {
+      "name": "blinded",
+      "condition_display_name": "blind",
+      "condition_status_effect": "blinded",
+      "causes_damage": "False",
+      "damage_over_time": "False",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "10",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "next_attack_miss": "True",
+      "converted_to_boon": "fury",
+      "dialogue_options": [{
+        "default": "I'm blind",
+        "necromancer": "I can't see",
+        "witchdoctor": "",
+        "mesmer": "I can't see anything",
+        "elementalist": "Ugggh, I'm blind!",
+        "druid": ""
+      }]
+    },
+    {
+      "name": "chilled",
+      "condition_display_name": "chilled",
+      "condition_status_effect": "chilled",
+      "causes_damage": "False",
+      "damage_over_time": "False",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "10",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "movement_speed_reduced": "True",
+      "movement_speed_penalty": "40",
+      "spell_recharge_increased": "True",
+      "spell_recharge_penalty": "40",
+      "converted_to_boon": "fury",
+      "dialogue_options": [{
+        "default": "F-f-freezing",
+        "necromancer": "Too cold",
+        "witchdoctor": "so cold",
+        "mesmer": "",
+        "elementalist": "",
+        "druid": "body heat draining"
+      }]
+    },
+    {
+      "name": "crippled",
+      "condition_display_name": "crippled",
+      "condition_status_effect": "crippled",
+      "causes_damage": "False",
+      "damage_over_time": "False",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "10",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "movement_speed_reduced": "True",
+      "movement_speed_penalty": "50",
+      "converted_to_boon": "swiftness",
+      "dialogue_options": [{
+        "default": "I can barely stand",
+        "necromancer": "Can't walk properly",
+        "witchdoctor": "My legs!",
+        "mesmer": "Ow! my legs!",
+        "elementalist": "Not the legs!",
+        "druid": ""
+      }]
+    },
+    {
+      "name": "fear",
+      "condition_display_name": "fear",
+      "condition_status_effect": "feared",
+      "causes_damage": "False",
+      "damage_over_time": "False",
+      "default_exists_for_turns": "05",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "10",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "run_away": "True",
+      "no_actions": "True",
+      "converted_to_boon": "stability",
+      "dialogue_options": [{
+        "default": "Retreat",
+        "necromancer": "",
+        "witchdoctor": "Flee and take shelter",
+        "mesmer": "Fall back!",
+        "elementalist": "Run away",
+        "druid": "Flee"
+      }]
+    },
+    {
+      "name": "immobilize",
+      "condition_display_name": "immobilize",
+      "condition_status_effect": "immobilized",
+      "causes_damage": "False",
+      "damage_over_time": "False",
+      "default_exists_for_turns": "05",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "10",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "no_movement": "True",
+      "converted_to_boon": "resistance",
+      "dialogue_options": [{
+        "default": "I can't move",
+        "necromancer": "",
+        "witchdoctor": "I'm stuck",
+        "mesmer": "",
+        "elementalist": "I feel petrified",
+        "druid": ""
+      }]
+    },
+    {
+      "name": "slow",
+      "condition_display_name": "slow",
+      "condition_status_effect": "slowed",
+      "causes_damage": "False",
+      "damage_over_time": "False",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "10",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "spell_recharge_increased": "True",
+      "spell_recharge_cost": "50",
+      "converted_to_boon": "quickness",
+      "dialogue_options":
+      [
+
+        {
+        "default": "So...slow",
+        "necromancer": "",
+        "witchdoctor": "",
+        "mesmer": "",
+        "elementalist": "",
+        "druid": ""
+        }
+      ]
+    },
+    {
+      "name": "vulnerability",
+      "condition_display_name": "vulnerable",
+      "condition_status_effect": "vulnerable",
+      "causes_damage": "False",
+      "damage_over_time": "False",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "25",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "incoming_damage_increased": "True",
+      "incoming_damage_increase": "1",
+      "converted_to_boon": "quickness",
+      "dialogue_options":
+      [
+        {
+          "default": "So...vulnerable",
+          "necromancer": "",
+          "witchdoctor": "",
+          "mesmer": "I'm exposed",
+          "elementalist": "Feeling vulnerable",
+          "druid": "Need cover"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,3 @@
-import tcod
-import json
-
 from newGame.initialiseNewGame import get_constants
 from utilities.jsonUtilities import read_json_file
 from loguru import logger
@@ -18,7 +15,7 @@ def main():
 
     weapons = read_json_file(constants['Json_file_path'] + 'weapons.json')
     for weapon in weapons['weapons']:
-        print(weapon['display_name'])
+        print(weapon['wielded_both_hands'])
 
     mobiles = read_json_file(constants['Json_file_path'] + 'mobiles.json')
 
@@ -31,8 +28,9 @@ def main():
                 print('The ' + mobile['name'] + ' is now a ' + mobile['name'] + ' ' + k['suffix'] +
                       ' and is now equipped with a ' + k['equipment'])
 
-
-
+    conditions = read_json_file(constants['Json_file_path'] + 'conditions.json')
+    for condi in conditions['conditions']:
+        print(condi['name'])
 
 
 if __name__ == '__main__':
