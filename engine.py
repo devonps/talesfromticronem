@@ -32,6 +32,9 @@ def main():
     for condi in conditions['conditions']:
         print(condi['name'])
 
+    boons = read_json_file(constants['Json_file_path'] + 'boons.json')
+    for boon in boons['boons']:
+        print(boon['name'])
 
 if __name__ == '__main__':
     main()

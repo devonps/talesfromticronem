@@ -1,0 +1,249 @@
+{
+  "boons": [
+    {
+      "name": "aegis",
+      "boon_display_name": "aegis",
+      "boon_status_effect": "aegis",
+      "default_exists_for_turns": "00",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "10",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "next_attack_blocked": "True",
+      "converted_to_condition": "burning",
+      "dialogue_options":
+      [
+        {
+          "default": "You will not hit me",
+          "necromancer": "",
+          "witchdoctor": "",
+          "mesmer": "",
+          "elementalist": "F",
+          "druid": ""
+        }
+      ]
+    },
+    {
+      "name": "alacrity",
+      "boon_display_name": "alacrity",
+      "boon_status_effect": "alacrity",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "5",
+      "stacks_intensity": "False",
+      "stacks_duration": "False",
+      "spell_recharge_increased": "True",
+      "spell_recharge_improved": "20",
+      "converted_to_condition": "chilled",
+      "dialogue_options":
+      [
+        {
+          "default": "You're so slow!",
+          "necromancer": "",
+          "witchdoctor": "",
+          "mesmer": "",
+          "elementalist": "",
+          "druid": ""
+        }
+      ]
+    },
+    {
+      "name": "fury",
+      "boon_display_name": "fury",
+      "boon_status_effect": "fury",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "5",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "crit_chance_increased": "True",
+      "crit_chance_improved": "20",
+      "converted_to_condition": "blinded",
+      "dialogue_options":
+      [
+        {
+          "default": "fury rising!",
+          "necromancer": "Kill 'em all",
+          "witchdoctor": "Urge to kill rising",
+          "mesmer": "Feel the fury",
+          "elementalist": "Rage at maximum",
+          "druid": "Anger is rising"
+        }
+      ]
+    },
+    {
+      "name": "might",
+      "boon_display_name": "might",
+      "boon_status_effect": "might",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "5",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "base_damage_per_stack": "5",
+      "weapon_level_modifier": "0.3125",
+      "converted_to_condition": "weakness",
+      "dialogue_options":
+      [
+        {
+          "default": "There's the power",
+          "necromancer": "Time to do some real damage",
+          "witchdoctor": "I feel...strong",
+          "mesmer": "Might makes right",
+          "elementalist": "",
+          "druid": ""
+        }
+      ]
+    },
+    {
+      "name": "protection",
+      "boon_display_name": "protection",
+      "boon_status_effect": "protected",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "5",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "incoming_damage_reduced": "True",
+      "incoming_damage_reduction": "33",
+      "converted_to_condition": "vulnerability",
+      "dialogue_options":
+      [
+        {
+          "default": "Armour enhanced",
+          "necromancer": "",
+          "witchdoctor": "",
+          "mesmer": "Strength is mine",
+          "elementalist": "Protected",
+          "druid": "Safe from harm!"
+        }
+      ]
+    },
+    {
+      "name": "regeneration",
+      "boon_display_name": "regeneration",
+      "boon_status_effect": "regeneration",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "5",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "healing_over_time": "True",
+      "converted_to_condition": "poisoned",
+      "dialogue_options":
+      [
+        {
+          "default": "Invigorating",
+          "necromancer": "Getting healthy",
+          "witchdoctor": "On the mend",
+          "mesmer": "Refreshing",
+          "elementalist": "",
+          "druid": "I'm renewed"
+        }
+      ]
+    },
+    {
+      "name": "resistance",
+      "boon_display_name": "resistance",
+      "boon_status_effect": "resistance",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "5",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "conditions_are_disabled": "True",
+      "converted_to_condition": "chilled",
+      "dialogue_options":
+      [
+        {
+          "default": "Ahh! You don't scare me",
+          "necromancer": "",
+          "witchdoctor": "",
+          "mesmer": "",
+          "elementalist": "",
+          "druid": ""
+        }
+      ]
+    },
+    {
+      "name": "retaliation",
+      "boon_display_name": "retaliation",
+      "boon_status_effect": "retaliation",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "5",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "reflect_taken_damage": "True",
+      "converted_to_condition": "confusion",
+      "dialogue_options":
+      [
+        {
+          "default": "Hit me, if you dare!",
+          "necromancer": "",
+          "witchdoctor": "",
+          "mesmer": "",
+          "elementalist": "",
+          "druid": ""
+        }
+      ]
+    },
+    {
+      "name": "stability",
+      "boon_display_name": "stability",
+      "boon_status_effect": "stability",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "5",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "cannot_be_controlled": "True",
+      "converted_to_condition": "fear",
+      "dialogue_options":
+      [
+        {
+          "default": "You can't control me!",
+          "necromancer": "",
+          "witchdoctor": "",
+          "mesmer": "",
+          "elementalist": "",
+          "druid": ""
+        }
+      ]
+    },
+    {
+      "name": "swiftness",
+      "boon_display_name": "swiftness",
+      "boon_status_effect": "swiftness",
+      "default_exists_for_turns": "03",
+      "can_be_stacked": "True",
+      "base_stacks_applied": "01",
+      "max_stacks": "9",
+      "stacks_intensity": "False",
+      "stacks_duration": "True",
+      "movement_speed_increased": "True",
+      "movement_speed_bonus": "50",
+      "converted_to_condition": "crippled",
+      "dialogue_options":
+      [
+        {
+          "default": "Catch me if you can!",
+          "necromancer": "Accelerating",
+          "witchdoctor": "",
+          "mesmer": "Eat my dust!",
+          "elementalist": "",
+          "druid": ""
+        }
+      ]
+    }
+  ]
+}
