@@ -1,6 +1,7 @@
 from subprocess import call
 from time import gmtime, strftime
 from loguru import logger
+from newGame import constants
 
 
 class Screenshot:
@@ -8,10 +9,9 @@ class Screenshot:
     @staticmethod
     def grab_screen_shot(filename):
         # save screen shots where
-        scrfilepath = 'static/screenshots/'
         scrfilename = 'screenshot ' + strftime("%d-%m-%Y %H:%M:%S", gmtime())
-        scrfileextension = 'jpg'
-        fullfile = scrfilepath + scrfilename + '.' + scrfileextension
+
+        fullfile = constants.SCRFILEPATH + scrfilename + '.' + constants.SCRFILEEXTENSION
 
         logger.info('Screenshot saved to {file}', file=filename)
         call(["screencapture", fullfile])

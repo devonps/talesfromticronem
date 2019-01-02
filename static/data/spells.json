@@ -1,0 +1,15 @@
+{
+  "spells": [
+    {
+      "name": "mark of blood",
+      "description": "Inscribe a mark that bleeds foes when they trigger it, and grants regeneration to allies.",
+      "weapon_type": "staff",
+      "cast_time": "1",
+      "cool_down": "3",
+      "ground_targeted": "True",
+      "max_range": "spell_dist_nearby",
+      "aoe_size": "aoe_medium",
+      "effects": "Bleed,regen"
+    }
+  ]
+}
