@@ -9,7 +9,7 @@
       "ground_targeted": "True",
       "max_range": "spell_dist_nearby",
       "aoe_size": "aoe_medium",
-      "effects": "Bleed,regen"
+      "effects": ["Bleeding", "regeneration"]
     }
   ]
 }
