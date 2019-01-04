@@ -1,12 +1,15 @@
+import esper
 
 from utilities.jsonUtilities import read_json_file
 from loguru import logger
 from newGame import constants
+from components import shared, condis, spellBoons
+from components.addStatusEffects import process_status_effect
 
 
 def main():
 
-    logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
+#    logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
 
     logger.info('********************')
     logger.info('* New game started *')
@@ -34,6 +37,23 @@ def main():
     boons = read_json_file(constants.JSONFILEPATH + 'boons.json')
     for boon in boons['boons']:
         print(boon['name'])
+
+
+# create esper world
+    Gameworld = esper.World()
+
+    spells = read_json_file(constants.JSONFILEPATH + 'spells.json')
+    for spell in spells['spells']:
+        myspell = Gameworld.create_entity()
+        Gameworld.add_component(myspell, shared.Name(spell['name']))
+        Gameworld.add_component(myspell, shared.Description(spell['description']))
+        effects = spell['effects']
+        process_status_effect(Gameworld, myspell, effects)
+
+    for ent, (name, desc, cond, boon) in Gameworld.get_components(shared.Name, shared.Description,
+                                                                  condis.Bleeding, spellBoons.Regeneration):
+        print(name.text + ' lasts for: ' + str(cond.lasts_for) + ' turns.')
+        print(name.text + ' regen max stacks: ' + str(boon.max_stacks))
 
 
 if __name__ == '__main__':

@@ -135,6 +135,8 @@
       "stacks_intensity": "False",
       "stacks_duration": "True",
       "healing_over_time": "True",
+      "base_heal_per_turn": "05",
+      "heal_modifier": "0.125",
       "converted_to_condition": "poisoned",
       "dialogue_options":
       [
