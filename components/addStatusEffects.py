@@ -3,7 +3,7 @@
 # the entity will commonly be a spell but it could be an item
 # will need to pass: (esper) World object, entity id, and effects to be added
 
-from components import condis, spellBoons
+from components import condis, spellBoons, resources
 from loguru import logger
 from newGame import constants
 
@@ -14,6 +14,14 @@ def process_status_effect(world, entity, effects):
             add_condition(world, entity, e.lower())
         if e.lower() in constants.boon_effects:
             add_boon(world, entity, e.lower())
+        if e.lower() in constants.class_resources:
+            add_class_resource(world, entity, e.lower())
+
+
+def add_class_resource(world, entity, effect):
+    if effect == 'lifeforce':
+        world.add_component(entity, resources.Lifeforce())
+    logger.info('Class resource {} added to spell', effect)
 
 
 def add_condition(world, entity, effect):
@@ -71,7 +79,6 @@ def add_boon(world, entity, effect):
 
     if effect == 'regeneration':
         world.add_component(entity, spellBoons.Regeneration())
-        logger.debug('definitely added regen')
 
     if effect == 'resistance':
         world.add_component(entity, spellBoons.Resistance())

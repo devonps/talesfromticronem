@@ -54,6 +54,8 @@ condi_effects = {'bleeding', 'burning', 'cripple', 'confusion', 'poison', 'torme
 boon_effects = {'aegis', 'alacrity', 'fury', 'might', 'protection', 'regeneration',
                 'resistance', 'retaliation', 'stability', 'swiftness'}
 
+class_resources ={'lifeforce'}
+
 # colours used to draw the dungeon
 colors = {
     'dark_wall': tcod.dark_yellow,

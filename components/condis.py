@@ -1,6 +1,6 @@
 
 class Bleeding:
-    def __init__(self, name='Bleed',condition_status_effect='Bleeding', base_damage_per_stack=2,
+    def __init__(self, name='Bleed', condition_status_effect='Bleeding', base_damage_per_stack=2,
                  condition_damage_modifier=0.06, weapon_level_modifier=0.25, max_stacks=10, dialog="I'm bleeding",
                  lasts_for=3):
         self.name = name

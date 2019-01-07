@@ -4,12 +4,31 @@
       "name": "mark of blood",
       "description": "Inscribe a mark that bleeds foes when they trigger it, and grants regeneration to allies.",
       "weapon_type": "staff",
-      "cast_time": "1",
+      "cast_time": "0",
       "cool_down": "3",
+      "lives_for": "3",
+      "weapon_slot": "2",
+      "max_targets": "99",
       "ground_targeted": "True",
       "max_range": "spell_dist_nearby",
+      "aoe": "True",
       "aoe_size": "aoe_medium",
       "effects": ["Bleeding", "regeneration"]
+    },
+        {
+      "name": "necrotic grasp",
+      "description": "Send out a grasping hand that damages foes in a line and grants you life force.",
+      "weapon_type": "staff",
+      "cast_time": "0",
+      "cool_down": "0",
+      "lives_for": "0",
+      "weapon_slot": "1",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "max_range": "spell_dist_far",
+      "aoe": "False",
+      "aoe_size": "none",
+      "effects": ["lifeforce", "damage"]
     }
   ]
 }
