@@ -16,8 +16,8 @@ def main():
 
     for _, (name, desc, cond, boon) in world.get_components(shared.Name, shared.Description,
                                                                 condis.Bleeding, spellBoons.Regeneration):
-        print(name.text + ' lasts for: ' + str(cond.lasts_for) + ' turns.')
-        print(name.text + ' regen max stacks: ' + str(boon.max_stacks))
+        print(name.label + ' lasts for: ' + str(cond.lasts_for) + ' turns.')
+        print(name.label + ' regen max stacks: ' + str(boon.max_stacks))
 
 
 if __name__ == '__main__':

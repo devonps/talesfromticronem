@@ -8,19 +8,28 @@ from loguru import logger
 from newGame import constants
 
 
-def process_status_effect(world, entity, effects):
+def process_status_effect(world, entity, spell_name, effects):
+    logger.info('---> Working on spell {}', spell_name)
     for e in effects:
+        spell_not_added = True
         if e.lower() in constants.condi_effects:
             add_condition(world, entity, e.lower())
+            spell_not_added = False
         if e.lower() in constants.boon_effects:
             add_boon(world, entity, e.lower())
+            spell_not_added = False
         if e.lower() in constants.class_resources:
             add_class_resource(world, entity, e.lower())
+            spell_not_added = False
+        if spell_not_added:
+            logger.warning("{} effect * {} * has no associated code - check constants", spell_name, e.lower())
 
 
 def add_class_resource(world, entity, effect):
     if effect == 'lifeforce':
         world.add_component(entity, resources.Lifeforce())
+    if effect == 'damage':
+        world.add_component(entity, resources.Damage())
     logger.info('Class resource {} added to spell', effect)
 
 

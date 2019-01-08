@@ -33,9 +33,6 @@ def create_game_world():
     return esper.World()
 
 
-    #######################
-    # SPELLS              #
-    #######################
 def generate_spells(gameworld):
     spells = read_json_file(constants.JSONFILEPATH + 'spells.json')
     logger.debug('Creating spells as entities')
@@ -44,7 +41,7 @@ def generate_spells(gameworld):
         gameworld.add_component(myspell, shared.Name(spell['name']))
         gameworld.add_component(myspell, shared.Description(spell['description']))
         effects = spell['effects']
-        process_status_effect(gameworld, myspell, effects)
+        process_status_effect(gameworld, myspell, spell['name'], effects)
 
 
 def generate_monsters(gameworld):
