@@ -8,13 +8,16 @@
       "cool_down": "0",
       "lives_for": "0",
       "weapon_slot": "1",
-      "damage_coeff": "0.666",
       "max_targets": "5",
       "ground_targeted": "False",
       "max_range": "spell_dist_far",
       "aoe": "False",
       "aoe_size": "none",
-      "effects": ["lifeforce", "damage"]
+      "effects":
+      [
+        {"damage": "0.666",
+        "lifeforce":"4"}
+      ]
     },
     {
       "name": "mark of blood",
@@ -27,10 +30,16 @@
       "damage_coeff": "0.33",
       "max_targets": "99",
       "ground_targeted": "True",
-      "max_range": "spell_dist_nearby",
+      "max_range": "spell_dist_very_far",
       "aoe": "True",
       "aoe_size": "aoe_medium",
-      "effects": ["bleeding", "regeneration", "lifeforce"]
+      "effects":
+      [
+        {"damage": "0.33",
+        "bleeding": "2",
+        "regeneration": "5",
+        "lifeforce": "4"}
+      ]
     },
     {
       "name": "life blood",
@@ -40,13 +49,17 @@
       "cool_down": "2",
       "lives_for": "3",
       "weapon_slot": "3",
-      "damage_coeff": "0.565",
       "max_targets": "0",
       "ground_targeted": "True",
-      "max_range": "spell_dist_nearby",
+      "max_range": "spell_dist_very_far",
       "aoe": "True",
       "aoe_size": "aoe_medium",
-      "effects": ["lifeforce", "bleeding"]
+      "effects":
+      [
+        {"damage": "0.565",
+        "bleeding": "2",
+        "lifeforce": "4"}
+      ]
     },
     {
       "name": "putrid mark",
@@ -56,14 +69,17 @@
       "cool_down": "3",
       "lives_for": "3",
       "weapon_slot": "4",
-      "damage_coeff": "1.32",
       "max_targets": "5",
-      "max_cond_transferred": "3",
       "ground_targeted": "True",
-      "max_range": "spell_dist_nearby",
+      "max_range": "spell_dist_very_far",
       "aoe": "True",
       "aoe_size": "aoe_medium",
-      "effects": ["transferConditions", "bleeding", "lifeforce"]
+      "effects":
+      [
+        {"damage": "1.32",
+        "transferConditions": "3",
+        "lifeforce": "4"}
+      ]
     },
     {
       "name": "reaper's mark",
@@ -73,13 +89,17 @@
       "cool_down": "4",
       "lives_for": "3",
       "weapon_slot": "5",
-      "damage_coeff": "0.275",
       "max_targets": "0",
       "ground_targeted": "True",
-      "max_range": "spell_dist_nearby",
+      "max_range": "spell_dist_very_far",
       "aoe": "True",
       "aoe_size": "aoe_medium",
-      "effects": ["fear", "lifeforce"]
+      "effects":
+      [
+        {"damage": "0.275",
+        "fear": "1",
+        "lifeforce": "2"}
+      ]
     },
     {
       "name": "necrotic slash",
@@ -89,13 +109,15 @@
       "cool_down": "0",
       "lives_for": "0",
       "weapon_slot": "4",
-      "damage_coeff": "0.9",
       "max_targets": "2",
       "ground_targeted": "False",
       "max_range": "spell_dist_personal",
       "aoe": "False",
       "aoe_size": "none",
-      "effects": ["damage", "lifeforce"]
+      "effects":
+      [
+        {"damage": "0.9"}
+      ]
     },
     {
       "name": "reaper's touch",
@@ -105,13 +127,18 @@
       "cool_down": "2",
       "lives_for": "0",
       "weapon_slot": "5",
-      "damage_coeff": "0.75",
       "max_targets": "5",
       "ground_targeted": "False",
-      "max_range": "spell_dist_personal",
+      "max_range": "spell_dist_very_far",
       "aoe": "False",
       "aoe_size": "none",
-      "effects": ["damage", "lifeforce", "vulnerability","regeneration"]
+      "effects":
+      [
+        {"damage": "0.75",
+        "regeneration": "5",
+        "lifeforce": "3",
+        "vulnerability":"4"}
+      ]
     },
     {
       "name": "dark pact",
@@ -121,13 +148,17 @@
       "cool_down": "2",
       "lives_for": "0",
       "weapon_slot": "4",
-      "damage_coeff": "0.75",
-      "max_targets": "5",
       "ground_targeted": "False",
       "max_range": "spell_dist_nearby",
       "aoe": "False",
       "aoe_size": "none",
-      "effects": ["damage", "immobilize", "selfbleeding"]
+      "effects":
+      [
+        {"damage": "1.2",
+        "immobilize": "2",
+        "lifeforce": "2",
+        "selfbleeding":"2"}
+      ]
     },
     {
       "name": "burning blood",
@@ -137,13 +168,17 @@
       "cool_down": "5",
       "lives_for": "0",
       "weapon_slot": "5",
-      "damage_coeff": "1.0",
       "max_targets": "5",
       "ground_targeted": "True",
       "max_range": "spell_dist_nearby",
       "aoe": "True",
       "aoe_size": "aoe_medium",
-      "effects": ["damage", "burning", "bleeding"]
+      "effects":
+      [
+        {"damage": "1.0",
+        "burning": "2",
+        "bleeding": "2"}
+      ]
     },
     {
       "name": "necrotic bite",
@@ -153,13 +188,16 @@
       "cool_down": "0",
       "lives_for": "0",
       "weapon_slot": "1",
-      "damage_coeff": "1.2",
       "max_targets": "2",
       "ground_targeted": "False",
       "max_range": "spell_dist_personal",
       "aoe": "False",
       "aoe_size": "none",
-      "effects": ["damage", "lifeforce"]
+      "effects":
+      [
+        {"damage": "1.2",
+        "lifeforce": "6"}
+      ]
     },
     {
       "name": "fading twilight",
@@ -169,13 +207,16 @@
       "cool_down": "2",
       "lives_for": "0",
       "weapon_slot": "2",
-      "damage_coeff": "1.3",
       "max_targets": "3",
       "ground_targeted": "False",
       "max_range": "spell_dist_personal",
       "aoe": "False",
       "aoe_size": "none",
-      "effects": ["damage", "lifeforce"]
+      "effects":
+      [
+        {"damage": "1.3",
+        "lifeforce": "1"}
+      ]
     },
     {
       "name": "death spiral",
@@ -185,14 +226,18 @@
       "cool_down": "2",
       "lives_for": "0",
       "weapon_slot": "3",
-      "damage_coeff": "1.98",
       "max_targets": "3",
-      "strikes_for": "6",
       "ground_targeted": "False",
       "max_range": "spell_dist_close",
       "aoe": "False",
       "aoe_size": "none",
-      "effects": ["damage", "lifeforce", "vulnerability"]
+      "effects":
+      [
+        {"damage": "1.98",
+        "lifeforce": "2",
+        "vulnerability": "12",
+        "strikes_for": "6"}
+      ]
     },
     {
       "name": "gravedigger",
@@ -202,31 +247,35 @@
       "cool_down": "3",
       "lives_for": "0",
       "weapon_slot": "4",
-      "damage_coeff": "3.0",
       "max_targets": "5",
-      "strikes_for": "1",
       "ground_targeted": "False",
       "max_range": "spell_dist_close",
       "aoe": "False",
       "aoe_size": "none",
-      "effects": ["damage"]
+      "effects":
+      [
+        {"damage": "3.0"}
+      ]
     },
     {
       "name": "Grasping Darkness",
-      "description": "Conjure claws of darkness from the shadows to attack foes, applying a condition to them, gain life force for each struck foe.",
+      "description": "Conjure claws of darkness from the shadows to attack foes, slowing them and gain life force for each struck foe.",
       "weapon_type": "sword",
       "cast_time": "0",
       "cool_down": "8",
       "lives_for": "0",
       "weapon_slot": "5",
-      "damage_coeff": "1.3",
       "max_targets": "5",
-      "strikes_for": "1",
       "ground_targeted": "False",
       "max_range": "spell_dist_nearby",
       "aoe": "False",
       "aoe_size": "none",
-      "effects": ["damage", "lifeforce"]
+      "effects":
+      [
+        {"damage": "1.3",
+        "lifeforce":"4"
+        }
+      ]
     }
   ]
 }

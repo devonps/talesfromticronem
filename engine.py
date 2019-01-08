@@ -2,6 +2,7 @@
 from loguru import logger
 from newGame.initialiseNewGame import setup_game
 from components import shared, condis, spellBoons
+from newGame import constants
 
 
 def main():
