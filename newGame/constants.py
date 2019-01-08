@@ -50,7 +50,7 @@ SPELL_DIST_VERY_FAR = 10
 
 # conditions
 condi_effects = {'bleeding', 'burning', 'cripple', 'confusion', 'poison', 'torment',
-                 'blind', 'chill', 'fear', 'immobilize', 'vulnerability'}
+                 'blind', 'chill', 'fear', 'immobilize', 'vulnerability', 'selfbleeding'}
 boon_effects = {'aegis', 'alacrity', 'fury', 'might', 'protection', 'regeneration',
                 'resistance', 'retaliation', 'stability', 'swiftness'}
 
