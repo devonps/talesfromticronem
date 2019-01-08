@@ -9,7 +9,7 @@ import esper
 from utilities.jsonUtilities import read_json_file
 from loguru import logger
 from newGame import constants
-from components import shared, condis, spellBoons
+from components import spells
 from components.addStatusEffects import process_status_effect
 
 
@@ -34,12 +34,23 @@ def create_game_world():
 
 
 def generate_spells(gameworld):
-    spells = read_json_file(constants.JSONFILEPATH + 'spells.json')
+    spellFile = read_json_file(constants.JSONFILEPATH + 'spells.json')
     logger.debug('Creating spells as entities')
-    for spell in spells['spells']:
+    for spell in spellFile['spells']:
         myspell = gameworld.create_entity()
-        gameworld.add_component(myspell, shared.Name(spell['name']))
-        gameworld.add_component(myspell, shared.Description(spell['description']))
+        gameworld.add_component(myspell, spells.Name(spell['name']))
+        gameworld.add_component(myspell, spells.Description(spell['description']))
+        gameworld.add_component(myspell, spells.WeaponType(spell['weapon_type']))
+        gameworld.add_component(myspell, spells.ClassName(spell['class']))
+        gameworld.add_component(myspell, spells.CastTime(spell['cast_time']))
+        gameworld.add_component(myspell, spells.CoolDown(spell['cool_down']))
+        gameworld.add_component(myspell, spells.LivesFor(spell['lives_for']))
+        gameworld.add_component(myspell, spells.WeaponSlot(spell['weapon_slot']))
+        gameworld.add_component(myspell, spells.MaxTargets(spell['max_targets']))
+        gameworld.add_component(myspell, spells.GroundTargeted(spell['ground_targeted']))
+        gameworld.add_component(myspell, spells.MaxRange(spell['max_range']))
+        gameworld.add_component(myspell, spells.AreaOfEffect(spell['aoe']))
+        gameworld.add_component(myspell, spells.AreaOfEffectSize(spell['aoe_size']))
         effects = spell['effects']
         process_status_effect(gameworld, myspell, spell['name'], effects)
 
