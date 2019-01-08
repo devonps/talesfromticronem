@@ -143,3 +143,17 @@ class Vulnerability:
         self.max_stacks = max_stacks
         self.dialog = dialog
         self.lasts_for = lasts_for
+
+
+class Selfbleeding:
+    def __init__(self, name='Bleed', condition_status_effect='Bleeding', base_damage_per_stack=2,
+                 condition_damage_modifier=0.06, weapon_level_modifier=0.25, max_stacks=10, dialog="I'm bleeding",
+                 lasts_for=3):
+        self.label = name
+        self.condition_status_effect = condition_status_effect
+        self.base_damage_per_stack = base_damage_per_stack
+        self.condition_damage_modifier = condition_damage_modifier
+        self.weapon_level_modifier = weapon_level_modifier
+        self.max_stacks = max_stacks
+        self.dialog = dialog
+        self.lasts_for = lasts_for
