@@ -19,7 +19,8 @@ class Lifeforce:
 
 
 class Damage:
-    pass
+    def __init__(self, coefficient=0.0):
+        self.coefficient = coefficient
 
 #
 # This is the component for transfer conditions from caster to N targets
@@ -27,4 +28,13 @@ class Damage:
 
 
 class TransferConditions:
+    pass
+
+
+#
+# Strikes for informs the game how many times the targets are hit for
+#
+
+
+class Strikesfor:
     pass

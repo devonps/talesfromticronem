@@ -9,68 +9,70 @@ from newGame import constants
 
 
 def process_status_effect(world, entity, spell_name, effects):
-    logger.info('---> Working on spell {}', spell_name)
-    for e in effects:
+    logger.info('---> Working on spell {} with {}', spell_name, effects)
+    for key, val in effects[0].items():
         spell_not_added = True
-        if e.lower() in constants.condi_effects:
-            add_condition(world, entity, e.lower())
+        if key.lower() in constants.condi_effects:
+            add_condition(world, entity, key.lower(), val)
             spell_not_added = False
-        if e.lower() in constants.boon_effects:
-            add_boon(world, entity, e.lower())
+        if key.lower() in constants.boon_effects:
+            add_boon(world, entity, key.lower(), val)
             spell_not_added = False
-        if e.lower() in constants.class_resources:
-            add_class_resource(world, entity, e.lower())
+        if key.lower() in constants.class_resources:
+            add_class_resource(world, entity, key.lower(), val)
             spell_not_added = False
         if spell_not_added:
-            logger.warning("{} effect * {} * has no associated code - check constants", spell_name, e.lower())
+            logger.warning("{} effect * {} * has no associated code - check constants", spell_name, key.lower())
 
 
-def add_class_resource(world, entity, effect):
+def add_class_resource(world, entity, effect, resource_value):
     if effect == 'lifeforce':
-        world.add_component(entity, resources.Lifeforce())
+        world.add_component(entity, resources.Lifeforce(onhit=resource_value))
     if effect == 'damage':
-        world.add_component(entity, resources.Damage())
+        world.add_component(entity, resources.Damage(coefficient=resource_value))
+    if effect == 'strikes_for':
+        world.add_component(entity, resources.Strikesfor())
     logger.info('Class resource {} added to spell', effect)
 
 
-def add_condition(world, entity, effect):
+def add_condition(world, entity, effect, condi_value):
     if effect == 'bleeding':
-        world.add_component(entity, condis.Bleeding())
+        world.add_component(entity, condis.Bleeding(stacks_applied=condi_value))
 
     if effect == 'burning':
-        world.add_component(entity, condis.Burning())
+        world.add_component(entity, condis.Burning(stacks_applied=condi_value))
 
     if effect == 'confusion':
-        world.add_component(entity, condis.Confusion())
+        world.add_component(entity, condis.Confusion(stacks_applied=condi_value))
 
     if effect == 'poison':
-        world.add_component(entity, condis.Poison())
+        world.add_component(entity, condis.Poison(stacks_applied=condi_value))
 
     if effect == 'torment':
-        world.add_component(entity, condis.Torment())
+        world.add_component(entity, condis.Torment(stacks_applied=condi_value))
 
     if effect == 'blind':
-        world.add_component(entity, condis.Blind())
+        world.add_component(entity, condis.Blind(stacks_applied=condi_value))
 
     if effect == 'chill':
-        world.add_component(entity, condis.Chill())
+        world.add_component(entity, condis.Chill(stacks_applied=condi_value))
 
     if effect == 'cripple':
-        world.add_component(entity, condis.Cripple())
+        world.add_component(entity, condis.Cripple(stacks_applied=condi_value))
 
     if effect == 'fear':
-        world.add_component(entity, condis.Fear())
+        world.add_component(entity, condis.Fear(stacks_applied=condi_value))
 
     if effect == 'immobilize':
-        world.add_component(entity, condis.Immobilize())
+        world.add_component(entity, condis.Immobilize(stacks_applied=condi_value))
 
     if effect == 'vulnerability':
-        world.add_component(entity, condis.Vulnerability())
+        world.add_component(entity, condis.Vulnerability(stacks_applied=condi_value))
 
     logger.info('Condition {} added to spell', effect)
 
 
-def add_boon(world, entity, effect):
+def add_boon(world, entity, effect, boon_value):
     if effect == 'aegis':
         world.add_component(entity, spellBoons.Aegis())
 
