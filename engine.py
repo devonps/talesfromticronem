@@ -1,8 +1,7 @@
 
 from loguru import logger
 from newGame.initialiseNewGame import setup_game
-from components import shared, condis, spellBoons
-from newGame import constants
+from components import  spells
 
 
 def main():
@@ -15,10 +14,9 @@ def main():
 
     world = setup_game()
 
-    for _, (name, desc, cond, boon) in world.get_components(shared.Name, shared.Description,
-                                                                condis.Bleeding, spellBoons.Regeneration):
-        print(name.label + ' lasts for: ' + str(cond.lasts_for) + ' turns.')
-        print(name.label + ' regen max stacks: ' + str(boon.max_stacks))
+    for _, (name, cl, wpn, slot) in world.get_components(spells.Name, spells.ClassName, spells.WeaponType, spells.WeaponSlot):
+        if cl.label == 'necromancer' and wpn.label == 'staff':
+            print('Spell ' + name.label + ' is attached to a ' + cl.label + 's ' + wpn.label + ' in slot ' + str(slot.slot))
 
 
 if __name__ == '__main__':
