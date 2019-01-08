@@ -54,7 +54,7 @@ condi_effects = {'bleeding', 'burning', 'cripple', 'confusion', 'poison', 'torme
 boon_effects = {'aegis', 'alacrity', 'fury', 'might', 'protection', 'regeneration',
                 'resistance', 'retaliation', 'stability', 'swiftness'}
 
-class_resources ={'lifeforce'}
+class_resources ={'lifeforce', 'damage', 'transferconditions'}
 
 # colours used to draw the dungeon
 colors = {
