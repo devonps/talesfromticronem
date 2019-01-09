@@ -32,6 +32,8 @@ def add_class_resource(world, entity, effect, resource_value):
         world.add_component(entity, resources.Damage(coefficient=resource_value))
     if effect == 'strikes_for':
         world.add_component(entity, resources.Strikesfor())
+    if effect =='boonsconverted':
+        world.add_component(entity, resources.ConvertBoons())
     logger.info('Class resource {} added to spell', effect)
 
 

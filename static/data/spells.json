@@ -271,7 +271,7 @@
       ]
     },
     {
-      "name": "Grasping Darkness",
+      "name": "grasping Darkness",
       "description": "Conjure claws of darkness from the shadows to attack foes, slowing them and gain life force for each struck foe.",
       "weapon_type": "sword",
       "class": "necromancer",
@@ -288,6 +288,115 @@
       [
         {"damage": "1.3",
         "lifeforce":"4"
+        }
+      ]
+    },
+    {
+      "name": "rending claws",
+      "description": "Slash your foe twice with ghostly claws to make them vulnerable.",
+      "weapon_type": "wand",
+      "class": "necromancer",
+      "cast_time": "0",
+      "cool_down": "0",
+      "lives_for": "0",
+      "weapon_slot": "1",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "max_range": "spell_dist_nearby",
+      "aoe": "False",
+      "aoe_size": "none",
+      "effects":
+      [
+        {"damage": "1.0",
+        "vulnerability":"3"
+        }
+      ]
+    },
+    {
+      "name": "ghastly claws",
+      "description": "Summon spectral claws to slash your foe in a quick flurry of strikes, gaining life force per strike.",
+      "weapon_type": "wand",
+      "class": "necromancer",
+      "cast_time": "0",
+      "cool_down": "1",
+      "lives_for": "0",
+      "weapon_slot": "2",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "max_range": "spell_dist_nearby",
+      "aoe": "False",
+      "aoe_size": "none",
+      "effects":
+      [
+        {"damage": "4.0",
+        "lifeforce":"12",
+        "strikes_for": "8"
+        }
+      ]
+    },
+    {
+      "name": "blood curse",
+      "description": "Bleed your foe.",
+      "weapon_type": "wand",
+      "class": "necromancer",
+      "cast_time": "0",
+      "cool_down": "0",
+      "lives_for": "0",
+      "weapon_slot": "3",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "max_range": "spell_dist_far",
+      "aoe": "False",
+      "aoe_size": "none",
+      "effects":
+      [
+        {"damage": "0.35",
+        "bleeding":"1"
+        }
+      ]
+    },
+    {
+      "name": "rending curse",
+      "description": "Bleed your foe.",
+      "weapon_type": "wand",
+      "class": "necromancer",
+      "cast_time": "0",
+      "cool_down": "1",
+      "lives_for": "0",
+      "weapon_slot": "4",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "max_range": "spell_dist_far",
+      "aoe": "False",
+      "aoe_size": "none",
+      "effects":
+      [
+        {"damage": "0.35",
+        "bleeding":"1",
+        "vulnerability":"3"
+        }
+      ]
+    },
+    {
+      "name": "feast of corruption",
+      "description": "Strike your target, gain life force, immobilise, and corrupt boons on your foe.",
+      "weapon_type": "wand",
+      "class": "necromancer",
+      "cast_time": "0",
+      "cool_down": "3",
+      "lives_for": "0",
+      "weapon_slot": "5",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "max_range": "spell_dist_far",
+      "aoe": "False",
+      "aoe_size": "none",
+      "effects":
+      [
+        {"damage": "1.0",
+        "lifeforce":"8",
+        "torment":"3",
+        "BoonsConverted": "3"
         }
       ]
     }
