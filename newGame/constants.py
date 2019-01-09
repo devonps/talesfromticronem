@@ -42,11 +42,11 @@ AOE_SMALL = 1
 AOE_MEDIUM = 2
 AOE_LARGE = 3
 
-SPELL_DIST_PERSONAL = 1
-SPELL_DIST_CLOSE = 3
-SPELL_DIST_NEARBY = 5
-SPELL_DIST_FAR = 7
-SPELL_DIST_VERY_FAR = 10
+SPELL_DIST_PERSONAL = 1     # 130 / 150
+SPELL_DIST_CLOSE = 3        # 300
+SPELL_DIST_NEARBY = 5       # 600
+SPELL_DIST_FAR = 7          # 900
+SPELL_DIST_VERY_FAR = 10    # 1200
 
 # conditions
 condi_effects = {'bleeding', 'burning', 'cripple', 'confusion', 'poison', 'torment',
@@ -54,7 +54,7 @@ condi_effects = {'bleeding', 'burning', 'cripple', 'confusion', 'poison', 'torme
 boon_effects = {'aegis', 'alacrity', 'fury', 'might', 'protection', 'regeneration',
                 'resistance', 'retaliation', 'stability', 'swiftness'}
 
-class_resources ={'lifeforce', 'damage', 'transferconditions', 'strikes_for'}
+class_resources ={'lifeforce', 'damage', 'transferconditions', 'strikes_for','boonsconverted'}
 
 # colours used to draw the dungeon
 colors = {

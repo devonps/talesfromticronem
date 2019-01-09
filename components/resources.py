@@ -1,4 +1,4 @@
-
+#TODO Overall spell effects need coding
 
 #
 # life force is used by the Necromancer and Witch doctor classes
@@ -26,6 +26,8 @@ class Damage:
 # This is the component for transfer conditions from caster to N targets
 # It's an empty component by design, it is used to flag that damage should be applied to the target
 
+# TODO Transfer conditions spell effect
+
 
 class TransferConditions:
     pass
@@ -35,6 +37,18 @@ class TransferConditions:
 # Strikes for informs the game how many times the targets are hit for
 #
 
+# TODO Spell number of hits effect
+
 
 class Strikesfor:
+    pass
+
+
+#
+# Convert boons to conditions
+#
+# TODO convert boons to conditions effect
+
+
+class ConvertBoons:
     pass
