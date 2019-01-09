@@ -1,7 +1,7 @@
 
 from loguru import logger
 from newGame.initialiseNewGame import setup_game
-from components import  spells
+from components import spells
 
 
 def main():
@@ -14,9 +14,10 @@ def main():
 
     world = setup_game()
 
-    for _, (name, cl, wpn, slot) in world.get_components(spells.Name, spells.ClassName, spells.WeaponType, spells.WeaponSlot):
+    # the following code will get the entity id (stored in ent) for
+    for ent, (name, cl, wpn, slot) in world.get_components(spells.Name, spells.ClassName, spells.WeaponType, spells.WeaponSlot):
         if cl.label == 'necromancer' and wpn.label == 'staff':
-            print('Spell ' + name.label + ' is attached to a ' + cl.label + 's ' + wpn.label + ' in slot ' + str(slot.slot))
+            print('Spell ' + name.label + '(' + str(ent) + ') is attached to a ' + cl.label + 's ' + wpn.label + ' in slot ' + str(slot.slot))
 
 
 if __name__ == '__main__':
