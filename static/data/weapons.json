@@ -20,8 +20,8 @@
       "spell_slot_four": "00",
       "spell_slot_five": "00",
       "current_xp_level": "01",
-      "hallmark_slot_one": "99",
-      "hallmark_slot_two": "1234"
+      "hallmark_slot_one": "00",
+      "hallmark_slot_two": "00"
     },
     {
       "name": "wand",
@@ -43,8 +43,8 @@
       "spell_slot_four": "00",
       "spell_slot_five": "00",
       "current_xp_level": "01",
-      "hallmark_slot_one": "99",
-      "hallmark_slot_two": "1234"
+      "hallmark_slot_one": "00",
+      "hallmark_slot_two": "00"
     },
     {
       "name": "scepter",
@@ -66,8 +66,8 @@
       "spell_slot_four": "00",
       "spell_slot_five": "00",
       "current_xp_level": "01",
-      "hallmark_slot_one": "99",
-      "hallmark_slot_two": "1234"
+      "hallmark_slot_one": "00",
+      "hallmark_slot_two": "00"
     },
     {
       "name": "staff",
@@ -89,8 +89,8 @@
       "spell_slot_four": "00",
       "spell_slot_five": "00",
       "current_xp_level": "01",
-      "hallmark_slot_one": "99",
-      "hallmark_slot_two": "1234"
+      "hallmark_slot_one": "00",
+      "hallmark_slot_two": "00"
     },
     {
       "name": "dagger",
@@ -112,8 +112,8 @@
       "spell_slot_four": "00",
       "spell_slot_five": "00",
       "current_xp_level": "01",
-      "hallmark_slot_one": "99",
-      "hallmark_slot_two": "1234"
+      "hallmark_slot_one": "00",
+      "hallmark_slot_two": "00"
     },
     {
       "name": "rod",
@@ -135,8 +135,8 @@
       "spell_slot_four": "00",
       "spell_slot_five": "00",
       "current_xp_level": "01",
-      "hallmark_slot_one": "99",
-      "hallmark_slot_two": "1234"
+      "hallmark_slot_one": "00",
+      "hallmark_slot_two": "00"
     },
     {
       "name": "focus",
@@ -158,8 +158,8 @@
       "spell_slot_four": "00",
       "spell_slot_five": "00",
       "current_xp_level": "01",
-      "hallmark_slot_one": "99",
-      "hallmark_slot_two": "1234"
+      "hallmark_slot_one": "00",
+      "hallmark_slot_two": "00"
     }
   ]
 }
