@@ -59,7 +59,7 @@ def generate_spells(gameworld):
 def generate_monsters(gameworld):
     logger.debug('Creating monsters as entities')
 
-    # create the monbile including its class
+    # create the monbile including its class15:
     # determine it's weapons & armour based on its class
     # create each weapon and load spells to that weapon
     # create any armour
