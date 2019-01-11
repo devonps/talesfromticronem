@@ -8,7 +8,8 @@ import esper
 
 from utilities.jsonUtilities import read_json_file
 from loguru import logger
-from newGame import constants, ClassWeapons as c
+from newGame import constants
+from newGame.ClassWeapons import WeaponClass
 from components import spells, weapons
 from components.addStatusEffects import process_status_effect
 
@@ -73,11 +74,21 @@ def generate_items(gameworld):
 
 
 def generate_weapons(gameworld):
-    staff = c.WeaponClass.create_staff(gameworld)
-    logger.info('Staff created with entity id of {}', staff)
+    staff = WeaponClass.create_staff(gameworld)
+    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
     load_weapon_with_spells(gameworld, staff, 'staff', 'necromancer')
-    # TODO assign spells to weapons
-    # load the staff with necro spells
+
+    focus = WeaponClass.create_focus(gameworld)
+    load_weapon_with_spells(gameworld, focus, 'focus', 'necromancer')
+
+    rod = WeaponClass.create_rod(gameworld)
+    load_weapon_with_spells(gameworld, rod, 'rod', 'necromancer')
+
+    sword = WeaponClass.create_sword(gameworld)
+    load_weapon_with_spells(gameworld, sword, 'sword', 'necromancer')
+
+    wand = WeaponClass.create_wand(gameworld)
+    load_weapon_with_spells(gameworld, wand, 'wand', 'necromancer')
 
 
 def load_weapon_with_spells(gameworld, weapon_obj, weapon_type, mobile_class):

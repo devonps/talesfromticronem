@@ -15,9 +15,11 @@ def main():
     world = setup_game()
 
     for ent, (name, desc, slot) in world.get_components(weapons.Name, weapons.Describable, weapons.Spells):
-        spell_name_component = world.component_for_entity(slot.slot_three, spells.Name)
-        print(spell_name_component.label)
 
+        spell_name_component = world.component_for_entity(slot.slot_four, spells.Name)
+        print(name.label, spell_name_component.label)
+        spell_name_component = world.component_for_entity(slot.slot_five, spells.Name)
+        print(name.label, spell_name_component.label)
 
 if __name__ == '__main__':
     main()
