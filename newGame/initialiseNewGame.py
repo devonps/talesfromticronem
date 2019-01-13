@@ -10,7 +10,7 @@ from utilities.jsonUtilities import read_json_file
 from loguru import logger
 from newGame import constants
 from newGame.ClassWeapons import WeaponClass
-from components import spells, weapons
+from components import spells, weapons, mobiles
 from components.addStatusEffects import process_status_effect
 
 
@@ -22,7 +22,7 @@ def setup_game():
     generate_spells(world)
     generate_items(world)
     generate_monsters(world)
-    generate_player_character(world)
+#    generate_player_character(world)
     # create game map
     # place entities (enemies, items)
 
@@ -120,4 +120,16 @@ def load_weapon_with_spells(gameworld, weapon_obj, weapon_type, mobile_class):
 def generate_player_character(gameworld):
     logger.debug('Creating the player character entity')
     player = gameworld.create_entity()
+    gameworld.add_component(player, mobiles.Name(first='dull', suffix='none'))
+    gameworld.add_component(player, mobiles.Describable())
+    gameworld.add_component(player, mobiles.CharacterClass('dull'))
+    gameworld.add_component(player, mobiles.AI(ailevel=constants.AI_LEVEL_PLAYER))
+    gameworld.add_component(player, mobiles.Health(current=1, maximum=10))
+    gameworld.add_component(player, mobiles.Inventory())
+    gameworld.add_component(player, mobiles.Armour())
+    gameworld.add_component(player, mobiles.Jewellery())
+    gameworld.add_component(player, mobiles.Equipped())
+
     logger.info('stored as entity {}', player)
+
+    return player
