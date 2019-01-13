@@ -48,6 +48,16 @@ SPELL_DIST_NEARBY = 5       # 600
 SPELL_DIST_FAR = 7          # 900
 SPELL_DIST_VERY_FAR = 10    # 1200
 
+# AI constants
+
+AI_LEVEL_PLAYER = 1     # player character
+AI_LEVEL_WIZARD = 3     # enemy - most intelligent
+AI_LEVEL_DEMON = 5      # enemy - intelligent
+AI_LEVEL_MONSTER = 7    # enemy - stupid
+AI_LEVEL_NPC = 9        # neutral - task orientated
+
+AIBehaviour = {}
+
 # conditions
 condi_effects = {'bleeding', 'burning', 'cripple', 'confusion', 'poison', 'torment',
                  'blind', 'chill', 'fear', 'immobilize', 'vulnerability', 'selfbleeding'}
