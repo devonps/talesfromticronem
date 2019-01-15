@@ -74,20 +74,20 @@ def generate_items(gameworld):
 
 
 def generate_weapons(gameworld):
-    staff = WeaponClass.create_staff(gameworld)
+    staff = WeaponClass.create_weapon(gameworld, 'staff')
     # parameters are: gameworld, weapon object, weapon type as a string, mobile class
     load_weapon_with_spells(gameworld, staff, 'staff', 'necromancer')
 
-    focus = WeaponClass.create_focus(gameworld)
+    focus = WeaponClass.create_weapon(gameworld, 'focus')
     load_weapon_with_spells(gameworld, focus, 'focus', 'necromancer')
 
-    rod = WeaponClass.create_rod(gameworld)
+    rod = WeaponClass.create_weapon(gameworld, 'rod')
     load_weapon_with_spells(gameworld, rod, 'rod', 'necromancer')
 
-    sword = WeaponClass.create_sword(gameworld)
+    sword = WeaponClass.create_weapon(gameworld, 'sword')
     load_weapon_with_spells(gameworld, sword, 'sword', 'necromancer')
 
-    wand = WeaponClass.create_wand(gameworld)
+    wand = WeaponClass.create_weapon(gameworld, 'wand')
     load_weapon_with_spells(gameworld, wand, 'wand', 'necromancer')
 
 
@@ -122,7 +122,7 @@ def generate_player_character(gameworld):
     player = gameworld.create_entity()
     gameworld.add_component(player, mobiles.Name(first='dull', suffix='none'))
     gameworld.add_component(player, mobiles.Describable())
-    gameworld.add_component(player, mobiles.CharacterClass('dull'))
+    gameworld.add_component(player, mobiles.CharacterClass())
     gameworld.add_component(player, mobiles.AI(ailevel=constants.AI_LEVEL_PLAYER))
     gameworld.add_component(player, mobiles.Health(current=1, maximum=10))
     gameworld.add_component(player, mobiles.Inventory())

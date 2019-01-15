@@ -1,4 +1,5 @@
 import tcod
+from newGame import constants
 
 
 class Name:
@@ -16,12 +17,12 @@ class Describable:
 
 
 class CharacterClass:
-    def __init__(self, magic_user='undefined'):
-        self.magic_user = magic_user
+    def __init__(self, label='undefined'):
+        self.label = label
 
 
 class AI:
-    def __init__(self, ailevel='none', behaviour='wander'):
+    def __init__(self, ailevel=0, behaviour='wander'):
         self.ailevel = ailevel
         self.behaviour = behaviour
 
