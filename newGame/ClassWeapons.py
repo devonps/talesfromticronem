@@ -2,7 +2,7 @@
 from utilities.jsonUtilities import read_json_file
 from loguru import logger
 from newGame import constants
-from components import weapons
+from components import weapons, spells
 
 
 class WeaponClass:

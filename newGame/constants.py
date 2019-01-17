@@ -50,6 +50,7 @@ SPELL_DIST_VERY_FAR = 10    # 1200
 
 # AI constants
 
+AI_LEVEL_NONE = 0       # the entity cannot perform any actions
 AI_LEVEL_PLAYER = 1     # player character
 AI_LEVEL_WIZARD = 2     # enemy - most intelligent
 AI_LEVEL_DEMON = 3     # enemy - intelligent

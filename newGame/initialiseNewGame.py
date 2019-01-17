@@ -66,6 +66,18 @@ def generate_monsters(gameworld):
     # determine/calculate its starting stats based on weapons, armour, and class
 
 
+def create_wizard(gameworld):
+    pass
+
+
+def create_demon(gameworld):
+    pass
+
+
+def create_monster(gameworld):
+    pass
+
+
 def generate_items(gameworld):
     logger.debug('Creating items as entities - for testing purposes only')
     generate_weapons(gameworld)
@@ -117,12 +129,12 @@ def load_weapon_with_spells(gameworld, weapon_obj, weapon_type, mobile_class):
                 weapon_slot_component.slot_five = ent
 
 
-def generate_player_character(gameworld):
+def generate_player_character(gameworld, characterclass):
     logger.debug('Creating the player character entity')
-    player = gameworld.create_entity()
-    gameworld.add_component(player, mobiles.Name(first='dull', suffix='none'))
+    player = generate_base_mobile(gameworld)
+    gameworld.add_component(player, mobiles.Name(first='Steve', suffix='none'))
     gameworld.add_component(player, mobiles.Describable())
-    gameworld.add_component(player, mobiles.CharacterClass())
+    gameworld.add_component(player, mobiles.CharacterClass(label=characterclass))
     gameworld.add_component(player, mobiles.AI(ailevel=constants.AI_LEVEL_PLAYER))
     gameworld.add_component(player, mobiles.Health(current=1, maximum=10))
     gameworld.add_component(player, mobiles.Inventory())
@@ -133,3 +145,19 @@ def generate_player_character(gameworld):
     logger.info('stored as entity {}', player)
 
     return player
+
+
+def generate_base_mobile(gameworld):
+    logger.info('Creating base mobile entity')
+    mobile = gameworld.create_entity()
+    gameworld.add_component(mobile, mobiles.Name(first='', suffix=''))
+    gameworld.add_component(mobile, mobiles.Describable())
+    gameworld.add_component(mobile, mobiles.CharacterClass())
+    gameworld.add_component(mobile, mobiles.AI(ailevel=constants.AI_LEVEL_NONE))
+    gameworld.add_component(mobile, mobiles.Health())
+    gameworld.add_component(mobile, mobiles.Inventory())
+    gameworld.add_component(mobile, mobiles.Armour())
+    gameworld.add_component(mobile, mobiles.Jewellery())
+    gameworld.add_component(mobile, mobiles.Equipped())
+
+    return mobile

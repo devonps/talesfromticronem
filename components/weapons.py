@@ -26,11 +26,11 @@ class Wielded:
 
 class Spells:
     def __init__(self, slot_one=0, slot_two=0, slot_three=0, slot_four=0, slot_five=0):
-        self.slot_one = slot_one
-        self.slot_two = slot_two
-        self.slot_three = slot_three
-        self.slot_four = slot_four
-        self.slot_five = slot_five
+        self.slot_one = int(slot_one)
+        self.slot_two = int(slot_two)
+        self.slot_three = int(slot_three)
+        self.slot_four = int(slot_four)
+        self.slot_five = int(slot_five)
         self.slot_one_disabled = None
         self.slot_two_disabled = None
         self.slot_three_disabled = None
