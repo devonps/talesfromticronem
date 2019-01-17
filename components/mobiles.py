@@ -1,5 +1,4 @@
 import tcod
-from newGame import constants
 
 
 class Name:
@@ -22,7 +21,7 @@ class CharacterClass:
 
 
 class AI:
-    def __init__(self, ailevel=0, behaviour='wander'):
+    def __init__(self, ailevel=0, behaviour='none'):
         self.ailevel = ailevel
         self.behaviour = behaviour
 
