@@ -65,6 +65,10 @@ character_classes = ['necromancer', 'witch doctor', 'druid', 'mesmer', 'elementa
 
 playable_classes = ['necromancer']
 
+demon_classes = ['fire', 'ice', 'earth']
+
+demon_weapons = ['focus', 'rod']
+
 # conditions
 condi_effects = ['bleeding', 'burning', 'cripple', 'confusion', 'poison', 'torment',
                  'blind', 'chill', 'fear', 'immobilize', 'vulnerability', 'selfbleeding']
