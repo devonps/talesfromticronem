@@ -5,6 +5,7 @@
 # create spells as entities
 
 import esper
+import random
 
 from utilities.jsonUtilities import read_json_file
 from loguru import logger
@@ -12,6 +13,7 @@ from newGame import constants
 from newGame.ClassWeapons import WeaponClass
 from components import spells, weapons, mobiles
 from components.addStatusEffects import process_status_effect
+from utilities.mobileHelp import MobileUtilities
 
 
 def setup_game():
@@ -59,7 +61,7 @@ def generate_spells(gameworld):
 def generate_monsters(gameworld):
     logger.debug('Creating monsters as entities')
 
-    # create the monbile including its class15:
+    # create the mobile including its class:
     # determine it's weapons & armour based on its class
     # create each weapon and load spells to that weapon
     # create any armour
@@ -67,7 +69,66 @@ def generate_monsters(gameworld):
 
 
 def create_wizard(gameworld):
-    pass
+    """
+    This method creates an enemy type of Wizard - this represents the toughest opponent for the player.
+    Wizards are created from the same playable classes the player can select.
+
+    :param gameworld:
+    :return wizard:
+    """
+    logger.debug('Creating new wizard')
+    # generate base mobile
+    wizard = generate_base_mobile(gameworld)
+    # add wizard specific components - this selection will become more complex over time
+
+    # determine the type of wizard, i.e. it's character class
+    characterclass = random.choice(constants.playable_classes)
+    gameworld.add_component(wizard, mobiles.CharacterClass(label=characterclass))
+    class_component = gameworld.component_for_entity(wizard, mobiles.CharacterClass)
+
+    # add race to Wizard - again better 'selection' techniques need to be created
+    gameworld.add_component(wizard, mobiles.Race(race='human'))
+
+    # create inventory for wizard
+    gameworld.add_component(wizard, mobiles.Inventory())
+
+    # assign starting weapon + spells
+
+    # create a new weapon for the wizard
+    sword = WeaponClass.create_weapon(gameworld, 'sword')
+    # get the weapon type
+    weapon_type = gameworld.component_for_entity(sword, weapons.Name)
+    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+    load_weapon_with_spells(gameworld, sword, weapon_type.label, class_component.label)
+
+    # add the equipable component
+    gameworld.add_component(wizard, mobiles.Equipped())
+    # equip wizard with weapon
+    MobileUtilities.equip_weapon(gameworld, wizard, sword, 'main')
+
+    # create a new weapon for the wizard
+    focus = WeaponClass.create_weapon(gameworld, 'focus')
+    # get the weapon type
+    weapon_type = gameworld.component_for_entity(focus, weapons.Name)
+    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+    load_weapon_with_spells(gameworld, focus, weapon_type.label, class_component.label)
+
+    # equip wizard with weapon
+    MobileUtilities.equip_weapon(gameworld, wizard, focus, 'off')
+
+    # add the armour component
+    gameworld.add_component(wizard, mobiles.Armour())
+
+    # add the jewellery component
+    gameworld.add_component(wizard, mobiles.Jewellery())
+
+    # calculate starting health
+    gameworld.add_component(wizard, mobiles.Health())
+
+    # add renderable component to wizard
+    gameworld.add_component(wizard, mobiles.Renderable)
+
+    return wizard
 
 
 def create_demon(gameworld):
@@ -136,11 +197,25 @@ def generate_player_character(gameworld, characterclass):
     gameworld.add_component(player, mobiles.Describable())
     gameworld.add_component(player, mobiles.CharacterClass(label=characterclass))
     gameworld.add_component(player, mobiles.AI(ailevel=constants.AI_LEVEL_PLAYER))
-    gameworld.add_component(player, mobiles.Health(current=1, maximum=10))
     gameworld.add_component(player, mobiles.Inventory())
     gameworld.add_component(player, mobiles.Armour())
     gameworld.add_component(player, mobiles.Jewellery())
     gameworld.add_component(player, mobiles.Equipped())
+    gameworld.add_component(player, mobiles.Race(race='human'))
+    gameworld.add_component(player, mobiles.Health(current=1, maximum=10))
+
+    class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
+    # create a new weapon for the player
+    weapon = WeaponClass.create_weapon(gameworld, 'sword')
+    weapon_type = gameworld.component_for_entity(weapon, weapons.Name)
+    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+    load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)
+
+    # equip wizard with weapon
+    MobileUtilities.equip_weapon(gameworld, player, weapon, 'main')
+
+    # add renderable component to player
+    gameworld.add_component(player, mobiles.Renderable)
 
     logger.info('stored as entity {}', player)
 
@@ -148,16 +223,11 @@ def generate_player_character(gameworld, characterclass):
 
 
 def generate_base_mobile(gameworld):
-    logger.info('Creating base mobile entity')
     mobile = gameworld.create_entity()
-    gameworld.add_component(mobile, mobiles.Name(first='', suffix=''))
+    logger.info('Base mobile entity ID ' + str(mobile))
+    gameworld.add_component(mobile, mobiles.Name(first='xyz', suffix=''))
     gameworld.add_component(mobile, mobiles.Describable())
     gameworld.add_component(mobile, mobiles.CharacterClass())
     gameworld.add_component(mobile, mobiles.AI(ailevel=constants.AI_LEVEL_NONE))
-    gameworld.add_component(mobile, mobiles.Health())
-    gameworld.add_component(mobile, mobiles.Inventory())
-    gameworld.add_component(mobile, mobiles.Armour())
-    gameworld.add_component(mobile, mobiles.Jewellery())
-    gameworld.add_component(mobile, mobiles.Equipped())
 
     return mobile

@@ -60,13 +60,18 @@ AI_LEVEL_NPC = 5       # neutral - task orientated
 
 AIBehaviour = {}
 
-# conditions
-condi_effects = {'bleeding', 'burning', 'cripple', 'confusion', 'poison', 'torment',
-                 'blind', 'chill', 'fear', 'immobilize', 'vulnerability', 'selfbleeding'}
-boon_effects = {'aegis', 'alacrity', 'fury', 'might', 'protection', 'regeneration',
-                'resistance', 'retaliation', 'stability', 'swiftness'}
+# playable classes
+character_classes = ['necromancer', 'witch doctor', 'druid', 'mesmer', 'elementalist', 'chronomancer']
 
-class_resources ={'lifeforce', 'damage', 'transferconditions', 'strikes_for','boonsconverted'}
+playable_classes = ['necromancer']
+
+# conditions
+condi_effects = ['bleeding', 'burning', 'cripple', 'confusion', 'poison', 'torment',
+                 'blind', 'chill', 'fear', 'immobilize', 'vulnerability', 'selfbleeding']
+boon_effects = ['aegis', 'alacrity', 'fury', 'might', 'protection', 'regeneration',
+                'resistance', 'retaliation', 'stability', 'swiftness']
+
+class_resources =['lifeforce', 'damage', 'transferconditions', 'strikes_for','boonsconverted']
 
 # colours used to draw the dungeon
 colors = {
