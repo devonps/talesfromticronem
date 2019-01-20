@@ -15,6 +15,11 @@ class Describable:
         self.background = background
 
 
+class Race:
+    def __init__(self, race='human'):
+        self.label = race
+
+
 class CharacterClass:
     def __init__(self, label='undefined'):
         self.label = label
@@ -60,3 +65,7 @@ class Equipped:
         self.main_hand = main_hand
         self.off_hand = off_hand
         self.both_hands = both_hands
+
+
+class Renderable:
+    pass
