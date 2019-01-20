@@ -1,6 +1,6 @@
 
 from loguru import logger
-from newGame.initialiseNewGame import setup_game, generate_player_character, load_weapon_with_spells, create_wizard
+from newGame.initialiseNewGame import setup_game, generate_player_character, create_wizard, create_demon
 from components import spells, weapons, mobiles
 from newGame.ClassWeapons import WeaponClass
 
@@ -85,6 +85,11 @@ def main():
 
     print(wizard_name.first + ' the ' + class_component.label + ' is holding a ' + wpns)
 
+
+    thisdemon = create_demon(gameworld)
+    class_component = gameworld.component_for_entity(thisdemon, mobiles.CharacterClass)
+
+    print('Becareful there is a ' + class_component.label + ' demon about!')
 
 if __name__ == '__main__':
     main()

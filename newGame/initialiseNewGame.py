@@ -132,7 +132,42 @@ def create_wizard(gameworld):
 
 
 def create_demon(gameworld):
-    pass
+    logger.debug('Creating new demon')
+    # generate base mobile
+    demon = generate_base_mobile(gameworld)
+    # add demon specific components - this selection will become more complex over time
+
+    # determine the type of demon, i.e. it's character class
+    characterclass = random.choice(constants.demon_classes)
+    gameworld.add_component(demon, mobiles.CharacterClass(label=characterclass))
+
+    class_component = gameworld.component_for_entity(demon, mobiles.CharacterClass)
+
+    # add race to Demon - again better 'selection' techniques need to be created
+    gameworld.add_component(demon, mobiles.Race(race='demon'))
+
+    # create a new weapon for the demon
+    weapon = WeaponClass.create_weapon(gameworld, random.choice(constants.demon_weapons))
+    # get the weapon type
+    weapon_type = gameworld.component_for_entity(weapon, weapons.Name)
+    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+    load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)
+
+    # add the equipable component
+    gameworld.add_component(demon, mobiles.Equipped())
+    # equip demon with weapon
+    MobileUtilities.equip_weapon(gameworld, demon, weapon, 'main')
+
+    # add the armour component
+    gameworld.add_component(demon, mobiles.Armour())
+
+    # calculate starting health
+    gameworld.add_component(demon, mobiles.Health())
+
+    # add renderable component to demon
+    gameworld.add_component(demon, mobiles.Renderable)
+
+    return demon
 
 
 def create_monster(gameworld):
