@@ -2,9 +2,6 @@
 from loguru import logger
 from newGame.initialiseNewGame import setup_game, generate_player_character, create_wizard, create_demon
 from components import spells, weapons, mobiles
-from newGame.ClassWeapons import WeaponClass
-
-from utilities.spellHelp import SpellUtilities
 from utilities.mobileHelp import MobileUtilities
 
 
@@ -25,7 +22,7 @@ def main():
     logger.info('* New game started *')
     logger.info('********************')
 
-    gameworld = setup_game()
+    gameworld, game_map = setup_game()
 
     # for_testing(world)
 
@@ -85,11 +82,13 @@ def main():
 
     print(wizard_name.first + ' the ' + class_component.label + ' is holding a ' + wpns)
 
-
     thisdemon = create_demon(gameworld)
     class_component = gameworld.component_for_entity(thisdemon, mobiles.CharacterClass)
 
-    print('Becareful there is a ' + class_component.label + ' demon about!')
+    ai_component = gameworld.component_for_entity(thisdemon, mobiles.AI)
+
+    print('be careful there is a ' + class_component.label + ' demon about!')
+    print(ai_component.ailevel)
 
 if __name__ == '__main__':
     main()
