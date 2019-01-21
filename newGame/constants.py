@@ -27,8 +27,8 @@ else:
 RNG_STREAMS = 10
 
 # game-map settings
-MAP_WIDTH = 240
-MAP_HEIGHT = 120
+MAP_WIDTH = 80
+MAP_HEIGHT = 50
 
 # dungon BSP settings
 BSP_DEPTH = 10
