@@ -14,6 +14,7 @@ from newGame.ClassWeapons import WeaponClass
 from components import spells, weapons, mobiles
 from components.addStatusEffects import process_status_effect
 from utilities.mobileHelp import MobileUtilities
+from map_objects.gameMap import GameMap
 
 
 def setup_game():
@@ -26,9 +27,11 @@ def setup_game():
     generate_monsters(world)
 #    generate_player_character(world)
     # create game map
+    game_map = GameMap(constants.MAP_WIDTH, constants.MAP_HEIGHT)
+    game_map.make_map()
     # place entities (enemies, items)
 
-    return world
+    return world, game_map
 
 
 # create esper world (enemies, items, spells, etc)
@@ -128,6 +131,9 @@ def create_wizard(gameworld):
     # add renderable component to wizard
     gameworld.add_component(wizard, mobiles.Renderable)
 
+    # add AI component
+    gameworld.add_component(wizard, mobiles.AI(ailevel=constants.AI_LEVEL_WIZARD))
+
     return wizard
 
 
@@ -166,6 +172,9 @@ def create_demon(gameworld):
 
     # add renderable component to demon
     gameworld.add_component(demon, mobiles.Renderable)
+
+    # add AI component
+    gameworld.add_component(demon, mobiles.AI(ailevel=constants.AI_LEVEL_DEMON))
 
     return demon
 

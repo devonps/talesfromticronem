@@ -6,9 +6,6 @@ GAME_WINDOW_TITLE = 'Tales from Ticronem'
 SCREEN_WIDTH = 100
 SCREEN_HEIGHT = 60
 
-MAP_WIDTH = 80
-MAP_HEIGHT = 40
-
 # logging
 LOG_FOLDER = 'logs/'
 LOG_FILENAME = 'gamelog_'
@@ -28,6 +25,23 @@ else:
 
 # holds the number of RNG streams used in the PCG generator
 RNG_STREAMS = 10
+
+# game-map settings
+MAP_WIDTH = 240
+MAP_HEIGHT = 120
+
+# dungon BSP settings
+BSP_DEPTH = 10
+BSP_NODE_MIN_SIZE = 5
+BSP_FULL_ROOMS = False
+
+# dungeon viewport
+VIEWPORT_WIDTH = 80
+VIEWPORT_HEIGHT = 40
+
+# viewport scrolling values
+VIEWPORT_SCROLL_X = 30
+VIEWPORT_SCROLL_Y = 30
 
 # simple-dungeon room information
 ROOM_MAX_SIZE = 10
@@ -58,7 +72,7 @@ AI_LEVEL_MONSTER = 4    # enemy - stupid
 AI_LEVEL_NPC = 5       # neutral - task orientated
 
 
-AIBehaviour = {}
+AIBehaviour = []
 
 # playable classes
 character_classes = ['necromancer', 'witch doctor', 'druid', 'mesmer', 'elementalist', 'chronomancer']
