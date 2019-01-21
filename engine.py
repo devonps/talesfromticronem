@@ -1,10 +1,11 @@
 import tcod
-import time
 from loguru import logger
 from newGame.initialiseNewGame import setup_game, generate_player_character, create_wizard, create_demon
 from newGame import constants
 from components import spells, weapons, mobiles
 from utilities.mobileHelp import MobileUtilities
+
+from processors.render import RenderProcessor
 
 
 def for_testing(gameworld):
@@ -98,19 +99,24 @@ def main():
     tcod.console_set_custom_font('static/fonts/courier12x12_aa_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
     tcod.console_init_root(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.GAME_WINDOW_TITLE, False)
 
+    con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
+
     key = tcod.Key()
     mouse = tcod.Mouse()
 
+    render_process = RenderProcessor(con)
+    gameworld.add_processor(render_process)
+
     while not tcod.console_is_window_closed():
         tcod.sys_check_for_event(tcod.EVENT_KEY, key, mouse)
-        tcod.console_set_default_foreground(0, tcod.white)
-        tcod.console_put_char(0, 1, 1, '@', tcod.BKGND_NONE)
-        tcod.console_flush()
 
+        # run ALL game processors
+        gameworld.process()
         key = tcod.console_check_for_keypress()
 
         if key.vk == tcod.KEY_ESCAPE:
             return True
+
 
 if __name__ == '__main__':
     main()

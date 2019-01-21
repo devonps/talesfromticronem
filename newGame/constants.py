@@ -1,10 +1,7 @@
 import random
-import tcod
 
 
 GAME_WINDOW_TITLE = 'Tales from Ticronem'
-SCREEN_WIDTH = 100
-SCREEN_HEIGHT = 60
 
 # logging
 LOG_FOLDER = 'logs/'
@@ -26,14 +23,13 @@ else:
 # holds the number of RNG streams used in the PCG generator
 RNG_STREAMS = 10
 
-# game-map settings
-MAP_WIDTH = 80
-MAP_HEIGHT = 50
+# tcod console settings
+SCREEN_WIDTH = 100
+SCREEN_HEIGHT = 60
 
-# dungon BSP settings
-BSP_DEPTH = 10
-BSP_NODE_MIN_SIZE = 5
-BSP_FULL_ROOMS = False
+# game-map settings
+MAP_WIDTH = 240
+MAP_HEIGHT = 120
 
 # dungeon viewport
 VIEWPORT_WIDTH = 80
@@ -42,6 +38,14 @@ VIEWPORT_HEIGHT = 40
 # viewport scrolling values
 VIEWPORT_SCROLL_X = 30
 VIEWPORT_SCROLL_Y = 30
+
+# message box settings
+MSG_PANEL_START_Y = VIEWPORT_HEIGHT + 2
+MSG_PANEL_WIDTH = 80
+MSG_PANEL_DEPTH = 10
+MSG_PANEL_LINES = MSG_PANEL_DEPTH - 1
+
+# status effects settings
 
 # simple-dungeon room information
 ROOM_MAX_SIZE = 10
@@ -90,14 +94,6 @@ boon_effects = ['aegis', 'alacrity', 'fury', 'might', 'protection', 'regeneratio
                 'resistance', 'retaliation', 'stability', 'swiftness']
 
 class_resources =['lifeforce', 'damage', 'transferconditions', 'strikes_for','boonsconverted']
-
-# colours used to draw the dungeon
-colors = {
-    'dark_wall': tcod.dark_yellow,
-    'dark_ground': tcod.Color(50, 50, 150),
-    'light_wall': tcod.Color(130, 110, 50),
-    'light_ground': tcod.Color(200, 180, 50)
-}
 
 FOV_ALGORITHM = 0
 FOV_LIGHT_WALLS = True
