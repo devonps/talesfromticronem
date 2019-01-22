@@ -112,6 +112,9 @@ def main():
 
         # run ALL game processors
         gameworld.process()
+
+        tcod.console_flush()
+
         key = tcod.console_check_for_keypress()
 
         if key.vk == tcod.KEY_ESCAPE:
