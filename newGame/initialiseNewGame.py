@@ -6,6 +6,7 @@
 
 import esper
 import random
+import tcod
 
 from utilities.jsonUtilities import read_json_file
 from loguru import logger
@@ -238,7 +239,7 @@ def generate_player_character(gameworld, characterclass):
     logger.debug('Creating the player character entity')
     player = generate_base_mobile(gameworld)
     gameworld.add_component(player, mobiles.Name(first='Steve', suffix='none'))
-    gameworld.add_component(player, mobiles.Describable())
+    gameworld.add_component(player, mobiles.Describable(glyph='@', foreground=tcod.orange))
     gameworld.add_component(player, mobiles.CharacterClass(label=characterclass))
     gameworld.add_component(player, mobiles.AI(ailevel=constants.AI_LEVEL_PLAYER))
     gameworld.add_component(player, mobiles.Inventory())
@@ -259,7 +260,10 @@ def generate_player_character(gameworld, characterclass):
     MobileUtilities.equip_weapon(gameworld, player, weapon, 'main')
 
     # add renderable component to player
-    gameworld.add_component(player, mobiles.Renderable)
+    gameworld.add_component(player, mobiles.Renderable(is_visible=True))
+
+    # give player a false starting position - just for testing
+    gameworld.add_component(player, mobiles.Position(x=random.randrange(3,55), y=random.randrange(5,39)))
 
     logger.info('stored as entity {}', player)
 

@@ -68,4 +68,11 @@ class Equipped:
 
 
 class Renderable:
-    pass
+    def __init__(self, is_visible=True):
+        self.isVisible = is_visible
+
+
+class Position:
+    def __init__(self, x=0, y=0):
+        self.x = x
+        self.y = y
