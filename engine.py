@@ -8,15 +8,6 @@ from utilities.mobileHelp import MobileUtilities
 from processors.render import RenderProcessor
 
 
-def for_testing(gameworld):
-    for _, (name, desc, slot) in gameworld.get_components(weapons.Name, weapons.Describable, weapons.Spells):
-
-        spell_name_component = gameworld.component_for_entity(slot.slot_four, spells.Name)
-        print(name.label, spell_name_component.label)
-        spell_name_component = gameworld.component_for_entity(slot.slot_five, spells.Name)
-        print(name.label, spell_name_component.label)
-
-
 def main():
 
 #    logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
@@ -26,8 +17,6 @@ def main():
     logger.info('********************')
 
     gameworld, game_map = setup_game()
-
-    # for_testing(world)
 
     # create the player
     player = generate_player_character(gameworld, 'necromancer')
