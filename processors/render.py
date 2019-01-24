@@ -44,14 +44,14 @@ class RenderConsole(esper.Processor):
         self.render_player_status_effects_content(constants.H_BAR_X, constants.H_BAR_Y + 6, chr(10), tcod.white)
 
         # draw the entities
-        x,y = self.render_entities()
+        self.render_entities()
 
         # blit the console
         self.blit_the_console()
         # flush the console
         self.flush_console()
         # clear the entity
-        self.clear_entity(x,y)
+        self.clear_entity()
 
     @staticmethod
     def flush_console():
@@ -65,7 +65,6 @@ class RenderConsole(esper.Processor):
         for ent, (rend, pos, desc) in self.world.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
             if rend.isVisible:
                 self.render_entity(pos.x, pos.y, desc.glyph, desc.foreground, desc.background)
-                return pos.x, pos.y
 
     def render_boons(self):
         self.render_h_bar(constants.H_BAR_X, constants.H_BAR_Y, constants.BCC_BAR_RIGHT_SIDE,tcod.darker_gray)
@@ -189,8 +188,11 @@ class RenderConsole(esper.Processor):
         tcod.console_put_char_ex(self.con, posx, posy, glyph, fg, bg)
 
     # clear the entity from the screen - this is used in conjunction with the Renderable component
-    def clear_entity(self, posx, posy):
-        tcod.console_put_char(self.con, posx, posy, ' ', tcod.BKGND_NONE)
+    def clear_entity(self):
+        for ent, (rend, pos, desc) in self.world.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
+            if rend.isVisible:
+                self.render_entity(pos.x, pos.y, ' ', desc.foreground, desc.background)
+        # tcod.console_put_char(self.con, posx, posy, ' ', tcod.BKGND_NONE)
 
     def render_player_status_effects_content(self, posx, posy, glyph, foreground):
         x = 0
@@ -210,3 +212,31 @@ class RenderConsole(esper.Processor):
         tcod.console_set_default_foreground(self.con, tcod.white)
         hp = 100 - value
         tcod.console_print_ex(self.con, posx, (posy + constants.V_BAR_DEPTH) + 2, tcod.BKGND_NONE, tcod.LEFT, str(hp) + '%')
+
+
+class RenderInventory(esper.Processor):
+    def __init__(self):
+        super().__init__()
+
+    def process(self):
+        pass
+
+
+class RenderGameStartScreen(esper.Processor):
+    def __init__(self,):
+        super().__init__()
+
+    def process(self):
+        pass
+        # get opening image & blit it
+        # display game options
+
+
+class RenderPlayerCharacterScreen(esper.Processor):
+    def __init__(self, ):
+        super().__init__()
+
+    def process(self):
+        pass
+
+

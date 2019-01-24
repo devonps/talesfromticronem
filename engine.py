@@ -82,6 +82,9 @@ def main():
         wpn_name = gameworld.component_for_entity(weapons_equipped[2], weapons.Name)
         wpns = wpn_name.label + ' in both his hands'
 
+    position_component = gameworld.component_for_entity(thiswizard, mobiles.Position)
+    render_component = gameworld.component_for_entity(thiswizard, mobiles.Renderable)
+
     print(wizard_name.first + ' the ' + class_component.label + ' is holding a ' + wpns)
 
     thisdemon = create_demon(gameworld)
@@ -105,6 +108,9 @@ def main():
         if key.vk == tcod.KEY_ENTER:
             gameworld.component_for_entity(player, mobiles.Position).x = random.randrange(1, 79)
             gameworld.component_for_entity(player, mobiles.Position).y = random.randrange(1, 39)
+
+            gameworld.component_for_entity(thiswizard, mobiles.Position).x = random.randrange(1, 79)
+            gameworld.component_for_entity(thiswizard, mobiles.Position).y = random.randrange(1, 39)
 
         if key.vk == tcod.KEY_ESCAPE:
             return True

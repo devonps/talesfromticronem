@@ -17,7 +17,7 @@ from components import spells, weapons, mobiles
 from components.addStatusEffects import process_status_effect
 from utilities.mobileHelp import MobileUtilities
 from map_objects.gameMap import GameMap
-from processors.render import RenderConsole
+from processors.render import *
 
 
 def setup_game(con):
@@ -25,8 +25,14 @@ def setup_game(con):
     # create Esper game world
     world = create_game_world()
     # generate Esper processors
-    render_process = RenderConsole(con)
-    world.add_processor(render_process)
+    render_console_process = RenderConsole(con)
+    render_game_screen = RenderGameStartScreen()
+    render_inventory_screen = RenderInventory()
+    render_character_screen = RenderInventory()
+    world.add_processor(render_console_process)
+    world.add_processor(render_game_screen)
+    world.add_processor(render_inventory_screen)
+    world.add_processor(render_character_screen)
 
     # create entities for game world
     generate_spells(world)
@@ -99,10 +105,23 @@ def create_wizard(gameworld):
     # add race to Wizard - again better 'selection' techniques need to be created
     gameworld.add_component(wizard, mobiles.Race(race='human'))
 
+    # add renderable component to wizard
+    gameworld.add_component(wizard, mobiles.Renderable(is_visible=True))
+
+    # add AI component
+    gameworld.add_component(wizard, mobiles.AI(ailevel=constants.AI_LEVEL_WIZARD))
+
+    # make the wizard appear
+    gameworld.add_component(wizard, mobiles.Position(x=random.randrange(3,55), y=random.randrange(5,39)))
+
+    gameworld.add_component(wizard, mobiles.Describable(glyph='@', foreground=tcod.white))
+
     # create inventory for wizard
     gameworld.add_component(wizard, mobiles.Inventory())
 
     # assign starting weapon + spells
+
+    # will this wizard use a 2-handed weapon or not!
 
     # create a new weapon for the wizard
     sword = WeaponClass.create_weapon(gameworld, 'sword')
@@ -116,7 +135,7 @@ def create_wizard(gameworld):
     # equip wizard with weapon
     MobileUtilities.equip_weapon(gameworld, wizard, sword, 'main')
 
-    # create a new weapon for the wizard
+    # create a 2nd weapon for the wizard
     focus = WeaponClass.create_weapon(gameworld, 'focus')
     # get the weapon type
     weapon_type = gameworld.component_for_entity(focus, weapons.Name)
@@ -134,12 +153,6 @@ def create_wizard(gameworld):
 
     # calculate starting health
     gameworld.add_component(wizard, mobiles.Health())
-
-    # add renderable component to wizard
-    gameworld.add_component(wizard, mobiles.Renderable)
-
-    # add AI component
-    gameworld.add_component(wizard, mobiles.AI(ailevel=constants.AI_LEVEL_WIZARD))
 
     return wizard
 
