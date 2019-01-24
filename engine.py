@@ -85,7 +85,7 @@ def main():
 
     # temp code to display the console!
 
-    tcod.console_set_custom_font('static/fonts/courier12x12_aa_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
+    tcod.console_set_custom_font('static/fonts/prestige12x12_gs_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
     tcod.console_init_root(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.GAME_WINDOW_TITLE, False)
 
     con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
