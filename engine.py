@@ -1,11 +1,11 @@
 import tcod
+import random
+
 from loguru import logger
 from newGame.initialiseNewGame import setup_game, generate_player_character, create_wizard, create_demon
 from newGame import constants
 from components import spells, weapons, mobiles
 from utilities.mobileHelp import MobileUtilities
-
-from processors.render import RenderProcessor
 
 
 def main():
@@ -16,7 +16,17 @@ def main():
     logger.info('* New game started *')
     logger.info('********************')
 
-    gameworld, game_map = setup_game()
+    tcod.console_set_custom_font('static/fonts/prestige12x12_gs_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
+    tcod.console_init_root(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.GAME_WINDOW_TITLE, False)
+
+    con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
+
+    key = tcod.Key()
+    mouse = tcod.Mouse()
+
+    # Esper initialisation
+    gameworld, game_map = setup_game(con)
+
 
     # create the player
     player = generate_player_character(gameworld, 'necromancer')
@@ -85,26 +95,16 @@ def main():
 
     # temp code to display the console!
 
-    tcod.console_set_custom_font('static/fonts/prestige12x12_gs_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
-    tcod.console_init_root(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.GAME_WINDOW_TITLE, False)
-
-    con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
-
-    key = tcod.Key()
-    mouse = tcod.Mouse()
-
-    render_process = RenderProcessor(con)
-    gameworld.add_processor(render_process)
-
     while not tcod.console_is_window_closed():
         tcod.sys_check_for_event(tcod.EVENT_KEY, key, mouse)
 
         # run ALL game processors
         gameworld.process()
 
-        tcod.console_flush()
-
         key = tcod.console_check_for_keypress()
+        if key.vk == tcod.KEY_ENTER:
+            gameworld.component_for_entity(player, mobiles.Position).x = random.randrange(1, 79)
+            gameworld.component_for_entity(player, mobiles.Position).y = random.randrange(1, 39)
 
         if key.vk == tcod.KEY_ESCAPE:
             return True

@@ -8,6 +8,7 @@ import esper
 import random
 import tcod
 
+
 from utilities.jsonUtilities import read_json_file
 from loguru import logger
 from newGame import constants
@@ -16,12 +17,17 @@ from components import spells, weapons, mobiles
 from components.addStatusEffects import process_status_effect
 from utilities.mobileHelp import MobileUtilities
 from map_objects.gameMap import GameMap
+from processors.render import RenderConsole
 
 
-def setup_game():
+def setup_game(con):
     # read in JSON files - maybe
     # create Esper game world
     world = create_game_world()
+    # generate Esper processors
+    render_process = RenderConsole(con)
+    world.add_processor(render_process)
+
     # create entities for game world
     generate_spells(world)
     generate_items(world)
