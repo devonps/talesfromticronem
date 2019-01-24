@@ -22,15 +22,9 @@ class RenderProcessor(esper.Processor):
         self.render_controls()
 
         # draw the entities
-
         for ent, (rend, pos, desc) in self.world.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
             if rend.isVisible:
-                posx = pos.x
-                posy = pos.y
-                glyph = desc.glyph
-                fg = desc.foreground
-                bg = desc.background
-                tcod.console_put_char_ex(self.con, posx, posy, glyph, fg, bg)
+                self.render_entity(pos.x, pos.y, desc.glyph, desc.foreground, desc.background)
 
         # draw the health, mana and F1 bar
         self.render_health_bar()
@@ -42,12 +36,33 @@ class RenderProcessor(esper.Processor):
 
     def render_boons(self):
         self.render_h_bar(constants.H_BAR_X, constants.H_BAR_Y, constants.BCC_BAR_RIGHT_SIDE,tcod.darker_gray, tcod.green,  'Boons')
+        x = 0
+        for a in range(10):
+            self.render_entity(1 + constants.H_BAR_X + x, constants.H_BAR_Y + 1, tcod.CHAR_SUBP_DIAG, tcod.green, tcod.black)
+            if a < 9:
+                x += 1
+                self.render_entity(1 + constants.H_BAR_X + x, constants.H_BAR_Y + 1, chr(179), tcod.darker_gray, tcod.black)
+            x += 1
 
     def render_conditions(self):
         self.render_h_bar(constants.H_BAR_X, constants.H_BAR_Y + 3, constants.BCC_BAR_RIGHT_SIDE, tcod.darker_gray, tcod.red, 'Conditions')
+        x = 0
+        for a in range(10):
+            self.render_entity(1 + constants.H_BAR_X + x, constants.H_BAR_Y + 4, chr(9), tcod.green, tcod.black)
+            if a < 9:
+                x += 1
+                self.render_entity(1 + constants.H_BAR_X + x, constants.H_BAR_Y + 4, chr(179), tcod.darker_gray, tcod.black)
+            x += 1
 
     def render_controls(self):
         self.render_h_bar(constants.H_BAR_X, constants.H_BAR_Y + 6, constants.BCC_BAR_RIGHT_SIDE, tcod.darker_gray, tcod.white, 'Controls')
+        x = 0
+        for a in range(10):
+            self.render_entity(1 + constants.H_BAR_X + x, constants.H_BAR_Y + 7, chr(10), tcod.green, tcod.black)
+            if a < 9:
+                x += 1
+                self.render_entity(1 + constants.H_BAR_X + x, constants.H_BAR_Y + 7, chr(179), tcod.darker_gray, tcod.black)
+            x += 1
 
     def render_health_bar(self):
         self.render_v_bar(constants.V_BAR_X, constants.V_BAR_Y, constants.V_BAR_D, tcod.darker_gray, tcod.red, 15)
@@ -160,8 +175,19 @@ class RenderProcessor(esper.Processor):
         tcod.console_put_char_ex(self.con, right_side, posy + 2, chr(217), foreground, background)
 
         for x in range(constants.BO_CO_CO_WIDTH):
-            tcod.console_put_char_ex(self.con, (posx + 1) + x, posy, chr(196), foreground, background)
-            tcod.console_put_char_ex(self.con, (posx + 1) + x, posy + 2, chr(196), foreground, background)
+            if x % 2:
+                tcod.console_put_char_ex(self.con, (posx + 1) + x, posy, chr(194), foreground, background)
+                tcod.console_put_char_ex(self.con, (posx + 1) + x, posy + 2, chr(193), foreground, background)
+            else:
+                tcod.console_put_char_ex(self.con, (posx + 1) + x, posy, chr(196), foreground, background)
+                tcod.console_put_char_ex(self.con, (posx + 1) + x, posy + 2, chr(196), foreground, background)
 
-        tcod.console_set_default_foreground(self.con, fill_colour)
-        tcod.console_print_ex(self.con, posx + 1, posy + 1, tcod.BKGND_NONE, tcod.LEFT, msg)
+        # tcod.console_set_default_foreground(self.con, fill_colour)
+        # tcod.console_print_ex(self.con, posx + 1, posy + 1, tcod.BKGND_NONE, tcod.LEFT, msg)
+
+    def render_entity(self, posx, posy, glyph, fg, bg):
+        tcod.console_put_char_ex(self.con, posx, posy, glyph, fg, bg)
+
+    # clear the entity from the screen - this is used in conjunction with the Renderable component
+    def clear_entity(self, posx, posy):
+        tcod.console_put_char(self.con, posx, posy, ' ', tcod.BKGND_NONE)
