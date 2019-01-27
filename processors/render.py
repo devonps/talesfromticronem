@@ -223,13 +223,24 @@ class RenderInventory(esper.Processor):
 
 
 class RenderGameStartScreen(esper.Processor):
-    def __init__(self,):
+    def __init__(self, con):
+        self.image = tcod.image_load('static/images/menu_background.png')
+        self.title = constants.GAME_WINDOW_TITLE
+        self.author = '(c) 2019 Steven Devonport'
+        self.con = con
         super().__init__()
 
     def process(self):
-        pass
         # get opening image & blit it
+        tcod.image_blit_2x(self.image, self.con, 0, 0)
+
+        # display Game information
+        tcod.console_set_default_foreground(self.con, tcod.yellow)
+        tcod.console_print_ex(self.con, 10, 20, tcod.BKGND_NONE, tcod.LEFT, self.title)
+        tcod.console_print_ex(self.con, 10, 22, tcod.BKGND_NONE, tcod.LEFT, self.author)
         # display game options
+
+        tcod.console_blit(self.con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
 
 
 class RenderPlayerCharacterScreen(esper.Processor):
