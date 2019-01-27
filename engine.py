@@ -2,31 +2,17 @@ import tcod
 import random
 
 from loguru import logger
-from newGame.initialiseNewGame import setup_game, generate_player_character, create_wizard, create_demon
+from newGame.initialiseNewGame import setup_game, generate_player_character, create_wizard, create_demon, create_game_world
 from newGame import constants
 from components import spells, weapons, mobiles
 from utilities.mobileHelp import MobileUtilities
+from processors.render import *
 
 
-def main():
+def start_game(con, gameworld):
+    logger.info('For testing')
 
-#    logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
-
-    logger.info('********************')
-    logger.info('* New game started *')
-    logger.info('********************')
-
-    tcod.console_set_custom_font('static/fonts/prestige12x12_gs_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
-    tcod.console_init_root(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.GAME_WINDOW_TITLE, False)
-
-    con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
-
-    key = tcod.Key()
-    mouse = tcod.Mouse()
-
-    # Esper initialisation
-    gameworld, game_map = setup_game(con)
-
+    setup_game(con, gameworld)
 
     # create the player
     player = generate_player_character(gameworld, 'necromancer')
@@ -82,9 +68,6 @@ def main():
         wpn_name = gameworld.component_for_entity(weapons_equipped[2], weapons.Name)
         wpns = wpn_name.label + ' in both his hands'
 
-    position_component = gameworld.component_for_entity(thiswizard, mobiles.Position)
-    render_component = gameworld.component_for_entity(thiswizard, mobiles.Renderable)
-
     print(wizard_name.first + ' the ' + class_component.label + ' is holding a ' + wpns)
 
     thisdemon = create_demon(gameworld)
@@ -95,14 +78,16 @@ def main():
     print('be careful there is a ' + class_component.label + ' demon about!')
     print(ai_component.ailevel)
 
-
-    # temp code to display the console!
+    key = tcod.Key()
+    mouse = tcod.Mouse()
 
     while not tcod.console_is_window_closed():
         tcod.sys_check_for_event(tcod.EVENT_KEY, key, mouse)
 
         # run ALL game processors
         gameworld.process()
+
+        tcod.console_flush()
 
         key = tcod.console_check_for_keypress()
         if key.vk == tcod.KEY_ENTER:
@@ -111,6 +96,56 @@ def main():
 
             gameworld.component_for_entity(thiswizard, mobiles.Position).x = random.randrange(1, 79)
             gameworld.component_for_entity(thiswizard, mobiles.Position).y = random.randrange(1, 39)
+
+        if key.vk == tcod.KEY_ESCAPE:
+            return True
+
+
+def main():
+
+    #    logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
+
+    logger.info('********************')
+    logger.info('* New game started *')
+    logger.info('********************')
+
+    tcod.console_set_custom_font('static/fonts/prestige12x12_gs_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
+    tcod.console_init_root(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.GAME_WINDOW_TITLE, False)
+
+    con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
+
+    key = tcod.Key()
+    mouse = tcod.Mouse()
+
+    # Esper initialisation
+    gameworld = create_game_world()
+
+    # start game screen
+
+    # add the processors we need to display and handle the game start screen, character selection, etc.
+
+    render_game_screen = RenderGameStartScreen(con=con)
+    gameworld.add_processor(render_game_screen)
+
+    while not tcod.console_is_window_closed():
+        tcod.sys_check_for_event(tcod.EVENT_KEY, key, mouse)
+        gameworld.process()
+
+        tcod.console_flush()
+
+        key = tcod.console_check_for_keypress()
+        key_char = chr(key.c)
+
+        if key_char == 'g':
+            gameworld.remove_processor(RenderGameStartScreen)
+            tcod.console_clear(con)
+            tcod.console_flush()
+            start_game(con, gameworld)
+            print('left game')
+            render_game_screen = RenderGameStartScreen(con=con)
+            gameworld.add_processor(render_game_screen)
+            tcod.console_clear(con)
+            tcod.console_flush()
 
         if key.vk == tcod.KEY_ESCAPE:
             return True

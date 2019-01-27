@@ -20,17 +20,11 @@ from map_objects.gameMap import GameMap
 from processors.render import *
 
 
-def setup_game(con):
-    # read in JSON files - maybe
-    # create Esper game world
-    world = create_game_world()
-    # generate Esper processors
+def setup_game(con, world):
     render_console_process = RenderConsole(con)
-    render_game_screen = RenderGameStartScreen()
     render_inventory_screen = RenderInventory()
-    render_character_screen = RenderInventory()
+    render_character_screen = RenderPlayerCharacterScreen()
     world.add_processor(render_console_process)
-    world.add_processor(render_game_screen)
     world.add_processor(render_inventory_screen)
     world.add_processor(render_character_screen)
 
