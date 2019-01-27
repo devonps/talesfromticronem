@@ -131,21 +131,20 @@ def main():
         tcod.sys_check_for_event(tcod.EVENT_KEY, key, mouse)
         gameworld.process()
 
-        tcod.console_flush()
+        # tcod.console_flush()
 
         key = tcod.console_check_for_keypress()
         key_char = chr(key.c)
 
-        if key_char == 'g':
+        if key_char == 'a':
             gameworld.remove_processor(RenderGameStartScreen)
             tcod.console_clear(con)
-            tcod.console_flush()
+            # tcod.console_flush()
             start_game(con, gameworld)
             print('left game')
+
             render_game_screen = RenderGameStartScreen(con=con)
             gameworld.add_processor(render_game_screen)
-            tcod.console_clear(con)
-            tcod.console_flush()
 
         if key.vk == tcod.KEY_ESCAPE:
             return True
