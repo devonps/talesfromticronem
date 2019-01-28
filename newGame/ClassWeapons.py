@@ -45,3 +45,28 @@ class WeaponClass:
 
                 logger.info('Entity {} has been created using the {} template', myweapon, weapon['name'])
                 return myweapon  # this is the entity id for the newly created weapon
+
+    def load_weapon_with_spells(gameworld, weapon_obj, weapon_type, mobile_class):
+        # get list of spells for that weapon and mobile class
+        for ent, (cl, wpn, weapon_slot) in gameworld.get_components(spells.ClassName, spells.WeaponType, spells.WeaponSlot):
+            if (wpn.label == weapon_type) and (cl.label == mobile_class):
+                if weapon_slot.slot == '1':
+                    logger.info('Spell {} added to weapon slot 1', ent)
+                    weapon_slot_component = gameworld.component_for_entity(weapon_obj, weapons.Spells)
+                    weapon_slot_component.slot_one = ent
+                if weapon_slot.slot == '2':
+                    logger.info('Spell {} added to weapon slot 2', ent)
+                    weapon_slot_component = gameworld.component_for_entity(weapon_obj, weapons.Spells)
+                    weapon_slot_component.slot_two = ent
+                if weapon_slot.slot == '3':
+                    logger.info('Spell {} added to weapon slot 3', ent)
+                    weapon_slot_component = gameworld.component_for_entity(weapon_obj, weapons.Spells)
+                    weapon_slot_component.slot_three = ent
+                if weapon_slot.slot == '4':
+                    logger.info('Spell {} added to weapon slot 4', ent)
+                    weapon_slot_component = gameworld.component_for_entity(weapon_obj, weapons.Spells)
+                    weapon_slot_component.slot_four = ent
+                if weapon_slot.slot == '5':
+                    logger.info('Spell {} added to weapon slot 5', ent)
+                    weapon_slot_component = gameworld.component_for_entity(weapon_obj, weapons.Spells)
+                    weapon_slot_component.slot_five = ent
