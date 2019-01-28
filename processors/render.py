@@ -4,6 +4,7 @@ import tcod
 from loguru import logger
 from newGame import constants
 from components import mobiles
+from utilities.display import menu
 
 
 class RenderConsole(esper.Processor):
@@ -49,14 +50,8 @@ class RenderConsole(esper.Processor):
 
         # blit the console
         self.blit_the_console()
-        # flush the console
-        self.flush_console()
         # clear the entity
         self.clear_entity()
-
-    @staticmethod
-    def flush_console():
-        tcod.console_flush()
 
     def blit_the_console(self):
         # update console with latest changes
@@ -224,11 +219,11 @@ class RenderInventory(esper.Processor):
 
 
 class RenderGameStartScreen(esper.Processor):
-    def __init__(self, con):
-        self.image = tcod.image_load('static/images/menu_background.png')
+    def __init__(self, con, image):
         self.title = constants.GAME_WINDOW_TITLE
         self.author = '(c) 2019 Steven Devonport'
         self.con = con
+        self.image = image
         super().__init__()
 
     def process(self):
@@ -236,7 +231,6 @@ class RenderGameStartScreen(esper.Processor):
         tcod.image_blit_2x(self.image, self.con, 0, 0)
 
         self.render_game_info()
-        tcod.console_blit(self.con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
 
         # display game options
         menu(self.con, header='Game Start',
@@ -244,13 +238,12 @@ class RenderGameStartScreen(esper.Processor):
              width=24, screen_width=constants.SCREEN_WIDTH, screen_height=constants.SCREEN_HEIGHT, posx=10, posy=26,
              foreground=tcod.yellow)
 
-        tcod.console_flush()
-
     def render_game_info(self):
         # display Game information
         tcod.console_set_default_foreground(self.con, tcod.yellow)
         tcod.console_print_ex(self.con, 10, 10, tcod.BKGND_NONE, tcod.LEFT, self.title)
         tcod.console_print_ex(self.con, 10, 42, tcod.BKGND_NONE, tcod.LEFT, self.author)
+        tcod.console_blit(self.con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
 
 
 class RenderPlayerCharacterScreen(esper.Processor):
@@ -259,31 +252,3 @@ class RenderPlayerCharacterScreen(esper.Processor):
 
     def process(self):
         pass
-
-
-def menu(con, header, options, width, screen_width, screen_height, posx, posy, foreground):
-
-    # calculate the total height for the menu header with one line per option
-    header_height = tcod.console_get_height_rect(con, 0, 0, width, screen_height, header)
-    height = len(options) + header_height
-
-    # create an off-screen window - this is where the menu options will be displayed
-    window = tcod.console_new(width, height)
-
-    # print the header, with auto-wrap
-    tcod.console_set_default_foreground(window, foreground)
-    tcod.console_print_rect_ex(window, 0, 0, width, height, tcod.BKGND_NONE, tcod.LEFT, header)
-
-    # print the options
-    y = header_height
-    letter_index = ord('a')
-    for option_text in options:
-        text = '(' + chr(letter_index) + ') ' + option_text
-        tcod.console_print_ex(window, 0, y, tcod.BKGND_NONE, tcod.LEFT, text)
-        y += 1
-        letter_index += 1
-
-    # blit the contents of 'window' to the root console
-    x = int(screen_width / 2 - width / 2)
-    y = int(screen_height / 2 - height / 2)
-    tcod.console_blit(window, 0, 0, width, height, 0, posx, posy, 1.0, 0.7)
