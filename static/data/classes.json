@@ -1,0 +1,28 @@
+{
+  "classes" : [
+  {
+    "name": "necromancer",
+    "flavour": "The Necromancer can summon the dead to fight for them, channel blood energy, and rend their enemies' souls. Necromancers draw on life force and use it to strengthen or heal themselves"
+  },
+  {
+    "name": "witch doctor",
+    "flavour": "An inexorable force on the battlefield, the witch doctor empowers itself enough to wield a cleaving greatsword to harvest its foes."
+  },
+  {
+    "name": "druid",
+    "flavour": "Druids capable of channeling the might of the heavens allowing them to accumulate astral force to become a celestial avatar, a paragon of reactive recovery and strong sustainability in a dangerous world."
+  },
+  {
+    "name": "mesmer",
+    "flavour": "Mesmers weave deception magic that seeks to confound, disorient and dumbfound their enemies."
+  },
+    {
+      "name": "Elementalist",
+    "flavour": "Elementalists channel elemental forces, making fire, air, earth, and water do their bidding, their powers of destruction are drawn from an affinity with the four elements"
+    },
+    {
+      "name": "chronomancer",
+    "flavour": "The path of the Chronomancer allows them to rend both space and time, allowing them to focus on past versus future and fast versus slow as key themes"
+    }
+]
+}

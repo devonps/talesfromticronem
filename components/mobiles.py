@@ -8,11 +8,12 @@ class Name:
 
 
 class Describable:
-    def __init__(self, description='undefined', glyph='@', foreground=tcod.white, background=tcod.black):
+    def __init__(self, description='undefined', glyph='@', foreground=tcod.orange, background=tcod.black, personality='charm'):
         self.description = description
         self.glyph = glyph
         self.foreground = foreground
         self.background = background
+        self.personality = personality
 
 
 class Race:

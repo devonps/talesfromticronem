@@ -1,0 +1,20 @@
+{
+  "races" : [
+    {
+      "name": "Human",
+      "flavour": "Humans have lost everything, including their former glory, through their incessient hunger for power . Even their gods have withdrawn. And yet, they still believe."
+    },
+    {
+      "name": "Elf",
+      "flavour": "Elves are born with a desire to travel the world, they seek travel, adventure, and above all else knowledge. They struggle to balance the spirit of adventure with duty, and curiosity with honor."
+    },
+    {
+      "name": "Orc",
+      "flavour": "Orcs are by nature large, savage, and short tempered. They have renounced all gods as false and view life through a cynical lens."
+    },
+    {
+      "name": "Troll",
+      "flavour": "Trolls are raised as warriors from birth, their combat skills make them dangerous enemies and invaluable allies. As individuals they favour hunting and tracking but when gathered together they are formidable warband."
+    }
+  ]
+}

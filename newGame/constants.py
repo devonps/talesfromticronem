@@ -92,6 +92,9 @@ AI_LEVEL_NPC = 5       # neutral - task orientated
 
 AIBehaviour = []
 
+# playable races
+playable_races = ['human', 'elf', 'orc', 'troll']
+
 # playable classes
 character_classes = ['necromancer', 'witch doctor', 'druid', 'mesmer', 'elementalist', 'chronomancer']
 
