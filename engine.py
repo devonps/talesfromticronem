@@ -8,7 +8,6 @@ from newGame.newCharacter import NewCharacter
 
 
 def start_game(con, gameworld):
-    logger.info('For testing')
 
     gameworld, game_map = setup_game(con, gameworld)
 
