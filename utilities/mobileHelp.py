@@ -1,8 +1,9 @@
-from components import spells, weapons, mobiles
+from components import mobiles
+from loguru import logger
+from newGame import constants
 
 
 class MobileUtilities:
-    pass
 
     # check ALL hand combos: main, off, and both hands
     @staticmethod
@@ -34,3 +35,13 @@ class MobileUtilities:
             gameworld.component_for_entity(entity, mobiles.Equipped).off_hand = weapon
         if hand == 'both':
             gameworld.component_for_entity(entity, mobiles.Equipped).both_hands = weapon
+
+    def generate_base_mobile(gameworld):
+        mobile = gameworld.create_entity()
+        logger.info('Base mobile entity ID ' + str(mobile))
+        gameworld.add_component(mobile, mobiles.Name(first='xyz', suffix=''))
+        gameworld.add_component(mobile, mobiles.Describable())
+        gameworld.add_component(mobile, mobiles.CharacterClass())
+        gameworld.add_component(mobile, mobiles.AI(ailevel=constants.AI_LEVEL_NONE))
+
+        return mobile
