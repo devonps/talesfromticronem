@@ -7,12 +7,15 @@ from newGame import constants
 from components import spells, weapons, mobiles
 from utilities.mobileHelp import MobileUtilities
 from processors.render import *
+from newGame.newCharacter import NewCharacter
 
 
 def start_game(con, gameworld):
     logger.info('For testing')
 
     setup_game(con, gameworld)
+
+    NewCharacter.create(con, gameworld)
 
     # create the player
     player = generate_player_character(gameworld, 'necromancer')
@@ -121,17 +124,18 @@ def main():
     gameworld = create_game_world()
 
     # start game screen
+    background_image = tcod.image_load('static/images/menu_background.png')
 
     # add the processors we need to display and handle the game start screen, character selection, etc.
 
-    render_game_screen = RenderGameStartScreen(con=con)
+    render_game_screen = RenderGameStartScreen(con=con, image=background_image)
     gameworld.add_processor(render_game_screen)
 
     while not tcod.console_is_window_closed():
         tcod.sys_check_for_event(tcod.EVENT_KEY, key, mouse)
         gameworld.process()
 
-        # tcod.console_flush()
+        tcod.console_flush()
 
         key = tcod.console_check_for_keypress()
         key_char = chr(key.c)
@@ -139,11 +143,12 @@ def main():
         if key_char == 'a':
             gameworld.remove_processor(RenderGameStartScreen)
             tcod.console_clear(con)
-            # tcod.console_flush()
             start_game(con, gameworld)
             print('left game')
-
-            render_game_screen = RenderGameStartScreen(con=con)
+            gameworld.clear_database()
+            tcod.console_delete(con)
+            con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
+            render_game_screen = RenderGameStartScreen(con=con, image=background_image)
             gameworld.add_processor(render_game_screen)
 
         if key.vk == tcod.KEY_ESCAPE:
