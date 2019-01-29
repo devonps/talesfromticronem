@@ -1,10 +1,10 @@
 import tcod
 import random
 
-
 from newGame.initialiseNewGame import setup_game, create_game_world
 from processors.render import *
 from newGame.newCharacter import NewCharacter
+from input_handler import handle_main_menu
 
 
 def start_game(con, gameworld):
@@ -12,6 +12,13 @@ def start_game(con, gameworld):
     gameworld, game_map = setup_game(con, gameworld)
 
     player = NewCharacter.create(con, gameworld)
+
+    # test code
+    player_name_component = gameworld.component_for_entity(player, mobiles.Name)
+    player_race_component = gameworld.component_for_entity(player, mobiles.Race)
+    player_class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
+
+    logger.info(player_name_component.first + ' the ' + player_race_component.label + ' ' + player_class_component.label + ' is ready!')
 
     key = tcod.Key()
     mouse = tcod.Mouse()
@@ -66,10 +73,13 @@ def main():
 
         tcod.console_flush()
 
-        key = tcod.console_check_for_keypress()
-        key_char = chr(key.c)
+        action = handle_main_menu(key)
 
-        if key_char == 'a':
+        new_game = action.get('new_game')
+        load_saved_game = action.get('load_game')
+        exit_game = action.get('exit')
+
+        if new_game:
             gameworld.remove_processor(RenderGameStartScreen)
             tcod.console_clear(con)
             start_game(con, gameworld)
@@ -79,9 +89,10 @@ def main():
             con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
             render_game_screen = RenderGameStartScreen(con=con, image=background_image)
             gameworld.add_processor(render_game_screen)
-
-        if key.vk == tcod.KEY_ESCAPE:
-            return True
+        elif load_saved_game:
+            pass
+        elif exit_game:
+            break
 
 
 if __name__ == '__main__':
