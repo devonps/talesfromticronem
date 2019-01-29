@@ -7,7 +7,7 @@ from components import weapons, mobiles
 from newGame.ClassWeapons import WeaponClass
 from utilities.mobileHelp import MobileUtilities
 from newGame import constants
-from utilities.jsonUtilities import read_json_file
+from utilities.jsonUtilities import read_json_file, get_count_of_items
 
 
 class NewCharacter:
@@ -54,101 +54,79 @@ def generate_player_character(gameworld):
 def select_race(con, gameworld, player):
     logger.info('Reading racial information')
     race_file = read_json_file(constants.JSONFILEPATH + 'races.json')
+    item_count = get_count_of_items(race_file, 'races')
 
-    tcod.console_print_frame(con, x=10, y=5, w=80, h=50, clear=False, flag=tcod.BKGND_DEFAULT, fmt='Select Race')
+    frame_x = 5
+    frame_y = 4
+    frame_w = 80
+    flavour_x = 15
+    flavour_y = frame_y + 1
 
-    race_x = 12
-    race_y = 10
-    flavour_x = 20
-    flavour_y = race_y - 1
+    posy = display_selection(con=con, filename=race_file, element='races', posx=frame_x + 1, posy=frame_y + 2, width=frame_w,
+                             flavour_x=flavour_x, flavour_y=flavour_y)
 
-    for race in race_file['races']:
-        race_name = race['name']
-        race_flavour = race['flavour']
-        # print race details
+    tcod.console_print_frame(con, x=frame_x, y=frame_y - 2, w=frame_w, h=posy, clear=False, flag=tcod.BKGND_DEFAULT, fmt='Select Race')
 
-        tcod.console_print(con, race_x, race_y, race_name)
-        my_wrap = textwrap.TextWrapper(width=50)
-        new_flavour_lines = my_wrap.wrap(text=race_flavour)
-
-        for line in new_flavour_lines:
-            tcod.console_print(con, flavour_x, flavour_y, line)
-            flavour_y += 1
-
-        tcod.console_put_char_ex(con, 10, flavour_y + 1, chr(195), tcod.yellow, tcod.black)
-        tcod.console_hline(con, 11, flavour_y + 1, 78, tcod.BKGND_DEFAULT)
-        tcod.console_put_char_ex(con, 89, flavour_y + 1, chr(180), tcod.yellow, tcod.black)
-
-        flavour_y += 3
-        race_y = flavour_y + 1
+    tcod.console_print_ex(con=con, x=20, y=posy + 3, flag=tcod.BKGND_NONE, alignment=tcod.LEFT,
+                          fmt='Arrows to highlight, enter to select')
 
     tcod.console_blit(con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
-    dummy = True
+    race_not_selected = True
+    selected_race = 'human'
 
     key = tcod.Key()
     mouse = tcod.Mouse()
 
-    while dummy:
+    while race_not_selected:
         tcod.sys_check_for_event(tcod.EVENT_KEY, key, mouse)
 
         tcod.console_flush()
 
         key = tcod.console_check_for_keypress()
         if key.vk == tcod.KEY_ENTER:
-            dummy = False
+            race_not_selected = False
     tcod.console_clear(con)
 
-    gameworld.add_component(player, mobiles.Race(race='human'))
+    gameworld.add_component(player, mobiles.Race(race=selected_race))
 
 
 def select_character_class(con, gameworld, player):
     logger.info('Selecting character class')
     class_file = read_json_file(constants.JSONFILEPATH + 'classes.json')
 
-    tcod.console_print_frame(con, x=10, y=5, w=80, h=50, clear=False, flag=tcod.BKGND_DEFAULT, fmt='Select Class')
+    frame_x = 5
+    frame_y = 4
+    frame_w = 80
+    flavour_x = 20
+    flavour_y = frame_y + 1
 
-    class_x = 12
-    class_y = 10
-    flavour_x = 25
-    flavour_y = class_y - 1
+    posy = display_selection(con=con, filename=class_file, element='classes', posx=frame_x + 1, posy=frame_y + 2, width=frame_w,
+                      flavour_x=flavour_x, flavour_y=flavour_y)
 
-    for pclass in class_file['classes']:
-        class_name = pclass['name']
-        class_flavour = pclass['flavour']
-        # print race details
+    tcod.console_print_frame(con, x=frame_x, y=frame_y - 2, w=frame_w, h=posy, clear=False, flag=tcod.BKGND_DEFAULT,
+                             fmt='Select Class')
 
-        tcod.console_print(con, class_x, class_y, class_name)
-        my_wrap = textwrap.TextWrapper(width=50)
-        new_flavour_lines = my_wrap.wrap(text=class_flavour)
-
-        for line in new_flavour_lines:
-            tcod.console_print(con, flavour_x, flavour_y, line)
-            flavour_y += 1
-
-        tcod.console_put_char_ex(con, 10, flavour_y + 1, chr(195), tcod.yellow, tcod.black)
-        tcod.console_hline(con, 11, flavour_y + 1, 78, tcod.BKGND_DEFAULT)
-        tcod.console_put_char_ex(con, 89, flavour_y + 1, chr(180), tcod.yellow, tcod.black)
-
-        flavour_y += 3
-        class_y = flavour_y + 1
+    tcod.console_print_ex(con=con, x=20, y=posy + 3, flag=tcod.BKGND_NONE, alignment=tcod.LEFT,
+                          fmt='Arrows to highlight, enter to select')
 
     tcod.console_blit(con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
-    dummy = True
+    class_not_selected = True
+    selected_class = 'necromancer'
 
     key = tcod.Key()
     mouse = tcod.Mouse()
 
-    while dummy:
+    while class_not_selected:
         tcod.sys_check_for_event(tcod.EVENT_KEY, key, mouse)
 
         tcod.console_flush()
 
         key = tcod.console_check_for_keypress()
         if key.vk == tcod.KEY_ENTER:
-            dummy = False
+            class_not_selected = False
     tcod.console_clear(con)
 
-    gameworld.add_component(player, mobiles.CharacterClass(label='necromancer'))
+    gameworld.add_component(player, mobiles.CharacterClass(label=selected_class))
 
 
 def select_profession_background(con, gameworld, player):
@@ -194,3 +172,29 @@ def get_starting_equipment(con, gameworld, player):
 
     logger.debug('Player is ready to rock and roll!')
 
+
+def display_selection(con, filename, element, posx, posy, width, flavour_x, flavour_y):
+
+    for option in filename[element]:
+        option_name = option['name']
+        option_flavour = option['flavour']
+        # print race details
+
+        tcod.console_set_default_foreground(con, tcod.white)
+        tcod.console_print(con, posx, posy, option_name.capitalize())
+        my_wrap = textwrap.TextWrapper(width=50)
+        new_flavour_lines = my_wrap.wrap(text=option_flavour)
+
+        tcod.console_set_default_foreground(con, tcod.yellow)
+        for line in new_flavour_lines:
+            tcod.console_print(con, flavour_x, flavour_y, line)
+            flavour_y += 1
+
+        # tcod.console_put_char_ex(con, posx, flavour_y + 1, chr(195), tcod.yellow, tcod.black)
+        tcod.console_hline(con, posx, flavour_y + 1, width - 1, tcod.BKGND_DEFAULT)
+        # tcod.console_put_char_ex(con, width + 4, flavour_y + 1, chr(180), tcod.yellow, tcod.black)
+
+        flavour_y += 3
+        posy = flavour_y + 1
+
+    return flavour_y - 3
