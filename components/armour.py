@@ -4,6 +4,11 @@ class Location:
         self.label = text
 
 
+class LocationAKA:
+    def __init__(self, text = ''):
+        self.label = text
+
+
 class Set:
     def __init__(self, label=''):
         self.label = label
@@ -25,9 +30,11 @@ class Defense:
 
 
 class Describable:
-    def __init__(self, prefix='', suffix=''):
+    def __init__(self, prefix='', suffix='', location_aka='', level=0):
         self.prefix = prefix
         self.suffix = suffix
+        self.location_aka = location_aka
+        self.level = level
 
 
 class AttributeBonus:

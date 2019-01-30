@@ -6,6 +6,8 @@ from processors.render import *
 from newGame.newCharacter import NewCharacter
 from input_handler import handle_main_menu
 
+from newGame.ClassArmour import *
+
 
 def start_game(con, gameworld):
 
@@ -19,6 +21,14 @@ def start_game(con, gameworld):
     player_class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
 
     logger.info(player_name_component.first + ' the ' + player_race_component.label + ' ' + player_class_component.label + ' is ready!')
+
+    chest_piece = ArmourClass.describe_armour_at_bodylocation(gameworld, player, 'chest')
+    legs_piece = ArmourClass.describe_armour_at_bodylocation(gameworld, player, 'legs')
+    feet_piece = ArmourClass.describe_armour_at_bodylocation(gameworld, player, 'feet')
+
+    logger.info(player_name_component.first + ' is wearing a ' + chest_piece)
+    logger.info(' with matching ' + legs_piece)
+    logger.info(' and he has a dirty pair of ' + feet_piece)
 
     key = tcod.Key()
     mouse = tcod.Mouse()
