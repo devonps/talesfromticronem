@@ -44,12 +44,12 @@ class Inventory:
 
 
 class Armour:
-    def __init__(self, head=0, chest=0, legs=0, feet=0, back=0):
+    def __init__(self, head=0, chest=0, legs=0, feet=0, gloves=0):
         self.head = head
         self.chest = chest
         self.legs = legs
         self.feet = feet
-        self.back = back
+        self.gloves = gloves
 
 
 class Jewellery:

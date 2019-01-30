@@ -3,7 +3,7 @@ import random
 import textwrap
 
 from loguru import logger
-from components import weapons, mobiles
+from components import weapons, mobiles, armour
 from newGame.ClassWeapons import WeaponClass
 from utilities.mobileHelp import MobileUtilities
 from newGame import constants
@@ -156,6 +156,8 @@ def get_starting_equipment(con, gameworld, player):
 
     # create starting armour
     logger.info('creating some armour for the player')
+    create_starting_armour(gameworld, player)
+
     # create starting jewellery
     logger.info('creating some basic jewellery for the player')
     # create starting weapons
@@ -173,6 +175,64 @@ def get_starting_equipment(con, gameworld, player):
     MobileUtilities.equip_weapon(gameworld, player, weapon, 'main')
 
     logger.debug('Player is ready to rock and roll!')
+
+
+def create_starting_armour(gameworld, player):
+    logger.debug('Creating starting armour')
+    chest_armour = gameworld.create_entity()
+    legs_armour = gameworld.create_entity()
+    feet_armour = gameworld.create_entity()
+    armour_file = read_json_file(constants.JSONFILEPATH + 'armour.json')
+    for arms in armour_file['armour']:
+        if arms['quality'] == 'basic':
+            if arms['location'] == 'chest':
+                gameworld.add_component(chest_armour, armour.Location(arms['location']))
+                gameworld.add_component(chest_armour, armour.Set(arms['set']))
+                gameworld.add_component(chest_armour, armour.Quality(arms['quality']))
+                gameworld.add_component(chest_armour, armour.Weight(arms['weight']))
+                gameworld.add_component(chest_armour, armour.Defense(arms['defense']))
+                gameworld.add_component(chest_armour, armour.Describable(prefix=arms['prefix']))
+                gameworld.add_component(chest_armour, armour.AttributeBonus(
+                    majorname=arms['attr-majorname'],
+                    majorbonus=arms['attr-majorbonus'],
+                    minoronename=arms['attr-minoronename'],
+                    minoronebonus=arms['attr-minoronebonus'],
+                    minortwoname=arms['attr-minortwoname'],
+                    minortwobonus=arms['attr-minortwobonus']))
+
+            if arms['location'] == 'legs':
+                gameworld.add_component(legs_armour, armour.Location(arms['location']))
+                gameworld.add_component(legs_armour, armour.Set(arms['set']))
+                gameworld.add_component(legs_armour, armour.Quality(arms['quality']))
+                gameworld.add_component(legs_armour, armour.Weight(arms['weight']))
+                gameworld.add_component(legs_armour, armour.Defense(arms['defense']))
+                gameworld.add_component(chest_armour, armour.Describable(prefix=arms['prefix']))
+                gameworld.add_component(legs_armour, armour.AttributeBonus(
+                    majorname=arms['attr-majorname'],
+                    majorbonus=arms['attr-majorbonus'],
+                    minoronename=arms['attr-minoronename'],
+                    minoronebonus=arms['attr-minoronebonus'],
+                    minortwoname=arms['attr-minortwoname'],
+                    minortwobonus=arms['attr-minortwobonus']))
+
+            if arms['location'] == 'feet':
+                gameworld.add_component(feet_armour, armour.Location(arms['location']))
+                gameworld.add_component(feet_armour, armour.Set(arms['set']))
+                gameworld.add_component(feet_armour, armour.Quality(arms['quality']))
+                gameworld.add_component(feet_armour, armour.Weight(arms['weight']))
+                gameworld.add_component(feet_armour, armour.Defense(arms['defense']))
+                gameworld.add_component(chest_armour, armour.Describable(prefix=arms['prefix']))
+                gameworld.add_component(feet_armour, armour.AttributeBonus(
+                    majorname=arms['attr-majorname'],
+                    majorbonus=arms['attr-majorbonus'],
+                    minoronename=arms['attr-minoronename'],
+                    minoronebonus=arms['attr-minoronebonus'],
+                    minortwoname=arms['attr-minortwoname'],
+                    minortwobonus=arms['attr-minortwobonus']))
+
+    gameworld.component_for_entity(player, mobiles.Armour).chest = chest_armour
+    gameworld.component_for_entity(player, mobiles.Armour).legs = legs_armour
+    gameworld.component_for_entity(player, mobiles.Armour).feet = feet_armour
 
 
 def display_selection(con, filename, element, posx, posy, width, flavour_x, flavour_y):
