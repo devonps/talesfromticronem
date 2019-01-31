@@ -182,17 +182,14 @@ def get_starting_equipment(con, gameworld, player):
 def create_starting_armour(gameworld, player):
     logger.info('Creating starting armour')
 
-    chest_armour = ArmourClass.create_piece_of_armour(gameworld, 'chest', 'basic', 'light', 'Frayed Cloth', '',
-                                                      'Shirt', 0, 21,'', 0, '', 0, '', 0)
-    legs_armour = ArmourClass.create_piece_of_armour(gameworld, 'legs', 'basic', 'light', 'Frayed Cloth', '',
-                                                     'pants', 0, 21,'', 0, '', 0, '', 0)
-    feet_armour = ArmourClass.create_piece_of_armour(gameworld, 'feet', 'basic', 'light', 'Frayed Cloth', '',
-                                                     'shoes', 0, 21,'', 0, '', 0, '', 0)
+    my_armour = ArmourClass.create_full_armour_set(gameworld, armourset='Apprentice', level=0, quality='basic')
 
     logger.info('Attaching starting armour to player character')
-    gameworld.component_for_entity(player, mobiles.Armour).chest = chest_armour
-    gameworld.component_for_entity(player, mobiles.Armour).legs = legs_armour
-    gameworld.component_for_entity(player, mobiles.Armour).feet = feet_armour
+    ArmourClass.equip_full_set_of_armour(gameworld, entity=player, armourset=my_armour)
+
+
+def create_starting_jewellery(gameworld, player):
+    pass
 
 
 def display_selection(con, filename, element, posx, posy, width, flavour_x, flavour_y):

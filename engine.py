@@ -28,7 +28,7 @@ def start_game(con, gameworld):
 
     logger.info(player_name_component.first + ' is wearing a ' + chest_piece)
     logger.info(' with matching ' + legs_piece)
-    logger.info(' and he has a dirty pair of ' + feet_piece)
+    logger.info(' and he has a pair of ' + feet_piece)
 
     key = tcod.Key()
     mouse = tcod.Mouse()

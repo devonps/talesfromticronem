@@ -47,7 +47,7 @@ class ArmourClass:
 
         return armour_piece
 
-    def create_full_armour_set(gameworld, armourset):
+    def create_full_armour_set(gameworld, armourset, level, quality):
         """
         This method creates a full set of armour (as game entities), it calls the method create_piece_of_armour
         to create the actual piece of armour.
@@ -60,34 +60,35 @@ class ArmourClass:
 
         :return: a list of entities created in the order [head, chest, hands, legs, feet]
         """
-
+        print(armourset, level, quality)
         armour_set_file = read_json_file(constants.JSONFILEPATH + 'armoursets.json')
 
         full_armour_set = []
 
-        for armour in armour_set_file['armoursets']:
-            if armour['setname'] == armourset:
-                gm = gameworld
-                bodylocation = armour['location']
-                quality = armour['basic']
-                weight = armour['weight']
-                setname = armourset
-                prefix = armour['prefix']
-                location_aka = armour['location aka']
-                level = armour['level']
-                defense = armour['defense']
-                majorname = armour['majorname']
-                majorbonus = armour['majorbonus']
-                minoronename = armour['minoronename']
-                minoronebonus = armour['minoronebonus']
-                minortwoname = armour['minortwoname']
-                minortwobonus = armour['minortwobonus']
+        for this_armour in armour_set_file['armoursets']:
+            if this_armour['setname'] == armourset:
+                if this_armour['level'] == level:
+                    if this_armour['quality'] == quality:
+                        bodylocation = this_armour['location']
+                        quality = quality
+                        weight = this_armour['weight']
+                        setname = armourset
+                        prefix = this_armour['prefix']
+                        location_aka = this_armour['location aka']
+                        level = level
+                        defense = this_armour['defense']
+                        majorname = this_armour['majorname']
+                        majorbonus = this_armour['majorbonus']
+                        minoronename = this_armour['minoronename']
+                        minoronebonus = this_armour['minoronebonus']
+                        minortwoname = this_armour['minortwoname']
+                        minortwobonus = this_armour['minortwobonus']
 
-                piece_of_Armour = ArmourClass.create_piece_of_armour(gameworld, bodylocation, quality, weight, setname, prefix,
-                                                   location_aka, level, defense,majorname, majorbonus, minoronename,
-                                                   minoronebonus, minortwoname, minortwobonus)
+                        piece_of_armour = ArmourClass.create_piece_of_armour(gameworld, bodylocation, quality,
+                                        weight,setname, prefix,location_aka, level, defense,majorname,
+                                        majorbonus, minoronename, minoronebonus, minortwoname, minortwobonus)
 
-                full_armour_set.append(piece_of_Armour)
+                        full_armour_set.append(piece_of_armour)
 
         return full_armour_set
 
@@ -128,4 +129,39 @@ class ArmourClass:
 
         return set_component.label + ' ' + locationAKA_component.label
 
+    def equip_full_set_of_armour(gameworld, entity, armourset):
 
+        if armourset[0] > 0:
+            gameworld.component_for_entity(entity, mobiles.Armour).chest = armourset[0]
+        if armourset[1] > 0:
+            gameworld.component_for_entity(entity, mobiles.Armour).head = armourset[1]
+        if armourset[2] > 0:
+            gameworld.component_for_entity(entity, mobiles.Armour).hands = armourset[2]
+        if armourset[3] > 0:
+            gameworld.component_for_entity(entity, mobiles.Armour).legs = armourset[3]
+        if armourset[4] > 0:
+            gameworld.component_for_entity(entity, mobiles.Armour).feet = armourset[4]
+
+    def equip_single_piece_of_armour(gameworld, entity, piece_of_armour, bodylocation):
+        if bodylocation == 'head':
+            gameworld.component_for_entity(entity, mobiles.Armour).head = piece_of_armour
+        if bodylocation == 'chest':
+            gameworld.component_for_entity(entity, mobiles.Armour).chest = piece_of_armour
+        if bodylocation == 'hands':
+            gameworld.component_for_entity(entity, mobiles.Armour).hands = piece_of_armour
+        if bodylocation == 'legs':
+            gameworld.component_for_entity(entity, mobiles.Armour).legs = piece_of_armour
+        if bodylocation == 'feet':
+            gameworld.component_for_entity(entity, mobiles.Armour).feet = piece_of_armour
+
+    def unequip_piece_of_armour(gameworld, entity, bodylocation):
+        if bodylocation == 'head':
+            gameworld.component_for_entity(entity, mobiles.Armour).head = 0
+        if bodylocation == 'chest':
+            gameworld.component_for_entity(entity, mobiles.Armour).chest = 0
+        if bodylocation == 'hands':
+            gameworld.component_for_entity(entity, mobiles.Armour).hands = 0
+        if bodylocation == 'legs':
+            gameworld.component_for_entity(entity, mobiles.Armour).legs = 0
+        if bodylocation == 'feet':
+            gameworld.component_for_entity(entity, mobiles.Armour).feet = 0
