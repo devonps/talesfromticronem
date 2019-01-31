@@ -7,6 +7,8 @@ from newGame.newCharacter import NewCharacter
 from input_handler import handle_main_menu
 
 from newGame.ClassArmour import *
+from components import jewellery
+from newGame.ClassJewellery import Trinkets
 
 
 def start_game(con, gameworld):
@@ -26,10 +28,25 @@ def start_game(con, gameworld):
     legs_piece = ArmourClass.describe_armour_at_bodylocation(gameworld, player, 'legs')
     feet_piece = ArmourClass.describe_armour_at_bodylocation(gameworld, player, 'feet')
 
+    amulet = Trinkets.get_jewellery_entity_at_bodylocation(gameworld, player, 'neck')
+
+    # TURN THE BELOW CODE INTO A METHOD
+    gemstone_component = gameworld.component_for_entity(amulet, jewellery.Describable)
+    material_component = gameworld.component_for_entity(amulet, jewellery.Material)
+    type_component = gameworld.component_for_entity(amulet, jewellery.Type)
+
+    # TURN THE BELOW CODE INTO A METHOD
+    attribute_component = gameworld.component_for_entity(amulet, jewellery.ImprovementTo)
+    stat_name = attribute_component.stat1name
+    stat_bonus = attribute_component.stat1bonus
+
+
     logger.info(player_name_component.first + ' is wearing a ' + chest_piece)
     logger.info(' with matching ' + legs_piece)
     logger.info(' and he has a pair of ' + feet_piece)
 
+    logger.info('Around his neck he has an {} {} {}', gemstone_component.component3, material_component.label, type_component.label)
+    logger.info('This provides a +{} to his {} attribute', stat_bonus, stat_name)
     key = tcod.Key()
     mouse = tcod.Mouse()
 

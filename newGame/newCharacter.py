@@ -7,6 +7,7 @@ from components import weapons, mobiles, armour
 from newGame.ClassWeapons import WeaponClass
 from newGame import constants
 from newGame.ClassArmour import *
+from newGame.ClassJewellery import Trinkets
 from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
 from input_handler import handle_new_race, handle_new_class
@@ -160,6 +161,7 @@ def get_starting_equipment(con, gameworld, player):
 
     # create starting jewellery
     logger.info('creating some basic jewellery for the player')
+    create_starting_jewellery(gameworld, player)
 
     # create starting weapons
     logger.info('creating a weapon for the player')
@@ -189,7 +191,17 @@ def create_starting_armour(gameworld, player):
 
 
 def create_starting_jewellery(gameworld, player):
-    pass
+    stud = Trinkets.create_earring(gameworld, e_setting='copper', e_hook='copper', e_activator='Amber')
+    stud2 = Trinkets.create_earring(gameworld, e_setting='copper', e_hook='copper', e_activator='Amber')
+    ring1 = Trinkets.create_ring(gameworld, e_setting='copper', e_hook='copper', e_activator='Amber')
+    ring2 = Trinkets.create_ring(gameworld, e_setting='copper', e_hook='copper', e_activator='Amber')
+    amulet = Trinkets.create_amulet(gameworld, e_setting='copper', e_hook='copper', e_activator='Amber')
+
+    Trinkets.equip_piece_of_jewellery(gameworld, player, stud)
+    Trinkets.equip_piece_of_jewellery(gameworld, player, stud2)
+    Trinkets.equip_piece_of_jewellery(gameworld, player, ring1)
+    Trinkets.equip_piece_of_jewellery(gameworld, player, ring2)
+    Trinkets.equip_piece_of_jewellery(gameworld, player, amulet)
 
 
 def display_selection(con, filename, element, posx, posy, width, flavour_x, flavour_y):
