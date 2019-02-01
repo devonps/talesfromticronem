@@ -149,6 +149,13 @@ def select_personality_choices(con, gameworld, player):
 
 def name_your_character(con, gameworld, player):
     logger.info('Naming the character')
+
+    tcod.namegen_parse('static/names/human.txt')
+
+    for name in range(20):
+        logger.info('...and so {} is born!', tcod.namegen_generate('female'))
+
+    # below is the fallback scenario
     gameworld.add_component(player, mobiles.Name(first='Steve', suffix='none'))
 
 
