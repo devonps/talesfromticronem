@@ -60,7 +60,6 @@ class ArmourClass:
 
         :return: a list of entities created in the order [head, chest, hands, legs, feet]
         """
-        print(armourset, level, quality)
         armour_set_file = read_json_file(constants.JSONFILEPATH + 'armoursets.json')
 
         full_armour_set = []
