@@ -131,52 +131,43 @@ class Trinkets:
 
         return ring
 
-    def get_jewellery_at_bodylocation(self):
-        pass
-
-    def equip_piece_of_jewellery(gameworld, mobile, trinket):
+    def equip_piece_of_jewellery(gameworld, mobile, bodylocation, trinket):
 
         trinket_type_component = gameworld.component_for_entity(trinket, jewellery.Type)
         equipped = gameworld.component_for_entity(trinket, jewellery.Equipped)
         if not equipped.label:
             logger.info('Equipping {}', trinket_type_component.label)
-            if trinket_type_component.label == 'earring':
-                left_ear = Trinkets.get_jewellery_entity_at_bodylocation(gameworld, mobile, 'left ear')
-                right_ear = Trinkets.get_jewellery_entity_at_bodylocation(gameworld, mobile, 'right ear')
 
-                if left_ear == 0:
-                    gameworld.component_for_entity(mobile, mobiles.Jewellery).ear_one=trinket
-                    gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped=True
-                    logger.info('The earring is in the left ear')
-                elif right_ear == 0:
-                    gameworld.component_for_entity(mobile, mobiles.Jewellery).ear_two=trinket
-                    gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped=True
-                    logger.info('The earring is in the right ear')
-
-            if trinket_type_component.label == 'ring':
-                left_ring = Trinkets.get_jewellery_entity_at_bodylocation(gameworld, mobile, 'left hand')
-                right_ring = Trinkets.get_jewellery_entity_at_bodylocation(gameworld, mobile, 'right hand')
-
-                if left_ring == 0:
-                    gameworld.component_for_entity(mobile, mobiles.Jewellery).ring_one=trinket
-                    gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped=True
-                    logger.info('Equipping ring onto the left hand')
-                elif right_ring == 0:
-                    gameworld.component_for_entity(mobile, mobiles.Jewellery).ring_two=trinket
-                    gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped=True
-                    logger.info('Equipping ring onto the right hand')
-
-            if trinket_type_component.label == 'amulet':
-                amulet = Trinkets.get_jewellery_entity_at_bodylocation(gameworld, mobile, 'neck')
-
-                if amulet == 0:
-                    gameworld.component_for_entity(mobile, mobiles.Jewellery).amulet = trinket
-                    gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped = True
+            if bodylocation == 'left ear':
+                gameworld.component_for_entity(mobile, mobiles.Jewellery).ear_one = trinket
+                gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped = True
+            if bodylocation == 'right ear':
+                gameworld.component_for_entity(mobile, mobiles.Jewellery).ear_two = trinket
+                gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped = True
+            if bodylocation == 'left hand':
+                gameworld.component_for_entity(mobile, mobiles.Jewellery).ring_one = trinket
+                gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped = True
+            if bodylocation == 'right hand':
+                gameworld.component_for_entity(mobile, mobiles.Jewellery).ring_two = trinket
+                gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped = True
+            if bodylocation == 'neck':
+                gameworld.component_for_entity(mobile, mobiles.Jewellery).amulet = trinket
+                gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped = True
         else:
             logger.info('{} is already equipped.', trinket_type_component.label)
 
-    def unequp_piece_of_jewellery(gameworld, entity, trinket, bodylocaton):
-        pass
+    def unequp_piece_of_jewellery(gameworld, entity, bodylocation):
+
+        if bodylocation == 'left ear':
+            gameworld.component_for_entity(entity, mobiles.Jewellery).ear_one = 0
+        if bodylocation == 'right ear':
+            gameworld.component_for_entity(entity, mobiles.Jewellery).ear_two = 0
+        if bodylocation == 'left hand':
+            gameworld.component_for_entity(entity, mobiles.Jewellery).ring_one = 0
+        if bodylocation == 'right hand':
+            gameworld.component_for_entity(entity, mobiles.Jewellery).ring_two = 0
+        if bodylocation == 'neck':
+            gameworld.component_for_entity(entity, mobiles.Jewellery).amulet = 0
 
     def get_jewellery_entity_at_bodylocation(gameworld, entity, bodylocation):
         jewellery = 0
