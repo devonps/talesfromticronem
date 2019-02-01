@@ -7,8 +7,8 @@ from newGame.newCharacter import NewCharacter
 from input_handler import handle_main_menu
 
 from newGame.ClassArmour import *
-from components import jewellery
 from newGame.ClassJewellery import Trinkets
+from utilities.mobileHelp import MobileUtilities
 
 
 def start_game(con, gameworld):
@@ -18,35 +18,26 @@ def start_game(con, gameworld):
     player = NewCharacter.create(con, gameworld)
 
     # test code
-    player_name_component = gameworld.component_for_entity(player, mobiles.Name)
-    player_race_component = gameworld.component_for_entity(player, mobiles.Race)
-    player_class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
 
-    logger.info(player_name_component.first + ' the ' + player_race_component.label + ' ' + player_class_component.label + ' is ready!')
+    player_description = MobileUtilities.describe_the_mobile(gameworld, player)
 
     chest_piece = ArmourClass.describe_armour_at_bodylocation(gameworld, player, 'chest')
     legs_piece = ArmourClass.describe_armour_at_bodylocation(gameworld, player, 'legs')
     feet_piece = ArmourClass.describe_armour_at_bodylocation(gameworld, player, 'feet')
 
     amulet = Trinkets.get_jewellery_entity_at_bodylocation(gameworld, player, 'neck')
+    trinket_description = Trinkets.describe_piece_of_jewellery(gameworld, amulet)
+    logger.info(player_description + ' is ready!')
+    logger.info('he is wearing an ' + chest_piece + ' with matching ' + legs_piece + ' and he has a pair of ' + feet_piece)
 
-    # TURN THE BELOW CODE INTO A METHOD
-    gemstone_component = gameworld.component_for_entity(amulet, jewellery.Describable)
-    material_component = gameworld.component_for_entity(amulet, jewellery.Material)
-    type_component = gameworld.component_for_entity(amulet, jewellery.Type)
+    logger.info('Around his neck he has an {}', trinket_description)
 
-    # TURN THE BELOW CODE INTO A METHOD
-    attribute_component = gameworld.component_for_entity(amulet, jewellery.ImprovementTo)
-    stat_name = attribute_component.stat1name
-    stat_bonus = attribute_component.stat1bonus
+    jewel_bonus = Trinkets.get_jewellery_attribute_bonus(gameworld, amulet)
 
+    for k, v in jewel_bonus.items():
+        if k != '':
+            logger.info('and this provides a +{} to his {} attribute',v, k )
 
-    logger.info(player_name_component.first + ' is wearing a ' + chest_piece)
-    logger.info(' with matching ' + legs_piece)
-    logger.info(' and he has a pair of ' + feet_piece)
-
-    logger.info('Around his neck he has an {} {} {}', gemstone_component.component3, material_component.label, type_component.label)
-    logger.info('This provides a +{} to his {} attribute', stat_bonus, stat_name)
     key = tcod.Key()
     mouse = tcod.Mouse()
 
