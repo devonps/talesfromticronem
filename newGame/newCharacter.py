@@ -3,9 +3,8 @@ import random
 import textwrap
 
 from loguru import logger
-from components import weapons, mobiles, armour
+from components import weapons
 from newGame.ClassWeapons import WeaponClass
-from newGame import constants
 from newGame.ClassArmour import *
 from newGame.ClassJewellery import Trinkets
 from utilities.mobileHelp import MobileUtilities
@@ -197,11 +196,11 @@ def create_starting_jewellery(gameworld, player):
     ring2 = Trinkets.create_ring(gameworld, e_setting='copper', e_hook='copper', e_activator='Amber')
     amulet = Trinkets.create_amulet(gameworld, e_setting='copper', e_hook='copper', e_activator='Amber')
 
-    Trinkets.equip_piece_of_jewellery(gameworld, player, stud)
-    Trinkets.equip_piece_of_jewellery(gameworld, player, stud2)
-    Trinkets.equip_piece_of_jewellery(gameworld, player, ring1)
-    Trinkets.equip_piece_of_jewellery(gameworld, player, ring2)
-    Trinkets.equip_piece_of_jewellery(gameworld, player, amulet)
+    Trinkets.equip_piece_of_jewellery(gameworld, player, 'left ear', stud)
+    Trinkets.equip_piece_of_jewellery(gameworld, player, 'right ear', stud2)
+    Trinkets.equip_piece_of_jewellery(gameworld, player, 'left hand', ring1)
+    Trinkets.equip_piece_of_jewellery(gameworld, player, 'right hand', ring2)
+    Trinkets.equip_piece_of_jewellery(gameworld, player, 'neck', amulet)
 
 
 def display_selection(con, filename, element, posx, posy, width, flavour_x, flavour_y):
