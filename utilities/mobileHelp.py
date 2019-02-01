@@ -45,3 +45,10 @@ class MobileUtilities:
         gameworld.add_component(mobile, mobiles.AI(ailevel=constants.AI_LEVEL_NONE))
 
         return mobile
+
+    def describe_the_mobile(gameworld, entity):
+        player_name_component = gameworld.component_for_entity(entity, mobiles.Name)
+        player_race_component = gameworld.component_for_entity(entity, mobiles.Race)
+        player_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
+
+        return player_name_component.first + ' the ' + player_race_component.label + ' ' + player_class_component.label

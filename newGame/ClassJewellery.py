@@ -193,4 +193,30 @@ class Trinkets:
 
         return jewellery
 
+    def get_jewellery_attribute_bonus(gameworld, piece_of_jewellery):
 
+        bonus = {}
+
+        attribute_component = gameworld.component_for_entity(piece_of_jewellery, jewellery.ImprovementTo)
+        stat1_name = attribute_component.stat1name
+        stat1_bonus = attribute_component.stat1bonus
+        stat2_name = attribute_component.stat1name
+        stat2_bonus = attribute_component.stat1bonus
+        stat3_name = attribute_component.stat1name
+        stat3_bonus = attribute_component.stat1bonus
+
+        if stat1_name != '':
+            bonus[stat1_name] = stat1_bonus
+        if stat2_name != '':
+            bonus[stat2_name] = stat2_bonus
+        if stat3_name != '':
+            bonus[stat3_name] = stat3_bonus
+
+        return bonus
+
+    def describe_piece_of_jewellery(gameworld, piece_of_jewellery):
+        gemstone_component = gameworld.component_for_entity(piece_of_jewellery, jewellery.Describable)
+        material_component = gameworld.component_for_entity(piece_of_jewellery, jewellery.Material)
+        type_component = gameworld.component_for_entity(piece_of_jewellery, jewellery.Type)
+
+        return gemstone_component.component3 + ' ' + material_component.label + ' ' + type_component.label

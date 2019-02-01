@@ -19,7 +19,6 @@ class Describable:
         self.component2 = component2
         self.component3 = component3
 
-
 class ImprovementTo:
     def __init__(self,stat1name='', stat1bonus=0, stat2name='', stat2bonus=0, stat3name='', stat3bonus=0):
         self.stat1name = stat1name
