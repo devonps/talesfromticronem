@@ -123,3 +123,12 @@ SCRFILEEXTENSION = 'jpg'
 
 # external data
 JSONFILEPATH = 'static/data/'
+HUMANNAMESFILE = 'static/names/human.txt'
+ELFNAMESFILE = 'static/names/elf.txt'
+ORCNAMESFILE = 'static/names/orc.txt'
+TROLLNAMESFILE = 'static/names/troll.txt'
+REGIONNAMESFILE = 'static/names/region.txt'
+TOWNNAMESFILE = 'static/names/town.txt'
+WIZARDNAMESFILE = 'static/names/wizard.txt'
+NPCNAMESFILE = 'static/names/npc.txt'
+DEMONNAMESFILE = 'static/names/demon.txt'

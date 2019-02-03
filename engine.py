@@ -27,16 +27,29 @@ def start_game(con, gameworld):
 
     amulet = Trinkets.get_jewellery_entity_at_bodylocation(gameworld, player, 'neck')
     trinket_description = Trinkets.describe_piece_of_jewellery(gameworld, amulet)
-    logger.info(player_description + ' is ready!')
-    logger.info('he is wearing an ' + chest_piece + ' with matching ' + legs_piece + ' and he has a pair of ' + feet_piece)
 
-    logger.info('Around his neck he has an {}', trinket_description)
+    gender_component = gameworld.component_for_entity(player, mobiles.Describable)
+
+    if gender_component.gender == 'male':
+        gender_text = 'his'
+        msg2 = 'he '
+    else:
+        gender_text = 'her'
+        msg2 = 'she '
+
+    logger.info(player_description + ' is ready!')
+
+    msg = 'Around ' + gender_text + ' neck he has an {}'
+
+    logger.info(msg2 + 'is wearing an ' + chest_piece + ' with matching ' + legs_piece + ' and ' + msg2 + 'has a pair of ' + feet_piece)
+
+    logger.info(msg, trinket_description)
 
     jewel_bonus = Trinkets.get_jewellery_attribute_bonus(gameworld, amulet)
 
     for k, v in jewel_bonus.items():
         if k != '':
-            logger.info('and this provides a +{} to his {} attribute',v, k )
+            logger.info('and this provides a +{} to ' + gender_text + '{} attribute',v, k)
 
     key = tcod.Key()
     mouse = tcod.Mouse()
@@ -60,7 +73,7 @@ def start_game(con, gameworld):
 
 def main():
 
-    #    logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
+    # logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
 
     logger.info('********************')
     logger.info('* New game started *')
