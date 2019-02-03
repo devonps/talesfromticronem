@@ -1,4 +1,3 @@
-//Names based on syllables from J.R.R. Tolkien's and David Eddings' novels.
 name "male" {
   phonemesVocals = "a, e, i, o, u, y"
   phonemesConsonants = "b, c, ch, ck, cz, d, dh, f, g, gh, h, j, k, kh, l, m, n, p, ph, q, r, rh, s, sh, t, th, ts, tz, v, w, x, z, zh"

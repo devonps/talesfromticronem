@@ -50,5 +50,6 @@ class MobileUtilities:
         player_name_component = gameworld.component_for_entity(entity, mobiles.Name)
         player_race_component = gameworld.component_for_entity(entity, mobiles.Race)
         player_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
+        player_gender_component = gameworld.component_for_entity(entity, mobiles.Describable)
 
-        return player_name_component.first + ' the ' + player_race_component.label + ' ' + player_class_component.label
+        return player_name_component.first + ' the ' + player_gender_component.gender + ' ' + player_race_component.label + ' ' + player_class_component.label
