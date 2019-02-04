@@ -1,62 +1,30 @@
 import tcod
 
+
 from newGame.initialiseNewGame import setup_game, create_game_world
 from processors.render import RenderGameStartScreen
-from newGame.newCharacter import NewCharacter
 from input_handler import handle_main_menu
 
 from newGame.ClassArmour import *
-from newGame.ClassJewellery import Trinkets
 from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys
 
 
 def start_game(con, gameworld):
 
-    player = NewCharacter.create(con, gameworld)
-    gameworld, game_map = setup_game(con, gameworld, player)
+    game_map, player = setup_game(con, gameworld)
 
     # test code
 
     player_description = MobileUtilities.describe_the_mobile(gameworld, player)
 
-    chest_piece = ArmourClass.describe_armour_at_bodylocation(gameworld, player, 'chest')
-    legs_piece = ArmourClass.describe_armour_at_bodylocation(gameworld, player, 'legs')
-    feet_piece = ArmourClass.describe_armour_at_bodylocation(gameworld, player, 'feet')
-
-    amulet = Trinkets.get_jewellery_entity_at_bodylocation(gameworld, player, 'neck')
-    trinket_description = Trinkets.describe_piece_of_jewellery(gameworld, amulet)
-
-    gender_component = gameworld.component_for_entity(player, mobiles.Describable)
-
-    if gender_component.gender == 'male':
-        gender_text = 'his '
-        msg2 = 'he '
-    else:
-        gender_text = 'her '
-        msg2 = 'she '
-
     logger.info(player_description + ' is ready!')
-
-    msg = 'Around ' + gender_text + ' neck ' + msg2 + 'has an {}'
-
-    logger.info(msg2 + 'is wearing an ' + chest_piece + ' with matching ' + legs_piece + ' and ' + msg2 + 'has a pair of ' + feet_piece)
-
-    logger.info(msg, trinket_description)
-
-    jewel_bonus = Trinkets.get_jewellery_attribute_bonus(gameworld, amulet)
-
-    for k, v in jewel_bonus.items():
-        if k != '':
-            logger.info('and this provides a +{} to ' + gender_text + ' {} attribute',v, k)
 
     key = tcod.Key()
     mouse = tcod.Mouse()
 
     while not tcod.console_is_window_closed():
 
-        # ev = tcod.sys_wait_for_event(tcod.EVENT_KEY, key, mouse, flush=False)
-        ev = 0
         action = handle_keys(mouse, key, gameworld, player)
 
         exit_game = action.get('exit')
@@ -70,7 +38,6 @@ def start_game(con, gameworld):
 
         # run ALL game processors
         gameworld.process()
-
         tcod.console_flush()
 
 
