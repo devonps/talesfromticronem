@@ -20,7 +20,7 @@ def setup_game(con, world):
     generate_items(world)
     generate_monsters(world)
     # create game map
-    game_map = GameMap(constants.MAP_WIDTH, constants.MAP_HEIGHT)
+    game_map = GameMap(constants.VIEWPORT_WIDTH, constants.VIEWPORT_HEIGHT)
     game_map.make_map()
     # place entities (enemies, items)
 
