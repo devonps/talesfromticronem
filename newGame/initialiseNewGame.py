@@ -13,7 +13,7 @@ from processors.render import RenderConsole, RenderInventory, RenderPlayerCharac
 from processors.move_entities import MoveEntities
 
 
-def setup_game(con, world):
+def setup_game(con, world, player):
 
     # create entities for game world
     generate_spells(world)
@@ -21,7 +21,7 @@ def setup_game(con, world):
     generate_monsters(world)
     # create game map
     game_map = GameMap(constants.VIEWPORT_WIDTH, constants.VIEWPORT_HEIGHT)
-    game_map.make_map()
+    game_map.make_map(constants.MAX_ROOMS, constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE, constants.MAP_WIDTH, constants.MAP_HEIGHT, world, player)
     # place entities (enemies, items)
 
     render_console_process = RenderConsole(con=con, game_map=game_map)
