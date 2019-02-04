@@ -5,12 +5,14 @@ from loguru import logger
 from newGame import constants
 from components import mobiles
 from utilities.display import menu
+from map_objects.gameMap import GameMap
 
 
 class RenderConsole(esper.Processor):
-    def __init__(self, con):
+    def __init__(self, con, game_map):
         super().__init__()
         self.con = con
+        self.game_map = game_map
 
     def process(self):
         # GUI viewport and message box borders
@@ -29,8 +31,6 @@ class RenderConsole(esper.Processor):
         self.render_mana_bar()
         self.render_f1_bar()
 
-        # render the game map
-
         # render player effects...
         # life
         self.render_player_life_bar_content(constants.V_BAR_X, constants.V_BAR_Y, 15, tcod.red, tcod.black)
@@ -44,6 +44,16 @@ class RenderConsole(esper.Processor):
         self.render_player_status_effects_content(constants.H_BAR_X, constants.H_BAR_Y + 3, chr(9), tcod.red)
         # controls
         self.render_player_status_effects_content(constants.H_BAR_X, constants.H_BAR_Y + 6, chr(10), tcod.white)
+
+        # render the game map
+        for y in range(self.game_map.height):
+            for x in range(self.game_map.width):
+                wall = self.game_map.tiles[x][y].block_sight
+
+                if wall:
+                    tcod.console_set_char_background(self.con, x, y, tcod.darker_gray, tcod.BKGND_SET)
+                else:
+                    tcod.console_set_char_background(self.con, x, y, tcod.black, tcod.BKGND_SET)
 
         # draw the entities
         self.render_entities()

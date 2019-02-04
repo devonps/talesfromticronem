@@ -1,14 +1,16 @@
-
+import tcod
 import random
 
 from newGame.initialiseNewGame import setup_game, create_game_world
-from processors.render import *
+from processors.render import RenderGameStartScreen
+from processors.move_entities import MoveEntities
 from newGame.newCharacter import NewCharacter
 from input_handler import handle_main_menu
 
 from newGame.ClassArmour import *
 from newGame.ClassJewellery import Trinkets
 from utilities.mobileHelp import MobileUtilities
+from utilities.input_handlers import handle_keys
 
 
 def start_game(con, gameworld):
@@ -31,15 +33,15 @@ def start_game(con, gameworld):
     gender_component = gameworld.component_for_entity(player, mobiles.Describable)
 
     if gender_component.gender == 'male':
-        gender_text = 'his'
+        gender_text = 'his '
         msg2 = 'he '
     else:
-        gender_text = 'her'
+        gender_text = 'her '
         msg2 = 'she '
 
     logger.info(player_description + ' is ready!')
 
-    msg = 'Around ' + gender_text + ' neck he has an {}'
+    msg = 'Around ' + gender_text + ' neck ' + msg2 + 'has an {}'
 
     logger.info(msg2 + 'is wearing an ' + chest_piece + ' with matching ' + legs_piece + ' and ' + msg2 + 'has a pair of ' + feet_piece)
 
@@ -49,26 +51,34 @@ def start_game(con, gameworld):
 
     for k, v in jewel_bonus.items():
         if k != '':
-            logger.info('and this provides a +{} to ' + gender_text + '{} attribute',v, k)
+            logger.info('and this provides a +{} to ' + gender_text + ' {} attribute',v, k)
 
     key = tcod.Key()
     mouse = tcod.Mouse()
 
+    # test code
+    gameworld.component_for_entity(player, mobiles.Position).x = random.randrange(1, 79)
+    gameworld.component_for_entity(player, mobiles.Position).y = random.randrange(1, 39)
+
     while not tcod.console_is_window_closed():
-        tcod.sys_check_for_event(tcod.EVENT_KEY, key, mouse)
+
+        # ev = tcod.sys_wait_for_event(tcod.EVENT_KEY, key, mouse, flush=False)
+        ev = 0
+        action = handle_keys(mouse, key, gameworld, player)
+
+        exit_game = action.get('exit')
+        fullscreen = action.get('fullscreen')
+
+        if exit_game:
+            return True
+
+        if fullscreen:
+            tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
 
         # run ALL game processors
         gameworld.process()
 
         tcod.console_flush()
-
-        key = tcod.console_check_for_keypress()
-        if key.vk == tcod.KEY_ENTER:
-            gameworld.component_for_entity(player, mobiles.Position).x = random.randrange(1, 79)
-            gameworld.component_for_entity(player, mobiles.Position).y = random.randrange(1, 39)
-
-        if key.vk == tcod.KEY_ESCAPE:
-            return True
 
 
 def main():
@@ -96,7 +106,10 @@ def main():
     # add the processors we need to display and handle the game start screen, character selection, etc.
 
     render_game_screen = RenderGameStartScreen(con=con, image=background_image)
+    # move_entities_processor = MoveEntities(gameworld=gameworld)
+
     gameworld.add_processor(render_game_screen)
+    # gameworld.add_processor(move_entities_processor)
 
     while not tcod.console_is_window_closed():
         tcod.sys_check_for_event(tcod.EVENT_KEY, key, mouse)
@@ -120,6 +133,7 @@ def main():
             con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
             render_game_screen = RenderGameStartScreen(con=con, image=background_image)
             gameworld.add_processor(render_game_screen)
+
         elif load_saved_game:
             pass
         elif exit_game:
