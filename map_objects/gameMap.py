@@ -1,7 +1,6 @@
 import tcod
 
 from map_objects.tile import Tile
-from newGame import constants
 
 
 class GameMap:
@@ -11,9 +10,20 @@ class GameMap:
         self.tiles = self.initialize_tiles()
 
     def initialize_tiles(self):
-        tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
+        tiles = [[Tile(False) for y in range(self.height)] for x in range(self.width)]
+
+        tiles[30][22].block_path = True
+        tiles[30][22].block_sight = True
+        tiles[31][22].block_path = True
+        tiles[31][22].block_sight = True
+        tiles[32][22].block_path = True
+        tiles[32][22].block_sight = True
 
         return tiles
+
+    def is_blocked(self,x ,y):
+        if self.tiles[x][y].block_path:
+            return True
 
     def make_map(self):
         """
@@ -22,9 +32,3 @@ class GameMap:
         """
         rooms = []
         pass
-
-    def is_blocked(self, x, y):
-        if self.tiles[x][y].blocked:
-            return True
-
-        return False

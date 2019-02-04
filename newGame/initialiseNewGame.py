@@ -1,23 +1,19 @@
-
+import esper
 import random
 
-
+from loguru import logger
 from utilities.jsonUtilities import read_json_file
 from newGame.ClassWeapons import WeaponClass
+from newGame import constants
 from components import spells, weapons
 from components.addStatusEffects import process_status_effect
 from utilities.mobileHelp import MobileUtilities
 from map_objects.gameMap import GameMap
-from processors.render import *
+from processors.render import RenderConsole, RenderInventory, RenderPlayerCharacterScreen
+from processors.move_entities import MoveEntities
 
 
 def setup_game(con, world):
-    render_console_process = RenderConsole(con)
-    render_inventory_screen = RenderInventory()
-    render_character_screen = RenderPlayerCharacterScreen()
-    world.add_processor(render_console_process)
-    world.add_processor(render_inventory_screen)
-    world.add_processor(render_character_screen)
 
     # create entities for game world
     generate_spells(world)
@@ -27,6 +23,15 @@ def setup_game(con, world):
     game_map = GameMap(constants.MAP_WIDTH, constants.MAP_HEIGHT)
     game_map.make_map()
     # place entities (enemies, items)
+
+    render_console_process = RenderConsole(con=con, game_map=game_map)
+    render_inventory_screen = RenderInventory()
+    render_character_screen = RenderPlayerCharacterScreen()
+    move_entities_processor = MoveEntities(gameworld=world, game_map=game_map)
+    world.add_processor(render_console_process)
+    world.add_processor(render_inventory_screen)
+    world.add_processor(render_character_screen)
+    world.add_processor(move_entities_processor)
 
     return world, game_map
 

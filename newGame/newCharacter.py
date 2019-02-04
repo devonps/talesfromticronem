@@ -41,6 +41,7 @@ def generate_player_character(gameworld):
     gameworld.add_component(player, mobiles.Jewellery())
     gameworld.add_component(player, mobiles.Equipped())
     gameworld.add_component(player, mobiles.Health(current=1, maximum=10))
+    gameworld.add_component(player, mobiles.Velocity())
 
     # add renderable component to player
     gameworld.add_component(player, mobiles.Renderable(is_visible=True))
