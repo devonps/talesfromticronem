@@ -1,9 +1,7 @@
 import tcod
-import random
 
 from newGame.initialiseNewGame import setup_game, create_game_world
 from processors.render import RenderGameStartScreen
-from processors.move_entities import MoveEntities
 from newGame.newCharacter import NewCharacter
 from input_handler import handle_main_menu
 
@@ -15,9 +13,8 @@ from utilities.input_handlers import handle_keys
 
 def start_game(con, gameworld):
 
-    gameworld, game_map = setup_game(con, gameworld)
-
     player = NewCharacter.create(con, gameworld)
+    gameworld, game_map = setup_game(con, gameworld, player)
 
     # test code
 
@@ -55,10 +52,6 @@ def start_game(con, gameworld):
 
     key = tcod.Key()
     mouse = tcod.Mouse()
-
-    # test code
-    gameworld.component_for_entity(player, mobiles.Position).x = random.randrange(1, 79)
-    gameworld.component_for_entity(player, mobiles.Position).y = random.randrange(1, 39)
 
     while not tcod.console_is_window_closed():
 
