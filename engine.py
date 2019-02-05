@@ -8,6 +8,7 @@ from input_handler import handle_main_menu
 from newGame.ClassArmour import *
 from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys
+from utilities.gameworld import reset_gameworld
 
 
 def start_game(con, gameworld):
@@ -88,7 +89,7 @@ def main():
             tcod.console_clear(con)
             start_game(con, gameworld)
             print('left game')
-            gameworld.clear_database()
+            reset_gameworld(gameworld)
             tcod.console_delete(con)
             con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
             render_game_screen = RenderGameStartScreen(con=con, image=background_image)
