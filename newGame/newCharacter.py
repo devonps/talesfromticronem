@@ -3,12 +3,13 @@ import random
 import textwrap
 
 from loguru import logger
-from components import weapons
+from components import weapons, spellBar
 from newGame.ClassWeapons import WeaponClass
 from newGame.ClassArmour import *
 from newGame.ClassJewellery import Trinkets
 from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
+from utilities.spellHelp import SpellUtilities
 from input_handler import handle_new_race, handle_new_class
 
 
@@ -20,9 +21,27 @@ class NewCharacter:
         select_character_class(con=con, gameworld=gameworld, player=player)
         select_personality_choices(con=con, gameworld=gameworld, player=player)
         name_your_character(con=con, gameworld=gameworld, player=player)
-        get_starting_equipment(con=con, gameworld=gameworld, player=player)
+        spell_bar_entity = generate_spell_bar(gameworld=gameworld)
+        get_starting_equipment(con=con, gameworld=gameworld, player=player, spellbar=spell_bar_entity)
+        return player, spell_bar_entity
 
-        return player
+
+def generate_spell_bar(gameworld):
+    logger.debug('Creating the spell bar')
+    spell_bar = gameworld.create_entity()
+
+    gameworld.add_component(spell_bar, spellBar.SlotOne())
+    gameworld.add_component(spell_bar, spellBar.SlotTwo())
+    gameworld.add_component(spell_bar, spellBar.SlotThree())
+    gameworld.add_component(spell_bar, spellBar.SlotFour())
+    gameworld.add_component(spell_bar, spellBar.SlotFive())
+    gameworld.add_component(spell_bar, spellBar.SlotSix())
+    gameworld.add_component(spell_bar, spellBar.SlotSeven())
+    gameworld.add_component(spell_bar, spellBar.SlotEight())
+    gameworld.add_component(spell_bar, spellBar.SlotNine())
+    gameworld.add_component(spell_bar, spellBar.SlotTen())
+
+    return spell_bar
 
 
 def generate_player_character(gameworld):
@@ -34,7 +53,7 @@ def generate_player_character(gameworld):
 
     logger.debug('Creating the player character entity')
     player = MobileUtilities.generate_base_mobile(gameworld)
-    gameworld.add_component(player, mobiles.Describable())
+    gameworld.add_component(player, mobiles.Describable(background=tcod.blue))
     gameworld.add_component(player, mobiles.AI(ailevel=constants.AI_LEVEL_PLAYER))
     gameworld.add_component(player, mobiles.Inventory())
     gameworld.add_component(player, mobiles.Armour())
@@ -203,7 +222,7 @@ def name_your_character(con, gameworld, player):
     gameworld.add_component(player, mobiles.Name(first=selected_name, suffix='none'))
 
 
-def get_starting_equipment(con, gameworld, player):
+def get_starting_equipment(con, gameworld, player, spellbar):
     logger.debug('Selecting starting equipment')
 
     # create starting armour
@@ -218,7 +237,7 @@ def get_starting_equipment(con, gameworld, player):
     class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
 
     # create a new weapon for the player
-    weapon = WeaponClass.create_weapon(gameworld, 'sword')
+    weapon = WeaponClass.create_weapon(gameworld, 'staff')
     weapon_type = gameworld.component_for_entity(weapon, weapons.Name)
     # parameters are: gameworld, weapon object, weapon type as a string, mobile class
     logger.info('Loading that weapon with the necessary spells')
@@ -226,7 +245,11 @@ def get_starting_equipment(con, gameworld, player):
 
     # equip player with weapon
     logger.info('Equipping player with that loaded weapon')
-    MobileUtilities.equip_weapon(gameworld, player, weapon, 'main')
+    MobileUtilities.equip_weapon(gameworld, player, weapon, 'both')
+
+    # load spell bar with spells from weapon
+    logger.info('Loading spell bar')
+    SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spellbar)
 
     logger.debug('Player is ready to rock and roll!')
 

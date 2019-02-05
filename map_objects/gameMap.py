@@ -4,6 +4,7 @@ from map_objects.tile import Tile
 from map_objects.rectangle import Rect
 from random import randint
 from components import mobiles
+from newGame import constants
 
 
 class GameMap:

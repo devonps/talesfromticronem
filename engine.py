@@ -1,7 +1,7 @@
 import tcod
 
 
-from newGame.initialiseNewGame import setup_game, create_game_world
+from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character
 from processors.render import RenderGameStartScreen
 from input_handler import handle_main_menu
 
@@ -13,12 +13,13 @@ from utilities.gameworld import reset_gameworld
 
 def start_game(con, gameworld):
 
-    game_map, player = setup_game(con, gameworld)
+    setup_game(con, gameworld)
+    player, spell_bar = create_new_character(con, gameworld)
+    initialise_game_map(con, gameworld, player, spell_bar)
 
     # test code
 
     player_description = MobileUtilities.describe_the_mobile(gameworld, player)
-
     logger.info(player_description + ' is ready!')
 
     key = tcod.Key()
@@ -46,9 +47,9 @@ def main():
 
     # logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
 
-    logger.info('********************')
-    logger.info('* New game started *')
-    logger.info('********************')
+    logger.info('*********************')
+    logger.info('* Initialising game *')
+    logger.info('*********************')
 
     tcod.console_set_custom_font('static/fonts/prestige12x12_gs_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
     tcod.console_init_root(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.GAME_WINDOW_TITLE, False)
@@ -88,7 +89,9 @@ def main():
             gameworld.remove_processor(RenderGameStartScreen)
             tcod.console_clear(con)
             start_game(con, gameworld)
-            print('left game')
+            logger.info('*********************')
+            logger.info('* Left Game         *')
+            logger.info('*********************')
             reset_gameworld(gameworld)
             tcod.console_delete(con)
             con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
