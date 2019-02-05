@@ -26,11 +26,14 @@ def start_game(con, gameworld):
     mouse = tcod.Mouse()
 
     while not tcod.console_is_window_closed():
-
         action = handle_keys(mouse, key, gameworld, player)
 
         exit_game = action.get('exit')
         fullscreen = action.get('fullscreen')
+        player_moved = action.get('player_moved')
+
+        if player_moved:
+            pass
 
         if exit_game:
             return True

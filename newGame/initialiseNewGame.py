@@ -32,9 +32,13 @@ def initialise_game_map(con, gameworld, player, spell_bar):
     game_map = GameMap(constants.VIEWPORT_WIDTH, constants.VIEWPORT_HEIGHT)
     game_map.make_map(constants.MAX_ROOMS, constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE, constants.MAP_WIDTH,
                       constants.MAP_HEIGHT, gameworld, player)
+
+    fov_compute = True
+    fov_map = GameMap.make_fov_map(game_map)
+
     # place entities (enemies, items)
 
-    render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld)
+    render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld, fov_compute=fov_compute, fov_map=fov_map)
     render_inventory_screen = RenderInventory()
     render_character_screen = RenderPlayerCharacterScreen()
     move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
