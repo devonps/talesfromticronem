@@ -10,33 +10,40 @@ from components.addStatusEffects import process_status_effect
 from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
 from map_objects.gameMap import GameMap
-from processors.render import RenderConsole, RenderInventory, RenderPlayerCharacterScreen
+from processors.render import RenderConsole, RenderInventory, RenderPlayerCharacterScreen, RenderSpellBar
 from processors.move_entities import MoveEntities
 
 
 def setup_game(con, gameworld):
 
     # create entities for game world
-    player = NewCharacter.create(con, gameworld)
     generate_spells(gameworld)
     generate_items(gameworld)
     generate_monsters(gameworld)
+
+
+def create_new_character(con, gameworld):
+    player, spell_bar = NewCharacter.create(con, gameworld)
+    return player, spell_bar
+
+
+def initialise_game_map(con, gameworld, player, spell_bar):
     # create game map
     game_map = GameMap(constants.VIEWPORT_WIDTH, constants.VIEWPORT_HEIGHT)
     game_map.make_map(constants.MAX_ROOMS, constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE, constants.MAP_WIDTH,
                       constants.MAP_HEIGHT, gameworld, player)
     # place entities (enemies, items)
 
-    render_console_process = RenderConsole(con=con, game_map=game_map)
+    render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld)
     render_inventory_screen = RenderInventory()
     render_character_screen = RenderPlayerCharacterScreen()
     move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
+    render_spell_bar_processor = RenderSpellBar(con=con, spell_bar=spell_bar, gameworld=gameworld)
     gameworld.add_processor(render_console_process)
     gameworld.add_processor(render_inventory_screen)
     gameworld.add_processor(render_character_screen)
     gameworld.add_processor(move_entities_processor)
-
-    return game_map, player
+    gameworld.add_processor(render_spell_bar_processor)
 
 
 # create esper world (enemies, items, spells, etc)

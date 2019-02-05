@@ -3,23 +3,23 @@ import tcod
 
 from loguru import logger
 from newGame import constants
-from components import mobiles
+from components import mobiles, weapons, spells, spellBar
 from utilities.display import menu
-from map_objects.gameMap import GameMap
+from utilities.mobileHelp import MobileUtilities
+from utilities.spellHelp import SpellUtilities
 
 
 class RenderConsole(esper.Processor):
-    def __init__(self, con, game_map):
+    def __init__(self, con, game_map, gameworld):
         super().__init__()
         self.con = con
         self.game_map = game_map
+        self.gameworld = gameworld
 
     def process(self):
         # GUI viewport and message box borders
         self.render_viewport()
         self.render_message_box()
-
-        # draw the spell bar borders
 
         # draw the boon, condition, and control bar borders (horizontal)
         self.render_boons()
@@ -46,6 +46,7 @@ class RenderConsole(esper.Processor):
         self.render_player_status_effects_content(constants.H_BAR_X, constants.H_BAR_Y + 6, chr(10), tcod.white)
 
         # render the game map
+
         for y in range(self.game_map.height):
             for x in range(self.game_map.width):
                 wall = self.game_map.tiles[x][y].block_sight
@@ -73,122 +74,54 @@ class RenderConsole(esper.Processor):
                 self.render_entity(pos.x, pos.y, desc.glyph, desc.foreground, desc.background)
 
     def render_boons(self):
-        self.render_h_bar(constants.H_BAR_X, constants.H_BAR_Y, constants.BCC_BAR_RIGHT_SIDE,tcod.darker_gray)
+        self.render_h_bar(posx=constants.H_BAR_X, posy=constants.H_BAR_Y, right_side=constants.BCC_BAR_RIGHT_SIDE,border_colour=tcod.darker_gray)
 
     def render_conditions(self):
-        self.render_h_bar(constants.H_BAR_X, constants.H_BAR_Y + 3, constants.BCC_BAR_RIGHT_SIDE, tcod.darker_gray)
+        self.render_h_bar(posx=constants.H_BAR_X, posy=constants.H_BAR_Y + 3, right_side=constants.BCC_BAR_RIGHT_SIDE, border_colour=tcod.darker_gray)
 
     def render_controls(self):
-        self.render_h_bar(constants.H_BAR_X, constants.H_BAR_Y + 6, constants.BCC_BAR_RIGHT_SIDE, tcod.darker_gray)
+        self.render_h_bar(posx=constants.H_BAR_X, posy=constants.H_BAR_Y + 6, right_side=constants.BCC_BAR_RIGHT_SIDE, border_colour=tcod.darker_gray)
 
     def render_health_bar(self):
-        self.render_v_bar(constants.V_BAR_X, constants.V_BAR_Y, constants.V_BAR_D, tcod.darker_gray, tcod.red, 15)
+        self.render_v_bar(posx=constants.V_BAR_X, posy=constants.V_BAR_Y, depth=constants.V_BAR_D, border_colour=tcod.darker_gray)
 
     def render_mana_bar(self):
-        self.render_v_bar(constants.V_BAR_X + 3, constants.V_BAR_Y, constants.V_BAR_D, tcod.darker_gray, tcod.blue, 6)
+        self.render_v_bar(posx=constants.V_BAR_X + 3, posy=constants.V_BAR_Y, depth=constants.V_BAR_D, border_colour=tcod.darker_gray)
 
     def render_f1_bar(self):
-        self.render_v_bar(constants.V_BAR_X + 6, constants.V_BAR_Y, constants.V_BAR_D, tcod.darker_gray, tcod.white, 9)
+        self.render_v_bar(posx=constants.V_BAR_X + 6, posy=constants.V_BAR_Y, depth=constants.V_BAR_D, border_colour=tcod.darker_gray)
 
     def render_viewport(self):
         # draw the outer bounds of the map viewport
-        tcod.console_set_default_foreground(self.con, tcod.red)
+        tcod.console_set_default_foreground(self.con, tcod.yellow)
 
-        for a in range(constants.VIEWPORT_WIDTH):
-            for d in range(constants.VIEWPORT_HEIGHT):
-                # top and bottom of viewport
-                if a > 0 and (d == 0 or d == constants.VIEWPORT_HEIGHT - 1):
-                    tcod.console_put_char(self.con, a, d, chr(196), tcod.BKGND_NONE)
-                # top corners of viewport
-                if a == 0 and d == 0:
-                    tcod.console_put_char(self.con, a, 0, chr(218), tcod.BKGND_NONE)
-                if a == constants.VIEWPORT_WIDTH - 1 and d == 0:
-                    tcod.console_put_char(self.con, a, 0, chr(191), tcod.BKGND_NONE)
-
-                # down sides of viewport
-                if a == 0 and d > 0:
-                    tcod.console_put_char(self.con, a, d, chr(179), tcod.BKGND_NONE)
-                if a == constants.VIEWPORT_WIDTH - 1 and d > 0:
-                    tcod.console_put_char(self.con, a, d, chr(179), tcod.BKGND_NONE)
-
-                # bottom corners of viewport
-                if a == 0 and d == constants.VIEWPORT_HEIGHT - 1:
-                    tcod.console_put_char(self.con, a, d, chr(192), tcod.BKGND_NONE)
-                if a == constants.VIEWPORT_WIDTH - 1 and d == constants.VIEWPORT_HEIGHT - 1:
-                    tcod.console_put_char(self.con, a, d, chr(217), tcod.BKGND_NONE)
+        tcod.console_print_frame(self.con, x=0, y=0, w=constants.VIEWPORT_WIDTH, h=constants.VIEWPORT_HEIGHT, clear=False, flag=tcod.BKGND_DEFAULT,
+                                 fmt='')
 
     def render_message_box(self):
         # draw the message box area
 
-        foreground = tcod.yellow
-        background = tcod.black
+        tcod.console_set_default_foreground(self.con, tcod.yellow)
 
-        for a in range(constants.MSG_PANEL_WIDTH):
-            for d in range(constants.MSG_PANEL_DEPTH):
-                # top and bottom of message box
-                if a > 0 and (d == 0 or d == constants.MSG_PANEL_DEPTH - 1):
-                    tcod.console_put_char_ex(self.con, a, constants.MSG_PANEL_START_Y + d, chr(196), foreground, background)
-                # top corners of message box
-                if a == 0 and d == 0:
-                    tcod.console_put_char_ex(self.con, a, constants.MSG_PANEL_START_Y, chr(218), foreground, background)
-                if a == constants.MSG_PANEL_WIDTH - 1 and d == 0:
-                    tcod.console_put_char_ex(self.con, a, constants.MSG_PANEL_START_Y, chr(191), foreground, background)
-
-                # down sides of message box
-                if a == 0 and d > 0:
-                    tcod.console_put_char_ex(self.con, a, constants.MSG_PANEL_START_Y + d, chr(179), foreground, background)
-                if a == constants.MSG_PANEL_WIDTH - 1 and d > 0:
-                    tcod.console_put_char_ex(self.con, a, constants.MSG_PANEL_START_Y + d, chr(179), foreground, background)
-
-                # bottom corners of message box
-                if a == 0 and d == constants.MSG_PANEL_DEPTH - 1:
-                    tcod.console_put_char_ex(self.con, a, constants.MSG_PANEL_START_Y + d, chr(192), foreground, background)
-                if a == constants.MSG_PANEL_WIDTH - 1 and d == constants.MSG_PANEL_DEPTH - 1:
-                    tcod.console_put_char_ex(self.con, a, constants.MSG_PANEL_START_Y + d, chr(217), foreground, background)
-
+        tcod.console_print_frame(self.con, x=0, y=constants.MSG_PANEL_START_Y, w=constants.MSG_PANEL_WIDTH, h=constants.MSG_PANEL_DEPTH, clear=False, flag=tcod.BKGND_DEFAULT,
+                                 fmt='')
         # test code - to be deleted
         tcod.console_set_default_foreground(self.con, tcod.light_blue)
         for y in range(constants.MSG_PANEL_LINES):
             tcod.console_print_ex(self.con, 1, 1 + constants.MSG_PANEL_START_Y + y, tcod.BKGND_NONE, tcod.LEFT,
                                   'Message line ' + str(y))
 
-    def render_v_bar(self, posx, posy, bottom_side, border_colour, fill_colour, hp_lost):
+    def render_v_bar(self, posx, posy, depth, border_colour):
 
-        foreground = border_colour
-        background = tcod.black
-
-        tcod.console_put_char_ex(self.con, posx, posy, chr(218), foreground, background)
-        tcod.console_put_char_ex(self.con, posx + 1, posy, chr(196), foreground, background)
-        tcod.console_put_char_ex(self.con, posx + 2, posy, chr(191), foreground, background)
-
-        tcod.console_put_char_ex(self.con, posx, bottom_side, chr(192), foreground, background)
-        tcod.console_put_char_ex(self.con, posx + 1, bottom_side, chr(196), foreground, background)
-        tcod.console_put_char_ex(self.con, posx + 2, bottom_side, chr(217), foreground, background)
-
-        for y in range(constants.V_BAR_DEPTH):
-            tcod.console_put_char_ex(self.con, posx, (posy + 1) + y, chr(179), foreground, background)
-            tcod.console_put_char_ex(self.con, posx + 2, (posy + 1) + y, chr(179), foreground, background)
+        tcod.console_set_default_foreground(self.con, border_colour)
+        tcod.console_print_frame(self.con, x=posx, y=posy, w=3, h=depth, clear=False, flag=tcod.BKGND_DEFAULT,
+                                 fmt='')
 
     def render_h_bar(self, posx, posy, right_side, border_colour):
 
-        foreground = border_colour
-        background = tcod.black
-
-        tcod.console_put_char_ex(self.con, posx, posy, chr(218), foreground, background)
-        tcod.console_put_char_ex(self.con, posx, posy + 1, chr(179), foreground, background)
-        tcod.console_put_char_ex(self.con, posx, posy + 2, chr(192), foreground, background)
-
-        tcod.console_put_char_ex(self.con, right_side, posy, chr(191), foreground, background)
-        tcod.console_put_char_ex(self.con, right_side, posy + 1, chr(179), foreground, background)
-        tcod.console_put_char_ex(self.con, right_side, posy + 2, chr(217), foreground, background)
-
-        for x in range(constants.BO_CO_CO_WIDTH):
-            if x % 2:
-                tcod.console_put_char_ex(self.con, (posx + 1) + x, posy, chr(194), foreground, background)
-                tcod.console_put_char_ex(self.con, (posx + 1) + x, posy + 2, chr(193), foreground, background)
-            else:
-                tcod.console_put_char_ex(self.con, (posx + 1) + x, posy, chr(196), foreground, background)
-                tcod.console_put_char_ex(self.con, (posx + 1) + x, posy + 2, chr(196), foreground, background)
+        tcod.console_set_default_foreground(self.con, border_colour)
+        tcod.console_print_frame(self.con, x=posx, y=posy, w=right_side, h=3, clear=False, flag=tcod.BKGND_DEFAULT,
+                                 fmt='')
 
     def render_entity(self, posx, posy, glyph, fg, bg):
         tcod.console_put_char_ex(self.con, posx, posy, glyph, fg, bg)
@@ -218,6 +151,37 @@ class RenderConsole(esper.Processor):
         tcod.console_set_default_foreground(self.con, tcod.white)
         hp = 100 - value
         tcod.console_print_ex(self.con, posx, (posy + constants.V_BAR_DEPTH) + 2, tcod.BKGND_NONE, tcod.LEFT, str(hp) + '%')
+
+
+class RenderSpellBar(esper.Processor):
+    def __init__(self, con, spell_bar, gameworld):
+        super().__init__()
+        self.spell_bar = spell_bar
+        self.con = con
+        self.gameworld = gameworld
+
+    def process(self):
+        self.render_spell_bar()
+
+    def render_spell_bar(self):
+        tcod.console_set_default_foreground(self.con, tcod.yellow)
+        for spellSlot in range( constants.SPELL_SLOTS):
+            tcod.console_print_frame(self.con,
+                                     x=constants.SPELL_BAR_X + (spellSlot * constants.SPELL_BOX_WIDTH),
+                                     y=constants.SPELL_BAR_Y,
+                                     w=constants.SPELL_BOX_WIDTH,
+                                     h=constants.SPELL_BOX_DEPTH,
+                                     clear=False,
+                                     flag=tcod.BKGND_DEFAULT,
+                                     fmt='')
+            slot_component = SpellUtilities.get_spell_bar_slot_componet(self.gameworld, spell_bar=self.spell_bar, slotid=spellSlot)
+
+            if slot_component == -1:
+                logger.warning('Could not get slot component from spell bar')
+            else:
+                tcod.console_put_char_ex(self.con, slot_component.posx, slot_component.posy, '1', tcod.white, tcod.black)
+                tcod.console_put_char_ex(self.con, slot_component.posx + 1, slot_component.posy + 1, '&', tcod.yellow, tcod.black)
+                tcod.console_put_char_ex(self.con, slot_component.posx + 2, slot_component.posy, '*', tcod.white, tcod.black)
 
 
 class RenderInventory(esper.Processor):

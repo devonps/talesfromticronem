@@ -16,6 +16,11 @@ class WeaponType:
         self.label = text
 
 
+class WeaponSlot:
+    def __init__(self, slot=0):
+        self.slot = slot
+
+
 class ClassName:
     def __init__(self, text='no such class'):
         self.label = text
@@ -34,11 +39,6 @@ class CoolDown:
 class LivesFor:
     def __init__(self, number_of_turns=1 ):
         self.number_of_turns = number_of_turns
-
-
-class WeaponSlot:
-    def __init__(self, slot=0):
-        self.slot = slot
 
 
 class MaxTargets:
