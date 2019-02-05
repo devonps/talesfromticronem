@@ -7,14 +7,17 @@ from components import mobiles, weapons, spells, spellBar
 from utilities.display import menu
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
+from map_objects.gameMap import GameMap
 
 
 class RenderConsole(esper.Processor):
-    def __init__(self, con, game_map, gameworld):
+    def __init__(self, con, game_map, gameworld, fov_compute, fov_map):
         super().__init__()
         self.con = con
         self.game_map = game_map
         self.gameworld = gameworld
+        self.fov_compute = fov_compute
+        self.fov_map = fov_map
 
     def process(self):
         # GUI viewport and message box borders
@@ -46,15 +49,7 @@ class RenderConsole(esper.Processor):
         self.render_player_status_effects_content(constants.H_BAR_X, constants.H_BAR_Y + 6, chr(10), tcod.white)
 
         # render the game map
-
-        for y in range(self.game_map.height):
-            for x in range(self.game_map.width):
-                wall = self.game_map.tiles[x][y].block_sight
-
-                if wall:
-                    tcod.console_set_char_background(self.con, x, y, tcod.darker_gray, tcod.BKGND_SET)
-                else:
-                    tcod.console_set_char_background(self.con, x, y, tcod.black, tcod.BKGND_SET)
+        self.render_game_map()
 
         # draw the entities
         self.render_entities()
@@ -67,6 +62,34 @@ class RenderConsole(esper.Processor):
     def blit_the_console(self):
         # update console with latest changes
         tcod.console_blit(self.con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
+
+    def render_game_map(self):
+
+        thisplayer = MobileUtilities.get_player_entity(self.gameworld)
+        player_position_component = self.gameworld.component_for_entity(thisplayer, mobiles.Position)
+
+        has_player_moved = MobileUtilities.has_player_moved(self.gameworld)
+
+        if has_player_moved:
+            GameMap.calculate_fov(self.fov_map, player_position_component.x, player_position_component.y, constants.FOV_RADIUS, constants.FOV_LIGHT_WALLS,
+                                  constants.FOV_ALGORITHM)
+
+            for y in range(self.game_map.height):
+                for x in range(self.game_map.width):
+                    isVisible = tcod.map_is_in_fov(self.fov_map, x, y)
+                    wall = self.game_map.tiles[x][y].block_sight
+
+                    if isVisible:
+                        if wall:
+                            tcod.console_set_char_background(self.con, x, y, tcod.black, tcod.BKGND_SET)
+                        else:
+                            tcod.console_set_char_background(self.con, x, y, tcod.gray, tcod.BKGND_SET)
+                        self.game_map.tiles[x][y].explored = True
+                    elif self.game_map.tiles[x][y].explored:
+                        if wall:
+                            tcod.console_set_char_background(self.con, x, y, tcod.darker_gray, tcod.BKGND_SET)
+                        else:
+                            tcod.console_set_char_background(self.con, x, y, tcod.dark_gray, tcod.BKGND_SET)
 
     def render_entities(self):
         for ent, (rend, pos, desc) in self.world.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):

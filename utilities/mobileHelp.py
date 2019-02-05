@@ -53,3 +53,19 @@ class MobileUtilities:
         player_gender_component = gameworld.component_for_entity(entity, mobiles.Describable)
 
         return player_name_component.first + ' the ' + player_gender_component.gender + ' ' + player_race_component.label + ' ' + player_class_component.label
+
+    @staticmethod
+    def get_player_entity(gameworld):
+        player = 0
+        for ent, ai in gameworld.get_component(mobiles.AI):
+            if ai.ailevel == constants.AI_LEVEL_PLAYER:
+                player = ent
+
+        return player
+
+    def has_player_moved(gameworld):
+        player_entity = MobileUtilities.get_player_entity(gameworld)
+
+        position_component = gameworld.component_for_entity(player_entity, mobiles.Position)
+
+        return position_component.hasMoved

@@ -66,7 +66,7 @@ def generate_player_character(gameworld):
     gameworld.add_component(player, mobiles.Renderable(is_visible=True))
 
     # give player a false starting position - just for testing
-    gameworld.add_component(player, mobiles.Position(x=random.randrange(3, 55), y=random.randrange(5, 39)))
+    gameworld.add_component(player, mobiles.Position(x=random.randrange(3, 55), y=random.randrange(5, 39), hasmoved=True))
 
     logger.info('stored as entity {}', player)
 
