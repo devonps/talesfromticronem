@@ -60,6 +60,7 @@ def main():
 
     key = tcod.Key()
     mouse = tcod.Mouse()
+    action = {}
 
     # Esper initialisation
     gameworld = create_game_world()
@@ -77,10 +78,9 @@ def main():
 
     while not tcod.console_is_window_closed():
         gameworld.process()
-
-        tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS, key, mouse, flush=False)
         tcod.console_flush()
 
+        tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS, key, mouse, flush=False)
         action = handle_main_menu(key, mouse)
 
         new_game = action.get('new_game')
