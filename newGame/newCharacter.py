@@ -83,7 +83,7 @@ def select_race(con, gameworld, player):
     flavour_x = 19
     flavour_y = frame_y + 1
     race_not_selected = True
-    selected_race = 'human'
+    selected_race = ''
 
     key = tcod.Key()
     mouse = tcod.Mouse()
@@ -105,7 +105,6 @@ def select_race(con, gameworld, player):
 
         tcod.console_flush()
         selected_race = handle_new_race(key=key, mouse=mouse)
-        print('selected race ' + str(selected_race))
 
         if selected_race != '':
             race_not_selected = False
