@@ -30,16 +30,16 @@ def generate_spell_bar(gameworld):
     logger.debug('Creating the spell bar')
     spell_bar = gameworld.create_entity()
 
-    gameworld.add_component(spell_bar, spellBar.SlotOne())
-    gameworld.add_component(spell_bar, spellBar.SlotTwo())
-    gameworld.add_component(spell_bar, spellBar.SlotThree())
-    gameworld.add_component(spell_bar, spellBar.SlotFour())
-    gameworld.add_component(spell_bar, spellBar.SlotFive())
-    gameworld.add_component(spell_bar, spellBar.SlotSix())
-    gameworld.add_component(spell_bar, spellBar.SlotSeven())
-    gameworld.add_component(spell_bar, spellBar.SlotEight())
-    gameworld.add_component(spell_bar, spellBar.SlotNine())
-    gameworld.add_component(spell_bar, spellBar.SlotTen())
+    gameworld.add_component(spell_bar, spellBar.SlotOne(id=1))
+    gameworld.add_component(spell_bar, spellBar.SlotTwo(id=2))
+    gameworld.add_component(spell_bar, spellBar.SlotThree(id=3))
+    gameworld.add_component(spell_bar, spellBar.SlotFour(id=4))
+    gameworld.add_component(spell_bar, spellBar.SlotFive(id=5))
+    gameworld.add_component(spell_bar, spellBar.SlotSix(id=6))
+    gameworld.add_component(spell_bar, spellBar.SlotSeven(id=7))
+    gameworld.add_component(spell_bar, spellBar.SlotEight(id=8))
+    gameworld.add_component(spell_bar, spellBar.SlotNine(id=9))
+    gameworld.add_component(spell_bar, spellBar.SlotTen(id=0))
 
     return spell_bar
 

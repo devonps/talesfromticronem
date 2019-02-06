@@ -29,7 +29,7 @@ def create_new_character(con, gameworld):
 
 def initialise_game_map(con, gameworld, player, spell_bar):
     # create game map
-    game_map = GameMap(constants.VIEWPORT_WIDTH, constants.VIEWPORT_HEIGHT)
+    game_map = GameMap(constants.MAP_WIDTH, constants.MAP_HEIGHT)
     game_map.make_map(constants.MAX_ROOMS, constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE, constants.MAP_WIDTH,
                       constants.MAP_HEIGHT, gameworld, player)
 
