@@ -10,7 +10,7 @@ from newGame.ClassJewellery import Trinkets
 from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.spellHelp import SpellUtilities
-from input_handler import handle_new_race, handle_new_class
+from utilities.input_handlers import handle_new_race, handle_new_class
 
 
 class NewCharacter:
@@ -89,6 +89,7 @@ def select_race(con, gameworld, player):
     mouse = tcod.Mouse()
 
     while race_not_selected:
+        tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS, key, mouse, flush=False)
 
         posy = display_selection(con=con, filename=race_file, element='races', posx=frame_x + 1, posy=frame_y + 2,
                                  width=frame_w,
@@ -103,8 +104,9 @@ def select_race(con, gameworld, player):
         tcod.console_blit(con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
 
         tcod.console_flush()
-        tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS, key, mouse, True)
-        selected_race = handle_new_race(key)
+        selected_race = handle_new_race(key=key, mouse=mouse)
+        print('selected race ' + str(selected_race))
+
         if selected_race != '':
             race_not_selected = False
 
@@ -141,9 +143,8 @@ def select_character_class(con, gameworld, player):
                               fmt='Arrows to highlight, enter to select')
 
         tcod.console_blit(con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
-
+        tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS, key, mouse, flush=False)
         tcod.console_flush()
-        tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS, key, mouse, True)
         selected_class = handle_new_class(key)
         if selected_class != '':
             class_not_selected = False
