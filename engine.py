@@ -3,11 +3,10 @@ import tcod
 
 from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character
 from processors.render import RenderGameStartScreen
-from input_handler import handle_main_menu
 
 from newGame.ClassArmour import *
 from utilities.mobileHelp import MobileUtilities
-from utilities.input_handlers import handle_keys
+from utilities.input_handlers import handle_keys, handle_main_menu, handle_new_race
 from utilities.gameworld import reset_gameworld
 
 
@@ -77,12 +76,12 @@ def main():
     # gameworld.add_processor(move_entities_processor)
 
     while not tcod.console_is_window_closed():
-        tcod.sys_check_for_event(tcod.EVENT_KEY, key, mouse)
         gameworld.process()
 
+        tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS, key, mouse, flush=False)
         tcod.console_flush()
 
-        action = handle_main_menu(key)
+        action = handle_main_menu(key, mouse)
 
         new_game = action.get('new_game')
         load_saved_game = action.get('load_game')
