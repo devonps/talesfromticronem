@@ -1,4 +1,5 @@
 import random
+import tcod
 
 
 GAME_WINDOW_TITLE = 'Tales from Ticronem'
@@ -124,9 +125,19 @@ boon_effects = ['aegis', 'alacrity', 'fury', 'might', 'protection', 'regeneratio
 
 class_resources =['lifeforce', 'damage', 'transferconditions', 'strikes_for','boonsconverted']
 
-FOV_ALGORITHM = 0
+# FOV settings
+FOV_ALGORITHM = tcod.FOV_BASIC
 FOV_LIGHT_WALLS = True
 FOV_RADIUS = 10
+
+# colors
+colors = {
+    'unexplored': tcod.black,
+    'dark_wall': tcod.dark_gray,
+    'dark_ground': tcod.darker_gray,
+    'light_wall': tcod.grey,
+    'light_ground': tcod.yellow
+}
 
 # Screenshot
 SCRFILEPATH = 'static/screenshots/'

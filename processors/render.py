@@ -77,19 +77,23 @@ class RenderConsole(esper.Processor):
             for y in range(self.game_map.height):
                 for x in range(self.game_map.width):
                     isVisible = tcod.map_is_in_fov(self.fov_map, x, y)
-                    wall = self.game_map.tiles[x][y].block_sight
+                    wall = self.game_map.tiles[x][y].block_path
 
                     if isVisible:
                         if wall:
-                            tcod.console_set_char_background(self.con, x, y, tcod.black, tcod.BKGND_SET)
+                            #tcod.console_set_char_background(self.con, x, y, constants.colors.get('light_wall'), tcod.BKGND_SET)
+                            tcod.console_put_char_ex(self.con, x, y, '#', constants.colors.get('light_wall'), tcod.black)
                         else:
-                            tcod.console_set_char_background(self.con, x, y, tcod.gray, tcod.BKGND_SET)
+                            #tcod.console_set_char_background(self.con, x, y, constants.colors.get('light_ground'), tcod.BKGND_SET)
+                            tcod.console_put_char_ex(self.con, x, y, '.', constants.colors.get('light_ground'),tcod.black)
                         self.game_map.tiles[x][y].explored = True
                     elif self.game_map.tiles[x][y].explored:
                         if wall:
-                            tcod.console_set_char_background(self.con, x, y, tcod.darker_gray, tcod.BKGND_SET)
+                            #tcod.console_set_char_background(self.con, x, y, constants.colors.get('dark_wall'), tcod.BKGND_SET)
+                            tcod.console_put_char_ex(self.con, x, y, '#', constants.colors.get('dark_wall'), tcod.black)
                         else:
-                            tcod.console_set_char_background(self.con, x, y, tcod.dark_gray, tcod.BKGND_SET)
+                            #tcod.console_set_char_background(self.con, x, y, constants.colors.get('dark_ground'), tcod.BKGND_SET)
+                            tcod.console_put_char_ex(self.con, x, y, '.', constants.colors.get('dark_ground'),tcod.black)
 
     def render_entities(self):
         for ent, (rend, pos, desc) in self.world.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
@@ -154,7 +158,6 @@ class RenderConsole(esper.Processor):
         for ent, (rend, pos, desc) in self.world.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
             if rend.isVisible:
                 self.render_entity(pos.x, pos.y, ' ', desc.foreground, desc.background)
-        # tcod.console_put_char(self.con, posx, posy, ' ', tcod.BKGND_NONE)
 
     def render_player_status_effects_content(self, posx, posy, glyph, foreground):
         x = 0

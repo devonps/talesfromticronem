@@ -88,5 +88,5 @@ class GameMap:
                                         not game_map.tiles[x][y].block_path)
         return fov_map
 
-    def calculate_fov(fov_map, x, y, radius, light_walls=True, algo = 0):
+    def calculate_fov(fov_map, x, y, radius, light_walls=True, algo =0):
         tcod.map_compute_fov(fov_map, x, y, radius, light_walls, algo)
