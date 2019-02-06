@@ -24,26 +24,44 @@ else:
 # holds the number of RNG streams used in the PCG generator
 RNG_STREAMS = 10
 
-# tcod console settings
+# tcod root console settings
 SCREEN_WIDTH = 100
 SCREEN_HEIGHT = 60
 
 # game-map settings
+
+# the next 2 settings are the dimensions of the total map area size
 # MAP_WIDTH = 240
 # MAP_HEIGHT = 120
+# for now I've restricted the total area to the size of the viewport
 MAP_WIDTH = 80
 MAP_HEIGHT = 40
 
 # dungeon viewport
-VIEWPORT_WIDTH = 80
-VIEWPORT_HEIGHT = 40
+VIEWPORT_WIDTH = 82
+VIEWPORT_HEIGHT = 42
+VIEWPORT_START_X = 0
+VIEWPORT_START_Y = 0
+
+# game map drawing offsets for use with viewport
+MAP_VIEW_DRAW_X = VIEWPORT_START_X + 1
+MAP_VIEW_DRAW_Y = VIEWPORT_START_Y + 1
 
 # viewport scrolling values
 VIEWPORT_SCROLL_X = 30
 VIEWPORT_SCROLL_Y = 30
 
+# FOV settings
+FOV_ALGORITHM = tcod.FOV_BASIC
+FOV_LIGHT_WALLS = True
+FOV_RADIUS = 10
+
+# HUD_X_LEFT_COLUMN = 2
+# HUD_Y_TOP_ROW = 2
+
 # message box settings
 MSG_PANEL_START_Y = VIEWPORT_HEIGHT
+MSG_PANEL_START_X = 0
 MSG_PANEL_WIDTH = 40
 MSG_PANEL_LINES = 10
 MSG_PANEL_DEPTH = MSG_PANEL_LINES + 2
@@ -66,10 +84,17 @@ V_BAR_D = V_BAR_DEPTH + 2
 # Spell bar settings
 SPELL_BAR_X = 20
 SPELL_BAR_Y = MSG_PANEL_START_Y + MSG_PANEL_DEPTH
-SPELL_BOX_WIDTH = 5
-SPELL_BOX_DEPTH = 5
 SPELL_SLOTS = 10
+SPELL_BOX_WIDTH = 5
 SPELL_BAR_WIDTH = SPELL_SLOTS * SPELL_BOX_WIDTH
+SPELL_BOX_DEPTH = 5
+SPELL_SLOTS_Y = 55
+
+SPELL_SLOT_N_X = []
+for a in range(0, SPELL_SLOTS):
+    px = 21 + (a * SPELL_BOX_WIDTH)
+    SPELL_SLOT_N_X.append(px)
+
 
 # status effects settings
 
@@ -77,9 +102,6 @@ SPELL_BAR_WIDTH = SPELL_SLOTS * SPELL_BOX_WIDTH
 ROOM_MAX_SIZE = 10
 ROOM_MIN_SIZE = 6
 MAX_ROOMS = 30
-
-HUD_X_LEFT_COLUMN = 2
-HUD_Y_TOP_ROW = 2
 
 # spell constants
 AOE_SMALL = 1
@@ -124,11 +146,6 @@ boon_effects = ['aegis', 'alacrity', 'fury', 'might', 'protection', 'regeneratio
                 'resistance', 'retaliation', 'stability', 'swiftness']
 
 class_resources =['lifeforce', 'damage', 'transferconditions', 'strikes_for','boonsconverted']
-
-# FOV settings
-FOV_ALGORITHM = tcod.FOV_BASIC
-FOV_LIGHT_WALLS = True
-FOV_RADIUS = 10
 
 # colors
 colors = {

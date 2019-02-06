@@ -74,31 +74,36 @@ class RenderConsole(esper.Processor):
             GameMap.calculate_fov(self.fov_map, player_position_component.x, player_position_component.y, constants.FOV_RADIUS, constants.FOV_LIGHT_WALLS,
                                   constants.FOV_ALGORITHM)
 
-            for y in range(self.game_map.height):
-                for x in range(self.game_map.width):
-                    isVisible = tcod.map_is_in_fov(self.fov_map, x, y)
-                    wall = self.game_map.tiles[x][y].block_path
+            for map_cell_y in range(self.game_map.height):
+                for map_cell_x in range(self.game_map.width):
+                    isVisible = tcod.map_is_in_fov(self.fov_map, map_cell_x, map_cell_y)
+                    wall = self.game_map.tiles[map_cell_x][map_cell_y].block_path
+
+                    draw_pos_x = constants.MAP_VIEW_DRAW_X + map_cell_x
+                    draw_pos_y = constants.MAP_VIEW_DRAW_Y + map_cell_y
 
                     if isVisible:
                         if wall:
-                            #tcod.console_set_char_background(self.con, x, y, constants.colors.get('light_wall'), tcod.BKGND_SET)
-                            tcod.console_put_char_ex(self.con, x, y, '#', constants.colors.get('light_wall'), tcod.black)
+                            #tcod.console_set_char_background(self.con, draw_pos_x, draw_pos_y, constants.colors.get('light_wall'), tcod.BKGND_SET)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, '#', constants.colors.get('light_wall'), tcod.black)
                         else:
-                            #tcod.console_set_char_background(self.con, x, y, constants.colors.get('light_ground'), tcod.BKGND_SET)
-                            tcod.console_put_char_ex(self.con, x, y, '.', constants.colors.get('light_ground'),tcod.black)
-                        self.game_map.tiles[x][y].explored = True
-                    elif self.game_map.tiles[x][y].explored:
+                            #tcod.console_set_char_background(self.con, draw_pos_x, draw_pos_y, constants.colors.get('light_ground'), tcod.BKGND_SET)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, '.', constants.colors.get('light_ground'),tcod.black)
+                        self.game_map.tiles[map_cell_x][map_cell_y].explored = True
+                    elif self.game_map.tiles[map_cell_x][map_cell_y].explored:
                         if wall:
-                            #tcod.console_set_char_background(self.con, x, y, constants.colors.get('dark_wall'), tcod.BKGND_SET)
-                            tcod.console_put_char_ex(self.con, x, y, '#', constants.colors.get('dark_wall'), tcod.black)
+                            #tcod.console_set_char_background(self.con, draw_pos_x, draw_pos_y, constants.colors.get('dark_wall'), tcod.BKGND_SET)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, '#', constants.colors.get('dark_wall'), tcod.black)
                         else:
-                            #tcod.console_set_char_background(self.con, x, y, constants.colors.get('dark_ground'), tcod.BKGND_SET)
-                            tcod.console_put_char_ex(self.con, x, y, '.', constants.colors.get('dark_ground'),tcod.black)
+                            #tcod.console_set_char_background(self.con, draw_pos_x, draw_pos_y, constants.colors.get('dark_ground'), tcod.BKGND_SET)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, '.', constants.colors.get('dark_ground'),tcod.black)
 
     def render_entities(self):
         for ent, (rend, pos, desc) in self.world.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
             if rend.isVisible:
-                self.render_entity(pos.x, pos.y, desc.glyph, desc.foreground, desc.background)
+                draw_pos_x = constants.MAP_VIEW_DRAW_X + pos.x
+                draw_pos_y = constants.MAP_VIEW_DRAW_Y + pos.y
+                self.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.foreground, desc.background)
 
     def render_boons(self):
         self.render_h_bar(posx=constants.H_BAR_X, posy=constants.H_BAR_Y, right_side=constants.BCC_BAR_RIGHT_SIDE,border_colour=tcod.darker_gray)
@@ -122,7 +127,13 @@ class RenderConsole(esper.Processor):
         # draw the outer bounds of the map viewport
         tcod.console_set_default_foreground(self.con, tcod.yellow)
 
-        tcod.console_print_frame(self.con, x=0, y=0, w=constants.VIEWPORT_WIDTH, h=constants.VIEWPORT_HEIGHT, clear=False, flag=tcod.BKGND_DEFAULT,
+        tcod.console_print_frame(self.con,
+                                 x=constants.VIEWPORT_START_X,
+                                 y=constants.VIEWPORT_START_Y,
+                                 w=constants.VIEWPORT_WIDTH,
+                                 h=constants.VIEWPORT_HEIGHT,
+                                 clear=False,
+                                 flag=tcod.BKGND_DEFAULT,
                                  fmt='')
 
     def render_message_box(self):
@@ -130,7 +141,13 @@ class RenderConsole(esper.Processor):
 
         tcod.console_set_default_foreground(self.con, tcod.yellow)
 
-        tcod.console_print_frame(self.con, x=0, y=constants.MSG_PANEL_START_Y, w=constants.MSG_PANEL_WIDTH, h=constants.MSG_PANEL_DEPTH, clear=False, flag=tcod.BKGND_DEFAULT,
+        tcod.console_print_frame(self.con,
+                                 x=constants.MSG_PANEL_START_X,
+                                 y=constants.MSG_PANEL_START_Y,
+                                 w=constants.MSG_PANEL_WIDTH,
+                                 h=constants.MSG_PANEL_DEPTH,
+                                 clear=False,
+                                 flag=tcod.BKGND_DEFAULT,
                                  fmt='')
         # test code - to be deleted
         tcod.console_set_default_foreground(self.con, tcod.light_blue)
@@ -205,7 +222,7 @@ class RenderSpellBar(esper.Processor):
             if slot_component == -1:
                 logger.warning('Could not get slot component from spell bar')
             else:
-                tcod.console_put_char_ex(self.con, slot_component.posx, slot_component.posy, '1', tcod.white, tcod.black)
+                tcod.console_put_char_ex(self.con, slot_component.posx, slot_component.posy, str(slot_component.id), tcod.white, tcod.black)
                 tcod.console_put_char_ex(self.con, slot_component.posx + 1, slot_component.posy + 1, '&', tcod.yellow, tcod.black)
                 tcod.console_put_char_ex(self.con, slot_component.posx + 2, slot_component.posy, '*', tcod.white, tcod.black)
 
