@@ -50,6 +50,8 @@ def handle_main_menu(key, mouse):
             # save current game
         elif key_char == 'd':
             return {'exit': True}
+        elif key_char == 'e':
+            return {'player_seed': True}
     return {}
 
 

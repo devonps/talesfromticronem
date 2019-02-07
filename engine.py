@@ -6,7 +6,7 @@ from processors.render import RenderGameStartScreen
 
 from newGame.ClassArmour import *
 from utilities.mobileHelp import MobileUtilities
-from utilities.input_handlers import handle_keys, handle_main_menu, handle_new_race
+from utilities.input_handlers import handle_keys, handle_main_menu
 from utilities.gameworld import reset_gameworld
 
 
@@ -86,6 +86,11 @@ def main():
         new_game = action.get('new_game')
         load_saved_game = action.get('load_game')
         exit_game = action.get('exit')
+        player_seed = action.get('player_seed')
+
+        if player_seed:
+            player_supplied_seed = "ABSTRACTIONISM"
+            constants.PLAYER_SEED = player_supplied_seed
 
         if new_game:
             gameworld.remove_processor(RenderGameStartScreen)

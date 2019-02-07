@@ -13,21 +13,6 @@ def _uint64(n):
     return n & 0xffffffffffffffff
 
 
-def build_pcg(world_seed, stream):
-    return PCG32Generator(world_seed, stream)
-
-
-def get_next_random_seed(seed):
-    return seed.get_next_uint32()
-
-
-def get_next_seed_bound(seed, boundary):
-    """
-    Return a value between zero (inclusive) and *bound* (exclusive).
-    """
-    return seed.get_next_uint(boundary)
-
-
 class PCG32Generator:
     __slots__ = ['state', 'inc']
 
@@ -100,3 +85,19 @@ class PCG32Generator:
             val = self.get_next_uint32()
             if val >= threshold:
                 return val % bound
+
+    def convert_string_to_integer(value):
+        """
+        This method converts a string, encoded as utf-8, into a series of integers and then
+        sums all integers into a single integer, which is returned.
+
+        :param value: Incoming string to be converted
+        :return: Integer that represents the sum of the individual integers
+        """
+        bytes1 = bytes(value, 'utf-8')
+        sm = 0
+
+        for b1 in bytes1:
+            sm += b1
+
+        return sm
