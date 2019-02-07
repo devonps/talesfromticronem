@@ -27,7 +27,9 @@ def handle_keys(mouse, key, gameworld, player):
             return {'player_moved': True}
 
         # non-movement keys
-        if key.vk == tcod.KEY_ENTER and key.lalt:
+        if key.vk == tcod.KEY_ENTER:
+            return{'text': True}
+        elif key.vk == tcod.KEY_ENTER and key.lalt:
             # Alt+Enter: toggle full screen
             return {'fullscreen': True}
 
@@ -84,7 +86,6 @@ def handle_new_class(key):
     elif key_char == 'f':
         return 'chronomancer'
     return ''
-
 
 def handle_mouse(mouse):
     (x, y) = (mouse.cx, mouse.cy)
