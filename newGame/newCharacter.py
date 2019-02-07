@@ -11,6 +11,7 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.spellHelp import SpellUtilities
 from utilities.input_handlers import handle_new_race, handle_new_class
+from utilities.text_input import text_entry
 
 
 class NewCharacter:
@@ -170,54 +171,33 @@ def select_personality_choices(con, gameworld, player):
 def name_your_character(con, gameworld, player):
     logger.info('Naming the character')
 
-    # frame_x = 5
-    # frame_y = 4
-    # frame_w = 80
-    # flavour_x = 19
-    # flavour_y = frame_y + 1
-    # name_not_selected = True
-    selected_name = ''
-    #
-    # key = tcod.Key()
-    # mouse = tcod.Mouse()
-    #
-    # while name_not_selected:
-    #
-    #     tcod.console_print_frame(con, x=frame_x, y=frame_y - 2, w=frame_w, h=frame_y, clear=False, flag=tcod.BKGND_DEFAULT,
-    #                              fmt='Make Your Choices')
-    #
-    #     selected_name = input('What is your name? ')
-    #     tcod.console_blit(con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
-    #
-    #     tcod.console_flush()
-    #     tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS, key, mouse, True)
-    #     if selected_name != '':
-    #         name_not_selected = False
-    #
-    # tcod.console_clear(con)
+    this_name = text_entry()
 
-    player_race_component = gameworld.component_for_entity(player, mobiles.Race)
-    logger.info('Race selected {}', player_race_component.label)
+    if this_name == '':
+        player_race_component = gameworld.component_for_entity(player, mobiles.Race)
+        logger.info('Race selected {}', player_race_component.label)
 
-    if player_race_component.label == 'human':
-        tcod.namegen_parse(constants.HUMANNAMESFILE)
-        logger.info('reading from human file')
-    if player_race_component.label == 'elf':
-        tcod.namegen_parse(constants.ELFNAMESFILE)
-    if player_race_component.label == 'orc':
-        tcod.namegen_parse(constants.ORCNAMESFILE)
-    if player_race_component.label == 'troll':
-        tcod.namegen_parse(constants.TROLLNAMESFILE)
+        if player_race_component.label == 'human':
+            tcod.namegen_parse(constants.HUMANNAMESFILE)
+            logger.info('reading from human file')
+        if player_race_component.label == 'elf':
+            tcod.namegen_parse(constants.ELFNAMESFILE)
+        if player_race_component.label == 'orc':
+            tcod.namegen_parse(constants.ORCNAMESFILE)
+        if player_race_component.label == 'troll':
+            tcod.namegen_parse(constants.TROLLNAMESFILE)
 
-    if random.randrange(0,100) < 50:
-        sn = tcod.namegen_generate('male')
-        gameworld.component_for_entity(player, mobiles.Describable).gender = 'male'
+        if random.randrange(0,100) < 50:
+            sn = tcod.namegen_generate('male')
+            gameworld.component_for_entity(player, mobiles.Describable).gender = 'male'
+        else:
+            sn = tcod.namegen_generate('female')
+            gameworld.component_for_entity(player, mobiles.Describable).gender = 'female'
+
+        selected_name = sn.capitalize()
+        logger.info('Name chosen {}', selected_name)
     else:
-        sn = tcod.namegen_generate('female')
-        gameworld.component_for_entity(player, mobiles.Describable).gender = 'female'
-
-    selected_name = sn.capitalize()
-    logger.info('Name chosen {}', selected_name)
+        selected_name = this_name
 
     gameworld.add_component(player, mobiles.Name(first=selected_name, suffix='none'))
 

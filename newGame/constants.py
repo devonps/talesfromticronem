@@ -170,3 +170,10 @@ TOWNNAMESFILE = 'static/names/town.txt'
 WIZARDNAMESFILE = 'static/names/wizard.txt'
 NPCNAMESFILE = 'static/names/npc.txt'
 DEMONNAMESFILE = 'static/names/demon.txt'
+
+# text input panel settings
+TXT_PANEL_WRITE_X = 1
+TXT_PANEL_WRITE_Y = 2
+TXT_PANEL_WIDTH = 35
+TXT_PANEL_HEIGHT = 25
+TXT_PANEL_FPS = 30
