@@ -8,7 +8,7 @@ from newGame.ClassArmour import *
 from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys, handle_main_menu
 from utilities.gameworld import reset_gameworld
-from utilities.text_input import text_to_entry
+
 
 
 def start_game(con, gameworld):
@@ -34,7 +34,7 @@ def start_game(con, gameworld):
         text_entered = action.get('text')
 
         if text_entered:
-            my_word = text_to_entry()
+            my_word = text_entry()
             logger.info('text returned {}', my_word)
 
         if player_moved:
