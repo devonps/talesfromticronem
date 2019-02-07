@@ -8,13 +8,20 @@ class Name:
 
 
 class Describable:
-    def __init__(self, description='undefined', glyph='@', foreground=tcod.orange, background=tcod.black, personality='charm', gender =''):
+    def __init__(self, description='undefined', glyph='@', foreground=tcod.orange, background=tcod.black, personality='Unpredictable', gender =''):
         self.description = description
         self.glyph = glyph
         self.foreground = foreground
         self.background = background
-        self.personality = personality
+        self.personality_title = personality
         self.gender = gender
+
+
+class Personality:
+    def __init__(self, charm_level=33, dignity_level=33, ferocity_level=33):
+        self.charm_level = charm_level
+        self.dignity_level = dignity_level
+        self.ferocity_level = ferocity_level
 
 
 class Race:

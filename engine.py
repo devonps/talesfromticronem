@@ -10,7 +10,6 @@ from utilities.input_handlers import handle_keys, handle_main_menu
 from utilities.gameworld import reset_gameworld
 
 
-
 def start_game(con, gameworld):
 
     setup_game(con, gameworld)

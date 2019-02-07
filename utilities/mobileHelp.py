@@ -54,7 +54,6 @@ class MobileUtilities:
 
         return player_name_component.first + ' the ' + player_gender_component.gender + ' ' + player_race_component.label + ' ' + player_class_component.label
 
-    @staticmethod
     def get_player_entity(gameworld):
         player = 0
         for ent, ai in gameworld.get_component(mobiles.AI):
@@ -69,3 +68,39 @@ class MobileUtilities:
         position_component = gameworld.component_for_entity(player_entity, mobiles.Position)
 
         return position_component.hasMoved
+
+    def calculate_player_personality(gameworld):
+        player_entity = MobileUtilities.get_player_entity(gameworld)
+
+        player_current_personality_component = gameworld.component_for_entity(player_entity, mobiles.Personality)
+        player_describable_personality_component = gameworld.component_for_entity(player_entity, mobiles.Describable)
+
+        player_personality = player_describable_personality_component.personality_title
+
+        # get current personality trait values
+        charm_level = player_current_personality_component.charm_level
+        dignity_level = player_current_personality_component.dignity_level
+        ferocity_level = player_current_personality_component.ferocity_level
+
+        if charm_level == 12.5 and dignity_level == 75 and ferocity_level == 12.5:
+            player_personality = 'Noble'
+        if charm_level == 75 and dignity_level == 12.5 and ferocity_level == 12.5:
+            player_personality = 'Captivating'
+        if charm_level == 12.5 and dignity_level == 12.5 and ferocity_level == 175:
+            player_personality = 'Barbaric'
+        if charm_level == 45 and dignity_level == 45 and ferocity_level == 10:
+            player_personality = 'Diplomatic'
+        if charm_level == 10 and dignity_level == 45 and ferocity_level == 45:
+            player_personality = 'Militant'
+        if charm_level == 45 and dignity_level == 10 and ferocity_level == 45:
+            player_personality = 'Scoundrel'
+        if charm_level == 33 and dignity_level == 33 and ferocity_level == 33:
+            player_personality = 'Unpredictable'
+        if charm_level == 50 and dignity_level == 25 and ferocity_level == 25:
+            player_personality = 'Charming'
+        if charm_level == 25 and dignity_level == 50 and ferocity_level == 25:
+            player_personality = 'Honourable'
+        if charm_level == 25 and dignity_level == 25 and ferocity_level == 50:
+            player_personality = 'Brute'
+
+        player_describable_personality_component.personality_title = player_personality

@@ -11,18 +11,20 @@ from map_objects.gameMap import GameMap
 
 
 class RenderConsole(esper.Processor):
-    def __init__(self, con, game_map, gameworld, fov_compute, fov_map):
+    def __init__(self, con, game_map, gameworld, fov_compute, fov_map, spell_bar):
         super().__init__()
         self.con = con
         self.game_map = game_map
         self.gameworld = gameworld
         self.fov_compute = fov_compute
         self.fov_map = fov_map
+        self.spell_bar = spell_bar
 
     def process(self):
         # GUI viewport and message box borders
         self.render_viewport()
         self.render_message_box()
+        self.render_spell_bar()
 
         # draw the boon, condition, and control bar borders (horizontal)
         self.render_boons()
@@ -62,6 +64,26 @@ class RenderConsole(esper.Processor):
     def blit_the_console(self):
         # update console with latest changes
         tcod.console_blit(self.con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
+
+    def render_spell_bar(self):
+        tcod.console_set_default_foreground(self.con, tcod.yellow)
+        for spellSlot in range( constants.SPELL_SLOTS):
+            tcod.console_print_frame(self.con,
+                                     x=constants.SPELL_BAR_X + (spellSlot * constants.SPELL_BOX_WIDTH),
+                                     y=constants.SPELL_BAR_Y,
+                                     w=constants.SPELL_BOX_WIDTH,
+                                     h=constants.SPELL_BOX_DEPTH,
+                                     clear=False,
+                                     flag=tcod.BKGND_DEFAULT,
+                                     fmt='')
+            slot_component = SpellUtilities.get_spell_bar_slot_componet(self.gameworld, spell_bar=self.spell_bar, slotid=spellSlot)
+
+            if slot_component == -1:
+                logger.warning('Could not get slot component from spell bar')
+            else:
+                tcod.console_put_char_ex(self.con, slot_component.posx, slot_component.posy, str(slot_component.id), tcod.white, tcod.black)
+                tcod.console_put_char_ex(self.con, slot_component.posx + 1, slot_component.posy + 1, '&', tcod.yellow, tcod.black)
+                tcod.console_put_char_ex(self.con, slot_component.posx + 2, slot_component.posy, '*', tcod.white, tcod.black)
 
     def render_game_map(self):
 
@@ -194,37 +216,6 @@ class RenderConsole(esper.Processor):
         tcod.console_set_default_foreground(self.con, tcod.white)
         hp = 100 - value
         tcod.console_print_ex(self.con, posx, (posy + constants.V_BAR_DEPTH) + 2, tcod.BKGND_NONE, tcod.LEFT, str(hp) + '%')
-
-
-class RenderSpellBar(esper.Processor):
-    def __init__(self, con, spell_bar, gameworld):
-        super().__init__()
-        self.spell_bar = spell_bar
-        self.con = con
-        self.gameworld = gameworld
-
-    def process(self):
-        self.render_spell_bar()
-
-    def render_spell_bar(self):
-        tcod.console_set_default_foreground(self.con, tcod.yellow)
-        for spellSlot in range( constants.SPELL_SLOTS):
-            tcod.console_print_frame(self.con,
-                                     x=constants.SPELL_BAR_X + (spellSlot * constants.SPELL_BOX_WIDTH),
-                                     y=constants.SPELL_BAR_Y,
-                                     w=constants.SPELL_BOX_WIDTH,
-                                     h=constants.SPELL_BOX_DEPTH,
-                                     clear=False,
-                                     flag=tcod.BKGND_DEFAULT,
-                                     fmt='')
-            slot_component = SpellUtilities.get_spell_bar_slot_componet(self.gameworld, spell_bar=self.spell_bar, slotid=spellSlot)
-
-            if slot_component == -1:
-                logger.warning('Could not get slot component from spell bar')
-            else:
-                tcod.console_put_char_ex(self.con, slot_component.posx, slot_component.posy, str(slot_component.id), tcod.white, tcod.black)
-                tcod.console_put_char_ex(self.con, slot_component.posx + 1, slot_component.posy + 1, '&', tcod.yellow, tcod.black)
-                tcod.console_put_char_ex(self.con, slot_component.posx + 2, slot_component.posy, '*', tcod.white, tcod.black)
 
 
 class RenderInventory(esper.Processor):
