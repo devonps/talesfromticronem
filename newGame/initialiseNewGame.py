@@ -9,6 +9,7 @@ from components import spells, weapons
 from components.addStatusEffects import process_status_effect
 from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
+from utilities.randomNumberGenerator import PCG32Generator
 from map_objects.gameMap import GameMap
 from processors.render import RenderConsole, RenderInventory, RenderPlayerCharacterScreen, RenderSpellBar
 from processors.move_entities import MoveEntities
@@ -16,10 +17,30 @@ from processors.move_entities import MoveEntities
 
 def setup_game(con, gameworld):
 
+    # world seed generation
+    generate_world_seed()
+
     # create entities for game world
     generate_spells(gameworld)
     generate_items(gameworld)
     generate_monsters(gameworld)
+
+
+def generate_world_seed():
+    logger.info('World seed from constants {}', constants.WORLD_SEED)
+
+    if constants.PLAYER_SEED != '':
+        sm = PCG32Generator.convert_string_to_integer(constants.PLAYER_SEED)
+        constants.WORLD_SEED = sm
+    else:
+        constants.WORLD_SEED = random.getrandbits(30)
+
+    logger.info('World seed is now {}', constants.WORLD_SEED)
+    # Test Code
+    # other_items = PCG32Generator(constants.WORLD_SEED, 0)
+    # for n in range(10):
+    #     nxt = other_items.get_next_uint(100)
+    #     logger.info('No {}. and from within mobiles the next bound rng is {} bound set to 100', n, nxt)
 
 
 def create_new_character(con, gameworld):

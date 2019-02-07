@@ -1,4 +1,3 @@
-import random
 import tcod
 
 
@@ -13,16 +12,15 @@ LOGFILE = LOG_FOLDER + LOG_FILENAME + LOG_TIME + LOG_EXTENSION
 LOGFORMAT = LOG_TIME + ' | {level} | {message}'
 
 # PCG
-PLAYER_SEED = 0
-DUNGEON_STREAM = 0
-
-if PLAYER_SEED > 0:
-    WORLD_SEED = PLAYER_SEED
-else:
-    WORLD_SEED = random.getrandbits(30)
+PLAYER_SEED = ''
+WORLD_SEED = 0
 
 # holds the number of RNG streams used in the PCG generator
 RNG_STREAMS = 10
+# individual streams used throughout the game
+PRNG_STREAM_MOBILES = 0
+PRNG_STREAM_ITEMS = 1
+PRNG_STREAM_SPELLS = 2
 
 # tcod root console settings
 SCREEN_WIDTH = 100
