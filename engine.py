@@ -75,7 +75,7 @@ def main():
 
     # add the processors we need to display and handle the game start screen, character selection, etc.
 
-    render_game_screen = RenderGameStartScreen(con=con, image=background_image)
+    render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse)
     # move_entities_processor = MoveEntities(gameworld=gameworld)
 
     gameworld.add_processor(render_game_screen)
@@ -85,8 +85,7 @@ def main():
         gameworld.process()
         tcod.console_flush()
 
-        tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS, key, mouse, flush=False)
-        action = handle_main_menu(key, mouse)
+        action = handle_main_menu(key)
 
         new_game = action.get('new_game')
         load_saved_game = action.get('load_game')
@@ -107,7 +106,7 @@ def main():
             reset_gameworld(gameworld)
             tcod.console_delete(con)
             con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
-            render_game_screen = RenderGameStartScreen(con=con, image=background_image)
+            render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse)
             gameworld.add_processor(render_game_screen)
 
         elif load_saved_game:

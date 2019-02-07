@@ -227,11 +227,13 @@ class RenderInventory(esper.Processor):
 
 
 class RenderGameStartScreen(esper.Processor):
-    def __init__(self, con, image):
+    def __init__(self, con, image, key, mouse):
         self.title = constants.GAME_WINDOW_TITLE
         self.author = '(c) 2019 Steven Devonport'
         self.con = con
         self.image = image
+        self.key = key
+        self.mouse = mouse
         super().__init__()
 
     def process(self):
@@ -244,7 +246,9 @@ class RenderGameStartScreen(esper.Processor):
         menu(self.con, header='Game Start',
              options=['New Game', 'Continue', 'Save', 'Quit'],
              width=24, screen_width=constants.SCREEN_WIDTH, screen_height=constants.SCREEN_HEIGHT, posx=10, posy=26,
-             foreground=tcod.yellow)
+             foreground=tcod.yellow,
+             key=self.key,
+             mouse=self.mouse)
 
     def render_game_info(self):
         # display Game information

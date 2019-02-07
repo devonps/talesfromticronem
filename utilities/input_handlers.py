@@ -40,7 +40,7 @@ def handle_keys(mouse, key, gameworld, player):
     return {}
 
 
-def handle_main_menu(key, mouse):
+def handle_main_menu(key):
     key_char = chr(key.c)
     if key.vk == tcod.KEY_CHAR:
         if key_char == 'a':
@@ -86,6 +86,7 @@ def handle_new_class(key):
     elif key_char == 'f':
         return 'chronomancer'
     return ''
+
 
 def handle_mouse(mouse):
     (x, y) = (mouse.cx, mouse.cy)
