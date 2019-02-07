@@ -62,6 +62,7 @@ def generate_player_character(gameworld):
     gameworld.add_component(player, mobiles.Equipped())
     gameworld.add_component(player, mobiles.Health(current=1, maximum=10))
     gameworld.add_component(player, mobiles.Velocity())
+    gameworld.add_component(player, mobiles.Personality())
 
     # add renderable component to player
     gameworld.add_component(player, mobiles.Renderable(is_visible=True))
@@ -165,7 +166,11 @@ def select_personality_choices(con, gameworld, player):
     # The personality-oriented question affects the conversational options that NPCs provide.
     # there will be 3 options: charm, dignity, ferocity
 
-    gameworld.add_component(player, mobiles.Describable(personality='charm'))
+    MobileUtilities.calculate_player_personality(gameworld)
+
+    personality_component = gameworld.component_for_entity(player, mobiles.Describable)
+
+    logger.debug('You personality is viewed as {} by other NPCs', personality_component.personality_title)
 
 
 def name_your_character(con, gameworld, player):

@@ -11,7 +11,7 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.randomNumberGenerator import PCG32Generator
 from map_objects.gameMap import GameMap
-from processors.render import RenderConsole, RenderInventory, RenderPlayerCharacterScreen, RenderSpellBar
+from processors.render import RenderConsole, RenderInventory, RenderPlayerCharacterScreen
 from processors.move_entities import MoveEntities
 
 
@@ -59,16 +59,14 @@ def initialise_game_map(con, gameworld, player, spell_bar):
 
     # place entities (enemies, items)
 
-    render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld, fov_compute=fov_compute, fov_map=fov_map)
+    render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld, fov_compute=fov_compute, fov_map=fov_map, spell_bar=spell_bar)
     render_inventory_screen = RenderInventory()
     render_character_screen = RenderPlayerCharacterScreen()
     move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
-    render_spell_bar_processor = RenderSpellBar(con=con, spell_bar=spell_bar, gameworld=gameworld)
     gameworld.add_processor(render_console_process)
     gameworld.add_processor(render_inventory_screen)
     gameworld.add_processor(render_character_screen)
     gameworld.add_processor(move_entities_processor)
-    gameworld.add_processor(render_spell_bar_processor)
 
 
 # create esper world (enemies, items, spells, etc)
