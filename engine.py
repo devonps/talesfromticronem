@@ -8,6 +8,7 @@ from newGame.ClassArmour import *
 from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys, handle_main_menu
 from utilities.gameworld import reset_gameworld
+from components import userInput
 
 
 def start_game(con, gameworld):
@@ -30,11 +31,6 @@ def start_game(con, gameworld):
         exit_game = action.get('exit')
         fullscreen = action.get('fullscreen')
         player_moved = action.get('player_moved')
-        text_entered = action.get('text')
-
-        if text_entered:
-            my_word = text_entry()
-            logger.info('text returned {}', my_word)
 
         if player_moved:
             pass
@@ -50,6 +46,7 @@ def start_game(con, gameworld):
         tcod.console_flush()
 
 
+@logger.catch()
 def main():
 
     # logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
@@ -70,22 +67,26 @@ def main():
     # Esper initialisation
     gameworld = create_game_world()
 
-    # start game screen
+    # user input entity created
+    ent = gameworld.create_entity()
+    gameworld.add_component(ent, userInput.Keyboard())
+    gameworld.add_component(ent, userInput.Mouse())
+
+    # start game screen image
     background_image = tcod.image_load('static/images/menu_background.png')
 
-    # add the processors we need to display and handle the game start screen, character selection, etc.
+    # add the processors we need to display the game start screen
 
-    render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse)
-    # move_entities_processor = MoveEntities(gameworld=gameworld)
+    render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse, gameworld=gameworld)
 
     gameworld.add_processor(render_game_screen)
-    # gameworld.add_processor(move_entities_processor)
 
     while not tcod.console_is_window_closed():
         gameworld.process()
         tcod.console_flush()
 
-        action = handle_main_menu(key)
+        action = handle_main_menu(key, mouse, gameworld)
+        logger.info('action is set to {}', action)
 
         new_game = action.get('new_game')
         load_saved_game = action.get('load_game')
@@ -97,6 +98,7 @@ def main():
             constants.PLAYER_SEED = player_supplied_seed
 
         if new_game:
+            logger.info('New game starting')
             gameworld.remove_processor(RenderGameStartScreen)
             tcod.console_clear(con)
             start_game(con, gameworld)
@@ -104,9 +106,10 @@ def main():
             logger.info('* Left Game         *')
             logger.info('*********************')
             reset_gameworld(gameworld)
-            tcod.console_delete(con)
-            con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
-            render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse)
+            # Esper initialisation
+            gameworld = create_game_world()
+            tcod.console_clear(con)
+            render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse, gameworld=gameworld)
             gameworld.add_processor(render_game_screen)
 
         elif load_saved_game:

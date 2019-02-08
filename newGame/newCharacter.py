@@ -89,6 +89,8 @@ def select_race(con, gameworld, player):
 
     key = tcod.Key()
     mouse = tcod.Mouse()
+    tcod.console_clear(con)
+    tcod.console_flush()
 
     while race_not_selected:
         tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS, key, mouse, flush=False)
