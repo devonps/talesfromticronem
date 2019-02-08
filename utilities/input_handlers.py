@@ -1,7 +1,7 @@
 import tcod
 
-from components import mobiles
-
+from components import mobiles, userInput
+from loguru import logger
 
 def handle_keys(mouse, key, gameworld, player):
     # movement
@@ -40,9 +40,10 @@ def handle_keys(mouse, key, gameworld, player):
     return {}
 
 
-def handle_main_menu(key):
+def handle_main_menu(key, mouse, gameworld):
     key_char = chr(key.c)
     if key.vk == tcod.KEY_CHAR:
+        logger.info('keyboard option {}', key_char)
         if key_char == 'a':
             return {'new_game': True}
         elif key_char == 'b':
@@ -54,6 +55,24 @@ def handle_main_menu(key):
             return {'exit': True}
         elif key_char == 'e':
             return {'player_seed': True}
+    if mouse:
+        player_input_entity = get_user_input_entity(gameworld)
+        mouse_component = gameworld.component_for_entity(player_input_entity, userInput.Mouse)
+        keyboard_component = gameworld.component_for_entity(player_input_entity, userInput.Keyboard)
+
+        if mouse_component.lbutton:
+            logger.info('Mouse/text option is {}', keyboard_component.keypressed)
+            if keyboard_component.keypressed == 'a':
+                return {'new_game': True}
+            elif keyboard_component.keypressed == 'b':
+                return {'load_game': True}
+            elif keyboard_component.keypressed == 'c':
+                pass
+                # save current game
+            elif keyboard_component.keypressed == 'd':
+                return {'exit': True}
+            elif keyboard_component.keypressed == 'e':
+                return {'player_seed': True}
     return {}
 
 
@@ -97,3 +116,8 @@ def handle_mouse(mouse):
         return {'right_click': (x, y)}
 
     return {}
+
+
+def get_user_input_entity(gameworld):
+    for ent, (k, m) in gameworld.get_components(userInput.Mouse, userInput.Keyboard):
+        return ent

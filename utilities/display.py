@@ -1,7 +1,9 @@
 import tcod
+from utilities.input_handlers import get_user_input_entity
+from components import userInput
 
 
-def menu(con, header, options, width, screen_width, screen_height, posx, posy, foreground, key, mouse):
+def menu(con, header, options, width, screen_width, screen_height, posx, posy, foreground, key, mouse, gameworld):
 
     if len(options) > 26:
         raise ValueError('Cannot have a menu with more than 26 options.')
@@ -30,10 +32,10 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
 
     # blit the contents of 'window' to the root console
     tcod.console_blit(window, 0, 0, width, height, 0, posx, posy, 1.0, 0.7)
-
     # compute x and y offsets
     x_offset = posx
     y_offset = posy + header_height
+    player_input_entity = get_user_input_entity(gameworld)
 
     while True:
         tcod.console_flush()
@@ -41,10 +43,12 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
 
         if mouse.lbutton_pressed:
             (menu_x, menu_y) = (mouse.cx - x_offset, mouse.cy - y_offset)
-            if (menu_x >=0 and menu_x < width) and (menu_y >=0 and menu_y < height - header_height):
-                print('left mouse button pressed ' + str(menu_y))
-                print('menu option ' + chr(97 + menu_y))
-                return chr(97 + menu_y)
+            if (menu_x >= 0 and menu_x < width) and (menu_y >= 0 and menu_y < height - header_height):
+                gameworld.component_for_entity(player_input_entity, userInput.Keyboard).keypressed = chr(97 + menu_y)
+                gameworld.component_for_entity(player_input_entity, userInput.Mouse).lbutton = True
+                print('console set to ' + str(con))
+                print('menu option ' + str(menu_y))
+                return menu_y
 
         if mouse.rbutton_pressed or key.vk == tcod.KEY_ESCAPE:
             return None
@@ -53,10 +57,9 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
         index = key.c - ord('a')
         key_char = chr(key.c)
 
-        if index >= 0 and index <= len(options):
+        if 0 <= index <= len(options):
+            print('console set to ' + str(con))
             return key_char
 
-        if index >= 0 and index <= 26:
+        if 0 <= index <= 26:
             return None
-
-
