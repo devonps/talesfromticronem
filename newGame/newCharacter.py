@@ -93,7 +93,6 @@ def select_race(con, gameworld, player):
     tcod.console_flush()
 
     while race_not_selected:
-        tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS, key, mouse, flush=False)
 
         posy = display_selection(con=con, filename=race_file, element='races', posx=frame_x + 1, posy=frame_y + 2,
                                  width=frame_w,
@@ -108,6 +107,7 @@ def select_race(con, gameworld, player):
         tcod.console_blit(con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
 
         tcod.console_flush()
+        tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS | tcod.EVENT_MOUSE, key, mouse, flush=False)
         selected_race = handle_new_race(key=key, mouse=mouse)
 
         if selected_race != '':

@@ -108,6 +108,11 @@ def main():
             reset_gameworld(gameworld)
             # Esper initialisation
             gameworld = create_game_world()
+            # user input entity created
+            ent = gameworld.create_entity()
+            gameworld.add_component(ent, userInput.Keyboard())
+            gameworld.add_component(ent, userInput.Mouse())
+
             tcod.console_clear(con)
             render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse, gameworld=gameworld)
             gameworld.add_processor(render_game_screen)
