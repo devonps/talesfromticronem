@@ -67,7 +67,7 @@ class RenderConsole(esper.Processor):
 
     def render_spell_bar(self):
         tcod.console_set_default_foreground(self.con, tcod.yellow)
-        for spellSlot in range( constants.SPELL_SLOTS):
+        for spellSlot in range(1, constants.SPELL_SLOTS):
             tcod.console_print_frame(self.con,
                                      x=constants.SPELL_BAR_X + (spellSlot * constants.SPELL_BOX_WIDTH),
                                      y=constants.SPELL_BAR_Y,
@@ -77,13 +77,12 @@ class RenderConsole(esper.Processor):
                                      flag=tcod.BKGND_DEFAULT,
                                      fmt='')
             slot_component = SpellUtilities.get_spell_bar_slot_componet(self.gameworld, spell_bar=self.spell_bar, slotid=spellSlot)
-
             if slot_component == -1:
                 logger.warning('Could not get slot component from spell bar')
             else:
-                tcod.console_put_char_ex(self.con, slot_component.posx, slot_component.posy, str(slot_component.id), tcod.white, tcod.black)
-                tcod.console_put_char_ex(self.con, slot_component.posx + 1, slot_component.posy + 1, '&', tcod.yellow, tcod.black)
-                tcod.console_put_char_ex(self.con, slot_component.posx + 2, slot_component.posy, '*', tcod.white, tcod.black)
+                tcod.console_put_char_ex(self.con, constants.SPELL_BAR_X + (spellSlot * constants.SPELL_BOX_WIDTH) + 1, constants.SPELL_SLOTS_Y, str(slot_component.sid), tcod.white, tcod.black)
+                tcod.console_put_char_ex(self.con, constants.SPELL_BAR_X + (spellSlot * constants.SPELL_BOX_WIDTH) + 2, constants.SPELL_SLOTS_Y + 1, '&', tcod.yellow, tcod.black)
+                tcod.console_put_char_ex(self.con, constants.SPELL_BAR_X + (spellSlot * constants.SPELL_BOX_WIDTH) + 3, constants.SPELL_SLOTS_Y, '*', tcod.white, tcod.black)
 
     def render_game_map(self):
 
