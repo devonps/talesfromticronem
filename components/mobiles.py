@@ -46,6 +46,20 @@ class Health:
         self.maximum = maximum
 
 
+class ManaPool:
+    def __init__(self, current=0, maximum=0):
+        self.current = current
+        self.maximum = maximum
+
+
+class SpecialBar:
+    def __init__(self, maxstages=3, currentstage=0, valuecurrent=0, valuemaximum=0):
+        self.maxstages =maxstages
+        self.currentstage = currentstage
+        self.valuecurrent = valuecurrent
+        self.valuemaximum = valuemaximum
+
+
 class Inventory:
     def __init__(self, exists=False):
         self.exists = exists

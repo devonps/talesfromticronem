@@ -2,8 +2,10 @@ from components import mobiles
 from loguru import logger
 from newGame import constants
 
+import numbers
 
-class MobileUtilities:
+
+class MobileUtilities(numbers.Real):
 
     # check ALL hand combos: main, off, and both hands
     @staticmethod
@@ -104,3 +106,11 @@ class MobileUtilities:
             player_personality = 'Brute'
 
         player_describable_personality_component.personality_title = player_personality
+
+    def get_number_as_a_percentage(lower_value, maximum_value):
+        return int((lower_value / maximum_value) * 100)
+
+    def get_bar_count(lower_value):
+        logger.info('lower value is {}, depth i {}', lower_value, constants.V_BAR_DEPTH)
+        return (lower_value / 100) * constants.V_BAR_DEPTH
+
