@@ -1,5 +1,5 @@
 import tcod
-from utilities.input_handlers import get_user_input_entity, handle_mouse_in_menus
+from utilities.input_handlers import get_user_input_entity, handle_mouse_in_menus, handle_menus
 from components import userInput
 from newGame import constants
 
@@ -46,11 +46,8 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
         ret_value = handle_mouse_in_menus(mouse=mouse, width=width, height=height, header_height=header_height, x_offset=x_offset, y_offset=y_offset)
 
         if ret_value > -1:
-            logger.info('Mouse button menu option {}', ret_value)
             gameworld.component_for_entity(player_input_entity, userInput.Keyboard).keypressed = chr(97 + ret_value)
             gameworld.component_for_entity(player_input_entity, userInput.Mouse).lbutton = True
-            keyboard_component = gameworld.component_for_entity(player_input_entity, userInput.Keyboard)
-            logger.info('keypress stored as {}', keyboard_component.keypressed)
             return ret_value
 
         # convert the ASCII code to a menu option
@@ -58,7 +55,6 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
         key_char = chr(key.c)
 
         if 0 <= index <= len(options):
-            logger.info('at least one key has been pressed {}', key_char)
             return key_char
 
         if 0 <= index <= 26:
