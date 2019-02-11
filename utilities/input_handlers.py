@@ -3,6 +3,7 @@ import tcod
 from components import mobiles, userInput
 from loguru import logger
 
+
 def handle_keys(mouse, key, gameworld, player):
     # movement
     player_velocity_component = gameworld.component_for_entity(player, mobiles.Velocity)
@@ -76,7 +77,7 @@ def handle_main_menu(key, mouse, gameworld):
     return {}
 
 
-def handle_new_race(key, mouse):
+def handle_new_race(key, mouse, gameworld):
     key_char = chr(key.c)
     if key.vk == tcod.KEY_CHAR:
         if key_char == 'a':
@@ -87,10 +88,25 @@ def handle_new_race(key, mouse):
             return 'orc'
         elif key_char == 'd':
             return 'troll'
+    if mouse:
+        player_input_entity = get_user_input_entity(gameworld)
+        mouse_component = gameworld.component_for_entity(player_input_entity, userInput.Mouse)
+        keyboard_component = gameworld.component_for_entity(player_input_entity, userInput.Keyboard)
+
+        if mouse_component.lbutton:
+            logger.info('Mouse/race option is {}', keyboard_component.keypressed)
+            if keyboard_component.keypressed == 'a':
+                return 'human'
+            elif keyboard_component.keypressed == 'b':
+                return 'elf'
+            elif keyboard_component.keypressed == 'c':
+                return 'orc'
+            elif keyboard_component.keypressed == 'd':
+                return 'troll'
     return ''
 
 
-def handle_new_class(key):
+def handle_new_class(key, mouse, gameworld):
     key_char = chr(key.c)
     if key_char == 'a':
         return 'necromancer'
@@ -104,7 +120,36 @@ def handle_new_class(key):
         return 'elementalist'
     elif key_char == 'f':
         return 'chronomancer'
+    if mouse:
+        player_input_entity = get_user_input_entity(gameworld)
+        mouse_component = gameworld.component_for_entity(player_input_entity, userInput.Mouse)
+        keyboard_component = gameworld.component_for_entity(player_input_entity, userInput.Keyboard)
+
+        if mouse_component.lbutton:
+            logger.info('Mouse/class option is {}', keyboard_component.keypressed)
+            if keyboard_component.keypressed == 'a':
+                return 'necromancer'
+            elif keyboard_component.keypressed == 'b':
+                return 'witch doctor'
+            elif keyboard_component.keypressed == 'c':
+                return 'druid'
+            elif keyboard_component.keypressed == 'd':
+                return 'elementalist'
+            elif keyboard_component.keypressed == 'd':
+                return 'chronomancer'
     return ''
+
+
+def handle_mouse_in_menus(mouse, width,height, header_height, x_offset, y_offset):
+    if mouse.lbutton_pressed:
+        (menu_x, menu_y) = (mouse.cx - x_offset, mouse.cy - y_offset)
+        if (menu_x >= 0 and menu_x < width) and (menu_y >= 0 and menu_y < height - header_height):
+            # gameworld.component_for_entity(player_input_entity, userInput.Keyboard).keypressed = chr(97 + menu_y)
+            # gameworld.component_for_entity(player_input_entity, userInput.Mouse).lbutton = True
+            # print('console set to ' + str(con))
+            print('menu option ' + str(menu_y))
+            return menu_y
+    return -1
 
 
 def handle_mouse(mouse):
