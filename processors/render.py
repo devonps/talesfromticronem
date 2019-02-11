@@ -37,16 +37,29 @@ class RenderConsole(esper.Processor):
         self.render_f1_bar()
 
         # render player effects...
+        player_entity = MobileUtilities.get_player_entity(self.gameworld)
+
         # life
-        self.render_player_life_bar_content(constants.V_BAR_X, constants.V_BAR_Y, 15, tcod.red, tcod.black)
+        player_current_health_component = self.gameworld.component_for_entity(player_entity, mobiles.Health)
+        current_health_percentage = MobileUtilities.get_number_as_a_percentage(player_current_health_component.current, player_current_health_component.maximum)
+        self.render_player_vertical_bar_content(constants.V_BAR_X, constants.V_BAR_Y, current_health_percentage, tcod.red, tcod.black)
+
         # mana
-        self.render_player_life_bar_content(constants.V_BAR_X + 3, constants.V_BAR_Y, 20, tcod.blue, tcod.black)
+        player_current_mana_component = self.gameworld.component_for_entity(player_entity, mobiles.ManaPool)
+        current_mana_percentage = MobileUtilities.get_number_as_a_percentage(player_current_mana_component.current, player_current_mana_component.maximum)
+        self.render_player_vertical_bar_content(constants.V_BAR_X + 3, constants.V_BAR_Y, current_mana_percentage, tcod.blue, tcod.black)
+        logger.info('mana percentage set to {}', current_mana_percentage)
         # F1 bar
-        self.render_player_life_bar_content(constants.V_BAR_X + 6, constants.V_BAR_Y, 1, tcod.white, tcod.black)
+        player_current_special_component = self.gameworld.component_for_entity(player_entity, mobiles.SpecialBar)
+        current_special_percentage = MobileUtilities.get_number_as_a_percentage(player_current_special_component.valuecurrent, player_current_special_component.valuemaximum)
+        self.render_player_vertical_bar_content(constants.V_BAR_X + 6, constants.V_BAR_Y, current_special_percentage, tcod.white, tcod.black)
+
         # boons
         self.render_player_status_effects_content(constants.H_BAR_X, constants.H_BAR_Y, tcod.CHAR_SUBP_DIAG, tcod.green)
+
         # conditions
         self.render_player_status_effects_content(constants.H_BAR_X, constants.H_BAR_Y + 3, chr(9), tcod.red)
+
         # controls
         self.render_player_status_effects_content(constants.H_BAR_X, constants.H_BAR_Y + 6, chr(10), tcod.white)
 
@@ -206,15 +219,12 @@ class RenderConsole(esper.Processor):
                 self.render_entity(1 + posx + x, posy + 1, chr(179), tcod.darker_gray, tcod.black)
             x += 1
 
-    def render_player_life_bar_content(self, posx, posy, value, foreground, background):
+    def render_player_vertical_bar_content(self, posx, posy, current_value, foreground, background):
+        bar_count = int(MobileUtilities.get_bar_count(current_value))
+        logger.info('bar count set to {}', bar_count)
 
-        for y in range(constants.V_BAR_DEPTH - value):
+        for y in range(bar_count):
             tcod.console_put_char_ex(self.con, posx + 1, (posy + constants.V_BAR_DEPTH) - y, chr(176), foreground, background)
-
-        # displays % amount at bottom of bar
-        tcod.console_set_default_foreground(self.con, tcod.white)
-        hp = 100 - value
-        tcod.console_print_ex(self.con, posx, (posy + constants.V_BAR_DEPTH) + 2, tcod.BKGND_NONE, tcod.LEFT, str(hp) + '%')
 
 
 class RenderInventory(esper.Processor):
