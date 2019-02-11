@@ -10,7 +10,7 @@ from newGame.ClassJewellery import Trinkets
 from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.spellHelp import SpellUtilities
-from utilities.input_handlers import handle_new_race, handle_new_class
+from utilities.input_handlers import handle_menus
 from utilities.text_input import text_entry
 from utilities.display import menu
 
@@ -92,6 +92,7 @@ def select_race(con, gameworld, player):
     key = tcod.Key()
     mouse = tcod.Mouse()
     tcod.console_clear(con)
+    selected_race = ''
 
     while race_not_selected:
 
@@ -104,7 +105,16 @@ def select_race(con, gameworld, player):
              gameworld=gameworld)
 
         if ret_value != '':
-            selected_race = handle_new_race(key=key, mouse=mouse, gameworld=gameworld)
+            ret_value = handle_menus(key=key, mouse=mouse, gameworld=gameworld)
+
+            if ret_value == 'a':
+                selected_race = 'human'
+            elif ret_value == 'b':
+                selected_race = 'elf'
+            elif ret_value == 'c':
+                selected_race = 'orc'
+            elif ret_value == 'd':
+                selected_race = 'troll'
             logger.info('Selected race {}', selected_race)
             gameworld.add_component(player, mobiles.Race(race=selected_race))
             race_not_selected = False
@@ -126,6 +136,7 @@ def select_character_class(con, gameworld, player):
 
     key = tcod.Key()
     mouse = tcod.Mouse()
+    selected_class = ''
 
     while class_not_selected:
 
@@ -138,7 +149,21 @@ def select_character_class(con, gameworld, player):
              gameworld=gameworld)
 
         if ret_value != '':
-            selected_class = handle_new_class(key=key, mouse=mouse, gameworld=gameworld)
+            ret_value = handle_menus(key=key, mouse=mouse, gameworld=gameworld)
+
+            if ret_value == 'a':
+                selected_class = 'necromancer'
+            elif ret_value == 'b':
+                selected_class = 'witch doctor'
+            elif ret_value == 'c':
+                selected_class = 'druid'
+            elif ret_value == 'd':
+                selected_class = 'mesmer'
+            elif ret_value == 'e':
+                selected_class = 'elementalist'
+            elif ret_value == 'f':
+                selected_class = 'chronomancer'
+
             logger.info('Selected class {}', selected_class)
             gameworld.add_component(player, mobiles.CharacterClass(label=selected_class))
             class_not_selected = False
