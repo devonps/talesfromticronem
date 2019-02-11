@@ -12,6 +12,7 @@ from utilities.jsonUtilities import read_json_file
 from utilities.spellHelp import SpellUtilities
 from utilities.input_handlers import handle_new_race, handle_new_class
 from utilities.text_input import text_entry
+from utilities.display import menu
 
 
 class NewCharacter:
@@ -76,84 +77,72 @@ def generate_player_character(gameworld):
 
 
 def select_race(con, gameworld, player):
-    logger.info('Reading racial information')
+    logger.info('Select Race')
     race_file = read_json_file(constants.JSONFILEPATH + 'races.json')
 
-    frame_x = 5
-    frame_y = 4
-    frame_w = 80
-    flavour_x = 19
-    flavour_y = frame_y + 1
+    menu_options = []
+    menu_options_flavour = []
+
+    for option in race_file['races']:
+        menu_options.append(option['name'])
+        menu_options_flavour.append(option['flavour'])
+
     race_not_selected = True
-    selected_race = ''
 
     key = tcod.Key()
     mouse = tcod.Mouse()
     tcod.console_clear(con)
-    tcod.console_flush()
 
     while race_not_selected:
 
-        posy = display_selection(con=con, filename=race_file, element='races', posx=frame_x + 1, posy=frame_y + 2,
-                                 width=frame_w,
-                                 flavour_x=flavour_x, flavour_y=flavour_y)
+        ret_value = menu(con, header='Select Race',
+             options=menu_options,
+             width=24, screen_width=constants.SCREEN_WIDTH, screen_height=constants.SCREEN_HEIGHT, posx=10, posy=26,
+             foreground=tcod.yellow,
+             key=key,
+             mouse=mouse,
+             gameworld=gameworld)
 
-        tcod.console_print_frame(con, x=frame_x, y=frame_y - 2, w=frame_w, h=posy, clear=False, flag=tcod.BKGND_DEFAULT,
-                                 fmt='Select Race')
-
-        tcod.console_print_ex(con=con, x=20, y=posy + 3, flag=tcod.BKGND_NONE, alignment=tcod.LEFT,
-                              fmt='Press letter to select')
-
-        tcod.console_blit(con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
-
-        tcod.console_flush()
-        tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS | tcod.EVENT_MOUSE, key, mouse, flush=False)
-        selected_race = handle_new_race(key=key, mouse=mouse)
-
-        if selected_race != '':
+        if ret_value != '':
+            selected_race = handle_new_race(key=key, mouse=mouse, gameworld=gameworld)
+            logger.info('Selected race {}', selected_race)
+            gameworld.add_component(player, mobiles.Race(race=selected_race))
             race_not_selected = False
-
-    tcod.console_clear(con)
-
-    gameworld.add_component(player, mobiles.Race(race=selected_race))
+            tcod.console_clear(con)
 
 
 def select_character_class(con, gameworld, player):
     logger.info('Selecting character class')
     class_file = read_json_file(constants.JSONFILEPATH + 'classes.json')
 
-    frame_x = 5
-    frame_y = 4
-    frame_w = 80
-    flavour_x = 24
-    flavour_y = frame_y + 1
+    menu_options = []
+    menu_options_flavour = []
+
+    for option in class_file['classes']:
+        menu_options.append(option['name'])
+        menu_options_flavour.append(option['flavour'])
 
     class_not_selected = True
-    selected_class = 'necromancer'
 
     key = tcod.Key()
     mouse = tcod.Mouse()
 
     while class_not_selected:
-        posy = display_selection(con=con, filename=class_file, element='classes', posx=frame_x + 1, posy=frame_y + 2,
-                                 width=frame_w,
-                                 flavour_x=flavour_x, flavour_y=flavour_y)
 
-        tcod.console_print_frame(con, x=frame_x, y=frame_y - 2, w=frame_w, h=posy, clear=False, flag=tcod.BKGND_DEFAULT,
-                                 fmt='Select Class')
+        ret_value = menu(con, header='Select Class',
+             options=menu_options,
+             width=24, screen_width=constants.SCREEN_WIDTH, screen_height=constants.SCREEN_HEIGHT, posx=10, posy=26,
+             foreground=tcod.yellow,
+             key=key,
+             mouse=mouse,
+             gameworld=gameworld)
 
-        tcod.console_print_ex(con=con, x=20, y=posy + 3, flag=tcod.BKGND_NONE, alignment=tcod.LEFT,
-                              fmt='Arrows to highlight, enter to select')
-
-        tcod.console_blit(con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
-        tcod.sys_wait_for_event(tcod.EVENT_KEY_PRESS, key, mouse, flush=False)
-        tcod.console_flush()
-        selected_class = handle_new_class(key)
-        if selected_class != '':
+        if ret_value != '':
+            selected_class = handle_new_class(key=key, mouse=mouse, gameworld=gameworld)
+            logger.info('Selected class {}', selected_class)
+            gameworld.add_component(player, mobiles.CharacterClass(label=selected_class))
             class_not_selected = False
-    tcod.console_clear(con)
-
-    gameworld.add_component(player, mobiles.CharacterClass(label=selected_class))
+            tcod.console_clear(con)
 
 
 def select_profession_background(con, gameworld, player):
@@ -172,7 +161,7 @@ def select_personality_choices(con, gameworld, player):
 
     personality_component = gameworld.component_for_entity(player, mobiles.Describable)
 
-    logger.debug('You personality is viewed as {} by other NPCs', personality_component.personality_title)
+    logger.debug('Your personality is viewed as {} by other NPCs', personality_component.personality_title)
 
 
 def name_your_character(con, gameworld, player):
