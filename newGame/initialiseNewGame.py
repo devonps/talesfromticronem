@@ -5,9 +5,8 @@ from loguru import logger
 from newGame.ClassWeapons import WeaponClass
 from newGame import constants
 from newGame.newCharacter import NewCharacter
-from components import spells, weapons
+from components import spells
 from components.addStatusEffects import process_status_effect
-from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.randomNumberGenerator import PCG32Generator
 from map_objects.gameMap import GameMap
@@ -37,10 +36,13 @@ def generate_world_seed():
 
     logger.info('World seed is now {}', constants.WORLD_SEED)
     # Test Code
-    # other_items = PCG32Generator(constants.WORLD_SEED, 0)
+    # dung_rooms = PCG32Generator(constants.WORLD_SEED, constants.PRNG_STREAM_DUNGEONS)
+    #
+    # constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE
     # for n in range(10):
-    #     nxt = other_items.get_next_uint(100)
-    #     logger.info('No {}. and from within mobiles the next bound rng is {} bound set to 100', n, nxt)
+    #     # nxt = dung_rooms.get_next_uint(constants.ROOM_MAX_SIZE)
+    #     nxt = dung_rooms.get_next_number_in_range(constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE)
+    #     logger.info('Random No {}. is {} range is between {} and {}', n, nxt, constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE)
 
 
 def create_new_character(con, gameworld):
@@ -104,121 +106,6 @@ def generate_monsters(gameworld):
     # create each weapon and load spells to that weapon
     # create any armour
     # determine/calculate its starting stats based on weapons, armour, and class
-
-
-def create_wizard(gameworld):
-    """
-    This method creates an enemy type of Wizard - this represents the toughest opponent for the player.
-    Wizards are created from the same playable classes the player can select.
-
-    :param gameworld:
-    :return wizard:
-    """
-    logger.debug('Creating new wizard')
-    # generate base mobile
-    wizard = MobileUtilities.generate_base_mobile(gameworld)
-    # add wizard specific components - this selection will become more complex over time
-
-    # determine the type of wizard, i.e. it's character class
-    characterclass = random.choice(constants.playable_classes)
-    gameworld.add_component(wizard, mobiles.CharacterClass(label=characterclass))
-    class_component = gameworld.component_for_entity(wizard, mobiles.CharacterClass)
-
-    # add race to Wizard - again better 'selection' techniques need to be created
-    gameworld.add_component(wizard, mobiles.Race(race='human'))
-
-    # add renderable component to wizard
-    gameworld.add_component(wizard, mobiles.Renderable(is_visible=True))
-
-    # add AI component
-    gameworld.add_component(wizard, mobiles.AI(ailevel=constants.AI_LEVEL_WIZARD))
-
-    # make the wizard appear
-    gameworld.add_component(wizard, mobiles.Position(x=random.randrange(3,55), y=random.randrange(5,39)))
-
-    gameworld.add_component(wizard, mobiles.Describable(glyph='@', foreground=tcod.white))
-
-    # create inventory for wizard
-    gameworld.add_component(wizard, mobiles.Inventory())
-
-    # assign starting weapon + spells
-
-    # will this wizard use a 2-handed weapon or not!
-
-    # create a new weapon for the wizard
-    sword = WeaponClass.create_weapon(gameworld, 'sword')
-    # get the weapon type
-    weapon_type = gameworld.component_for_entity(sword, weapons.Name)
-    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-    WeaponClass.load_weapon_with_spells(gameworld, sword, weapon_type.label, class_component.label)
-
-    # add the equipable component
-    gameworld.add_component(wizard, mobiles.Equipped())
-    # equip wizard with weapon
-    MobileUtilities.equip_weapon(gameworld, wizard, sword, 'main')
-
-    # create a 2nd weapon for the wizard
-    focus = WeaponClass.create_weapon(gameworld, 'focus')
-    # get the weapon type
-    weapon_type = gameworld.component_for_entity(focus, weapons.Name)
-    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-    load_weapon_with_spells(gameworld, focus, weapon_type.label, class_component.label)
-
-    # equip wizard with weapon
-    MobileUtilities.equip_weapon(gameworld, wizard, focus, 'off')
-
-    # add the armour component
-    gameworld.add_component(wizard, mobiles.Armour())
-
-    # add the jewellery component
-    gameworld.add_component(wizard, mobiles.Jewellery())
-
-    # calculate starting health
-    gameworld.add_component(wizard, mobiles.Health())
-
-    return wizard
-
-
-def create_demon(gameworld):
-    logger.debug('Creating new demon')
-    # generate base mobile
-    demon = generate_base_mobile(gameworld)
-    # add demon specific components - this selection will become more complex over time
-
-    # determine the type of demon, i.e. it's character class
-    characterclass = random.choice(constants.demon_classes)
-    gameworld.add_component(demon, mobiles.CharacterClass(label=characterclass))
-
-    class_component = gameworld.component_for_entity(demon, mobiles.CharacterClass)
-
-    # add race to Demon - again better 'selection' techniques need to be created
-    gameworld.add_component(demon, mobiles.Race(race='demon'))
-
-    # create a new weapon for the demon
-    weapon = WeaponClass.create_weapon(gameworld, random.choice(constants.demon_weapons))
-    # get the weapon type
-    weapon_type = gameworld.component_for_entity(weapon, weapons.Name)
-    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-    load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)
-
-    # add the equipable component
-    gameworld.add_component(demon, mobiles.Equipped())
-    # equip demon with weapon
-    MobileUtilities.equip_weapon(gameworld, demon, weapon, 'main')
-
-    # add the armour component
-    gameworld.add_component(demon, mobiles.Armour())
-
-    # calculate starting health
-    gameworld.add_component(demon, mobiles.Health())
-
-    # add renderable component to demon
-    gameworld.add_component(demon, mobiles.Renderable)
-
-    # add AI component
-    gameworld.add_component(demon, mobiles.AI(ailevel=constants.AI_LEVEL_DEMON))
-
-    return demon
 
 
 def create_monster(gameworld):

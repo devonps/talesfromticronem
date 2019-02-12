@@ -111,6 +111,5 @@ class MobileUtilities(numbers.Real):
         return int((lower_value / maximum_value) * 100)
 
     def get_bar_count(lower_value):
-        logger.info('lower value is {}, depth i {}', lower_value, constants.V_BAR_DEPTH)
         return (lower_value / 100) * constants.V_BAR_DEPTH
 

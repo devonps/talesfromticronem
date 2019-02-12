@@ -15,12 +15,11 @@ LOGFORMAT = LOG_TIME + ' | {level} | {message}'
 PLAYER_SEED = ''
 WORLD_SEED = 0
 
-# holds the number of RNG streams used in the PCG generator
-RNG_STREAMS = 10
 # individual streams used throughout the game
 PRNG_STREAM_MOBILES = 0
 PRNG_STREAM_ITEMS = 1
 PRNG_STREAM_SPELLS = 2
+PRNG_STREAM_DUNGEONS = 3
 
 # tcod root console settings
 SCREEN_WIDTH = 100
