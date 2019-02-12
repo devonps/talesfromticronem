@@ -48,6 +48,7 @@ def start_game(con, gameworld):
 
 def game_replay(con):
     ReplayGame.process(con)
+    tcod.console_clear(con)
 
 @logger.catch()
 def main():
@@ -69,6 +70,9 @@ def main():
 
     # Esper initialisation
     gameworld = create_game_world()
+
+    # needed here to gather player input from the main menu
+    MobileUtilities.create_player_input_entity(gameworld)
 
     # start game screen image
     background_image = tcod.image_load('static/images/menu_background.png')
