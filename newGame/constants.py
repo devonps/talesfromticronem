@@ -28,6 +28,9 @@ GAME_ACTIONS_FILE = 'Actions.txt'
 SCREEN_WIDTH = 100
 SCREEN_HEIGHT = 60
 
+# max menu height
+MENU_MAX_HEIGHT = 7
+
 # game-map settings
 
 # the next 2 settings are the dimensions of the total map area size
@@ -78,7 +81,6 @@ BCC_BAR_RIGHT_SIDE = BO_CO_CO_WIDTH + 2
 V_BAR_DEPTH = 30
 V_BAR_X = VIEWPORT_WIDTH
 V_BAR_Y = (VIEWPORT_HEIGHT - V_BAR_DEPTH) - 3
-# V_BAR_D = V_BAR_Y + V_BAR_DEPTH + 1
 V_BAR_D = V_BAR_DEPTH + 2
 
 # Spell bar settings
