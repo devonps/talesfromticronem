@@ -1,0 +1,6 @@
+world_seed:308573177
+move:20:-1:0
+move:20:-1:0
+move:20:-1:0
+move:20:0:-1
+exit:true

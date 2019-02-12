@@ -253,7 +253,7 @@ class RenderGameStartScreen(esper.Processor):
 
         # display game options
         menu(self.con, header='Game Start',
-            options=['New Game', 'Continue', 'Save', 'Quit'],
+            options=['New Game', 'Continue', 'Save', 'Set Seed', 'Replay', 'Quit'],
             width=24, screen_width=constants.SCREEN_WIDTH, screen_height=constants.SCREEN_HEIGHT, posx=10, posy=26,
             foreground=tcod.yellow,
             key=self.key,

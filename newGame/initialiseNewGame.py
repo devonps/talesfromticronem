@@ -9,6 +9,7 @@ from components import spells
 from components.addStatusEffects import process_status_effect
 from utilities.jsonUtilities import read_json_file
 from utilities.randomNumberGenerator import PCG32Generator
+from utilities.externalfileutilities import Externalfiles
 from map_objects.gameMap import GameMap
 from processors.render import RenderConsole, RenderInventory, RenderPlayerCharacterScreen
 from processors.move_entities import MoveEntities
@@ -35,6 +36,9 @@ def generate_world_seed():
         constants.WORLD_SEED = random.getrandbits(30)
 
     logger.info('World seed is now {}', constants.WORLD_SEED)
+    value = 'world_seed:' + str(constants.WORLD_SEED)
+    Externalfiles.write_to_existing_file(constants.GAME_ACTIONS_FILE, value)
+
     # Test Code
     # dung_rooms = PCG32Generator(constants.WORLD_SEED, constants.PRNG_STREAM_DUNGEONS)
     #
