@@ -17,6 +17,8 @@ from processors.move_entities import MoveEntities
 
 def setup_game(con, gameworld):
 
+    filehandle = Externalfiles.create_new_file(constants.GAME_ACTIONS_FILE)
+
     # world seed generation
     generate_world_seed()
 

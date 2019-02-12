@@ -1,4 +1,4 @@
-from components import mobiles
+from components import mobiles, userInput
 from loguru import logger
 from newGame import constants
 
@@ -38,6 +38,7 @@ class MobileUtilities(numbers.Real):
         if hand == 'both':
             gameworld.component_for_entity(entity, mobiles.Equipped).both_hands = weapon
 
+    @staticmethod
     def generate_base_mobile(gameworld):
         mobile = gameworld.create_entity()
         logger.info('Base mobile entity ID ' + str(mobile))
@@ -48,6 +49,7 @@ class MobileUtilities(numbers.Real):
 
         return mobile
 
+    @staticmethod
     def describe_the_mobile(gameworld, entity):
         player_name_component = gameworld.component_for_entity(entity, mobiles.Name)
         player_race_component = gameworld.component_for_entity(entity, mobiles.Race)
@@ -56,6 +58,7 @@ class MobileUtilities(numbers.Real):
 
         return player_name_component.first + ' the ' + player_gender_component.gender + ' ' + player_race_component.label + ' ' + player_class_component.label
 
+    @staticmethod
     def get_player_entity(gameworld):
         player = 0
         for ent, ai in gameworld.get_component(mobiles.AI):
@@ -64,6 +67,7 @@ class MobileUtilities(numbers.Real):
 
         return player
 
+    @staticmethod
     def has_player_moved(gameworld):
         player_entity = MobileUtilities.get_player_entity(gameworld)
 
@@ -71,6 +75,7 @@ class MobileUtilities(numbers.Real):
 
         return position_component.hasMoved
 
+    @staticmethod
     def calculate_player_personality(gameworld):
         player_entity = MobileUtilities.get_player_entity(gameworld)
 
@@ -107,9 +112,16 @@ class MobileUtilities(numbers.Real):
 
         player_describable_personality_component.personality_title = player_personality
 
+    @staticmethod
     def get_number_as_a_percentage(lower_value, maximum_value):
         return int((lower_value / maximum_value) * 100)
 
+    @staticmethod
     def get_bar_count(lower_value):
         return (lower_value / 100) * constants.V_BAR_DEPTH
 
+    @staticmethod
+    def create_player_input_entity(gameworld):
+        ent = gameworld.create_entity()
+        gameworld.add_component(ent, userInput.Keyboard())
+        gameworld.add_component(ent, userInput.Mouse())

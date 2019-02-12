@@ -48,6 +48,7 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
         if ret_value > -1:
             gameworld.component_for_entity(player_input_entity, userInput.Keyboard).keypressed = chr(97 + ret_value)
             gameworld.component_for_entity(player_input_entity, userInput.Mouse).lbutton = True
+            tcod.console_clear(window)
             return ret_value
 
         # convert the ASCII code to a menu option
@@ -55,6 +56,7 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
         key_char = chr(key.c)
 
         if 0 <= index <= len(options):
+            tcod.console_clear(window)
             return key_char
 
         if 0 <= index <= 26:

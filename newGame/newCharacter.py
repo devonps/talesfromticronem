@@ -75,10 +75,6 @@ def generate_player_character(gameworld):
 
     logger.info('stored as entity {}', player)
 
-    ent = gameworld.create_entity()
-    gameworld.add_component(ent, userInput.Keyboard())
-    gameworld.add_component(ent, userInput.Mouse())
-
     return player
 
 
