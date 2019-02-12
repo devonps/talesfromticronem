@@ -15,7 +15,8 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
     header_height = tcod.console_get_height_rect(con, 0, 0, width, screen_height, header)
     if header == '':
         header_height = 0
-    height = len(options) + header_height
+    #height = len(options) + header_height
+    height = constants.MENU_MAX_HEIGHT
 
     # create an off-screen window - this is where the menu options will be displayed
     window = tcod.console_new(width, height)
