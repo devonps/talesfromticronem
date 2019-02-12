@@ -2,8 +2,10 @@ import tcod
 
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
-from random import randint
 from components import mobiles
+from newGame import constants
+from utilities.randomNumberGenerator import PCG32Generator
+from loguru import logger
 
 
 class GameMap:
@@ -45,11 +47,17 @@ class GameMap:
         rooms = []
         num_rooms = 0
 
+        dungeon_seed_stream = PCG32Generator(constants.WORLD_SEED, constants.PRNG_STREAM_DUNGEONS)
+
         for r in range(max_rooms):
-            w = randint(room_min_size, room_max_size)
-            h = randint(room_min_size, room_max_size)
-            x = randint(0, map_width - w - 1)
-            y = randint(0, map_height - h - 1)
+            # w = randint(room_min_size, room_max_size)
+            # h = randint(room_min_size, room_max_size)
+            # x = randint(0, map_width - w - 1)
+            # y = randint(0, map_height - h - 1)
+            w = dungeon_seed_stream.get_next_number_in_range(room_min_size, room_max_size)
+            h = dungeon_seed_stream.get_next_number_in_range(room_min_size, room_max_size)
+            x = dungeon_seed_stream.get_next_uint(map_width - w - 1)
+            y = dungeon_seed_stream.get_next_uint(map_height - h - 1)
 
             new_room = Rect(x, y, w, h)
             for other_room in rooms:
@@ -66,7 +74,8 @@ class GameMap:
                 else:
                     (prev_x, prev_y) = rooms[num_rooms - 1].center()
                     # flip a coin (random number that is either 0 or 1)
-                    if randint(0, 1) == 1:
+                    # 2 is chosen so that I get either 0 or 1 returned
+                    if dungeon_seed_stream.get_next_number_in_range(0, 2) == 1:
                         # first move horizontally, then vertically
                         self.create_h_tunnel(prev_x, new_x, prev_y)
                         self.create_v_tunnel(prev_y, new_y, new_x)

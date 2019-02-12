@@ -3,7 +3,7 @@ import tcod
 
 from loguru import logger
 from newGame import constants
-from components import mobiles, weapons, spells, spellBar
+from components import mobiles
 from utilities.display import menu
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
@@ -48,7 +48,6 @@ class RenderConsole(esper.Processor):
         player_current_mana_component = self.gameworld.component_for_entity(player_entity, mobiles.ManaPool)
         current_mana_percentage = MobileUtilities.get_number_as_a_percentage(player_current_mana_component.current, player_current_mana_component.maximum)
         self.render_player_vertical_bar_content(constants.V_BAR_X + 3, constants.V_BAR_Y, current_mana_percentage, tcod.blue, tcod.black)
-        logger.info('mana percentage set to {}', current_mana_percentage)
         # F1 bar
         player_current_special_component = self.gameworld.component_for_entity(player_entity, mobiles.SpecialBar)
         current_special_percentage = MobileUtilities.get_number_as_a_percentage(player_current_special_component.valuecurrent, player_current_special_component.valuemaximum)
@@ -110,7 +109,8 @@ class RenderConsole(esper.Processor):
 
             for map_cell_y in range(self.game_map.height):
                 for map_cell_x in range(self.game_map.width):
-                    isVisible = tcod.map_is_in_fov(self.fov_map, map_cell_x, map_cell_y)
+                    #isVisible = tcod.map_is_in_fov(self.fov_map, map_cell_x, map_cell_y)
+                    isVisible = True
                     wall = self.game_map.tiles[map_cell_x][map_cell_y].block_path
 
                     draw_pos_x = constants.MAP_VIEW_DRAW_X + map_cell_x
@@ -221,7 +221,6 @@ class RenderConsole(esper.Processor):
 
     def render_player_vertical_bar_content(self, posx, posy, current_value, foreground, background):
         bar_count = int(MobileUtilities.get_bar_count(current_value))
-        logger.info('bar count set to {}', bar_count)
 
         for y in range(bar_count):
             tcod.console_put_char_ex(self.con, posx + 1, (posy + constants.V_BAR_DEPTH) - y, chr(176), foreground, background)

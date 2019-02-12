@@ -1,15 +1,13 @@
 import tcod
 
 
-from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character
+from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, constants
 from processors.render import RenderGameStartScreen
-
-from newGame.ClassArmour import *
 from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys, handle_menus
 from utilities.gameworld import reset_gameworld
 from components import userInput
-
+from loguru import logger
 
 def start_game(con, gameworld):
 
@@ -49,7 +47,7 @@ def start_game(con, gameworld):
 @logger.catch()
 def main():
 
-    # logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
+    #logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
 
     logger.info('*********************')
     logger.info('* Initialising game *')

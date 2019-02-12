@@ -86,6 +86,20 @@ class PCG32Generator:
             if val >= threshold:
                 return val % bound
 
+    def get_next_number_in_range(self, lower, upper):
+        """
+
+        :param lower: This is the minimum value you want to return
+        :param upper: This is the maximum value you want returned
+        :return: An integer between lower (inclusive) and upper (exclusive)
+        """
+        value = -1
+        while True:
+            if value < lower:
+                value = PCG32Generator.get_next_uint(self, upper)
+            else:
+                return value
+
     def convert_string_to_integer(value):
         """
         This method converts a string, encoded as utf-8, into a series of integers and then

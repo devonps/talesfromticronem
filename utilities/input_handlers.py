@@ -42,10 +42,8 @@ def handle_keys(mouse, key, gameworld, player):
 
 
 def handle_menus(key, mouse, gameworld):
-    # tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS | tcod.EVENT_MOUSE, key, mouse)
     key_char = chr(key.c)
     if key.vk == tcod.KEY_CHAR:
-        logger.info('keyboard option {}', key_char)
         return key_char
     player_input_entity = get_user_input_entity(gameworld)
     mouse_component = gameworld.component_for_entity(player_input_entity, userInput.Mouse)
