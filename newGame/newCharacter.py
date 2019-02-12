@@ -3,7 +3,7 @@ import random
 import textwrap
 
 from loguru import logger
-from components import weapons, spellBar
+from components import weapons, spellBar, userInput
 from newGame.ClassWeapons import WeaponClass
 from newGame.ClassArmour import *
 from newGame.ClassJewellery import Trinkets
@@ -74,6 +74,10 @@ def generate_player_character(gameworld):
     gameworld.add_component(player, mobiles.Position(x=random.randrange(3, 55), y=random.randrange(5, 39), hasmoved=True))
 
     logger.info('stored as entity {}', player)
+
+    ent = gameworld.create_entity()
+    gameworld.add_component(ent, userInput.Keyboard())
+    gameworld.add_component(ent, userInput.Mouse())
 
     return player
 

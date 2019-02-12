@@ -50,10 +50,6 @@ class GameMap:
         dungeon_seed_stream = PCG32Generator(constants.WORLD_SEED, constants.PRNG_STREAM_DUNGEONS)
 
         for r in range(max_rooms):
-            # w = randint(room_min_size, room_max_size)
-            # h = randint(room_min_size, room_max_size)
-            # x = randint(0, map_width - w - 1)
-            # y = randint(0, map_height - h - 1)
             w = dungeon_seed_stream.get_next_number_in_range(room_min_size, room_max_size)
             h = dungeon_seed_stream.get_next_number_in_range(room_min_size, room_max_size)
             x = dungeon_seed_stream.get_next_uint(map_width - w - 1)

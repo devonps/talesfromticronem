@@ -6,8 +6,10 @@ from processors.render import RenderGameStartScreen
 from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys, handle_menus
 from utilities.gameworld import reset_gameworld
+from utilities.replayGame import ReplayGame
 from components import userInput
 from loguru import logger
+
 
 def start_game(con, gameworld):
 
@@ -44,6 +46,9 @@ def start_game(con, gameworld):
         tcod.console_flush()
 
 
+def game_replay(con):
+    ReplayGame.process(con)
+
 @logger.catch()
 def main():
 
@@ -65,11 +70,6 @@ def main():
     # Esper initialisation
     gameworld = create_game_world()
 
-    # user input entity created
-    ent = gameworld.create_entity()
-    gameworld.add_component(ent, userInput.Keyboard())
-    gameworld.add_component(ent, userInput.Mouse())
-
     # start game screen image
     background_image = tcod.image_load('static/images/menu_background.png')
 
@@ -82,7 +82,7 @@ def main():
     while not tcod.console_is_window_closed():
         gameworld.process()
         tcod.console_flush()
-        new_game = load_saved_game = save_game = exit_game = player_seed = False
+        new_game = load_saved_game = save_game = exit_game = player_seed = replay_game = False
 
         action = handle_menus(key, mouse, gameworld)
 
@@ -96,11 +96,18 @@ def main():
             # save current game
             save_game = True
         elif action == 'd':
-            # return {'exit': True}
-            exit_game = True
-        elif action == 'e':
             # return {'player_seed': True}
             player_seed = True
+        elif action == 'e':
+            # return {'replay': True}
+            replay_game = True
+        elif action == 'f':
+            # return {'exit': True}
+            exit_game = True
+
+        if replay_game:
+            logger.info('Replaying game')
+            game_replay(con)
 
         if player_seed:
             player_supplied_seed = "ABSTRACTIONISM"
@@ -117,10 +124,6 @@ def main():
             reset_gameworld(gameworld)
             # Esper initialisation
             gameworld = create_game_world()
-            # user input entity created
-            ent = gameworld.create_entity()
-            gameworld.add_component(ent, userInput.Keyboard())
-            gameworld.add_component(ent, userInput.Mouse())
 
             tcod.console_clear(con)
             render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse, gameworld=gameworld)

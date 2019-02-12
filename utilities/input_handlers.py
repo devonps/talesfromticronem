@@ -2,6 +2,8 @@ import tcod
 
 from components import mobiles, userInput
 from loguru import logger
+from newGame import constants
+from utilities.externalfileutilities import Externalfiles
 
 
 def handle_keys(mouse, key, gameworld, player):
@@ -13,18 +15,26 @@ def handle_keys(mouse, key, gameworld, player):
         if key.vk == tcod.KEY_UP:
             player_velocity_component.dy = -1
             position_component.hasMoved = True
+            value = 'move:' + str(player) + ':0:-1'
+            Externalfiles.write_to_existing_file(constants.GAME_ACTIONS_FILE, value)
             return {'player_moved': True}
         elif key.vk == tcod.KEY_DOWN:
             player_velocity_component.dy = 1
             position_component.hasMoved = True
+            value = 'move:' + str(player) + ':0:1'
+            Externalfiles.write_to_existing_file(constants.GAME_ACTIONS_FILE, value)
             return {'player_moved': True}
         elif key.vk == tcod.KEY_LEFT:
             player_velocity_component.dx = -1
             position_component.hasMoved = True
+            value = 'move:' + str(player) + ':-1:0'
+            Externalfiles.write_to_existing_file(constants.GAME_ACTIONS_FILE, value)
             return {'player_moved': True}
         elif key.vk == tcod.KEY_RIGHT:
             player_velocity_component.dx = 1
             position_component.hasMoved = True
+            value = 'move:' + str(player) + ':1:0'
+            Externalfiles.write_to_existing_file(constants.GAME_ACTIONS_FILE, value)
             return {'player_moved': True}
 
         # non-movement keys
@@ -36,6 +46,8 @@ def handle_keys(mouse, key, gameworld, player):
 
         elif key.vk == tcod.KEY_ESCAPE:
             # Exit the game
+            value = 'exit:true'
+            Externalfiles.write_to_existing_file(constants.GAME_ACTIONS_FILE, value)
             return {'exit': True}
 
     return {}

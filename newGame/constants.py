@@ -21,6 +21,9 @@ PRNG_STREAM_ITEMS = 1
 PRNG_STREAM_SPELLS = 2
 PRNG_STREAM_DUNGEONS = 3
 
+# external game activities settings
+GAME_ACTIONS_FILE = 'Actions.txt'
+
 # tcod root console settings
 SCREEN_WIDTH = 100
 SCREEN_HEIGHT = 60
