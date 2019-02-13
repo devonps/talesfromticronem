@@ -1,5 +1,6 @@
 import esper
 import random
+import tcod
 
 from loguru import logger
 from newGame.ClassWeapons import WeaponClass
@@ -60,11 +61,19 @@ def create_new_character(con, gameworld):
 def initialise_game_map(con, gameworld, player, spell_bar, message_log):
     # create game map
     game_map = GameMap(constants.MAP_WIDTH, constants.MAP_HEIGHT)
-    game_map.make_map(constants.MAX_ROOMS, constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE, constants.MAP_WIDTH,
-                      constants.MAP_HEIGHT, gameworld, player)
+    # game_map.make_map(constants.MAX_ROOMS, constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE, constants.MAP_WIDTH,constants.MAP_HEIGHT, gameworld, player)
+    game_map.make_bsp_map(player, gameworld)
 
     fov_compute = True
-    fov_map = GameMap.make_fov_map(game_map)
+    # fov_map = GameMap.make_fov_map(game_map)
+
+    fov_map = tcod.map_new(game_map.width, game_map.height)
+
+    for y in range(game_map.height):
+        for x in range(game_map.width):
+            tcod.map_set_properties(fov_map, x, y, not game_map.tiles[x][y].transparent,
+                                    not game_map.tiles[x][y].block_path)
+
 
     # place entities (enemies, items)
 
