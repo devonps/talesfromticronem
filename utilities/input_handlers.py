@@ -4,9 +4,10 @@ from components import mobiles, userInput
 from loguru import logger
 from newGame import constants
 from utilities.externalfileutilities import Externalfiles
+from newGame.game_messages import Message
 
 
-def handle_keys(mouse, key, gameworld, player):
+def handle_keys(mouse, key, gameworld, player, message_log):
     # movement
     player_velocity_component = gameworld.component_for_entity(player, mobiles.Velocity)
     position_component = gameworld.component_for_entity(player, mobiles.Position)
@@ -39,9 +40,10 @@ def handle_keys(mouse, key, gameworld, player):
 
         # non-movement keys
         if key.vk == tcod.KEY_ENTER:
-            return{'text': True}
-        elif key.vk == tcod.KEY_ENTER and key.lalt:
+            message_log.add_message(message=Message('123456789012345678901234567890', color=tcod.white))
+        if key.vk == tcod.KEY_ENTER and key.lalt:
             # Alt+Enter: toggle full screen
+            message_log.add_message(message=Message('Full screen mode activated', color=tcod.white))
             return {'fullscreen': True}
 
         elif key.vk == tcod.KEY_ESCAPE:

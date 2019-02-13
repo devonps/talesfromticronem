@@ -8,10 +8,11 @@ from utilities.display import menu
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 from map_objects.gameMap import GameMap
+from newGame.game_messages import MessageLog, Message
 
 
 class RenderConsole(esper.Processor):
-    def __init__(self, con, game_map, gameworld, fov_compute, fov_map, spell_bar):
+    def __init__(self, con, game_map, gameworld, fov_compute, fov_map, spell_bar, message_log):
         super().__init__()
         self.con = con
         self.game_map = game_map
@@ -19,6 +20,7 @@ class RenderConsole(esper.Processor):
         self.fov_compute = fov_compute
         self.fov_map = fov_map
         self.spell_bar = spell_bar
+        self.message_log = message_log
 
     def process(self):
         # GUI viewport and message box borders
@@ -183,11 +185,12 @@ class RenderConsole(esper.Processor):
                                  clear=False,
                                  flag=tcod.BKGND_DEFAULT,
                                  fmt='')
-        # test code - to be deleted
-        tcod.console_set_default_foreground(self.con, tcod.light_blue)
-        for y in range(constants.MSG_PANEL_LINES):
-            tcod.console_print_ex(self.con, 1, 1 + constants.MSG_PANEL_START_Y + y, tcod.BKGND_NONE, tcod.LEFT,
-                                  'Message line ' + str(y))
+        # render messages in message log
+        y = 1
+        for message in self.message_log.messages:
+            tcod.console_set_default_foreground(self.con, message.color)
+            tcod.console_print_ex(self.con, 1, constants.MSG_PANEL_START_Y + y, tcod.BKGND_NONE, tcod.LEFT, message.text)
+            y += 1
 
     def render_v_bar(self, posx, posy, depth, border_colour):
 
