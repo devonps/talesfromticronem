@@ -40,11 +40,20 @@ MENU_MAX_HEIGHT = 7
 MAP_WIDTH = 80
 MAP_HEIGHT = 40
 
+# BSP Map settings
+MAP_BSP_NO_SPLITS = 10
+MAP_BSP_ROOM_MIN_SIZE = 5
+MAP_BSP_FULL_ROOMS = True
+
 # dungeon viewport
 VIEWPORT_WIDTH = 82
 VIEWPORT_HEIGHT = 42
 VIEWPORT_START_X = 0
 VIEWPORT_START_Y = 0
+
+# dungeon wall/floor
+DNG_FLOOR = ' '
+DNG_WALL = '#'
 
 # game map drawing offsets for use with viewport
 MAP_VIEW_DRAW_X = VIEWPORT_START_X + 1
@@ -93,12 +102,6 @@ SPELL_BAR_WIDTH = SPELL_SLOTS * SPELL_BOX_WIDTH
 SPELL_BOX_DEPTH = 5
 SPELL_SLOTS_Y = 55
 SPELL_SLOTS_X = 21
-
-SPELL_SLOT_N_X = []
-for a in range(1, SPELL_SLOTS):
-    px = 21 + (a * SPELL_BOX_WIDTH)
-    SPELL_SLOT_N_X.append(px)
-
 
 # status effects settings
 

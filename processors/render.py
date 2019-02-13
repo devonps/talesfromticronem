@@ -106,13 +106,12 @@ class RenderConsole(esper.Processor):
         has_player_moved = MobileUtilities.has_player_moved(self.gameworld)
 
         if has_player_moved:
-            GameMap.calculate_fov(self.fov_map, player_position_component.x, player_position_component.y, constants.FOV_RADIUS, constants.FOV_LIGHT_WALLS,
-                                  constants.FOV_ALGORITHM)
+            GameMap.calculate_fov(self.fov_map, player_position_component.x, player_position_component.y, constants.FOV_RADIUS, constants.FOV_LIGHT_WALLS,constants.FOV_ALGORITHM)
 
             for map_cell_y in range(self.game_map.height):
                 for map_cell_x in range(self.game_map.width):
-                    #isVisible = tcod.map_is_in_fov(self.fov_map, map_cell_x, map_cell_y)
-                    isVisible = True
+                    isVisible = tcod.map_is_in_fov(self.fov_map, map_cell_x, map_cell_y)
+                    # isVisible = True
                     wall = self.game_map.tiles[map_cell_x][map_cell_y].block_path
 
                     draw_pos_x = constants.MAP_VIEW_DRAW_X + map_cell_x
@@ -121,18 +120,18 @@ class RenderConsole(esper.Processor):
                     if isVisible:
                         if wall:
                             #tcod.console_set_char_background(self.con, draw_pos_x, draw_pos_y, constants.colors.get('light_wall'), tcod.BKGND_SET)
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, '#', constants.colors.get('light_wall'), tcod.black)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_WALL, constants.colors.get('light_wall'), tcod.black)
                         else:
                             #tcod.console_set_char_background(self.con, draw_pos_x, draw_pos_y, constants.colors.get('light_ground'), tcod.BKGND_SET)
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, '.', constants.colors.get('light_ground'),tcod.black)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR, constants.colors.get('light_ground'),tcod.black)
                         self.game_map.tiles[map_cell_x][map_cell_y].explored = True
                     elif self.game_map.tiles[map_cell_x][map_cell_y].explored:
                         if wall:
                             #tcod.console_set_char_background(self.con, draw_pos_x, draw_pos_y, constants.colors.get('dark_wall'), tcod.BKGND_SET)
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, '#', constants.colors.get('dark_wall'), tcod.black)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_WALL, constants.colors.get('dark_wall'), tcod.black)
                         else:
                             #tcod.console_set_char_background(self.con, draw_pos_x, draw_pos_y, constants.colors.get('dark_ground'), tcod.BKGND_SET)
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, '.', constants.colors.get('dark_ground'),tcod.black)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR, constants.colors.get('dark_ground'),tcod.black)
 
     def render_entities(self):
         for ent, (rend, pos, desc) in self.world.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
