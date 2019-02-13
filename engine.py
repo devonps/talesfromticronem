@@ -2,6 +2,7 @@ import tcod
 
 
 from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, constants
+from newGame.game_messages import MessageLog, Message
 from processors.render import RenderGameStartScreen
 from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys, handle_menus
@@ -15,7 +16,8 @@ def start_game(con, gameworld):
 
     setup_game(con, gameworld)
     player, spell_bar = create_new_character(con, gameworld)
-    initialise_game_map(con, gameworld, player, spell_bar)
+    message_log = MessageLog(x=constants.MSG_PANEL_START_X, width=constants.MSG_PANEL_WIDTH, height=constants.MSG_PANEL_LINES)
+    initialise_game_map(con, gameworld, player, spell_bar, message_log)
 
     # test code
 
@@ -25,8 +27,10 @@ def start_game(con, gameworld):
     key = tcod.Key()
     mouse = tcod.Mouse()
 
+    message_log.add_message(message=Message('New game starting', color=tcod.yellow))
+
     while not tcod.console_is_window_closed():
-        action = handle_keys(mouse, key, gameworld, player)
+        action = handle_keys(mouse, key, gameworld, player, message_log)
 
         exit_game = action.get('exit')
         fullscreen = action.get('fullscreen')

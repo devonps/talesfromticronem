@@ -16,6 +16,7 @@ logs/*
 __pycache__/
 *.py[cod]
 *$py.class
+Actions.txt
 
 # C extensions
 *.so

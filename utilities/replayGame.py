@@ -1,7 +1,7 @@
 import tcod
 
 from utilities.externalfileutilities import Externalfiles
-from newGame.initialiseNewGame import create_game_world, initialise_game_map, create_new_character, constants,\
+from newGame.initialiseNewGame import create_game_world, initialise_game_map, constants,\
     generate_items, generate_monsters, generate_spells
 from newGame.newCharacter import generate_player_character, generate_spell_bar, get_starting_equipment
 from loguru import logger

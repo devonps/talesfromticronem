@@ -5,6 +5,7 @@ from loguru import logger
 from newGame.ClassWeapons import WeaponClass
 from newGame import constants
 from newGame.newCharacter import NewCharacter
+from newGame.game_messages import MessageLog, Message
 from components import spells
 from components.addStatusEffects import process_status_effect
 from utilities.jsonUtilities import read_json_file
@@ -56,7 +57,7 @@ def create_new_character(con, gameworld):
     return player, spell_bar
 
 
-def initialise_game_map(con, gameworld, player, spell_bar):
+def initialise_game_map(con, gameworld, player, spell_bar, message_log):
     # create game map
     game_map = GameMap(constants.MAP_WIDTH, constants.MAP_HEIGHT)
     game_map.make_map(constants.MAX_ROOMS, constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE, constants.MAP_WIDTH,
@@ -67,7 +68,7 @@ def initialise_game_map(con, gameworld, player, spell_bar):
 
     # place entities (enemies, items)
 
-    render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld, fov_compute=fov_compute, fov_map=fov_map, spell_bar=spell_bar)
+    render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld, fov_compute=fov_compute, fov_map=fov_map, spell_bar=spell_bar, message_log=message_log )
     render_inventory_screen = RenderInventory()
     render_character_screen = RenderPlayerCharacterScreen()
     move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
