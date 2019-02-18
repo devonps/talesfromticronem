@@ -7,4 +7,4 @@ loguru==0.2.5
 numpy==1.15.4
 pycparser==2.19
 Pygments==2.3.0
-tcod==8.4.1
+tcod==8.5

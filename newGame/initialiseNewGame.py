@@ -31,15 +31,14 @@ def setup_game(con, gameworld):
 
 
 def generate_world_seed():
-    logger.info('World seed from constants {}', constants.WORLD_SEED)
 
     if constants.PLAYER_SEED != '':
-        sm = PCG32Generator.convert_string_to_integer(constants.PLAYER_SEED)
-        constants.WORLD_SEED = sm
+        constants.WORLD_SEED = PCG32Generator.convert_string_to_integer(constants.PLAYER_SEED)
+        # constants.WORLD_SEED = tcod.random_new_from_seed(seed=constants.PLAYER_SEED, algo=tcod.RNG_CMWC)
+        logger.info('Using player provided seed for world seed {}',constants.PLAYER_SEED)
     else:
         constants.WORLD_SEED = random.getrandbits(30)
-
-    logger.info('World seed is now {}', constants.WORLD_SEED)
+        logger.info('No player seed, using large random number for world seed {}', constants.WORLD_SEED)
     value = 'world_seed:' + str(constants.WORLD_SEED)
     Externalfiles.write_to_existing_file(constants.GAME_ACTIONS_FILE, value)
 
@@ -60,9 +59,13 @@ def create_new_character(con, gameworld):
 
 def initialise_game_map(con, gameworld, player, spell_bar, message_log):
     # create game map
+    # dungeon_seed_stream = PCG32Generator(constants.WORLD_SEED, constants.PRNG_STREAM_DUNGEONS)
+
     game_map = GameMap(constants.MAP_WIDTH, constants.MAP_HEIGHT)
     # game_map.make_map(constants.MAX_ROOMS, constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE, constants.MAP_WIDTH,constants.MAP_HEIGHT, gameworld, player)
-    game_map.make_bsp_map(player, gameworld)
+    # game_map.generate_bsp_map()
+    # game_map.test_map()
+    game_map.rogue_make_bsp_map()
 
     fov_compute = True
     # fov_map = GameMap.make_fov_map(game_map)

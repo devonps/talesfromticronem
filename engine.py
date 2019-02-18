@@ -1,4 +1,5 @@
 import tcod
+import random
 
 
 from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, constants
@@ -57,7 +58,7 @@ def game_replay(con):
 @logger.catch()
 def main():
 
-    #logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
+    # logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
 
     logger.info('*********************')
     logger.info('* Initialising game *')
@@ -120,6 +121,14 @@ def main():
         if player_seed:
             player_supplied_seed = "ABSTRACTIONISM"
             constants.PLAYER_SEED = player_supplied_seed
+
+            my_random = tcod.random_new_from_seed(1059)
+            logger.info('random seed set up {}', my_random)
+
+            for x in range(11):
+                r = my_random.randint(0,10)
+                logger.info('random number chosen {}', r)
+
 
         if new_game:
             logger.info('New game starting')
