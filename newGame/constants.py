@@ -12,7 +12,7 @@ LOGFILE = LOG_FOLDER + LOG_FILENAME + LOG_TIME + LOG_EXTENSION
 LOGFORMAT = LOG_TIME + ' | {level} | {message}'
 
 # PCG
-PLAYER_SEED = ''
+PLAYER_SEED = 'danger'
 WORLD_SEED = 0
 
 # individual streams used throughout the game
@@ -41,9 +41,11 @@ MAP_WIDTH = 80
 MAP_HEIGHT = 40
 
 # BSP Map settings
-MAP_BSP_NO_SPLITS = 10
-MAP_BSP_ROOM_MIN_SIZE = 5
-MAP_BSP_FULL_ROOMS = True
+BSP_TIMES_SPLIT = 6
+MAP_BSP_ROOM_MIN_SIZE = 4
+MAP_BSP_FULL_ROOMS = False
+BSP_MIN_SPLIT = .35
+BSP_MAX_SPLIT = .70
 
 # dungeon viewport
 VIEWPORT_WIDTH = 82

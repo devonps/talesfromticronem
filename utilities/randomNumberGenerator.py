@@ -3,7 +3,7 @@ Implementation of the PCG random number generator, Python OO style.
 For the original docs, read
 `this <http://www.pcg-random.org/using-pcg-c-basic.html>`_.
 """
-
+from loguru import logger
 
 def _uint32(n):
     return n & 0xffffffff
@@ -93,12 +93,21 @@ class PCG32Generator:
         :param upper: This is the maximum value you want returned
         :return: An integer between lower (inclusive) and upper (exclusive)
         """
-        value = -1
-        while True:
-            if value < lower:
-                value = PCG32Generator.get_next_uint(self, upper)
+        if lower > upper:
+            l = upper
+            upper = lower
+            lower = l
+
+        if lower == upper:
+            return lower
+        value = PCG32Generator.get_next_uint(self, upper)
+        vx = False
+        while not vx:
+            if value >= lower:
+                vx = True
             else:
-                return value
+                value = PCG32Generator.get_next_uint(self, upper)
+        return value
 
     def convert_string_to_integer(value):
         """
