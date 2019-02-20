@@ -40,13 +40,6 @@ MENU_MAX_HEIGHT = 7
 MAP_WIDTH = 80
 MAP_HEIGHT = 40
 
-# BSP Map settings
-BSP_TIMES_SPLIT = 6
-MAP_BSP_ROOM_MIN_SIZE = 4
-MAP_BSP_FULL_ROOMS = False
-BSP_MIN_SPLIT = .35
-BSP_MAX_SPLIT = .70
-
 # dungeon viewport
 VIEWPORT_WIDTH = 82
 VIEWPORT_HEIGHT = 42
@@ -54,7 +47,7 @@ VIEWPORT_START_X = 0
 VIEWPORT_START_Y = 0
 
 # dungeon wall/floor
-DNG_FLOOR = ' '
+DNG_FLOOR = '.'
 DNG_WALL = '#'
 
 # game map drawing offsets for use with viewport
@@ -66,8 +59,8 @@ VIEWPORT_SCROLL_X = 30
 VIEWPORT_SCROLL_Y = 30
 
 # FOV settings
-FOV_ALGORITHM = tcod.FOV_BASIC
-FOV_LIGHT_WALLS = True
+FOV_ALGORITHM = tcod.FOV_RESTRICTIVE
+FOV_LIGHT_WALLS = False
 FOV_RADIUS = 10
 
 # HUD_X_LEFT_COLUMN = 2
@@ -109,8 +102,8 @@ SPELL_SLOTS_X = 21
 
 # simple-dungeon room information
 ROOM_MAX_SIZE = 10
-ROOM_MIN_SIZE = 6
-MAX_ROOMS = 30
+ROOM_MIN_SIZE = 10
+MAX_ROOMS = 10
 
 # spell constants
 AOE_SMALL = 1

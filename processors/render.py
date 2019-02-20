@@ -108,10 +108,10 @@ class RenderConsole(esper.Processor):
         if has_player_moved:
             GameMap.calculate_fov(self.fov_map, player_position_component.x, player_position_component.y, constants.FOV_RADIUS, constants.FOV_LIGHT_WALLS,constants.FOV_ALGORITHM)
 
-            for map_cell_y in range(self.game_map.height):
-                for map_cell_x in range(self.game_map.width):
-                    # isVisible = tcod.map_is_in_fov(self.fov_map, map_cell_x, map_cell_y)
-                    isVisible = True
+            for map_cell_x in range(self.game_map.width):
+                for map_cell_y in range(self.game_map.height):
+                    isVisible = tcod.map_is_in_fov(self.fov_map, map_cell_x, map_cell_y)
+                    # isVisible = True
                     wall = self.game_map.tiles[map_cell_x][map_cell_y].block_path
 
                     draw_pos_x = constants.MAP_VIEW_DRAW_X + map_cell_x
