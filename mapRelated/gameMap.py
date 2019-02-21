@@ -2,8 +2,8 @@ import tcod
 import random
 import tcod.bsp
 
-from map_objects.tile import Tile
-from map_objects.rectangle import Rect, obj_Room
+from mapRelated.tile import Tile
+from mapRelated.rectangle import Rect
 from components import mobiles
 from newGame import constants
 from loguru import logger
@@ -94,64 +94,21 @@ class GameMap:
 
         self.create_h_tunnel(25,40,23)
 
-    def create_h_tunnel(self, x1, x2, y):
-        for x in range(min(x1, x2), max(x1, x2) + 1):
-            self.tiles[x][y].block_path = False
-            self.tiles[x][y].block_sight = False
+    @staticmethod
+    def xcreate_fov_map(game_map):
+        fov_map = tcod.map_new(game_map.width, game_map.height)
 
-    def create_v_tunnel(self, y1, y2, x):
-        for y in range(min(y1, y2), max(y1, y2) + 1):
-            self.tiles[x][y].block_path = False
-            self.tiles[x][y].block_sight = False
+        for mapx, mapy, tile in game_map:
+            if tile == constants.TILE_TYPE_WALL:
+                tcod.map_set_properties(fov_map, mapx, mapy, isTrans=False, isWalk=False)
+            if tile == constants.TILE_TYPE_FLOOR:
+                tcod.map_set_properties(fov_map, mapx, mapy, isTrans=True, isWalk=True)
+            if tile == constants.TILE_TYPE_CORRIDOR:
+                tcod.map_set_properties(fov_map, mapx, mapy, isTrans=True, isWalk=True)
+            if tile == constants.TILE_TYPE_DOOR:
+                tcod.map_set_properties(fov_map, mapx, mapy, isTrans=False, isWalk=True)
 
-    def vline(self, x, y1, y2):
-        if y1 > y2:
-            y1, y2 = y2, y1
 
-        for y in range(y1, y2 + 1):
-            self.tiles[x][y].block_path = False
-            self.tiles[x][y].block_sight = False
-
-    def vline_up(self, x, y):
-        while y >= 0 and self.tiles[x][y].block_path == True:
-            self.tiles[x][y].block_path = False
-            self.tiles[x][y].block_sight = False
-            y -= 1
-
-    def vline_down(self, x, y):
-        while y < constants.MAP_HEIGHT and self.tiles[x][y].block_path == True:
-            self.tiles[x][y].block_path = False
-            self.tiles[x][y].block_sight = False
-            y += 1
-
-    def hline(self, x1, y, x2):
-        if x1 > x2:
-            x1, x2 = x2, x1
-        for x in range(x1, x2 + 1):
-            self.tiles[x][y].block_path = False
-            self.tiles[x][y].block_sight = False
-
-    def hline_left(self, x, y):
-        while x >= 0 and self.tiles[x][y].block_path == True:
-            self.tiles[x][y].block_path = False
-            self.tiles[x][y].block_sight = False
-            x -= 1
-
-    def hline_right(self, x, y):
-        while x < constants.MAP_WIDTH and self.tiles[x][y].block_path == True:
-            self.tiles[x][y].block_path = False
-            self.tiles[x][y].block_sight = False
-            x += 1
-
-    def is_blocked(self, x, y):
-        if self.tiles[x][y].block_path:
-            return True
-
-    def create_room(self, room):
-        for x in range(room.x + 1, room.w):
-            for y in range(room.y + 1, room.h):
-                self.tiles[x][y].block_path = False
-                self.tiles[x][y].block_sight = False
 
     @staticmethod
     def make_fov_map(game_map):
@@ -159,10 +116,75 @@ class GameMap:
 
         for y in range(game_map.height):
             for x in range(game_map.width):
-                tcod.map_set_properties(fov_map, x, y, not game_map.tiles[x][y].transparent,
-                                        not game_map.tiles[x][y].block_path)
+
+                # tcod.map_set_properties(fov_map, x, y, not game_map.tiles[x][y].type_of_tile,
+                #                         not game_map.tiles[x][y].block_path)
+                tcod.map_set_properties(fov_map, x, y, isTrans=True, isWalk=True)
         return fov_map
 
     @staticmethod
-    def calculate_fov(fov_map, x, y, radius, light_walls=False, algo =0):
+    def calculate_fov(fov_map, x, y, radius, light_walls=False, algo=0):
         tcod.map_compute_fov(m=fov_map, x=x, y=y, radius=radius, light_walls=light_walls, algo=algo)
+
+    # def create_h_tunnel(self, x1, x2, y):
+    #     for x in range(min(x1, x2), max(x1, x2) + 1):
+    #         self.tiles[x][y].block_path = False
+    #         self.tiles[x][y].block_sight = False
+    #
+    # def create_v_tunnel(self, y1, y2, x):
+    #     for y in range(min(y1, y2), max(y1, y2) + 1):
+    #         self.tiles[x][y].block_path = False
+    #         self.tiles[x][y].block_sight = False
+    #
+    # def vline(self, x, y1, y2):
+    #     if y1 > y2:
+    #         y1, y2 = y2, y1
+    #
+    #     for y in range(y1, y2 + 1):
+    #         self.tiles[x][y].block_path = False
+    #         self.tiles[x][y].block_sight = False
+    #
+    # def vline_up(self, x, y):
+    #     while y >= 0 and self.tiles[x][y].block_path == True:
+    #         self.tiles[x][y].block_path = False
+    #         self.tiles[x][y].block_sight = False
+    #         y -= 1
+    #
+    # def vline_down(self, x, y):
+    #     while y < constants.MAP_HEIGHT and self.tiles[x][y].block_path == True:
+    #         self.tiles[x][y].block_path = False
+    #         self.tiles[x][y].block_sight = False
+    #         y += 1
+    #
+    # def hline(self, x1, y, x2):
+    #     if x1 > x2:
+    #         x1, x2 = x2, x1
+    #     for x in range(x1, x2 + 1):
+    #         self.tiles[x][y].block_path = False
+    #         self.tiles[x][y].block_sight = False
+    #
+    # def hline_left(self, x, y):
+    #     while x >= 0 and self.tiles[x][y].block_path == True:
+    #         self.tiles[x][y].block_path = False
+    #         self.tiles[x][y].block_sight = False
+    #         x -= 1
+    #
+    # def hline_right(self, x, y):
+    #     while x < constants.MAP_WIDTH and self.tiles[x][y].block_path == True:
+    #         self.tiles[x][y].block_path = False
+    #         self.tiles[x][y].block_sight = False
+    #         x += 1
+
+    def get_type_of_tile(self, x, y):
+        return self.tiles[x][y].type_of_tile
+
+    def is_blocked(self, x, y):
+        #if self.tiles[x][y].type_of_tile == constants.TILE_TYPE_WALL:
+        if self.grid[x][y] == constants.TILE_TYPE_WALL:
+            return True
+
+    def create_room(self, room):
+        for x in range(room.x + 1, room.w):
+            for y in range(room.y + 1, room.h):
+                self.tiles[x][y].type_of_tile = constants.TILE_TYPE_FLOOR
+

@@ -1,7 +1,7 @@
 import esper
 
 from components import mobiles
-from map_objects.gameMap import GameMap
+from mapRelated.gameMap import GameMap
 
 
 class MoveEntities(esper.Processor):
@@ -13,7 +13,6 @@ class MoveEntities(esper.Processor):
     def process(self, *args, **kwargs):
         for ent, (vel, pos) in self.gameworld.get_components(mobiles.Velocity, mobiles.Position):
             am_i_blocked = self.check_for_blocked_movement(pos.x + vel.dx, pos.y + vel.dy)
-
             if not am_i_blocked:
                 pos.x += vel.dx
                 pos.y += vel.dy

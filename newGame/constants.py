@@ -49,6 +49,18 @@ VIEWPORT_START_Y = 0
 # dungeon wall/floor
 DNG_FLOOR = '.'
 DNG_WALL = '#'
+DNG_DOOR = '+'
+
+# tile constants
+TILE_TYPE_EMPTY = 0
+TILE_TYPE_FLOOR = 1
+TILE_TYPE_CORRIDOR = 2
+TILE_TYPE_DOOR = 3
+TILE_TYPE_DEADEND = 4
+TILE_TYPE_WALL = 5
+TILE_TYPE_OBSTACLE = 6
+TILE_TYPE_CAVE = 7
+TILE_TYPE_WATER = 9
 
 # game map drawing offsets for use with viewport
 MAP_VIEW_DRAW_X = VIEWPORT_START_X + 1
@@ -59,12 +71,9 @@ VIEWPORT_SCROLL_X = 30
 VIEWPORT_SCROLL_Y = 30
 
 # FOV settings
-FOV_ALGORITHM = tcod.FOV_RESTRICTIVE
+FOV_ALGORITHM = tcod.FOV_BASIC
 FOV_LIGHT_WALLS = False
 FOV_RADIUS = 10
-
-# HUD_X_LEFT_COLUMN = 2
-# HUD_Y_TOP_ROW = 2
 
 # message box settings
 MSG_PANEL_START_Y = VIEWPORT_HEIGHT
@@ -99,11 +108,6 @@ SPELL_SLOTS_Y = 55
 SPELL_SLOTS_X = 21
 
 # status effects settings
-
-# simple-dungeon room information
-ROOM_MAX_SIZE = 10
-ROOM_MIN_SIZE = 10
-MAX_ROOMS = 10
 
 # spell constants
 AOE_SMALL = 1
