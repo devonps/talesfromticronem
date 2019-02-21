@@ -12,9 +12,13 @@ from components.addStatusEffects import process_status_effect
 from utilities.jsonUtilities import read_json_file
 from utilities.randomNumberGenerator import PCG32Generator
 from utilities.externalfileutilities import Externalfiles
-from map_objects.gameMap import GameMap
+from utilities.dateTimeUtilities import secondsToText
+from mapRelated.gameMap import GameMap
 from processors.render import RenderConsole, RenderInventory, RenderPlayerCharacterScreen
 from processors.move_entities import MoveEntities
+from mapRelated.dungeonGenerator import dungeonGenerator
+from time import time
+
 
 def setup_game(con, gameworld):
 
@@ -60,19 +64,27 @@ def initialise_game_map(con, gameworld, player, spell_bar, message_log):
     # create game map
     # dungeon_seed_stream = PCG32Generator(constants.WORLD_SEED, constants.PRNG_STREAM_DUNGEONS)
 
-    game_map = GameMap(constants.MAP_WIDTH, constants.MAP_HEIGHT)
-    game_map.make_map(constants.MAX_ROOMS, constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE, constants.MAP_WIDTH,constants.MAP_HEIGHT, gameworld, player)
-    # game_map.test_map()
+    # define map size (y,x) max tiles to use in direction
+    levelSize = [40, 80]
+    # create class instance; ALWAYS required
+    d = dungeonGenerator(levelSize[0], levelSize[1])
+    start_time = time()
+    d.placeRandomRooms(minRoomSize=5, maxRoomSize=15, roomStep=1, margin=1, attempts=2000)
+    d.generateCorridors('l')
+    d.connectAllRooms(0)
+    d.pruneDeadends(50)
+
+    # join unconnected areas
+    unconnected = d.findUnconnectedAreas()
+    d.joinUnconnectedAreas(unconnected)
+    d.placeWalls()
+
+    game_map = d
+
+    logger.info("Map Generated in %s" % (str(secondsToText(time() - start_time))))
 
     fov_compute = True
     fov_map = GameMap.make_fov_map(game_map)
-
-    # fov_map = tcod.map_new(game_map.width, game_map.height)
-    #
-    # for y in range(game_map.height):
-    #     for x in range(game_map.width):
-    #         tcod.map_set_properties(fov_map, x, y, not game_map.tiles[x][y].transparent,
-    #                                 not game_map.tiles[x][y].block_path)
 
 
     # place entities (enemies, items)
@@ -133,21 +145,3 @@ def generate_items(gameworld):
     # generate_weapons(gameworld)
 
     # assign spells to weapons
-
-
-def generate_weapons(gameworld):
-    staff = WeaponClass.create_weapon(gameworld, 'staff')
-    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-    load_weapon_with_spells(gameworld, staff, 'staff', 'necromancer')
-
-    focus = WeaponClass.create_weapon(gameworld, 'focus')
-    load_weapon_with_spells(gameworld, focus, 'focus', 'necromancer')
-
-    rod = WeaponClass.create_weapon(gameworld, 'rod')
-    load_weapon_with_spells(gameworld, rod, 'rod', 'necromancer')
-
-    sword = WeaponClass.create_weapon(gameworld, 'sword')
-    load_weapon_with_spells(gameworld, sword, 'sword', 'necromancer')
-
-    wand = WeaponClass.create_weapon(gameworld, 'wand')
-    load_weapon_with_spells(gameworld, wand, 'wand', 'necromancer')

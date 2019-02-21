@@ -7,7 +7,7 @@ from components import mobiles
 from utilities.display import menu
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
-from map_objects.gameMap import GameMap
+from mapRelated.gameMap import GameMap
 from newGame.game_messages import MessageLog, Message
 
 
@@ -65,7 +65,7 @@ class RenderConsole(esper.Processor):
         self.render_player_status_effects_content(constants.H_BAR_X, constants.H_BAR_Y + 6, chr(10), tcod.white)
 
         # render the game map
-        self.render_game_map()
+        self.render_map()
 
         # draw the entities
         self.render_entities()
@@ -98,40 +98,46 @@ class RenderConsole(esper.Processor):
                 tcod.console_put_char_ex(self.con, constants.SPELL_BAR_X + (spellSlot * constants.SPELL_BOX_WIDTH) + 2, constants.SPELL_SLOTS_Y + 1, '&', tcod.yellow, tcod.black)
                 tcod.console_put_char_ex(self.con, constants.SPELL_BAR_X + (spellSlot * constants.SPELL_BOX_WIDTH) + 3, constants.SPELL_SLOTS_Y, '*', tcod.white, tcod.black)
 
-    def render_game_map(self):
-
+    def render_map(self):
         thisplayer = MobileUtilities.get_player_entity(self.gameworld)
         player_position_component = self.gameworld.component_for_entity(thisplayer, mobiles.Position)
 
         has_player_moved = MobileUtilities.has_player_moved(self.gameworld)
+        # has_player_moved = True
 
         if has_player_moved:
+            # calculate FOV
             GameMap.calculate_fov(self.fov_map, player_position_component.x, player_position_component.y, constants.FOV_RADIUS, constants.FOV_LIGHT_WALLS,constants.FOV_ALGORITHM)
 
-            for map_cell_x in range(self.game_map.width):
-                for map_cell_y in range(self.game_map.height):
-                    isVisible = tcod.map_is_in_fov(self.fov_map, map_cell_x, map_cell_y)
-                    # isVisible = True
-                    wall = self.game_map.tiles[map_cell_x][map_cell_y].block_path
+            for mapx, mapy, tile in self.game_map:
+                isVisible = tcod.map_is_in_fov(self.fov_map, mapx, mapy)
+                # isVisible = True
+                draw_pos_x = constants.MAP_VIEW_DRAW_X + mapx
+                draw_pos_y = constants.MAP_VIEW_DRAW_Y + mapy
+                if isVisible:
+                    if tile == constants.TILE_TYPE_WALL:
+                        tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_WALL, constants.colors.get('light_wall'), tcod.black)
+                    elif tile == constants.TILE_TYPE_FLOOR:
+                        tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR, constants.colors.get('light_ground'),tcod.black)
+                    elif tile == constants.TILE_TYPE_DOOR:
+                        tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_DOOR, constants.colors.get('light_ground'),tcod.black)
+                    elif tile == constants.TILE_TYPE_CORRIDOR:
+                        tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR, constants.colors.get('dark_ground'),tcod.black)
+                    # tile += constants.TILE_TYPE_EXPLORED
 
-                    draw_pos_x = constants.MAP_VIEW_DRAW_X + map_cell_x
-                    draw_pos_y = constants.MAP_VIEW_DRAW_Y + map_cell_y
-
-                    if isVisible:
-                        if wall:
-                            #tcod.console_set_char_background(self.con, draw_pos_x, draw_pos_y, constants.colors.get('light_wall'), tcod.BKGND_SET)
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_WALL, constants.colors.get('light_wall'), tcod.black)
-                        else:
-                            #tcod.console_set_char_background(self.con, draw_pos_x, draw_pos_y, constants.colors.get('light_ground'), tcod.BKGND_SET)
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR, constants.colors.get('light_ground'),tcod.black)
-                        self.game_map.tiles[map_cell_x][map_cell_y].explored = True
-                    elif self.game_map.tiles[map_cell_x][map_cell_y].explored:
-                        if wall:
-                            #tcod.console_set_char_background(self.con, draw_pos_x, draw_pos_y, constants.colors.get('dark_wall'), tcod.BKGND_SET)
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_WALL, constants.colors.get('dark_wall'), tcod.black)
-                        else:
-                            #tcod.console_set_char_background(self.con, draw_pos_x, draw_pos_y, constants.colors.get('dark_ground'), tcod.BKGND_SET)
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR, constants.colors.get('dark_ground'),tcod.black)
+                else:
+                    if tile == constants.TILE_TYPE_WALL:
+                        tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_WALL,
+                                                 constants.colors.get('dark_wall'), tcod.black)
+                    elif tile == constants.TILE_TYPE_FLOOR:
+                        tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR,
+                                                 constants.colors.get('dark_ground'), tcod.black)
+                    elif tile == constants.TILE_TYPE_DOOR:
+                        tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_DOOR,
+                                                 constants.colors.get('dark_ground'), tcod.black)
+                    elif tile == constants.TILE_TYPE_CORRIDOR:
+                        tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR,
+                                                 constants.colors.get('dark_ground'), tcod.black)
 
     def render_entities(self):
         for ent, (rend, pos, desc) in self.world.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
