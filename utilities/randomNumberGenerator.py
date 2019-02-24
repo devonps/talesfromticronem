@@ -3,7 +3,10 @@ Implementation of the PCG random number generator, Python OO style.
 For the original docs, read
 `this <http://www.pcg-random.org/using-pcg-c-basic.html>`_.
 """
+import tcod
+
 from loguru import logger
+from newGame import constants
 
 def _uint32(n):
     return n & 0xffffffff
@@ -124,3 +127,29 @@ class PCG32Generator:
             sm += b1
 
         return sm
+
+
+class TCODGenerator:
+
+    @staticmethod
+    def generate_tcod_random_seed(seed_object):
+        """
+        This method is called from within the map generation routines that require a deterministic tcod
+        RNG, such as the tcod.bsp map generation routines.
+
+        It takes a PCG32Generator object (seed_object) and uses it to create a tcod random number generator
+
+        :param seed_object: 32bit Integer, has already been used in the PCG32Generator class, as in this example
+                    dungeon_seed = PCG32Generator(constants.WORLD_SEED, constants.PRNG_STREAM_DUNGEONS)
+        :return: tcod random number generator object
+        """
+
+        my_rng = seed_object.get_next_uint32()
+
+        tcod_random_object = tcod.random_new_from_seed(my_rng, 0)
+
+        return tcod_random_object
+
+    @staticmethod
+    def destroy_tcod_random_seed(seed_object):
+        tcod.random_delete(seed_object)

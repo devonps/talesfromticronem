@@ -48,7 +48,7 @@ VIEWPORT_START_Y = 0
 
 # dungeon wall/floor
 DNG_FLOOR = '.'
-DNG_WALL = '#'
+DNG_WALL = chr(178)
 DNG_DOOR = '+'
 
 # tile constants

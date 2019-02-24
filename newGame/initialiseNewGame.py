@@ -9,6 +9,7 @@ from newGame.newCharacter import NewCharacter
 from newGame.game_messages import MessageLog, Message
 from components import spells
 from components.addStatusEffects import process_status_effect
+from components import mobiles
 from utilities.jsonUtilities import read_json_file
 from utilities.randomNumberGenerator import PCG32Generator
 from utilities.externalfileutilities import Externalfiles
@@ -17,6 +18,7 @@ from mapRelated.gameMap import GameMap
 from processors.render import RenderConsole, RenderInventory, RenderPlayerCharacterScreen
 from processors.move_entities import MoveEntities
 from mapRelated.dungeonGenerator import dungeonGenerator
+from mapRelated.fov import FieldOfView
 from time import time
 
 
@@ -84,12 +86,12 @@ def initialise_game_map(con, gameworld, player, spell_bar, message_log):
     logger.info("Map Generated in %s" % (str(secondsToText(time() - start_time))))
 
     fov_compute = True
-    fov_map = GameMap.make_fov_map(game_map)
 
+    fov = FieldOfView(game_map)
 
     # place entities (enemies, items)
 
-    render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld, fov_compute=fov_compute, fov_map=fov_map, spell_bar=spell_bar, message_log=message_log )
+    render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld, fov_compute=fov_compute, fov_object=fov, spell_bar=spell_bar, message_log=message_log )
     render_inventory_screen = RenderInventory()
     render_character_screen = RenderPlayerCharacterScreen()
     move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
