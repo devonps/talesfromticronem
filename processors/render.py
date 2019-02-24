@@ -7,18 +7,19 @@ from components import mobiles
 from utilities.display import menu
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
+from mapRelated.fov import FieldOfView
 from mapRelated.gameMap import GameMap
 from newGame.game_messages import MessageLog, Message
 
 
 class RenderConsole(esper.Processor):
-    def __init__(self, con, game_map, gameworld, fov_compute, fov_map, spell_bar, message_log):
+    def __init__(self, con, game_map, gameworld, fov_compute, fov_object, spell_bar, message_log):
         super().__init__()
         self.con = con
         self.game_map = game_map
         self.gameworld = gameworld
         self.fov_compute = fov_compute
-        self.fov_map = fov_map
+        self.fov_object = fov_object
         self.spell_bar = spell_bar
         self.message_log = message_log
 
@@ -101,17 +102,20 @@ class RenderConsole(esper.Processor):
     def render_map(self):
         thisplayer = MobileUtilities.get_player_entity(self.gameworld)
         player_position_component = self.gameworld.component_for_entity(thisplayer, mobiles.Position)
+        # fov_map = self.fov_object.create_fov_map_via_raycasting(player_position_component.x, player_position_component.y)
 
         has_player_moved = MobileUtilities.has_player_moved(self.gameworld)
         # has_player_moved = True
 
         if has_player_moved:
             # calculate FOV
-            GameMap.calculate_fov(self.fov_map, player_position_component.x, player_position_component.y, constants.FOV_RADIUS, constants.FOV_LIGHT_WALLS,constants.FOV_ALGORITHM)
+            fov_map = self.fov_object.create_fov_map_via_raycasting(player_position_component.x, player_position_component.y)
+            # GameMap.calculate_fov(self.fov_map, player_position_component.x, player_position_component.y, constants.FOV_RADIUS, constants.FOV_LIGHT_WALLS,constants.FOV_ALGORITHM)
 
             for mapx, mapy, tile in self.game_map:
-                isVisible = tcod.map_is_in_fov(self.fov_map, mapx, mapy)
+                # isVisible = tcod.map_is_in_fov(self.fov_map, mapx, mapy)
                 # isVisible = True
+                isVisible = FieldOfView.get_fov_map_point(fov_map, mapx, mapy)
                 draw_pos_x = constants.MAP_VIEW_DRAW_X + mapx
                 draw_pos_y = constants.MAP_VIEW_DRAW_Y + mapy
                 if isVisible:
@@ -122,7 +126,7 @@ class RenderConsole(esper.Processor):
                     elif tile == constants.TILE_TYPE_DOOR:
                         tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_DOOR, constants.colors.get('light_ground'),tcod.black)
                     elif tile == constants.TILE_TYPE_CORRIDOR:
-                        tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR, constants.colors.get('dark_ground'),tcod.black)
+                        tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR, constants.colors.get('light_ground'),tcod.black)
                     # tile += constants.TILE_TYPE_EXPLORED
 
                 else:

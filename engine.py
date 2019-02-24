@@ -1,5 +1,4 @@
 import tcod
-import random
 
 
 from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, constants
@@ -11,6 +10,8 @@ from utilities.gameworld import reset_gameworld
 from utilities.replayGame import ReplayGame
 from components import userInput
 from loguru import logger
+
+from utilities.randomNumberGenerator import PCG32Generator, TCODGenerator
 
 
 def start_game(con, gameworld):
