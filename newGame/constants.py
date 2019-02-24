@@ -1,6 +1,5 @@
 import tcod
 
-
 GAME_WINDOW_TITLE = 'Tales from Ticronem'
 
 # logging

@@ -41,6 +41,8 @@
 from inspect import currentframe, getframeinfo
 from random import randint, choice, randrange, sample
 
+from utilities.randomNumberGenerator import PCG32Generator
+
 #tile constants
 EMPTY    = 0
 FLOOR    = 1
@@ -136,7 +138,7 @@ class dungeonGenerator:
 	    ** once created these will not be re-instanced, therefore any user made changes to grid will also need to update these lists for them to remain valid
 	"""
 
-	def __init__(self, height, width):
+	def __init__(self, height, width, rand_gen_object):
 
 		self.height = abs(height)
 		self.width = abs(width)      
@@ -147,6 +149,7 @@ class dungeonGenerator:
 		self.corridors = []
 		self.deadends = []        
 		self.graph = {}
+		self.rand_gen_object = rand_gen_object
 
 		# GK101 Additions:
 		self.hostabletiles = []
@@ -393,7 +396,6 @@ class dungeonGenerator:
 				if self.grid[nx][ny]: touching += 1
 			if touching == 1: self.deadends.append((x,y))
 
-
 	##### GENERATION FUNCTIONS ##### 
 
 	def placeRoom(self, startX, startY, roomWidth, roomHeight, ignoreOverlap = False):
@@ -435,17 +437,17 @@ class dungeonGenerator:
 		"""
 
 		for attempt in range(attempts):
-			roomWidth = randrange(minRoomSize, maxRoomSize, roomStep)
-			roomHeight = randrange(minRoomSize, maxRoomSize, roomStep)
-			startX = randint(0, self.width)
-			startY = randint(0, self.height)            
+			roomWidth = PCG32Generator.get_next_number_in_range(self.rand_gen_object, minRoomSize, maxRoomSize)
+			roomHeight = PCG32Generator.get_next_number_in_range(self.rand_gen_object, minRoomSize, maxRoomSize)
+			startX = PCG32Generator.get_next_uint(self.rand_gen_object, self.width + 1)
+			startY = PCG32Generator.get_next_uint(self.rand_gen_object, self.height + 1)
 			if self.quadFits(startX, startY, roomWidth, roomHeight, margin):
 				for x in range(roomWidth):
 					for y in range(roomHeight):
 						self.grid[startX+x][startY+y] = FLOOR
 				self.rooms.append(dungeonRoom(startX, startY, roomWidth, roomHeight))
 
-	def generateCaves(self, p = 45, smoothing = 4):
+	def generateCaves(self, p=45, smoothing=4):
 		"""
 		Generates more organic shapes using cellular automatation
 
@@ -459,7 +461,8 @@ class dungeonGenerator:
 		try:
 			for x in range(self.width):
 				for y in range(self.height):
-					if randint(0, 100) < p:
+					rnd_number = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, 100)
+					if rnd_number < p:
 						self.grid[x][y] = CAVE
 			for i in range(smoothing):
 				for x in range(self.width):
@@ -481,7 +484,8 @@ class dungeonGenerator:
 
 		for x in range(self.width):
 			for y in range(self.height):
-				if randint(0, 100) < p:
+				rnd_number = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, 100)
+				if rnd_number < p:
 					self.grid[x][y] = CAVE
 		for i in range(smoothing):
 			for x in range(self.width):
@@ -497,7 +501,7 @@ class dungeonGenerator:
 					elif touchingEmptySpace <= 2:
 						self.grid[x][y] = EMPTY
 
-	def generateCorridors(self, mode = 'r', x = None, y = None):
+	def generateCorridors(self, mode='r', x = None, y = None):
 		"""
 		generates a maze of corridors on the growing tree algorithm, 
 		where corridors do not overlap with over tiles, are 1 tile away from anything else and there are no diagonals
@@ -518,12 +522,12 @@ class dungeonGenerator:
 		"""
 
 		cells = [] 
-		if not x and not y:       
-			x = randint(1, self.width-2)
-			y = randint(1, self.height-2)        
+		if not x and not y:
+			x = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 1, (self.width-2) + 1)
+			y = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 1, (self.height - 2) + 1)
 			while not self.canCarve(x, y, 0, 0):
-				x = randint(1, self.width-2)
-				y = randint(1, self.height-2)
+				x = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 1, (self.width-2) + 1)
+				y = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 1, (self.height - 2) + 1)
 		self.grid[x][y] = CORRIDOR
 		self.corridors.append((x,y))
 		cells.append((x,y))
@@ -538,7 +542,9 @@ class dungeonGenerator:
 				x, y = cells[len(cells)//2]
 			possMoves = self.getPossibleMoves(x, y)
 			if possMoves:
-				xi, yi = choice(possMoves)
+				nb = len(possMoves)
+				chosen_move = PCG32Generator.get_next_uint(self.rand_gen_object, nb)
+				xi,yi = possMoves[chosen_move]
 				self.grid[xi][yi] = CORRIDOR
 				self.corridors.append((xi,yi))
 				cells.append((xi, yi))
