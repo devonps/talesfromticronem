@@ -39,7 +39,7 @@
 #       _removeMatchTiles                                        #            
 ##################################################################
 from inspect import currentframe, getframeinfo
-from random import randint, choice, randrange, sample
+# from random import randint, choice, randrange, sample
 
 from utilities.randomNumberGenerator import PCG32Generator
 
@@ -396,7 +396,11 @@ class dungeonGenerator:
 				if self.grid[nx][ny]: touching += 1
 			if touching == 1: self.deadends.append((x,y))
 
-	##### GENERATION FUNCTIONS ##### 
+	##### GENERATION FUNCTIONS #####
+
+	def generateBSPMap(self):
+		pass
+
 
 	def placeRoom(self, startX, startY, roomWidth, roomHeight, ignoreOverlap = False):
 		"""
@@ -535,7 +539,10 @@ class dungeonGenerator:
 			if mode == 'l':
 				x, y = cells[-1]
 			elif mode == 'r':
-				x, y = choice(cells)
+				c = len(cells)
+				cl = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, c)
+				x,y = cells[cl]
+				# x, y = choice(cells)
 			elif mode == 'f':
 				x, y = cells[0]
 			elif mode == 'm':
@@ -650,13 +657,31 @@ class dungeonGenerator:
 
 		# now get rand range from src list
 		rnd = []
-		if len(src)>=2:
-			rnd = sample(src, 2)
-		elif len(src)==1:
+		if len(src) == 2:
+			rnd = src
+		if len(src) > 2:
+			s = len(src)
+			r1 = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, s)
+			rnd = src[r1]
+			r2 = r1
+			while r2 == 1:
+				r2 = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, s)
+			rnd.append(src[r2])
+			# rnd = sample(src, 2)
+		elif len(src) == 1:
 			rnd.append(src)
-			rnd.append(self.hostabletiles[randint(0, len(self.hostabletiles))])
+			hr = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, len(self.hostabletiles))
+			rnd.append(self.hostabletiles[hr])
+			# rnd.append(self.hostabletiles[randint(0, len(self.hostabletiles))])
 		else:
-			rnd = sample(self.hostabletiles, 2)
+			s = len(self.hostabletiles)
+			r1 = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, s)
+			rnd = src[r1]
+			r2 = r1
+			while r2 == 1:
+				r2 = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, s)
+			rnd.append(src[r2])
+			# rnd = sample(self.hostabletiles, 2)
 
 		# remove these from deadends as these are nolonger deadends (if ever)
 		self._removeMatchTiles(self.deadends, rnd)
@@ -705,7 +730,12 @@ class dungeonGenerator:
 		else:            
 			for c in range(count):
 				if appCnt != count:
-					rnd = sample(self.hostabletiles, count)
+					rnd = []
+					# rnd = sample(self.hostabletiles, count)
+					for z in range(count):
+						rn = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, count)
+						rnd.append(rnd[rn])
+
 					for x,y,t in rnd:
 						if appCnt<count and (t == hostType or hostType == None):
 							appCnt += 1
@@ -793,13 +823,17 @@ class dungeonGenerator:
 				while chance <= extraDoorChance:
 					pickAgain = True
 					while pickAgain:
-						x, y = choice(connections)
+						cn = len(connections)
+						cons = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, cn)
+						x,y = connections[cons]
+						# x, y = choice(connections)
 						pickAgain = False
 						for xi, yi in self.findNeighbours(x, y):
 							if self.grid[xi][yi] == DOOR:
 								pickAgain = True
 								break
-					chance = randint(0, 100)
+					chance = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, 100)
+					# chance = randint(0, 100)
 					self.grid[x][y] = DOOR
 					self.doors.append((x, y))
 			else:
@@ -907,4 +941,5 @@ class dungeonGenerator:
 			while current != (startX, startY):
 				current = cameFrom[current]
 				path.append(current)
-			return path  
+			return path
+
