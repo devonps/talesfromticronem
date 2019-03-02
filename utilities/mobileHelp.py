@@ -125,3 +125,131 @@ class MobileUtilities(numbers.Real):
         ent = gameworld.create_entity()
         gameworld.add_component(ent, userInput.Keyboard())
         gameworld.add_component(ent, userInput.Mouse())
+
+    @staticmethod
+    def calculate_armour_attribute(gameworld, entity):
+        """
+        Need to calculate the 'defense' value first
+        Then get the toughness attribute value
+        :param gameworld: object: the game world
+        :param entity: integer: represents the entity in the gameworld
+        :return: None
+        """
+        entity_armour_component = gameworld.component_for_entity(entity, mobiles.Armour)
+        primary_attribute_component = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
+        # get defense values based on equipped pieces of armour
+        def_head_value = entity_armour_component.head
+        def_chest_value = entity_armour_component.chest
+        def_legs_value = entity_armour_component.legs
+        def_feet_value = entity_armour_component.feet
+        def_hands_value = entity_armour_component.hands
+
+        defense_value = def_head_value + def_chest_value + def_hands_value + def_legs_value + def_feet_value
+        toughness_value = primary_attribute_component.toughness
+
+        armour_value = defense_value + toughness_value
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).armour = armour_value
+
+    @staticmethod
+    def calculate_boon_duration(gameworld, entity):
+        """
+        calculates the duration of the boon(s) when they are applied to the target entity
+        :param gameworld: object: the game world
+        :param entity: integer: represents the mobile in the gameworld
+        :return: None
+        """
+        entity_secondary_component = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
+
+        concentration_value = entity_secondary_component.concentration
+
+        boon_duration_value = min(100, int(concentration_value / 15))
+
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).boonDuration = boon_duration_value
+
+    @staticmethod
+    def calculate_critical_hit_chance(gameworld, entity):
+        """
+        calculates the chance the entity has to generate a critical hit.
+        The boon 'fury' gives a flat 20% increase
+        Precision, traits, spells, and weapons can all affect the value
+
+        :param gameword:
+        :param entity:
+        :return: None
+        """
+        base_value = 5  # every hit has a 5% chance of causing a critical hit
+
+        status_effects_component = gameworld.component_for_entity(entity, mobiles.StatusEffects)
+        primary_attribute_component = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
+
+        precision_value = primary_attribute_component.precision
+        applied_boons = status_effects_component.boons
+        # now cycle through the list of applied_boons looking for fury
+        boon_fury_bonus = 0
+
+        # check the traits (currently not implemented)
+        trait_bonus = 0
+
+        precision_bonus = int(precision_value / 21)
+
+        critical_chance_value = min(100, base_value + boon_fury_bonus + trait_bonus + precision_value)
+
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalChance = critical_chance_value
+
+    @staticmethod
+    def calculate_critical_damage(gameworld, entity):
+        """
+        calculates the damage caused when a critical hit has landed
+        :param gameworld:
+        :param entity:
+        :return:
+        """
+
+        base_value = 150
+        entity_secondary_component = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
+
+        ferocity_value = entity_secondary_component.ferocity
+
+        critical_damage_bonus = int(ferocity_value / 15)
+
+        critical_damage_value = base_value + critical_damage_bonus
+
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalDamage = critical_damage_value
+
+    @staticmethod
+    def calculate_condition_duration(gameworld, entity):
+        """
+        caluclates the duration for conditions when they are applied to the target
+        :param gameworld:
+        :param entity:
+        :return:
+        """
+        entity_secondary_component = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
+        expertise_value = entity_secondary_component.expertise
+
+        cond_duration = int(expertise_value / 15)
+
+        cond_duration_bonus = min(100, cond_duration)
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).conditionDuration = cond_duration_bonus
+
+    @staticmethod
+    def calculate_health(gameworld, entity):
+        """
+        Calculates the health of the entity. Base health is based on character class & vitality.
+        Health value can be affected by traits, boons, conditions, etc.
+
+        :param gameworld:
+        :param entity:
+        :return:
+        """
+        primary_attribute_component = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
+        entity_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
+        vitality_value = primary_attribute_component.vitality
+        class_base_health = entity_class_component.baseHealth
+
+        vitality_calculated_health = vitality_value * 10
+
+        health_value = vitality_calculated_health + class_base_health
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).health = health_value
+
+

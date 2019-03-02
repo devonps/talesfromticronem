@@ -69,7 +69,7 @@ def initialise_game_map(con, gameworld, player, spell_bar, message_log):
     # define map size (y,x) max tiles to use in direction
     levelSize = [40, 80]
     # create class instance; ALWAYS required
-    d = dungeonGenerator(height=levelSize[0], width=levelSize[1], rand_gen_object=dungeon_seed_stream)
+    d = dungeonGenerator(height=levelSize[0], width=levelSize[1], rand_gen_object=dungeon_seed_stream, gameworld=gameworld)
     start_time = time()
     d.placeRandomRooms(minRoomSize=5, maxRoomSize=15, roomStep=1, margin=1, attempts=2000)
     d.generateCorridors('l')
