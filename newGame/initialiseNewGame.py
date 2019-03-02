@@ -81,6 +81,8 @@ def initialise_game_map(con, gameworld, player, spell_bar, message_log):
     d.joinUnconnectedAreas(unconnected)
     d.placeWalls()
 
+    # this isn't working as intended
+    # d.generateBSPMap()
     game_map = d
 
     logger.info("Map Generated in %s" % (str(secondsToText(time() - start_time))))

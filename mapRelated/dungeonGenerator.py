@@ -41,7 +41,9 @@
 from inspect import currentframe, getframeinfo
 # from random import randint, choice, randrange, sample
 
-from utilities.randomNumberGenerator import PCG32Generator
+from utilities.randomNumberGenerator import PCG32Generator, TCODGenerator
+from newGame import constants
+import tcod.bsp
 
 #tile constants
 EMPTY    = 0
@@ -141,8 +143,7 @@ class dungeonGenerator:
 	def __init__(self, height, width, rand_gen_object):
 
 		self.height = abs(height)
-		self.width = abs(width)      
-		#self.grid = [[EMPTY for i in range(self.width)] for i in range(self.height)]
+		self.width = abs(width)
 		self.grid = [[EMPTY for i in range(self.height)] for i in range(self.width)]
 		self.rooms = []
 		self.doors = []
@@ -399,28 +400,151 @@ class dungeonGenerator:
 	##### GENERATION FUNCTIONS #####
 
 	def generateBSPMap(self):
-		pass
+		bsp_rooms = []
 
+		bsp = tcod.bsp.BSP(x=0, y=0, width=constants.MAP_WIDTH, height=constants.MAP_HEIGHT)
+
+		my_tcod_rng = TCODGenerator.generate_tcod_random_seed(self.rand_gen_object)
+
+		bsp.split_recursive(depth=constants.BSP_NO_SPLITS,
+							min_width=constants.BSP_ROOM_MIN_SIZE,
+							min_height=constants.BSP_ROOM_MIN_SIZE,
+							max_horizontal_ratio=1.5,
+							max_vertical_ratio=1.5)
+
+		tcod.bsp_traverse_inverted_level_order(bsp, callback=self.traverse_node, userData=bsp_rooms)
+
+	def traverse_node(self, node, bsp_rooms):
+		if tcod.bsp_is_leaf(node):
+			minx = node.x + 1
+			maxx = node.x + node.w - 1
+			miny = node.y + 1
+			maxy = node.y + node.h - 1
+
+			if maxx == constants.MAP_WIDTH:
+				maxx -= 1
+			if maxy == constants.MAP_HEIGHT:
+				maxy -= 1
+
+			if not constants.BSP_FULL_ROOMS:
+				minx = PCG32Generator.get_next_number_in_range(self.rand_gen_object, minx, maxx - constants.BSP_ROOM_MIN_SIZE + 1)
+				miny = PCG32Generator.get_next_number_in_range(self.rand_gen_object, miny, maxy - constants.BSP_ROOM_MIN_SIZE + 1)
+				maxx = PCG32Generator.get_next_number_in_range(self.rand_gen_object, minx + constants.BSP_ROOM_MIN_SIZE - 2, maxx)
+				maxy = PCG32Generator.get_next_number_in_range(self.rand_gen_object, miny + constants.BSP_ROOM_MIN_SIZE - 2, maxy)
+
+			node.x = minx
+			node.y = miny
+			node.w = maxx - minx + 1
+			node.h = maxy - miny + 1
+
+			# dig out the room
+			self.placeRoom(minx, miny, maxx, maxy)
+
+			# add room center coordinates to the list of rooms
+			bsp_rooms.append(((minx + maxx) / 2, (miny + maxy) / 2))
+		# create corridors
+		else:
+			left = tcod.bsp_left(node)
+			right = tcod.bsp_right(node)
+			node.x = min(left.x, right.x)
+			node.y = min(left.y, right.y)
+			node.w = max(left.x + left.w, right.x + right.w) - node.x
+			node.h = max(left.y + left.h, right.y + right.h) - node.y
+
+			if node.horizontal:
+				if left.x + left.w - 1 < right.x or right.x + right.w - 1 < left.x:
+					x1 = PCG32Generator.get_next_number_in_range(self.rand_gen_object, left.x, left.x + left.w - 1)
+					x2 = PCG32Generator.get_next_number_in_range(self.rand_gen_object, right.x, right.x + right.w - 1)
+					y = PCG32Generator.get_next_number_in_range(self.rand_gen_object, left.y + left.h, right.y)
+					self.vline_up(x1, y -1)
+					self.hline(x1, y, x2)
+					self.vline_down(x2, y + 1)
+				else:
+					minx = max(left.x, right.x)
+					maxx = min(left.x + left.w - 1, right.x + right.w - 1)
+					x = PCG32Generator.get_next_number_in_range(self.rand_gen_object, minx, maxx + 1)
+					# catch out of bounds attempt
+					while x > constants.MAP_WIDTH - 1:
+						x -= 1
+					self.vline_down(x, right.y)
+					self.vline_up(x, right.y - 1)
+			else:
+				if left.y + left.h - 1 < right.y or right.y + right.h - 1 < left.y:
+					y1 = PCG32Generator.get_next_number_in_range(self.rand_gen_object, left.y, left.y + left.h - 1)
+					y2 = PCG32Generator.get_next_number_in_range(self.rand_gen_object, right.y, right.y + right.h - 1)
+					x = PCG32Generator.get_next_number_in_range(self.rand_gen_object, left.x + left.w, right.x)
+					self.vline(x, y1, y2)
+					self.hline_right(x + 1, y2)
+				else:
+					miny = max(left.y, right.y)
+					maxy = min(left.y + left.h - 1, right.y + right.h - 1)
+					y = PCG32Generator.get_next_number_in_range(self.rand_gen_object, miny, maxy)
+					# catch out of bounds attempt
+					while y > constants.MAP_HEIGHT - 1:
+						y -= 1
+
+					self.hline_left(right.x - 1, y)
+					self.hline_right(right.x, y)
+		return True
+
+	def vline(self, x, y1, y2):
+		if y1 > y2:
+			y1, y2 = y2, y1
+		for y in range(y1, y2 + 1):
+			self.grid[x][y] = CORRIDOR
+
+	def vline_up(self, x, y):
+		while y >= 0 and self.grid[x][y] == WALL:
+			self.grid[x][y] = CORRIDOR
+			y -= 1
+
+	def vline_down(self, x, y):
+		while y < constants.MAP_HEIGHT and self.grid[x][y] == WALL:
+			self.grid[x][y] = CORRIDOR
+			y += 1
+
+	def hline(self, x1, y, x2):
+		if x1 > x2:
+			x1, x2 = x2, x1
+		for x in range(x1, x2 + 1):
+			self.grid[x][y] = CORRIDOR
+
+	def hline_left(self, x, y):
+		while x >= 0 and self.grid[x][y] == WALL:
+			self.grid[x][y] = CORRIDOR
+			x -= 1
+
+	def hline_right(self, x, y):
+		while x < constants.MAP_WIDTH and self.grid[x][y] == WALL:
+			self.grid[x][y] = CORRIDOR
+			x += 1
+
+	def carve_room(self, startX, startY, roomWidth, roomHeight):
+		for x in range(roomWidth):
+			for y in range(roomHeight):
+				self.grid[startX + x][startY + y] = FLOOR
+		self.rooms.append(dungeonRoom(startX, startY, roomWidth, roomHeight))
 
 	def placeRoom(self, startX, startY, roomWidth, roomHeight, ignoreOverlap = False):
 		"""
 		place a defined quad within the grid and add it to self.rooms
 
 		Args:
-		    x and y: integer, starting corner of the room, grid indicies
-		    roomWdith and roomHeight: integer, height and width of the room where roomWidth > x and roomHeight > y
-		    ignoreOverlap: boolean, if true the room will be placed irregardless of if it overlaps with any other tile in the grid
-		        note, if true then it is up to you to ensure the room is within the bounds of the grid
+		x and y: integer, starting corner of the room, grid indicies
+		roomWdith and roomHeight: integer, height and width of the room where roomWidth > x and roomHeight > y
+		ignoreOverlap: boolean, if true the room will be placed irregardless of if it overlaps with any other tile in the grid
+			note, if true then it is up to you to ensure the room is within the bounds of the grid
 
-		Returns:
-		    True if the room was placed
-		"""
+	Returns:
+		True if the room was placed
+	"""
 
 		if self.quadFits(startX, startY, roomWidth, roomHeight, 0) or ignoreOverlap:
-			for x in range(roomWidth):
-				for y in range(roomHeight):
-					self.grid[startX+x][startY+y] = FLOOR
-			self.rooms.append(dungeonRoom(startX, startY, roomWidth, roomHeight))
+			self.carve_room(startX=startX, startY=startY, roomWidth=roomWidth, roomHeight=roomHeight)
+			# for x in range(roomWidth):
+			# 	for y in range(roomHeight):
+			# 		self.grid[startX+x][startY+y] = FLOOR
+			# self.rooms.append(dungeonRoom(startX, startY, roomWidth, roomHeight))
 			return True
 
 	def placeRandomRooms(self, minRoomSize, maxRoomSize, roomStep = 1, margin = 1, attempts = 500):
@@ -430,14 +554,14 @@ class dungeonGenerator:
 		Populates self.rooms
 
 		Args:
-		    minRoomSize: integer, smallest size of the quad
-		    maxRoomSize: integer, largest the quad can be
-		    roomStep: integer, the amount the room size can grow by, so to get rooms of odd or even numbered sizes set roomSize to 2 and the minSize to odd/even number accordingly
-		    margin: integer, space in grid cells the room needs to be away from other tiles
-		    attempts: the amount of tries to place rooms, larger values will give denser room placements, but slower generation times
+			minRoomSize: integer, smallest size of the quad
+			maxRoomSize: integer, largest the quad can be
+			roomStep: integer, the amount the room size can grow by, so to get rooms of odd or even numbered sizes set roomSize to 2 and the minSize to odd/even number accordingly
+			margin: integer, space in grid cells the room needs to be away from other tiles
+			attempts: the amount of tries to place rooms, larger values will give denser room placements, but slower generation times
 
 		Returns:
-		    none
+			none
 		"""
 
 		for attempt in range(attempts):
@@ -446,10 +570,11 @@ class dungeonGenerator:
 			startX = PCG32Generator.get_next_uint(self.rand_gen_object, self.width + 1)
 			startY = PCG32Generator.get_next_uint(self.rand_gen_object, self.height + 1)
 			if self.quadFits(startX, startY, roomWidth, roomHeight, margin):
-				for x in range(roomWidth):
-					for y in range(roomHeight):
-						self.grid[startX+x][startY+y] = FLOOR
-				self.rooms.append(dungeonRoom(startX, startY, roomWidth, roomHeight))
+				self.carve_room(startX=startX, startY=startY, roomWidth=roomWidth, roomHeight=roomHeight)
+				# for x in range(roomWidth):
+				# 	for y in range(roomHeight):
+				# 		self.grid[startX+x][startY+y] = FLOOR
+				# self.rooms.append(dungeonRoom(startX, startY, roomWidth, roomHeight))
 
 	def generateCaves(self, p=45, smoothing=4):
 		"""

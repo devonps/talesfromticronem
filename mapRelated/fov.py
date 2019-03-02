@@ -157,7 +157,7 @@ class FieldOfView:
                 x += ax
                 y += ay
 
-                if x < 0 or y < 0 or x > self.width or y > self.height:  # If ray is out of range
+                if x < 0 or y < 0 or x > self.width - 1 or y > self.height - 1:  # If ray is out of range
                     break
 
                 fov_map[int(round(x))][int(round(y))] = True  # Make tile visible
