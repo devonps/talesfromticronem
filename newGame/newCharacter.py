@@ -50,7 +50,7 @@ def generate_player_character(gameworld):
     """
     Creates a shell for the player character details to be populated with
     :param gameworld:
-    :return:
+    :return: player entity
     """
 
     logger.debug('Creating the player character entity')
@@ -61,17 +61,11 @@ def generate_player_character(gameworld):
     gameworld.add_component(player, mobiles.Armour())
     gameworld.add_component(player, mobiles.Jewellery())
     gameworld.add_component(player, mobiles.Equipped())
-    gameworld.add_component(player, mobiles.Health(current=5000, maximum=5000))
     gameworld.add_component(player, mobiles.Velocity())
     gameworld.add_component(player, mobiles.Personality())
     gameworld.add_component(player, mobiles.ManaPool(current=500, maximum=1000))
     gameworld.add_component(player, mobiles.SpecialBar(valuecurrent=10, valuemaximum=100))
-
-    # add renderable component to player
     gameworld.add_component(player, mobiles.Renderable(is_visible=True))
-
-    # give player a false starting position - just for testing
-    gameworld.add_component(player, mobiles.Position(x=random.randrange(3, 55), y=random.randrange(5, 39), hasmoved=True))
 
     logger.info('stored as entity {}', player)
 

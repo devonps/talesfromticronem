@@ -39,10 +39,11 @@
 #       _removeMatchTiles                                        #            
 ##################################################################
 from inspect import currentframe, getframeinfo
-# from random import randint, choice, randrange, sample
-
 from utilities.randomNumberGenerator import PCG32Generator, TCODGenerator
 from newGame import constants
+from components import mobiles
+from utilities.mobileHelp import MobileUtilities
+
 import tcod.bsp
 
 #tile constants
@@ -140,7 +141,7 @@ class dungeonGenerator:
 	    ** once created these will not be re-instanced, therefore any user made changes to grid will also need to update these lists for them to remain valid
 	"""
 
-	def __init__(self, height, width, rand_gen_object):
+	def __init__(self, height, width, rand_gen_object, gameworld):
 
 		self.height = abs(height)
 		self.width = abs(width)
@@ -151,6 +152,7 @@ class dungeonGenerator:
 		self.deadends = []        
 		self.graph = {}
 		self.rand_gen_object = rand_gen_object
+		self.gameworld = gameworld
 
 		# GK101 Additions:
 		self.hostabletiles = []
@@ -547,7 +549,7 @@ class dungeonGenerator:
 			# self.rooms.append(dungeonRoom(startX, startY, roomWidth, roomHeight))
 			return True
 
-	def placeRandomRooms(self, minRoomSize, maxRoomSize, roomStep = 1, margin = 1, attempts = 500):
+	def placeRandomRooms(self, minRoomSize, maxRoomSize, roomStep=1, margin=1, attempts=500):
 		""" 
 		randomly places quads in the grid
 		takes a brute force approach: randomly a generate quad in a random place -> check if fits -> reject if not
@@ -563,7 +565,7 @@ class dungeonGenerator:
 		Returns:
 			none
 		"""
-
+		player_placed = False
 		for attempt in range(attempts):
 			roomWidth = PCG32Generator.get_next_number_in_range(self.rand_gen_object, minRoomSize, maxRoomSize)
 			roomHeight = PCG32Generator.get_next_number_in_range(self.rand_gen_object, minRoomSize, maxRoomSize)
@@ -571,10 +573,14 @@ class dungeonGenerator:
 			startY = PCG32Generator.get_next_uint(self.rand_gen_object, self.height + 1)
 			if self.quadFits(startX, startY, roomWidth, roomHeight, margin):
 				self.carve_room(startX=startX, startY=startY, roomWidth=roomWidth, roomHeight=roomHeight)
-				# for x in range(roomWidth):
-				# 	for y in range(roomHeight):
-				# 		self.grid[startX+x][startY+y] = FLOOR
-				# self.rooms.append(dungeonRoom(startX, startY, roomWidth, roomHeight))
+				if not player_placed:
+					player = MobileUtilities.get_player_entity(self.gameworld)
+					self.gameworld.add_component(player, mobiles.Position(
+						x=startX + int(roomWidth / 2),
+						y=startY + int(roomHeight / 2),
+						hasmoved=True))
+					player_placed = True
+
 
 	def generateCaves(self, p=45, smoothing=4):
 		"""
