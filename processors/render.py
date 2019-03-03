@@ -43,8 +43,11 @@ class RenderConsole(esper.Processor):
         player_entity = MobileUtilities.get_player_entity(self.gameworld)
 
         # life
-        player_current_health_component = self.gameworld.component_for_entity(player_entity, mobiles.Health)
-        current_health_percentage = MobileUtilities.get_number_as_a_percentage(player_current_health_component.current, player_current_health_component.maximum)
+
+        player_derived_attributes_component = self.gameworld.component_for_entity(player_entity, mobiles.DerivedAttributes)
+        current_health = player_derived_attributes_component.currentHealth
+        maximum_health = player_derived_attributes_component.maximumHealth
+        current_health_percentage = MobileUtilities.get_number_as_a_percentage(current_health, maximum_health)
         self.render_player_vertical_bar_content(constants.V_BAR_X, constants.V_BAR_Y, current_health_percentage, tcod.red, tcod.black)
 
         # mana

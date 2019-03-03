@@ -157,10 +157,11 @@ class DerivedAttributes:
     Health: The character's maximum health.
         Base value is determined by profession and increases with level. Increased by Vitality (1 Vitality = 10 Health).
     """
-    def __init__(self, armour=0, boonDuration=0, criticalChance=0, CriticalDamage=0, conditionDuration=0, health=0):
+    def __init__(self, armour=0, boonDuration=0, criticalChance=0, CriticalDamage=0, conditionDuration=0, maximumHealth=0):
         self.armour = armour
         self.boonDuration = boonDuration
         self.criticalChance = criticalChance
         self.criticalDamage = CriticalDamage
         self.conditionDuration = conditionDuration
-        self.health = health
+        self.maximumHealth = maximumHealth
+        self.currentHealth = maximumHealth
