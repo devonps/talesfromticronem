@@ -578,9 +578,8 @@ class dungeonGenerator:
 					self.gameworld.add_component(player, mobiles.Position(
 						x=startX + int(roomWidth / 2),
 						y=startY + int(roomHeight / 2),
-						hasmoved=True))
+						hasMoved=True))
 					player_placed = True
-
 
 	def generateCaves(self, p=45, smoothing=4):
 		"""

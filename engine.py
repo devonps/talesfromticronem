@@ -8,10 +8,7 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys, handle_menus
 from utilities.gameworld import reset_gameworld
 from utilities.replayGame import ReplayGame
-from components import userInput
 from loguru import logger
-
-from utilities.randomNumberGenerator import PCG32Generator, TCODGenerator
 
 
 def start_game(con, gameworld):

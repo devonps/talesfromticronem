@@ -127,6 +127,16 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(ent, userInput.Mouse())
 
     @staticmethod
+    def calculate_derived_attributes(gameworld, entity):
+        MobileUtilities.calculate_armour_attribute(gameworld, entity)
+        MobileUtilities.calculate_boon_duration(gameworld, entity)
+        MobileUtilities.calculate_condition_duration(gameworld, entity)
+        MobileUtilities.calculate_critical_damage(gameworld, entity)
+        MobileUtilities.calculate_critical_hit_chance(gameworld, entity)
+        MobileUtilities.calculate_max_health(gameworld, entity)
+        MobileUtilities.calculate_current_health(gameworld, entity)
+
+    @staticmethod
     def calculate_armour_attribute(gameworld, entity):
         """
         Need to calculate the 'defense' value first
@@ -233,7 +243,7 @@ class MobileUtilities(numbers.Real):
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).conditionDuration = cond_duration_bonus
 
     @staticmethod
-    def calculate_health(gameworld, entity):
+    def calculate_max_health(gameworld, entity):
         """
         Calculates the health of the entity. Base health is based on character class & vitality.
         Health value can be affected by traits, boons, conditions, etc.
@@ -250,6 +260,25 @@ class MobileUtilities(numbers.Real):
         vitality_calculated_health = vitality_value * 10
 
         health_value = vitality_calculated_health + class_base_health
-        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).health = health_value
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth = health_value
 
 
+    @staticmethod
+    def calculate_current_health(gameworld, entity):
+        """
+        This method will take everything into account that could affect the entities health, and calculate
+        the current health
+        :param gameworld:
+        :param entity:
+        :return:
+        """
+        current_health = 0
+        maximum_health = gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth
+        # check boons
+        # check conditions
+        # check controls
+        # check traits
+        # check equipped items (armour, jewellery)
+        # check weapons
+
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth = maximum_health

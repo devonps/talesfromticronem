@@ -66,6 +66,12 @@ def generate_player_character(gameworld):
     gameworld.add_component(player, mobiles.ManaPool(current=500, maximum=1000))
     gameworld.add_component(player, mobiles.SpecialBar(valuecurrent=10, valuemaximum=100))
     gameworld.add_component(player, mobiles.Renderable(is_visible=True))
+    gameworld.add_component(player, mobiles.StatusEffects())
+    gameworld.add_component(player, mobiles.PrimaryAttributes())
+    gameworld.add_component(player, mobiles.SecondaryAttributes())
+    gameworld.add_component(player, mobiles.DerivedAttributes())
+
+    MobileUtilities.calculate_derived_attributes(gameworld, player)
 
     logger.info('stored as entity {}', player)
 
@@ -149,16 +155,22 @@ def select_character_class(con, gameworld, player):
 
             if ret_value == 'a':
                 selected_class = 'necromancer'
+                gameworld.add_component(player, mobiles.CharacterClass(base_health=22))
             elif ret_value == 'b':
                 selected_class = 'witch doctor'
+                gameworld.add_component(player, mobiles.CharacterClass(base_health=22))
             elif ret_value == 'c':
                 selected_class = 'druid'
+                gameworld.add_component(player, mobiles.CharacterClass(base_health=18))
             elif ret_value == 'd':
                 selected_class = 'mesmer'
+                gameworld.add_component(player, mobiles.CharacterClass(base_health=18))
             elif ret_value == 'e':
                 selected_class = 'elementalist'
+                gameworld.add_component(player, mobiles.CharacterClass(base_health=5))
             elif ret_value == 'f':
                 selected_class = 'chronomancer'
+                gameworld.add_component(player, mobiles.CharacterClass(base_health=5))
 
             logger.info('Selected class {}', selected_class)
             gameworld.add_component(player, mobiles.CharacterClass(label=selected_class))

@@ -17,6 +17,7 @@ from utilities.dateTimeUtilities import secondsToText
 from mapRelated.gameMap import GameMap
 from processors.render import RenderConsole, RenderInventory, RenderPlayerCharacterScreen
 from processors.move_entities import MoveEntities
+from processors.updateEntities import UpdateEntitiesProcessor
 from mapRelated.dungeonGenerator import dungeonGenerator
 from mapRelated.fov import FieldOfView
 from time import time
@@ -97,10 +98,12 @@ def initialise_game_map(con, gameworld, player, spell_bar, message_log):
     render_inventory_screen = RenderInventory()
     render_character_screen = RenderPlayerCharacterScreen()
     move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
+    update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
     gameworld.add_processor(render_console_process)
     gameworld.add_processor(render_inventory_screen)
     gameworld.add_processor(render_character_screen)
     gameworld.add_processor(move_entities_processor)
+    gameworld.add_processor(update_entities_processor)
 
 
 # create esper world (enemies, items, spells, etc)
