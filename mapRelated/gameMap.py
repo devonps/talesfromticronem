@@ -1,13 +1,15 @@
 import tcod
 import random
-import tcod.bsp
 
 from mapRelated.tile import Tile
 from mapRelated.rectangle import Rect
 from components import mobiles
+from utilities.mobileHelp import MobileUtilities
 from newGame import constants
 from loguru import logger
 from utilities.randomNumberGenerator import PCG32Generator
+from mapRelated.room import dungeonRoom
+
 
 
 class GameMap:
@@ -125,55 +127,6 @@ class GameMap:
     @staticmethod
     def calculate_fov(fov_map, x, y, radius, light_walls=False, algo=0):
         tcod.map_compute_fov(m=fov_map, x=x, y=y, radius=radius, light_walls=light_walls, algo=algo)
-
-    # def create_h_tunnel(self, x1, x2, y):
-    #     for x in range(min(x1, x2), max(x1, x2) + 1):
-    #         self.tiles[x][y].block_path = False
-    #         self.tiles[x][y].block_sight = False
-    #
-    # def create_v_tunnel(self, y1, y2, x):
-    #     for y in range(min(y1, y2), max(y1, y2) + 1):
-    #         self.tiles[x][y].block_path = False
-    #         self.tiles[x][y].block_sight = False
-    #
-    # def vline(self, x, y1, y2):
-    #     if y1 > y2:
-    #         y1, y2 = y2, y1
-    #
-    #     for y in range(y1, y2 + 1):
-    #         self.tiles[x][y].block_path = False
-    #         self.tiles[x][y].block_sight = False
-    #
-    # def vline_up(self, x, y):
-    #     while y >= 0 and self.tiles[x][y].block_path == True:
-    #         self.tiles[x][y].block_path = False
-    #         self.tiles[x][y].block_sight = False
-    #         y -= 1
-    #
-    # def vline_down(self, x, y):
-    #     while y < constants.MAP_HEIGHT and self.tiles[x][y].block_path == True:
-    #         self.tiles[x][y].block_path = False
-    #         self.tiles[x][y].block_sight = False
-    #         y += 1
-    #
-    # def hline(self, x1, y, x2):
-    #     if x1 > x2:
-    #         x1, x2 = x2, x1
-    #     for x in range(x1, x2 + 1):
-    #         self.tiles[x][y].block_path = False
-    #         self.tiles[x][y].block_sight = False
-    #
-    # def hline_left(self, x, y):
-    #     while x >= 0 and self.tiles[x][y].block_path == True:
-    #         self.tiles[x][y].block_path = False
-    #         self.tiles[x][y].block_sight = False
-    #         x -= 1
-    #
-    # def hline_right(self, x, y):
-    #     while x < constants.MAP_WIDTH and self.tiles[x][y].block_path == True:
-    #         self.tiles[x][y].block_path = False
-    #         self.tiles[x][y].block_sight = False
-    #         x += 1
 
     def get_type_of_tile(self, x, y):
         return self.tiles[x][y].type_of_tile

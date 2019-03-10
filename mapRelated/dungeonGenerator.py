@@ -43,6 +43,8 @@ from utilities.randomNumberGenerator import PCG32Generator, TCODGenerator
 from newGame import constants
 from components import mobiles
 from utilities.mobileHelp import MobileUtilities
+from loguru import logger
+from mapRelated.tile import Tile
 
 import tcod.bsp
 
@@ -69,19 +71,19 @@ OVERLAY_TREASURE = 5
 
 
 class dungeonRoom:
-	""" 
+	"""
 	a simple container for dungeon rooms
 	since you may want to return to constructing a room, edit it, etc. it helps to have some way to save them
 	without having to search through the whole game grid
 
 	Args:
-	    x and y coodinates for the room
-	    width and height for the room
+		x and y coodinates for the room
+		width and height for the room
 
 	Attributes:
-	    x, y: the starting coordinates in the 2d array
-	    width: the ammount of cells the room spans 
-	    height: the ammount of cells the room spans 
+		x, y: the starting coordinates in the 2d array
+		width: the ammount of cells the room spans
+		height: the ammount of cells the room spans
 	"""
 
 	def __init__(self, x, y, width, height):
@@ -90,55 +92,56 @@ class dungeonRoom:
 		self.width = width
 		self.height = height
 
+
 class dungeonGenerator:
 	"""
 	A renderer/framework/engine independent functions for generating random dungeons, including rooms, corridors, connects and path finding
 
 	The dungeon is built around a 2D list, the resulting dungeon is a 2D tile map, where each x,y point holds a
-	constant. The grid can then be iterated through using the contained constant to determine the tile to render and the x,y indice can be 
+	constant. The grid can then be iterated through using the contained constant to determine the tile to render and the x,y indice can be
 	multiplied by x,y size of the tile. The class it's self can be iterated through. For example:
 
-	    tileSize = 2
-	    for x, y, tile in dungeonGenerator:
-	        if tile = FLOOR:
-	            render(floorTile)
-	            floorTile.xPosition = x * tileSize
-	            floorTile.yPosition = y * tileSize
-	        and so forth...
+		tileSize = 2
+		for x, y, tile in dungeonGenerator:
+			if tile = FLOOR:
+				render(floorTile)
+				floorTile.xPosition = x * tileSize
+				floorTile.yPosition = y * tileSize
+			and so forth...
 
 	Alternatively:
 
-	    for x in range(dungeonGenerator.width):
-	        for y in range(dungeonGenerator.height):
-	            if dungeonGenerator.grid[x][y] = FLOOR:
-	                render(floorTile)
-	                floorTile.xPosition = x * tileSize
-	                floorTile.yPosition = y * tileSize
-	            and so forth...
+		for x in range(dungeonGenerator.width):
+			for y in range(dungeonGenerator.height):
+				if dungeonGenerator.grid[x][y] = FLOOR:
+					render(floorTile)
+					floorTile.xPosition = x * tileSize
+					floorTile.yPosition = y * tileSize
+				and so forth...
 
 
 	Throughout x,y refer to indicies in the tile map, nx,ny are used to refer to neighbours of x,y
 
 	Args:
-	    height and width of the dungeon to be generated
+		height and width of the dungeon to be generated
 
 	Attributes:
-	    width: size of the dungeon in the x dimension
-	    height: size of the dungeon in the y dimension
-	    grid: a 2D list (grid[x][y]) for storing tile constants (read tile map)
-	    rooms: **list of all the dungeonRoom objects in the dungeon, empty until placeRandomRooms() is called
-	    doors: **list of all grid coordinates of the corridor to room connections, elements are tuples (x,y), empty until connectAllRooms() is called
-	    corridors: **list of all the corridor tiles in the grid, elements are tuples (x,y), empty until generateCorridors() is called
-	    deadends: list of all corridor tiles only connected to one other tile, elements are tuples (x,y), empty until findDeadends() is called
-	    graph: dictionary where keys are the coordinates of all floor/corridor tiles and values are a list of floor/corridor directly connected, ie (x, y): [(x+1, y), (x-1, y), (x, y+1), (x, y-1)], empty until constructGraph() is called
+		width: size of the dungeon in the x dimension
+		height: size of the dungeon in the y dimension
+		grid: a 2D list (grid[x][y]) for storing tile constants (read tile map)
+		rooms: **list of all the dungeonRoom objects in the dungeon, empty until placeRandomRooms() is called
+		doors: **list of all grid coordinates of the corridor to room connections, elements are tuples (x,y), empty until connectAllRooms() is called
+		corridors: **list of all the corridor tiles in the grid, elements are tuples (x,y), empty until generateCorridors() is called
+		deadends: list of all corridor tiles only connected to one other tile, elements are tuples (x,y), empty until findDeadends() is called
+		graph: dictionary where keys are the coordinates of all floor/corridor tiles and values are a list of floor/corridor directly connected, ie (x, y): [(x+1, y), (x-1, y), (x, y+1), (x, y-1)], empty until constructGraph() is called
 
 	  GK101 Additions:
-	    hostabletiles: list of all floor tiles, elements are tuples (x,y), empty until placeWalls() is called
-	    overlays: dictionary  of all overlays tiles where x,y as string used as key;
-	              elements are tuples (x,y,[]) the list will hold all overlays;
-	              empty until placeRandomoverlays() is called
+		hostabletiles: list of all floor tiles, elements are tuples (x,y), empty until placeWalls() is called
+		overlays: dictionary  of all overlays tiles where x,y as string used as key;
+				  elements are tuples (x,y,[]) the list will hold all overlays;
+				  empty until placeRandomoverlays() is called
 
-	    ** once created these will not be re-instanced, therefore any user made changes to grid will also need to update these lists for them to remain valid
+		** once created these will not be re-instanced, therefore any user made changes to grid will also need to update these lists for them to remain valid
 	"""
 
 	def __init__(self, height, width, rand_gen_object, gameworld):
@@ -149,7 +152,8 @@ class dungeonGenerator:
 		self.rooms = []
 		self.doors = []
 		self.corridors = []
-		self.deadends = []        
+		self.deadends = []
+		self.tiles = self.initialise_tiles()
 		self.graph = {}
 		self.rand_gen_object = rand_gen_object
 		self.gameworld = gameworld
@@ -163,7 +167,26 @@ class dungeonGenerator:
 			for yi in range(self.height):
 				yield xi, yi, self.grid[xi][yi]
 
+	def initialise_tiles(self):
+		tiles = [[Tile(constants.TILE_TYPE_EMPTY) for y in range(self.height)] for x in range(self.width)]
+
+		return tiles
+
 	##### HELPER FUNCTIONS #####
+
+	# this method is a bit of a hack, it allows me to add stuff to each point in the game-map
+
+	def set_tiles(self):
+		for x in range(self.width):
+			for y in range(self.height):
+				if self.grid[x][y] == FLOOR:
+					self.tiles[x][y].type_of_tile = constants.TILE_TYPE_FLOOR
+				if self.grid[x][y] == WALL:
+					self.tiles[x][y].type_of_tile = constants.TILE_TYPE_WALL
+					if self.grid[x][y] == DOOR:
+						self.tiles[x][y].type_of_tile = constants.TILE_TYPE_DOOR
+				if self.grid[x][y] == CORRIDOR:
+					self.tiles[x][y].type_of_tile = constants.TILE_TYPE_CORRIDOR
 
 	def findNeighbours(self, x, y):
 		"""
@@ -238,7 +261,7 @@ class dungeonGenerator:
 		yi = (-1, 0, 1) if not yd else (1*yd, 2*yd)
 		for a in xi:
 			for b in yi:
-				if self.grid[a+x][b+y]:
+				if self.grid[a+x][b+y] > 0:
 					return False
 		return True
 
@@ -400,126 +423,6 @@ class dungeonGenerator:
 			if touching == 1: self.deadends.append((x,y))
 
 	##### GENERATION FUNCTIONS #####
-
-	def generateBSPMap(self):
-		bsp_rooms = []
-
-		bsp = tcod.bsp.BSP(x=0, y=0, width=constants.MAP_WIDTH, height=constants.MAP_HEIGHT)
-
-		my_tcod_rng = TCODGenerator.generate_tcod_random_seed(self.rand_gen_object)
-
-		bsp.split_recursive(depth=constants.BSP_NO_SPLITS,
-							min_width=constants.BSP_ROOM_MIN_SIZE,
-							min_height=constants.BSP_ROOM_MIN_SIZE,
-							max_horizontal_ratio=1.5,
-							max_vertical_ratio=1.5)
-
-		tcod.bsp_traverse_inverted_level_order(bsp, callback=self.traverse_node, userData=bsp_rooms)
-
-	def traverse_node(self, node, bsp_rooms):
-		if tcod.bsp_is_leaf(node):
-			minx = node.x + 1
-			maxx = node.x + node.w - 1
-			miny = node.y + 1
-			maxy = node.y + node.h - 1
-
-			if maxx == constants.MAP_WIDTH:
-				maxx -= 1
-			if maxy == constants.MAP_HEIGHT:
-				maxy -= 1
-
-			if not constants.BSP_FULL_ROOMS:
-				minx = PCG32Generator.get_next_number_in_range(self.rand_gen_object, minx, maxx - constants.BSP_ROOM_MIN_SIZE + 1)
-				miny = PCG32Generator.get_next_number_in_range(self.rand_gen_object, miny, maxy - constants.BSP_ROOM_MIN_SIZE + 1)
-				maxx = PCG32Generator.get_next_number_in_range(self.rand_gen_object, minx + constants.BSP_ROOM_MIN_SIZE - 2, maxx)
-				maxy = PCG32Generator.get_next_number_in_range(self.rand_gen_object, miny + constants.BSP_ROOM_MIN_SIZE - 2, maxy)
-
-			node.x = minx
-			node.y = miny
-			node.w = maxx - minx + 1
-			node.h = maxy - miny + 1
-
-			# dig out the room
-			self.placeRoom(minx, miny, maxx, maxy)
-
-			# add room center coordinates to the list of rooms
-			bsp_rooms.append(((minx + maxx) / 2, (miny + maxy) / 2))
-		# create corridors
-		else:
-			left = tcod.bsp_left(node)
-			right = tcod.bsp_right(node)
-			node.x = min(left.x, right.x)
-			node.y = min(left.y, right.y)
-			node.w = max(left.x + left.w, right.x + right.w) - node.x
-			node.h = max(left.y + left.h, right.y + right.h) - node.y
-
-			if node.horizontal:
-				if left.x + left.w - 1 < right.x or right.x + right.w - 1 < left.x:
-					x1 = PCG32Generator.get_next_number_in_range(self.rand_gen_object, left.x, left.x + left.w - 1)
-					x2 = PCG32Generator.get_next_number_in_range(self.rand_gen_object, right.x, right.x + right.w - 1)
-					y = PCG32Generator.get_next_number_in_range(self.rand_gen_object, left.y + left.h, right.y)
-					self.vline_up(x1, y -1)
-					self.hline(x1, y, x2)
-					self.vline_down(x2, y + 1)
-				else:
-					minx = max(left.x, right.x)
-					maxx = min(left.x + left.w - 1, right.x + right.w - 1)
-					x = PCG32Generator.get_next_number_in_range(self.rand_gen_object, minx, maxx + 1)
-					# catch out of bounds attempt
-					while x > constants.MAP_WIDTH - 1:
-						x -= 1
-					self.vline_down(x, right.y)
-					self.vline_up(x, right.y - 1)
-			else:
-				if left.y + left.h - 1 < right.y or right.y + right.h - 1 < left.y:
-					y1 = PCG32Generator.get_next_number_in_range(self.rand_gen_object, left.y, left.y + left.h - 1)
-					y2 = PCG32Generator.get_next_number_in_range(self.rand_gen_object, right.y, right.y + right.h - 1)
-					x = PCG32Generator.get_next_number_in_range(self.rand_gen_object, left.x + left.w, right.x)
-					self.vline(x, y1, y2)
-					self.hline_right(x + 1, y2)
-				else:
-					miny = max(left.y, right.y)
-					maxy = min(left.y + left.h - 1, right.y + right.h - 1)
-					y = PCG32Generator.get_next_number_in_range(self.rand_gen_object, miny, maxy)
-					# catch out of bounds attempt
-					while y > constants.MAP_HEIGHT - 1:
-						y -= 1
-
-					self.hline_left(right.x - 1, y)
-					self.hline_right(right.x, y)
-		return True
-
-	def vline(self, x, y1, y2):
-		if y1 > y2:
-			y1, y2 = y2, y1
-		for y in range(y1, y2 + 1):
-			self.grid[x][y] = CORRIDOR
-
-	def vline_up(self, x, y):
-		while y >= 0 and self.grid[x][y] == WALL:
-			self.grid[x][y] = CORRIDOR
-			y -= 1
-
-	def vline_down(self, x, y):
-		while y < constants.MAP_HEIGHT and self.grid[x][y] == WALL:
-			self.grid[x][y] = CORRIDOR
-			y += 1
-
-	def hline(self, x1, y, x2):
-		if x1 > x2:
-			x1, x2 = x2, x1
-		for x in range(x1, x2 + 1):
-			self.grid[x][y] = CORRIDOR
-
-	def hline_left(self, x, y):
-		while x >= 0 and self.grid[x][y] == WALL:
-			self.grid[x][y] = CORRIDOR
-			x -= 1
-
-	def hline_right(self, x, y):
-		while x < constants.MAP_WIDTH and self.grid[x][y] == WALL:
-			self.grid[x][y] = CORRIDOR
-			x += 1
 
 	def carve_room(self, startX, startY, roomWidth, roomHeight):
 		for x in range(roomWidth):

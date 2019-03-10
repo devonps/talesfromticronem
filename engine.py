@@ -127,7 +127,6 @@ def main():
                 r = my_random.randint(0,10)
                 logger.info('random number chosen {}', r)
 
-
         if new_game:
             logger.info('New game starting')
             gameworld.remove_processor(RenderGameStartScreen)

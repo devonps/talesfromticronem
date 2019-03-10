@@ -65,7 +65,12 @@ def create_new_character(con, gameworld):
 
 def initialise_game_map(con, gameworld, player, spell_bar, message_log):
     # create game map
+
     dungeon_seed_stream = PCG32Generator(constants.WORLD_SEED, constants.PRNG_STREAM_DUNGEONS)
+    # myd = MyGenerateDungeon(height=40, width=80, rand_gen_object=dungeon_seed_stream, gameworld=gameworld)
+    # myd.make_floors()
+
+
 
     # define map size (y,x) max tiles to use in direction
     levelSize = [40, 80]
@@ -81,6 +86,7 @@ def initialise_game_map(con, gameworld, player, spell_bar, message_log):
     unconnected = d.findUnconnectedAreas()
     d.joinUnconnectedAreas(unconnected)
     d.placeWalls()
+    d.set_tiles()
 
     # this isn't working as intended
     # d.generateBSPMap()
