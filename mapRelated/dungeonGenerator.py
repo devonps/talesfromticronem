@@ -49,15 +49,15 @@ from mapRelated.tile import Tile
 import tcod.bsp
 
 #tile constants
-EMPTY    = 0
-FLOOR    = 1
-CORRIDOR = 2
-DOOR     = 3
-DEADEND  = 4
-WALL     = 5
-OBSTACLE = 6
-CAVE     = 7
-WATER	 = 9
+# EMPTY    = 0
+# FLOOR    = 1
+# CORRIDOR = 2
+# DOOR     = 3
+# DEADEND  = 4
+# WALL     = 5
+# OBSTACLE = 6
+# CAVE     = 7
+# WATER	 = 9
 
 # GK101 Additions:
 OVERLAY  = 8
@@ -148,7 +148,7 @@ class dungeonGenerator:
 
 		self.height = abs(height)
 		self.width = abs(width)
-		self.grid = [[EMPTY for i in range(self.height)] for i in range(self.width)]
+		self.grid = [[constants.TILE_TYPE_EMPTY for i in range(self.height)] for i in range(self.width)]
 		self.rooms = []
 		self.doors = []
 		self.corridors = []
@@ -179,13 +179,13 @@ class dungeonGenerator:
 	def set_tiles(self):
 		for x in range(self.width):
 			for y in range(self.height):
-				if self.grid[x][y] == FLOOR:
+				if self.grid[x][y] == constants.TILE_TYPE_FLOOR:
 					self.tiles[x][y].type_of_tile = constants.TILE_TYPE_FLOOR
-				if self.grid[x][y] == WALL:
+				if self.grid[x][y] == constants.TILE_TYPE_WALL:
 					self.tiles[x][y].type_of_tile = constants.TILE_TYPE_WALL
-					if self.grid[x][y] == DOOR:
+					if self.grid[x][y] == constants.TILE_TYPE_DOOR:
 						self.tiles[x][y].type_of_tile = constants.TILE_TYPE_DOOR
-				if self.grid[x][y] == CORRIDOR:
+				if self.grid[x][y] == constants.TILE_TYPE_CORRIDOR:
 					self.tiles[x][y].type_of_tile = constants.TILE_TYPE_CORRIDOR
 
 	def findNeighbours(self, x, y):
@@ -234,7 +234,7 @@ class dungeonGenerator:
 		for area in unconnected:
 			if len(area) < 35:
 				for x, y in area:
-					self.grid[x][y] = EMPTY
+					self.grid[x][y] = constants.TILE_TYPE_EMPTY
 		return
 
 	def mergeUnconnectedAreas(self):
@@ -386,7 +386,7 @@ class dungeonGenerator:
 		unconnectedAreas = []
 		areaCount = 0       
 		#gridCopy = [[EMPTY for i in range(self.width)] for i in range(self.height)]
-		gridCopy = [[EMPTY for i in range(self.height)] for i in range(self.width)]
+		gridCopy = [[constants.TILE_TYPE_EMPTY for i in range(self.height)] for i in range(self.width)]
 		for x in range(self.width):
 			for y in range(self.height):
 				if self.grid[x][y]:
@@ -427,7 +427,7 @@ class dungeonGenerator:
 	def carve_room(self, startX, startY, roomWidth, roomHeight):
 		for x in range(roomWidth):
 			for y in range(roomHeight):
-				self.grid[startX + x][startY + y] = FLOOR
+				self.grid[startX + x][startY + y] = constants.TILE_TYPE_FLOOR
 		self.rooms.append(dungeonRoom(startX, startY, roomWidth, roomHeight))
 
 	def placeRoom(self, startX, startY, roomWidth, roomHeight, ignoreOverlap = False):
@@ -448,7 +448,7 @@ class dungeonGenerator:
 			self.carve_room(startX=startX, startY=startY, roomWidth=roomWidth, roomHeight=roomHeight)
 			# for x in range(roomWidth):
 			# 	for y in range(roomHeight):
-			# 		self.grid[startX+x][startY+y] = FLOOR
+			# 		self.grid[startX+x][startY+y] = constants.TILE_TYPE_FLOOR
 			# self.rooms.append(dungeonRoom(startX, startY, roomWidth, roomHeight))
 			return True
 
@@ -500,20 +500,20 @@ class dungeonGenerator:
 				for y in range(self.height):
 					rnd_number = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, 100)
 					if rnd_number < p:
-						self.grid[x][y] = CAVE
+						self.grid[x][y] = constants.TILE_TYPE_CAVE
 			for i in range(smoothing):
 				for x in range(self.width):
 					for y in range(self.height):
 						if x == 0 or x == self.width or y == 0 or y == self.height:
-							self.grid[x][y] = EMPTY
+							self.grid[x][y] = constants.TILE_TYPE_EMPTY
 						touchingEmptySpace = 0
 						for nx, ny in self.findNeighbours(x,y):
-							if self.grid[nx][ny] == CAVE: 
+							if self.grid[nx][ny] == constants.TILE_TYPE_CAVE:
 								touchingEmptySpace += 1
 						if touchingEmptySpace >= 5: 
-							self.grid[x][y] = CAVE
+							self.grid[x][y] = constants.TILE_TYPE_CAVE
 						elif touchingEmptySpace <= 2:
-							self.grid[x][y] = EMPTY
+							self.grid[x][y] = constants.TILE_TYPE_EMPTY
 		except Exception as e:
 			ln = getframeinfo(currentframe()).lineno
 			sys.stderr.write('dungeonGenerator - Error caught @ line {0}\n{1}\n'.format(ln, str(e)))
@@ -523,20 +523,20 @@ class dungeonGenerator:
 			for y in range(self.height):
 				rnd_number = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, 100)
 				if rnd_number < p:
-					self.grid[x][y] = CAVE
+					self.grid[x][y] = constants.TILE_TYPE_CAVE
 		for i in range(smoothing):
 			for x in range(self.width):
 				for y in range(self.height):
 					if x == 0 or x == self.width or y == 0 or y == self.height:
-						self.grid[x][y] = EMPTY
+						self.grid[x][y] = constants.TILE_TYPE_EMPTY
 					touchingEmptySpace = 0
 					for nx, ny in self.findNeighbours(x,y):
-						if self.grid[nx][ny] == CAVE: 
+						if self.grid[nx][ny] == constants.TILE_TYPE_CAVE:
 							touchingEmptySpace += 1
 					if touchingEmptySpace >= 5: 
-						self.grid[x][y] = CAVE
+						self.grid[x][y] = constants.TILE_TYPE_CAVE
 					elif touchingEmptySpace <= 2:
-						self.grid[x][y] = EMPTY
+						self.grid[x][y] = constants.TILE_TYPE_EMPTY
 
 	def generateCorridors(self, mode='r', x = None, y = None):
 		"""
@@ -565,7 +565,7 @@ class dungeonGenerator:
 			while not self.canCarve(x, y, 0, 0):
 				x = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 1, (self.width-2) + 1)
 				y = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 1, (self.height - 2) + 1)
-		self.grid[x][y] = CORRIDOR
+		self.grid[x][y] = constants.TILE_TYPE_CORRIDOR
 		self.corridors.append((x,y))
 		cells.append((x,y))
 		while cells:
@@ -585,7 +585,7 @@ class dungeonGenerator:
 				nb = len(possMoves)
 				chosen_move = PCG32Generator.get_next_uint(self.rand_gen_object, nb)
 				xi,yi = possMoves[chosen_move]
-				self.grid[xi][yi] = CORRIDOR
+				self.grid[xi][yi] = constants.TILE_TYPE_CORRIDOR
 				self.corridors.append((xi,yi))
 				cells.append((xi, yi))
 			else:
@@ -606,7 +606,7 @@ class dungeonGenerator:
 		for i in range(amount):
 			self.findDeadends()
 			for x,y in self.deadends:
-				self.grid[x][y] = EMPTY
+				self.grid[x][y] = constants.TILE_TYPE_EMPTY
 				self.corridors.remove((x,y))
 		self.findDeadends()
 
@@ -798,8 +798,8 @@ class dungeonGenerator:
 			for y in range(self.height):
 				if not self.grid[x][y]:
 					for nx, ny in self.findNeighbours(x,y):
-						if self.grid[nx][ny] and self.grid[nx][ny] is not WALL:
-							self.grid[x][y] = WALL
+						if self.grid[nx][ny] and self.grid[nx][ny] is not constants.TILE_TYPE_WALL:
+							self.grid[x][y] = constants.TILE_TYPE_WALL
 							break
 						
 	def placeWater(self):
@@ -818,8 +818,8 @@ class dungeonGenerator:
 			for y in range(self.height):
 				if not self.grid[x][y]:
 					for nx, ny in self.findNeighbours(x,y):
-						if self.grid[nx][ny] is WALL or self.grid[nx][ny] is EMPTY or self.grid[nx][ny] is FLOOR or self.grid[nx][ny] is WATER:
-							self.grid[x][y] = WATER
+						if self.grid[nx][ny] is constants.TILE_TYPE_WALL or self.grid[nx][ny] is constants.TILE_TYPE_EMPTY or self.grid[nx][ny] is constants.TILE_TYPE_FLOOR or self.grid[nx][ny] is constants.TILE_TYPE_WATER:
+							self.grid[x][y] = constants.TILE_TYPE_WATER
 							break
 
 	def connectAllRooms(self, extraDoorChance = 0):
@@ -862,12 +862,12 @@ class dungeonGenerator:
 						# x, y = choice(connections)
 						pickAgain = False
 						for xi, yi in self.findNeighbours(x, y):
-							if self.grid[xi][yi] == DOOR:
+							if self.grid[xi][yi] == constants.TILE_TYPE_DOOR:
 								pickAgain = True
 								break
 					chance = PCG32Generator.get_next_number_in_range(self.rand_gen_object, 0, 100)
 					# chance = randint(0, 100)
-					self.grid[x][y] = DOOR
+					self.grid[x][y] = constants.TILE_TYPE_DOOR
 					self.doors.append((x, y))
 			else:
 				unconnectedRooms.append(room)
@@ -901,16 +901,16 @@ class dungeonGenerator:
 			c.sort()
 			x, y = c[0]
 			for x in range(c[0][0]+1, c[1][0]):
-				if self.grid[x][y] == EMPTY:
-					self.grid[x][y] = CORRIDOR
+				if self.grid[x][y] == constants.TILE_TYPE_EMPTY:
+					self.grid[x][y] = constants.TILE_TYPE_CORRIDOR
 			for y in range(c[0][1]+1, c[1][1]):
-				if self.grid[x][y] == EMPTY:
-					self.grid[x][y] = CORRIDOR
+				if self.grid[x][y] == constants.TILE_TYPE_EMPTY:
+					self.grid[x][y] = constants.TILE_TYPE_CORRIDOR
 			self.corridors.append((x,y))
 
 	def place_doors(self):
 		for x,y in self.doors:
-			self.grid[x][y] = DOOR
+			self.grid[x][y] = constants.TILE_TYPE_DOOR
 
 	##### PATH FINDING FUNCTIONS #####                
 
