@@ -8,3 +8,4 @@ numpy==1.15.4
 pycparser==2.19
 Pygments==2.3.0
 tcod==8.5
+pytest==4.3.0
