@@ -27,3 +27,4 @@ Actions.txt
 .venv
 venv/
 ENV/
+.pytest_cache
