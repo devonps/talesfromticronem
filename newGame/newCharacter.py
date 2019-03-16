@@ -55,7 +55,7 @@ def generate_player_character(gameworld):
 
     logger.debug('Creating the player character entity')
     player = MobileUtilities.generate_base_mobile(gameworld)
-    gameworld.add_component(player, mobiles.Describable(background=tcod.blue))
+    gameworld.add_component(player, mobiles.Describable())
     gameworld.add_component(player, mobiles.AI(ailevel=constants.AI_LEVEL_PLAYER))
     gameworld.add_component(player, mobiles.Inventory())
     gameworld.add_component(player, mobiles.Armour())
@@ -84,10 +84,18 @@ def select_race(con, gameworld, player):
 
     menu_options = []
     menu_options_flavour = []
+    race_prefix = []
+    race_bg_colour = []
+    race_size = []
+    race_glyph = []
 
     for option in race_file['races']:
         menu_options.append(option['name'])
         menu_options_flavour.append(option['flavour'])
+        race_prefix.append(option['prefix'])
+        race_bg_colour.append(option['bg_colour'])
+        race_size.append(option['size'])
+        race_glyph.append(option['glyph'])
 
     race_not_selected = True
 
@@ -98,27 +106,37 @@ def select_race(con, gameworld, player):
 
     while race_not_selected:
 
-        ret_value = menu(con, header='Select Race',
-             options=menu_options,
-             width=24, screen_width=constants.SCREEN_WIDTH, screen_height=constants.SCREEN_HEIGHT, posx=10, posy=26,
-             foreground=tcod.yellow,
-             key=key,
-             mouse=mouse,
-             gameworld=gameworld)
-
+        ret_value = menu(con,
+                         header='Select Race',
+                         options=menu_options,
+                         width=24,
+                         screen_width=constants.SCREEN_WIDTH,
+                         screen_height=constants.SCREEN_HEIGHT,
+                         posx=10,
+                         posy=26,
+                         foreground=tcod.yellow,
+                         key=key,
+                         mouse=mouse,
+                         gameworld=gameworld)
         if ret_value != '':
             ret_value = handle_menus(key=key, mouse=mouse, gameworld=gameworld)
-
+            index = key.c - ord('a')
             if ret_value == 'a':
                 selected_race = 'human'
+                gameworld.add_component(player, mobiles.Describable(background=tcod.black))
             elif ret_value == 'b':
                 selected_race = 'elf'
+                gameworld.add_component(player, mobiles.Describable(background=tcod.blue))
             elif ret_value == 'c':
                 selected_race = 'orc'
+                gameworld.add_component(player, mobiles.Describable(background=tcod.red))
             elif ret_value == 'd':
                 selected_race = 'troll'
+                gameworld.add_component(player, mobiles.Describable(background=tcod.white))
             logger.info('Selected race {}', selected_race)
-            gameworld.add_component(player, mobiles.Race(race=selected_race))
+            gameworld.add_component(player, mobiles.Race(race=selected_race, size=race_size[index]))
+            logger.info('Racial Size {}', race_size[index])
+
             race_not_selected = False
             tcod.console_clear(con)
 

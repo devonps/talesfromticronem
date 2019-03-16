@@ -17,6 +17,7 @@ class Describable:
         self.gender = gender
 
 
+
 class Personality:
     def __init__(self, charm_level=33, dignity_level=33, ferocity_level=33):
         self.charm_level = charm_level
@@ -25,9 +26,9 @@ class Personality:
 
 
 class Race:
-    def __init__(self, race='human'):
+    def __init__(self, race='human', size='normal'):
         self.label = race
-
+        self.size = size
 
 class CharacterClass:
     def __init__(self, label='undefined', base_health=0):
@@ -49,7 +50,7 @@ class ManaPool:
 
 class SpecialBar:
     def __init__(self, maxstages=3, currentstage=0, valuecurrent=0, valuemaximum=0):
-        self.maxstages =maxstages
+        self.maxstages = maxstages
         self.currentstage = currentstage
         self.valuecurrent = valuecurrent
         self.valuemaximum = valuemaximum
