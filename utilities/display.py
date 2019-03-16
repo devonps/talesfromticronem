@@ -45,7 +45,6 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
         tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS | tcod.EVENT_MOUSE, key, mouse)
 
         ret_value = handle_mouse_in_menus(mouse=mouse, width=width, height=height, header_height=header_height, x_offset=x_offset, y_offset=y_offset)
-
         if ret_value > -1:
             gameworld.component_for_entity(player_input_entity, userInput.Keyboard).keypressed = chr(97 + ret_value)
             gameworld.component_for_entity(player_input_entity, userInput.Mouse).lbutton = True
