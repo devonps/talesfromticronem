@@ -1,4 +1,4 @@
-import tcod
+import tcod.console
 
 
 from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, constants
@@ -8,6 +8,7 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys, handle_menus
 from utilities.gameworld import reset_gameworld
 from utilities.replayGame import ReplayGame
+from utilities.display import display_hero_panel
 from loguru import logger
 
 
@@ -34,6 +35,10 @@ def start_game(con, gameworld):
         exit_game = action.get('exit')
         fullscreen = action.get('fullscreen')
         player_moved = action.get('player_moved')
+        display_hero = action.get('display_hero_panel')
+
+        if display_hero:
+            display_hero_panel(con, key, mouse, gameworld)
 
         if player_moved:
             pass
@@ -65,7 +70,8 @@ def main():
     tcod.console_set_custom_font('static/fonts/prestige12x12_gs_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
     tcod.console_init_root(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.GAME_WINDOW_TITLE, False)
 
-    con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
+    # con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
+    con = tcod.console.Console(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
 
     key = tcod.Key()
     mouse = tcod.Mouse()
@@ -130,7 +136,8 @@ def main():
         if new_game:
             logger.info('New game starting')
             gameworld.remove_processor(RenderGameStartScreen)
-            tcod.console_clear(con)
+            # tcod.console_clear(con)
+            con.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
             start_game(con, gameworld)
             logger.info('*********************')
             logger.info('* Left Game         *')
@@ -139,7 +146,8 @@ def main():
             # Esper initialisation
             gameworld = create_game_world()
 
-            tcod.console_clear(con)
+            # tcod.console_clear(con)
+            con.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
             render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse, gameworld=gameworld)
             gameworld.add_processor(render_game_screen)
 
