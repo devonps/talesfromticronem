@@ -13,6 +13,7 @@ def handle_keys(mouse, key, gameworld, player, message_log):
     position_component = gameworld.component_for_entity(player, mobiles.Position)
     ev = tcod.sys_wait_for_event(tcod.EVENT_KEY, key, mouse, flush=False)
     if ev & tcod.EVENT_KEY_PRESS:
+        key_char = chr(key.c)
         if key.vk == tcod.KEY_UP:
             player_velocity_component.dy = -1
             position_component.hasMoved = True
@@ -51,6 +52,9 @@ def handle_keys(mouse, key, gameworld, player, message_log):
             value = 'exit:true'
             Externalfiles.write_to_existing_file(constants.GAME_ACTIONS_FILE, value)
             return {'exit': True}
+        # hero action keys
+        elif key_char == 'c':
+            return {'display_hero_panel': True}
 
     return {}
 
@@ -68,9 +72,11 @@ def handle_menus(key, mouse, gameworld):
     return {}
 
 
-def handle_mouse_in_menus(mouse, width,height, header_height, x_offset, y_offset):
+def handle_mouse_in_menus(mouse, width, height, header_height, x_offset, y_offset):
     if mouse.lbutton_pressed:
+
         (menu_x, menu_y) = (mouse.cx - x_offset, mouse.cy - y_offset)
+        logger.info('left mouse button pressed at {}/{}', menu_x, menu_y)
         if (menu_x >= 0 and menu_x < width) and (menu_y >= 0 and menu_y < height - header_height):
             return menu_y
     return -1
