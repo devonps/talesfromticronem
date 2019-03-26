@@ -17,7 +17,6 @@ class Describable:
         self.gender = gender
 
 
-
 class Personality:
     def __init__(self, charm_level=33, dignity_level=33, ferocity_level=33):
         self.charm_level = charm_level
@@ -29,6 +28,7 @@ class Race:
     def __init__(self, race='human', size='normal'):
         self.label = race
         self.size = size
+
 
 class CharacterClass:
     def __init__(self, label='undefined', base_health=0):
@@ -64,6 +64,9 @@ class Inventory:
 class Armour:
     """
     Each body location holds the defense value, typically this is based on the equipped piece of armour
+    self.head --> holds an integer that represents a gameworld.entity
+    from there I can get the individual components I need such as...
+    defense.value
     """
     def __init__(self, head=0, chest=0, legs=0, feet=0, hands=0):
         self.head = head

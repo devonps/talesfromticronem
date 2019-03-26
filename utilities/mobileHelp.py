@@ -1,4 +1,4 @@
-from components import mobiles, userInput
+from components import mobiles, userInput, armour
 from loguru import logger
 from newGame import constants
 
@@ -6,6 +6,51 @@ import numbers
 
 
 class MobileUtilities(numbers.Real):
+
+    @staticmethod
+    def has_player_moved(gameworld):
+        player_entity = MobileUtilities.get_player_entity(gameworld)
+
+        position_component = gameworld.component_for_entity(player_entity, mobiles.Position)
+
+        return position_component.hasMoved
+
+    @staticmethod
+    def calculate_player_personality(gameworld):
+        player_entity = MobileUtilities.get_player_entity(gameworld)
+
+        player_current_personality_component = gameworld.component_for_entity(player_entity, mobiles.Personality)
+        player_describable_personality_component = gameworld.component_for_entity(player_entity, mobiles.Describable)
+
+        player_personality = player_describable_personality_component.personality_title
+
+        # get current personality trait values
+        charm_level = player_current_personality_component.charm_level
+        dignity_level = player_current_personality_component.dignity_level
+        ferocity_level = player_current_personality_component.ferocity_level
+
+        if charm_level == 12.5 and dignity_level == 75 and ferocity_level == 12.5:
+            player_personality = 'Noble'
+        if charm_level == 75 and dignity_level == 12.5 and ferocity_level == 12.5:
+            player_personality = 'Captivating'
+        if charm_level == 12.5 and dignity_level == 12.5 and ferocity_level == 175:
+            player_personality = 'Barbaric'
+        if charm_level == 45 and dignity_level == 45 and ferocity_level == 10:
+            player_personality = 'Diplomatic'
+        if charm_level == 10 and dignity_level == 45 and ferocity_level == 45:
+            player_personality = 'Militant'
+        if charm_level == 45 and dignity_level == 10 and ferocity_level == 45:
+            player_personality = 'Scoundrel'
+        if charm_level == 33 and dignity_level == 33 and ferocity_level == 33:
+            player_personality = 'Unpredictable'
+        if charm_level == 50 and dignity_level == 25 and ferocity_level == 25:
+            player_personality = 'Charming'
+        if charm_level == 25 and dignity_level == 50 and ferocity_level == 25:
+            player_personality = 'Honourable'
+        if charm_level == 25 and dignity_level == 25 and ferocity_level == 50:
+            player_personality = 'Brute'
+
+        player_describable_personality_component.personality_title = player_personality
 
     # check ALL hand combos: main, off, and both hands
     @staticmethod
@@ -57,7 +102,57 @@ class MobileUtilities(numbers.Real):
         player_gender_component = gameworld.component_for_entity(entity, mobiles.Describable)
 
         return player_name_component.first + ' the ' + player_gender_component.gender + ' ' + player_race_component.label + ' ' + player_class_component.label
+    #
+    # Get primary attributes
+    #
+    @staticmethod
+    def get_mobile_power(gameworld, entity):
+        primary_components = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
+        return primary_components.power
+    @staticmethod
+    def get_mobile_precision(gameworld, entity):
+        primary_components = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
+        return primary_components.precision
+    @staticmethod
+    def get_mobile_toughness(gameworld, entity):
+        primary_components = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
+        return primary_components.toughness
+    @staticmethod
+    def get_mobile_vitality(gameworld, entity):
+        primary_components = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
+        return primary_components.vitality
 
+    #
+    # Get secondary attributes
+    #
+    @staticmethod
+    def get_mobile_concentration(gameworld, entity):
+        secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
+        return secondary_components.concentration
+
+    @staticmethod
+    def get_mobile_condition_damage(gameworld, entity):
+        secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
+        return secondary_components.conditionDamage
+
+    @staticmethod
+    def get_mobile_expertise(gameworld, entity):
+        secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
+        return secondary_components.expertise
+
+    @staticmethod
+    def get_mobile_ferocity(gameworld, entity):
+        secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
+        return secondary_components.ferocity
+
+    @staticmethod
+    def get_mobile_healing_power(gameworld, entity):
+        secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
+        return secondary_components.healingPower
+
+    #
+    # general methods
+    #
     @staticmethod
     def get_player_entity(gameworld):
         player = 0
@@ -66,51 +161,6 @@ class MobileUtilities(numbers.Real):
                 player = ent
 
         return player
-
-    @staticmethod
-    def has_player_moved(gameworld):
-        player_entity = MobileUtilities.get_player_entity(gameworld)
-
-        position_component = gameworld.component_for_entity(player_entity, mobiles.Position)
-
-        return position_component.hasMoved
-
-    @staticmethod
-    def calculate_player_personality(gameworld):
-        player_entity = MobileUtilities.get_player_entity(gameworld)
-
-        player_current_personality_component = gameworld.component_for_entity(player_entity, mobiles.Personality)
-        player_describable_personality_component = gameworld.component_for_entity(player_entity, mobiles.Describable)
-
-        player_personality = player_describable_personality_component.personality_title
-
-        # get current personality trait values
-        charm_level = player_current_personality_component.charm_level
-        dignity_level = player_current_personality_component.dignity_level
-        ferocity_level = player_current_personality_component.ferocity_level
-
-        if charm_level == 12.5 and dignity_level == 75 and ferocity_level == 12.5:
-            player_personality = 'Noble'
-        if charm_level == 75 and dignity_level == 12.5 and ferocity_level == 12.5:
-            player_personality = 'Captivating'
-        if charm_level == 12.5 and dignity_level == 12.5 and ferocity_level == 175:
-            player_personality = 'Barbaric'
-        if charm_level == 45 and dignity_level == 45 and ferocity_level == 10:
-            player_personality = 'Diplomatic'
-        if charm_level == 10 and dignity_level == 45 and ferocity_level == 45:
-            player_personality = 'Militant'
-        if charm_level == 45 and dignity_level == 10 and ferocity_level == 45:
-            player_personality = 'Scoundrel'
-        if charm_level == 33 and dignity_level == 33 and ferocity_level == 33:
-            player_personality = 'Unpredictable'
-        if charm_level == 50 and dignity_level == 25 and ferocity_level == 25:
-            player_personality = 'Charming'
-        if charm_level == 25 and dignity_level == 50 and ferocity_level == 25:
-            player_personality = 'Honourable'
-        if charm_level == 25 and dignity_level == 25 and ferocity_level == 50:
-            player_personality = 'Brute'
-
-        player_describable_personality_component.personality_title = player_personality
 
     @staticmethod
     def get_number_as_a_percentage(lower_value, maximum_value):
@@ -126,6 +176,9 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(ent, userInput.Keyboard())
         gameworld.add_component(ent, userInput.Mouse())
 
+#
+# Calculate derived attributes
+#
     @staticmethod
     def calculate_derived_attributes(gameworld, entity):
         MobileUtilities.calculate_armour_attribute(gameworld, entity)
@@ -148,16 +201,24 @@ class MobileUtilities(numbers.Real):
         entity_armour_component = gameworld.component_for_entity(entity, mobiles.Armour)
         primary_attribute_component = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
         # get defense values based on equipped pieces of armour
-        def_head_value = entity_armour_component.head
-        def_chest_value = entity_armour_component.chest
-        def_legs_value = entity_armour_component.legs
-        def_feet_value = entity_armour_component.feet
-        def_hands_value = entity_armour_component.hands
 
-        defense_value = def_head_value + def_chest_value + def_hands_value + def_legs_value + def_feet_value
+        entity_head = entity_armour_component.head
+        entity_chest = entity_armour_component.chest
+        entity_legs = entity_armour_component.legs
+        entity_feet = entity_armour_component.feet
+        entity_hands = entity_armour_component.hands
+
+        def_chest_value = gameworld.component_for_entity(entity_chest, armour.Defense).value
+        def_head_value = gameworld.component_for_entity(entity_head, armour.Defense).value
+        def_legs_value = gameworld.component_for_entity(entity_legs, armour.Defense).value
+        def_feet_value = gameworld.component_for_entity(entity_feet, armour.Defense).value
+        def_hands_value = gameworld.component_for_entity(entity_hands, armour.Defense).value
+
+        defense_value = def_chest_value + def_head_value + def_legs_value + def_feet_value + def_hands_value
         toughness_value = primary_attribute_component.toughness
 
         armour_value = defense_value + toughness_value
+
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).armour = armour_value
 
     @staticmethod
@@ -262,7 +323,6 @@ class MobileUtilities(numbers.Real):
         health_value = vitality_calculated_health + class_base_health
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth = health_value
 
-
     @staticmethod
     def calculate_current_health(gameworld, entity):
         """
@@ -282,3 +342,35 @@ class MobileUtilities(numbers.Real):
         # check weapons
 
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth = maximum_health
+
+    #
+    # Get derived attributes
+    #
+
+    @staticmethod
+    def get_derived_armour_value(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).armour
+
+    @staticmethod
+    def get_derived_boon_duration(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).boonDuration
+
+    @staticmethod
+    def get_derived_critical_hit_chance(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalChance
+
+    @staticmethod
+    def get_derived_critical_damage(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalDamage
+
+    @staticmethod
+    def get_derived_condition_duration(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).conditionDuration
+
+    @staticmethod
+    def get_derived_maximum_health(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth
+
+    @staticmethod
+    def get_derived_current_health(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth
