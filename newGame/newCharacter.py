@@ -25,6 +25,9 @@ class NewCharacter:
         name_your_character(con=con, gameworld=gameworld, player=player)
         spell_bar_entity = generate_spell_bar(gameworld=gameworld)
         get_starting_equipment(con=con, gameworld=gameworld, player=player, spellbar=spell_bar_entity)
+
+        MobileUtilities.calculate_derived_attributes(gameworld, player)
+
         return player, spell_bar_entity
 
 
@@ -70,8 +73,6 @@ def generate_player_character(gameworld):
     gameworld.add_component(player, mobiles.PrimaryAttributes())
     gameworld.add_component(player, mobiles.SecondaryAttributes())
     gameworld.add_component(player, mobiles.DerivedAttributes())
-
-    MobileUtilities.calculate_derived_attributes(gameworld, player)
 
     logger.info('stored as entity {}', player)
 
@@ -288,6 +289,10 @@ def create_starting_armour(gameworld, player):
 
     logger.info('Attaching starting armour to player character')
     ArmourClass.equip_full_set_of_armour(gameworld, entity=player, armourset=my_armour)
+
+    chest_armour = ArmourClass.get_armour_piece_from_body_location(gameworld, player, 'chest')
+
+    logger.info('Chest armour: {}', chest_armour)
 
 
 def create_starting_jewellery(gameworld, player):
