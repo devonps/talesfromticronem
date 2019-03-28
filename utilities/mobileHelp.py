@@ -8,12 +8,21 @@ import numbers
 class MobileUtilities(numbers.Real):
 
     @staticmethod
-    def has_player_moved(gameworld):
-        player_entity = MobileUtilities.get_player_entity(gameworld)
+    def get_player_name_details(gameworld, entity):
+        name_component = gameworld.component_for_entity(entity, mobiles.Name)
+        names = [name_component.first, name_component.suffix]
+        return names
 
-        position_component = gameworld.component_for_entity(player_entity, mobiles.Position)
+    @staticmethod
+    def get_player_race_details(gameworld, entity):
+        race_component = gameworld.component_for_entity(entity, mobiles.Race)
+        racial = [race_component.label, race_component.size]
+        return racial
 
-        return position_component.hasMoved
+    @staticmethod
+    def get_player_personality_title(gameworld, entity):
+        describeable_component = gameworld.component_for_entity(entity, mobiles.Describable)
+        return describeable_component.personality_title
 
     @staticmethod
     def calculate_player_personality(gameworld):
@@ -101,7 +110,7 @@ class MobileUtilities(numbers.Real):
         player_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
         player_gender_component = gameworld.component_for_entity(entity, mobiles.Describable)
 
-        return player_name_component.first + ' the ' + player_gender_component.gender + ' ' + player_race_component.label + ' ' + player_class_component.label
+        return player_name_component.first + ' is a ' + player_gender_component.gender + ' ' + player_race_component.label + ' ' + player_class_component.label
     #
     # Get primary attributes
     #
@@ -176,6 +185,13 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(ent, userInput.Keyboard())
         gameworld.add_component(ent, userInput.Mouse())
 
+    @staticmethod
+    def has_player_moved(gameworld):
+        player_entity = MobileUtilities.get_player_entity(gameworld)
+
+        position_component = gameworld.component_for_entity(player_entity, mobiles.Position)
+
+        return position_component.hasMoved
 #
 # Calculate derived attributes
 #

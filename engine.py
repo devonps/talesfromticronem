@@ -8,7 +8,7 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys, handle_menus
 from utilities.gameworld import reset_gameworld
 from utilities.replayGame import ReplayGame
-from utilities.display import display_hero_panel
+from ui.character_screen import display_hero_panel
 from loguru import logger
 
 
@@ -22,7 +22,7 @@ def start_game(con, gameworld):
     # test code
 
     player_description = MobileUtilities.describe_the_mobile(gameworld, player)
-    logger.info(player_description + ' is ready!')
+    logger.info(player_description)
 
     key = tcod.Key()
     mouse = tcod.Mouse()
