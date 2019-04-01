@@ -5,6 +5,7 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.display import display_coloured_box
 from loguru import logger
 
+
 def display_hero_panel(con, key, mouse, gameworld):
 
     bg = tcod.grey
@@ -27,6 +28,7 @@ def display_hero_panel(con, key, mouse, gameworld):
     selected_tab = 1
     x_offset = 11
     y_offset = 8
+
     # main loop whilst hero panel is displayed
     while hero_panel_displayed:
         hero_panel.draw_frame(x=0, y=0,
@@ -107,12 +109,6 @@ def personal_tab(console, gameworld, player):
     player_healing_power = MobileUtilities.get_mobile_healing_power(gameworld=gameworld, entity=player)
     player_armour = MobileUtilities.get_derived_armour_value(gameworld=gameworld, entity=player)
     player_boon_duration = MobileUtilities.get_derived_boon_duration(gameworld=gameworld, entity=player)
-    # player_name_as_a_list = MobileUtilities.get_player_name_details(gameworld=gameworld, entity=player)
-    # player_first_name = player_name_as_a_list[0]
-    # player_suffix = player_name_as_a_list[1]
-    # racial_as_a_list = MobileUtilities.get_player_race_details(gameworld=gameworld, entity=player)
-    # player_race = racial_as_a_list[0]
-    # player_size = racial_as_a_list[1]
     player_description = MobileUtilities.describe_the_mobile(gameworld, player)
     player_personality_title = MobileUtilities.get_player_personality_title(gameworld=gameworld, entity=player)
 
@@ -121,6 +117,9 @@ def personal_tab(console, gameworld, player):
     player_condi_duration = MobileUtilities.get_derived_condition_duration(gameworld=gameworld, entity=player)
     player_max_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=player)
     player_current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=player)
+
+    player_current_mana = MobileUtilities.get_derived_current_mana(gameworld=gameworld, entity=player)
+    player_maximum_mana = MobileUtilities.get_derived_maximum_mana(gameworld=gameworld, entity=player)
 
     console.print_box(x=constants.HERO_PANEL_LEFT_COL, y=constants.HERO_PANEL_INFO_DEF_Y,
                       width=len(player_description), height=1, string=player_description)
@@ -204,6 +203,37 @@ def personal_tab(console, gameworld, player):
     console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 30,
                       width=constants.HERO_PANEL_INFO_WIDTH, height=1,
                       string="Current Health:" + str(player_current_health))
+
+    health_percent = MobileUtilities.get_number_as_a_percentage(player_current_health, player_max_health)
+    health_string = 'Health at ' + str(health_percent) + '%'
+
+    console.print_box(x=constants.HERO_PANEL_RIGHT_COL + 7, y=constants.HERO_PANEL_INFO_DEF_Y + 4,
+                      width=len(health_string), height=1,
+                      string=health_string)
+
+    health_bar_count = int(health_percent / 10)
+    for a in range(10):
+        if a <= health_bar_count:
+            console.print(x=constants.HERO_PANEL_RIGHT_COL + 7 + a, y=constants.HERO_PANEL_INFO_DEF_Y + 5,
+                          string=chr(175), fg=tcod.white, bg=tcod.lighter_green)
+        else:
+            console.print(x=constants.HERO_PANEL_RIGHT_COL + 7 + a, y=constants.HERO_PANEL_INFO_DEF_Y + 5,
+                          string=chr(175), fg=tcod.white, bg=tcod.dark_green)
+
+    mana_percent = MobileUtilities.get_number_as_a_percentage(player_current_mana, player_maximum_mana)
+    mana_string = 'Mana at ' + str(mana_percent) + '%'
+
+    console.print_box(x=constants.HERO_PANEL_RIGHT_COL + 7, y=constants.HERO_PANEL_INFO_DEF_Y +7,
+                      width=len(mana_string), height=1,
+                      string=mana_string)
+    mana_bar_count = int(mana_percent / 10)
+    for a in range(10):
+        if a <= mana_bar_count:
+            console.print(x=constants.HERO_PANEL_RIGHT_COL + 7 + a, y=constants.HERO_PANEL_INFO_DEF_Y + 8,
+                          string=chr(175), fg=tcod.white, bg=tcod.lighter_blue)
+        else:
+            console.print(x=constants.HERO_PANEL_RIGHT_COL + 7 + a, y=constants.HERO_PANEL_INFO_DEF_Y + 8,
+                          string=chr(175), fg=tcod.white, bg=tcod.dark_blue)
 
 
 def current_build_tab(console):

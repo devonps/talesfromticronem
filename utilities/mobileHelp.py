@@ -390,3 +390,11 @@ class MobileUtilities(numbers.Real):
     @staticmethod
     def get_derived_current_health(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth
+
+    @staticmethod
+    def get_derived_current_mana(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.ManaPool).current
+
+    @staticmethod
+    def get_derived_maximum_mana(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.ManaPool).maximum
