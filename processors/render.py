@@ -51,8 +51,10 @@ class RenderConsole(esper.Processor):
         self.render_player_vertical_bar_content(constants.V_BAR_X, constants.V_BAR_Y, current_health_percentage, tcod.red, tcod.black)
 
         # mana
-        player_current_mana_component = self.gameworld.component_for_entity(player_entity, mobiles.ManaPool)
-        current_mana_percentage = MobileUtilities.get_number_as_a_percentage(player_current_mana_component.current, player_current_mana_component.maximum)
+        player_current_mana = MobileUtilities.get_derived_current_mana(gameworld=self.gameworld, entity=player_entity)
+        player_maximum_mana = MobileUtilities.get_derived_maximum_mana(gameworld=self.gameworld, entity=player_entity)
+
+        current_mana_percentage = MobileUtilities.get_number_as_a_percentage(player_current_mana, player_maximum_mana)
         self.render_player_vertical_bar_content(constants.V_BAR_X + 3, constants.V_BAR_Y, current_mana_percentage, tcod.blue, tcod.black)
         # F1 bar
         player_current_special_component = self.gameworld.component_for_entity(player_entity, mobiles.SpecialBar)
