@@ -27,8 +27,8 @@ def display_hero_panel(con, key, mouse, gameworld):
             maxtablength = len(mytab)
     selected_tab = 1
     x_offset = 11
-    y_offset = 8
-
+    y_offset = 9
+    tab_offset = [9,11,13,15]
     # main loop whilst hero panel is displayed
     while hero_panel_displayed:
         hero_panel.draw_frame(x=0, y=0,
@@ -53,31 +53,68 @@ def display_hero_panel(con, key, mouse, gameworld):
             elif event.type == "MOUSEBUTTONDOWN":
                 x = event.tile.x
                 y = event.tile.y
-                if (x_offset <= x <= (x_offset + maxtablength)) and (y_offset <= y < (y_offset + tab_count)):
-                    ret_value = y - 8
-                    selected_tab = ret_value
-                logger.info('Tile x/y: {}/{}', x,y)
-                logger.info('Menu option: {}', selected_tab)
+                if y in tab_offset:
+                    y_down = (y_offset + tab_count)
+                    if x_offset <= x <= (x_offset + maxtablength):
+                        ret_value = tab_offset.index(y)
+                        selected_tab = ret_value
+                    logger.info('Menu option: {}', selected_tab)
+                    logger.info('Tile x/y: {}/{}', x,y)
 
         hero_panel.clear(ch=ord(' '), fg=tcod.white, bg=tcod.grey)
 
 
 def draw_hero_panel_tabs(hero_panel, maxtablength, selected_tab, gameworld, player_entity):
     tab_down = 3
+    tab_pos = 4
+    def_fg = tcod.white
+
+    # full length line
+    hero_panel.draw_rect(x=maxtablength + 1, y=1, width=1, height=hero_panel.height - 2, ch=179, fg=def_fg, bg=tcod.grey)
+    # top bar decoration
+    hero_panel.put_char(x=maxtablength + 1, y=0, ch=194)
+    # bottom bar decoration
+    hero_panel.put_char(x=maxtablength + 1, y=hero_panel.height - 1, ch=193)
     for tab_count, tab in enumerate(constants.HERO_PANEL_TABS):
-        if selected_tab == tab_count:
-            hero_panel.print_box(x=1, y=tab_down, width=maxtablength, height=1, string=tab)
-            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=0, fg=tcod.black, bg=tcod.grey)
-        else:
+        if tab_down == 3:
+            # tab cross bar
+            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=tcod.grey)
+            # tab cross bar top decoration
+            hero_panel.put_char(x=maxtablength + 1, y=tab_down, ch=180)
+            hero_panel.put_char(x=0, y=tab_down, ch=195)
+            tab_down += 1
+        if selected_tab != tab_count:
+
             hero_panel.print_box(x=1, y=tab_down, width=maxtablength, height=1, string=tab)
             hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=0, fg=tcod.white, bg=tcod.grey)
-        tab_down += 1
+            tab_down += 1
+            # tab cross bar
+            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=tcod.grey)
+            # tab cross bar top decoration
+            hero_panel.put_char(x=maxtablength + 1, y=tab_down, ch=180)
+            # left side tab cross bar decoration
+            hero_panel.put_char(x=0, y=tab_down, ch=195)
+            tab_down += 1
+
+        else:
+            hero_panel.print_box(x=1, y=tab_down, width=maxtablength, height=1, string=tab)
+            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=0, fg=tcod.white, bg=tcod.black)
+            tab_down += 1
+            # tab cross bar
+            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=tcod.grey)
+            # tab cross bar bottom right decoration
+            hero_panel.put_char(x=maxtablength + 1, y=tab_down, ch=191)
+            # tab cross bar top right decoration
+            hero_panel.put_char(x=maxtablength + 1, y=tab_down - 2, ch=217)
+            # left side tab cross bar decoration
+            hero_panel.put_char(x=0, y=tab_down, ch=195)
+            tab_down += 1
+
         draw_hero_information(hero_panel=hero_panel, selected_tab=selected_tab, gameworld=gameworld, player=player_entity)
 
-    tab_draw_pos = (3 + selected_tab)
-    hero_panel.draw_rect(x=maxtablength + 1, y=1, width=1, height=hero_panel.height - 2, ch=ord("|"), fg=tcod.white, bg=tcod.grey)
-    hero_panel.draw_rect(x=maxtablength + 1, y=tab_draw_pos, width=1, height=1, ch=ord(">"), fg=tcod.black, bg=tcod.grey)
-
+    tab_draw_pos = (tab_pos + (selected_tab * 2))
+    # hero_panel.draw_rect(x=maxtablength + 1, y=tab_draw_pos, width=1, height=1, ch=32, fg=tcod.white, bg=tcod.black)
+    hero_panel.put_char(x=maxtablength + 1, y=tab_draw_pos, ch=32)
 
 def draw_hero_information(hero_panel, selected_tab, gameworld, player):
     if selected_tab == 0:
@@ -125,7 +162,7 @@ def personal_tab(console, gameworld, player):
                       width=len(player_description), height=1, string=player_description)
     console.print_box(x=constants.HERO_PANEL_LEFT_COL, y=constants.HERO_PANEL_INFO_DEF_Y + 1,
                       width=len("who is known for being " + player_personality_title + "."), height=1,
-                      string="who is known for being " + player_personality_title + ".")
+                      string="who is known for being " + player_personality_title.lower() + ".")
 
     display_coloured_box(console=console, title="Primary Attributes",
                          posx=constants.HERO_PANEL_LEFT_COL,
@@ -177,7 +214,7 @@ def personal_tab(console, gameworld, player):
                          posx=constants.HERO_PANEL_LEFT_COL,
                          posy=constants.HERO_PANEL_INFO_DEF_Y + 22,
                          width=24,
-                         height=12,
+                         height=9,
                          fg=tcod.white,
                          bg=tcod.grey)
 
@@ -197,12 +234,12 @@ def personal_tab(console, gameworld, player):
                       width=constants.HERO_PANEL_INFO_WIDTH,
                       height=1, string="Condition Duration:" + str(player_condi_duration))
 
-    console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 29,
-                      width=constants.HERO_PANEL_INFO_WIDTH, height=1,
-                      string="Max Health:" + str(player_max_health))
-    console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 30,
-                      width=constants.HERO_PANEL_INFO_WIDTH, height=1,
-                      string="Current Health:" + str(player_current_health))
+    # console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 29,
+    #                   width=constants.HERO_PANEL_INFO_WIDTH, height=1,
+    #                   string="Max Health:" + str(player_max_health))
+    # console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 30,
+    #                   width=constants.HERO_PANEL_INFO_WIDTH, height=1,
+    #                   string="Current Health:" + str(player_current_health))
 
     health_percent = MobileUtilities.get_number_as_a_percentage(player_current_health, player_max_health)
     health_string = 'Health at ' + str(health_percent) + '%'
