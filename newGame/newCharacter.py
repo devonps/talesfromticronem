@@ -264,8 +264,8 @@ def get_starting_equipment(con, gameworld, player, spellbar):
     logger.info('creating a weapon for the player')
     class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
 
-    # create a new weapon for the player
-    weapon = WeaponClass.create_weapon(gameworld, 'staff')
+    # create a main hand weapon for the player
+    weapon = WeaponClass.create_weapon(gameworld, 'wand')
     weapon_type = gameworld.component_for_entity(weapon, weapons.Name)
     # parameters are: gameworld, weapon object, weapon type as a string, mobile class
     logger.info('Loading that weapon with the necessary spells')
@@ -273,7 +273,19 @@ def get_starting_equipment(con, gameworld, player, spellbar):
 
     # equip player with weapon
     logger.info('Equipping player with that loaded weapon')
-    MobileUtilities.equip_weapon(gameworld, player, weapon, 'both')
+    MobileUtilities.equip_weapon(gameworld, player, weapon, 'main')
+
+    # create an off-hand weapon for the player
+    weapon = WeaponClass.create_weapon(gameworld, 'dagger')
+    weapon_type = gameworld.component_for_entity(weapon, weapons.Name)
+    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+    logger.info('Loading that weapon with the necessary spells')
+    WeaponClass.load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)
+
+    # equip player with weapon
+    logger.info('Equipping player with that loaded weapon')
+    MobileUtilities.equip_weapon(gameworld, player, weapon, 'off')
+
 
     # load spell bar with spells from weapon
     logger.info('Loading spell bar')

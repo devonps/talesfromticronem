@@ -3,7 +3,8 @@ import tcod.event
 from newGame import constants
 from utilities.mobileHelp import MobileUtilities
 from utilities.display import display_coloured_box
-from loguru import logger
+from utilities.weaponHelp import WeaponUtilities
+from utilities.armourHelp import ArmourUtilities
 
 
 def display_hero_panel(con, key, mouse, gameworld):
@@ -28,7 +29,7 @@ def display_hero_panel(con, key, mouse, gameworld):
     selected_tab = 1
     x_offset = 11
     y_offset = 9
-    tab_offset = [9,11,13,15]
+
     # main loop whilst hero panel is displayed
     while hero_panel_displayed:
         hero_panel.draw_frame(x=0, y=0,
@@ -39,6 +40,11 @@ def display_hero_panel(con, key, mouse, gameworld):
                               title='Hero Panel')
         draw_hero_panel_tabs(hero_panel, maxtablength, selected_tab,
                              gameworld=gameworld, player_entity=player_entity)
+
+        hero_panel.print_box(x=maxtablength + 15, y=hero_panel.height - 2,
+                      width=40,
+                      height=1, string='Mouse to select, ESC to exit')
+
         tcod.console_blit(hero_panel, 0, 0,
                           constants.HERO_PANEL_WIDTH,
                           constants.HERO_PANEL_HEIGHT,
@@ -53,13 +59,11 @@ def display_hero_panel(con, key, mouse, gameworld):
             elif event.type == "MOUSEBUTTONDOWN":
                 x = event.tile.x
                 y = event.tile.y
-                if y in tab_offset:
-                    y_down = (y_offset + tab_count)
+                if y in constants.HERO_PANEL_TAB_OFFSETS:
+                    # y_down = (y_offset + tab_count)
                     if x_offset <= x <= (x_offset + maxtablength):
-                        ret_value = tab_offset.index(y)
+                        ret_value = constants.HERO_PANEL_TAB_OFFSETS.index(y)
                         selected_tab = ret_value
-                    logger.info('Menu option: {}', selected_tab)
-                    logger.info('Tile x/y: {}/{}', x,y)
 
         hero_panel.clear(ch=ord(' '), fg=tcod.white, bg=tcod.grey)
 
@@ -99,6 +103,8 @@ def draw_hero_panel_tabs(hero_panel, maxtablength, selected_tab, gameworld, play
         else:
             hero_panel.print_box(x=1, y=tab_down, width=maxtablength, height=1, string=tab)
             hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=0, fg=tcod.white, bg=tcod.black)
+            # draws the 'space' at the end of the tab
+            hero_panel.put_char(x=maxtablength + 1, y=tab_down, ch=32)
             tab_down += 1
             # tab cross bar
             hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=tcod.grey)
@@ -108,29 +114,28 @@ def draw_hero_panel_tabs(hero_panel, maxtablength, selected_tab, gameworld, play
             hero_panel.put_char(x=maxtablength + 1, y=tab_down - 2, ch=217)
             # left side tab cross bar decoration
             hero_panel.put_char(x=0, y=tab_down, ch=195)
+
             tab_down += 1
 
         draw_hero_information(hero_panel=hero_panel, selected_tab=selected_tab, gameworld=gameworld, player=player_entity)
 
-    tab_draw_pos = (tab_pos + (selected_tab * 2))
-    # hero_panel.draw_rect(x=maxtablength + 1, y=tab_draw_pos, width=1, height=1, ch=32, fg=tcod.white, bg=tcod.black)
-    hero_panel.put_char(x=maxtablength + 1, y=tab_draw_pos, ch=32)
 
 def draw_hero_information(hero_panel, selected_tab, gameworld, player):
     if selected_tab == 0:
-        equipment_tab(console=hero_panel)
+        equipment_tab(console=hero_panel, gameworld=gameworld, player=player)
     elif selected_tab == 1:
         personal_tab(console=hero_panel, gameworld=gameworld, player=player)
     elif selected_tab == 2:
-        current_build_tab(console=hero_panel)
+        current_build_tab(console=hero_panel, gameworld=gameworld, player=player)
+    elif selected_tab == 3:
+        weapons_tab(console=hero_panel, gameworld=gameworld, player=player)
     else:
-        story_tab(console=hero_panel)
+        inventory_tab(console=hero_panel, gameworld=gameworld, player=player)
 
 
-def equipment_tab(console):
-    width = 15
+def equipment_tab(console, gameworld, player):
 
-    console.print_box(x=constants.HERO_PANEL_INFO_DEF_X, y=constants.HERO_PANEL_INFO_DEF_Y, width=constants.HERO_PANEL_INFO_WIDTH, height=1, string="Power:")
+    console.print_box(x=constants.HERO_PANEL_INFO_DEF_X, y=constants.HERO_PANEL_INFO_DEF_Y, width=constants.HERO_PANEL_INFO_WIDTH, height=1, string="Equipment:")
 
 
 def personal_tab(console, gameworld, player):
@@ -234,13 +239,6 @@ def personal_tab(console, gameworld, player):
                       width=constants.HERO_PANEL_INFO_WIDTH,
                       height=1, string="Condition Duration:" + str(player_condi_duration))
 
-    # console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 29,
-    #                   width=constants.HERO_PANEL_INFO_WIDTH, height=1,
-    #                   string="Max Health:" + str(player_max_health))
-    # console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 30,
-    #                   width=constants.HERO_PANEL_INFO_WIDTH, height=1,
-    #                   string="Current Health:" + str(player_current_health))
-
     health_percent = MobileUtilities.get_number_as_a_percentage(player_current_health, player_max_health)
     health_string = 'Health at ' + str(health_percent) + '%'
 
@@ -273,11 +271,144 @@ def personal_tab(console, gameworld, player):
                           string=chr(175), fg=tcod.white, bg=tcod.dark_blue)
 
 
-def current_build_tab(console):
+def current_build_tab(console, gameworld, player):
 
-    console.print_box(x=constants.HERO_PANEL_INFO_DEF_X, y=constants.HERO_PANEL_INFO_DEF_Y, width=constants.HERO_PANEL_INFO_WIDTH, height=1, string="Power:" )
+    # gather current set of: spells, equipped armour, weapons, jewellery
+    # this creates a list of entities, i.e. weapons that are equipped in main hand, off hand, both hands
+    weapons_equipped_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
+    main_hand_weapon_entity = weapons_equipped_list[0]
+    off_hand_weapon_entity = weapons_equipped_list[1]
+    both_hands_weapon_entity = weapons_equipped_list[2]
+
+    # gather armour being worn
+    head_armour = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player)
+    chest_armour = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=player)
+    legs_armour = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player)
+    feet_armour = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=player)
+    hands_armour= MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=player)
+
+    head_armour_display = ''
+
+    if head_armour == 0:
+        head_armour_display = 'None'
+    else:
+        am_set_name = ArmourUtilities.get_armour_set_name(gameworld=gameworld, entity=head_armour)
+        am_quality_level = ArmourUtilities.get_armour_quality_level(gameworld=gameworld, entity=head_armour)
+        am_weight = ArmourUtilities.get_armour_piece_weight(gameworld=gameworld, entity=head_armour)
+        am_defense_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, body_location=head_armour)
+
+        if am_set_name != '':
+            head_armour_display = '(' + am_set_name + ') '
+
+        if am_quality_level != '':
+            head_armour_display += am_quality_level + ' '
+
+        if am_weight != '':
+            head_armour_display += am_weight + ' '
+
+        if am_defense_value != 0:
+            head_armour_display += str(am_defense_value)
+
+    # gather jewellery being worn
 
 
-def story_tab(console):
+    # gather current stats
 
-    console.print_box(x=constants.HERO_PANEL_INFO_DEF_X, y=constants.HERO_PANEL_INFO_DEF_Y, width=constants.HERO_PANEL_INFO_WIDTH, height=1, string="Power:" )
+    # display current set of equipped weapons
+    box_height = 5
+    weapon_display_string = []
+
+    if both_hands_weapon_entity != 0:
+        box_height = 5
+        both_weapon_display_name = WeaponUtilities.get_weapon_display_name(gameworld=gameworld, entity=both_hands_weapon_entity)
+        weapon_display_string.append(both_weapon_display_name + ' is in both hands.')
+    if main_hand_weapon_entity != 0:
+        main_weapon_display_name = WeaponUtilities.get_weapon_display_name(gameworld=gameworld, entity=main_hand_weapon_entity)
+        box_height = 6
+        weapon_display_string.append(main_weapon_display_name + ' is in the main hand')
+    if off_hand_weapon_entity != 0:
+        off_weapon_display_name = WeaponUtilities.get_weapon_display_name(gameworld=gameworld, entity=off_hand_weapon_entity)
+        weapon_display_string.append(off_weapon_display_name + ' is in the off hand')
+        if box_height == 6:
+            box_height = 7
+        else:
+            box_height = 6
+
+    display_coloured_box(console=console, title="Equipped Weapons",
+                         posx=constants.HERO_PANEL_LEFT_COL,
+                         posy=constants.HERO_PANEL_INFO_DEF_Y,
+                         width=30,
+                         height=box_height,
+                         fg=tcod.white,
+                         bg=tcod.dark_gray)
+    cnt = 2
+    for wpn in weapon_display_string:
+        console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + cnt,
+                      width=40,
+                      height=1, string=wpn)
+        cnt += 1
+
+    # display equipped armour
+    armcnt = cnt + 3
+    display_coloured_box(console=console, title="Equipped Armour",
+                         posx=constants.HERO_PANEL_LEFT_COL,
+                         posy=constants.HERO_PANEL_INFO_DEF_Y + armcnt,
+                         width=30,
+                         height=10,
+                         fg=tcod.white,
+                         bg=tcod.dark_gray)
+
+    console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + armcnt + 2,
+                      width=40,
+                      height=1, string='Head ' + head_armour_display)
+    console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + armcnt + 3,
+                      width=40,
+                      height=1, string='Chest')
+    console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + armcnt + 4,
+                      width=40,
+                      height=1, string='Hands')
+    console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + armcnt + 5,
+                      width=40,
+                      height=1, string='Legs')
+    console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + armcnt + 6,
+                      width=40,
+                      height=1, string='Feet')
+
+    # display current set of equipped Jewellery
+    jcnt = armcnt + 10
+    display_coloured_box(console=console, title="Equipped Jewellery",
+                         posx=constants.HERO_PANEL_LEFT_COL,
+                         posy=constants.HERO_PANEL_INFO_DEF_Y + jcnt,
+                         width=30,
+                         height=10,
+                         fg=tcod.white,
+                         bg=tcod.dark_gray)
+
+    console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + jcnt + 2,
+                      width=40,
+                      height=1, string='Left Ear')
+    console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + jcnt + 3,
+                      width=40,
+                      height=1, string='Right Ear')
+    console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + jcnt + 4,
+                      width=40,
+                      height=1, string='Left Hand')
+    console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + jcnt + 5,
+                      width=40,
+                      height=1, string='Right Hand')
+
+    console.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + jcnt + 6,
+                      width=40,
+                      height=1, string='Neck')
+
+    # display current set of stats
+
+
+def weapons_tab(console, gameworld, player):
+
+    console.print_box(x=constants.HERO_PANEL_INFO_DEF_X, y=constants.HERO_PANEL_INFO_DEF_Y, width=constants.HERO_PANEL_INFO_WIDTH, height=1, string="Weapons:" )
+
+
+def inventory_tab(console, gameworld, player):
+
+    console.print_box(x=constants.HERO_PANEL_INFO_DEF_X, y=constants.HERO_PANEL_INFO_DEF_Y, width=constants.HERO_PANEL_INFO_WIDTH, height=1, string="Inventory:" )

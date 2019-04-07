@@ -6,7 +6,6 @@ from components import userInput
 from newGame import constants
 
 
-
 def menu(con, header, options, width, screen_width, screen_height, posx, posy, foreground, key, mouse, gameworld):
 
     if len(options) > 26:
