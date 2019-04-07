@@ -1,6 +1,7 @@
 from components import mobiles, userInput, armour
 from loguru import logger
 from newGame import constants
+from utilities.armourHelp import ArmourUtilities
 
 import numbers
 
@@ -159,6 +160,29 @@ class MobileUtilities(numbers.Real):
         secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         return secondary_components.healingPower
 
+    @staticmethod
+    def is_entity_wearing_armour(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).armour
+
+    @staticmethod
+    def is_entity_wearing_head_armour(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.Armour).head
+    @staticmethod
+    def is_entity_wearing_chest_armour(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.Armour).chest
+
+    @staticmethod
+    def is_entity_wearing_legs_armour(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.Armour).legs
+
+    @staticmethod
+    def is_entity_wearing_feet_armour(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.Armour).feet
+
+    @staticmethod
+    def is_entity_wearing_hands_armour(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.Armour).hands
+
     #
     # general methods
     #
@@ -214,28 +238,55 @@ class MobileUtilities(numbers.Real):
         :param entity: integer: represents the entity in the gameworld
         :return: None
         """
-        entity_armour_component = gameworld.component_for_entity(entity, mobiles.Armour)
+
+        # get toughness value from primary attributes
         primary_attribute_component = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
-        # get defense values based on equipped pieces of armour
-
-        entity_head = entity_armour_component.head
-        entity_chest = entity_armour_component.chest
-        entity_legs = entity_armour_component.legs
-        entity_feet = entity_armour_component.feet
-        entity_hands = entity_armour_component.hands
-
-        def_chest_value = gameworld.component_for_entity(entity_chest, armour.Defense).value
-        def_head_value = gameworld.component_for_entity(entity_head, armour.Defense).value
-        def_legs_value = gameworld.component_for_entity(entity_legs, armour.Defense).value
-        def_feet_value = gameworld.component_for_entity(entity_feet, armour.Defense).value
-        def_hands_value = gameworld.component_for_entity(entity_hands, armour.Defense).value
-
-        defense_value = def_chest_value + def_head_value + def_legs_value + def_feet_value + def_hands_value
         toughness_value = primary_attribute_component.toughness
+
+        # get defense values based on equipped pieces of armour
+        defense_value = MobileUtilities.get_current_armour_based_defense_value(gameworld=gameworld, entity=entity)
 
         armour_value = defense_value + toughness_value
 
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).armour = armour_value
+
+    @staticmethod
+    def get_current_armour_based_defense_value(gameworld, entity):
+
+        head = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=entity)
+        chest = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=entity)
+        legs = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=entity)
+        feet = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=entity)
+        hands = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity)
+
+        if chest != 0:
+            def_chest_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, body_location=chest)
+        else:
+            def_chest_value = 0
+
+        if head != 0:
+            def_head_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, body_location=head)
+        else:
+            def_head_value = 0
+
+        if legs != 0:
+            def_legs_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, body_location=legs)
+        else:
+            def_legs_value = 0
+
+        if feet != 0:
+            def_feet_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, body_location=feet)
+        else:
+            def_feet_value = 0
+
+        if hands != 0:
+            def_hands_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, body_location=hands)
+        else:
+            def_hands_value = 0
+
+        defense_value = def_chest_value + def_head_value + def_legs_value + def_feet_value + def_hands_value
+
+        return defense_value
 
     @staticmethod
     def calculate_boon_duration(gameworld, entity):

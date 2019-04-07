@@ -196,7 +196,8 @@ HERO_PANEL_HEIGHT = 40
 HERO_PANEL_LEFT_X = 10
 HERO_PANEL_LEFT_Y = 5
 
-HERO_PANEL_TABS = ['Equipment', 'Personal', 'Build', 'Story']
+HERO_PANEL_TABS = ['Equipment', 'Personal', 'Build', 'Weapons', 'Inventory']
+HERO_PANEL_TAB_OFFSETS = [9,11,13,15, 17]
 
 HERO_PANEL_INFO_WIDTH = 25
 HERO_PANEL_INFO_DEF_X = 20

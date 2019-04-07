@@ -5,7 +5,7 @@ class Location:
 
 
 class LocationAKA:
-    def __init__(self, text = ''):
+    def __init__(self, text=''):
         self.label = text
 
 
