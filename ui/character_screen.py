@@ -152,7 +152,7 @@ def personal_tab(console, gameworld, player):
     player_armour = MobileUtilities.get_derived_armour_value(gameworld=gameworld, entity=player)
     player_boon_duration = MobileUtilities.get_derived_boon_duration(gameworld=gameworld, entity=player)
     player_description = MobileUtilities.describe_the_mobile(gameworld, player)
-    player_personality_title = MobileUtilities.get_player_personality_title(gameworld=gameworld, entity=player)
+    player_personality_title = MobileUtilities.get_mobile_personality_title(gameworld=gameworld, entity=player)
 
     player_critical_chance = MobileUtilities.get_derived_critical_hit_chance(gameworld=gameworld, entity=player)
     player_critical_damage = MobileUtilities.get_derived_critical_damage(gameworld=gameworld, entity=player)

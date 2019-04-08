@@ -9,24 +9,24 @@ import numbers
 class MobileUtilities(numbers.Real):
 
     @staticmethod
-    def get_player_name_details(gameworld, entity):
+    def get_mobile_name_details(gameworld, entity):
         name_component = gameworld.component_for_entity(entity, mobiles.Name)
         names = [name_component.first, name_component.suffix]
         return names
 
     @staticmethod
-    def get_player_race_details(gameworld, entity):
+    def get_mobile_race_details(gameworld, entity):
         race_component = gameworld.component_for_entity(entity, mobiles.Race)
         racial = [race_component.label, race_component.size]
         return racial
 
     @staticmethod
-    def get_player_personality_title(gameworld, entity):
+    def get_mobile_personality_title(gameworld, entity):
         describeable_component = gameworld.component_for_entity(entity, mobiles.Describable)
         return describeable_component.personality_title
 
     @staticmethod
-    def calculate_player_personality(gameworld):
+    def calculate_mobile_personality(gameworld):
         player_entity = MobileUtilities.get_player_entity(gameworld)
 
         player_current_personality_component = gameworld.component_for_entity(player_entity, mobiles.Personality)
@@ -210,10 +210,10 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(ent, userInput.Mouse())
 
     @staticmethod
-    def has_player_moved(gameworld):
-        player_entity = MobileUtilities.get_player_entity(gameworld)
+    def has_mobile_moved(gameworld):
+        entity = MobileUtilities.get_player_entity(gameworld)
 
-        position_component = gameworld.component_for_entity(player_entity, mobiles.Position)
+        position_component = gameworld.component_for_entity(entity, mobiles.Position)
 
         return position_component.hasMoved
 #
