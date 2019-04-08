@@ -155,6 +155,9 @@ def create_monster(gameworld):
 
 def generate_items(gameworld):
     logger.debug('Creating items as entities - for testing purposes only')
-    # generate_weapons(gameworld)
 
-    # assign spells to weapons
+    # generate weapons
+    # generate jewellery
+    # generate armour
+    # generate inventory bags
+
