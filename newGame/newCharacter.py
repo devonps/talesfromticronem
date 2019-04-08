@@ -209,7 +209,7 @@ def select_personality_choices(con, gameworld, player):
     # The personality-oriented question affects the conversational options that NPCs provide.
     # there will be 3 options: charm, dignity, ferocity
 
-    MobileUtilities.calculate_player_personality(gameworld)
+    MobileUtilities.calculate_mobile_personality(gameworld)
 
     personality_component = gameworld.component_for_entity(player, mobiles.Describable)
 

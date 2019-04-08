@@ -109,7 +109,7 @@ class RenderConsole(esper.Processor):
         player_position_component = self.gameworld.component_for_entity(thisplayer, mobiles.Position)
         # fov_map = self.fov_object.create_fov_map_via_raycasting(player_position_component.x, player_position_component.y)
 
-        has_player_moved = MobileUtilities.has_player_moved(self.gameworld)
+        has_player_moved = MobileUtilities.has_mobile_moved(self.gameworld)
         # has_player_moved = True
 
         if has_player_moved:
