@@ -5,6 +5,7 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.display import display_coloured_box
 from utilities.weaponHelp import WeaponUtilities
 from utilities.armourHelp import ArmourUtilities
+from components import bags
 
 
 def display_hero_panel(con, key, mouse, gameworld):
@@ -410,5 +411,39 @@ def weapons_tab(console, gameworld, player):
 
 
 def inventory_tab(console, gameworld, player):
+    start_y = 3
+    ac = 10
+    w = 6
+    def_fg = tcod.white
+    selected_inv_bag = 0
+    # cross bar
+    console.draw_rect(x=ac, y=start_y, width=w, height=1, ch=196, fg=def_fg, bg=tcod.grey)
+    console.put_char(x=ac, y=start_y, ch=197)
+    console.put_char(x=ac + 5, y=start_y, ch=191)
+    console.print_box(x=ac + 1, y=start_y + 1, width=4, height=1, string="Bags")
+    console.put_char(x=ac + 5, y=start_y + 1, ch=179)
+    # cross bar
+    console.draw_rect(x=ac, y=start_y + 2, width=w, height=1, ch=196, fg=def_fg, bg=tcod.grey)
+    console.put_char(x=ac, y=start_y + 2, ch=197)
+    console.put_char(x=ac + 5, y=start_y + 2, ch=180)
 
-    console.print_box(x=constants.HERO_PANEL_INFO_DEF_X, y=constants.HERO_PANEL_INFO_DEF_Y, width=constants.HERO_PANEL_INFO_WIDTH, height=1, string="Inventory:" )
+    bg_dwn = start_y + 3
+    for bag_id in range(4):
+        # bg id
+        console.put_char(x=ac + 2, y=bg_dwn + bag_id, ch=49 + bag_id)
+        console.put_char(x=ac + 5, y=bg_dwn + bag_id, ch=179)
+        bg_dwn += 1
+        # cross bar
+        console.draw_rect(x=ac, y=bg_dwn + bag_id, width=w, height=1, ch=196, fg=def_fg, bg=tcod.grey)
+        console.put_char(x=ac, y=bg_dwn + bag_id, ch=197)
+        console.put_char(x=ac + 5, y=bg_dwn + bag_id, ch=180)
+    console.put_char(x=ac + 5, y=bg_dwn + 3, ch=217)
+
+# next up display the selected inventory bag slots
+    inv_bag_max_slots = gameworld.component_for_entity(selected_inv_bag, bags.SlotSize).maxSize
+
+    for slot_id in range(inv_bag_max_slots):
+
+
+
+# then make the inventory numbers clickable

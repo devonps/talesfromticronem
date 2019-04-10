@@ -7,6 +7,7 @@ from components import weapons, spellBar, userInput
 from newGame.ClassWeapons import WeaponClass
 from newGame.ClassArmour import *
 from newGame.ClassJewellery import Trinkets
+from newGame.ClassBags import create_bag
 from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.spellHelp import SpellUtilities
@@ -286,10 +287,12 @@ def get_starting_equipment(con, gameworld, player, spellbar):
     logger.info('Equipping player with that loaded weapon')
     MobileUtilities.equip_weapon(gameworld, player, weapon, 'off')
 
-
     # load spell bar with spells from weapon
     logger.info('Loading spell bar')
     SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spellbar)
+
+    # create inventory bags
+    create_bag(gameworld=gameworld, entity=player)
 
     logger.debug('Player is ready to rock and roll!')
 

@@ -59,6 +59,7 @@ class SpecialBar:
 class Inventory:
     def __init__(self, exists=False):
         self.exists = exists
+        self.bags = []
 
 
 class Armour:

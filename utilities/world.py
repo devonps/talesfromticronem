@@ -23,3 +23,7 @@ def clear_world_database(gameworld):
 def reset_gameworld(gameworld):
     remove_all_processors(gameworld)
     clear_world_database(gameworld)
+
+
+def get_next_entity_id(gameworld):
+    return gameworld.create_entity()
