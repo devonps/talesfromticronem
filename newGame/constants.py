@@ -118,7 +118,7 @@ SPELL_SLOTS_X = 21
 AOE_SMALL = 1
 AOE_MEDIUM = 2
 AOE_LARGE = 3
-
+#                           GW2 range equivalents
 SPELL_DIST_PERSONAL = 1     # 130 / 150
 SPELL_DIST_CLOSE = 3        # 300
 SPELL_DIST_NEARBY = 5       # 600

@@ -6,10 +6,12 @@ from newGame.game_messages import MessageLog, Message
 from processors.render import RenderGameStartScreen
 from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys, handle_menus
-from utilities.gameworld import reset_gameworld
+from utilities.world import reset_gameworld
 from utilities.replayGame import ReplayGame
 from ui.character_screen import display_hero_panel
 from loguru import logger
+
+from components import mobiles, bags
 
 
 def start_game(con, gameworld):
@@ -23,6 +25,12 @@ def start_game(con, gameworld):
 
     player_description = MobileUtilities.describe_the_mobile(gameworld, player)
     logger.info(player_description)
+    mobile_inventory_component = gameworld.component_for_entity(player, mobiles.Inventory)
+    inv_bag_entity = mobile_inventory_component.bags[0]
+
+    bag_description = gameworld.component_for_entity(inv_bag_entity, bags.Description)
+
+    logger.info('Inventory bag entity {} is described as {}', inv_bag_entity, bag_description.label)
 
     key = tcod.Key()
     mouse = tcod.Mouse()
