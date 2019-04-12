@@ -34,7 +34,7 @@ class Location:
 # what is the item made of
 # this might not be used as a game mechanic, but it will at least add some flavour
 class Material:
-    def __init__(self, texture=''):
+    def __init__(self, texture='cloth'):
         self.texture = texture
 
 
@@ -92,6 +92,22 @@ class Wielded:
         self.off_hand = off_hand
         self.both_hands = both_hands
         self.true_or_false = true_or_false
+
+
+# which spells are loaded into the weapon
+class Spells:
+    def __init__(self, slot_one=0, slot_two=0, slot_three=0, slot_four=0, slot_five=0 ):
+        self.slot_one = slot_one
+        self.slot_two = slot_two
+        self.slot_three = slot_three
+        self.slot_four = slot_four
+        self.slot_five = slot_five
+        self.slot_one_disabled = False
+        self.slot_two_disabled = False
+        self.slot_three_disabled = False
+        self.slot_four_disabled = False
+        self.slot_five_disabled = False
+
 
 ####################################################
 #

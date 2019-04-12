@@ -41,13 +41,13 @@ class ReplayGame:
                     generate_monsters(gameworld)
 
                     # generate a new character
-                    player = generate_player_character(gameworld=gameworld)
+                    player = NewCharacter.generate_player_character(gameworld=gameworld)
 
                     # create the spell bar
-                    spell_bar_entity = generate_spell_bar(gameworld=gameworld)
+                    spell_bar_entity = NewCharacter.generate_spell_bar(gameworld=gameworld)
 
                     # assign starting equipment
-                    get_starting_equipment(con=con, gameworld=gameworld, player=player, spellbar=spell_bar_entity)
+                    NewCharacter.get_starting_equipment(con=con, gameworld=gameworld, player=player, spellbar=spell_bar_entity)
 
                     # initialise and create a new game map
                     initialise_game_map(con=con, gameworld=gameworld, player=player, spell_bar=spell_bar_entity)
