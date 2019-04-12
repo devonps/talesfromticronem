@@ -12,6 +12,7 @@ from ui.character_screen import display_hero_panel
 from loguru import logger
 
 from components import mobiles, bags
+from newGame.Items import Items
 
 
 def start_game(con, gameworld):
@@ -31,6 +32,8 @@ def start_game(con, gameworld):
     bag_description = gameworld.component_for_entity(inv_bag_entity, bags.Description)
 
     logger.info('Inventory bag entity {} is described as {}', inv_bag_entity, bag_description.label)
+
+    my_weapon = Items.create_weapon(gameworld=gameworld, weapon_type='sword')
 
     key = tcod.Key()
     mouse = tcod.Mouse()

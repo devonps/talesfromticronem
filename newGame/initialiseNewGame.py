@@ -59,7 +59,7 @@ def generate_world_seed():
 
 
 def create_new_character(con, gameworld):
-    player, spell_bar = NewCharacter.create(con, gameworld)
+    player, spell_bar = NewCharacter.create(con=con, gameworld=gameworld)
     return player, spell_bar
 
 
