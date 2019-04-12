@@ -440,9 +440,10 @@ def inventory_tab(console, gameworld, player):
     console.put_char(x=ac + 5, y=bg_dwn + 3, ch=217)
 
 # next up display the selected inventory bag slots
-    inv_bag_max_slots = gameworld.component_for_entity(selected_inv_bag, bags.SlotSize).maxSize
-
-    for slot_id in range(inv_bag_max_slots):
+#     inv_bag_max_slots = gameworld.component_for_entity(selected_inv_bag, bags.SlotSize).maxSize
+#
+#     for slot_id in range(inv_bag_max_slots):
+#         pass
 
 
 
