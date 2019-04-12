@@ -53,7 +53,7 @@ def handle_keys(mouse, key, gameworld, player, message_log):
             Externalfiles.write_to_existing_file(constants.GAME_ACTIONS_FILE, value)
             return {'exit': True}
         # hero action keys
-        elif key_char == 'c':
+        elif key_char == 'h':
             return {'display_hero_panel': True}
 
     return {}
