@@ -31,7 +31,7 @@ class Trinkets:
         ab = 1
 
         for gemstone in gemstone_file['gemstones']:
-            if gemstone['Gemstone'] == e_activator:
+            if gemstone['Stone'] == e_activator:
                 if ab == 3:
                     gameworld.add_component(earring, jewellery.ImprovementTo(stat3name=gemstone['Attribute'],
                                                                              stat3bonus=gemstone['Earring']))
@@ -70,7 +70,7 @@ class Trinkets:
         ab = 1
 
         for gemstone in gemstone_file['gemstones']:
-            if gemstone['Gemstone'] == e_activator:
+            if gemstone['Stone'] == e_activator:
                 if ab == 3:
                     gameworld.add_component(amulet, jewellery.ImprovementTo(stat3name=gemstone['Attribute'],
                                                                              stat3bonus=gemstone['Amulet']))
@@ -109,7 +109,7 @@ class Trinkets:
         ab = 1
 
         for gemstone in gemstone_file['gemstones']:
-            if gemstone['Gemstone'] == e_activator:
+            if gemstone['Stone'] == e_activator:
                 if ab == 3:
                     gameworld.add_component(ring, jewellery.ImprovementTo(stat3name=gemstone['Attribute'],
                                                                              stat3bonus=gemstone['Ring']))

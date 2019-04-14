@@ -3,11 +3,12 @@ import random
 import textwrap
 
 from loguru import logger
-from components import weapons, spellBar, userInput
+from components import weapons, spellBar, userInput, items
 from newGame.ClassWeapons import WeaponClass
 from newGame.ClassArmour import *
 from newGame.ClassJewellery import Trinkets
 from newGame.ClassBags import create_bag
+from newGame.Items import ItemManager
 from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.spellHelp import SpellUtilities
@@ -266,8 +267,12 @@ def get_starting_equipment(con, gameworld, player, spellbar):
     class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
 
     # create a main hand weapon for the player
-    weapon = WeaponClass.create_weapon(gameworld, 'wand')
-    weapon_type = gameworld.component_for_entity(weapon, weapons.Name)
+    # weapon = WeaponClass.create_weapon(gameworld, 'wand')
+    # weapon_type = gameworld.component_for_entity(weapon, weapons.Name)
+
+    weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='wand')
+    weapon_type = gameworld.component_for_entity(weapon, items.WeaponType)
+
     # parameters are: gameworld, weapon object, weapon type as a string, mobile class
     logger.info('Loading that weapon with the necessary spells')
     WeaponClass.load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)

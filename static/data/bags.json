@@ -3,7 +3,11 @@
     {
       "description": "a cloth bag",
       "material": "cloth",
-      "slots": "26"
+      "slots": "26",
+      "glyph": "%",
+      "fg_colour": "blue",
+      "bg_colour": "black",
+      "quality": "basic"
     }
       ]
 }
