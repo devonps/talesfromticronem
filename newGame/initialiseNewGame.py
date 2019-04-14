@@ -3,7 +3,6 @@ import random
 import tcod
 
 from loguru import logger
-from newGame.ClassWeapons import WeaponClass
 from newGame import constants
 from newGame.newCharacter import NewCharacter
 from newGame.game_messages import MessageLog, Message

@@ -15,347 +15,334 @@ from utilities.spellHelp import SpellUtilities
 from utilities.input_handlers import handle_menus
 from utilities.text_input import text_entry
 from utilities.display import menu
+from utilities.world import get_next_entity_id
 
 
 class NewCharacter:
 
     def create(con, gameworld):
-        player = generate_player_character(gameworld=gameworld)
-        select_race(con=con, gameworld=gameworld, player=player)
-        select_character_class(con=con, gameworld=gameworld, player=player)
-        select_personality_choices(con=con, gameworld=gameworld, player=player)
-        name_your_character(con=con, gameworld=gameworld, player=player)
-        spell_bar_entity = generate_spell_bar(gameworld=gameworld)
-        get_starting_equipment(con=con, gameworld=gameworld, player=player, spellbar=spell_bar_entity)
+        player = NewCharacter.generate_player_character(gameworld=gameworld)
+        NewCharacter.select_race(con=con, gameworld=gameworld, player=player)
+        NewCharacter.select_character_class(con=con, gameworld=gameworld, player=player)
+        NewCharacter.select_personality_choices(con=con, gameworld=gameworld, player=player)
+        NewCharacter.name_your_character(con=con, gameworld=gameworld, player=player)
+        spell_bar_entity = NewCharacter.generate_spell_bar(gameworld=gameworld)
+        NewCharacter.get_starting_equipment(con=con, gameworld=gameworld, player=player, spellbar=spell_bar_entity)
 
         MobileUtilities.calculate_derived_attributes(gameworld, player)
 
         return player, spell_bar_entity
 
+    def generate_spell_bar(gameworld):
+        logger.debug('Creating the spell bar')
+        spell_bar = get_next_entity_id(gameworld=gameworld)
 
-def generate_spell_bar(gameworld):
-    logger.debug('Creating the spell bar')
-    spell_bar = gameworld.create_entity()
+        gameworld.add_component(spell_bar, spellBar.SlotOne())
+        gameworld.add_component(spell_bar, spellBar.SlotTwo())
+        gameworld.add_component(spell_bar, spellBar.SlotThree())
+        gameworld.add_component(spell_bar, spellBar.SlotFour())
+        gameworld.add_component(spell_bar, spellBar.SlotFive())
+        gameworld.add_component(spell_bar, spellBar.SlotSix())
+        gameworld.add_component(spell_bar, spellBar.SlotSeven())
+        gameworld.add_component(spell_bar, spellBar.SlotEight())
+        gameworld.add_component(spell_bar, spellBar.SlotNine())
+        gameworld.add_component(spell_bar, spellBar.SlotTen())
 
-    gameworld.add_component(spell_bar, spellBar.SlotOne())
-    gameworld.add_component(spell_bar, spellBar.SlotTwo())
-    gameworld.add_component(spell_bar, spellBar.SlotThree())
-    gameworld.add_component(spell_bar, spellBar.SlotFour())
-    gameworld.add_component(spell_bar, spellBar.SlotFive())
-    gameworld.add_component(spell_bar, spellBar.SlotSix())
-    gameworld.add_component(spell_bar, spellBar.SlotSeven())
-    gameworld.add_component(spell_bar, spellBar.SlotEight())
-    gameworld.add_component(spell_bar, spellBar.SlotNine())
-    gameworld.add_component(spell_bar, spellBar.SlotTen())
+        return spell_bar
 
-    return spell_bar
+    def generate_player_character(gameworld):
+        """
+        Creates a shell for the player character details to be populated with
+        :param gameworld:
+        :return: player entity
+        """
 
+        logger.debug('Creating the player character entity')
+        player = MobileUtilities.generate_base_mobile(gameworld)
+        gameworld.add_component(player, mobiles.Describable())
+        gameworld.add_component(player, mobiles.AI(ailevel=constants.AI_LEVEL_PLAYER))
+        gameworld.add_component(player, mobiles.Inventory())
+        gameworld.add_component(player, mobiles.Armour())
+        gameworld.add_component(player, mobiles.Jewellery())
+        gameworld.add_component(player, mobiles.Equipped())
+        gameworld.add_component(player, mobiles.Velocity())
+        gameworld.add_component(player, mobiles.Personality())
+        gameworld.add_component(player, mobiles.ManaPool(current=500, maximum=1000))
+        gameworld.add_component(player, mobiles.SpecialBar(valuecurrent=10, valuemaximum=100))
+        gameworld.add_component(player, mobiles.Renderable(is_visible=True))
+        gameworld.add_component(player, mobiles.StatusEffects())
+        gameworld.add_component(player, mobiles.PrimaryAttributes())
+        gameworld.add_component(player, mobiles.SecondaryAttributes())
+        gameworld.add_component(player, mobiles.DerivedAttributes())
 
-def generate_player_character(gameworld):
-    """
-    Creates a shell for the player character details to be populated with
-    :param gameworld:
-    :return: player entity
-    """
+        logger.info('stored as entity {}', player)
 
-    logger.debug('Creating the player character entity')
-    player = MobileUtilities.generate_base_mobile(gameworld)
-    gameworld.add_component(player, mobiles.Describable())
-    gameworld.add_component(player, mobiles.AI(ailevel=constants.AI_LEVEL_PLAYER))
-    gameworld.add_component(player, mobiles.Inventory())
-    gameworld.add_component(player, mobiles.Armour())
-    gameworld.add_component(player, mobiles.Jewellery())
-    gameworld.add_component(player, mobiles.Equipped())
-    gameworld.add_component(player, mobiles.Velocity())
-    gameworld.add_component(player, mobiles.Personality())
-    gameworld.add_component(player, mobiles.ManaPool(current=500, maximum=1000))
-    gameworld.add_component(player, mobiles.SpecialBar(valuecurrent=10, valuemaximum=100))
-    gameworld.add_component(player, mobiles.Renderable(is_visible=True))
-    gameworld.add_component(player, mobiles.StatusEffects())
-    gameworld.add_component(player, mobiles.PrimaryAttributes())
-    gameworld.add_component(player, mobiles.SecondaryAttributes())
-    gameworld.add_component(player, mobiles.DerivedAttributes())
+        return player
 
-    logger.info('stored as entity {}', player)
+    def select_race(con, gameworld, player):
+        logger.info('Select Race')
+        race_file = read_json_file(constants.JSONFILEPATH + 'races.json')
 
-    return player
+        menu_options = []
+        menu_options_flavour = []
+        race_prefix = []
+        race_bg_colour = []
+        race_size = []
+        race_glyph = []
 
+        for option in race_file['races']:
+            menu_options.append(option['name'])
+            menu_options_flavour.append(option['flavour'])
+            race_prefix.append(option['prefix'])
+            race_bg_colour.append(option['bg_colour'])
+            race_size.append(option['size'])
+            race_glyph.append(option['glyph'])
 
-def select_race(con, gameworld, player):
-    logger.info('Select Race')
-    race_file = read_json_file(constants.JSONFILEPATH + 'races.json')
+        race_not_selected = True
 
-    menu_options = []
-    menu_options_flavour = []
-    race_prefix = []
-    race_bg_colour = []
-    race_size = []
-    race_glyph = []
+        key = tcod.Key()
+        mouse = tcod.Mouse()
+        tcod.console_clear(con)
+        selected_race = ''
 
-    for option in race_file['races']:
-        menu_options.append(option['name'])
-        menu_options_flavour.append(option['flavour'])
-        race_prefix.append(option['prefix'])
-        race_bg_colour.append(option['bg_colour'])
-        race_size.append(option['size'])
-        race_glyph.append(option['glyph'])
+        while race_not_selected:
 
-    race_not_selected = True
+            ret_value = menu(con,
+                             header='Select Race',
+                             options=menu_options,
+                             width=24,
+                             screen_width=constants.SCREEN_WIDTH,
+                             screen_height=constants.SCREEN_HEIGHT,
+                             posx=10,
+                             posy=26,
+                             foreground=tcod.yellow,
+                             key=key,
+                             mouse=mouse,
+                             gameworld=gameworld)
+            if ret_value != '':
+                ret_value = handle_menus(key=key, mouse=mouse, gameworld=gameworld)
+                index = key.c - ord('a')
+                if ret_value == 'a':
+                    selected_race = 'human'
+                    gameworld.add_component(player, mobiles.Describable(background=tcod.black))
+                elif ret_value == 'b':
+                    selected_race = 'elf'
+                    gameworld.add_component(player, mobiles.Describable(background=tcod.blue))
+                elif ret_value == 'c':
+                    selected_race = 'orc'
+                    gameworld.add_component(player, mobiles.Describable(background=tcod.red))
+                elif ret_value == 'd':
+                    selected_race = 'troll'
+                    gameworld.add_component(player, mobiles.Describable(background=tcod.white))
+                logger.info('Selected race {}', selected_race)
+                gameworld.add_component(player, mobiles.Race(race=selected_race, size=race_size[index]))
+                logger.info('Racial Size {}', race_size[index])
 
-    key = tcod.Key()
-    mouse = tcod.Mouse()
-    tcod.console_clear(con)
-    selected_race = ''
+                race_not_selected = False
+                tcod.console_clear(con)
 
-    while race_not_selected:
+    def select_character_class(con, gameworld, player):
+        logger.info('Selecting character class')
+        class_file = read_json_file(constants.JSONFILEPATH + 'classes.json')
 
-        ret_value = menu(con,
-                         header='Select Race',
-                         options=menu_options,
-                         width=24,
-                         screen_width=constants.SCREEN_WIDTH,
-                         screen_height=constants.SCREEN_HEIGHT,
-                         posx=10,
-                         posy=26,
-                         foreground=tcod.yellow,
-                         key=key,
-                         mouse=mouse,
-                         gameworld=gameworld)
-        if ret_value != '':
-            ret_value = handle_menus(key=key, mouse=mouse, gameworld=gameworld)
-            index = key.c - ord('a')
-            if ret_value == 'a':
-                selected_race = 'human'
-                gameworld.add_component(player, mobiles.Describable(background=tcod.black))
-            elif ret_value == 'b':
-                selected_race = 'elf'
-                gameworld.add_component(player, mobiles.Describable(background=tcod.blue))
-            elif ret_value == 'c':
-                selected_race = 'orc'
-                gameworld.add_component(player, mobiles.Describable(background=tcod.red))
-            elif ret_value == 'd':
-                selected_race = 'troll'
-                gameworld.add_component(player, mobiles.Describable(background=tcod.white))
-            logger.info('Selected race {}', selected_race)
-            gameworld.add_component(player, mobiles.Race(race=selected_race, size=race_size[index]))
-            logger.info('Racial Size {}', race_size[index])
+        menu_options = []
+        menu_options_flavour = []
 
-            race_not_selected = False
-            tcod.console_clear(con)
+        for option in class_file['classes']:
+            menu_options.append(option['name'])
+            menu_options_flavour.append(option['flavour'])
 
+        class_not_selected = True
 
-def select_character_class(con, gameworld, player):
-    logger.info('Selecting character class')
-    class_file = read_json_file(constants.JSONFILEPATH + 'classes.json')
+        key = tcod.Key()
+        mouse = tcod.Mouse()
+        selected_class = ''
 
-    menu_options = []
-    menu_options_flavour = []
+        while class_not_selected:
 
-    for option in class_file['classes']:
-        menu_options.append(option['name'])
-        menu_options_flavour.append(option['flavour'])
+            ret_value = menu(con, header='Select Class',
+                 options=menu_options,
+                 width=24, screen_width=constants.SCREEN_WIDTH, screen_height=constants.SCREEN_HEIGHT, posx=10, posy=26,
+                 foreground=tcod.yellow,
+                 key=key,
+                 mouse=mouse,
+                 gameworld=gameworld)
 
-    class_not_selected = True
+            if ret_value != '':
+                ret_value = handle_menus(key=key, mouse=mouse, gameworld=gameworld)
 
-    key = tcod.Key()
-    mouse = tcod.Mouse()
-    selected_class = ''
+                if ret_value == 'a':
+                    selected_class = 'necromancer'
+                    gameworld.add_component(player, mobiles.CharacterClass(base_health=22))
+                elif ret_value == 'b':
+                    selected_class = 'witch doctor'
+                    gameworld.add_component(player, mobiles.CharacterClass(base_health=22))
+                elif ret_value == 'c':
+                    selected_class = 'druid'
+                    gameworld.add_component(player, mobiles.CharacterClass(base_health=18))
+                elif ret_value == 'd':
+                    selected_class = 'mesmer'
+                    gameworld.add_component(player, mobiles.CharacterClass(base_health=18))
+                elif ret_value == 'e':
+                    selected_class = 'elementalist'
+                    gameworld.add_component(player, mobiles.CharacterClass(base_health=5))
+                elif ret_value == 'f':
+                    selected_class = 'chronomancer'
+                    gameworld.add_component(player, mobiles.CharacterClass(base_health=5))
 
-    while class_not_selected:
+                logger.info('Selected class {}', selected_class)
+                gameworld.add_component(player, mobiles.CharacterClass(label=selected_class))
+                class_not_selected = False
+                tcod.console_clear(con)
 
-        ret_value = menu(con, header='Select Class',
-             options=menu_options,
-             width=24, screen_width=constants.SCREEN_WIDTH, screen_height=constants.SCREEN_HEIGHT, posx=10, posy=26,
-             foreground=tcod.yellow,
-             key=key,
-             mouse=mouse,
-             gameworld=gameworld)
+    def select_profession_background(con, gameworld, player):
+        # The profession-oriented question affects a character's starting armor
+        player_class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
 
-        if ret_value != '':
-            ret_value = handle_menus(key=key, mouse=mouse, gameworld=gameworld)
+        # different options presented to player based on their chosen class
 
-            if ret_value == 'a':
-                selected_class = 'necromancer'
-                gameworld.add_component(player, mobiles.CharacterClass(base_health=22))
-            elif ret_value == 'b':
-                selected_class = 'witch doctor'
-                gameworld.add_component(player, mobiles.CharacterClass(base_health=22))
-            elif ret_value == 'c':
-                selected_class = 'druid'
-                gameworld.add_component(player, mobiles.CharacterClass(base_health=18))
-            elif ret_value == 'd':
-                selected_class = 'mesmer'
-                gameworld.add_component(player, mobiles.CharacterClass(base_health=18))
-            elif ret_value == 'e':
-                selected_class = 'elementalist'
-                gameworld.add_component(player, mobiles.CharacterClass(base_health=5))
-            elif ret_value == 'f':
-                selected_class = 'chronomancer'
-                gameworld.add_component(player, mobiles.CharacterClass(base_health=5))
+    def select_personality_choices(con, gameworld, player):
+        logger.info('Selecting character personality choices')
+        # The personality-oriented question affects the conversational options that NPCs provide.
+        # there will be 3 options: charm, dignity, ferocity
 
-            logger.info('Selected class {}', selected_class)
-            gameworld.add_component(player, mobiles.CharacterClass(label=selected_class))
-            class_not_selected = False
-            tcod.console_clear(con)
+        MobileUtilities.calculate_mobile_personality(gameworld)
 
+        personality_component = gameworld.component_for_entity(player, mobiles.Describable)
 
-def select_profession_background(con, gameworld, player):
-    # The profession-oriented question affects a character's starting armor
-    player_class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
+        logger.debug('Your personality is viewed as {} by other NPCs', personality_component.personality_title)
 
-    # different options presented to player based on their chosen class
+    def name_your_character(con, gameworld, player):
+        logger.info('Naming the character')
 
+        this_name = text_entry()
 
-def select_personality_choices(con, gameworld, player):
-    logger.info('Selecting character personality choices')
-    # The personality-oriented question affects the conversational options that NPCs provide.
-    # there will be 3 options: charm, dignity, ferocity
+        if this_name == '':
+            player_race_component = gameworld.component_for_entity(player, mobiles.Race)
+            logger.info('Race selected {}', player_race_component.label)
 
-    MobileUtilities.calculate_mobile_personality(gameworld)
+            if player_race_component.label == 'human':
+                tcod.namegen_parse(constants.HUMANNAMESFILE)
+                logger.info('reading from human file')
+            if player_race_component.label == 'elf':
+                tcod.namegen_parse(constants.ELFNAMESFILE)
+            if player_race_component.label == 'orc':
+                tcod.namegen_parse(constants.ORCNAMESFILE)
+            if player_race_component.label == 'troll':
+                tcod.namegen_parse(constants.TROLLNAMESFILE)
 
-    personality_component = gameworld.component_for_entity(player, mobiles.Describable)
+            if random.randrange(0,100) < 50:
+                sn = tcod.namegen_generate('male')
+                gameworld.component_for_entity(player, mobiles.Describable).gender = 'male'
+            else:
+                sn = tcod.namegen_generate('female')
+                gameworld.component_for_entity(player, mobiles.Describable).gender = 'female'
 
-    logger.debug('Your personality is viewed as {} by other NPCs', personality_component.personality_title)
-
-
-def name_your_character(con, gameworld, player):
-    logger.info('Naming the character')
-
-    this_name = text_entry()
-
-    if this_name == '':
-        player_race_component = gameworld.component_for_entity(player, mobiles.Race)
-        logger.info('Race selected {}', player_race_component.label)
-
-        if player_race_component.label == 'human':
-            tcod.namegen_parse(constants.HUMANNAMESFILE)
-            logger.info('reading from human file')
-        if player_race_component.label == 'elf':
-            tcod.namegen_parse(constants.ELFNAMESFILE)
-        if player_race_component.label == 'orc':
-            tcod.namegen_parse(constants.ORCNAMESFILE)
-        if player_race_component.label == 'troll':
-            tcod.namegen_parse(constants.TROLLNAMESFILE)
-
-        if random.randrange(0,100) < 50:
-            sn = tcod.namegen_generate('male')
-            gameworld.component_for_entity(player, mobiles.Describable).gender = 'male'
+            selected_name = sn.capitalize()
+            logger.info('Name chosen {}', selected_name)
         else:
-            sn = tcod.namegen_generate('female')
-            gameworld.component_for_entity(player, mobiles.Describable).gender = 'female'
+            selected_name = this_name
 
-        selected_name = sn.capitalize()
-        logger.info('Name chosen {}', selected_name)
-    else:
-        selected_name = this_name
+        gameworld.add_component(player, mobiles.Name(first=selected_name, suffix='none'))
 
-    gameworld.add_component(player, mobiles.Name(first=selected_name, suffix='none'))
+    def get_starting_equipment(con, gameworld, player, spellbar):
+        logger.debug('Selecting starting equipment')
 
+        # create starting armour
+        NewCharacter.create_starting_armour(gameworld, player)
 
-def get_starting_equipment(con, gameworld, player, spellbar):
-    logger.debug('Selecting starting equipment')
+        # create starting jewellery
+        logger.info('creating some basic jewellery for the player')
+        NewCharacter.create_starting_jewellery(gameworld, player)
 
-    # create starting armour
-    create_starting_armour(gameworld, player)
+        # create starting weapons
+        logger.info('creating a weapon for the player')
+        class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
 
-    # create starting jewellery
-    logger.info('creating some basic jewellery for the player')
-    create_starting_jewellery(gameworld, player)
+        weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='wand')
+        weapon_type = gameworld.component_for_entity(weapon, items.WeaponType)
 
-    # create starting weapons
-    logger.info('creating a weapon for the player')
-    class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
+        # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+        logger.info('Loading that weapon with the necessary spells')
+        WeaponClass.load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)
 
-    # create a main hand weapon for the player
-    # weapon = WeaponClass.create_weapon(gameworld, 'wand')
-    # weapon_type = gameworld.component_for_entity(weapon, weapons.Name)
+        # equip player with weapon
+        logger.info('Equipping player with that loaded weapon')
+        MobileUtilities.equip_weapon(gameworld, player, weapon, 'main')
 
-    weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='wand')
-    weapon_type = gameworld.component_for_entity(weapon, items.WeaponType)
+        # create an off-hand weapon for the player
+        weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='dagger')
+        weapon_type = gameworld.component_for_entity(weapon, items.WeaponType)
+        # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+        logger.info('Loading that weapon with the necessary spells')
+        WeaponClass.load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)
 
-    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-    logger.info('Loading that weapon with the necessary spells')
-    WeaponClass.load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)
+        # equip player with weapon
+        logger.info('Equipping player with that loaded weapon')
+        MobileUtilities.equip_weapon(gameworld, player, weapon, 'off')
 
-    # equip player with weapon
-    logger.info('Equipping player with that loaded weapon')
-    MobileUtilities.equip_weapon(gameworld, player, weapon, 'main')
+        # load spell bar with spells from weapon
+        logger.info('Loading spell bar')
+        SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spellbar)
 
-    # create an off-hand weapon for the player
-    weapon = WeaponClass.create_weapon(gameworld, 'dagger')
-    weapon_type = gameworld.component_for_entity(weapon, weapons.Name)
-    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-    logger.info('Loading that weapon with the necessary spells')
-    WeaponClass.load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)
+        # create inventory bags
+        create_bag(gameworld=gameworld, entity=player)
 
-    # equip player with weapon
-    logger.info('Equipping player with that loaded weapon')
-    MobileUtilities.equip_weapon(gameworld, player, weapon, 'off')
-
-    # load spell bar with spells from weapon
-    logger.info('Loading spell bar')
-    SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spellbar)
-
-    # create inventory bags
-    create_bag(gameworld=gameworld, entity=player)
-
-    logger.debug('Player is ready to rock and roll!')
+        logger.debug('Player is ready to rock and roll!')
 
 
-def create_starting_armour(gameworld, player):
-    logger.info('Creating starting armour')
+    def create_starting_armour(gameworld, player):
+        logger.info('Creating starting armour')
 
-    my_armour = ArmourClass.create_full_armour_set(gameworld, armourset='Apprentice', level=0, quality='basic')
+        my_armour = ItemManager.create_full_armour_set(gameworld, armourset='Apprentice', level=0, quality='basic')
 
-    logger.info('Attaching starting armour to player character')
-    ArmourClass.equip_full_set_of_armour(gameworld, entity=player, armourset=my_armour)
+        logger.info('Attaching starting armour to player character')
+        ArmourClass.equip_full_set_of_armour(gameworld, entity=player, armourset=my_armour)
 
-    chest_armour = ArmourClass.get_armour_piece_from_body_location(gameworld, player, 'chest')
+        chest_armour = ArmourClass.get_armour_piece_from_body_location(gameworld, player, 'chest')
 
-    logger.info('Chest armour: {}', chest_armour)
+        logger.info('Chest armour: {}', chest_armour)
 
+    def create_starting_jewellery(gameworld, player):
+        stud = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator='Amber')
+        stud2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator='Amber')
+        ring1 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator='Amber')
+        ring2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator='Amber')
+        amulet = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper', e_hook='copper', e_activator='Amber')
 
-def create_starting_jewellery(gameworld, player):
-    stud = Trinkets.create_earring(gameworld, e_setting='copper', e_hook='copper', e_activator='Amber')
-    stud2 = Trinkets.create_earring(gameworld, e_setting='copper', e_hook='copper', e_activator='Amber')
-    ring1 = Trinkets.create_ring(gameworld, e_setting='copper', e_hook='copper', e_activator='Amber')
-    ring2 = Trinkets.create_ring(gameworld, e_setting='copper', e_hook='copper', e_activator='Amber')
-    amulet = Trinkets.create_amulet(gameworld, e_setting='copper', e_hook='copper', e_activator='Amber')
+        Trinkets.equip_piece_of_jewellery(gameworld, player, 'left ear', stud)
+        Trinkets.equip_piece_of_jewellery(gameworld, player, 'right ear', stud2)
+        Trinkets.equip_piece_of_jewellery(gameworld, player, 'left hand', ring1)
+        Trinkets.equip_piece_of_jewellery(gameworld, player, 'right hand', ring2)
+        Trinkets.equip_piece_of_jewellery(gameworld, player, 'neck', amulet)
 
-    Trinkets.equip_piece_of_jewellery(gameworld, player, 'left ear', stud)
-    Trinkets.equip_piece_of_jewellery(gameworld, player, 'right ear', stud2)
-    Trinkets.equip_piece_of_jewellery(gameworld, player, 'left hand', ring1)
-    Trinkets.equip_piece_of_jewellery(gameworld, player, 'right hand', ring2)
-    Trinkets.equip_piece_of_jewellery(gameworld, player, 'neck', amulet)
+    def display_selection(con, filename, element, posx, posy, width, flavour_x, flavour_y):
 
+        letter_index = ord('a')
+        for option in filename[element]:
+            option_name = option['name']
+            option_flavour = option['flavour']
 
-def display_selection(con, filename, element, posx, posy, width, flavour_x, flavour_y):
+            tcod.console_set_default_foreground(con, tcod.white)
+            tcod.console_set_default_background(con, tcod.black)
 
-    letter_index = ord('a')
-    for option in filename[element]:
-        option_name = option['name']
-        option_flavour = option['flavour']
+            menu_choice = '(' + chr(letter_index) + ') '
 
-        tcod.console_set_default_foreground(con, tcod.white)
-        tcod.console_set_default_background(con, tcod.black)
+            tcod.console_print(con, posx, posy, menu_choice + option_name.capitalize())
+            my_wrap = textwrap.TextWrapper(width=50)
+            new_flavour_lines = my_wrap.wrap(text=option_flavour)
 
-        menu_choice = '(' + chr(letter_index) + ') '
+            tcod.console_set_default_foreground(con, tcod.yellow)
+            tcod.console_set_default_background(con, tcod.black)
 
-        tcod.console_print(con, posx, posy, menu_choice + option_name.capitalize())
-        my_wrap = textwrap.TextWrapper(width=50)
-        new_flavour_lines = my_wrap.wrap(text=option_flavour)
+            for line in new_flavour_lines:
+                tcod.console_print(con, flavour_x, flavour_y, line)
+                flavour_y += 1
 
-        tcod.console_set_default_foreground(con, tcod.yellow)
-        tcod.console_set_default_background(con, tcod.black)
+            tcod.console_hline(con, posx, flavour_y + 1, width - 1, tcod.BKGND_DEFAULT)
 
-        for line in new_flavour_lines:
-            tcod.console_print(con, flavour_x, flavour_y, line)
-            flavour_y += 1
+            flavour_y += 3
+            posy = flavour_y + 1
+            letter_index += 1
 
-        tcod.console_hline(con, posx, flavour_y + 1, width - 1, tcod.BKGND_DEFAULT)
-
-        flavour_y += 3
-        posy = flavour_y + 1
-        letter_index += 1
-
-    return flavour_y - 3
+        return flavour_y - 3

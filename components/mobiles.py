@@ -60,6 +60,7 @@ class Inventory:
     def __init__(self, exists=False):
         self.exists = exists
         self.bags = []
+        self.items_in_inventory = []
 
 
 class Armour:

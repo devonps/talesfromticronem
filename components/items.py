@@ -148,20 +148,20 @@ class ArmourBodyLocation:
 
 # what bonus does this piece of armour add and to which attribute
 class AttributeBonus:
-    def __init__(self, majorname='', majorbonus=0, minoronename='', minoronebonus=0, minortwoname='', minortwobonus=0):
+    def __init__(self, majorname='', majorbonus=0, minoronename='', minoronebonus=0):
         self.majorName = majorname
         self.majorBonus = majorbonus
         self.minorOneName = minoronename
         self.minorOneBonus = minoronebonus
-        self.minorTwoName = minortwoname
-        self.minorTwoBonus = minortwobonus
 
 
 # If this piece of armour belongs to an armour set it, the set name will
 # be found here
 class ArmourSet:
-    def __init__(self, label=''):
+    def __init__(self, label='', prefix='', level=0):
         self.name = label
+        self.prefix = prefix
+        self.level = level
 
 ####################################################
 #
@@ -173,9 +173,9 @@ class ArmourSet:
 # this defines the stat(s) the piece of jewellery improves
 # the dictionary is in the format:{stat_name, bonus_value}
 class JewelleryStatBonus:
-    def __init__(self, statName='', statBonus=0):
-        self.statName = statName
-        self.statBonus = statBonus
+    def __init__(self, statname='', statbonus=0):
+        self.statName = statname
+        self.statBonus = statbonus
 
 
 # where on the body can this piece of jewellery be worn
@@ -186,8 +186,8 @@ class JewelleryBodyLocation:
         self.neck = neck
         self.ears = ears
 
-####################################################
-#
-#   SPELLS
-#
-####################################################
+
+# Is the piece of jewellery already equipped
+class JewelleryEquipped:
+    def __init__(self, istrue=False):
+        self.istrue = istrue

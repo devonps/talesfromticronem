@@ -1,6 +1,7 @@
 from loguru import logger
 from components import jewellery, mobiles
 from utilities.jsonUtilities import read_json_file
+from utilities.itemsHelp import ItemUtilities
 from newGame import constants
 
 
@@ -132,29 +133,24 @@ class Trinkets:
         return ring
 
     def equip_piece_of_jewellery(gameworld, mobile, bodylocation, trinket):
-
-        trinket_type_component = gameworld.component_for_entity(trinket, jewellery.Type)
-        equipped = gameworld.component_for_entity(trinket, jewellery.Equipped)
-        if not equipped.label:
-            logger.info('Equipping {}', trinket_type_component.label)
-
+        trinket_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=trinket)
+        is_jewellery_equipped = ItemUtilities.get_jewellery_already_equipped_status(gameworld=gameworld, entity=trinket)
+        if not is_jewellery_equipped:
+            logger.info('Equipping {}', trinket_name)
             if bodylocation == 'left ear':
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).ear_one = trinket
-                gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped = True
             if bodylocation == 'right ear':
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).ear_two = trinket
-                gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped = True
             if bodylocation == 'left hand':
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).ring_one = trinket
-                gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped = True
             if bodylocation == 'right hand':
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).ring_two = trinket
-                gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped = True
             if bodylocation == 'neck':
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).amulet = trinket
-                gameworld.component_for_entity(trinket, jewellery.Equipped).isequipped = True
+
+            ItemUtilities.set_jewellery_equipped_status_to_true(gameworld=gameworld, entity=trinket)
         else:
-            logger.info('{} is already equipped.', trinket_type_component.label)
+            logger.info('{} is already equipped.', trinket_name)
 
     def unequp_piece_of_jewellery(gameworld, entity, bodylocation):
 
@@ -168,6 +164,7 @@ class Trinkets:
             gameworld.component_for_entity(entity, mobiles.Jewellery).ring_two = 0
         if bodylocation == 'neck':
             gameworld.component_for_entity(entity, mobiles.Jewellery).amulet = 0
+        ItemUtilities.set_jewellery_equipped_status_to_false(gameworld=gameworld, entity=entity)
 
     def get_jewellery_entity_at_bodylocation(gameworld, entity, bodylocation):
         jewellery = 0

@@ -3,8 +3,7 @@ import tcod.event
 from newGame import constants
 from utilities.mobileHelp import MobileUtilities
 from utilities.display import display_coloured_box
-from utilities.weaponHelp import WeaponUtilities
-from utilities.armourHelp import ArmourUtilities
+from utilities.itemsHelp import ItemUtilities
 from components import bags
 
 
@@ -293,10 +292,10 @@ def current_build_tab(console, gameworld, player):
     if head_armour == 0:
         head_armour_display = 'None'
     else:
-        am_set_name = ArmourUtilities.get_armour_set_name(gameworld=gameworld, entity=head_armour)
-        am_quality_level = ArmourUtilities.get_armour_quality_level(gameworld=gameworld, entity=head_armour)
-        am_weight = ArmourUtilities.get_armour_piece_weight(gameworld=gameworld, entity=head_armour)
-        am_defense_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, body_location=head_armour)
+        am_set_name = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=head_armour)
+        am_quality_level = ItemUtilities.get_item_quality(gameworld=gameworld, entity=head_armour)
+        am_weight = ItemUtilities.get_armour_piece_weight(gameworld=gameworld, entity=head_armour)
+        am_defense_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=head_armour)
 
         if am_set_name != '':
             head_armour_display = '(' + am_set_name + ') '
@@ -321,14 +320,14 @@ def current_build_tab(console, gameworld, player):
 
     if both_hands_weapon_entity != 0:
         box_height = 5
-        both_weapon_display_name = WeaponUtilities.get_weapon_display_name(gameworld=gameworld, entity=both_hands_weapon_entity)
+        both_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=both_hands_weapon_entity)
         weapon_display_string.append(both_weapon_display_name + ' is in both hands.')
     if main_hand_weapon_entity != 0:
-        main_weapon_display_name = WeaponUtilities.get_weapon_display_name(gameworld=gameworld, entity=main_hand_weapon_entity)
+        main_weapon_display_name =ItemUtilities.get_item_name(gameworld=gameworld, entity=main_hand_weapon_entity)
         box_height = 6
         weapon_display_string.append(main_weapon_display_name + ' is in the main hand')
     if off_hand_weapon_entity != 0:
-        off_weapon_display_name = WeaponUtilities.get_weapon_display_name(gameworld=gameworld, entity=off_hand_weapon_entity)
+        off_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=off_hand_weapon_entity)
         weapon_display_string.append(off_weapon_display_name + ' is in the off hand')
         if box_height == 6:
             box_height = 7

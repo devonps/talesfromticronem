@@ -1,7 +1,7 @@
 from components import armour
 
 
-class ArmourUtilities:
+class ArmourUtilitiesXXX:
 
     @staticmethod
     def get_armour_defense_value(gameworld, body_location):
