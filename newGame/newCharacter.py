@@ -3,11 +3,11 @@ import random
 import textwrap
 
 from loguru import logger
-from components import weapons, spellBar, userInput, items
+from components import spellBar, userInput, items, mobiles
 from newGame.ClassWeapons import WeaponClass
-from newGame.ClassArmour import *
+from newGame import constants
+from newGame.ClassArmour import ArmourClass
 from newGame.ClassJewellery import Trinkets
-from newGame.ClassBags import create_bag
 from newGame.Items import ItemManager
 from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
@@ -286,10 +286,9 @@ class NewCharacter:
         SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spellbar)
 
         # create inventory bags
-        create_bag(gameworld=gameworld, entity=player)
+        ItemManager.create_bag(gameworld=gameworld)
 
         logger.debug('Player is ready to rock and roll!')
-
 
     def create_starting_armour(gameworld, player):
         logger.info('Creating starting armour')

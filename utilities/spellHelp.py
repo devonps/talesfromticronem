@@ -1,5 +1,5 @@
 from loguru import logger
-from components import spells, weapons, spellBar, items
+from components import spells, spellBar, items
 from utilities.mobileHelp import MobileUtilities
 
 
