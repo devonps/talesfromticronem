@@ -4,7 +4,6 @@ from newGame import constants
 from utilities.mobileHelp import MobileUtilities
 from utilities.display import display_coloured_box
 from utilities.itemsHelp import ItemUtilities
-from components import bags
 
 
 def display_hero_panel(con, key, mouse, gameworld):
