@@ -1,7 +1,6 @@
 from newGame import constants
 from components import items
-from utilities import world
-from utilities import jsonUtilities
+from utilities import world, jsonUtilities
 from loguru import logger
 
 
@@ -54,10 +53,18 @@ class ItemManager:
                 logger.info('Entity {} has been created using the {} template', myweapon, weapon['name'])
                 return myweapon  # this is the entity id for the newly created weapon
 
-    def create_piece_of_armour(gameworld, bodylocation, quality):
+    def create_piece_of_armour(gameworld, bodylocation, quality, setname, prefix, level, majorname,
+                                        majorbonus, minoronename, minoronebonus):
         """
         This method creates a gameworld entity that's used as a piece of armour. It uses the Json file
         to create the 'base' entity - it's up to other methods to add flesh to these bones.
+        :param setname:
+        :param prefix:
+        :param level:
+        :param majorname:
+        :param majorbonus:
+        :param minoronename:
+        :param minoronebonus:
         :param bodylocation:
         :param quality:
         :param gameworld:
@@ -80,15 +87,17 @@ class ItemManager:
                 gameworld.add_component(armour_piece, items.RenderItem)
                 gameworld.add_component(armour_piece, items.Quality(level=piece_of_armour['quality']))
 
+                # generate armour specifics
                 gameworld.add_component(armour_piece, items.Weight(label=piece_of_armour['weight']))
+                gameworld.add_component(armour_piece, items.ArmourSet(label=setname))
+                gameworld.add_component(armour_piece, items.ArmourSet(prefix=prefix))
+                gameworld.add_component(armour_piece, items.ArmourSet(level=level))
                 gameworld.add_component(armour_piece, items.Defense(value=piece_of_armour['defense']))
                 gameworld.add_component(armour_piece, items.AttributeBonus(
-                    majorname=piece_of_armour['attr-majorname'],
-                    majorbonus=piece_of_armour['attr-majorbonus'],
-                    minoronename=piece_of_armour['attr-minoronename'],
-                    minoronebonus=piece_of_armour['attr-minoronebonus'],
-                    minortwoname=piece_of_armour['attr-minortwoname'],
-                    minortwobonus=piece_of_armour['attr-minortwobonus']))
+                    majorname=majorname,
+                    majorbonus=majorbonus,
+                    minoronename=minoronename,
+                    minoronebonus=minoronebonus))
 
                 if bodylocation == 'head':
                     gameworld.add_component(armour_piece, items.ArmourBodyLocation(head=True))
@@ -108,6 +117,49 @@ class ItemManager:
                 logger.info('Entity {} has been created as a piece of {} armour', armour_piece, bodylocation)
 
                 return armour_piece
+
+    def create_full_armour_set(gameworld, armourset, level, quality):
+        """
+        This method creates a full set of armour (as game entities), it calls the method create_piece_of_armour
+        to create the actual piece of armour.
+
+        Why do I need to create a full armour set?
+        1. An NPC could wear it
+        2. NPC's could drop multiple pieces of the same set
+        3. The PC could wear it
+        4. A full set may be available to purchase or craft by the PC
+
+        :return: a list of entities created in the order [head, chest, hands, legs, feet]
+        """
+        armour_set_file = jsonUtilities.read_json_file(constants.JSONFILEPATH + 'armoursets.json')
+
+        full_armour_set = []
+
+        for this_armour in armour_set_file['armoursets']:
+            if this_armour['setname'] == armourset:
+                if this_armour['level'] == level:
+                    if this_armour['quality'] == quality:
+                        bodylocation = this_armour['location']
+                        quality = quality
+                        weight = this_armour['weight']
+                        setname = armourset
+                        prefix = this_armour['prefix']
+                        location_aka = this_armour['location aka']
+                        level = level
+                        defense = this_armour['defense']
+                        majorname = this_armour['majorname']
+                        majorbonus = this_armour['majorbonus']
+                        minoronename = this_armour['minoronename']
+                        minoronebonus = this_armour['minoronebonus']
+                        minortwoname = this_armour['minortwoname']
+                        minortwobonus = this_armour['minortwobonus']
+
+                        piece_of_armour = ItemManager.create_piece_of_armour(gameworld, bodylocation, quality,
+                                            setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus)
+
+                        full_armour_set.append(piece_of_armour)
+
+        return full_armour_set
 
     def create_bag(gameworld):
         bags_file = jsonUtilities.read_json_file(constants.JSONFILEPATH + 'bags.json')
@@ -167,33 +219,35 @@ class ItemManager:
                 gameworld.add_component(piece_of_jewellery, items.RenderItem)
                 gameworld.add_component(piece_of_jewellery, items.Quality(level='common'))
 
+                # create jewellery specific components
+                gameworld.add_component(piece_of_jewellery, items.JewelleryEquipped(istrue=False))
                 desc = 'a ' + e_setting
-                nm = 'a ' + e_setting
+                nm = ''
 
                 if bodylocation == 'ear':
                     # create an earring
                     desc += ' earring, offset with a ' + e_activator + ' gemstone.'
-                    nm += ' earring'
+                    nm = 'earring'
                     gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(ears=True))
                     gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
-                        statName=gemstone['Attribute'],
-                        statBonus=gemstone['Earring']))
+                        statname=gemstone['Attribute'],
+                        statbonus=gemstone['Earring']))
                 elif bodylocation == 'neck':
                     # create an amulet
                     desc += ' amulet, offset with a ' + e_activator + ' gemstone.'
-                    nm += ' amulet'
+                    nm = ' amulet'
                     gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(neck=True))
                     gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
-                        statName=gemstone['Attribute'],
-                        statBonus=gemstone['Amulet']))
+                        statname=gemstone['Attribute'],
+                        statbonus=gemstone['Amulet']))
                 else:
                     # create a ring
                     desc += ' ring, offset with a ' + e_activator + ' gemstone.'
-                    nm += ' ring'
+                    nm = 'ring'
                     gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(fingers=True))
                     gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
-                        statName=gemstone['Attribute'],
-                        statBonus=gemstone['Ring']))
+                        statname=gemstone['Attribute'],
+                        statbonus=gemstone['Ring']))
 
                 gameworld.add_component(piece_of_jewellery, items.Describable(
                     description=desc,

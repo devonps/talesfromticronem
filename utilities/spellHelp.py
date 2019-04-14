@@ -1,5 +1,5 @@
 from loguru import logger
-from components import spells, weapons, spellBar
+from components import spells, weapons, spellBar, items
 from utilities.mobileHelp import MobileUtilities
 
 
@@ -24,15 +24,15 @@ class SpellUtilities:
         spell_entity = 0
 
         if slotid == 1:
-            spell_entity = gameworld.component_for_entity(weapon_equipped, weapons.Spells).slot_one
+            spell_entity = gameworld.component_for_entity(weapon_equipped, items.Spells).slot_one
         if slotid == 2:
-            spell_entity = gameworld.component_for_entity(weapon_equipped, weapons.Spells).slot_two
+            spell_entity = gameworld.component_for_entity(weapon_equipped, items.Spells).slot_two
         if slotid == 3:
-            spell_entity = gameworld.component_for_entity(weapon_equipped, weapons.Spells).slot_three
+            spell_entity = gameworld.component_for_entity(weapon_equipped, items.Spells).slot_three
         if slotid == 4:
-            spell_entity = gameworld.component_for_entity(weapon_equipped, weapons.Spells).slot_four
+            spell_entity = gameworld.component_for_entity(weapon_equipped, items.Spells).slot_four
         if slotid == 5:
-            spell_entity = gameworld.component_for_entity(weapon_equipped, weapons.Spells).slot_five
+            spell_entity = gameworld.component_for_entity(weapon_equipped, items.Spells).slot_five
 
         return spell_entity
 

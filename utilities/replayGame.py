@@ -3,7 +3,7 @@ import tcod
 from utilities.externalfileutilities import Externalfiles
 from newGame.initialiseNewGame import create_game_world, initialise_game_map, constants,\
     generate_items, generate_monsters, generate_spells
-from newGame.newCharacter import generate_player_character, generate_spell_bar, get_starting_equipment
+from newGame.newCharacter import NewCharacter
 from loguru import logger
 from components import mobiles
 from time import sleep
@@ -41,13 +41,13 @@ class ReplayGame:
                     generate_monsters(gameworld)
 
                     # generate a new character
-                    player = NewCharacter.generate_player_character(gameworld=gameworld)
+                    player = NewCharacter.generate_player_character
 
                     # create the spell bar
-                    spell_bar_entity = NewCharacter.generate_spell_bar(gameworld=gameworld)
+                    spell_bar_entity = NewCharacter.generate_spell_bar
 
                     # assign starting equipment
-                    NewCharacter.get_starting_equipment(con=con, gameworld=gameworld, player=player, spellbar=spell_bar_entity)
+                    NewCharacter.get_starting_equipment(player=player, spellbar=spell_bar_entity)
 
                     # initialise and create a new game map
                     initialise_game_map(con=con, gameworld=gameworld, player=player, spell_bar=spell_bar_entity)

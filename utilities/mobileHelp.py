@@ -1,7 +1,7 @@
 from components import mobiles, userInput, armour
 from loguru import logger
 from newGame import constants
-from utilities.armourHelp import ArmourUtilities
+from utilities.itemsHelp import ItemUtilities
 
 import numbers
 
@@ -260,27 +260,27 @@ class MobileUtilities(numbers.Real):
         hands = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity)
 
         if chest != 0:
-            def_chest_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, body_location=chest)
+            def_chest_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=chest)
         else:
             def_chest_value = 0
 
         if head != 0:
-            def_head_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, body_location=head)
+            def_head_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=head)
         else:
             def_head_value = 0
 
         if legs != 0:
-            def_legs_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, body_location=legs)
+            def_legs_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=legs)
         else:
             def_legs_value = 0
 
         if feet != 0:
-            def_feet_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, body_location=feet)
+            def_feet_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=feet)
         else:
             def_feet_value = 0
 
         if hands != 0:
-            def_hands_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, body_location=hands)
+            def_hands_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=hands)
         else:
             def_hands_value = 0
 
