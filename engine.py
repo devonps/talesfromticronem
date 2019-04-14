@@ -11,8 +11,7 @@ from utilities.replayGame import ReplayGame
 from ui.character_screen import display_hero_panel
 from loguru import logger
 
-from components import mobiles, bags
-from newGame.Items import Items
+from newGame.Items import ItemManager
 
 
 def start_game(con, gameworld):
@@ -26,14 +25,13 @@ def start_game(con, gameworld):
 
     player_description = MobileUtilities.describe_the_mobile(gameworld, player)
     logger.info(player_description)
-    mobile_inventory_component = gameworld.component_for_entity(player, mobiles.Inventory)
-    inv_bag_entity = mobile_inventory_component.bags[0]
 
-    bag_description = gameworld.component_for_entity(inv_bag_entity, bags.Description)
-
-    logger.info('Inventory bag entity {} is described as {}', inv_bag_entity, bag_description.label)
-
-    my_weapon = Items.create_weapon(gameworld=gameworld, weapon_type='sword')
+    # my_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='sword')
+    # head_armour_piece = ItemManager.create_piece_of_armour(gameworld=gameworld, bodylocation='head', quality='basic')
+    # new_bag = ItemManager.create_bag(gameworld=gameworld)
+    # earring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_activator='Garnet', e_setting='copper', e_hook='copper')
+    # amulet = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_activator='Garnet', e_setting='copper', e_hook='copper')
+    # ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_activator='Garnet', e_setting='copper', e_hook='copper')
 
     key = tcod.Key()
     mouse = tcod.Mouse()

@@ -1,184 +1,244 @@
 {
   "gemstones": [
   {
-    "Gemstone": "Amber",
+    "Stone": "Amber",
     "Type": "Pebble",
     "Attribute": "Condition Damage",
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black",
     "Gem": 3,
     "Amulet": 15,
     "Ring": 9,
     "Earring": 8
   },
   {
-    "Gemstone": "Garnet",
+    "Stone": "Garnet",
     "Type": "Pebble",
     "Attribute": "Power",
     "Gem": 3,
     "Amulet": 15,
     "Ring": 9,
-    "Earring": 8
+    "Earring": 8,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Turquoise",
+    "Stone": "Turquoise",
     "Type": "Pebble",
     "Attribute": "Vitality",
     "Gem": 3,
     "Amulet": 15,
     "Ring": 9,
-    "Earring": 8
+    "Earring": 8,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Malachite",
+    "Stone": "Malachite",
     "Type": "Pebble",
     "Attribute": "Toughness",
     "Gem": 3,
     "Amulet": 15,
     "Ring": 10,
-    "Earring": 9
+    "Earring": 9,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Pearl",
+    "Stone": "Pearl",
     "Type": "Pebble",
     "Attribute": "Healing Power",
     "Gem": 3,
     "Amulet": 15,
     "Ring": 10,
-    "Earring": 9
+    "Earring": 9,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Tiger's Eye",
+    "Stone": "Tiger's Eye",
     "Type": "Pebble",
     "Attribute": "Precision",
     "Gem": 3,
     "Amulet": 15,
     "Ring": 10,
-    "Earring": 9
+    "Earring": 9,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Amethyst",
+    "Stone": "Amethyst",
     "Type": "Nugget",
     "Attribute": "Power",
     "Gem": 5,
     "Amulet": 18,
     "Ring": 14,
-    "Earring": 12
+    "Earring": 12,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Amethyst",
+    "Stone": "Amethyst",
     "Type": "Nugget",
     "Attribute": "Vitality",
     "Gem": 2,
     "Amulet": 13,
     "Ring": 10,
-    "Earring": 8
+    "Earring": 8,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Carnelian",
+    "Stone": "Carnelian",
     "Type": "Nugget",
     "Attribute": "Power",
     "Gem": 5,
     "Amulet": 23,
     "Ring": 18,
-    "Earring": 15
+    "Earring": 15,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Carnelian",
+    "Stone": "Carnelian",
     "Type": "Nugget",
     "Attribute": "Precision",
     "Gem": 2,
     "Amulet": 17,
     "Ring": 13,
-    "Earring": 10
+    "Earring": 10,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Lapis",
+    "Stone": "Lapis",
     "Type": "Nugget",
     "Attribute": "Vitality",
     "Gem": 5,
     "Amulet": 23,
     "Ring": 24,
-    "Earring": 15
+    "Earring": 15,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Lapis",
+    "Stone": "Lapis",
     "Type": "Nugget",
     "Attribute": "Toughness",
     "Gem": 2,
     "Amulet": 17,
     "Ring": 17,
-    "Earring": 10
+    "Earring": 10,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Peridot",
+    "Stone": "Peridot",
     "Type": "Nugget",
     "Attribute": "Power",
     "Gem": 5,
     "Amulet": 23,
     "Ring": 18,
-    "Earring": 15
+    "Earring": 15,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Peridot",
+    "Stone": "Peridot",
     "Type": "Nugget",
     "Attribute": "Ferocity",
     "Gem": 2,
     "Amulet": 17,
     "Ring": 13,
-    "Earring": 10
+    "Earring": 10,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Spinel",
+    "Stone": "Spinel",
     "Type": "Nugget",
     "Attribute": "Healing Power",
     "Gem": 5,
     "Amulet": 23,
     "Ring": 18,
-    "Earring": 15
+    "Earring": 15,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Spinel",
+    "Stone": "Spinel",
     "Type": "Nugget",
     "Attribute": "Power",
     "Gem": 2,
     "Amulet": 17,
     "Ring": 13,
-    "Earring": 10
+    "Earring": 10,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Sunstone",
+    "Stone": "Sunstone",
     "Type": "Nugget",
     "Attribute": "Precision",
     "Gem": 5,
     "Amulet": 18,
     "Ring": 14,
-    "Earring": 12
+    "Earring": 12,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Sunstone",
+    "Stone": "Sunstone",
     "Type": "Nugget",
     "Attribute": "Power",
     "Gem": 2,
     "Amulet": 13,
     "Ring": 10,
-    "Earring": 8
+    "Earring": 8,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Topaz",
+    "Stone": "Topaz",
     "Type": "Nugget",
     "Attribute": "Condition Damage",
     "Gem": 5,
     "Amulet": 18,
     "Ring": 14,
-    "Earring": 12
+    "Earring": 12,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   },
   {
-    "Gemstone": "Topaz",
+    "Stone": "Topaz",
     "Type": "Nugget",
     "Attribute": "Precision",
     "Gem": 2,
     "Amulet": 13,
     "Ring": 10,
-    "Earring": 8
+    "Earring": 8,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   }
 ]
 }

@@ -34,8 +34,11 @@ class Location:
 # what is the item made of
 # this might not be used as a game mechanic, but it will at least add some flavour
 class Material:
-    def __init__(self, texture='cloth'):
+    def __init__(self, texture='cloth', component1='', component2='', component3=''):
         self.texture = texture
+        self.component1 = component1
+        self.component2 = component2
+        self.component3 = component3
 
 
 # is this item visible on the game map
@@ -75,6 +78,11 @@ class Experience:
     def __init__(self, current_level=1):
         self.current_level = current_level
         self.max_level = 10
+
+
+class WeaponType:
+    def __init__(self, label=''):
+        self.label = label
 
 
 # hallmarks are a way to add a different bonus to an existing weapon
@@ -130,8 +138,7 @@ class Defense:
 
 # where on the body can this piece of armour be placed
 class ArmourBodyLocation:
-    def __init__(self, text='undefined', chest=False, head=False, hands=False, feet=False, legs=False):
-        self.label = text
+    def __init__(self, chest=False, head=False, hands=False, feet=False, legs=False):
         self.chest = chest
         self.head = head
         self.hands = hands
@@ -141,9 +148,13 @@ class ArmourBodyLocation:
 
 # what bonus does this piece of armour add and to which attribute
 class AttributeBonus:
-    def __init__(self, majorattribute={}, minorattribute={}):
-        self.majorAttribute = majorattribute
-        self.minorAttribute = minorattribute
+    def __init__(self, majorname='', majorbonus=0, minoronename='', minoronebonus=0, minortwoname='', minortwobonus=0):
+        self.majorName = majorname
+        self.majorBonus = majorbonus
+        self.minorOneName = minoronename
+        self.minorOneBonus = minoronebonus
+        self.minorTwoName = minortwoname
+        self.minorTwoBonus = minortwobonus
 
 
 # If this piece of armour belongs to an armour set it, the set name will
@@ -161,9 +172,10 @@ class ArmourSet:
 
 # this defines the stat(s) the piece of jewellery improves
 # the dictionary is in the format:{stat_name, bonus_value}
-class ImprovementTo:
-    def __init__(self, stat={}):
-        self.stat = stat
+class JewelleryStatBonus:
+    def __init__(self, statName='', statBonus=0):
+        self.statName = statName
+        self.statBonus = statBonus
 
 
 # where on the body can this piece of jewellery be worn
