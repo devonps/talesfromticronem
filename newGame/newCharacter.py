@@ -297,7 +297,6 @@ class NewCharacter:
         my_armour = ItemManager.create_full_armour_set(gameworld=gameworld, armourset='Apprentice', level=0, quality='basic')
 
         logger.info('Attaching starting armour to player character')
-        # ArmourClass.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=my_armour)
         ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=my_armour)
 
         chest_armour = ArmourClass.get_armour_piece_from_body_location(gameworld, player, 'chest')
