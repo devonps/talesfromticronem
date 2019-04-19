@@ -1,10 +1,18 @@
 from newGame import constants
-from components import items
+from components import mobiles, items
 from utilities import world, jsonUtilities
+from utilities.itemsHelp import ItemUtilities
 from loguru import logger
 
 
 class ItemManager:
+
+    """
+    The purpose of the ItemManager class is to:
+    Create ALL items in the game
+    Delete ALL items from the game
+
+    """
 
     def create_weapon(gameworld, weapon_type):
         """
@@ -53,8 +61,7 @@ class ItemManager:
                 logger.info('Entity {} has been created using the {} template', myweapon, weapon['name'])
                 return myweapon  # this is the entity id for the newly created weapon
 
-    def create_piece_of_armour(gameworld, bodylocation, quality, setname, prefix, level, majorname,
-                                        majorbonus, minoronename, minoronebonus):
+    def create_piece_of_armour(gameworld, bodylocation, quality, setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus):
         """
         This method creates a gameworld entity that's used as a piece of armour. It uses the Json file
         to create the 'base' entity - it's up to other methods to add flesh to these bones.
@@ -81,23 +88,16 @@ class ItemManager:
                     name=piece_of_armour['location'] + ' armour',
                     glyph=piece_of_armour['glyph'],
                     fg=piece_of_armour['fg_colour'],
+                    description=piece_of_armour['location'] + ' armour',
                     bg=piece_of_armour['bg_colour']))
-                gameworld.add_component(armour_piece, items.Location(x=0, y=0))
+                gameworld.add_component(armour_piece, items.Location)
                 gameworld.add_component(armour_piece, items.Material)
                 gameworld.add_component(armour_piece, items.RenderItem)
                 gameworld.add_component(armour_piece, items.Quality(level=piece_of_armour['quality']))
 
                 # generate armour specifics
                 gameworld.add_component(armour_piece, items.Weight(label=piece_of_armour['weight']))
-                gameworld.add_component(armour_piece, items.ArmourSet(label=setname))
-                gameworld.add_component(armour_piece, items.ArmourSet(prefix=prefix))
-                gameworld.add_component(armour_piece, items.ArmourSet(level=level))
                 gameworld.add_component(armour_piece, items.Defense(value=piece_of_armour['defense']))
-                gameworld.add_component(armour_piece, items.AttributeBonus(
-                    majorname=majorname,
-                    majorbonus=majorbonus,
-                    minoronename=minoronename,
-                    minoronebonus=minoronebonus))
 
                 if bodylocation == 'head':
                     gameworld.add_component(armour_piece, items.ArmourBodyLocation(head=True))
@@ -113,6 +113,19 @@ class ItemManager:
 
                 if bodylocation == 'legs':
                     gameworld.add_component(armour_piece, items.ArmourBodyLocation(legs=True))
+
+                gameworld.add_component(armour_piece, items.AttributeBonus(
+                    majorname=majorname,
+                    majorbonus=majorbonus,
+                    minoronename=minoronename,
+                    minoronebonus=minoronebonus))
+
+                gameworld.add_component(armour_piece, items.ArmourSet(
+                    label=setname,
+                    prefix=prefix,
+                    level=level))
+
+                gameworld.add_component(armour_piece, items.ArmourBeingWorn(status=False))
 
                 logger.info('Entity {} has been created as a piece of {} armour', armour_piece, bodylocation)
 
@@ -257,3 +270,5 @@ class ItemManager:
                     bg=gemstone['bg_colour']))
                 logger.info('Created {}', desc)
                 return piece_of_jewellery
+
+

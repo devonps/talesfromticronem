@@ -27,3 +27,11 @@ def reset_gameworld(gameworld):
 
 def get_next_entity_id(gameworld):
     return gameworld.create_entity()
+
+
+def remove_component_from_entity(gameworld, entity, component):
+    gameworld.remove_component(entity, component)
+
+
+def does_entity_have_component(gameworld, entity, component):
+    return gameworld.has_component(entity, component)
