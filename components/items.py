@@ -54,6 +54,7 @@ class RenderItem:
 class Quality:
     def __init__(self, level='basic'):
         self.level = level
+
 ####################################################
 #
 #   BAGS
@@ -162,6 +163,12 @@ class ArmourSet:
         self.name = label
         self.prefix = prefix
         self.level = level
+
+
+# Is the armour being worn
+class ArmourBeingWorn:
+    def __init__(self, status=False):
+        self.status = status
 
 ####################################################
 #

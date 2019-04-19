@@ -41,19 +41,7 @@ class ArmourClass:
         if armourset[4] > 0:
             gameworld.component_for_entity(entity, mobiles.Armour).feet = armourset[4]
 
-    def equip_single_piece_of_armour(gameworld, entity, piece_of_armour, bodylocation):
-        if bodylocation == 'head':
-            gameworld.component_for_entity(entity, mobiles.Armour).head = piece_of_armour
-        if bodylocation == 'chest':
-            gameworld.component_for_entity(entity, mobiles.Armour).chest = piece_of_armour
-        if bodylocation == 'hands':
-            gameworld.component_for_entity(entity, mobiles.Armour).hands = piece_of_armour
-        if bodylocation == 'legs':
-            gameworld.component_for_entity(entity, mobiles.Armour).legs = piece_of_armour
-        if bodylocation == 'feet':
-            gameworld.component_for_entity(entity, mobiles.Armour).feet = piece_of_armour
-
-    def unequip_piece_of_armour(gameworld, entity, bodylocation):
+    def Xunequip_piece_of_armour(gameworld, entity, bodylocation):
         if bodylocation == 'head':
             gameworld.component_for_entity(entity, mobiles.Armour).head = 0
         if bodylocation == 'chest':

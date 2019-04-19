@@ -1,4 +1,6 @@
-from components import items
+from components import items, mobiles
+from utilities import world
+from loguru import logger
 
 
 class ItemUtilities:
@@ -47,6 +49,12 @@ class ItemUtilities:
     def get_item_location(gameworld, entity):
         item_location_component = gameworld.component_for_entity(entity, items.Location)
         return item_location_component.posx, item_location_component.posy
+
+    @staticmethod
+    def set_item_location(gameworld, entity, posx, posy):
+        item_location_component = gameworld.component_for_entity(entity, items.Location)
+        item_location_component.posx = posx
+        item_location_component.posy = posy
 
     @staticmethod
     def get_item_texture(gameworld, entity):
@@ -177,6 +185,70 @@ class ItemUtilities:
         minor = [armour_attributes_component.minorOneName, armour_attributes_component.minorOneBonus]
         return minor
 
+    @staticmethod
+    def get_armour_being_worn_status(gameworld, piece_of_armour):
+        armour_worn_component = gameworld.component_for_entity(piece_of_armour, items.ArmourBeingWorn)
+        return armour_worn_component.status
+
+    @staticmethod
+    def set_armour_being_worn_status_to_true(gameworld, entity):
+        gameworld.component_for_entity(entity, items.ArmourBeingWorn).status = True
+
+    @staticmethod
+    def set_armour_being_worn_status_to_false(gameworld, entity):
+        gameworld.component_for_entity(entity, items.ArmourBeingWorn).status = False
+
+    def equip_piece_of_armour(gameworld, entity, piece_of_armour, bodylocation):
+        logger.info('Armour entity is {} / mobile entity is {} / body location is {}', piece_of_armour, entity, bodylocation)
+        is_armour_being_worn = ItemUtilities.get_armour_being_worn_status(gameworld, piece_of_armour)
+        if not is_armour_being_worn:
+            if bodylocation == 'head':
+                gameworld.component_for_entity(entity, mobiles.Armour).head = piece_of_armour
+            if bodylocation == 'chest':
+                gameworld.component_for_entity(entity, mobiles.Armour).chest = piece_of_armour
+            if bodylocation == 'hands':
+                gameworld.component_for_entity(entity, mobiles.Armour).hands = piece_of_armour
+            if bodylocation == 'legs':
+                gameworld.component_for_entity(entity, mobiles.Armour).legs = piece_of_armour
+            if bodylocation == 'feet':
+                gameworld.component_for_entity(entity, mobiles.Armour).feet = piece_of_armour
+
+            ItemUtilities.set_armour_being_worn_status_to_true(gameworld, piece_of_armour)
+
+    def unequip_piece_of_armour(gameworld, entity, bodylocation):
+        armour_is_already_worn = ItemUtilities.get_armour_being_worn_status(gameworld, entity)
+        if armour_is_already_worn:
+            if bodylocation == 'head':
+                gameworld.component_for_entity(entity, mobiles.Armour).head = 0
+            if bodylocation == 'chest':
+                gameworld.component_for_entity(entity, mobiles.Armour).chest = 0
+            if bodylocation == 'hands':
+                gameworld.component_for_entity(entity, mobiles.Armour).hands = 0
+            if bodylocation == 'legs':
+                gameworld.component_for_entity(entity, mobiles.Armour).legs = 0
+            if bodylocation == 'feet':
+                gameworld.component_for_entity(entity, mobiles.Armour).feet = 0
+
+            ItemUtilities.set_armour_being_worn_status_to_false(gameworld, entity)
+
+    def equip_full_set_of_armour(gameworld, entity, armourset):
+
+        if armourset[0] > 0:
+            # gameworld.component_for_entity(entity, mobiles.Armour).chest = armourset[0]
+            ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[0], 'chest')
+        if armourset[1] > 0:
+            # gameworld.component_for_entity(entity, mobiles.Armour).head = armourset[1]
+            ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[1], 'head')
+        if armourset[2] > 0:
+            # gameworld.component_for_entity(entity, mobiles.Armour).hands = armourset[2]
+            ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[2], 'hands')
+        if armourset[3] > 0:
+            # gameworld.component_for_entity(entity, mobiles.Armour).legs = armourset[3]
+            ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[3], 'legs')
+        if armourset[4] > 0:
+            # gameworld.component_for_entity(entity, mobiles.Armour).feet = armourset[4]
+            ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[4], 'feet')
+
 ####################################################
 #
 #   JEWELLERY
@@ -207,3 +279,36 @@ class ItemUtilities:
     @staticmethod
     def set_jewellery_equipped_status_to_false(gameworld, entity):
         gameworld.component_for_entity(entity, items.JewelleryEquipped).istrue = False
+
+    def equip_jewellery(gameworld, mobile, bodylocation, trinket):
+        is_jewellery_equipped = ItemUtilities.get_jewellery_already_equipped_status(gameworld, entity=trinket)
+        if not is_jewellery_equipped:
+            if bodylocation == 'left ear':
+                gameworld.component_for_entity(mobile, mobiles.Jewellery).ear_one = trinket
+            if bodylocation == 'right ear':
+                gameworld.component_for_entity(mobile, mobiles.Jewellery).ear_two = trinket
+            if bodylocation == 'left hand':
+                gameworld.component_for_entity(mobile, mobiles.Jewellery).ring_one = trinket
+            if bodylocation == 'right hand':
+                gameworld.component_for_entity(mobile, mobiles.Jewellery).ring_two = trinket
+            if bodylocation == 'neck':
+                gameworld.component_for_entity(mobile, mobiles.Jewellery).amulet = trinket
+
+            ItemUtilities.set_jewellery_equipped_status_to_true(gameworld, entity=trinket)
+            if world.does_entity_have_component(gameworld=gameworld, entity=trinket, component=items.Location):
+                world.remove_component_from_entity(gameworld=gameworld, entity=trinket, component=items.Location)
+
+    def unequp_piece_of_jewellery(gameworld, entity, bodylocation):
+
+        if bodylocation == 'left ear':
+            gameworld.component_for_entity(entity, mobiles.Jewellery).ear_one = 0
+        if bodylocation == 'right ear':
+            gameworld.component_for_entity(entity, mobiles.Jewellery).ear_two = 0
+        if bodylocation == 'left hand':
+            gameworld.component_for_entity(entity, mobiles.Jewellery).ring_one = 0
+        if bodylocation == 'right hand':
+            gameworld.component_for_entity(entity, mobiles.Jewellery).ring_two = 0
+        if bodylocation == 'neck':
+            gameworld.component_for_entity(entity, mobiles.Jewellery).amulet = 0
+
+        ItemUtilities.set_jewellery_equipped_status_to_false(gameworld, entity=entity)

@@ -3,11 +3,10 @@ import random
 import textwrap
 
 from loguru import logger
-from components import spellBar, userInput, items, mobiles
+from components import spellBar, items, mobiles
 from newGame.ClassWeapons import WeaponClass
 from newGame import constants
 from newGame.ClassArmour import ArmourClass
-from newGame.ClassJewellery import Trinkets
 from newGame.Items import ItemManager
 from utilities.mobileHelp import MobileUtilities
 from utilities.jsonUtilities import read_json_file
@@ -16,6 +15,7 @@ from utilities.input_handlers import handle_menus
 from utilities.text_input import text_entry
 from utilities.display import menu
 from utilities.world import get_next_entity_id
+from utilities.itemsHelp import ItemUtilities
 
 
 class NewCharacter:
@@ -290,18 +290,21 @@ class NewCharacter:
 
         logger.debug('Player is ready to rock and roll!')
 
+    @staticmethod
     def create_starting_armour(gameworld, player):
         logger.info('Creating starting armour')
 
-        my_armour = ItemManager.create_full_armour_set(gameworld, armourset='Apprentice', level=0, quality='basic')
+        my_armour = ItemManager.create_full_armour_set(gameworld=gameworld, armourset='Apprentice', level=0, quality='basic')
 
         logger.info('Attaching starting armour to player character')
-        ArmourClass.equip_full_set_of_armour(gameworld, entity=player, armourset=my_armour)
+        # ArmourClass.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=my_armour)
+        ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=my_armour)
 
         chest_armour = ArmourClass.get_armour_piece_from_body_location(gameworld, player, 'chest')
 
         logger.info('Chest armour: {}', chest_armour)
 
+    @staticmethod
     def create_starting_jewellery(gameworld, player):
         stud = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator='Amber')
         stud2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator='Amber')
@@ -309,11 +312,11 @@ class NewCharacter:
         ring2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator='Amber')
         amulet = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper', e_hook='copper', e_activator='Amber')
 
-        Trinkets.equip_piece_of_jewellery(gameworld, player, 'left ear', stud)
-        Trinkets.equip_piece_of_jewellery(gameworld, player, 'right ear', stud2)
-        Trinkets.equip_piece_of_jewellery(gameworld, player, 'left hand', ring1)
-        Trinkets.equip_piece_of_jewellery(gameworld, player, 'right hand', ring2)
-        Trinkets.equip_piece_of_jewellery(gameworld, player, 'neck', amulet)
+        ItemUtilities.equip_jewellery(gameworld, player, 'left ear', stud)
+        ItemUtilities.equip_jewellery(gameworld, player, 'right ear', stud2)
+        ItemUtilities.equip_jewellery(gameworld, player, 'left hand', ring1)
+        ItemUtilities.equip_jewellery(gameworld, player, 'right hand', ring2)
+        ItemUtilities.equip_jewellery(gameworld, player, 'neck', amulet)
 
     def display_selection(con, filename, element, posx, posy, width, flavour_x, flavour_y):
 
