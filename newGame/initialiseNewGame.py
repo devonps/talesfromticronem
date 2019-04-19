@@ -20,6 +20,7 @@ from processors.updateEntities import UpdateEntitiesProcessor
 from mapRelated.dungeonGenerator import dungeonGenerator
 from mapRelated.fov import FieldOfView
 from time import time
+from utilities import world
 
 
 def setup_game(con, gameworld):
@@ -120,22 +121,22 @@ def generate_spells(gameworld):
     logger.debug('Creating spells as entities')
     spell_file = read_json_file(constants.JSONFILEPATH + 'spells.json')
     for spell in spell_file['spells']:
-        myspell = gameworld.create_entity()
-        gameworld.add_component(myspell, spells.Name(spell['name']))
-        gameworld.add_component(myspell, spells.Description(spell['description']))
-        gameworld.add_component(myspell, spells.WeaponType(spell['weapon_type']))
-        gameworld.add_component(myspell, spells.ClassName(spell['class']))
-        gameworld.add_component(myspell, spells.CastTime(spell['cast_time']))
-        gameworld.add_component(myspell, spells.CoolDown(spell['cool_down']))
-        gameworld.add_component(myspell, spells.LivesFor(spell['lives_for']))
-        gameworld.add_component(myspell, spells.WeaponSlot(spell['weapon_slot']))
-        gameworld.add_component(myspell, spells.MaxTargets(spell['max_targets']))
-        gameworld.add_component(myspell, spells.GroundTargeted(spell['ground_targeted']))
-        gameworld.add_component(myspell, spells.MaxRange(spell['max_range']))
-        gameworld.add_component(myspell, spells.AreaOfEffect(spell['aoe']))
-        gameworld.add_component(myspell, spells.AreaOfEffectSize(spell['aoe_size']))
+        thisspell = world.get_next_entity_id(gameworld=gameworld)
+        gameworld.add_component(thisspell, spells.Name(spell['name']))
+        gameworld.add_component(thisspell, spells.Description(spell['description']))
+        gameworld.add_component(thisspell, spells.WeaponType(spell['weapon_type']))
+        gameworld.add_component(thisspell, spells.ClassName(spell['class']))
+        gameworld.add_component(thisspell, spells.CastTime(spell['cast_time']))
+        gameworld.add_component(thisspell, spells.CoolDown(spell['cool_down']))
+        gameworld.add_component(thisspell, spells.LivesFor(spell['lives_for']))
+        gameworld.add_component(thisspell, spells.WeaponSlot(spell['weapon_slot']))
+        gameworld.add_component(thisspell, spells.MaxTargets(spell['max_targets']))
+        gameworld.add_component(thisspell, spells.GroundTargeted(spell['ground_targeted']))
+        gameworld.add_component(thisspell, spells.MaxRange(spell['max_range']))
+        gameworld.add_component(thisspell, spells.AreaOfEffect(spell['aoe']))
+        gameworld.add_component(thisspell, spells.AreaOfEffectSize(spell['aoe_size']))
         effects = spell['effects']
-        process_status_effect(gameworld, myspell, spell['name'], effects)
+        process_status_effect(gameworld, thisspell, spell['name'], effects)
 
 
 def generate_monsters(gameworld):
