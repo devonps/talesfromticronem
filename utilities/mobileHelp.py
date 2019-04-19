@@ -2,6 +2,7 @@ from components import mobiles, userInput
 from loguru import logger
 from newGame import constants
 from utilities.itemsHelp import ItemUtilities
+from utilities import world
 
 import numbers
 
@@ -95,7 +96,7 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def generate_base_mobile(gameworld):
-        mobile = gameworld.create_entity()
+        mobile = world.get_next_entity_id(gameworld=gameworld)
         logger.info('Base mobile entity ID ' + str(mobile))
         gameworld.add_component(mobile, mobiles.Name(first='xyz', suffix=''))
         gameworld.add_component(mobile, mobiles.Describable())
