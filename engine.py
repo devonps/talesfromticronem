@@ -47,7 +47,7 @@ def start_game(con, gameworld):
         display_hero = action.get('display_hero_panel')
 
         if display_hero:
-            display_hero_panel(con, key, mouse, gameworld)
+            display_hero_panel(gameworld)
 
         if player_moved:
             pass

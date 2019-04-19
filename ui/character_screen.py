@@ -6,9 +6,8 @@ from utilities.display import display_coloured_box
 from utilities.itemsHelp import ItemUtilities
 
 
-def display_hero_panel(con, key, mouse, gameworld):
+def display_hero_panel(gameworld):
 
-    bg = tcod.grey
     hero_panel_displayed = True
 
     # gather player entity
@@ -19,30 +18,15 @@ def display_hero_panel(con, key, mouse, gameworld):
     hero_panel = tcod.console_new(constants.HERO_PANEL_WIDTH, constants.HERO_PANEL_HEIGHT)
 
     # get the length of the longest word used for the tabs
-    maxtablength = 0
-    tab_count = 0
-    for mytab in constants.HERO_PANEL_TABS:
-        tab_count += 1
-        if len(mytab) > maxtablength:
-            maxtablength = len(mytab)
-    selected_tab = 1
+    maxtablength = calculate_max_tab_length()
+
     x_offset = 11
-    y_offset = 9
 
     # main loop whilst hero panel is displayed
     while hero_panel_displayed:
-        hero_panel.draw_frame(x=0, y=0,
-                              width=constants.HERO_PANEL_WIDTH,
-                              height=constants.HERO_PANEL_HEIGHT,
-                              clear=False,
-                              bg_blend=tcod.BKGND_DEFAULT,
-                              title='Hero Panel')
-        draw_hero_panel_tabs(hero_panel, maxtablength, selected_tab,
-                             gameworld=gameworld, player_entity=player_entity)
-
-        hero_panel.print_box(x=maxtablength + 15, y=hero_panel.height - 2,
-                      width=40,
-                      height=1, string='Mouse to select, ESC to exit')
+        draw_hero_panel_frame(hero_panel, maxtablength)
+        draw_hero_panel_tabs(hero_panel, maxtablength)
+        draw_hero_information(hero_panel=hero_panel, gameworld=gameworld, player=player_entity)
 
         tcod.console_blit(hero_panel, 0, 0,
                           constants.HERO_PANEL_WIDTH,
@@ -59,21 +43,44 @@ def display_hero_panel(con, key, mouse, gameworld):
                 x = event.tile.x
                 y = event.tile.y
                 if y in constants.HERO_PANEL_TAB_OFFSETS:
-                    # y_down = (y_offset + tab_count)
                     if x_offset <= x <= (x_offset + maxtablength):
                         ret_value = constants.HERO_PANEL_TAB_OFFSETS.index(y)
-                        selected_tab = ret_value
+                        constants.HERO_PANEL_SELECTED_TAB = ret_value
 
         hero_panel.clear(ch=ord(' '), fg=tcod.white, bg=tcod.grey)
 
 
-def draw_hero_panel_tabs(hero_panel, maxtablength, selected_tab, gameworld, player_entity):
+def calculate_max_tab_length():
+    maxtablength = 0
+    tab_count = 0
+    for mytab in constants.HERO_PANEL_TABS:
+        tab_count += 1
+        if len(mytab) > maxtablength:
+            maxtablength = len(mytab)
+
+    return maxtablength
+
+
+def draw_hero_panel_frame(hero_panel, maxtablength):
+    hero_panel.draw_frame(x=0, y=0,
+                          width=constants.HERO_PANEL_WIDTH,
+                          height=constants.HERO_PANEL_HEIGHT,
+                          clear=False,
+                          bg_blend=tcod.BKGND_DEFAULT,
+                          title='Hero Panel')
+
+    hero_panel.print_box(x=maxtablength + 15, y=hero_panel.height - 2,
+                         width=40,
+                         height=1, string='Mouse to select, ESC to exit')
+
+
+def draw_hero_panel_tabs(hero_panel, maxtablength):
     tab_down = 3
-    tab_pos = 4
     def_fg = tcod.white
+    def_bg = tcod.grey
 
     # full length line
-    hero_panel.draw_rect(x=maxtablength + 1, y=1, width=1, height=hero_panel.height - 2, ch=179, fg=def_fg, bg=tcod.grey)
+    hero_panel.draw_rect(x=maxtablength + 1, y=1, width=1, height=hero_panel.height - 2, ch=179, fg=def_fg, bg=def_bg)
     # top bar decoration
     hero_panel.put_char(x=maxtablength + 1, y=0, ch=194)
     # bottom bar decoration
@@ -81,18 +88,18 @@ def draw_hero_panel_tabs(hero_panel, maxtablength, selected_tab, gameworld, play
     for tab_count, tab in enumerate(constants.HERO_PANEL_TABS):
         if tab_down == 3:
             # tab cross bar
-            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=tcod.grey)
+            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=def_bg)
             # tab cross bar top decoration
             hero_panel.put_char(x=maxtablength + 1, y=tab_down, ch=180)
             hero_panel.put_char(x=0, y=tab_down, ch=195)
             tab_down += 1
-        if selected_tab != tab_count:
+        if constants.HERO_PANEL_SELECTED_TAB != tab_count:
 
             hero_panel.print_box(x=1, y=tab_down, width=maxtablength, height=1, string=tab)
-            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=0, fg=tcod.white, bg=tcod.grey)
+            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=0, fg=tcod.white, bg=def_bg)
             tab_down += 1
             # tab cross bar
-            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=tcod.grey)
+            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=def_bg)
             # tab cross bar top decoration
             hero_panel.put_char(x=maxtablength + 1, y=tab_down, ch=180)
             # left side tab cross bar decoration
@@ -101,12 +108,12 @@ def draw_hero_panel_tabs(hero_panel, maxtablength, selected_tab, gameworld, play
 
         else:
             hero_panel.print_box(x=1, y=tab_down, width=maxtablength, height=1, string=tab)
-            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=0, fg=tcod.white, bg=tcod.black)
+            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=0, fg=def_fg, bg=tcod.black)
             # draws the 'space' at the end of the tab
             hero_panel.put_char(x=maxtablength + 1, y=tab_down, ch=32)
             tab_down += 1
             # tab cross bar
-            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=tcod.grey)
+            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=def_bg)
             # tab cross bar bottom right decoration
             hero_panel.put_char(x=maxtablength + 1, y=tab_down, ch=191)
             # tab cross bar top right decoration
@@ -116,17 +123,15 @@ def draw_hero_panel_tabs(hero_panel, maxtablength, selected_tab, gameworld, play
 
             tab_down += 1
 
-        draw_hero_information(hero_panel=hero_panel, selected_tab=selected_tab, gameworld=gameworld, player=player_entity)
 
-
-def draw_hero_information(hero_panel, selected_tab, gameworld, player):
-    if selected_tab == 0:
+def draw_hero_information(hero_panel, gameworld, player):
+    if constants.HERO_PANEL_SELECTED_TAB == 0:
         equipment_tab(console=hero_panel, gameworld=gameworld, player=player)
-    elif selected_tab == 1:
+    elif constants.HERO_PANEL_SELECTED_TAB == 1:
         personal_tab(console=hero_panel, gameworld=gameworld, player=player)
-    elif selected_tab == 2:
+    elif constants.HERO_PANEL_SELECTED_TAB == 2:
         current_build_tab(console=hero_panel, gameworld=gameworld, player=player)
-    elif selected_tab == 3:
+    elif constants.HERO_PANEL_SELECTED_TAB == 3:
         weapons_tab(console=hero_panel, gameworld=gameworld, player=player)
     else:
         inventory_tab(console=hero_panel, gameworld=gameworld, player=player)
@@ -246,13 +251,8 @@ def personal_tab(console, gameworld, player):
                       string=health_string)
 
     health_bar_count = int(health_percent / 10)
-    for a in range(10):
-        if a <= health_bar_count:
-            console.print(x=constants.HERO_PANEL_RIGHT_COL + 7 + a, y=constants.HERO_PANEL_INFO_DEF_Y + 5,
-                          string=chr(175), fg=tcod.white, bg=tcod.lighter_green)
-        else:
-            console.print(x=constants.HERO_PANEL_RIGHT_COL + 7 + a, y=constants.HERO_PANEL_INFO_DEF_Y + 5,
-                          string=chr(175), fg=tcod.white, bg=tcod.dark_green)
+    draw_bar(console, constants.HERO_PANEL_RIGHT_COL + 7, constants.HERO_PANEL_INFO_DEF_Y + 5,
+             tcod.white, tcod.lighter_green, tcod.dark_green, health_bar_count)
 
     mana_percent = MobileUtilities.get_number_as_a_percentage(player_current_mana, player_maximum_mana)
     mana_string = 'Mana at ' + str(mana_percent) + '%'
@@ -260,14 +260,20 @@ def personal_tab(console, gameworld, player):
     console.print_box(x=constants.HERO_PANEL_RIGHT_COL + 7, y=constants.HERO_PANEL_INFO_DEF_Y +7,
                       width=len(mana_string), height=1,
                       string=mana_string)
+
     mana_bar_count = int(mana_percent / 10)
+    draw_bar(console, constants.HERO_PANEL_RIGHT_COL + 7, constants.HERO_PANEL_INFO_DEF_Y + 8,
+             tcod.white, tcod.lighter_blue, tcod.dark_blue, mana_bar_count)
+
+
+def draw_bar(console, posx, posy, fg, bg, bg_break, break_point):
     for a in range(10):
-        if a <= mana_bar_count:
-            console.print(x=constants.HERO_PANEL_RIGHT_COL + 7 + a, y=constants.HERO_PANEL_INFO_DEF_Y + 8,
-                          string=chr(175), fg=tcod.white, bg=tcod.lighter_blue)
+        if a <= break_point:
+            console.print(x=posx + a, y=posy,
+                          string=chr(175), fg=fg, bg=bg)
         else:
             console.print(x=constants.HERO_PANEL_RIGHT_COL + 7 + a, y=constants.HERO_PANEL_INFO_DEF_Y + 8,
-                          string=chr(175), fg=tcod.white, bg=tcod.dark_blue)
+                          string=chr(175), fg=fg, bg=bg_break)
 
 
 def current_build_tab(console, gameworld, player):
