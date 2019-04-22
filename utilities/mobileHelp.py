@@ -9,6 +9,46 @@ import numbers
 
 class MobileUtilities(numbers.Real):
 
+    #
+    # general methods
+    #
+    @staticmethod
+    def get_player_entity(gameworld):
+        player = 0
+        for ent, ai in gameworld.get_component(mobiles.AI):
+            if ai.ailevel == constants.AI_LEVEL_PLAYER:
+                player = ent
+
+        return player
+
+    @staticmethod
+    def get_number_as_a_percentage(lower_value, maximum_value):
+        return int((lower_value / maximum_value) * 100)
+
+    @staticmethod
+    def get_bar_count(lower_value):
+        return (lower_value / 100) * constants.V_BAR_DEPTH
+
+    @staticmethod
+    def create_player_input_entity(gameworld):
+        ent = gameworld.create_entity()
+        gameworld.add_component(ent, userInput.Keyboard())
+        gameworld.add_component(ent, userInput.Mouse())
+
+    @staticmethod
+    def has_player_moved(gameworld):
+        entity = MobileUtilities.get_player_entity(gameworld)
+
+        position_component = gameworld.component_for_entity(entity, mobiles.Position)
+
+        return position_component.hasMoved
+
+    @staticmethod
+    def get_mobile_current_location(gameworld, mobile):
+        location_component = gameworld.component_for_entity(mobile, mobiles.Position)
+        return location_component.x, location_component.y
+
+
     @staticmethod
     def get_mobile_name_details(gameworld, entity):
         name_component = gameworld.component_for_entity(entity, mobiles.Name)
@@ -184,39 +224,6 @@ class MobileUtilities(numbers.Real):
     def is_entity_wearing_hands_armour(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.Armour).hands
 
-    #
-    # general methods
-    #
-    @staticmethod
-    def get_player_entity(gameworld):
-        player = 0
-        for ent, ai in gameworld.get_component(mobiles.AI):
-            if ai.ailevel == constants.AI_LEVEL_PLAYER:
-                player = ent
-
-        return player
-
-    @staticmethod
-    def get_number_as_a_percentage(lower_value, maximum_value):
-        return int((lower_value / maximum_value) * 100)
-
-    @staticmethod
-    def get_bar_count(lower_value):
-        return (lower_value / 100) * constants.V_BAR_DEPTH
-
-    @staticmethod
-    def create_player_input_entity(gameworld):
-        ent = gameworld.create_entity()
-        gameworld.add_component(ent, userInput.Keyboard())
-        gameworld.add_component(ent, userInput.Mouse())
-
-    @staticmethod
-    def has_mobile_moved(gameworld):
-        entity = MobileUtilities.get_player_entity(gameworld)
-
-        position_component = gameworld.component_for_entity(entity, mobiles.Position)
-
-        return position_component.hasMoved
 #
 # Calculate derived attributes
 #

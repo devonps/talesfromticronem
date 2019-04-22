@@ -483,6 +483,7 @@ class dungeonGenerator:
 						y=startY + int(roomHeight / 2),
 						hasMoved=True))
 					player_placed = True
+					logger.debug('Player is located at {}/{}', startX + int(roomWidth / 2), startY + int(roomHeight / 2))
 
 	def generateCaves(self, p=45, smoothing=4):
 		"""

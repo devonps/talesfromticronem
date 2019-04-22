@@ -2,7 +2,7 @@ import tcod
 
 from utilities.externalfileutilities import Externalfiles
 from newGame.initialiseNewGame import create_game_world, initialise_game_map, constants,\
-    generate_items, generate_monsters, generate_spells
+    generate_items_and_place_them, generate_monsters_and_place_them, generate_spells
 from newGame.newCharacter import NewCharacter
 from loguru import logger
 from components import mobiles
@@ -37,8 +37,8 @@ class ReplayGame:
                     logger.info('World seed is now {}', constants.WORLD_SEED)
                     # create spells, items, and monsters --> the things the character will interract with
                     generate_spells(gameworld)
-                    generate_items(gameworld)
-                    generate_monsters(gameworld)
+                    generate_items_and_place_them(gameworld)
+                    generate_monsters_and_place_them(gameworld)
 
                     # generate a new character
                     player = NewCharacter.generate_player_character

@@ -3,7 +3,7 @@ import tcod
 
 from loguru import logger
 from newGame import constants
-from components import mobiles
+from components import mobiles, items
 from utilities.display import menu
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
@@ -74,6 +74,7 @@ class RenderConsole(esper.Processor):
         self.render_map()
 
         # draw the entities
+        self.render_items()
         self.render_entities()
 
         # blit the console
@@ -109,7 +110,7 @@ class RenderConsole(esper.Processor):
         player_position_component = self.gameworld.component_for_entity(thisplayer, mobiles.Position)
         # fov_map = self.fov_object.create_fov_map_via_raycasting(player_position_component.x, player_position_component.y)
 
-        has_player_moved = MobileUtilities.has_mobile_moved(self.gameworld)
+        has_player_moved = MobileUtilities.has_player_moved(self.gameworld)
         # has_player_moved = True
 
         if has_player_moved:
@@ -154,6 +155,13 @@ class RenderConsole(esper.Processor):
                 draw_pos_x = constants.MAP_VIEW_DRAW_X + pos.x
                 draw_pos_y = constants.MAP_VIEW_DRAW_Y + pos.y
                 self.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.foreground, desc.background)
+
+    def render_items(self):
+        for ent, (rend, loc, desc) in self.world.get_components(items.RenderItem, items.Location, items.Describable):
+            if rend.isTrue:
+                draw_pos_x = constants.MAP_VIEW_DRAW_X + loc.posx
+                draw_pos_y = constants.MAP_VIEW_DRAW_Y + loc.posy
+                self.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
 
     def render_boons(self):
         self.render_h_bar(posx=constants.H_BAR_X, posy=constants.H_BAR_Y, right_side=constants.BCC_BAR_RIGHT_SIDE,border_colour=tcod.darker_gray)
@@ -243,14 +251,6 @@ class RenderConsole(esper.Processor):
             tcod.console_put_char_ex(self.con, posx + 1, (posy + constants.V_BAR_DEPTH) - y, chr(176), foreground, background)
 
 
-class RenderInventory(esper.Processor):
-    def __init__(self):
-        super().__init__()
-
-    def process(self):
-        pass
-
-
 class RenderGameStartScreen(esper.Processor):
     def __init__(self, con, image, key, mouse, gameworld):
         self.title = constants.GAME_WINDOW_TITLE
@@ -283,11 +283,3 @@ class RenderGameStartScreen(esper.Processor):
         tcod.console_print_ex(self.con, 10, 10, tcod.BKGND_NONE, tcod.LEFT, self.title)
         tcod.console_print_ex(self.con, 10, 42, tcod.BKGND_NONE, tcod.LEFT, self.author)
         tcod.console_blit(self.con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
-
-
-class RenderPlayerCharacterScreen(esper.Processor):
-    def __init__(self, ):
-        super().__init__()
-
-    def process(self):
-        pass

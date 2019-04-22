@@ -1,39 +1,41 @@
 import esper
 import random
-import tcod
+
 
 from loguru import logger
 from newGame import constants
 from newGame.newCharacter import NewCharacter
-from newGame.game_messages import MessageLog, Message
+from newGame.Items import ItemManager
 from components import spells
 from components.addStatusEffects import process_status_effect
-from components import mobiles
+
 from utilities.jsonUtilities import read_json_file
 from utilities.randomNumberGenerator import PCG32Generator
 from utilities.externalfileutilities import Externalfiles
 from utilities.dateTimeUtilities import secondsToText
-from mapRelated.gameMap import GameMap
-from processors.render import RenderConsole, RenderInventory, RenderPlayerCharacterScreen
+from utilities import world
+
+from processors.render import RenderConsole
 from processors.move_entities import MoveEntities
 from processors.updateEntities import UpdateEntitiesProcessor
 from mapRelated.dungeonGenerator import dungeonGenerator
 from mapRelated.fov import FieldOfView
 from time import time
-from utilities import world
 
 
-def setup_game(con, gameworld):
+def setup_game(gameworld):
 
     filehandle = Externalfiles.create_new_file(constants.GAME_ACTIONS_FILE)
 
     # world seed generation
     generate_world_seed()
 
+
+def create_and_place_world_entities(gameworld, game_map):
     # create entities for game world
     generate_spells(gameworld)
-    generate_items(gameworld)
-    generate_monsters(gameworld)
+    generate_items_and_place_them(gameworld, game_map)
+    generate_monsters_and_place_them(gameworld)
 
 
 def generate_world_seed():
@@ -88,8 +90,6 @@ def initialise_game_map(con, gameworld, player, spell_bar, message_log):
     d.placeWalls()
     d.set_tiles()
 
-    # this isn't working as intended
-    # d.generateBSPMap()
     game_map = d
 
     logger.info("Map Generated in %s" % (str(secondsToText(time() - start_time))))
@@ -98,18 +98,14 @@ def initialise_game_map(con, gameworld, player, spell_bar, message_log):
 
     fov = FieldOfView(game_map)
 
-    # place entities (enemies, items)
-
     render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld, fov_compute=fov_compute, fov_object=fov, spell_bar=spell_bar, message_log=message_log )
-    render_inventory_screen = RenderInventory()
-    render_character_screen = RenderPlayerCharacterScreen()
     move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
     update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
     gameworld.add_processor(render_console_process)
-    gameworld.add_processor(render_inventory_screen)
-    gameworld.add_processor(render_character_screen)
     gameworld.add_processor(move_entities_processor)
     gameworld.add_processor(update_entities_processor)
+
+    return game_map
 
 
 # create esper world (enemies, items, spells, etc)
@@ -139,7 +135,7 @@ def generate_spells(gameworld):
         process_status_effect(gameworld, thisspell, spell['name'], effects)
 
 
-def generate_monsters(gameworld):
+def generate_monsters_and_place_them(gameworld):
     logger.debug('Creating monsters as entities')
 
     # create the mobile including its class:
@@ -149,15 +145,33 @@ def generate_monsters(gameworld):
     # determine/calculate its starting stats based on weapons, armour, and class
 
 
-def create_monster(gameworld):
-    pass
-
-
-def generate_items(gameworld):
+def generate_items_and_place_them(gameworld, game_map):
     logger.debug('Creating items as entities - for testing purposes only')
 
     # generate weapons
+    new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='sword')
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon, game_map=game_map)
+    logger.info('Has item been placed :{}', has_item_been_placed)
     # generate jewellery
-    # generate armour
-    # generate inventory bags
+    # new_piece_of_jewellery = ItemManager.create_jewellery(
+    #     gameworld=gameworld,
+    #     bodylocation='neck',
+    #     e_setting='copper',
+    #     e_hook='copper',
+    #     e_activator='Garnet')
+    # ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_jewellery, game_map=game_map)
+    # # generate armour
+    # new_piece_of_armour = ItemManager.create_piece_of_armour(
+    #     gameworld=gameworld,
+    #     bodylocation='legs',
+    #     quality='basic',
+    #     setname='Apprentice',
+    #     prefix='',
+    #     level=0,
+    #     majorname='',
+    #     majorbonus=0,
+    #     minoronename='',
+    #     minoronebonus=0)
+    # ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map)
+
 

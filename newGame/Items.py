@@ -1,8 +1,12 @@
 from newGame import constants
-from components import mobiles, items
+from components import items
 from utilities import world, jsonUtilities
 from utilities.itemsHelp import ItemUtilities
+from utilities.mobileHelp import MobileUtilities
 from loguru import logger
+
+import random
+import tcod
 
 
 class ItemManager:
@@ -11,6 +15,7 @@ class ItemManager:
     The purpose of the ItemManager class is to:
     Create ALL items in the game
     Delete ALL items from the game
+    Place items in the dungeon
 
     """
 
@@ -30,11 +35,14 @@ class ItemManager:
                     description=weapon['description'],
                     name=weapon['display_name'],
                     glyph=weapon['glyph'],
-                    fg=weapon['fg_colour'],
-                    bg=weapon['bg_colour']))
-                gameworld.add_component(myweapon, items.Location(x=0, y=0))
+                    fg=tcod.white,
+                    bg=tcod.black
+                    # fg=weapon['fg_colour'],
+                    # bg=weapon['bg_colour']
+                ))
+                # gameworld.add_component(myweapon, items.Location(x=0, y=0))
                 gameworld.add_component(myweapon, items.Material)
-                gameworld.add_component(myweapon, items.RenderItem)
+                gameworld.add_component(myweapon, items.RenderItem(istrue=True))
                 gameworld.add_component(myweapon, items.Quality(level=weapon['quality_level']))
 
                 # generate weapon specific components
@@ -270,5 +278,66 @@ class ItemManager:
                     bg=gemstone['bg_colour']))
                 logger.info('Created {}', desc)
                 return piece_of_jewellery
+
+    def place_item_in_dungeon(gameworld, item_to_be_placed, game_map):
+        """
+
+        :param item_to_be_placed: gameworld.entity
+        :return:
+
+        This method will look for a suitable location in the dungeon to place an item.
+        Over time I imagine this will evolve into lots of constraints and possibly be removed
+        in favour of something else. 22/4/19
+        """
+
+        if item_to_be_placed == 0:
+            return False
+        logger.info('Placing {} in the dungeon', item_to_be_placed)
+
+        # get player entity
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld)
+        if player_entity == 0:
+            logger.warning('Cannot resolve player entity')
+            return False
+
+        # lets take the simple approach - place items near player start position
+        # and on the dungeon floor. Plus no more than one item per dungeon location
+
+        # Check if item can be rendered on to the dungeon
+        can_be_rendered = ItemUtilities.get_item_can_be_rendered(gameworld=gameworld, entity=item_to_be_placed)
+        gameworld.add_component(item_to_be_placed, items.Location(x=0, y=0))
+        item_has_been_placed = False
+        if can_be_rendered:
+
+            # get items current location --> if already exists then it is already placed in the dungeon
+            item_dungeon_posx, item_dungeon_posy = ItemUtilities.get_item_location(gameworld=gameworld, entity=item_to_be_placed)
+            if item_dungeon_posx > 0 or item_dungeon_posy > 0:
+                logger.info('Item is already in the dungeon, cannot place twice')
+                return False
+            # get player current location
+            player_pos_x, player_pos_y = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=player_entity)
+            if player_pos_x == 0 or player_pos_y == 0:
+                logger.warning('Cannot resolve players current position')
+                return False
+            # pick random location in the dungeon --> that's near the player location but not in a wall
+            max_attempts = 500
+            attempts = 0
+
+            for mx, my, tile in game_map:
+                if mx == player_pos_x and my == player_pos_y:
+                    while not item_has_been_placed and attempts < max_attempts:
+                        ix = random.randrange(player_pos_x, player_pos_x + 4)
+                        iy = random.randrange(player_pos_y, player_pos_y + 4)
+                        if tile == constants.TILE_TYPE_FLOOR:
+                            tile = constants.TILE_TYPE_ITEM
+                            ItemUtilities.set_item_location(gameworld=gameworld, entity=item_to_be_placed, posx=ix, posy=iy)
+                            logger.info('...at location {} / {}', ix, iy)
+                            logger.info('Player located at {}/{}', player_pos_x, player_pos_y)
+                            attempts = 499
+                            item_has_been_placed = True
+                    attempts += 1
+        return item_has_been_placed
+
+
 
 

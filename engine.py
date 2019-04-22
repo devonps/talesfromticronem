@@ -1,7 +1,7 @@
 import tcod.console
 
 
-from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, constants
+from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, constants, create_and_place_world_entities
 from newGame.game_messages import MessageLog, Message
 from processors.render import RenderGameStartScreen
 from utilities.mobileHelp import MobileUtilities
@@ -11,27 +11,19 @@ from utilities.replayGame import ReplayGame
 from ui.character_screen import display_hero_panel
 from loguru import logger
 
-from newGame.Items import ItemManager
-
 
 def start_game(con, gameworld):
 
-    setup_game(con, gameworld)
+    setup_game(gameworld)
     player, spell_bar = create_new_character(con, gameworld)
     message_log = MessageLog(x=constants.MSG_PANEL_START_X, width=constants.MSG_PANEL_WIDTH, height=constants.MSG_PANEL_LINES)
-    initialise_game_map(con, gameworld, player, spell_bar, message_log)
+    game_map = initialise_game_map(con, gameworld, player, spell_bar, message_log)
+    create_and_place_world_entities(gameworld=gameworld, game_map=game_map)
 
     # test code
 
     player_description = MobileUtilities.describe_the_mobile(gameworld, player)
     logger.info(player_description)
-
-    # my_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='sword')
-    # head_armour_piece = ItemManager.create_piece_of_armour(gameworld=gameworld, bodylocation='head', quality='basic')
-    # new_bag = ItemManager.create_bag(gameworld=gameworld)
-    # earring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_activator='Garnet', e_setting='copper', e_hook='copper')
-    # amulet = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_activator='Garnet', e_setting='copper', e_hook='copper')
-    # ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_activator='Garnet', e_setting='copper', e_hook='copper')
 
     key = tcod.Key()
     mouse = tcod.Mouse()
