@@ -4,7 +4,7 @@ from components import mobiles, userInput
 from loguru import logger
 from newGame import constants
 from utilities.externalfileutilities import Externalfiles
-from newGame.game_messages import Message
+from utilities.game_messages import Message
 
 
 def handle_keys(mouse, key, gameworld, player, message_log):
@@ -55,6 +55,8 @@ def handle_keys(mouse, key, gameworld, player, message_log):
         # hero action keys
         elif key_char == 'h':
             return {'display_hero_panel': True}
+        elif key_char == 'g':
+            return {'pickup': True}
 
     return {}
 

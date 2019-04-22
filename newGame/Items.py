@@ -327,29 +327,12 @@ class ItemManager:
             while not item_has_been_placed and attempts < max_attempts:
                 ix = random.randrange(player_pos_x, player_pos_x + 4)
                 iy = random.randrange(player_pos_y, player_pos_y + 4)
-                # if game_map[ix][iy].type_of_tile == constants.TILE_TYPE_FLOOR:
-                #     game_map[ix][iy].type_of_tile = constants.TILE_TYPE_ITEM
                 ItemUtilities.set_item_location(gameworld=gameworld, entity=item_to_be_placed, posx=ix, posy=iy)
                 logger.info('...at location {} / {}', ix, iy)
                 logger.info('Player located at {}/{}', player_pos_x, player_pos_y)
                 attempts = 499
                 item_has_been_placed = True
                 attempts += 1
-
-
-
-            # for mx, my, tile in game_map:
-            #     if mx == player_pos_x and my == player_pos_y:
-            #         while not item_has_been_placed and attempts < max_attempts:
-            #             ix = random.randrange(player_pos_x, player_pos_x + 4)
-            #             iy = random.randrange(player_pos_y, player_pos_y + 4)
-            #             if tile == constants.TILE_TYPE_FLOOR:
-            #                 tile = constants.TILE_TYPE_ITEM
-            #                 ItemUtilities.set_item_location(gameworld=gameworld, entity=item_to_be_placed, posx=ix, posy=iy)
-            #                 logger.info('...at location {} / {}', ix, iy)
-            #                 logger.info('Player located at {}/{}', player_pos_x, player_pos_y)
-            #                 attempts = 499
-            #                 item_has_been_placed = True
 
         return item_has_been_placed
 

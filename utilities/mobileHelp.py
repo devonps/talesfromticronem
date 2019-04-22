@@ -1,9 +1,8 @@
-from components import mobiles, userInput
+from components import mobiles, userInput, items
 from loguru import logger
 from newGame import constants
 from utilities.itemsHelp import ItemUtilities
 from utilities import world
-
 import numbers
 
 
@@ -47,7 +46,6 @@ class MobileUtilities(numbers.Real):
     def get_mobile_current_location(gameworld, mobile):
         location_component = gameworld.component_for_entity(mobile, mobiles.Position)
         return location_component.x, location_component.y
-
 
     @staticmethod
     def get_mobile_name_details(gameworld, entity):
@@ -153,6 +151,34 @@ class MobileUtilities(numbers.Real):
         player_gender_component = gameworld.component_for_entity(entity, mobiles.Describable)
 
         return player_name_component.first + ' is a ' + player_gender_component.gender + ' ' + player_race_component.label + ' ' + player_class_component.label
+
+    #
+    # Mobile actions
+    #
+
+    # pick up item from dungeon floor
+    def mobile_pick_up_item(gameworld, mobile):
+        px, py = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=mobile)
+        for ent, (rend, loc, desc) in gameworld.get_components(items.RenderItem, items.Location, items.Describable):
+            if loc.posx == px and loc.posy == py:
+                if rend.isTrue:
+                    pass
+                    # check if mobile has enough space in their inventory
+                    # remove item location data
+                    gameworld.remove_component(ent, items.Location)
+                    # add item entity to mobile inventory
+                    gameworld.component_for_entity(mobile, mobiles.Inventory).items = ent
+                    logger.info('{} has been picked up', desc.name)
+
+    # drop item to dungeon floor
+
+
+
+    # add item, once picked up, to inventory
+
+
+
+
     #
     # Get primary attributes
     #

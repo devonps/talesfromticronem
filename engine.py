@@ -2,7 +2,7 @@ import tcod.console
 
 
 from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, constants, create_and_place_world_entities
-from newGame.game_messages import MessageLog, Message
+from utilities.game_messages import MessageLog, Message
 from processors.render import RenderGameStartScreen
 from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys, handle_menus
@@ -37,9 +37,13 @@ def start_game(con, gameworld):
         fullscreen = action.get('fullscreen')
         player_moved = action.get('player_moved')
         display_hero = action.get('display_hero_panel')
+        pick_up_entity = action.get('pickup')
 
         if display_hero:
             display_hero_panel(gameworld)
+
+        if pick_up_entity:
+            MobileUtilities.mobile_pick_up_item(gameworld=gameworld, mobile=player)
 
         if player_moved:
             pass

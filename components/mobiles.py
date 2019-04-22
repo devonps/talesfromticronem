@@ -59,8 +59,8 @@ class SpecialBar:
 class Inventory:
     def __init__(self, exists=False):
         self.exists = exists
-        self.bags = []
-        self.items_in_inventory = []
+        self.bags = []  # this is a list of the bag 'entities'
+        self.items = []  # this is a list of the items in each bag [bag_number:entity_number]
 
 
 class Armour:

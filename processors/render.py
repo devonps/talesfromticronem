@@ -7,9 +7,6 @@ from components import mobiles, items
 from utilities.display import menu
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
-from mapRelated.fov import FieldOfView
-from mapRelated.gameMap import GameMap
-from newGame.game_messages import MessageLog, Message
 
 
 class RenderConsole(esper.Processor):
@@ -135,36 +132,19 @@ class RenderConsole(esper.Processor):
                             tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR, constants.colors.get('light_ground'),tcod.black)
                         # tile += constants.TILE_TYPE_EXPLORED
 
-            # for mapx, mapy, tile in self.game_map:
-            #     # isVisible = tcod.map_is_in_fov(self.fov_map, mapx, mapy)
-            #     isVisible = True
-            #     # isVisible = FieldOfView.get_fov_map_point(fov_map, mapx, mapy)
-            #     draw_pos_x = constants.MAP_VIEW_DRAW_X + mapx
-            #     draw_pos_y = constants.MAP_VIEW_DRAW_Y + mapy
-            #     if isVisible:
-            #         if tile == constants.TILE_TYPE_WALL:
-            #             tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_WALL, constants.colors.get('light_wall'), tcod.black)
-            #         elif tile == constants.TILE_TYPE_FLOOR:
-            #             tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR, constants.colors.get('light_ground'),tcod.black)
-            #         elif tile == constants.TILE_TYPE_DOOR:
-            #             tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_DOOR, constants.colors.get('light_ground'),tcod.black)
-            #         elif tile == constants.TILE_TYPE_CORRIDOR:
-            #             tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR, constants.colors.get('light_ground'),tcod.black)
-            #         # tile += constants.TILE_TYPE_EXPLORED
-            #
-            #     else:
-            #         if tile == constants.TILE_TYPE_WALL:
-            #             tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_WALL,
-            #                                      constants.colors.get('dark_wall'), tcod.black)
-            #         elif tile == constants.TILE_TYPE_FLOOR:
-            #             tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR,
-            #                                      constants.colors.get('dark_ground'), tcod.black)
-            #         elif tile == constants.TILE_TYPE_DOOR:
-            #             tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_DOOR,
-            #                                      constants.colors.get('dark_ground'), tcod.black)
-            #         elif tile == constants.TILE_TYPE_CORRIDOR:
-            #             tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR,
-            #                                      constants.colors.get('dark_ground'), tcod.black)
+                    else:
+                        if tile == constants.TILE_TYPE_WALL:
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_WALL,
+                                                     constants.colors.get('dark_wall'), tcod.black)
+                        elif tile == constants.TILE_TYPE_FLOOR:
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR,
+                                                     constants.colors.get('dark_ground'), tcod.black)
+                        elif tile == constants.TILE_TYPE_DOOR:
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_DOOR,
+                                                     constants.colors.get('dark_ground'), tcod.black)
+                        elif tile == constants.TILE_TYPE_CORRIDOR:
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, constants.DNG_FLOOR,
+                                                     constants.colors.get('dark_ground'), tcod.black)
 
     def render_entities(self):
         for ent, (rend, pos, desc) in self.world.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
