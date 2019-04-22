@@ -441,21 +441,37 @@ def inventory_tab(console, gameworld, player):
     for bag_id in range(4):
         # bg id
         if bag_id + 1 != selected_inv_bag:
-            console.put_char(x=ac + 5, y=bg_dwn - 1, ch=191)
+            # bottom cross bar
+            console.draw_rect(x=ac, y=bg_dwn + bag_id + 1, width=w, height=1, ch=196, fg=def_fg, bg=tcod.grey)
+            # console.put_char(x=ac, y=bg_dwn, ch=197)
             console.print_box(x=ac + 2, y=bg_dwn + bag_id, width=1, height=1, string=str(bag_id + 1))
             console.draw_rect(x=ac + 2, y=bg_dwn + bag_id, width=1, height=1, ch=0, fg=tcod.white, bg=tcod.grey)
+            # right hand bar
+            console.put_char(x=ac + 5, y=bg_dwn + bag_id, ch=179)
+            # bottom left corner
+            console.put_char(x=ac, y=bg_dwn + bag_id + 1, ch=195)
+            # bottom right corner
             console.put_char(x=ac + 5, y=bg_dwn + bag_id + 1, ch=217)
+            # top right corner
+            console.put_char(x=ac + 5, y=bg_dwn + bag_id + 1, ch=180)
+
         else:
+            # bottom cross bar
+            console.draw_rect(x=ac, y=bg_dwn + bag_id + 1, width=w, height=1, ch=196, fg=def_fg, bg=tcod.grey)
             # console.put_char(x=ac + 5, y=bg_dwn + bag_id, ch=217)
+            # bag id
             console.print_box(x=ac + 2, y=bg_dwn + bag_id, width=1, height=1, string=str(bag_id + 1))
             console.draw_rect(x=ac + 2, y=bg_dwn + bag_id, width=1, height=1, ch=0, fg=tcod.white, bg=tcod.black)
-            # console.put_char(x=ac + 5, y=bg_dwn + bag_id, ch=191)
+            # bottom left corner
+            console.put_char(x=ac, y=bg_dwn + bag_id + 1, ch=195)
+            # bottom right corner
+            console.put_char(x=ac + 5, y=bg_dwn + bag_id + 1, ch=191)
+            # top right corner
+            console.put_char(x=ac + 5, y=bg_dwn + bag_id + 1, ch=217)
+            # top left corner
+            console.put_char(x=ac, y=bg_dwn + bag_id + 1, ch=195)
+
         bg_dwn += 1
-        # cross bar
-        console.draw_rect(x=ac, y=bg_dwn + bag_id, width=w, height=1, ch=196, fg=def_fg, bg=tcod.grey)
-        # console.put_char(x=ac, y=bg_dwn + bag_id, ch=195)
-        # console.put_char(x=ac + 5, y=bg_dwn + bag_id, ch=196)
-        # console.put_char(x=ac + 5, y=bg_dwn + 3, ch=191)
 
 # next up display the selected inventory bag slots
 
