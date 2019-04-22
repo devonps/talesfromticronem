@@ -20,6 +20,7 @@ from processors.move_entities import MoveEntities
 from processors.updateEntities import UpdateEntitiesProcessor
 from mapRelated.dungeonGenerator import dungeonGenerator
 from mapRelated.fov import FieldOfView
+from mapRelated.gameMap import GameMap
 from time import time
 
 
@@ -69,30 +70,39 @@ def initialise_game_map(con, gameworld, player, spell_bar, message_log):
     # create game map
 
     dungeon_seed_stream = PCG32Generator(constants.WORLD_SEED, constants.PRNG_STREAM_DUNGEONS)
-    # myd = MyGenerateDungeon(height=40, width=80, rand_gen_object=dungeon_seed_stream, gameworld=gameworld)
-    # myd.make_floors()
 
 
 
-    # define map size (y,x) max tiles to use in direction
-    levelSize = [40, 80]
-    # create class instance; ALWAYS required
-    d = dungeonGenerator(height=levelSize[0], width=levelSize[1], rand_gen_object=dungeon_seed_stream, gameworld=gameworld)
-    start_time = time()
-    d.placeRandomRooms(minRoomSize=5, maxRoomSize=15, roomStep=1, margin=1, attempts=2000)
-    d.generateCorridors('l')
-    d.connectAllRooms(0)
-    d.pruneDeadends(50)
 
-    # join unconnected areas
-    unconnected = d.findUnconnectedAreas()
-    d.joinUnconnectedAreas(unconnected)
-    d.placeWalls()
-    d.set_tiles()
+    # # define map size (y,x) max tiles to use in direction
+    # levelSize = [40, 80]
+    # # create class instance; ALWAYS required
+    # d = dungeonGenerator(height=levelSize[0], width=levelSize[1], rand_gen_object=dungeon_seed_stream, gameworld=gameworld)
+    # start_time = time()
+    # d.placeRandomRooms(minRoomSize=5, maxRoomSize=15, roomStep=1, margin=1, attempts=2000)
+    # d.generateCorridors('l')
+    # d.connectAllRooms(0)
+    # d.pruneDeadends(50)
+    #
+    # # join unconnected areas
+    # unconnected = d.findUnconnectedAreas()
+    # d.joinUnconnectedAreas(unconnected)
+    # d.placeWalls()
+    # d.set_tiles()git
 
-    game_map = d
+    # game_map = d
 
-    logger.info("Map Generated in %s" % (str(secondsToText(time() - start_time))))
+    game_map = GameMap(mapwidth=constants.MAP_WIDTH, mapheight=constants.MAP_HEIGHT)
+    game_map.make_map(
+        max_rooms=constants.DNG_MAX_ROOMS,
+        room_min_size=constants.DNG_ROOM_MIN_SIZE,
+        room_max_size=constants.DNG_MAX_ROOMS,
+        map_width=constants.MAP_WIDTH,
+        map_height=constants.MAP_HEIGHT,
+        gameworld=gameworld,
+        player=player)
+
+    # logger.info("Map Generated in %s" % (str(secondsToText(time() - start_time))))
 
     fov_compute = True
 
@@ -151,27 +161,28 @@ def generate_items_and_place_them(gameworld, game_map):
     # generate weapons
     new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='sword')
     has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon, game_map=game_map)
-    logger.info('Has item been placed :{}', has_item_been_placed)
+    logger.info('Has weapon been placed :{}', has_item_been_placed)
     # generate jewellery
-    # new_piece_of_jewellery = ItemManager.create_jewellery(
-    #     gameworld=gameworld,
-    #     bodylocation='neck',
-    #     e_setting='copper',
-    #     e_hook='copper',
-    #     e_activator='Garnet')
-    # ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_jewellery, game_map=game_map)
-    # # generate armour
-    # new_piece_of_armour = ItemManager.create_piece_of_armour(
-    #     gameworld=gameworld,
-    #     bodylocation='legs',
-    #     quality='basic',
-    #     setname='Apprentice',
-    #     prefix='',
-    #     level=0,
-    #     majorname='',
-    #     majorbonus=0,
-    #     minoronename='',
-    #     minoronebonus=0)
-    # ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map)
-
+    new_piece_of_jewellery = ItemManager.create_jewellery(
+        gameworld=gameworld,
+        bodylocation='neck',
+        e_setting='copper',
+        e_hook='copper',
+        e_activator='Garnet')
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_jewellery, game_map=game_map)
+    logger.info('Has jewellery been placed :{}', has_item_been_placed)
+    # generate armour
+    new_piece_of_armour = ItemManager.create_piece_of_armour(
+        gameworld=gameworld,
+        bodylocation='legs',
+        quality='basic',
+        setname='Apprentice',
+        prefix='',
+        level=0,
+        majorname='',
+        majorbonus=0,
+        minoronename='',
+        minoronebonus=0)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map)
+    logger.info('Has armour been placed :{}', has_item_been_placed)
 

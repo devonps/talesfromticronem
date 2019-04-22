@@ -29,7 +29,7 @@ class GameMap:
 
         return tiles
 
-    def Xmake_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, gameworld, player):
+    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, gameworld, player):
         """
         This function creates the entire dungeon floor, including the bits that cannot be seen by the player
         :return:
@@ -63,8 +63,11 @@ class GameMap:
 
                 if num_rooms == 0:
                     # place player in the first room
-                    gameworld.component_for_entity(player, mobiles.Position).x = new_x
-                    gameworld.component_for_entity(player, mobiles.Position).y = new_y
+                    # player = MobileUtilities.get_player_entity(gameworld)
+                    gameworld.add_component(player, mobiles.Position(
+                        x=new_x,
+                        y=new_y,
+                        hasMoved=True))
                 else:
                     (prev_x, prev_y) = rooms[num_rooms - 1].center()
                     # flip a coin (random number that is either 0 or 1)
@@ -82,17 +85,6 @@ class GameMap:
                 # finally, append the new room to the list
                 rooms.append(new_room)
                 num_rooms += 1
-
-    def Xtest_map(self):
-        rooms = []
-
-        room1 = Rect(20,15,10,15)
-        room2 = Rect(35,15,10,15)
-
-        self.create_room(room1)
-        self.create_room(room2)
-
-        self.create_h_tunnel(25,40,23)
 
     @staticmethod
     def xcreate_fov_map(game_map):
@@ -124,16 +116,30 @@ class GameMap:
     def Xcalculate_fov(fov_map, x, y, radius, light_walls=False, algo=0):
         tcod.map_compute_fov(m=fov_map, x=x, y=y, radius=radius, light_walls=light_walls, algo=algo)
 
-    def Xget_type_of_tile(self, x, y):
+    def get_type_of_tile(self, x, y):
         return self.tiles[x][y].type_of_tile
 
     def is_blocked(self, x, y):
         # if self.tiles[x][y].type_of_tile == constants.TILE_TYPE_WALL:
-        if self.grid[x][y] == constants.TILE_TYPE_WALL:
+        if self.tiles[x][y].blocked:
             return True
+        return False
+
+    def create_h_tunnel(self, x1, x2, y):
+        for x in range(min(x1, x2), max(x1, x2) + 1):
+            self.tiles[x][y].blocked = False
+            self.tiles[x][y].block_sight = False
+            self.tiles[x][y].type_of_tile = constants.TILE_TYPE_FLOOR
+
+    def create_v_tunnel(self, y1, y2, x):
+        for y in range(min(y1, y2), max(y1, y2) + 1):
+            self.tiles[x][y].blocked = False
+            self.tiles[x][y].block_sight = False
+            self.tiles[x][y].type_of_tile = constants.TILE_TYPE_FLOOR
 
     def create_room(self, room):
         for x in range(room.x + 1, room.w):
             for y in range(room.y + 1, room.h):
                 self.tiles[x][y].type_of_tile = constants.TILE_TYPE_FLOOR
-
+                self.tiles[x][y].blocked = False
+                self.tiles[x][y].block_sight = False
