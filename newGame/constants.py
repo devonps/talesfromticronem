@@ -65,6 +65,7 @@ TILE_TYPE_WALL = 5
 TILE_TYPE_OBSTACLE = 6
 TILE_TYPE_CAVE = 7
 TILE_TYPE_WATER = 8
+TILE_TYPE_ITEM = 9
 
 # game map drawing offsets for use with viewport
 MAP_VIEW_DRAW_X = VIEWPORT_START_X + 1

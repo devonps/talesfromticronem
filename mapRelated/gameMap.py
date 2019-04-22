@@ -11,7 +11,6 @@ from utilities.randomNumberGenerator import PCG32Generator
 from mapRelated.room import dungeonRoom
 
 
-
 class GameMap:
     def __init__(self, mapwidth, mapheight):
         self.width = mapwidth
@@ -30,8 +29,7 @@ class GameMap:
 
         return tiles
 
-
-    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, gameworld, player):
+    def Xmake_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, gameworld, player):
         """
         This function creates the entire dungeon floor, including the bits that cannot be seen by the player
         :return:
@@ -85,7 +83,7 @@ class GameMap:
                 rooms.append(new_room)
                 num_rooms += 1
 
-    def test_map(self):
+    def Xtest_map(self):
         rooms = []
 
         room1 = Rect(20,15,10,15)
@@ -110,10 +108,8 @@ class GameMap:
             if tile == constants.TILE_TYPE_DOOR:
                 tcod.map_set_properties(fov_map, mapx, mapy, isTrans=False, isWalk=True)
 
-
-
     @staticmethod
-    def make_fov_map(game_map):
+    def Xmake_fov_map(game_map):
         fov_map = tcod.map_new(game_map.width, game_map.height)
 
         for y in range(game_map.height):
@@ -125,14 +121,14 @@ class GameMap:
         return fov_map
 
     @staticmethod
-    def calculate_fov(fov_map, x, y, radius, light_walls=False, algo=0):
+    def Xcalculate_fov(fov_map, x, y, radius, light_walls=False, algo=0):
         tcod.map_compute_fov(m=fov_map, x=x, y=y, radius=radius, light_walls=light_walls, algo=algo)
 
-    def get_type_of_tile(self, x, y):
+    def Xget_type_of_tile(self, x, y):
         return self.tiles[x][y].type_of_tile
 
     def is_blocked(self, x, y):
-        #if self.tiles[x][y].type_of_tile == constants.TILE_TYPE_WALL:
+        # if self.tiles[x][y].type_of_tile == constants.TILE_TYPE_WALL:
         if self.grid[x][y] == constants.TILE_TYPE_WALL:
             return True
 

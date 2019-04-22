@@ -4,8 +4,6 @@ from processors import move_entities, render, updateEntities
 
 def remove_all_processors(gameworld):
     gameworld.remove_processor(render.RenderConsole)
-    gameworld.remove_processor(render.RenderInventory)
-    gameworld.remove_processor(render.RenderPlayerCharacterScreen)
     gameworld.remove_processor(move_entities.MoveEntities)
     gameworld.remove_processor(updateEntities.UpdateEntitiesProcessor)
 
