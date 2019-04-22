@@ -159,6 +159,7 @@ class MobileUtilities(numbers.Real):
     # pick up item from dungeon floor
     def mobile_pick_up_item(gameworld, mobile):
         px, py = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=mobile)
+        mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
         for ent, (rend, loc, desc) in gameworld.get_components(items.RenderItem, items.Location, items.Describable):
             if loc.posx == px and loc.posy == py:
                 if rend.isTrue:
@@ -167,8 +168,13 @@ class MobileUtilities(numbers.Real):
                     # remove item location data
                     gameworld.remove_component(ent, items.Location)
                     # add item entity to mobile inventory
-                    gameworld.component_for_entity(mobile, mobiles.Inventory).items = ent
+                    mobile_inventory_component.items.append(ent)
                     logger.info('{} has been picked up', desc.name)
+
+        mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
+        inventory_items = mobile_inventory_component.items
+        logger.info('Inventory consists of {}', inventory_items)
+
 
     # drop item to dungeon floor
 
