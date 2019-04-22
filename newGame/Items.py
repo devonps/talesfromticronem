@@ -95,12 +95,13 @@ class ItemManager:
                 gameworld.add_component(armour_piece, items.Describable(
                     name=piece_of_armour['location'] + ' armour',
                     glyph=piece_of_armour['glyph'],
-                    fg=piece_of_armour['fg_colour'],
                     description=piece_of_armour['location'] + ' armour',
-                    bg=piece_of_armour['bg_colour']))
-                gameworld.add_component(armour_piece, items.Location)
+                    fg=tcod.white,
+                    bg=tcod.black))
+
+                # gameworld.add_component(armour_piece, items.Location)
                 gameworld.add_component(armour_piece, items.Material)
-                gameworld.add_component(armour_piece, items.RenderItem)
+                gameworld.add_component(armour_piece, items.RenderItem(istrue=True))
                 gameworld.add_component(armour_piece, items.Quality(level=piece_of_armour['quality']))
 
                 # generate armour specifics
@@ -195,9 +196,9 @@ class ItemManager:
                 description=this_bag['description'],
                 name=this_bag['description'],
                 glyph=this_bag['glyph'],
-                fg=this_bag['fg_colour'],
-                bg=this_bag['bg_colour']))
-            gameworld.add_component(new_bag, items.Location(x=0, y=0))
+                fg=tcod.white,
+                bg=tcod.black))
+            # gameworld.add_component(new_bag, items.Location(x=0, y=0))
             gameworld.add_component(new_bag, items.Material(texture=this_bag['material']))
             gameworld.add_component(new_bag, items.RenderItem)
             gameworld.add_component(new_bag, items.Quality(level=this_bag['quality']))
@@ -235,9 +236,9 @@ class ItemManager:
                 piece_of_jewellery = world.get_next_entity_id(gameworld=gameworld)
                 # generate common item components
                 gameworld.add_component(piece_of_jewellery, items.TypeOfItem(label='jewellery'))
-                gameworld.add_component(piece_of_jewellery, items.Location(x=0, y=0))
+                # gameworld.add_component(piece_of_jewellery, items.Location(x=0, y=0))
                 gameworld.add_component(piece_of_jewellery, items.Material(texture=e_setting))
-                gameworld.add_component(piece_of_jewellery, items.RenderItem)
+                gameworld.add_component(piece_of_jewellery, items.RenderItem(istrue=True))
                 gameworld.add_component(piece_of_jewellery, items.Quality(level='common'))
 
                 # create jewellery specific components
@@ -274,14 +275,15 @@ class ItemManager:
                     description=desc,
                     name=nm,
                     glyph=gemstone['glyph'],
-                    fg=gemstone['fg_colour'],
-                    bg=gemstone['bg_colour']))
+                    fg=tcod.blue,
+                    bg=tcod.black))
                 logger.info('Created {}', desc)
                 return piece_of_jewellery
 
     def place_item_in_dungeon(gameworld, item_to_be_placed, game_map):
         """
 
+        :param game_map: holds the current view of the world
         :param item_to_be_placed: gameworld.entity
         :return:
 
@@ -322,20 +324,33 @@ class ItemManager:
             # pick random location in the dungeon --> that's near the player location but not in a wall
             max_attempts = 500
             attempts = 0
+            while not item_has_been_placed and attempts < max_attempts:
+                ix = random.randrange(player_pos_x, player_pos_x + 4)
+                iy = random.randrange(player_pos_y, player_pos_y + 4)
+                # if game_map[ix][iy].type_of_tile == constants.TILE_TYPE_FLOOR:
+                #     game_map[ix][iy].type_of_tile = constants.TILE_TYPE_ITEM
+                ItemUtilities.set_item_location(gameworld=gameworld, entity=item_to_be_placed, posx=ix, posy=iy)
+                logger.info('...at location {} / {}', ix, iy)
+                logger.info('Player located at {}/{}', player_pos_x, player_pos_y)
+                attempts = 499
+                item_has_been_placed = True
+                attempts += 1
 
-            for mx, my, tile in game_map:
-                if mx == player_pos_x and my == player_pos_y:
-                    while not item_has_been_placed and attempts < max_attempts:
-                        ix = random.randrange(player_pos_x, player_pos_x + 4)
-                        iy = random.randrange(player_pos_y, player_pos_y + 4)
-                        if tile == constants.TILE_TYPE_FLOOR:
-                            tile = constants.TILE_TYPE_ITEM
-                            ItemUtilities.set_item_location(gameworld=gameworld, entity=item_to_be_placed, posx=ix, posy=iy)
-                            logger.info('...at location {} / {}', ix, iy)
-                            logger.info('Player located at {}/{}', player_pos_x, player_pos_y)
-                            attempts = 499
-                            item_has_been_placed = True
-                    attempts += 1
+
+
+            # for mx, my, tile in game_map:
+            #     if mx == player_pos_x and my == player_pos_y:
+            #         while not item_has_been_placed and attempts < max_attempts:
+            #             ix = random.randrange(player_pos_x, player_pos_x + 4)
+            #             iy = random.randrange(player_pos_y, player_pos_y + 4)
+            #             if tile == constants.TILE_TYPE_FLOOR:
+            #                 tile = constants.TILE_TYPE_ITEM
+            #                 ItemUtilities.set_item_location(gameworld=gameworld, entity=item_to_be_placed, posx=ix, posy=iy)
+            #                 logger.info('...at location {} / {}', ix, iy)
+            #                 logger.info('Player located at {}/{}', player_pos_x, player_pos_y)
+            #                 attempts = 499
+            #                 item_has_been_placed = True
+
         return item_has_been_placed
 
 

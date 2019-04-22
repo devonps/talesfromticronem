@@ -39,6 +39,12 @@ MENU_MAX_HEIGHT = 7
 MAP_WIDTH = 80
 MAP_HEIGHT = 40
 
+# dungeon map settings - temp values for game construction
+DNG_MAX_ROOMS = 30
+DNG_ROOM_MIN_SIZE = 5
+DNG_ROOM_MAX_SIZE = 9
+
+
 # BSP MAP SETTINGS
 BSP_NO_SPLITS = 10
 BSP_ROOM_MIN_SIZE = 5
