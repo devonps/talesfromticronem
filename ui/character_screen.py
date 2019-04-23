@@ -5,7 +5,6 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.display import display_coloured_box
 from utilities.itemsHelp import ItemUtilities
 from components import mobiles
-from loguru import logger
 
 
 def display_hero_panel(gameworld):
@@ -41,10 +40,6 @@ def display_hero_panel(gameworld):
             if event.type == 'KEYDOWN':
                 if event.sym == tcod.event.K_ESCAPE:
                     hero_panel_displayed = False
-                if constants.HERO_PANEL_SELECTED_TAB == 4:
-                    if (event.sym - 48) in (1,2,3,4):
-                        constants.HERO_PANEL_INV_SELECTED_BAG = event.sym - 48
-                        logger.info('Selected bag {}', constants.HERO_PANEL_INV_SELECTED_BAG)
             elif event.type == "MOUSEBUTTONDOWN":
                 x = event.tile.x
                 y = event.tile.y
@@ -422,58 +417,6 @@ def weapons_tab(console, gameworld, player):
 
 def inventory_tab(console, gameworld, player):
     start_y = 11
-    ac = 10
-    w = 6
-    def_fg = tcod.white
-    selected_inv_bag = constants.HERO_PANEL_INV_SELECTED_BAG
-    # cross bar
-    console.draw_rect(x=ac, y=start_y, width=w, height=1, ch=196, fg=def_fg, bg=tcod.grey)
-    console.put_char(x=ac, y=start_y, ch=193)
-    console.put_char(x=ac + 5, y=start_y, ch=191)
-    console.print_box(x=ac + 1, y=start_y + 1, width=4, height=1, string="Bags")
-    console.put_char(x=ac + 5, y=start_y + 1, ch=179)
-    # cross bar
-    console.draw_rect(x=ac, y=start_y + 2, width=w, height=1, ch=196, fg=def_fg, bg=tcod.grey)
-    console.put_char(x=ac, y=start_y + 2, ch=194)
-    console.put_char(x=ac + 5, y=start_y + 2, ch=180)
-
-    bg_dwn = start_y + 3
-    for bag_id in range(4):
-        # bg id
-        if bag_id + 1 != selected_inv_bag:
-            # bottom cross bar
-            console.draw_rect(x=ac, y=bg_dwn + bag_id + 1, width=w, height=1, ch=196, fg=def_fg, bg=tcod.grey)
-            # console.put_char(x=ac, y=bg_dwn, ch=197)
-            console.print_box(x=ac + 2, y=bg_dwn + bag_id, width=1, height=1, string=str(bag_id + 1))
-            console.draw_rect(x=ac + 2, y=bg_dwn + bag_id, width=1, height=1, ch=0, fg=tcod.white, bg=tcod.grey)
-            # right hand bar
-            console.put_char(x=ac + 5, y=bg_dwn + bag_id, ch=179)
-            # bottom left corner
-            console.put_char(x=ac, y=bg_dwn + bag_id + 1, ch=195)
-            # bottom right corner
-            console.put_char(x=ac + 5, y=bg_dwn + bag_id + 1, ch=217)
-            # top right corner
-            console.put_char(x=ac + 5, y=bg_dwn + bag_id + 1, ch=180)
-
-        else:
-            # bottom cross bar
-            console.draw_rect(x=ac, y=bg_dwn + bag_id + 1, width=w, height=1, ch=196, fg=def_fg, bg=tcod.grey)
-            # console.put_char(x=ac + 5, y=bg_dwn + bag_id, ch=217)
-            # bag id
-            console.print_box(x=ac + 2, y=bg_dwn + bag_id, width=1, height=1, string=str(bag_id + 1))
-            console.draw_rect(x=ac + 2, y=bg_dwn + bag_id, width=1, height=1, ch=0, fg=tcod.white, bg=tcod.black)
-            # bottom left corner
-            console.put_char(x=ac, y=bg_dwn + bag_id + 1, ch=195)
-            # bottom right corner
-            console.put_char(x=ac + 5, y=bg_dwn + bag_id + 1, ch=191)
-            # top right corner
-            console.put_char(x=ac + 5, y=bg_dwn + bag_id + 1, ch=217)
-            # top left corner
-            console.put_char(x=ac, y=bg_dwn + bag_id + 1, ch=195)
-
-        bg_dwn += 1
-
-# next up display the selected inventory bag slots
 
     # temp solution until I sort out how to store a dictionary of items in bags
     mobile_inventory_component = gameworld.component_for_entity(player, mobiles.Inventory)
@@ -488,7 +431,7 @@ def inventory_tab(console, gameworld, player):
         console.print_box(x=ix, y=iy, width=40, height=1, string=text)
         letter_index += 1
         iy += 1
-        console.print_box(x=ix, y=console.height - 3, width=40, height=1, string='1-4 for bags, letters for items')
+        # console.print_box(x=ix, y=console.height - 3, width=40, height=1, string='1-4 for bags, letters for items')
     if letter_index == ord('a'):
         console.print_box(x=ix, y=iy, width=40, height=1, string='Nothing in Inventory')
 
