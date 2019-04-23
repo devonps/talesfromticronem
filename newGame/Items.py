@@ -4,6 +4,7 @@ from utilities import world, jsonUtilities
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from loguru import logger
+from mapRelated.gameMap import GameMap
 
 import random
 import tcod
@@ -236,7 +237,6 @@ class ItemManager:
                 piece_of_jewellery = world.get_next_entity_id(gameworld=gameworld)
                 # generate common item components
                 gameworld.add_component(piece_of_jewellery, items.TypeOfItem(label='jewellery'))
-                # gameworld.add_component(piece_of_jewellery, items.Location(x=0, y=0))
                 gameworld.add_component(piece_of_jewellery, items.Material(texture=e_setting))
                 gameworld.add_component(piece_of_jewellery, items.RenderItem(istrue=True))
                 gameworld.add_component(piece_of_jewellery, items.Quality(level='common'))
@@ -325,13 +325,15 @@ class ItemManager:
             max_attempts = 500
             attempts = 0
             while not item_has_been_placed and attempts < max_attempts:
-                ix = random.randrange(player_pos_x, player_pos_x + 4)
-                iy = random.randrange(player_pos_y, player_pos_y + 4)
-                ItemUtilities.set_item_location(gameworld=gameworld, entity=item_to_be_placed, posx=ix, posy=iy)
-                logger.info('...at location {} / {}', ix, iy)
-                logger.info('Player located at {}/{}', player_pos_x, player_pos_y)
-                attempts = 499
-                item_has_been_placed = True
+                ix = random.randrange(1, constants.MAP_WIDTH)
+                iy = random.randrange(1, constants.MAP_HEIGHT)
+                tile = GameMap.get_type_of_tile(game_map, ix, iy)
+                if tile == constants.TILE_TYPE_FLOOR:
+                    ItemUtilities.set_item_location(gameworld=gameworld, entity=item_to_be_placed, posx=ix, posy=iy)
+                    logger.info('...at location {} / {}', ix, iy)
+                    logger.info('Player located at {}/{}', player_pos_x, player_pos_y)
+                    attempts = 499
+                    item_has_been_placed = True
                 attempts += 1
 
         return item_has_been_placed
