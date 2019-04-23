@@ -163,26 +163,12 @@ class MobileUtilities(numbers.Real):
         for ent, (rend, loc, desc) in gameworld.get_components(items.RenderItem, items.Location, items.Describable):
             if loc.posx == px and loc.posy == py:
                 if rend.isTrue:
-                    pass
                     # check if mobile has enough space in their inventory
                     # remove item location data
                     gameworld.remove_component(ent, items.Location)
-                    # add item entity to mobile inventory
+                    # add item entity to mobiles' inventory
                     mobile_inventory_component.items.append(ent)
                     logger.info('{} has been picked up', desc.name)
-
-        mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
-        inventory_items = mobile_inventory_component.items
-        logger.info('Inventory consists of {}', inventory_items)
-
-
-    # drop item to dungeon floor
-
-
-
-    # add item, once picked up, to inventory
-
-
 
 
     #
