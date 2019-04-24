@@ -12,6 +12,6 @@ class UpdateEntitiesProcessor(esper.Processor):
         super().__init__()
         self.gameworld = gameworld
 
-    def process(self):
+    def process(self, game_config):
         for ent, ai in self.gameworld.get_component(mobiles.AI):
             MobileUtilities.calculate_derived_attributes(self.gameworld, ent)

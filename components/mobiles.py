@@ -52,8 +52,8 @@ class SpecialBar:
     def __init__(self, maxstages=3, currentstage=0, valuecurrent=0, valuemaximum=0):
         self.maxstages = maxstages
         self.currentstage = currentstage
-        self.valuecurrent = valuecurrent
-        self.valuemaximum = valuemaximum
+        self.currentvalue = valuecurrent
+        self.maximumvalue = valuemaximum
 
 
 class Inventory:
