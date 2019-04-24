@@ -15,12 +15,13 @@ class TypeOfItem:
 
 
 class Describable:
-    def __init__(self, name='', description='', glyph='', fg=tcod.white, bg=tcod.black):
+    def __init__(self, name='', description='', glyph='', fg=tcod.white, bg=tcod.black, displayname=''):
         self.name = name
         self.description = description
         self.glyph = glyph
         self.fg = fg
         self.bg = bg
+        self.displayname = displayname
 
 
 # physical location on the game map

@@ -98,7 +98,8 @@ class ItemManager:
                     glyph=piece_of_armour['glyph'],
                     description=piece_of_armour['location'] + ' armour',
                     fg=tcod.white,
-                    bg=tcod.black))
+                    bg=tcod.black,
+                    displayname=piece_of_armour['type']))
 
                 # gameworld.add_component(armour_piece, items.Location)
                 gameworld.add_component(armour_piece, items.Material)

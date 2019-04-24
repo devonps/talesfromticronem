@@ -20,6 +20,11 @@ class ItemUtilities:
         return item_described_component.name
 
     @staticmethod
+    def get_item_displayname(gameworld, entity):
+        item_described_component = gameworld.component_for_entity(entity, items.Describable)
+        return item_described_component.displayname
+
+    @staticmethod
     def get_item_description(gameworld, entity):
         item_described_component = gameworld.component_for_entity(entity, items.Describable)
         return item_described_component.description
