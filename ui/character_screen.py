@@ -11,6 +11,9 @@ def display_hero_panel(gameworld):
 
     hero_panel_displayed = True
 
+    hp_def_fg = tcod.white
+    hp_def_bg = tcod.dark_gray
+
     # gather player entity
     player_entity = MobileUtilities.get_player_entity(gameworld=gameworld)
     # update player derived attributes - do that here to allow for mid-turn changes
@@ -26,7 +29,7 @@ def display_hero_panel(gameworld):
     # main loop whilst hero panel is displayed
     while hero_panel_displayed:
         draw_hero_panel_frame(hero_panel, maxtablength)
-        draw_hero_panel_tabs(hero_panel, maxtablength)
+        draw_hero_panel_tabs(hero_panel, maxtablength, hp_def_fg, hp_def_bg)
         draw_hero_information(hero_panel=hero_panel, gameworld=gameworld, player=player_entity)
 
         tcod.console_blit(hero_panel, 0, 0,
@@ -48,7 +51,7 @@ def display_hero_panel(gameworld):
                         ret_value = constants.HERO_PANEL_TAB_OFFSETS.index(y)
                         constants.HERO_PANEL_SELECTED_TAB = ret_value
 
-        hero_panel.clear(ch=ord(' '), fg=tcod.white, bg=tcod.grey)
+        hero_panel.clear(ch=ord(' '), fg=hp_def_fg, bg=hp_def_bg)
 
 
 def calculate_max_tab_length():
@@ -75,10 +78,10 @@ def draw_hero_panel_frame(hero_panel, maxtablength):
                          height=1, string='Mouse to select, ESC to exit')
 
 
-def draw_hero_panel_tabs(hero_panel, maxtablength):
+def draw_hero_panel_tabs(hero_panel, maxtablength, def_fg, def_bg):
     tab_down = 3
-    def_fg = tcod.white
-    def_bg = tcod.grey
+    # def_fg = tcod.white
+    # def_bg = tcod.grey
 
     # full length line
     hero_panel.draw_rect(x=maxtablength + 1, y=1, width=1, height=hero_panel.height - 2, ch=179, fg=def_fg, bg=def_bg)
@@ -420,16 +423,17 @@ def inventory_tab(hero_panel, gameworld, player):
     # temp solution until I sort out how to store a dictionary of items in bags
     mobile_inventory_component = gameworld.component_for_entity(player, mobiles.Inventory)
     letter_index = 97
-    key_pos = 18
-    glyph_pos = 20
-    desc_pos = 22
-    iy = 13
     bar_width = 15
-    frame_left = 18
-    frame_down = 12
+    frame_left = 12
+    frame_down = 5
     frame_width = 25
+    iy = frame_down + 1
+    key_pos = frame_left
+    glyph_pos = frame_left + 2
+    desc_pos = frame_left + 4
     def_fg = tcod.white
-    def_bg = tcod.gray
+    def_bg = tcod.darker_gray
+    def_wd = tcod.blue
     across_pipe = 196
     bottom_left = 192
     bottom_right = 217
@@ -450,25 +454,29 @@ def inventory_tab(hero_panel, gameworld, player):
         hero_panel.draw_rect(x=frame_left, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg,
                              bg=def_bg)
         # right vertical line
-        hero_panel.draw_rect(x=frame_left + frame_width - 1, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg,
-                             bg=def_bg)
+        hero_panel.draw_rect(x=frame_left + frame_width - 1, y=frame_down, width=1, height=max_lines, ch=down_pipe,
+                             fg=def_fg, bg=def_bg)
         # top horizontal line
         hero_panel.draw_rect(x=frame_left, y=frame_down, width=frame_width, height=1, ch=across_pipe, fg=def_fg,
                              bg=def_bg)
         # bottom horizontal line
-        hero_panel.draw_rect(x=frame_left, y=frame_down + max_lines, width=frame_width, height=1, ch=across_pipe, fg=def_fg,
-                             bg=def_bg)
+        hero_panel.draw_rect(x=frame_left, y=frame_down + max_lines, width=frame_width, height=1, ch=across_pipe,
+                             fg=def_fg, bg=def_bg)
         # top left
-        hero_panel.put_char(x=frame_left, y=frame_down, ch=top_left)
+        hero_panel.print(x=frame_left, y=frame_down, string=chr(top_left), fg=def_fg, bg=def_bg)
+        # hero_panel.put_char(x=frame_left, y=frame_down, ch=top_left)
 
         # top right
-        hero_panel.put_char(x=frame_left + frame_width - 1, y=frame_down, ch=top_right)
+        hero_panel.print(x=frame_left + frame_width - 1, y=frame_down, string=chr(top_right), fg=def_fg, bg=def_bg)
+        # hero_panel.put_char(x=frame_left + frame_width - 1, y=frame_down, ch=top_right)
 
         # bottom left
-        hero_panel.put_char(x=frame_left, y=frame_down + max_lines, ch=bottom_left)
+        hero_panel.print(x=frame_left, y=frame_down + max_lines, string=chr(bottom_left), fg=def_fg, bg=def_bg)
+        # hero_panel.put_char(x=frame_left, y=frame_down + max_lines, ch=bottom_left)
 
         # bottom right
-        hero_panel.put_char(x=frame_left + frame_width - 1, y=frame_down + max_lines, ch=bottom_right)
+        hero_panel.print(x=frame_left + frame_width - 1, y=frame_down + max_lines, string=chr(bottom_right), fg=def_fg, bg=def_bg)
+        # hero_panel.put_char(x=frame_left + frame_width - 1, y=frame_down + max_lines, ch=bottom_right)
 
         z = frame_down + 2
         cnt = 1
@@ -477,47 +485,62 @@ def inventory_tab(hero_panel, gameworld, player):
                 hero_panel.draw_rect(x=frame_left+1, y=z, width=frame_width - 2, height=1, ch=across_pipe, fg=def_fg, bg=def_bg)
 
                 if cnt < len(inventory_items):
-                    hero_panel.put_char(x=frame_left, y=z, ch=left_tee)
-                    hero_panel.put_char(x=frame_left + frame_width - 1, y=z, ch=right_tee)
+                    hero_panel.print(x=frame_left, y=z, string=chr(left_tee), fg=def_fg, bg=def_bg)
+                    # hero_panel.put_char(x=frame_left, y=z, ch=left_tee)
+                    hero_panel.print(x=frame_left + frame_width - 1, y=z, string=chr(right_tee), fg=def_fg, bg=def_bg)
+                    # hero_panel.put_char(x=frame_left + frame_width - 1, y=z, ch=right_tee)
                 else:
-                    hero_panel.put_char(x=frame_left, y=z, ch=bottom_left)
-                    hero_panel.put_char(x=frame_left + frame_width - 1, y=z, ch=bottom_right)
+                    hero_panel.print(x=frame_left, y=z, string=chr(bottom_left), fg=def_fg, bg=def_bg)
+                    # hero_panel.put_char(x=frame_left, y=z, ch=bottom_left)
+                    hero_panel.print(x=frame_left + frame_width - 1, y=z, string=chr(bottom_right), fg=def_fg, bg=def_bg)
+                    # hero_panel.put_char(x=frame_left + frame_width - 1, y=z, ch=bottom_right)
 
                 z += 2
                 cnt += 1
         zz = 1
         for item in inventory_items:
 
-            item_glyph = ord(ItemUtilities.get_item_glyph(gameworld=gameworld, entity=item))
-            item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=item)
+            item_glyph = ItemUtilities.get_item_glyph(gameworld=gameworld, entity=item)
+            item_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=item)
+            item_fg = ItemUtilities.get_item_fg_colour(gameworld=gameworld, entity=item)
+            item_bg = ItemUtilities.get_item_bg_colour(gameworld=gameworld, entity=item)
             item_quality = ItemUtilities.get_item_quality(gameworld=gameworld, entity=item)
 
-            # draw frame around inventory item
-
             # KEY
-            hero_panel.put_char(x=key_pos + 1, y=iy, ch=letter_index)
-            hero_panel.put_char(x=key_pos + 2, y=iy, ch=down_pipe)
+            hero_panel.print(x=key_pos + 1, y=iy, string=chr(letter_index), fg=def_wd, bg=None)
+            # hero_panel.put_char(x=key_pos + 1, y=iy, ch=letter_index)
+            hero_panel.print(x=key_pos + 2, y=iy, string=chr(down_pipe), fg=def_fg, bg=def_bg)
+            # hero_panel.put_char(x=key_pos + 2, y=iy, ch=down_pipe)
             if zz == 1:
-                hero_panel.put_char(x=key_pos + 2, y=iy - 1, ch=top_tee)
+                hero_panel.print(x=key_pos + 2, y=iy - 1, string=chr(top_tee), fg=def_fg, bg=def_bg)
+                # hero_panel.put_char(x=key_pos + 2, y=iy - 1, ch=top_tee)
 
             if zz < len(inventory_items):
-                hero_panel.put_char(x=key_pos + 2, y=iy + 1, ch=cross_pipe)
+                hero_panel.print(x=key_pos + 2, y=iy + 1, string=chr(cross_pipe), fg=def_fg, bg=def_bg)
+                # hero_panel.put_char(x=key_pos + 2, y=iy + 1, ch=cross_pipe)
             else:
-                hero_panel.put_char(x=key_pos + 2, y=iy + 1, ch=bottom_tee)
+                hero_panel.print(x=key_pos + 2, y=iy + 1, string=chr(bottom_tee), fg=def_fg, bg=def_bg)
+                # hero_panel.put_char(x=key_pos + 2, y=iy + 1, ch=bottom_tee)
 
             # GLYPH
-            hero_panel.put_char(x=glyph_pos + 1, y=iy, ch=item_glyph)
-            hero_panel.put_char(x=glyph_pos + 2, y=iy, ch=down_pipe)
+            hero_panel.print(x=glyph_pos + 1, y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
+            # hero_panel.put_char(x=glyph_pos + 1, y=iy, ch=item_glyph)
+            hero_panel.print(x=glyph_pos + 2, y=iy, string=chr(down_pipe), fg=def_fg, bg=def_bg)
+            # hero_panel.put_char(x=glyph_pos + 2, y=iy, ch=down_pipe)
             if zz == 1:
-                hero_panel.put_char(x=glyph_pos + 2, y=iy - 1, ch=top_tee)
+                hero_panel.print(x=glyph_pos + 2, y=iy - 1, string=chr(top_tee), fg=def_fg, bg=def_bg)
+                # hero_panel.put_char(x=glyph_pos + 2, y=iy - 1, ch=top_tee)
 
             if zz < len(inventory_items):
-                hero_panel.put_char(x=glyph_pos + 2, y=iy + 1, ch=cross_pipe)
+                hero_panel.print(x=glyph_pos + 2, y=iy + 1, string=chr(cross_pipe), fg=def_fg, bg=def_bg)
+                # hero_panel.put_char(x=glyph_pos + 2, y=iy + 1, ch=cross_pipe)
             else:
-                hero_panel.put_char(x=glyph_pos + 2, y=iy + 1, ch=bottom_tee)
+                hero_panel.print(x=glyph_pos + 2, y=iy + 1, string=chr(bottom_tee), fg=def_fg, bg=def_bg)
+                # hero_panel.put_char(x=glyph_pos + 2, y=iy + 1, ch=bottom_tee)
 
             # DESCRIPTION
-            hero_panel.print_box(x=desc_pos + 1, y=iy, width=bar_width, height=1, string=item_name)
+            hero_panel.print(x=desc_pos + 1, y=iy, string=item_name, fg=def_wd, bg=None)
+            # hero_panel.print_box(x=desc_pos + 1, y=iy, width=bar_width, height=1, string=item_name)
             # QUALITY
 
             letter_index += 1
