@@ -1,4 +1,5 @@
-from newGame import constants
+# from newGame import constants
+from utilities import configUtilities
 
 
 class FieldOfView:
@@ -23,7 +24,7 @@ class FieldOfView:
         self.height = game_map.height
         self.fov_radius = 10  # FOV Radius
 
-    def create_fov_map_via_raycasting(self, startx, starty):
+    def create_fov_map_via_raycasting(self, startx, starty, game_config):
 
         RAYS = 360  # number of degrees in a circle
         STEP = 3  # The step per cycle. More = faster but large steps may cause artefacts
@@ -146,6 +147,9 @@ class FieldOfView:
         # value of sin(i degrees) and to y (player's y) value of cos(i degrees),
         # RAD times, and cheaacking for collision wiaath wall every step.
 
+        tile_type_door = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_DOOR')
+        tile_type_wall = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_WALL')
+
         for i in range(0, RAYS + 1, STEP):
             ax = sintable[i]  # Get pre-calculated value sin(x / (180 / pi))
             ay = costable[i]  # cos(x / (180 / pi))
@@ -164,7 +168,7 @@ class FieldOfView:
 
                 tile = self.game_map.grid[int(round(x))][int(round(y))]
 
-                if tile == constants.TILE_TYPE_DOOR or tile == constants.TILE_TYPE_WALL:  # Stop ray if it hit
+                if tile == tile_type_door or tile == tile_type_wall:  # Stop ray if it hits
                     break  # a wall or a door.
 
         return fov_map

@@ -5,7 +5,7 @@ import textwrap
 from loguru import logger
 from components import spellBar, items, mobiles
 from newGame.ClassWeapons import WeaponClass
-from newGame import constants
+# from newGame import constants
 from newGame.ClassArmour import ArmourClass
 from newGame.Items import ItemManager
 from utilities.mobileHelp import MobileUtilities
@@ -16,18 +16,19 @@ from utilities.text_input import text_entry
 from utilities.display import menu
 from utilities.world import get_next_entity_id
 from utilities.itemsHelp import ItemUtilities
+from utilities import configUtilities
 
 
 class NewCharacter:
 
-    def create(con, gameworld):
-        player = NewCharacter.generate_player_character(gameworld=gameworld)
-        NewCharacter.select_race(con=con, gameworld=gameworld, player=player)
-        NewCharacter.select_character_class(con=con, gameworld=gameworld, player=player)
+    def create(con, gameworld, game_config):
+        player = NewCharacter.generate_player_character(gameworld=gameworld, game_config=game_config)
+        NewCharacter.select_race(con=con, gameworld=gameworld, player=player, game_config=game_config)
+        NewCharacter.select_character_class(con=con, gameworld=gameworld, player=player, game_config=game_config)
         NewCharacter.select_personality_choices(con=con, gameworld=gameworld, player=player)
-        NewCharacter.name_your_character(con=con, gameworld=gameworld, player=player)
+        NewCharacter.name_your_character(con=con, gameworld=gameworld, player=player, game_config=game_config)
         spell_bar_entity = NewCharacter.generate_spell_bar(gameworld=gameworld)
-        NewCharacter.get_starting_equipment(con=con, gameworld=gameworld, player=player, spellbar=spell_bar_entity)
+        NewCharacter.get_starting_equipment(con=con, gameworld=gameworld, player=player, spellbar=spell_bar_entity, game_config=game_config)
 
         MobileUtilities.calculate_derived_attributes(gameworld, player)
 
@@ -50,17 +51,12 @@ class NewCharacter:
 
         return spell_bar
 
-    def generate_player_character(gameworld):
-        """
-        Creates a shell for the player character details to be populated with
-        :param gameworld:
-        :return: player entity
-        """
-
+    def generate_player_character(gameworld, game_config):
+        player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_PLAYER')
         logger.debug('Creating the player character entity')
         player = MobileUtilities.generate_base_mobile(gameworld)
         gameworld.add_component(player, mobiles.Describable())
-        gameworld.add_component(player, mobiles.AI(ailevel=constants.AI_LEVEL_PLAYER))
+        gameworld.add_component(player, mobiles.AI(ailevel=player_ai))
         gameworld.add_component(player, mobiles.Inventory())
         gameworld.add_component(player, mobiles.Armour())
         gameworld.add_component(player, mobiles.Jewellery())
@@ -79,9 +75,14 @@ class NewCharacter:
 
         return player
 
-    def select_race(con, gameworld, player):
+    def select_race(con, gameworld, player, game_config):
+
+        player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='RACESFILE')
+        screen_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='tcod', parameter='SCREEN_WIDTH')
+        screen_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='tcod', parameter='SCREEN_HEIGHT')
+
         logger.info('Select Race')
-        race_file = read_json_file(constants.JSONFILEPATH + 'races.json')
+        race_file = read_json_file(player_race_file)
 
         menu_options = []
         menu_options_flavour = []
@@ -111,8 +112,8 @@ class NewCharacter:
                              header='Select Race',
                              options=menu_options,
                              width=24,
-                             screen_width=constants.SCREEN_WIDTH,
-                             screen_height=constants.SCREEN_HEIGHT,
+                             screen_width=screen_width,
+                             screen_height=screen_height,
                              posx=10,
                              posy=26,
                              foreground=tcod.yellow,
@@ -141,9 +142,17 @@ class NewCharacter:
                 race_not_selected = False
                 tcod.console_clear(con)
 
-    def select_character_class(con, gameworld, player):
+    def select_character_class(con, gameworld, player, game_config):
+
+        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                      parameter='CLASSESFILE')
+        screen_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='tcod',
+                                                                   parameter='SCREEN_WIDTH')
+        screen_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='tcod',
+                                                                    parameter='SCREEN_HEIGHT')
+
         logger.info('Selecting character class')
-        class_file = read_json_file(constants.JSONFILEPATH + 'classes.json')
+        class_file = read_json_file(player_class_file)
 
         menu_options = []
         menu_options_flavour = []
@@ -162,7 +171,7 @@ class NewCharacter:
 
             ret_value = menu(con, header='Select Class',
                  options=menu_options,
-                 width=24, screen_width=constants.SCREEN_WIDTH, screen_height=constants.SCREEN_HEIGHT, posx=10, posy=26,
+                 width=24, screen_width=screen_width, screen_height=screen_height, posx=10, posy=26,
                  foreground=tcod.yellow,
                  key=key,
                  mouse=mouse,
@@ -212,7 +221,14 @@ class NewCharacter:
 
         logger.debug('Your personality is viewed as {} by other NPCs', personality_component.personality_title)
 
-    def name_your_character(con, gameworld, player):
+    def name_your_character(con, gameworld, player, game_config):
+
+        human_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',parameter='HUMANNAMESFILE')
+        elf_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                   parameter='ELFNAMESFILE')
+        orc_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='ORCNAMESFILE')
+        troll_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='TROLLNAMESFILE')
+
         logger.info('Naming the character')
 
         this_name = text_entry()
@@ -222,14 +238,14 @@ class NewCharacter:
             logger.info('Race selected {}', player_race_component.label)
 
             if player_race_component.label == 'human':
-                tcod.namegen_parse(constants.HUMANNAMESFILE)
+                tcod.namegen_parse(human_name_file)
                 logger.info('reading from human file')
             if player_race_component.label == 'elf':
-                tcod.namegen_parse(constants.ELFNAMESFILE)
+                tcod.namegen_parse(elf_name_file)
             if player_race_component.label == 'orc':
-                tcod.namegen_parse(constants.ORCNAMESFILE)
+                tcod.namegen_parse(orc_name_file)
             if player_race_component.label == 'troll':
-                tcod.namegen_parse(constants.TROLLNAMESFILE)
+                tcod.namegen_parse(troll_name_file)
 
             if random.randrange(0,100) < 50:
                 sn = tcod.namegen_generate('male')
@@ -245,21 +261,21 @@ class NewCharacter:
 
         gameworld.add_component(player, mobiles.Name(first=selected_name, suffix='none'))
 
-    def get_starting_equipment(con, gameworld, player, spellbar):
+    def get_starting_equipment(con, gameworld, player, spellbar, game_config):
         logger.debug('Selecting starting equipment')
 
         # create starting armour
-        NewCharacter.create_starting_armour(gameworld, player)
+        NewCharacter.create_starting_armour(gameworld, player, game_config=game_config)
 
         # create starting jewellery
         logger.info('creating some basic jewellery for the player')
-        NewCharacter.create_starting_jewellery(gameworld, player)
+        NewCharacter.create_starting_jewellery(gameworld, player, game_config)
 
         # create starting weapons
         logger.info('creating a weapon for the player')
         class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
 
-        weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='wand')
+        weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='wand', game_config=game_config)
         weapon_type = gameworld.component_for_entity(weapon, items.WeaponType)
 
         # parameters are: gameworld, weapon object, weapon type as a string, mobile class
@@ -271,7 +287,7 @@ class NewCharacter:
         MobileUtilities.equip_weapon(gameworld, player, weapon, 'main')
 
         # create an off-hand weapon for the player
-        weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='dagger')
+        weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='dagger', game_config=game_config)
         weapon_type = gameworld.component_for_entity(weapon, items.WeaponType)
         # parameters are: gameworld, weapon object, weapon type as a string, mobile class
         logger.info('Loading that weapon with the necessary spells')
@@ -286,15 +302,16 @@ class NewCharacter:
         SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spellbar)
 
         # create inventory bags
-        ItemManager.create_bag(gameworld=gameworld)
+        ItemManager.create_bag(gameworld=gameworld, game_config=game_config)
 
         logger.debug('Player is ready to rock and roll!')
 
     @staticmethod
-    def create_starting_armour(gameworld, player):
+    def create_starting_armour(gameworld, player, game_config):
         logger.info('Creating starting armour')
 
-        my_armour = ItemManager.create_full_armour_set(gameworld=gameworld, armourset='Apprentice', level=0, quality='basic')
+        my_armour = ItemManager.create_full_armour_set(gameworld=gameworld, armourset='Apprentice', level=0,
+                                                       quality='basic', game_config=game_config)
 
         logger.info('Attaching starting armour to player character')
         ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=my_armour)
@@ -304,12 +321,12 @@ class NewCharacter:
         logger.info('Chest armour: {}', chest_armour)
 
     @staticmethod
-    def create_starting_jewellery(gameworld, player):
-        stud = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator='Amber')
-        stud2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator='Amber')
-        ring1 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator='Amber')
-        ring2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator='Amber')
-        amulet = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper', e_hook='copper', e_activator='Amber')
+    def create_starting_jewellery(gameworld, player, game_config):
+        stud = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator='Amber', game_config=game_config)
+        stud2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator='Amber', game_config=game_config)
+        ring1 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator='Amber', game_config=game_config)
+        ring2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator='Amber', game_config=game_config)
+        amulet = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper', e_hook='copper', e_activator='Amber', game_config=game_config)
 
         ItemUtilities.equip_jewellery(gameworld, player, 'left ear', stud)
         ItemUtilities.equip_jewellery(gameworld, player, 'right ear', stud2)

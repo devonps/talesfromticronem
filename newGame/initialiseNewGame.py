@@ -3,7 +3,6 @@ import random
 
 
 from loguru import logger
-from newGame import constants
 from newGame.newCharacter import NewCharacter
 from newGame.Items import ItemManager
 from components import spells
@@ -12,95 +11,69 @@ from components.addStatusEffects import process_status_effect
 from utilities.jsonUtilities import read_json_file
 from utilities.randomNumberGenerator import PCG32Generator
 from utilities.externalfileutilities import Externalfiles
-from utilities.dateTimeUtilities import secondsToText
 from utilities import world
+from utilities import configUtilities
 
 from processors.render import RenderConsole
 from processors.move_entities import MoveEntities
 from processors.updateEntities import UpdateEntitiesProcessor
-from mapRelated.dungeonGenerator import dungeonGenerator
 from mapRelated.fov import FieldOfView
 from mapRelated.gameMap import GameMap
-from time import time
 
 
-def setup_game(gameworld):
-
-    filehandle = Externalfiles.create_new_file(constants.GAME_ACTIONS_FILE)
+def setup_game(game_config):
 
     # world seed generation
-    generate_world_seed()
+    generate_world_seed(game_config)
 
 
-def create_and_place_world_entities(gameworld, game_map):
+def create_and_place_world_entities(gameworld, game_map, game_config):
     # create entities for game world
-    generate_spells(gameworld)
-    generate_items_and_place_them(gameworld, game_map)
+    generate_spells(gameworld, game_config)
+    generate_items_and_place_them(gameworld, game_map, game_config)
     generate_monsters_and_place_them(gameworld)
 
 
-def generate_world_seed():
+def generate_world_seed(game_config):
 
-    if constants.PLAYER_SEED != '':
-        constants.WORLD_SEED = PCG32Generator.convert_string_to_integer(constants.PLAYER_SEED)
-        # constants.WORLD_SEED = tcod.random_new_from_seed(seed=constants.PLAYER_SEED, algo=tcod.RNG_CMWC)
-        logger.info('Using player provided seed for world seed {}',constants.PLAYER_SEED)
+    player_seed = configUtilities.get_config_value_as_string(configfile=game_config, section='pcg', parameter='PLAYER_SEED')
+
+    if player_seed != '':
+        world_seed = PCG32Generator.convert_string_to_integer(player_seed)
+        logger.info('Using player provided seed for world seed {}', player_seed)
     else:
-        constants.WORLD_SEED = random.getrandbits(30)
-        logger.info('No player seed, using large random number for world seed {}', constants.WORLD_SEED)
-    value = 'world_seed:' + str(constants.WORLD_SEED)
-    Externalfiles.write_to_existing_file(constants.GAME_ACTIONS_FILE, value)
+        world_seed = random.getrandbits(30)
+        logger.info('No player seed, using large random number for world seed {}', world_seed)
+    value = 'world_seed:' + str(world_seed)
+    action_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='GAME_ACTIONS_FILE')
 
-    # Test Code
-    # dung_rooms = PCG32Generator(constants.WORLD_SEED, constants.PRNG_STREAM_DUNGEONS)
-    #
-    # constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE
-    # for n in range(10):
-    #     # nxt = dung_rooms.get_next_uint(constants.ROOM_MAX_SIZE)
-    #     nxt = dung_rooms.get_next_number_in_range(constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE)
-    #     logger.info('Random No {}. is {} range is between {} and {}', n, nxt, constants.ROOM_MIN_SIZE, constants.ROOM_MAX_SIZE)
+    Externalfiles.write_to_existing_file(action_file, value)
 
 
-def create_new_character(con, gameworld):
-    player, spell_bar = NewCharacter.create(con=con, gameworld=gameworld)
+def create_new_character(con, gameworld, game_config):
+    player, spell_bar = NewCharacter.create(con=con, gameworld=gameworld, game_config=game_config)
     return player, spell_bar
 
 
-def initialise_game_map(con, gameworld, player, spell_bar, message_log):
+def initialise_game_map(con, gameworld, player, spell_bar, message_log, game_config):
+
+    map_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='MAP_WIDTH')
+    map_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='MAP_HEIGHT')
+    max_rooms_per_level = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_MAX_ROOMS')
+    room_min = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_ROOM_MIN_SIZE')
+    room_max = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_ROOM_MAX_SIZE')
+
     # create game map
-
-    dungeon_seed_stream = PCG32Generator(constants.WORLD_SEED, constants.PRNG_STREAM_DUNGEONS)
-
-
-
-
-    # # define map size (y,x) max tiles to use in direction
-    # levelSize = [40, 80]
-    # # create class instance; ALWAYS required
-    # d = dungeonGenerator(height=levelSize[0], width=levelSize[1], rand_gen_object=dungeon_seed_stream, gameworld=gameworld)
-    # start_time = time()
-    # d.placeRandomRooms(minRoomSize=5, maxRoomSize=15, roomStep=1, margin=1, attempts=2000)
-    # d.generateCorridors('l')
-    # d.connectAllRooms(0)
-    # d.pruneDeadends(50)
-    #
-    # # join unconnected areas
-    # unconnected = d.findUnconnectedAreas()
-    # d.joinUnconnectedAreas(unconnected)
-    # d.placeWalls()
-    # d.set_tiles()git
-
-    # game_map = d
-
-    game_map = GameMap(mapwidth=constants.MAP_WIDTH, mapheight=constants.MAP_HEIGHT)
+    game_map = GameMap(mapwidth=map_width, mapheight=map_height)
     game_map.make_map(
-        max_rooms=constants.DNG_MAX_ROOMS,
-        room_min_size=constants.DNG_ROOM_MIN_SIZE,
-        room_max_size=constants.DNG_MAX_ROOMS,
-        map_width=constants.MAP_WIDTH,
-        map_height=constants.MAP_HEIGHT,
+        max_rooms=max_rooms_per_level,
+        room_min_size=room_min,
+        room_max_size=room_max,
+        map_width=map_width,
+        map_height=map_height,
         gameworld=gameworld,
-        player=player)
+        player=player,
+        game_config=game_config)
 
     # logger.info("Map Generated in %s" % (str(secondsToText(time() - start_time))))
 
@@ -123,9 +96,12 @@ def create_game_world():
     return esper.World()
 
 
-def generate_spells(gameworld):
+def generate_spells(gameworld, game_config):
+
+    json_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='JSONFILEPATH')
+    spell_file = read_json_file(json_file_path + 'spells.json')
+
     logger.debug('Creating spells as entities')
-    spell_file = read_json_file(constants.JSONFILEPATH + 'spells.json')
     for spell in spell_file['spells']:
         thisspell = world.get_next_entity_id(gameworld=gameworld)
         gameworld.add_component(thisspell, spells.Name(spell['name']))
@@ -155,12 +131,12 @@ def generate_monsters_and_place_them(gameworld):
     # determine/calculate its starting stats based on weapons, armour, and class
 
 
-def generate_items_and_place_them(gameworld, game_map):
+def generate_items_and_place_them(gameworld, game_map, game_config):
     logger.debug('Creating items as entities - for testing purposes only')
 
     # generate weapons
-    new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='sword')
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon, game_map=game_map)
+    new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='sword', game_config=game_config)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon, game_map=game_map, game_config=game_config)
     logger.info('Has weapon been placed :{}', has_item_been_placed)
     # generate jewellery
     new_piece_of_jewellery = ItemManager.create_jewellery(
@@ -168,8 +144,8 @@ def generate_items_and_place_them(gameworld, game_map):
         bodylocation='neck',
         e_setting='copper',
         e_hook='copper',
-        e_activator='Garnet')
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_jewellery, game_map=game_map)
+        e_activator='Garnet', game_config=game_config)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_jewellery, game_map=game_map, game_config=game_config)
     logger.info('Has jewellery been placed :{}', has_item_been_placed)
     # generate jewellery
     new_piece_of_jewellery = ItemManager.create_jewellery(
@@ -177,10 +153,10 @@ def generate_items_and_place_them(gameworld, game_map):
         bodylocation='ear',
         e_setting='copper',
         e_hook='copper',
-        e_activator='Garnet')
+        e_activator='Garnet', game_config=game_config)
     has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld,
                                                              item_to_be_placed=new_piece_of_jewellery,
-                                                             game_map=game_map)
+                                                             game_map=game_map, game_config=game_config)
     logger.info('Has jewellery been placed :{}', has_item_been_placed)
     # generate jewellery
     new_piece_of_jewellery = ItemManager.create_jewellery(
@@ -188,10 +164,10 @@ def generate_items_and_place_them(gameworld, game_map):
         bodylocation='ear',
         e_setting='copper',
         e_hook='copper',
-        e_activator='Pearl')
+        e_activator='Pearl', game_config=game_config)
     has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld,
                                                              item_to_be_placed=new_piece_of_jewellery,
-                                                             game_map=game_map)
+                                                             game_map=game_map, game_config=game_config)
     logger.info('Has jewellery been placed :{}', has_item_been_placed)
     # generate jewellery
     new_piece_of_jewellery = ItemManager.create_jewellery(
@@ -199,10 +175,10 @@ def generate_items_and_place_them(gameworld, game_map):
         bodylocation='neck',
         e_setting='copper',
         e_hook='copper',
-        e_activator='Amber')
+        e_activator='Amber', game_config=game_config)
     has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld,
                                                              item_to_be_placed=new_piece_of_jewellery,
-                                                             game_map=game_map)
+                                                             game_map=game_map, game_config=game_config)
     logger.info('Has jewellery been placed :{}', has_item_been_placed)
     # generate jewellery
     new_piece_of_jewellery = ItemManager.create_jewellery(
@@ -210,10 +186,10 @@ def generate_items_and_place_them(gameworld, game_map):
         bodylocation='ear',
         e_setting='copper',
         e_hook='copper',
-        e_activator='Turquoise')
+        e_activator='Turquoise', game_config=game_config)
     has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld,
                                                              item_to_be_placed=new_piece_of_jewellery,
-                                                             game_map=game_map)
+                                                             game_map=game_map, game_config=game_config)
     logger.info('Has jewellery been placed :{}', has_item_been_placed)
 
     # generate armour
@@ -227,8 +203,8 @@ def generate_items_and_place_them(gameworld, game_map):
         majorname='',
         majorbonus=0,
         minoronename='',
-        minoronebonus=0)
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map)
+        minoronebonus=0, game_config=game_config)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
     logger.info('Has armour been placed :{}', has_item_been_placed)
 
 # generate armour
@@ -242,8 +218,8 @@ def generate_items_and_place_them(gameworld, game_map):
         majorname='',
         majorbonus=0,
         minoronename='',
-        minoronebonus=0)
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map)
+        minoronebonus=0, game_config=game_config)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
     logger.info('Has armour been placed :{}', has_item_been_placed)
 # generate armour
     new_piece_of_armour = ItemManager.create_piece_of_armour(
@@ -256,8 +232,8 @@ def generate_items_and_place_them(gameworld, game_map):
         majorname='',
         majorbonus=0,
         minoronename='',
-        minoronebonus=0)
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map)
+        minoronebonus=0, game_config=game_config)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
     logger.info('Has armour been placed :{}', has_item_been_placed)
 # generate armour
     new_piece_of_armour = ItemManager.create_piece_of_armour(
@@ -270,8 +246,8 @@ def generate_items_and_place_them(gameworld, game_map):
         majorname='',
         majorbonus=0,
         minoronename='',
-        minoronebonus=0)
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map)
+        minoronebonus=0, game_config=game_config)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
     logger.info('Has armour been placed :{}', has_item_been_placed)
 # generate armour
     new_piece_of_armour = ItemManager.create_piece_of_armour(
@@ -284,8 +260,8 @@ def generate_items_and_place_them(gameworld, game_map):
         majorname='',
         majorbonus=0,
         minoronename='',
-        minoronebonus=0)
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map)
+        minoronebonus=0, game_config=game_config)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
     logger.info('Has armour been placed :{}', has_item_been_placed)
 # generate armour
     new_piece_of_armour = ItemManager.create_piece_of_armour(
@@ -298,6 +274,6 @@ def generate_items_and_place_them(gameworld, game_map):
         majorname='',
         majorbonus=0,
         minoronename='',
-        minoronebonus=0)
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map)
+        minoronebonus=0, game_config=game_config)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
     logger.info('Has armour been placed :{}', has_item_been_placed)

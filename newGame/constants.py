@@ -157,7 +157,7 @@ demon_classes = ['fire', 'ice', 'earth']
 
 demon_weapons = ['focus', 'rod']
 
-# conditions
+# conditions --> move these out to a different file and then read them into the dictionary....maybe?
 condi_effects = ['bleeding', 'burning', 'cripple', 'confusion', 'poison', 'torment',
                  'blind', 'chill', 'fear', 'immobilize', 'vulnerability', 'selfbleeding']
 boon_effects = ['aegis', 'alacrity', 'fury', 'might', 'protection', 'regeneration',
@@ -165,7 +165,7 @@ boon_effects = ['aegis', 'alacrity', 'fury', 'might', 'protection', 'regeneratio
 
 class_resources =['lifeforce', 'damage', 'transferconditions', 'strikes_for','boonsconverted']
 
-# colors
+# colors --> move these out to a different file?
 colors = {
     'unexplored': tcod.black,
     'dark_wall': tcod.dark_gray,
@@ -215,5 +215,6 @@ HERO_PANEL_INFO_DEF_Y = 3
 HERO_PANEL_LEFT_COL = 12
 HERO_PANEL_RIGHT_COL = 30
 
+# move out to player specific information inside mobile components??
 HERO_PANEL_SELECTED_TAB = 1
 HERO_PANEL_INV_SELECTED_BAG = 1
