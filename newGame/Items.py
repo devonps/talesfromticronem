@@ -1,8 +1,9 @@
-from newGame import constants
+# from newGame import constants
 from components import items
 from utilities import world, jsonUtilities
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
+from utilities import configUtilities
 from loguru import logger
 from mapRelated.gameMap import GameMap
 
@@ -20,13 +21,15 @@ class ItemManager:
 
     """
 
-    def create_weapon(gameworld, weapon_type):
+    def create_weapon(gameworld, weapon_type, game_config):
         """
         Currently this creates a new weapon using the information in an external file
         :type gameworld: esper.world
         :type weapon_type: the type of weapon to be created, e.g. sword
         """
-        weapon_file = jsonUtilities.read_json_file(constants.JSONFILEPATH + 'weapons.json')
+        weapon_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='WEAPONSFILE')
+
+        weapon_file = jsonUtilities.read_json_file(weapon_file_path)
         for weapon in weapon_file['weapons']:
             if weapon['name'] == weapon_type:
                 myweapon = world.get_next_entity_id(gameworld=gameworld)
@@ -71,7 +74,7 @@ class ItemManager:
                 logger.info('Entity {} has been created using the {} template', myweapon, weapon['name'])
                 return myweapon  # this is the entity id for the newly created weapon
 
-    def create_piece_of_armour(gameworld, bodylocation, quality, setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus):
+    def create_piece_of_armour(gameworld, bodylocation, quality, setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus, game_config):
         """
         This method creates a gameworld entity that's used as a piece of armour. It uses the Json file
         to create the 'base' entity - it's up to other methods to add flesh to these bones.
@@ -87,7 +90,10 @@ class ItemManager:
         :param gameworld:
 
         """
-        armour_file = jsonUtilities.read_json_file(constants.JSONFILEPATH + 'armour.json')
+        armour_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                    parameter='ARMOURFILE')
+
+        armour_file = jsonUtilities.read_json_file(armour_file_path)
         for piece_of_armour in armour_file['armour']:
             if piece_of_armour['location'] == bodylocation and piece_of_armour['quality'] == quality:
                 armour_piece = world.get_next_entity_id(gameworld=gameworld)
@@ -143,7 +149,7 @@ class ItemManager:
 
                 return armour_piece
 
-    def create_full_armour_set(gameworld, armourset, level, quality):
+    def create_full_armour_set(gameworld, armourset, level, quality, game_config):
         """
         This method creates a full set of armour (as game entities), it calls the method create_piece_of_armour
         to create the actual piece of armour.
@@ -156,7 +162,9 @@ class ItemManager:
 
         :return: a list of entities created in the order [head, chest, hands, legs, feet]
         """
-        armour_set_file = jsonUtilities.read_json_file(constants.JSONFILEPATH + 'armoursets.json')
+        json_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='JSONFILEPATH')
+
+        armour_set_file = jsonUtilities.read_json_file(json_file_path + 'armoursets.json')
 
         full_armour_set = []
 
@@ -180,14 +188,18 @@ class ItemManager:
                         minortwobonus = this_armour['minortwobonus']
 
                         piece_of_armour = ItemManager.create_piece_of_armour(gameworld, bodylocation, quality,
-                                            setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus)
+                                            setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus, game_config)
 
                         full_armour_set.append(piece_of_armour)
 
         return full_armour_set
 
-    def create_bag(gameworld):
-        bags_file = jsonUtilities.read_json_file(constants.JSONFILEPATH + 'bags.json')
+    def create_bag(gameworld, game_config):
+
+        bag_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                      parameter='BAGSFILE')
+
+        bags_file = jsonUtilities.read_json_file(bag_file_path)
         bag_count = 0
         for this_bag in bags_file['bags']:
             new_bag = world.get_next_entity_id(gameworld=gameworld)
@@ -214,7 +226,7 @@ class ItemManager:
 
             return new_bag
 
-    def create_jewellery(gameworld, bodylocation, e_setting, e_hook, e_activator):
+    def create_jewellery(gameworld, bodylocation, e_setting, e_hook, e_activator, game_config):
         """
         Will create a piece of jewellery the e_setting informs the tier, e.g. copper is only used in Tier 1 jewellery
         The e_activator is the gemstone - this drives the attribute bonuses
@@ -225,6 +237,9 @@ class ItemManager:
         :param e_activator: the gemstone used in the jewellery, drives the attribute bonus
         :return:
         """
+        gemstones_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                      parameter='GEMSTONESFILE')
+
         if e_setting == '' or e_activator == '' or e_hook == '':
             logger.debug('At least one base component is missing')
             return 0
@@ -232,7 +247,7 @@ class ItemManager:
             logger.debug("Jewellery setting and hook base metals don't match")
             return 0
 
-        gemstone_file = jsonUtilities.read_json_file(constants.JSONFILEPATH + 'gemstones.json')
+        gemstone_file = jsonUtilities.read_json_file(gemstones_file_path)
 
         for gemstone in gemstone_file['gemstones']:
             if gemstone['Stone'] == e_activator:
@@ -283,7 +298,7 @@ class ItemManager:
                 logger.info('Created {}', desc)
                 return piece_of_jewellery
 
-    def place_item_in_dungeon(gameworld, item_to_be_placed, game_map):
+    def place_item_in_dungeon(gameworld, item_to_be_placed, game_map, game_config):
         """
 
         :param game_map: holds the current view of the world
@@ -294,6 +309,9 @@ class ItemManager:
         Over time I imagine this will evolve into lots of constraints and possibly be removed
         in favour of something else. 22/4/19
         """
+        map_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='MAP_WIDTH')
+        map_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='MAP_HEIGHT')
+        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_FLOOR')
 
         if item_to_be_placed == 0:
             return False
@@ -328,10 +346,10 @@ class ItemManager:
             max_attempts = 500
             attempts = 0
             while not item_has_been_placed and attempts < max_attempts:
-                ix = random.randrange(1, constants.MAP_WIDTH)
-                iy = random.randrange(1, constants.MAP_HEIGHT)
+                ix = random.randrange(1, map_width)
+                iy = random.randrange(1, map_height)
                 tile = GameMap.get_type_of_tile(game_map, ix, iy)
-                if tile == constants.TILE_TYPE_FLOOR:
+                if tile == tile_type_floor:
                     ItemUtilities.set_item_location(gameworld=gameworld, entity=item_to_be_placed, posx=ix, posy=iy)
                     logger.info('...at location {} / {}', ix, iy)
                     logger.info('Player located at {}/{}', player_pos_x, player_pos_y)

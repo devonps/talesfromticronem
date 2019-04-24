@@ -1,7 +1,8 @@
 import tcod
 
 from utilities.externalfileutilities import Externalfiles
-from newGame.initialiseNewGame import create_game_world, initialise_game_map, constants,\
+from utilities import configUtilities
+from newGame.initialiseNewGame import create_game_world, initialise_game_map,\
     generate_items_and_place_them, generate_monsters_and_place_them, generate_spells
 from newGame.newCharacter import NewCharacter
 from loguru import logger
@@ -12,8 +13,8 @@ from time import sleep
 class ReplayGame:
 
     @staticmethod
-    def process(con):
-        game_actions = ReplayGame.get_game_replay_actions()
+    def process(con, game_config):
+        game_actions = ReplayGame.get_game_replay_actions(game_config)
         ReplayGame.cycle_through_game_actions(con, game_actions)
 
     @staticmethod
@@ -32,9 +33,11 @@ class ReplayGame:
                 # set world seed
                 if current_word == 'world_seed':
 
-                    constants.WORLD_SEED = int(my_list[1])
+                    world_seed = int(my_list[1])
 
-                    logger.info('World seed is now {}', constants.WORLD_SEED)
+                    # constants.WORLD_SEED = int(my_list[1])
+
+                    logger.info('World seed is now {}', world_seed)
                     # create spells, items, and monsters --> the things the character will interract with
                     generate_spells(gameworld)
                     generate_items_and_place_them(gameworld)
@@ -71,10 +74,12 @@ class ReplayGame:
                         tcod.console_flush()
 
     @staticmethod
-    def get_game_replay_actions():
+    def get_game_replay_actions(game_config):
+        action_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                 parameter='GAME_ACTIONS_FILE')
 
         # game_actions should be created as a list
-        game_actions = Externalfiles.load_existing_file(constants.GAME_ACTIONS_FILE)
+        game_actions = Externalfiles.load_existing_file(action_file)
 
         return game_actions
 

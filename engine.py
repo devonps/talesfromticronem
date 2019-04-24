@@ -1,7 +1,7 @@
 import tcod.console
 
 
-from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, constants, create_and_place_world_entities
+from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, create_and_place_world_entities
 from utilities.game_messages import MessageLog, Message
 from processors.render import RenderGameStartScreen
 from utilities.mobileHelp import MobileUtilities
@@ -10,15 +10,20 @@ from utilities.world import reset_gameworld
 from utilities.replayGame import ReplayGame
 from ui.character_screen import display_hero_panel
 from loguru import logger
+from utilities import configUtilities
 
 
-def start_game(con, gameworld):
+def start_game(con, gameworld, game_config):
 
-    setup_game(gameworld)
-    player, spell_bar = create_new_character(con, gameworld)
-    message_log = MessageLog(x=constants.MSG_PANEL_START_X, width=constants.MSG_PANEL_WIDTH, height=constants.MSG_PANEL_LINES)
-    game_map = initialise_game_map(con, gameworld, player, spell_bar, message_log)
-    create_and_place_world_entities(gameworld=gameworld, game_map=game_map)
+    msg_panel_across_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_START_X')
+    msg_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_WIDTH')
+    msg_panel_lines = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_LINES')
+
+    setup_game(game_config)
+    player, spell_bar = create_new_character(con, gameworld, game_config)
+    message_log = MessageLog(x=msg_panel_across_pos, width=msg_panel_width, height=msg_panel_lines)
+    game_map = initialise_game_map(con, gameworld, player, spell_bar, message_log, game_config)
+    create_and_place_world_entities(gameworld=gameworld, game_map=game_map, game_config=game_config)
 
     # test code
 
@@ -59,9 +64,10 @@ def start_game(con, gameworld):
         tcod.console_flush()
 
 
-def game_replay(con):
-    ReplayGame.process(con)
+def game_replay(con, game_config):
+    ReplayGame.process(con, game_config)
     tcod.console_clear(con)
+
 
 @logger.catch()
 def main():
@@ -72,11 +78,22 @@ def main():
     logger.info('* Initialising game *')
     logger.info('*********************')
 
-    tcod.console_set_custom_font('static/fonts/prestige12x12_gs_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
-    tcod.console_init_root(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.GAME_WINDOW_TITLE, False)
+    game_config = configUtilities.load_config()
 
-    # con = tcod.console_new(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
-    con = tcod.console.Console(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
+    sects = configUtilities.get_config_file_sections(game_config)
+
+    game_title1 = configUtilities.get_config_value_as_string(game_config, 'default', 'GAME_WINDOW_TITLE')
+
+    logger.info('config file test:{}', str(game_title1))
+
+    con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
+    con_height = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_HEIGHT')
+    game_title = configUtilities.get_config_value_as_string(game_config, 'default', 'GAME_WINDOW_TITLE')
+
+    tcod.console_set_custom_font('static/fonts/prestige12x12_gs_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
+    tcod.console_init_root(con_width, con_height, game_title, False)
+
+    con = tcod.console.Console(con_width, con_height)
 
     key = tcod.Key()
     mouse = tcod.Mouse()
@@ -125,11 +142,14 @@ def main():
 
         if replay_game:
             logger.info('Replaying game')
-            game_replay(con)
+            game_replay(con, game_config)
 
         if player_seed:
             player_supplied_seed = "ABSTRACTIONISM"
-            constants.PLAYER_SEED = player_supplied_seed
+            # this was a write back to the constants file. This doesn't work with the config file
+            # need another option issue #57 created
+            # constants.PLAYER_SEED = player_supplied_seed
+            pass
 
             my_random = tcod.random_new_from_seed(1059)
             logger.info('random seed set up {}', my_random)
@@ -143,7 +163,7 @@ def main():
             gameworld.remove_processor(RenderGameStartScreen)
             # tcod.console_clear(con)
             con.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
-            start_game(con, gameworld)
+            start_game(con, gameworld, game_config)
             logger.info('*********************')
             logger.info('* Left Game         *')
             logger.info('*********************')

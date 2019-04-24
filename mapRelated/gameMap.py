@@ -1,14 +1,10 @@
-import tcod
 import random
 
 from mapRelated.tile import Tile
 from mapRelated.rectangle import Rect
 from components import mobiles
-from utilities.mobileHelp import MobileUtilities
-from newGame import constants
 from loguru import logger
-from utilities.randomNumberGenerator import PCG32Generator
-from mapRelated.room import dungeonRoom
+from utilities import configUtilities
 
 
 class GameMap:
@@ -20,7 +16,6 @@ class GameMap:
         # MAP PROPERTIES #
         self.listRooms = []
         self.listRegions = []
-        self.dungeon_seed = PCG32Generator(constants.WORLD_SEED, constants.PRNG_STREAM_DUNGEONS)
 
     def initialize_tiles(self):
         tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
@@ -29,13 +24,14 @@ class GameMap:
 
         return tiles
 
-    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, gameworld, player):
+    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, gameworld, player, game_config):
         """
         This function creates the entire dungeon floor, including the bits that cannot be seen by the player
         :return:
         """
         rooms = []
         num_rooms = 0
+        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_FLOOR')
 
         # for r in range(max_rooms):
         #     w = self.dungeon_seed.get_next_number_in_range(room_min_size, room_max_size)
@@ -58,7 +54,7 @@ class GameMap:
                 if new_room.intersect(other_room):
                     break
             else:
-                self.create_room(new_room)
+                self.create_room(new_room, tile_type_floor)
                 (new_x, new_y) = new_room.center()
 
                 if num_rooms == 0:
@@ -75,71 +71,40 @@ class GameMap:
                     #if self.dungeon_seed.get_next_number_in_range(0, 2) == 1:
                     if random.randint(0,1) == 1:
                         # first move horizontally, then vertically
-                        self.create_h_tunnel(prev_x, new_x, prev_y)
-                        self.create_v_tunnel(prev_y, new_y, new_x)
+                        self.create_h_tunnel(prev_x, new_x, prev_y, tile_type_floor)
+                        self.create_v_tunnel(prev_y, new_y, new_x, tile_type_floor)
                     else:
                         # first move vertically, then horizontally
-                        self.create_v_tunnel(prev_y, new_y, prev_x)
-                        self.create_h_tunnel(prev_x, new_x, new_y)
+                        self.create_v_tunnel(prev_y, new_y, prev_x, tile_type_floor)
+                        self.create_h_tunnel(prev_x, new_x, new_y, tile_type_floor)
 
                 # finally, append the new room to the list
                 rooms.append(new_room)
                 num_rooms += 1
 
-    @staticmethod
-    def xcreate_fov_map(game_map):
-        fov_map = tcod.map_new(game_map.width, game_map.height)
-
-        for mapx, mapy, tile in game_map:
-            if tile == constants.TILE_TYPE_WALL:
-                tcod.map_set_properties(fov_map, mapx, mapy, isTrans=False, isWalk=False)
-            if tile == constants.TILE_TYPE_FLOOR:
-                tcod.map_set_properties(fov_map, mapx, mapy, isTrans=True, isWalk=True)
-            if tile == constants.TILE_TYPE_CORRIDOR:
-                tcod.map_set_properties(fov_map, mapx, mapy, isTrans=True, isWalk=True)
-            if tile == constants.TILE_TYPE_DOOR:
-                tcod.map_set_properties(fov_map, mapx, mapy, isTrans=False, isWalk=True)
-
-    @staticmethod
-    def Xmake_fov_map(game_map):
-        fov_map = tcod.map_new(game_map.width, game_map.height)
-
-        for y in range(game_map.height):
-            for x in range(game_map.width):
-
-                # tcod.map_set_properties(fov_map, x, y, not game_map.tiles[x][y].type_of_tile,
-                #                         not game_map.tiles[x][y].block_path)
-                tcod.map_set_properties(fov_map, x, y, isTrans=True, isWalk=True)
-        return fov_map
-
-    @staticmethod
-    def Xcalculate_fov(fov_map, x, y, radius, light_walls=False, algo=0):
-        tcod.map_compute_fov(m=fov_map, x=x, y=y, radius=radius, light_walls=light_walls, algo=algo)
-
     def get_type_of_tile(self, x, y):
         return self.tiles[x][y].type_of_tile
 
     def is_blocked(self, x, y):
-        # if self.tiles[x][y].type_of_tile == constants.TILE_TYPE_WALL:
         if self.tiles[x][y].blocked:
             return True
         return False
 
-    def create_h_tunnel(self, x1, x2, y):
+    def create_h_tunnel(self, x1, x2, y, tile_type):
         for x in range(min(x1, x2), max(x1, x2) + 1):
             self.tiles[x][y].blocked = False
             self.tiles[x][y].block_sight = False
-            self.tiles[x][y].type_of_tile = constants.TILE_TYPE_FLOOR
+            self.tiles[x][y].type_of_tile = tile_type
 
-    def create_v_tunnel(self, y1, y2, x):
+    def create_v_tunnel(self, y1, y2, x, tile_type):
         for y in range(min(y1, y2), max(y1, y2) + 1):
             self.tiles[x][y].blocked = False
             self.tiles[x][y].block_sight = False
-            self.tiles[x][y].type_of_tile = constants.TILE_TYPE_FLOOR
+            self.tiles[x][y].type_of_tile = tile_type
 
-    def create_room(self, room):
+    def create_room(self, room, tile_type):
         for x in range(room.x + 1, room.w):
             for y in range(room.y + 1, room.h):
-                self.tiles[x][y].type_of_tile = constants.TILE_TYPE_FLOOR
+                self.tiles[x][y].type_of_tile = tile_type
                 self.tiles[x][y].blocked = False
                 self.tiles[x][y].block_sight = False
