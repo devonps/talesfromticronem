@@ -254,6 +254,7 @@ class MobileUtilities(numbers.Real):
         MobileUtilities.calculate_critical_hit_chance(gameworld, entity)
         MobileUtilities.calculate_max_health(gameworld, entity)
         MobileUtilities.calculate_current_health(gameworld, entity)
+        MobileUtilities.get_derived_special_bar_current_value(gameworld, entity)
 
     @staticmethod
     def calculate_armour_attribute(gameworld, entity):
@@ -436,6 +437,24 @@ class MobileUtilities(numbers.Real):
 
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth = maximum_health
 
+    @staticmethod
+    def calculate_current_mana(gameworld, entity):
+        """
+        This method will take everything into account that could affect the entities mana, and calculate
+        the current health
+        :param gameworld:
+        :param entity:
+        :return:
+        """
+        current_mana = MobileUtilities.get_derived_current_mana(gameworld, entity)
+        # check boons
+        # check conditions
+        # check controls
+        # check traits
+        # check equipped items (armour, jewellery)
+        # check weapons
+        return current_mana
+
     #
     # Get derived attributes
     #
@@ -475,3 +494,11 @@ class MobileUtilities(numbers.Real):
     @staticmethod
     def get_derived_maximum_mana(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.ManaPool).maximum
+
+    @staticmethod
+    def get_derived_special_bar_current_value(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.SpecialBar).currentvalue
+
+    @staticmethod
+    def get_derived_special_bar_max_value(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.SpecialBar).maximumvalue

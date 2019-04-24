@@ -60,7 +60,7 @@ def start_game(con, gameworld, game_config):
             tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
 
         # run ALL game processors
-        gameworld.process()
+        gameworld.process(game_config)
         tcod.console_flush()
 
 
