@@ -433,7 +433,7 @@ def inventory_tab(hero_panel, gameworld, player):
     desc_pos = frame_left + 4
     def_fg = tcod.white
     def_bg = tcod.darker_gray
-    def_wd = tcod.blue
+    def_wd = tcod.white
     across_pipe = 196
     bottom_left = 192
     bottom_right = 217

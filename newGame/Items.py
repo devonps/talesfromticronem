@@ -32,17 +32,18 @@ class ItemManager:
                 myweapon = world.get_next_entity_id(gameworld=gameworld)
                 # generate common item components
                 gameworld.add_component(myweapon, items.TypeOfItem(label='weapon'))
+                gameworld.add_component(myweapon, items.Material)
                 gameworld.add_component(myweapon, items.Describable(
                     description=weapon['description'],
                     name=weapon['display_name'],
                     glyph=weapon['glyph'],
                     fg=tcod.white,
-                    bg=tcod.black
+                    bg=tcod.black,
+                    displayname='wooden ' + weapon_type
                     # fg=weapon['fg_colour'],
                     # bg=weapon['bg_colour']
                 ))
                 # gameworld.add_component(myweapon, items.Location(x=0, y=0))
-                gameworld.add_component(myweapon, items.Material)
                 gameworld.add_component(myweapon, items.RenderItem(istrue=True))
                 gameworld.add_component(myweapon, items.Quality(level=weapon['quality_level']))
 
@@ -99,7 +100,7 @@ class ItemManager:
                     description=piece_of_armour['location'] + ' armour',
                     fg=tcod.white,
                     bg=tcod.black,
-                    displayname=piece_of_armour['type']))
+                    displayname='cloth ' + piece_of_armour['type']))
 
                 # gameworld.add_component(armour_piece, items.Location)
                 gameworld.add_component(armour_piece, items.Material)
@@ -258,7 +259,7 @@ class ItemManager:
                 elif bodylocation == 'neck':
                     # create an amulet
                     desc += ' amulet, offset with a ' + e_activator + ' gemstone.'
-                    nm = ' amulet'
+                    nm = 'amulet'
                     gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(neck=True))
                     gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
                         statname=gemstone['Attribute'],
@@ -277,7 +278,8 @@ class ItemManager:
                     name=nm,
                     glyph=gemstone['glyph'],
                     fg=tcod.blue,
-                    bg=tcod.black))
+                    bg=tcod.black,
+                    displayname=e_activator + ' ' + nm))
                 logger.info('Created {}', desc)
                 return piece_of_jewellery
 
