@@ -2,12 +2,12 @@ import esper
 import tcod
 
 from loguru import logger
-from newGame import constants
 from components import mobiles, items
 from utilities.display import menu
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 from utilities import configUtilities
+from utilities import colourUtilities
 
 
 class RenderConsole(esper.Processor):
@@ -102,6 +102,10 @@ class RenderConsole(esper.Processor):
         dng_wall = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_WALL')
         dng_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_FLOOR')
         dng_door = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_DOOR')
+        dwl = configUtilities.get_config_value_as_string(configfile=game_config, section='colours', parameter='DUNGEON_WALL_LIGHT')
+        dwd = configUtilities.get_config_value_as_string(configfile=game_config, section='colours', parameter='DUNGEON_WALL_DARK')
+        dfl = configUtilities.get_config_value_as_string(configfile=game_config, section='colours', parameter='DUNGEON_FLOOR_LIGHT')
+        dfd = configUtilities.get_config_value_as_string(configfile=game_config, section='colours', parameter='DUNGEON_FLOOR_DARK')
 
         # thisplayer = MobileUtilities.get_player_entity(self.gameworld)
         # player_position_component = self.gameworld.component_for_entity(thisplayer, mobiles.Position)
@@ -114,32 +118,40 @@ class RenderConsole(esper.Processor):
             # calculate FOV
             # fov_map = self.fov_object.create_fov_map_via_raycasting(player_position_component.x, player_position_component.y)
             # GameMap.calculate_fov(self.fov_map, player_position_component.x, player_position_component.y, constants.FOV_RADIUS, constants.FOV_LIGHT_WALLS,constants.FOV_ALGORITHM)
+            # light_wall = colourUtilities.BEIGE
+            # light_ground = colourUtilities.GRAY25
+            bgnd = colourUtilities.BLACK
+
+            dng_wall_light = colourUtilities.colors[dwl]
+            dng_light_ground = colourUtilities.colors[dfl]
+            dng_dark_ground = colourUtilities.colors[dfd]
+            dng_dark_wall = colourUtilities.colors[dwd]
 
             for y in range(self.game_map.height):
                 for x in range(self.game_map.width):
-                    isVisible = True
+                    isVisible = False
                     draw_pos_x = map_view_across + x
                     draw_pos_y = map_view_down + y
                     tile = self.game_map.tiles[x][y].type_of_tile
                     if isVisible:
                         if tile == tile_type_wall:
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_wall, constants.colors.get('light_wall'), tcod.black)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_wall, dng_wall_light, bgnd)
                         elif tile == tile_type_floor:
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_floor, constants.colors.get('light_ground'),tcod.black)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_floor, dng_light_ground, bgnd)
                         elif tile == tile_type_door:
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_door, constants.colors.get('light_ground'),tcod.black)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_door, dng_light_ground, bgnd)
                         elif tile == tile_type_corridor:
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_floor, constants.colors.get('light_ground'),tcod.black)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_floor, dng_light_ground, bgnd)
 
                     else:
                         if tile == tile_type_wall:
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_wall, constants.colors.get('dark_wall'), tcod.black)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_wall, dng_dark_wall, bgnd)
                         elif tile == tile_type_floor:
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_floor, constants.colors.get('dark_ground'), tcod.black)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_floor, dng_dark_ground, bgnd)
                         elif tile == tile_type_door:
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_door, constants.colors.get('dark_ground'), tcod.black)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_door, dng_dark_ground, bgnd)
                         elif tile == tile_type_corridor:
-                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_floor, constants.colors.get('dark_ground'), tcod.black)
+                            tcod.console_put_char_ex(self.con, draw_pos_x, draw_pos_y, dng_floor, dng_dark_ground, bgnd)
 
     def render_entities(self, game_config):
         px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
@@ -306,8 +318,6 @@ class RenderConsole(esper.Processor):
 
 class RenderGameStartScreen(esper.Processor):
     def __init__(self, con, image, key, mouse, gameworld):
-        self.title = constants.GAME_WINDOW_TITLE
-        self.author = '(c) 2019 Steven Devonport'
         self.con = con
         self.image = image
         self.key = key
@@ -315,24 +325,30 @@ class RenderGameStartScreen(esper.Processor):
         self.gameworld = gameworld
         super().__init__()
 
-    def process(self):
+    def process(self, game_config):
         # get opening image & blit it
         tcod.image_blit_2x(self.image, self.con, 0, 0)
 
-        self.render_game_info()
-
+        self.render_game_info(game_config)
+        con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
+        con_height = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_HEIGHT')
         # display game options
         menu(self.con, header='Game Start',
             options=['New Game', 'Continue', 'Save', 'Set Seed', 'Replay', 'Quit'],
-            width=24, screen_width=constants.SCREEN_WIDTH, screen_height=constants.SCREEN_HEIGHT, posx=10, posy=26,
+            width=24, screen_width=con_width, screen_height=con_height, posx=10, posy=26,
             foreground=tcod.yellow,
             key=self.key,
             mouse=self.mouse,
             gameworld=self.gameworld)
 
-    def render_game_info(self):
+    def render_game_info(self, game_config):
         # display Game information
+        game_title = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='GAME_WINDOW_TITLE')
+        author = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='AUTHOR')
+        con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
+        con_height = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_HEIGHT')
+
         tcod.console_set_default_foreground(self.con, tcod.yellow)
-        tcod.console_print_ex(self.con, 10, 10, tcod.BKGND_NONE, tcod.LEFT, self.title)
-        tcod.console_print_ex(self.con, 10, 42, tcod.BKGND_NONE, tcod.LEFT, self.author)
-        tcod.console_blit(self.con, 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, 0, 0, 0)
+        tcod.console_print_ex(self.con, 10, 10, tcod.BKGND_NONE, tcod.LEFT, game_title)
+        tcod.console_print_ex(self.con, 10, 42, tcod.BKGND_NONE, tcod.LEFT, author)
+        tcod.console_blit(self.con, 0, 0, con_width, con_height, 0, 0, 0)

@@ -115,7 +115,7 @@ def main():
     gameworld.add_processor(render_game_screen)
 
     while not tcod.console_is_window_closed():
-        gameworld.process()
+        gameworld.process(game_config)
         tcod.console_flush()
         new_game = load_saved_game = save_game = exit_game = player_seed = replay_game = False
 
@@ -163,6 +163,8 @@ def main():
             gameworld.remove_processor(RenderGameStartScreen)
             # tcod.console_clear(con)
             con.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
+            game_config = configUtilities.load_config()
+
             start_game(con, gameworld, game_config)
             logger.info('*********************')
             logger.info('* Left Game         *')
