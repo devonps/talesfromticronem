@@ -5,39 +5,42 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.display import display_coloured_box
 from utilities.itemsHelp import ItemUtilities
 from components import mobiles
+from utilities import configUtilities
 
 
-def display_hero_panel(gameworld):
+def display_hero_panel(gameworld, game_config):
 
     hero_panel_displayed = True
 
     hp_def_fg = tcod.white
     hp_def_bg = tcod.dark_gray
+    panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_WIDTH')
+    panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_HEIGHT')
+    panel_left_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_X')
+    panel_left_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_Y')
+    hp_tab_max_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_MAX_WIDTH')
 
     # gather player entity
     player_entity = MobileUtilities.get_player_entity(gameworld=gameworld)
     # update player derived attributes - do that here to allow for mid-turn changes
     MobileUtilities.calculate_derived_attributes(gameworld=gameworld, entity=player_entity)
     # generate new tcod.console
-    hero_panel = tcod.console_new(constants.HERO_PANEL_WIDTH, constants.HERO_PANEL_HEIGHT)
-
-    # get the length of the longest word used for the tabs
-    maxtablength = calculate_max_tab_length()
+    hero_panel = tcod.console_new(panel_width, panel_height)
 
     x_offset = 11
 
     # main loop whilst hero panel is displayed
     while hero_panel_displayed:
-        draw_hero_panel_frame(hero_panel, maxtablength)
-        draw_hero_panel_tabs(hero_panel, maxtablength, hp_def_fg, hp_def_bg)
-        draw_hero_information(hero_panel=hero_panel, gameworld=gameworld, player=player_entity)
+        draw_hero_panel_frame(hero_panel, game_config)
+        draw_hero_panel_tabs(hero_panel, game_config, hp_def_fg, hp_def_bg)
+        draw_hero_information(hero_panel=hero_panel, gameworld=gameworld, player=player_entity, game_config=game_config)
 
         tcod.console_blit(hero_panel, 0, 0,
-                          constants.HERO_PANEL_WIDTH,
-                          constants.HERO_PANEL_HEIGHT,
+                          panel_width,
+                          panel_height,
                           0,
-                          constants.HERO_PANEL_LEFT_X,
-                          constants.HERO_PANEL_LEFT_Y)
+                          panel_left_x,
+                          panel_left_y)
         tcod.console_flush()
         for event in tcod.event.wait():
             if event.type == 'KEYDOWN':
@@ -46,107 +49,111 @@ def display_hero_panel(gameworld):
             elif event.type == "MOUSEBUTTONDOWN":
                 x = event.tile.x
                 y = event.tile.y
-                if y in constants.HERO_PANEL_TAB_OFFSETS:
-                    if x_offset <= x <= (x_offset + maxtablength):
+                if y in [9, 11, 13, 15, 17]:
+                    if x_offset <= x <= (x_offset + hp_tab_max_width):
                         ret_value = constants.HERO_PANEL_TAB_OFFSETS.index(y)
-                        constants.HERO_PANEL_SELECTED_TAB = ret_value
+                        # constants.HERO_PANEL_SELECTED_TAB = ret_value
+                        configUtilities.write_config_value(configfile=game_config, section='gui', parameter='HERO_PANEL_SELECTED_TAB', value=str(ret_value))
 
         hero_panel.clear(ch=ord(' '), fg=hp_def_fg, bg=hp_def_bg)
 
 
-def calculate_max_tab_length():
-    maxtablength = 0
-    tab_count = 0
-    for mytab in constants.HERO_PANEL_TABS:
-        tab_count += 1
-        if len(mytab) > maxtablength:
-            maxtablength = len(mytab)
+def draw_hero_panel_frame(hero_panel, game_config):
+    hp_tab_max_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_MAX_WIDTH')
+    panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_WIDTH')
+    panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_HEIGHT')
 
-    return maxtablength
-
-
-def draw_hero_panel_frame(hero_panel, maxtablength):
     hero_panel.draw_frame(x=0, y=0,
-                          width=constants.HERO_PANEL_WIDTH,
-                          height=constants.HERO_PANEL_HEIGHT,
+                          width=panel_width,
+                          height=panel_height,
                           clear=False,
                           bg_blend=tcod.BKGND_DEFAULT,
                           title='Hero Panel')
 
-    hero_panel.print_box(x=maxtablength + 15, y=hero_panel.height - 2,
+    hero_panel.print_box(x=hp_tab_max_width + 15, y=panel_height- 2,
                          width=40,
                          height=1, string='Mouse to select, ESC to exit')
 
 
-def draw_hero_panel_tabs(hero_panel, maxtablength, def_fg, def_bg):
+def draw_hero_panel_tabs(hero_panel, game_config, def_fg, def_bg):
+    hp_tab_max_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_MAX_WIDTH')
+    hp_selected_tab = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_SELECTED_TAB')
     tab_down = 3
-    # def_fg = tcod.white
-    # def_bg = tcod.grey
 
     # full length line
-    hero_panel.draw_rect(x=maxtablength + 1, y=1, width=1, height=hero_panel.height - 2, ch=179, fg=def_fg, bg=def_bg)
+    hero_panel.draw_rect(x=hp_tab_max_width + 1, y=1, width=1, height=hero_panel.height - 2, ch=179, fg=def_fg, bg=def_bg)
     # top bar decoration
-    hero_panel.put_char(x=maxtablength + 1, y=0, ch=194)
+    hero_panel.put_char(x=hp_tab_max_width + 1, y=0, ch=194)
     # bottom bar decoration
-    hero_panel.put_char(x=maxtablength + 1, y=hero_panel.height - 1, ch=193)
+    hero_panel.put_char(x=hp_tab_max_width + 1, y=hero_panel.height - 1, ch=193)
     for tab_count, tab in enumerate(constants.HERO_PANEL_TABS):
         if tab_down == 3:
             # tab cross bar
-            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=def_bg)
+            hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=196, fg=def_fg, bg=def_bg)
             # tab cross bar top decoration
-            hero_panel.put_char(x=maxtablength + 1, y=tab_down, ch=180)
+            hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down, ch=180)
             hero_panel.put_char(x=0, y=tab_down, ch=195)
             tab_down += 1
-        if constants.HERO_PANEL_SELECTED_TAB != tab_count:
+        if hp_selected_tab != tab_count:
 
-            hero_panel.print_box(x=1, y=tab_down, width=maxtablength, height=1, string=tab)
-            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=0, fg=tcod.white, bg=def_bg)
+            hero_panel.print_box(x=1, y=tab_down, width=hp_tab_max_width, height=1, string=tab)
+            hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=0, fg=tcod.white, bg=def_bg)
             tab_down += 1
             # tab cross bar
-            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=def_bg)
+            hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=196, fg=def_fg, bg=def_bg)
             # tab cross bar top decoration
-            hero_panel.put_char(x=maxtablength + 1, y=tab_down, ch=180)
+            hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down, ch=180)
             # left side tab cross bar decoration
             hero_panel.put_char(x=0, y=tab_down, ch=195)
             tab_down += 1
 
         else:
-            hero_panel.print_box(x=1, y=tab_down, width=maxtablength, height=1, string=tab)
-            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=0, fg=def_fg, bg=tcod.black)
+            hero_panel.print_box(x=1, y=tab_down, width=hp_tab_max_width, height=1, string=tab)
+            hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=0, fg=def_fg, bg=tcod.black)
             # draws the 'space' at the end of the tab
-            hero_panel.put_char(x=maxtablength + 1, y=tab_down, ch=32)
+            hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down, ch=32)
             tab_down += 1
             # tab cross bar
-            hero_panel.draw_rect(x=1, y=tab_down, width=maxtablength, height=1, ch=196, fg=def_fg, bg=def_bg)
+            hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=196, fg=def_fg, bg=def_bg)
             # tab cross bar bottom right decoration
-            hero_panel.put_char(x=maxtablength + 1, y=tab_down, ch=191)
+            hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down, ch=191)
             # tab cross bar top right decoration
-            hero_panel.put_char(x=maxtablength + 1, y=tab_down - 2, ch=217)
+            hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down - 2, ch=217)
             # left side tab cross bar decoration
             hero_panel.put_char(x=0, y=tab_down, ch=195)
 
             tab_down += 1
 
 
-def draw_hero_information(hero_panel, gameworld, player):
-    if constants.HERO_PANEL_SELECTED_TAB == 0:
-        equipment_tab(hero_panel=hero_panel, gameworld=gameworld, player=player)
-    elif constants.HERO_PANEL_SELECTED_TAB == 1:
-        personal_tab(hero_panel=hero_panel, gameworld=gameworld, player=player)
-    elif constants.HERO_PANEL_SELECTED_TAB == 2:
-        current_build_tab(hero_panel=hero_panel, gameworld=gameworld, player=player)
-    elif constants.HERO_PANEL_SELECTED_TAB == 3:
-        weapons_tab(hero_panel=hero_panel, gameworld=gameworld, player=player)
+def draw_hero_information(hero_panel, gameworld, player, game_config):
+    hp_selected_tab = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_SELECTED_TAB')
+
+    if hp_selected_tab == 0:
+        equipment_tab(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
+    elif hp_selected_tab == 1:
+        personal_tab(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
+    elif hp_selected_tab == 2:
+        current_build_tab(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
+    elif hp_selected_tab == 3:
+        weapons_tab(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
     else:
-        inventory_tab(hero_panel=hero_panel, gameworld=gameworld, player=player)
+        inventory_tab(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
 
 
-def equipment_tab(hero_panel, gameworld, player):
+def equipment_tab(hero_panel, gameworld, player, game_config):
+    hp_def_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_X')
+    hp_def_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_Y')
+    hp_info_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_WIDTH')
 
-    hero_panel.print_box(x=constants.HERO_PANEL_INFO_DEF_X, y=constants.HERO_PANEL_INFO_DEF_Y, width=constants.HERO_PANEL_INFO_WIDTH, height=1, string="Equipment:")
+    hero_panel.print_box(x=hp_def_x, y=hp_def_y, width=hp_info_width, height=1, string="Equipment:")
 
 
-def personal_tab(hero_panel, gameworld, player):
+def personal_tab(hero_panel, gameworld, player, game_config):
+
+    hp_left_col = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_COL')
+    hp_right_col = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_RIGHT_COL')
+    hp_def_y= configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_Y')
+    hp_info_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',parameter='HERO_PANEL_INFO_WIDTH')
 
     player_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=player)
     player_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld, entity=player)
@@ -171,116 +178,88 @@ def personal_tab(hero_panel, gameworld, player):
     player_current_mana = MobileUtilities.get_derived_current_mana(gameworld=gameworld, entity=player)
     player_maximum_mana = MobileUtilities.get_derived_maximum_mana(gameworld=gameworld, entity=player)
 
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL, y=constants.HERO_PANEL_INFO_DEF_Y,
-                      width=len(player_description), height=1, string=player_description)
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL, y=constants.HERO_PANEL_INFO_DEF_Y + 1,
+    hero_panel.print_box(x=hp_left_col, y=hp_def_y, width=len(player_description), height=1, string=player_description)
+    hero_panel.print_box(x=hp_left_col, y=hp_def_y + 1,
                       width=len("who is known for being " + player_personality_title + "."), height=1,
                       string="who is known for being " + player_personality_title.lower() + ".")
 
     display_coloured_box(console=hero_panel, title="Primary Attributes",
-                         posx=constants.HERO_PANEL_LEFT_COL,
-                         posy=constants.HERO_PANEL_INFO_DEF_Y + 4,
+                         posx=hp_left_col,
+                         posy=hp_def_y + 4,
                          width=24,
                          height=8,
                          fg=tcod.white,
                          bg=tcod.darker_gray)
 
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 6,
-                      width=len("Power:" + str(player_power)), height=1,
-                      string="Power:" + str(player_power))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 6,width=len("Power:" + str(player_power)), height=1,string="Power:" + str(player_power))
 
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 7,
-                      width=len("Precision:" + str(player_precision)), height=1,
-                      string="Precision:" + str(player_precision))
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 8,
-                      width=len("Toughness:" + str(player_toughness)), height=1,
-                      string="Toughness:" + str(player_toughness))
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 9,
-                      width=len("Vitality:" + str(player_vitality)), height=1,
-                      string="Vitality:" + str(player_vitality))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 7,width=len("Precision:" + str(player_precision)), height=1,string="Precision:" + str(player_precision))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 8,width=len("Toughness:" + str(player_toughness)), height=1,string="Toughness:" + str(player_toughness))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 9,width=len("Vitality:" + str(player_vitality)), height=1,string="Vitality:" + str(player_vitality))
 
     display_coloured_box(console=hero_panel, title="Secondary Attributes",
-                         posx=constants.HERO_PANEL_LEFT_COL,
-                         posy=constants.HERO_PANEL_INFO_DEF_Y + 12,
+                         posx=hp_left_col,
+                         posy=hp_def_y + 12,
                          width=24,
                          height=10,
                          fg=tcod.white,
                          bg=tcod.dark_gray)
 
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 14,
-                      width=constants.HERO_PANEL_INFO_WIDTH, height=1,
-                      string="Concentration:" + str(player_concentration))
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 15,
-                      width=constants.HERO_PANEL_INFO_WIDTH, height=1,
-                      string="Condition Damage:" + str(player_condi_damage))
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 16,
-                      width=constants.HERO_PANEL_INFO_WIDTH, height=1,
-                      string="Expertise:" + str(player_expertise))
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 17,
-                      width=constants.HERO_PANEL_INFO_WIDTH, height=1,
-                      string="Ferocity:" + str(player_ferocity))
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 18,
-                      width=constants.HERO_PANEL_INFO_WIDTH, height=1,
-                      string="Healing Power:" + str(player_healing_power))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 14,width=hp_info_width, height=1,string="Concentration:" + str(player_concentration))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 15,width=hp_info_width, height=1,string="Condition Damage:" + str(player_condi_damage))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 16,width=hp_info_width, height=1,string="Expertise:" + str(player_expertise))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 17,width=hp_info_width, height=1,string="Ferocity:" + str(player_ferocity))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 18,width=hp_info_width, height=1,string="Healing Power:" + str(player_healing_power))
 
     display_coloured_box(console=hero_panel, title="Derived Attributes",
-                         posx=constants.HERO_PANEL_LEFT_COL,
-                         posy=constants.HERO_PANEL_INFO_DEF_Y + 22,
+                         posx=hp_left_col,
+                         posy=hp_def_y + 22,
                          width=24,
                          height=9,
                          fg=tcod.white,
                          bg=tcod.grey)
 
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 24,
-                      width=constants.HERO_PANEL_INFO_WIDTH,
-                      height=1, string="Armour:" + str(player_armour))
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 25,
-                      width=constants.HERO_PANEL_INFO_WIDTH, height=1,
-                      string="Boon Duration:" + str(player_boon_duration))
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 26,
-                      width=constants.HERO_PANEL_INFO_WIDTH, height=1,
-                      string="Critical Chance:" + str(player_critical_chance) + '%')
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 27,
-                      width=constants.HERO_PANEL_INFO_WIDTH, height=1,
-                      string="Critical Damage:" + str(player_critical_damage) + '%')
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + 28,
-                      width=constants.HERO_PANEL_INFO_WIDTH,
-                      height=1, string="Condition Duration:" + str(player_condi_duration))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 24,width=hp_info_width, height=1, string="Armour:" + str(player_armour))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 25,width=hp_info_width, height=1, string="Boon Duration:" + str(player_boon_duration))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 26,width=hp_info_width, height=1,string="Critical Chance:" + str(player_critical_chance) + '%')
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 27,width=hp_info_width, height=1,string="Critical Damage:" + str(player_critical_damage) + '%')
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + 28, width=hp_info_width,height=1, string="Condition Duration:" + str(player_condi_duration))
 
     health_percent = MobileUtilities.get_number_as_a_percentage(player_current_health, player_max_health)
     health_string = 'Health at ' + str(health_percent) + '%'
 
-    hero_panel.print_box(x=constants.HERO_PANEL_RIGHT_COL + 7, y=constants.HERO_PANEL_INFO_DEF_Y + 4,
-                      width=len(health_string), height=1,
-                      string=health_string)
+    hero_panel.print_box(x=hp_right_col + 7, y=hp_def_y + 4,width=len(health_string), height=1,string=health_string)
 
     health_bar_count = int(health_percent / 10)
-    draw_bar(hero_panel, constants.HERO_PANEL_RIGHT_COL + 7, constants.HERO_PANEL_INFO_DEF_Y + 5,
-             tcod.white, tcod.lighter_green, tcod.dark_green, health_bar_count)
+    draw_bar(hero_panel, hp_right_col + 7, hp_def_y + 5,
+             tcod.white, tcod.lighter_green, tcod.dark_green, health_bar_count, game_config)
 
     mana_percent = MobileUtilities.get_number_as_a_percentage(player_current_mana, player_maximum_mana)
     mana_string = 'Mana at ' + str(mana_percent) + '%'
 
-    hero_panel.print_box(x=constants.HERO_PANEL_RIGHT_COL + 7, y=constants.HERO_PANEL_INFO_DEF_Y +7,
-                      width=len(mana_string), height=1,
-                      string=mana_string)
+    hero_panel.print_box(x=hp_right_col + 7, y=hp_def_y + 7, width=len(mana_string), height=1, string=mana_string)
 
     mana_bar_count = int(mana_percent / 10)
-    draw_bar(hero_panel, constants.HERO_PANEL_RIGHT_COL + 7, constants.HERO_PANEL_INFO_DEF_Y + 8,
-             tcod.white, tcod.lighter_blue, tcod.dark_blue, mana_bar_count)
+    draw_bar(hero_panel, hp_right_col + 7, hp_def_y + 8,
+             tcod.white, tcod.lighter_blue, tcod.dark_blue, mana_bar_count, game_config)
 
 
-def draw_bar(hero_panel, posx, posy, fg, bg, bg_break, break_point):
+def draw_bar(hero_panel, posx, posy, fg, bg, bg_break, break_point, game_config):
+    hp_right_col = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',parameter='HERO_PANEL_RIGHT_COL')
+    hp_def_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',parameter='HERO_PANEL_INFO_DEF_Y')
+
     for a in range(10):
         if a <= break_point:
             hero_panel.print(x=posx + a, y=posy,
                           string=chr(175), fg=fg, bg=bg)
         else:
-            hero_panel.print(x=constants.HERO_PANEL_RIGHT_COL + 7 + a, y=constants.HERO_PANEL_INFO_DEF_Y + 8,
+            hero_panel.print(x=hp_right_col + 7 + a, y=hp_def_y + 8,
                           string=chr(175), fg=fg, bg=bg_break)
 
 
-def current_build_tab(hero_panel, gameworld, player):
+def current_build_tab(hero_panel, gameworld, player, game_config):
+    hp_left_col = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_COL')
+    hp_def_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_Y')
 
     # gather current set of: spells, equipped armour, weapons, jewellery
     # this creates a list of entities, i.e. weapons that are equipped in main hand, off hand, both hands
@@ -332,7 +311,7 @@ def current_build_tab(hero_panel, gameworld, player):
         both_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=both_hands_weapon_entity)
         weapon_display_string.append(both_weapon_display_name + ' is in both hands.')
     if main_hand_weapon_entity != 0:
-        main_weapon_display_name =ItemUtilities.get_item_name(gameworld=gameworld, entity=main_hand_weapon_entity)
+        main_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=main_hand_weapon_entity)
         box_height = 6
         weapon_display_string.append(main_weapon_display_name + ' is in the main hand')
     if off_hand_weapon_entity != 0:
@@ -344,15 +323,15 @@ def current_build_tab(hero_panel, gameworld, player):
             box_height = 6
 
     display_coloured_box(console=hero_panel, title="Equipped Weapons",
-                         posx=constants.HERO_PANEL_LEFT_COL,
-                         posy=constants.HERO_PANEL_INFO_DEF_Y,
+                         posx=hp_left_col,
+                         posy=hp_def_y,
                          width=30,
                          height=box_height,
                          fg=tcod.white,
                          bg=tcod.dark_gray)
     cnt = 2
     for wpn in weapon_display_string:
-        hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + cnt,
+        hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + cnt,
                       width=40,
                       height=1, string=wpn)
         cnt += 1
@@ -360,65 +339,72 @@ def current_build_tab(hero_panel, gameworld, player):
     # display equipped armour
     armcnt = cnt + 3
     display_coloured_box(console=hero_panel, title="Equipped Armour",
-                         posx=constants.HERO_PANEL_LEFT_COL,
-                         posy=constants.HERO_PANEL_INFO_DEF_Y + armcnt,
+                         posx=hp_left_col,
+                         posy=hp_def_y + armcnt,
                          width=30,
                          height=10,
                          fg=tcod.white,
                          bg=tcod.dark_gray)
 
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + armcnt + 2,
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 2,
                       width=40,
                       height=1, string='Head ' + head_armour_display)
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + armcnt + 3,
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 3,
                       width=40,
                       height=1, string='Chest')
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + armcnt + 4,
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 4,
                       width=40,
                       height=1, string='Hands')
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + armcnt + 5,
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 5,
                       width=40,
                       height=1, string='Legs')
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + armcnt + 6,
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 6,
                       width=40,
                       height=1, string='Feet')
 
     # display current set of equipped Jewellery
     jcnt = armcnt + 10
     display_coloured_box(console=hero_panel, title="Equipped Jewellery",
-                         posx=constants.HERO_PANEL_LEFT_COL,
-                         posy=constants.HERO_PANEL_INFO_DEF_Y + jcnt,
+                         posx=hp_left_col,
+                         posy=hp_def_y + jcnt,
                          width=30,
                          height=10,
                          fg=tcod.white,
                          bg=tcod.dark_gray)
 
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + jcnt + 2,
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 2,
                       width=40,
                       height=1, string='Left Ear')
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + jcnt + 3,
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 3,
                       width=40,
                       height=1, string='Right Ear')
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + jcnt + 4,
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 4,
                       width=40,
                       height=1, string='Left Hand')
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + jcnt + 5,
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 5,
                       width=40,
                       height=1, string='Right Hand')
 
-    hero_panel.print_box(x=constants.HERO_PANEL_LEFT_COL + 1, y=constants.HERO_PANEL_INFO_DEF_Y + jcnt + 6,
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 6,
                       width=40,
                       height=1, string='Neck')
 
     # display current set of stats
 
 
-def weapons_tab(hero_panel, gameworld, player):
+def weapons_tab(hero_panel, gameworld, player, game_config):
+    hp_def_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_X')
+    hp_def_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_Y')
+    hp_info_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_WIDTH')
 
-    hero_panel.print_box(x=constants.HERO_PANEL_INFO_DEF_X, y=constants.HERO_PANEL_INFO_DEF_Y, width=constants.HERO_PANEL_INFO_WIDTH, height=1, string="Weapons:" )
+    hero_panel.print_box(x=hp_def_x, y=hp_def_y, width=hp_info_width, height=1, string="Weapons:" )
 
 
-def inventory_tab(hero_panel, gameworld, player):
+def inventory_tab(hero_panel, gameworld, player, game_config):
+
+    hp_def_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_X')
+    hp_def_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_Y')
+    hp_info_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_WIDTH')
 
     # temp solution until I sort out how to store a dictionary of items in bags
     mobile_inventory_component = gameworld.component_for_entity(player, mobiles.Inventory)

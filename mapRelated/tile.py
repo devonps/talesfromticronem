@@ -1,10 +1,10 @@
-from newGame import constants
-
 
 class Tile:
 
-    def __init__(self, blocked, type_of_tile=constants.TILE_TYPE_WALL, block_sight=None, explored=False):
-        self.type_of_tile = type_of_tile
+    def __init__(self, blocked, block_sight=None, explored=False):
+
+        # type_of_tile=constants.TILE_TYPE_WALL - some hackery magic going on below
+        self.type_of_tile = 5
         self.blocked = blocked
         if block_sight is None:
                 block_sight = blocked

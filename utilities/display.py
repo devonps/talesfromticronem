@@ -3,10 +3,10 @@ import tcod.console, tcod.event
 from utilities.input_handlers import get_user_input_entity, handle_mouse_in_menus
 
 from components import userInput
-from newGame import constants
+from utilities import configUtilities
 
 
-def menu(con, header, options, width, screen_width, screen_height, posx, posy, foreground, key, mouse, gameworld):
+def menu(con, header, options, width, screen_width, screen_height, posx, posy, foreground, key, mouse, gameworld, game_config):
 
     if len(options) > 26:
         raise ValueError('Cannot have a menu with more than 26 options.')
@@ -15,8 +15,8 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
     header_height = tcod.console_get_height_rect(con, 0, 0, width, screen_height, header)
     if header == '':
         header_height = 0
-    #height = len(options) + header_height
-    height = constants.MENU_MAX_HEIGHT
+    height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MENU_MAX_HEIGHT')
+
 
     # create an off-screen window - this is where the menu options will be displayed
     window = tcod.console_new(width, height)

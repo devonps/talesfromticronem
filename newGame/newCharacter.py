@@ -5,7 +5,6 @@ import textwrap
 from loguru import logger
 from components import spellBar, items, mobiles
 from newGame.ClassWeapons import WeaponClass
-# from newGame import constants
 from newGame.ClassArmour import ArmourClass
 from newGame.Items import ItemManager
 from utilities.mobileHelp import MobileUtilities
@@ -119,7 +118,8 @@ class NewCharacter:
                              foreground=tcod.yellow,
                              key=key,
                              mouse=mouse,
-                             gameworld=gameworld)
+                             gameworld=gameworld,
+                             game_config=game_config)
             if ret_value != '':
                 ret_value = handle_menus(key=key, mouse=mouse, gameworld=gameworld)
                 index = key.c - ord('a')
@@ -175,7 +175,8 @@ class NewCharacter:
                  foreground=tcod.yellow,
                  key=key,
                  mouse=mouse,
-                 gameworld=gameworld)
+                 gameworld=gameworld,
+                 game_config=game_config)
 
             if ret_value != '':
                 ret_value = handle_menus(key=key, mouse=mouse, gameworld=gameworld)

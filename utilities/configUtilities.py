@@ -30,3 +30,7 @@ def get_config_value_as_float(configfile, section, parameter):
 
 def get_config_file_sections(configfile):
     return configfile.sections()
+
+
+def write_config_value(configfile, section, parameter, value):
+    configfile[section][parameter] = value
