@@ -129,7 +129,7 @@ class RenderConsole(esper.Processor):
 
             for y in range(self.game_map.height):
                 for x in range(self.game_map.width):
-                    isVisible = False
+                    isVisible = True
                     draw_pos_x = map_view_across + x
                     draw_pos_y = map_view_down + y
                     tile = self.game_map.tiles[x][y].type_of_tile
@@ -339,7 +339,8 @@ class RenderGameStartScreen(esper.Processor):
             foreground=tcod.yellow,
             key=self.key,
             mouse=self.mouse,
-            gameworld=self.gameworld)
+            gameworld=self.gameworld,
+             game_config=game_config)
 
     def render_game_info(self, game_config):
         # display Game information

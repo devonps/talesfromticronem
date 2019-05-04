@@ -45,7 +45,7 @@ def start_game(con, gameworld, game_config):
         pick_up_entity = action.get('pickup')
 
         if display_hero:
-            display_hero_panel(gameworld)
+            display_hero_panel(gameworld, game_config)
 
         if pick_up_entity:
             MobileUtilities.mobile_pick_up_item(gameworld=gameworld, mobile=player)
