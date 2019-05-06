@@ -1,8 +1,8 @@
 from components import mobiles, userInput, items
 from loguru import logger
-from newGame import constants
 from utilities.itemsHelp import ItemUtilities
 from utilities import world
+from utilities import configUtilities
 import numbers
 
 
@@ -12,10 +12,12 @@ class MobileUtilities(numbers.Real):
     # general methods
     #
     @staticmethod
-    def get_player_entity(gameworld):
+    def get_player_entity(gameworld, game_config):
+        player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_PLAYER')
+
         player = 0
         for ent, ai in gameworld.get_component(mobiles.AI):
-            if ai.ailevel == constants.AI_LEVEL_PLAYER:
+            if ai.ailevel == player_ai:
                 player = ent
 
         return player
@@ -25,8 +27,8 @@ class MobileUtilities(numbers.Real):
         return int((lower_value / maximum_value) * 100)
 
     @staticmethod
-    def get_bar_count(lower_value):
-        return (lower_value / 100) * constants.V_BAR_DEPTH
+    def get_bar_count(lower_value, bar_depth):
+        return (lower_value / 100) * bar_depth
 
     @staticmethod
     def create_player_input_entity(gameworld):
@@ -35,8 +37,8 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(ent, userInput.Mouse())
 
     @staticmethod
-    def has_player_moved(gameworld):
-        entity = MobileUtilities.get_player_entity(gameworld)
+    def has_player_moved(gameworld, game_config):
+        entity = MobileUtilities.get_player_entity(gameworld, game_config)
 
         position_component = gameworld.component_for_entity(entity, mobiles.Position)
 
@@ -65,8 +67,8 @@ class MobileUtilities(numbers.Real):
         return describeable_component.personality_title
 
     @staticmethod
-    def calculate_mobile_personality(gameworld):
-        player_entity = MobileUtilities.get_player_entity(gameworld)
+    def calculate_mobile_personality(gameworld, game_config):
+        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
 
         player_current_personality_component = gameworld.component_for_entity(player_entity, mobiles.Personality)
         player_describable_personality_component = gameworld.component_for_entity(player_entity, mobiles.Describable)
@@ -133,13 +135,15 @@ class MobileUtilities(numbers.Real):
             gameworld.component_for_entity(entity, mobiles.Equipped).both_hands = weapon
 
     @staticmethod
-    def generate_base_mobile(gameworld):
+    def generate_base_mobile(gameworld, game_config):
+        player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_NONE')
+
         mobile = world.get_next_entity_id(gameworld=gameworld)
         logger.info('Base mobile entity ID ' + str(mobile))
         gameworld.add_component(mobile, mobiles.Name(first='xyz', suffix=''))
         gameworld.add_component(mobile, mobiles.Describable())
         gameworld.add_component(mobile, mobiles.CharacterClass())
-        gameworld.add_component(mobile, mobiles.AI(ailevel=constants.AI_LEVEL_NONE))
+        gameworld.add_component(mobile, mobiles.AI(ailevel=player_ai))
 
         return mobile
 

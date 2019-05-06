@@ -55,7 +55,7 @@ class RenderConsole(esper.Processor):
         self.render_controls(game_config)
 
     def render_player_vitals(self, game_config):
-        player_entity = MobileUtilities.get_player_entity(self.gameworld)
+        player_entity = MobileUtilities.get_player_entity(self.gameworld, game_config)
         player_derived_attributes_component = self.gameworld.component_for_entity(player_entity,
                                                                                   mobiles.DerivedAttributes)
 
@@ -111,7 +111,7 @@ class RenderConsole(esper.Processor):
         # player_position_component = self.gameworld.component_for_entity(thisplayer, mobiles.Position)
         # fov_map = self.fov_object.create_fov_map_via_raycasting(player_position_component.x, player_position_component.y)
 
-        player_has_moved = MobileUtilities.has_player_moved(self.gameworld)
+        player_has_moved = MobileUtilities.has_player_moved(self.gameworld, game_config)
         # player_has_moved = True
 
         if player_has_moved:
@@ -310,7 +310,7 @@ class RenderConsole(esper.Processor):
         bar_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_DEPTH')
         posy = py + bar_depth
 
-        bar_count = int(MobileUtilities.get_bar_count(current_value))
+        bar_count = int(MobileUtilities.get_bar_count(current_value, bar_depth))
 
         for y in range(bar_count):
             tcod.console_put_char_ex(self.con, posx, posy - y, chr(176), foreground, background)

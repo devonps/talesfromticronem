@@ -21,7 +21,7 @@ def display_hero_panel(gameworld, game_config):
     hp_tab_max_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_MAX_WIDTH')
 
     # gather player entity
-    player_entity = MobileUtilities.get_player_entity(gameworld=gameworld)
+    player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
     # update player derived attributes - do that here to allow for mid-turn changes
     MobileUtilities.calculate_derived_attributes(gameworld=gameworld, entity=player_entity)
     # generate new tcod.console

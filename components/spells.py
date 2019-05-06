@@ -1,5 +1,3 @@
-from newGame import constants
-
 
 class Name:
     def __init__(self, text='undefined'):
@@ -52,7 +50,7 @@ class GroundTargeted:
 
 
 class MaxRange:
-    def __init__(self, max_range=constants.SPELL_DIST_PERSONAL):
+    def __init__(self, max_range=0):
         self.max_range = max_range
 
 
