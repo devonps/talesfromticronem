@@ -31,7 +31,7 @@ class GameMap:
         """
         rooms = []
         num_rooms = 0
-        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_FLOOR')
+        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='TILE_TYPE_FLOOR')
 
         # for r in range(max_rooms):
         #     w = self.dungeon_seed.get_next_number_in_range(room_min_size, room_max_size)
