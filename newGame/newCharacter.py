@@ -24,7 +24,7 @@ class NewCharacter:
         player = NewCharacter.generate_player_character(gameworld=gameworld, game_config=game_config)
         NewCharacter.select_race(con=con, gameworld=gameworld, player=player, game_config=game_config)
         NewCharacter.select_character_class(con=con, gameworld=gameworld, player=player, game_config=game_config)
-        NewCharacter.select_personality_choices(con=con, gameworld=gameworld, player=player)
+        NewCharacter.select_personality_choices(con=con, gameworld=gameworld, player=player, game_config=game_config)
         NewCharacter.name_your_character(con=con, gameworld=gameworld, player=player, game_config=game_config)
         spell_bar_entity = NewCharacter.generate_spell_bar(gameworld=gameworld)
         NewCharacter.get_starting_equipment(con=con, gameworld=gameworld, player=player, spellbar=spell_bar_entity, game_config=game_config)
@@ -53,7 +53,7 @@ class NewCharacter:
     def generate_player_character(gameworld, game_config):
         player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_PLAYER')
         logger.debug('Creating the player character entity')
-        player = MobileUtilities.generate_base_mobile(gameworld)
+        player = MobileUtilities.generate_base_mobile(gameworld, game_config)
         gameworld.add_component(player, mobiles.Describable())
         gameworld.add_component(player, mobiles.AI(ailevel=player_ai))
         gameworld.add_component(player, mobiles.Inventory())
@@ -211,12 +211,12 @@ class NewCharacter:
 
         # different options presented to player based on their chosen class
 
-    def select_personality_choices(con, gameworld, player):
+    def select_personality_choices(con, gameworld, player, game_config):
         logger.info('Selecting character personality choices')
         # The personality-oriented question affects the conversational options that NPCs provide.
         # there will be 3 options: charm, dignity, ferocity
 
-        MobileUtilities.calculate_mobile_personality(gameworld)
+        MobileUtilities.calculate_mobile_personality(gameworld, game_config)
 
         personality_component = gameworld.component_for_entity(player, mobiles.Describable)
 
@@ -232,7 +232,7 @@ class NewCharacter:
 
         logger.info('Naming the character')
 
-        this_name = text_entry()
+        this_name = text_entry(game_config)
 
         if this_name == '':
             player_race_component = gameworld.component_for_entity(player, mobiles.Race)

@@ -318,7 +318,7 @@ class ItemManager:
         logger.info('Placing {} in the dungeon', item_to_be_placed)
 
         # get player entity
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld)
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         if player_entity == 0:
             logger.warning('Cannot resolve player entity')
             return False
