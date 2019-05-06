@@ -33,10 +33,10 @@ def start_game(con, gameworld, game_config):
     key = tcod.Key()
     mouse = tcod.Mouse()
 
-    message_log.add_message(message=Message('New game starting', color=tcod.yellow))
+    message_log.add_message(message=Message('New game starting', color=tcod.yellow), game_config=game_config)
 
     while not tcod.console_is_window_closed():
-        action = handle_keys(mouse, key, gameworld, player, message_log)
+        action = handle_keys(mouse, key, gameworld, player, message_log, game_config)
 
         exit_game = action.get('exit')
         fullscreen = action.get('fullscreen')

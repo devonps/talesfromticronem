@@ -118,7 +118,7 @@ def generate_spells(gameworld, game_config):
         gameworld.add_component(thisspell, spells.AreaOfEffect(spell['aoe']))
         gameworld.add_component(thisspell, spells.AreaOfEffectSize(spell['aoe_size']))
         effects = spell['effects']
-        process_status_effect(gameworld, thisspell, spell['name'], effects)
+        process_status_effect(gameworld, thisspell, spell['name'], effects, game_config)
 
 
 def generate_monsters_and_place_them(gameworld):
