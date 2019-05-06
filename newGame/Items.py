@@ -146,6 +146,7 @@ class ItemManager:
                 gameworld.add_component(armour_piece, items.ArmourBeingWorn(status=False))
 
                 logger.info('Entity {} has been created as a piece of {} armour', armour_piece, bodylocation)
+                logger.info('Item Type set to {}', ItemUtilities.get_item_type(gameworld, armour_piece))
 
                 return armour_piece
 
@@ -311,7 +312,7 @@ class ItemManager:
         """
         map_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='MAP_WIDTH')
         map_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='MAP_HEIGHT')
-        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_FLOOR')
+        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='TILE_TYPE_FLOOR')
 
         if item_to_be_placed == 0:
             return False
