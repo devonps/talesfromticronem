@@ -1,6 +1,5 @@
 import tcod.event
 
-from newGame import constants
 from utilities.mobileHelp import MobileUtilities
 from utilities.display import display_coloured_box
 from utilities.itemsHelp import ItemUtilities
@@ -19,6 +18,9 @@ def display_hero_panel(gameworld, game_config):
     panel_left_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_X')
     panel_left_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_Y')
     hp_tab_max_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_MAX_WIDTH')
+    hp_tabs = configUtilities.get_config_value_as_list(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_OFFSETS')
+
+    hp_tabs_offsets = list(map(int, hp_tabs))
 
     # gather player entity
     player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
@@ -49,9 +51,9 @@ def display_hero_panel(gameworld, game_config):
             elif event.type == "MOUSEBUTTONDOWN":
                 x = event.tile.x
                 y = event.tile.y
-                if y in [9, 11, 13, 15, 17]:
+                if y in hp_tabs_offsets:
                     if x_offset <= x <= (x_offset + hp_tab_max_width):
-                        ret_value = constants.HERO_PANEL_TAB_OFFSETS.index(y)
+                        ret_value = hp_tabs_offsets.index(y)
                         # constants.HERO_PANEL_SELECTED_TAB = ret_value
                         configUtilities.write_config_value(configfile=game_config, section='gui', parameter='HERO_PANEL_SELECTED_TAB', value=str(ret_value))
 
@@ -78,6 +80,8 @@ def draw_hero_panel_frame(hero_panel, game_config):
 def draw_hero_panel_tabs(hero_panel, game_config, def_fg, def_bg):
     hp_tab_max_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_MAX_WIDTH')
     hp_selected_tab = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_SELECTED_TAB')
+    hp_tabs = configUtilities.get_config_value_as_list(configfile=game_config, section='gui', parameter='HERO_PANEL_TABS')
+
     tab_down = 3
 
     # full length line
@@ -86,7 +90,7 @@ def draw_hero_panel_tabs(hero_panel, game_config, def_fg, def_bg):
     hero_panel.put_char(x=hp_tab_max_width + 1, y=0, ch=194)
     # bottom bar decoration
     hero_panel.put_char(x=hp_tab_max_width + 1, y=hero_panel.height - 1, ch=193)
-    for tab_count, tab in enumerate(constants.HERO_PANEL_TABS):
+    for tab_count, tab in enumerate(hp_tabs):
         if tab_down == 3:
             # tab cross bar
             hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=196, fg=def_fg, bg=def_bg)

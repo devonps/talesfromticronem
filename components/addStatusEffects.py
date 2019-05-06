@@ -5,20 +5,25 @@
 
 from components import condis, spellBoons, resources
 from loguru import logger
-from newGame import constants
+from utilities import configUtilities
 
 
-def process_status_effect(world, entity, spell_name, effects):
+def process_status_effect(world, entity, spell_name, effects, game_config):
+
+    condis = configUtilities.get_config_value_as_list(configfile=game_config, section='spells', parameter='condi_effects')
+    boons = configUtilities.get_config_value_as_list(configfile=game_config, section='spells', parameter='boon_effects')
+    resources = configUtilities.get_config_value_as_list(configfile=game_config, section='spells', parameter='class_resources')
+
     logger.info('---> Working on spell {} with {}', spell_name, effects)
     for key, val in effects[0].items():
         spell_not_added = True
-        if key.lower() in constants.condi_effects:
+        if key.lower() in condis:
             add_condition(world, entity, key.lower(), val)
             spell_not_added = False
-        if key.lower() in constants.boon_effects:
+        if key.lower() in boons:
             add_boon(world, entity, key.lower(), val)
             spell_not_added = False
-        if key.lower() in constants.class_resources:
+        if key.lower() in resources:
             add_class_resource(world, entity, key.lower(), val)
             spell_not_added = False
         if spell_not_added:
