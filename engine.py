@@ -8,7 +8,6 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys, handle_menus
 from utilities.world import reset_gameworld
 from utilities.replayGame import ReplayGame
-from ui.character_screen import display_hero_panel
 from loguru import logger
 from utilities import configUtilities
 
@@ -41,11 +40,11 @@ def start_game(con, gameworld, game_config):
         exit_game = action.get('exit')
         fullscreen = action.get('fullscreen')
         player_moved = action.get('player_moved')
-        display_hero = action.get('display_hero_panel')
+        display_inventory = action.get('display_hero_panel')
         pick_up_entity = action.get('pickup')
 
-        if display_hero:
-            display_hero_panel(gameworld, game_config)
+        if display_inventory:
+            configUtilities.write_config_value(configfile=game_config, section='game',parameter='DISPLAY_GAME_STATE', value=str(2))
 
         if pick_up_entity:
             MobileUtilities.mobile_pick_up_item(gameworld=gameworld, mobile=player)
