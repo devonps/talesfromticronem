@@ -1,5 +1,6 @@
 import esper
 import tcod
+import tcod.event
 
 from loguru import logger
 from components import mobiles, items
@@ -8,6 +9,8 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 from utilities import configUtilities
 from utilities import colourUtilities
+from utilities.itemsHelp import ItemUtilities
+from utilities.display import draw_panel_frame
 
 
 class RenderConsole(esper.Processor):
@@ -22,6 +25,27 @@ class RenderConsole(esper.Processor):
         self.message_log = message_log
 
     def process(self, game_config):
+        game_state = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='DISPLAY_GAME_STATE')
+        # logger.info('display game state set to {}', game_state)
+        if game_state == 1:
+            self.render_game_map(game_config)
+        elif game_state == 2:
+            self.render_inventory_screen(game_config)
+        elif game_state == 3:
+            self.render_personal_screen(game_config)
+        elif game_state == 4:
+            self.render_equipment_screen(game_config)
+        elif game_state == 5:
+            self.render_build_screen(game_config)
+        else:
+            self.render_weapons_screen(game_config)
+
+        # blit the console
+        self.blit_the_console(game_config)
+        # clear the entity
+        self.clear_entity()
+
+    def render_game_map(self, game_config):
         # GUI viewport and message box borders
         self.render_viewport(game_config)
         self.render_message_box(game_config)
@@ -36,10 +60,205 @@ class RenderConsole(esper.Processor):
         self.render_items(game_config)
         self.render_entities(game_config)
 
-        # blit the console
-        self.blit_the_console(game_config)
-        # clear the entity
-        self.clear_entity()
+    def render_inventory_screen(self, game_config):
+
+        gui_frame = configUtilities.get_config_value_as_string(configfile=game_config, section='gui', parameter='frame_border_pipe_type')
+
+        hp_def_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_X')
+        hp_def_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_Y')
+        hp_info_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_WIDTH')
+        left_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui'
+                                                               ,parameter='frame_' + gui_frame + '_left_tee')
+        right_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_right_tee')
+        bottom_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_bottom_tee')
+        top_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_tee')
+        cross_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_cross_pipe')
+
+        across_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_across_pipe')
+        bottom_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_bottom_left')
+        bottom_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_bottom_right')
+        down_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_down_pipe')
+        top_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_left')
+        top_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_right')
+        frame_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_left')
+        frame_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_down')
+        frame_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_width')
+        inv_key_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_key_pos')
+        inv_glyph_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_glyph_pos')
+        inv_desc_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_desc_pos')
+        inv_section_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_section_pos')
+        inv_actions = configUtilities.get_config_value_as_list(configfile=game_config, section='game', parameter='ITEM_INV_ACTIONS')
+        panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',parameter='HERO_PANEL_WIDTH')
+        panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_HEIGHT')
+        panel_left_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_X')
+        panel_left_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',parameter='HERO_PANEL_LEFT_Y')
+        other_game_state = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',parameter='DISPLAY_GAME_MAP')
+
+        inv_panel = tcod.console_new(panel_width, panel_height)
+
+        player = MobileUtilities.get_player_entity(self.gameworld, game_config)
+        mobile_inventory_component = self.gameworld.component_for_entity(player, mobiles.Inventory)
+        def_fg = colourUtilities.WHITE
+        def_bg = colourUtilities.DARKGRAY
+        def_wd = colourUtilities.WHITE
+        hp_def_fg = colourUtilities.WHITE
+        hp_def_bg = colourUtilities.DARKGRAY
+
+        hero_panel_displayed = True
+
+        while hero_panel_displayed:
+
+            letter_index = 97
+            iy = frame_down + 1
+
+            inventory_items = mobile_inventory_component.items
+            if len(inventory_items) != 0:
+                max_lines = 2
+
+                items_armour, cnt = self.populate_inv_lists(inventory_items, self.gameworld, 'armour')
+                max_lines += cnt
+                items_weapons, cnt = self.populate_inv_lists(inventory_items, self.gameworld, 'weapon')
+                max_lines += cnt
+                items_jewellery, cnt = self.populate_inv_lists(inventory_items, self.gameworld, 'jewellery')
+                max_lines += cnt
+                items_bags, cnt = self.populate_inv_lists(inventory_items, self.gameworld, 'bag')
+                max_lines += cnt
+                items_gemstones, cnt = self.populate_inv_lists(inventory_items, self.gameworld, 'gemstone')
+                max_lines += cnt
+
+                if len(items_armour) != 0:
+                    inv_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Armour')
+                    iy += 1
+
+                    for armour in items_armour:
+                        item_glyph = ItemUtilities.get_item_glyph(gameworld=self.gameworld, entity=armour)
+                        item_name = ItemUtilities.get_item_displayname(gameworld=self.gameworld, entity=armour)
+                        item_fg = ItemUtilities.get_item_fg_colour(gameworld=self.gameworld, entity=armour)
+                        item_bg = ItemUtilities.get_item_bg_colour(gameworld=self.gameworld, entity=armour)
+
+                        # KEY
+                        inv_panel.print(x=inv_key_pos, y=iy, string=chr(letter_index), fg=def_wd, bg=None)
+                        # GLYPH
+                        inv_panel.print(x=inv_glyph_pos , y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
+                        # DESCRIPTION
+                        inv_panel.print(x=inv_desc_pos, y=iy, string=item_name, fg=def_wd, bg=None)
+
+                        letter_index += 1
+                        iy += 1
+
+                if len(items_weapons) != 0:
+                    inv_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Weapons')
+                    iy += 1
+
+                    for weapon in items_weapons:
+                        item_glyph = ItemUtilities.get_item_glyph(gameworld=self.gameworld, entity=weapon)
+                        item_name = ItemUtilities.get_item_displayname(gameworld=self.gameworld, entity=weapon)
+                        item_fg = ItemUtilities.get_item_fg_colour(gameworld=self.gameworld, entity=weapon)
+                        item_bg = ItemUtilities.get_item_bg_colour(gameworld=self.gameworld, entity=weapon)
+
+                        # KEY
+                        inv_panel.print(x=inv_key_pos, y=iy, string=chr(letter_index), fg=def_wd, bg=None)
+                        # GLYPH
+                        inv_panel.print(x=inv_glyph_pos, y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
+                        # DESCRIPTION
+                        inv_panel.print(x=inv_desc_pos, y=iy, string=item_name, fg=def_wd, bg=None)
+
+                        letter_index += 1
+                        iy += 1
+
+                if len(items_jewellery) != 0:
+                    inv_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Jewellery')
+                    iy += 1
+
+                    for jewellery in items_jewellery:
+                        item_glyph = ItemUtilities.get_item_glyph(gameworld=self.gameworld, entity=jewellery)
+                        item_name = ItemUtilities.get_item_displayname(gameworld=self.gameworld, entity=jewellery)
+                        item_fg = ItemUtilities.get_item_fg_colour(gameworld=self.gameworld, entity=jewellery)
+                        item_bg = ItemUtilities.get_item_bg_colour(gameworld=self.gameworld, entity=jewellery)
+
+                        # KEY
+                        inv_panel.print(x=inv_key_pos, y=iy, string=chr(letter_index), fg=def_wd, bg=None)
+                        # GLYPH
+                        inv_panel.print(x=inv_glyph_pos, y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
+                        # DESCRIPTION
+                        inv_panel.print(x=inv_desc_pos, y=iy, string=item_name, fg=def_wd, bg=None)
+
+                        letter_index += 1
+                        iy += 1
+
+                # draw surrounding frame
+                # left vertical line
+                inv_panel.draw_rect(x=frame_left, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg, bg=def_bg)
+                # right vertical line
+                inv_panel.draw_rect(x=frame_left + frame_width - 1, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg, bg=def_bg)
+                # top horizontal line
+                inv_panel.draw_rect(x=frame_left, y=frame_down, width=frame_width, height=1, ch=across_pipe, fg=def_fg, bg=def_bg)
+                # top left
+                inv_panel.print(x=frame_left, y=frame_down, string=chr(top_left), fg=def_fg, bg=def_bg)
+                # top right
+                inv_panel.print(x=frame_left + frame_width - 1, y=frame_down, string=chr(top_right), fg=def_fg, bg=def_bg)
+                # bottom horizontal line
+                inv_panel.draw_rect(x=frame_left, y=iy, width=frame_width, height=1, ch=across_pipe ,fg=def_fg, bg=def_bg)
+                # bottom left
+                inv_panel.print(x=frame_left, y=iy, string=chr(bottom_left), fg=def_fg, bg=def_bg)
+                # bottom right
+                inv_panel.print(x=frame_left + frame_width - 1, y=iy, string=chr(bottom_right), fg=def_fg, bg=def_bg)
+            else:
+                inv_panel.print_box(x=inv_key_pos, y=iy, width=40, height=1, string='Nothing in Inventory')
+
+            draw_panel_frame(inv_panel, game_config)
+            tcod.console_blit(inv_panel, 0, 0,
+                              panel_width,
+                              panel_height,
+                              0,
+                              panel_left_x,
+                              panel_left_y)
+
+            tcod.console_flush()
+
+            for event in tcod.event.wait():
+                if event.type == 'KEYDOWN':
+                    if event.sym == tcod.event.K_ESCAPE:
+                        hero_panel_displayed = False
+                        configUtilities.write_config_value(configfile=game_config, section='game', parameter='DISPLAY_GAME_STATE', value=str(other_game_state))
+                elif event.type == "MOUSEBUTTONDOWN":
+                    x = event.tile.x
+                    y = event.tile.y
+                    if event.button == tcod.event.BUTTON_RIGHT:
+                        logger.info('Right mouse button clicked')
+                        logger.info('Tile coords {}', event.tile)
+
+            inv_panel.clear(ch=ord(' '), fg=hp_def_fg, bg=hp_def_bg)
+
+    def populate_inv_lists(self, inventory_items, gameworld, item_type_in_inv):
+
+        inv_items = []
+        cnt = 0
+
+        for item in inventory_items:
+            item_type = ItemUtilities.get_item_type(gameworld=gameworld, entity=item)
+
+            if item_type == item_type_in_inv:
+                inv_items.append(item)
+                if cnt == 0:
+                    cnt = 2
+                else:
+                    cnt += 1
+
+        return inv_items, cnt
+
+    def render_equipment_screen(self, game_config):
+        pass
+
+    def render_build_screen(self, game_config):
+        pass
+
+    def render_personal_screen(self, game_config):
+        pass
+
+    def render_weapons_screen(self, game_config):
+        pass
+
 
     def blit_the_console(self, game_config):
         # update console with latest changes

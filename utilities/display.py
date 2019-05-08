@@ -73,3 +73,20 @@ def display_coloured_box(console, title, posx, posy, width, height, fg, bg ):
 
     console.draw_rect(x=posx, y=posy,
                       width=width - 2, height=height - 2, ch=0, fg=fg, bg=bg)
+
+
+def draw_panel_frame(hero_panel, game_config):
+    hp_tab_max_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_MAX_WIDTH')
+    panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_WIDTH')
+    panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_HEIGHT')
+
+    hero_panel.draw_frame(x=0, y=0,
+                          width=panel_width,
+                          height=panel_height,
+                          clear=False,
+                          bg_blend=tcod.BKGND_DEFAULT,
+                          title='Hero Panel')
+
+    hero_panel.print_box(x=hp_tab_max_width + 15, y=panel_height - 2,
+                         width=40,
+                         height=1, string='Mouse to select, ESC to exit')

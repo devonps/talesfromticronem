@@ -56,8 +56,10 @@ def display_hero_panel(gameworld, game_config):
                 if y in hp_tabs_offsets:
                     if x_offset <= x <= (x_offset + hp_tab_max_width):
                         ret_value = hp_tabs_offsets.index(y)
-                        # constants.HERO_PANEL_SELECTED_TAB = ret_value
                         configUtilities.write_config_value(configfile=game_config, section='gui', parameter='HERO_PANEL_SELECTED_TAB', value=str(ret_value))
+                if event.button == tcod.event.BUTTON_RIGHT:
+                    logger.info('Right mouse button clicked')
+                    logger.info('Tile coords {}', event.tile)
 
         hero_panel.clear(ch=ord(' '), fg=hp_def_fg, bg=hp_def_bg)
 
@@ -408,22 +410,23 @@ def weapons_tab(hero_panel, gameworld, player, game_config):
 
 def inventory_tab(hero_panel, gameworld, player, game_config):
 
+    gui_frame = configUtilities.get_config_value_as_string(configfile=game_config, section='gui', parameter='frame_border_pipe_type')
+
     hp_def_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_X')
     hp_def_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_Y')
     hp_info_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_WIDTH')
+    left_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',parameter='frame_' + gui_frame + '_left_tee')
+    right_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_right_tee')
+    bottom_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_bottom_tee')
+    top_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_tee')
+    cross_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_cross_pipe')
 
-    gui_frame = 'single'
     across_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_across_pipe')
     bottom_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_bottom_left')
     bottom_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_bottom_right')
-    bottom_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_bottom_tee')
     down_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_down_pipe')
-    left_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_left_tee')
-    right_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_right_tee')
     top_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_left')
-    top_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_tee')
     top_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_right')
-    cross_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_cross_pipe')
     frame_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_left')
     frame_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_down')
     frame_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_width')
@@ -431,57 +434,30 @@ def inventory_tab(hero_panel, gameworld, player, game_config):
     inv_glyph_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_glyph_pos')
     inv_desc_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_desc_pos')
     inv_section_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_section_pos')
+    inv_actions = configUtilities.get_config_value_as_list(configfile=game_config, section='game', parameter='ITEM_INV_ACTIONS')
 
     # temp solution until I sort out how to store a dictionary of items in bags
     mobile_inventory_component = gameworld.component_for_entity(player, mobiles.Inventory)
     letter_index = 97
-    bar_width = 15
     iy = frame_down + 1
-    # key_pos = frame_left
-    # glyph_pos = frame_left + 3
-    # desc_pos = frame_left + 6
     def_fg = colourUtilities.WHITE  # tcod.white
     def_bg = colourUtilities.DARKGRAY  # tcod.darker_gray
     def_wd = colourUtilities.WHITE  # tcod.white
 
     inventory_items = mobile_inventory_component.items
     if len(inventory_items) != 0:
-
-        items_armour = []
-        items_weapons = []
-        items_jewellery = []
-        items_bags = []
-        items_gemstones = []
         max_lines = 2
 
-        for item in inventory_items:
-            item_type = ItemUtilities.get_item_type(gameworld=gameworld, entity=item)
-
-            if item_type == 'armour':
-                if len(items_armour) == 0:
-                    max_lines += 1
-                items_armour.append(item)
-                max_lines += 1
-            if item_type == 'weapon':
-                if len(items_weapons) == 0:
-                    max_lines += 1
-                items_weapons.append(item)
-                max_lines += 1
-            if item_type == 'jewellery':
-                if len(items_jewellery) == 0:
-                    max_lines += 1
-                items_jewellery.append(item)
-                max_lines += 1
-            if item_type == 'gemstone':
-                if len(items_gemstones) == 0:
-                    max_lines += 1
-                items_gemstones.append(item)
-                max_lines += 1
-            if item_type == 'bag':
-                if len(items_bags) == 0:
-                    max_lines += 1
-                items_bags.append(item)
-                max_lines += 1
+        items_armour, cnt = populate_inv_lists(inventory_items, gameworld, 'armour')
+        max_lines += cnt
+        items_weapons, cnt = populate_inv_lists(inventory_items, gameworld, 'weapon')
+        max_lines += cnt
+        items_jewellery, cnt = populate_inv_lists(inventory_items, gameworld, 'jewellery')
+        max_lines += cnt
+        items_bags, cnt = populate_inv_lists(inventory_items, gameworld, 'bag')
+        max_lines += cnt
+        items_gemstones, cnt = populate_inv_lists(inventory_items, gameworld, 'gemstone')
+        max_lines += cnt
 
         if len(items_armour) != 0:
             hero_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Armour')
@@ -542,37 +518,41 @@ def inventory_tab(hero_panel, gameworld, player, game_config):
 
                 letter_index += 1
                 iy += 1
-        max_lines -= 1
-        logger.info('Inventory lines: {}', max_lines)
+
         # draw surrounding frame
         # left vertical line
-        hero_panel.draw_rect(x=frame_left, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg,
-                             bg=def_bg)
+        hero_panel.draw_rect(x=frame_left, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg, bg=def_bg)
         # right vertical line
-        hero_panel.draw_rect(x=frame_left + frame_width - 1, y=frame_down, width=1, height=max_lines, ch=down_pipe,
-                             fg=def_fg, bg=def_bg)
+        hero_panel.draw_rect(x=frame_left + frame_width - 1, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg, bg=def_bg)
         # top horizontal line
-        hero_panel.draw_rect(x=frame_left, y=frame_down, width=frame_width, height=1, ch=across_pipe, fg=def_fg,
-                             bg=def_bg)
-        # bottom horizontal line
-        hero_panel.draw_rect(x=frame_left, y=frame_down + max_lines, width=frame_width, height=1, ch=across_pipe,
-                             fg=def_fg, bg=def_bg)
+        hero_panel.draw_rect(x=frame_left, y=frame_down, width=frame_width, height=1, ch=across_pipe, fg=def_fg, bg=def_bg)
         # top left
         hero_panel.print(x=frame_left, y=frame_down, string=chr(top_left), fg=def_fg, bg=def_bg)
-        # hero_panel.put_char(x=frame_left, y=frame_down, ch=top_left)
-
         # top right
         hero_panel.print(x=frame_left + frame_width - 1, y=frame_down, string=chr(top_right), fg=def_fg, bg=def_bg)
-        # hero_panel.put_char(x=frame_left + frame_width - 1, y=frame_down, ch=top_right)
-
+        # bottom horizontal line
+        hero_panel.draw_rect(x=frame_left, y=iy, width=frame_width, height=1, ch=across_pipe,fg=def_fg, bg=def_bg)
         # bottom left
-        hero_panel.print(x=frame_left, y=frame_down + max_lines, string=chr(bottom_left), fg=def_fg, bg=def_bg)
-        # hero_panel.put_char(x=frame_left, y=frame_down + max_lines, ch=bottom_left)
-
+        hero_panel.print(x=frame_left, y=iy, string=chr(bottom_left), fg=def_fg, bg=def_bg)
         # bottom right
-        hero_panel.print(x=frame_left + frame_width - 1, y=frame_down + max_lines, string=chr(bottom_right), fg=def_fg,
-                         bg=def_bg)
-        # hero_panel.put_char(x=frame_left + frame_width - 1, y=frame_down + max_lines, ch=bottom_right)
+        hero_panel.print(x=frame_left + frame_width - 1, y=iy, string=chr(bottom_right), fg=def_fg, bg=def_bg)
     else:
         hero_panel.print_box(x=inv_key_pos, y=iy, width=40, height=1, string='Nothing in Inventory')
 
+
+def populate_inv_lists(inventory_items, gameworld, item_type_in_inv):
+
+    inv_items = []
+    cnt = 0
+
+    for item in inventory_items:
+        item_type = ItemUtilities.get_item_type(gameworld=gameworld, entity=item)
+
+        if item_type == item_type_in_inv:
+            inv_items.append(item)
+            if cnt == 0:
+                cnt = 2
+            else:
+                cnt += 1
+
+    return inv_items, cnt

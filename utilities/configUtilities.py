@@ -41,3 +41,7 @@ def get_config_value_as_list(configfile, section, parameter):
     # now break this out into a list
     mylist = str.split(",")
     return mylist
+
+
+def update_game_state(configfile, section, parameter, value):
+    configfile[section][parameter] = value
