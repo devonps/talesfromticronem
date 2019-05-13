@@ -10,7 +10,7 @@ from utilities.spellHelp import SpellUtilities
 from utilities import configUtilities
 from utilities import colourUtilities
 from utilities.itemsHelp import ItemUtilities
-from utilities.display import draw_panel_frame
+from utilities.display import draw_colourful_frame
 
 
 class RenderConsole(esper.Processor):
@@ -43,7 +43,7 @@ class RenderConsole(esper.Processor):
         # blit the console
         self.blit_the_console(game_config)
         # clear the entity
-        self.clear_entity()
+        # self.clear_entity()
 
     def render_game_map(self, game_config):
         # GUI viewport and message box borders
@@ -80,33 +80,35 @@ class RenderConsole(esper.Processor):
         down_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_down_pipe')
         top_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_left')
         top_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_right')
-        frame_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_left')
-        frame_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_down')
-        frame_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_width')
-        inv_key_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_key_pos')
-        inv_glyph_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_glyph_pos')
-        inv_desc_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_desc_pos')
-        inv_section_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_section_pos')
+        frame_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_frame_left')
+        frame_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_frame_down')
+        frame_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_frame_width')
+        inv_key_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_key_pos')
+        inv_glyph_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_glyph_pos')
+        inv_desc_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_desc_pos')
+        inv_section_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_section_pos')
+        inv_nothing_posx = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_nothing_msg_x')
+        inv_nothing_posy = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_nothing_msg_y')
+        inv_section_char = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_section_line')
         inv_actions = configUtilities.get_config_value_as_list(configfile=game_config, section='game', parameter='ITEM_INV_ACTIONS')
-        panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',parameter='HERO_PANEL_WIDTH')
-        panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_HEIGHT')
-        panel_left_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_X')
-        panel_left_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',parameter='HERO_PANEL_LEFT_Y')
+        panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv',parameter='INV_PANEL_MAX_WIDTH')
+        panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='INV_PANEL_MAX_HEIGHT')
+        panel_left_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='INV_PANEL_LEFT_X')
+        panel_left_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv',parameter='INV_PANEL_LEFT_Y')
         other_game_state = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',parameter='DISPLAY_GAME_MAP')
 
         inv_panel = tcod.console_new(panel_width, panel_height)
 
         player = MobileUtilities.get_player_entity(self.gameworld, game_config)
         mobile_inventory_component = self.gameworld.component_for_entity(player, mobiles.Inventory)
-        def_fg = colourUtilities.WHITE
-        def_bg = colourUtilities.DARKGRAY
-        def_wd = colourUtilities.WHITE
-        hp_def_fg = colourUtilities.WHITE
-        hp_def_bg = colourUtilities.DARKGRAY
+        def_fg = colourUtilities.WARMGREY
+        def_wd = colourUtilities.GOLDENROD1
+        inv_def_fg = colourUtilities.WHITE
+        inv_def_bg = colourUtilities.BLACK
 
-        hero_panel_displayed = True
+        inv_panel_displayed = True
 
-        while hero_panel_displayed:
+        while inv_panel_displayed:
 
             letter_index = 97
             iy = frame_down + 1
@@ -127,7 +129,11 @@ class RenderConsole(esper.Processor):
                 max_lines += cnt
 
                 if len(items_armour) != 0:
-                    inv_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Armour')
+                    inv_panel.print_box(x=inv_section_pos, y=iy, width=6, height=1, string='Armour')
+                    sectlen = len('Armour')
+                    sx = inv_section_pos + sectlen
+                    sectseplen = panel_width - sx
+                    inv_panel.draw_rect(x=inv_section_pos + sectlen + 1, y=iy, width=sectseplen, height=1, ch=inv_section_char, fg=def_fg, bg=None)
                     iy += 1
 
                     for armour in items_armour:
@@ -148,6 +154,10 @@ class RenderConsole(esper.Processor):
 
                 if len(items_weapons) != 0:
                     inv_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Weapons')
+                    sectlen = len('Weapons')
+                    sx = inv_section_pos + sectlen
+                    sectseplen = panel_width - sx
+                    inv_panel.draw_rect(x=inv_section_pos + sectlen + 1, y=iy, width=sectseplen, height=1, ch=inv_section_char, fg=def_fg, bg=None)
                     iy += 1
 
                     for weapon in items_weapons:
@@ -168,6 +178,10 @@ class RenderConsole(esper.Processor):
 
                 if len(items_jewellery) != 0:
                     inv_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Jewellery')
+                    sectlen = len('Jewellery')
+                    sx = inv_section_pos + sectlen
+                    sectseplen = panel_width - sx
+                    inv_panel.draw_rect(x=inv_section_pos + sectlen + 1, y=iy, width=sectseplen, height=1, ch=inv_section_char, fg=def_fg, bg=None)
                     iy += 1
 
                     for jewellery in items_jewellery:
@@ -185,28 +199,13 @@ class RenderConsole(esper.Processor):
 
                         letter_index += 1
                         iy += 1
-
-                # draw surrounding frame
-                # left vertical line
-                inv_panel.draw_rect(x=frame_left, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg, bg=def_bg)
-                # right vertical line
-                inv_panel.draw_rect(x=frame_left + frame_width - 1, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg, bg=def_bg)
-                # top horizontal line
-                inv_panel.draw_rect(x=frame_left, y=frame_down, width=frame_width, height=1, ch=across_pipe, fg=def_fg, bg=def_bg)
-                # top left
-                inv_panel.print(x=frame_left, y=frame_down, string=chr(top_left), fg=def_fg, bg=def_bg)
-                # top right
-                inv_panel.print(x=frame_left + frame_width - 1, y=frame_down, string=chr(top_right), fg=def_fg, bg=def_bg)
-                # bottom horizontal line
-                inv_panel.draw_rect(x=frame_left, y=iy, width=frame_width, height=1, ch=across_pipe ,fg=def_fg, bg=def_bg)
-                # bottom left
-                inv_panel.print(x=frame_left, y=iy, string=chr(bottom_left), fg=def_fg, bg=def_bg)
-                # bottom right
-                inv_panel.print(x=frame_left + frame_width - 1, y=iy, string=chr(bottom_right), fg=def_fg, bg=def_bg)
             else:
-                inv_panel.print_box(x=inv_key_pos, y=iy, width=40, height=1, string='Nothing in Inventory')
+                inv_panel.print_box(x=inv_nothing_posx, y=inv_nothing_posy, width=panel_width, height=1, string='Nothing in Inventory')
 
-            draw_panel_frame(inv_panel, game_config)
+            draw_colourful_frame(console=inv_panel, game_config=game_config, startx=0, starty=0,
+                                 width=panel_width, height=panel_height,
+                                 title='Inventory', corner_decorator='', corner_studs='square')
+
             tcod.console_blit(inv_panel, 0, 0,
                               panel_width,
                               panel_height,
@@ -219,7 +218,7 @@ class RenderConsole(esper.Processor):
             for event in tcod.event.wait():
                 if event.type == 'KEYDOWN':
                     if event.sym == tcod.event.K_ESCAPE:
-                        hero_panel_displayed = False
+                        inv_panel_displayed = False
                         configUtilities.write_config_value(configfile=game_config, section='game', parameter='DISPLAY_GAME_STATE', value=str(other_game_state))
                 elif event.type == "MOUSEBUTTONDOWN":
                     x = event.tile.x
@@ -228,7 +227,7 @@ class RenderConsole(esper.Processor):
                         logger.info('Right mouse button clicked')
                         logger.info('Tile coords {}', event.tile)
 
-            inv_panel.clear(ch=ord(' '), fg=hp_def_fg, bg=hp_def_bg)
+            inv_panel.clear(ch=ord(' '), fg=inv_def_fg, bg=inv_def_bg)
 
     def populate_inv_lists(self, inventory_items, gameworld, item_type_in_inv):
 
@@ -258,7 +257,6 @@ class RenderConsole(esper.Processor):
 
     def render_weapons_screen(self, game_config):
         pass
-
 
     def blit_the_console(self, game_config):
         # update console with latest changes

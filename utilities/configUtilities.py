@@ -37,7 +37,7 @@ def write_config_value(configfile, section, parameter, value):
 
 
 def get_config_value_as_list(configfile, section, parameter):
-    str = get_config_value_as_string(configfile, section, parameter)
+    str = get_config_value_as_text(configfile, section, parameter)
     # now break this out into a list
     mylist = str.split(",")
     return mylist
