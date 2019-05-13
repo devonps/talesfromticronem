@@ -3,7 +3,8 @@ import tcod.console, tcod.event
 from utilities.input_handlers import get_user_input_entity, handle_mouse_in_menus
 
 from components import userInput
-from utilities import configUtilities
+from utilities import configUtilities, colourUtilities
+from loguru import logger
 
 
 def menu(con, header, options, width, screen_width, screen_height, posx, posy, foreground, key, mouse, gameworld, game_config):
@@ -75,18 +76,89 @@ def display_coloured_box(console, title, posx, posy, width, height, fg, bg ):
                       width=width - 2, height=height - 2, ch=0, fg=fg, bg=bg)
 
 
-def draw_panel_frame(hero_panel, game_config):
-    hp_tab_max_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_MAX_WIDTH')
-    panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_WIDTH')
-    panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_HEIGHT')
+def draw_colourful_frame(console, game_config, startx, starty, width, height, title, corner_decorator, corner_studs):
+    # get config items
+    root_con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
+    root_con_height = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_HEIGHT')
+    # check inbound values
+    if (startx + width >= root_con_width) or (starty + height >= root_con_height):
+        logger.warning('Frame for panel will not fit inside root console - frame aborted')
+        return
 
-    hero_panel.draw_frame(x=0, y=0,
-                          width=panel_width,
-                          height=panel_height,
-                          clear=False,
-                          bg_blend=tcod.BKGND_DEFAULT,
-                          title='Hero Panel')
+    # load glyphs for frames
+    gui_frame = configUtilities.get_config_value_as_string(configfile=game_config, section='gui',
+                                                           parameter='frame_border_pipe_type')
+    across_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                              parameter='frame_' + gui_frame + '_across_pipe')
+    bottom_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                              parameter='frame_' + gui_frame + '_bottom_left')
+    bottom_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                               parameter='frame_' + gui_frame + '_bottom_right')
+    down_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                            parameter='frame_' + gui_frame + '_down_pipe')
+    top_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                           parameter='frame_' + gui_frame + '_top_left')
+    top_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                            parameter='frame_' + gui_frame + '_top_right')
 
-    hero_panel.print_box(x=hp_tab_max_width + 15, y=panel_height - 2,
-                         width=40,
-                         height=1, string='Mouse to select, ESC to exit')
+    fg = colourUtilities.WHITE
+    bg = colourUtilities.BLACK
+    corner_decorator_fg = colourUtilities.YELLOW1
+    corner_decorator_bg = colourUtilities.BLACK
+
+    # draw basic frame
+    #  top left corner
+    console.print(x=startx, y=starty, string=chr(top_left), fg=fg, bg=bg)
+    # top left --> top right
+    console.draw_rect(x=startx + 1, y=starty, width=width - 2, height=1, ch=across_pipe, fg=fg, bg=bg)
+    # top right
+    console.print(x=width-1, y=starty, string=chr(top_right), fg=fg, bg=bg)
+    # right side down
+    console.draw_rect(x=width - 1, y=starty + 1, width=1, height=height - 1, ch=down_pipe, fg=fg, bg=bg)
+    # right corner
+    console.print(x=width - 1, y=height - 1, string=chr(bottom_right), fg=fg, bg=bg)
+    # bottom left --> bottom right
+    console.draw_rect(x=startx + 1, y=height - 1, width=width - 2, height=1, ch=across_pipe, fg=fg, bg=bg)
+    # bottom left
+    console.print(x=startx, y=height - 1, string=chr(bottom_left), fg=fg, bg=bg)
+    # left side down
+    console.draw_rect(x=startx, y=starty + 1, width=1, height=height - 2, ch=down_pipe, fg=fg, bg=bg)
+
+    # draw string title + decorator if needed
+
+    if title:
+        title_decorator = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='frame_title_decorator')
+        titlelen = len(title)
+        titleminuspanel = width - titlelen
+        pwx = int(titleminuspanel / 2)
+        titlestring = chr(title_decorator) + title + chr(title_decorator)
+
+        console.print_box(x=pwx, y=starty, width=40, height=1, string=titlestring)
+
+    # You can only draw corner decorators or studs
+    if corner_decorator != '':
+        cd = configUtilities.get_config_value_as_list(configfile=game_config, section='gui',
+                                                      parameter='frame_corner_decorator_' + corner_decorator)
+
+        corner_decorator = list(map(int, cd))
+        # top left corner
+        console.print(x=startx, y=starty, string=chr(corner_decorator[0]), fg=fg, bg=bg)
+        # top right corner
+        console.print(x=width-1, y=starty, string=chr(corner_decorator[1]), fg=fg, bg=bg)
+        # bottom left corner
+        console.print(x=startx, y=height - 1, string=chr(corner_decorator[2]), fg=fg, bg=bg)
+        # right corner corner
+        console.print(x=width - 1, y=height - 1, string=chr(corner_decorator[3]), fg=fg, bg=bg)
+
+    elif corner_studs != '':
+            corner_stud_decorator = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                                parameter='frame_corner_studs_' + corner_studs)
+            # top left
+            console.print(x=startx + 1, y=starty + 1, string=chr(corner_stud_decorator), fg=corner_decorator_fg, bg=corner_decorator_bg)
+            # top right
+            console.print(x=width - 2, y=starty + 1, string=chr(corner_stud_decorator), fg=corner_decorator_fg, bg=corner_decorator_bg)
+            # bottom left
+            console.print(x=startx + 1, y=height - 2, string=chr(corner_stud_decorator), fg=corner_decorator_fg, bg=corner_decorator_bg)
+            # bottom right
+            console.print(x=width - 2, y=height - 2, string=chr(corner_stud_decorator), fg=corner_decorator_fg, bg=corner_decorator_bg)
