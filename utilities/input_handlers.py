@@ -1,44 +1,29 @@
 import tcod
+import tcod.event
 
 from components import mobiles, userInput
 from loguru import logger
-from utilities.externalfileutilities import Externalfiles
 from utilities.game_messages import Message
-from utilities import configUtilities
 
 
 def handle_keys(mouse, key, gameworld, player, message_log, game_config):
-    GAME_ACTIONS_FILE = configUtilities.get_config_value_as_string(configfile=game_config, section='default',parameter='GAME_ACTIONS_FILE')
 
     # movement
     player_velocity_component = gameworld.component_for_entity(player, mobiles.Velocity)
-    position_component = gameworld.component_for_entity(player, mobiles.Position)
     ev = tcod.sys_wait_for_event(tcod.EVENT_KEY, key, mouse, flush=False)
     if ev & tcod.EVENT_KEY_PRESS:
         key_char = chr(key.c)
         if key.vk == tcod.KEY_UP:
             player_velocity_component.dy = -1
-            position_component.hasMoved = True
-            value = 'move:' + str(player) + ':0:-1'
-            Externalfiles.write_to_existing_file(GAME_ACTIONS_FILE, value)
             return {'player_moved': True}
         elif key.vk == tcod.KEY_DOWN:
             player_velocity_component.dy = 1
-            position_component.hasMoved = True
-            value = 'move:' + str(player) + ':0:1'
-            Externalfiles.write_to_existing_file(GAME_ACTIONS_FILE, value)
             return {'player_moved': True}
         elif key.vk == tcod.KEY_LEFT:
             player_velocity_component.dx = -1
-            position_component.hasMoved = True
-            value = 'move:' + str(player) + ':-1:0'
-            Externalfiles.write_to_existing_file(GAME_ACTIONS_FILE, value)
             return {'player_moved': True}
         elif key.vk == tcod.KEY_RIGHT:
             player_velocity_component.dx = 1
-            position_component.hasMoved = True
-            value = 'move:' + str(player) + ':1:0'
-            Externalfiles.write_to_existing_file(GAME_ACTIONS_FILE, value)
             return {'player_moved': True}
 
         # non-movement keys
@@ -51,12 +36,10 @@ def handle_keys(mouse, key, gameworld, player, message_log, game_config):
 
         elif key.vk == tcod.KEY_ESCAPE:
             # Exit the game
-            value = 'exit:true'
-            Externalfiles.write_to_existing_file(GAME_ACTIONS_FILE, value)
             return {'exit': True}
         # hero action keys
-        elif key_char == 'h':
-            return {'display_hero_panel': True}
+        elif key_char == 'i':
+            return {'display_inv_panel': True}
         elif key_char == 'g':
             return {'pickup': True}
 
@@ -86,17 +69,29 @@ def handle_mouse_in_menus(mouse, width, height, header_height, x_offset, y_offse
     return -1
 
 
-def handle_mouse(mouse):
-    (x, y) = (mouse.cx, mouse.cy)
-
-    if mouse.lbutton_pressed:
-        return {'left_click': (x, y)}
-    elif mouse.rbutton_pressed:
-        return {'right_click': (x, y)}
-
-    return {}
-
-
 def get_user_input_entity(gameworld):
     for ent, (k, m) in gameworld.get_components(userInput.Mouse, userInput.Keyboard):
         return ent
+
+
+def handle_game_keys():
+    action = ''
+    myevent = ''
+    for event in tcod.event.wait():
+        if event.type == 'KEYDOWN':
+            # logger.info('KEYDOWN {}', event)
+            if event.sym == tcod.event.K_ESCAPE:
+                myevent = 'keypress'
+                action = 'quit'
+        if event.type == "TEXTINPUT":
+            myevent = 'keypress'
+            action = event.text
+        elif event.type == "MOUSEBUTTONDOWN":
+            myevent = 'mousebutton'
+            if event.button == tcod.event.BUTTON_LEFT:
+                action = 'left'
+            else:
+                action = 'right'
+        elif event.type == "MOUSEMOTION":
+            pass
+    return myevent, action

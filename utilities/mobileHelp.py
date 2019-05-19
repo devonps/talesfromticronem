@@ -45,6 +45,11 @@ class MobileUtilities(numbers.Real):
         return position_component.hasMoved
 
     @staticmethod
+    def set_mobile_has_moved(gameworld, mobile):
+        position_component = gameworld.component_for_entity(mobile, mobiles.Position)
+        position_component.hasMoved = True
+
+    @staticmethod
     def get_mobile_current_location(gameworld, mobile):
         location_component = gameworld.component_for_entity(mobile, mobiles.Position)
         return location_component.x, location_component.y

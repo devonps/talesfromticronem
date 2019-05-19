@@ -335,6 +335,7 @@ class NewCharacter:
         ItemUtilities.equip_jewellery(gameworld, player, 'right hand', ring2)
         ItemUtilities.equip_jewellery(gameworld, player, 'neck', amulet)
 
+    @staticmethod
     def display_selection(con, filename, element, posx, posy, width, flavour_x, flavour_y):
 
         letter_index = ord('a')
