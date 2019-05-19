@@ -40,7 +40,7 @@ def start_game(con, gameworld, game_config):
         exit_game = action.get('exit')
         fullscreen = action.get('fullscreen')
         player_moved = action.get('player_moved')
-        display_inventory = action.get('display_hero_panel')
+        display_inventory = action.get('display_inv_panel')
         pick_up_entity = action.get('pickup')
 
         if display_inventory:
@@ -53,6 +53,8 @@ def start_game(con, gameworld, game_config):
             pass
 
         if exit_game:
+            value = 'exit:true'
+            ReplayGame.update_game_replay_file(game_config, value)
             return True
 
         if fullscreen:

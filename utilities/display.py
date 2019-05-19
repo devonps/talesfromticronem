@@ -1,6 +1,6 @@
 import tcod
 import tcod.console, tcod.event
-from utilities.input_handlers import get_user_input_entity, handle_mouse_in_menus
+from utilities.input_handlers import get_user_input_entity, handle_mouse_in_menus, handle_game_keys
 
 from components import userInput
 from utilities import configUtilities, colourUtilities
@@ -46,6 +46,7 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
         tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS | tcod.EVENT_MOUSE, key, mouse)
 
         ret_value = handle_mouse_in_menus(mouse=mouse, width=width, height=height, header_height=header_height, x_offset=x_offset, y_offset=y_offset)
+
         if ret_value > -1:
             gameworld.component_for_entity(player_input_entity, userInput.Keyboard).keypressed = chr(97 + ret_value)
             gameworld.component_for_entity(player_input_entity, userInput.Mouse).lbutton = True
@@ -76,7 +77,7 @@ def display_coloured_box(console, title, posx, posy, width, height, fg, bg ):
                       width=width - 2, height=height - 2, ch=0, fg=fg, bg=bg)
 
 
-def draw_colourful_frame(console, game_config, startx, starty, width, height, title, corner_decorator, corner_studs):
+def draw_colourful_frame(console, game_config, startx, starty, width, height, title, title_loc, corner_decorator, corner_studs, msg):
     # get config items
     root_con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
     root_con_height = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_HEIGHT')
@@ -129,12 +130,23 @@ def draw_colourful_frame(console, game_config, startx, starty, width, height, ti
     if title:
         title_decorator = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='frame_title_decorator')
+        pwx = 0
         titlelen = len(title)
-        titleminuspanel = width - titlelen
-        pwx = int(titleminuspanel / 2)
+
+        if title_loc == 'left':
+            pwx = startx + 3
+        if title_loc == 'centre':
+            titleminuspanel = width - titlelen
+            pwx = int(titleminuspanel / 2)
+        if title_loc == 'right':
+            pwx = (width - titlelen) - 4
+
         titlestring = chr(title_decorator) + title + chr(title_decorator)
 
-        console.print_box(x=pwx, y=starty, width=40, height=1, string=titlestring)
+        console.print_box(x=pwx, y=starty, width=titlelen, height=1, string=titlestring)
+
+    if msg:
+        console.print_box(x=startx + 3, y=starty - 2, width=len(msg), height=1, string=msg)
 
     # You can only draw corner decorators or studs
     if corner_decorator != '':

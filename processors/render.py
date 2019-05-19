@@ -11,6 +11,7 @@ from utilities import configUtilities
 from utilities import colourUtilities
 from utilities.itemsHelp import ItemUtilities
 from utilities.display import draw_colourful_frame
+from utilities.input_handlers import handle_game_keys
 
 
 class RenderConsole(esper.Processor):
@@ -62,27 +63,7 @@ class RenderConsole(esper.Processor):
 
     def render_inventory_screen(self, game_config):
 
-        gui_frame = configUtilities.get_config_value_as_string(configfile=game_config, section='gui', parameter='frame_border_pipe_type')
-
-        hp_def_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_X')
-        hp_def_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_Y')
-        hp_info_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_WIDTH')
-        left_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui'
-                                                               ,parameter='frame_' + gui_frame + '_left_tee')
-        right_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_right_tee')
-        bottom_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_bottom_tee')
-        top_tee = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_tee')
-        cross_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_cross_pipe')
-
-        across_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_across_pipe')
-        bottom_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_bottom_left')
-        bottom_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_bottom_right')
-        down_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_down_pipe')
-        top_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_left')
-        top_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_right')
-        frame_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_frame_left')
         frame_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_frame_down')
-        frame_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_frame_width')
         inv_key_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_key_pos')
         inv_glyph_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_glyph_pos')
         inv_desc_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_desc_pos')
@@ -204,7 +185,7 @@ class RenderConsole(esper.Processor):
 
             draw_colourful_frame(console=inv_panel, game_config=game_config, startx=0, starty=0,
                                  width=panel_width, height=panel_height,
-                                 title='Inventory', corner_decorator='', corner_studs='square')
+                                 title='Inventory', title_loc='centre', corner_decorator='', corner_studs='square', msg='ESC to quit')
 
             tcod.console_blit(inv_panel, 0, 0,
                               panel_width,
@@ -215,17 +196,18 @@ class RenderConsole(esper.Processor):
 
             tcod.console_flush()
 
-            for event in tcod.event.wait():
-                if event.type == 'KEYDOWN':
-                    if event.sym == tcod.event.K_ESCAPE:
-                        inv_panel_displayed = False
-                        configUtilities.write_config_value(configfile=game_config, section='game', parameter='DISPLAY_GAME_STATE', value=str(other_game_state))
-                elif event.type == "MOUSEBUTTONDOWN":
-                    x = event.tile.x
-                    y = event.tile.y
-                    if event.button == tcod.event.BUTTON_RIGHT:
-                        logger.info('Right mouse button clicked')
-                        logger.info('Tile coords {}', event.tile)
+            event_to_be_processed, event_action = handle_game_keys()
+            # if event_to_be_processed != '':
+            if event_to_be_processed == 'keypress':
+                if event_action == 'quit':
+                    inv_panel_displayed = False
+                    configUtilities.write_config_value(configfile=game_config, section='game',
+                                                       parameter='DISPLAY_GAME_STATE', value=str(other_game_state))
+            if event_to_be_processed == 'mousebutton':
+                if event_action == 'left':
+                    logger.info('Left mouse button pressed')
+                else:
+                    logger.info('Right mouse button pressed')
 
             inv_panel.clear(ch=ord(' '), fg=inv_def_fg, bg=inv_def_bg)
 
