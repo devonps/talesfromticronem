@@ -28,6 +28,7 @@ class ItemManager:
         :type weapon_type: the type of weapon to be created, e.g. sword
         """
         weapon_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='WEAPONSFILE')
+        weapon_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game', parameter='ITEM_WEAPON_ACTIONS')
 
         weapon_file = jsonUtilities.read_json_file(weapon_file_path)
         for weapon in weapon_file['weapons']:
@@ -36,6 +37,7 @@ class ItemManager:
                 # generate common item components
                 gameworld.add_component(myweapon, items.TypeOfItem(label='weapon'))
                 gameworld.add_component(myweapon, items.Material)
+                gameworld.add_component(myweapon, items.Actionlist(action_list=weapon_action_list))
                 gameworld.add_component(myweapon, items.Describable(
                     description=weapon['description'],
                     name=weapon['display_name'],
@@ -92,6 +94,8 @@ class ItemManager:
         """
         armour_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                     parameter='ARMOURFILE')
+        armour_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
+                                                                      parameter='ITEM_ARMOUR_ACTIONS')
 
         armour_file = jsonUtilities.read_json_file(armour_file_path)
         for piece_of_armour in armour_file['armour']:
@@ -100,6 +104,8 @@ class ItemManager:
 
                 # generate common item components
                 gameworld.add_component(armour_piece, items.TypeOfItem(label='armour'))
+
+                gameworld.add_component(armour_piece, items.Actionlist(action_list=armour_action_list))
                 gameworld.add_component(armour_piece, items.Describable(
                     name=piece_of_armour['location'] + ' armour',
                     glyph=piece_of_armour['glyph'],
@@ -199,6 +205,8 @@ class ItemManager:
 
         bag_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                       parameter='BAGSFILE')
+        bag_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
+                                                                      parameter='ITEM_ARMOUR_ACTIONS')
 
         bags_file = jsonUtilities.read_json_file(bag_file_path)
         bag_count = 0
@@ -208,6 +216,7 @@ class ItemManager:
 
             # generate common item components
             gameworld.add_component(new_bag, items.TypeOfItem(label='bag'))
+            gameworld.add_component(new_bag, items.Actionlist(action_list=bag_action_list))
             gameworld.add_component(new_bag, items.Describable(
                 description=this_bag['description'],
                 name=this_bag['description'],
@@ -240,7 +249,8 @@ class ItemManager:
         """
         gemstones_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                       parameter='GEMSTONESFILE')
-
+        jewellery_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
+                                                                      parameter='ITEM_JEWELLERY_ACTIONS')
         if e_setting == '' or e_activator == '' or e_hook == '':
             logger.debug('At least one base component is missing')
             return 0
@@ -258,6 +268,7 @@ class ItemManager:
                 gameworld.add_component(piece_of_jewellery, items.Material(texture=e_setting))
                 gameworld.add_component(piece_of_jewellery, items.RenderItem(istrue=True))
                 gameworld.add_component(piece_of_jewellery, items.Quality(level='common'))
+                gameworld.add_component(piece_of_jewellery, items.Actionlist(action_list=jewellery_action_list))
 
                 # create jewellery specific components
                 gameworld.add_component(piece_of_jewellery, items.JewelleryEquipped(istrue=False))

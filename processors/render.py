@@ -71,23 +71,25 @@ class RenderConsole(esper.Processor):
         inv_nothing_posx = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_nothing_msg_x')
         inv_nothing_posy = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_nothing_msg_y')
         inv_section_char = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_section_line')
-        inv_actions = configUtilities.get_config_value_as_list(configfile=game_config, section='game', parameter='ITEM_INV_ACTIONS')
         panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv',parameter='INV_PANEL_MAX_WIDTH')
         panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='INV_PANEL_MAX_HEIGHT')
         panel_left_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='INV_PANEL_LEFT_X')
         panel_left_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv',parameter='INV_PANEL_LEFT_Y')
         other_game_state = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',parameter='DISPLAY_GAME_MAP')
+        act_menu_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv',parameter='act_menu_width')
+        act_menu_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv',parameter='act_menu_height')
 
         inv_panel = tcod.console_new(panel_width, panel_height)
 
         player = MobileUtilities.get_player_entity(self.gameworld, game_config)
         mobile_inventory_component = self.gameworld.component_for_entity(player, mobiles.Inventory)
-        def_fg = colourUtilities.WARMGREY
+        def_fg = colourUtilities.GRAY19
         def_wd = colourUtilities.GOLDENROD1
         inv_def_fg = colourUtilities.WHITE
         inv_def_bg = colourUtilities.BLACK
 
         inv_panel_displayed = True
+        display_action_menu = False
 
         while inv_panel_displayed:
 
@@ -95,6 +97,7 @@ class RenderConsole(esper.Processor):
             iy = frame_down + 1
 
             inventory_items = mobile_inventory_component.items
+            disp_inv = []
             if len(inventory_items) != 0:
                 max_lines = 2
 
@@ -129,7 +132,7 @@ class RenderConsole(esper.Processor):
                         inv_panel.print(x=inv_glyph_pos , y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
                         # DESCRIPTION
                         inv_panel.print(x=inv_desc_pos, y=iy, string=item_name, fg=def_wd, bg=None)
-
+                        disp_inv.append(armour)
                         letter_index += 1
                         iy += 1
 
@@ -153,7 +156,7 @@ class RenderConsole(esper.Processor):
                         inv_panel.print(x=inv_glyph_pos, y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
                         # DESCRIPTION
                         inv_panel.print(x=inv_desc_pos, y=iy, string=item_name, fg=def_wd, bg=None)
-
+                        disp_inv.append(weapon)
                         letter_index += 1
                         iy += 1
 
@@ -177,7 +180,7 @@ class RenderConsole(esper.Processor):
                         inv_panel.print(x=inv_glyph_pos, y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
                         # DESCRIPTION
                         inv_panel.print(x=inv_desc_pos, y=iy, string=item_name, fg=def_wd, bg=None)
-
+                        disp_inv.append(jewellery)
                         letter_index += 1
                         iy += 1
             else:
@@ -185,7 +188,7 @@ class RenderConsole(esper.Processor):
 
             draw_colourful_frame(console=inv_panel, game_config=game_config, startx=0, starty=0,
                                  width=panel_width, height=panel_height,
-                                 title='Inventory', title_loc='centre', corner_decorator='', corner_studs='square', msg='ESC to quit')
+                                 title='Inventory', title_loc='centre', corner_decorator='', corner_studs='square', msg='a-z, ESC to quit')
 
             tcod.console_blit(inv_panel, 0, 0,
                               panel_width,
@@ -195,19 +198,60 @@ class RenderConsole(esper.Processor):
                               panel_left_y)
 
             tcod.console_flush()
-
             event_to_be_processed, event_action = handle_game_keys()
-            # if event_to_be_processed != '':
-            if event_to_be_processed == 'keypress':
-                if event_action == 'quit':
-                    inv_panel_displayed = False
-                    configUtilities.write_config_value(configfile=game_config, section='game',
-                                                       parameter='DISPLAY_GAME_STATE', value=str(other_game_state))
-            if event_to_be_processed == 'mousebutton':
-                if event_action == 'left':
-                    logger.info('Left mouse button pressed')
-                else:
-                    logger.info('Right mouse button pressed')
+            if display_action_menu is False and event_to_be_processed != '':
+                if event_to_be_processed == 'keypress':
+                    if event_action == 'quit':
+                        inv_panel_displayed = False
+                        configUtilities.write_config_value(configfile=game_config, section='game',
+                                                           parameter='DISPLAY_GAME_STATE', value=str(other_game_state))
+                    else:
+                        # interact with item in inventory
+                        # display 'action menu' for item
+                        id = ord(event_action) - 97
+                        if id < len(disp_inv):
+                            inv_id = disp_inv[id]
+                            item_actions = ItemUtilities.get_item_actions(gameworld=self.gameworld, entity=inv_id)
+                            display_action_menu = True
+
+                elif event_to_be_processed == 'mousebutton':
+                    if event_action == 'left':
+                        logger.info('Left mouse button pressed')
+                    else:
+                        logger.info('Right mouse button pressed')
+
+            else:
+                # display action menu --> works like a mini inventory panel
+
+                while display_action_menu:
+                    action_panel = tcod.console_new(act_menu_width, act_menu_height)
+
+                    draw_colourful_frame(console=action_panel, game_config=game_config, startx=0, starty=0,
+                                         width=act_menu_width, height=act_menu_height,
+                                         title='Actions', title_loc='right', corner_decorator='',
+                                         corner_studs='round', msg='ESC to quit')
+
+                    cnt = 1
+                    for action in item_actions:
+                        action_panel.print(x=3, y=cnt, string=str(cnt) + ':' + action, fg=def_wd, bg=None)
+                        cnt += 1
+                    tcod.console_blit(action_panel, 0, 0,
+                                      act_menu_width,  act_menu_height,
+                                      0, inv_key_pos + 10, 10)
+
+                    action_panel.clear(ch=ord(' '), fg=colourUtilities.GHOSTWHITE, bg=colourUtilities.SEAGREEN1)
+                    tcod.console_flush()
+                    event_to_be_processed, event_action = handle_game_keys()
+                    if event_action != '':
+                        if event_action == 'quit':
+                            display_action_menu = False
+                            configUtilities.write_config_value(configfile=game_config, section='game',
+                                                               parameter='DISPLAY_GAME_STATE', value=str(other_game_state))
+                        else:
+                            ia = ord(event_action) - 49
+                            if ia < len(item_actions):
+                                logger.info('Action initiated: {}', item_actions[ia])
+                                display_action_menu = False
 
             inv_panel.clear(ch=ord(' '), fg=inv_def_fg, bg=inv_def_bg)
 

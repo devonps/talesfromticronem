@@ -14,6 +14,12 @@ class TypeOfItem:
         self.label = label
 
 
+# defines the available actions based on the type of item
+class Actionlist:
+    def __init__(self, action_list=''):
+        self.actions = action_list
+
+
 class Describable:
     def __init__(self, name='', description='', glyph='', fg=tcod.white, bg=tcod.black, displayname=''):
         self.name = name

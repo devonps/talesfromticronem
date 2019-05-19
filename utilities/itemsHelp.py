@@ -15,6 +15,11 @@ class ItemUtilities:
         return item_type_component.label
 
     @staticmethod
+    def get_item_actions(gameworld, entity):
+        item_actions_component = gameworld.component_for_entity(entity, items.Actionlist)
+        return item_actions_component.actions
+
+    @staticmethod
     def get_item_name(gameworld, entity):
         item_described_component = gameworld.component_for_entity(entity, items.Describable)
         return item_described_component.name

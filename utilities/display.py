@@ -143,7 +143,7 @@ def draw_colourful_frame(console, game_config, startx, starty, width, height, ti
 
         titlestring = chr(title_decorator) + title + chr(title_decorator)
 
-        console.print_box(x=pwx, y=starty, width=titlelen, height=1, string=titlestring)
+        console.print_box(x=pwx, y=starty, width=len(titlestring), height=1, string=titlestring)
 
     if msg:
         console.print_box(x=startx + 3, y=starty - 2, width=len(msg), height=1, string=msg)
