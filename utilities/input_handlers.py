@@ -10,38 +10,41 @@ def handle_keys(mouse, key, gameworld, player, message_log, game_config):
 
     # movement
     player_velocity_component = gameworld.component_for_entity(player, mobiles.Velocity)
-    ev = tcod.sys_wait_for_event(tcod.EVENT_KEY, key, mouse, flush=False)
-    if ev & tcod.EVENT_KEY_PRESS:
-        key_char = chr(key.c)
-        if key.vk == tcod.KEY_UP:
-            player_velocity_component.dy = -1
-            return {'player_moved': True}
-        elif key.vk == tcod.KEY_DOWN:
-            player_velocity_component.dy = 1
-            return {'player_moved': True}
-        elif key.vk == tcod.KEY_LEFT:
-            player_velocity_component.dx = -1
-            return {'player_moved': True}
-        elif key.vk == tcod.KEY_RIGHT:
-            player_velocity_component.dx = 1
-            return {'player_moved': True}
+    for event in tcod.event.wait():
+        if event.type == 'KEYDOWN':
+            if event.sym == tcod.event.K_UP:
+                player_velocity_component.dy = -1
+                return {'player_moved': True}
+            if event.sym == tcod.event.K_DOWN:
+                player_velocity_component.dy = 1
+                return {'player_moved': True}
+            if event.sym == tcod.event.K_LEFT:
+                player_velocity_component.dx = -1
+                return {'player_moved': True}
+            if event.sym == tcod.event.K_RIGHT:
+                player_velocity_component.dx = 1
+                return {'player_moved': True}
 
-        # non-movement keys
-        if key.vk == tcod.KEY_ENTER:
-            message_log.add_message(message=Message('123456789012345678901234567890', color=tcod.white), game_config=game_config)
-        if key.vk == tcod.KEY_ENTER and key.lalt:
-            # Alt+Enter: toggle full screen
-            message_log.add_message(message=Message('Full screen mode activated', color=tcod.white), game_config=game_config)
-            return {'fullscreen': True}
-
-        elif key.vk == tcod.KEY_ESCAPE:
-            # Exit the game
-            return {'exit': True}
+            if event.sym == tcod.event.K_ESCAPE:
+                # Exit the game
+                return {'exit': True}
+        if event.type == "TEXTINPUT":
         # hero action keys
-        elif key_char == 'i':
-            return {'display_inv_panel': True}
-        elif key_char == 'g':
-            return {'pickup': True}
+            if event.text == 'i':
+                return {'display_inv_panel': True}
+            if event.text == 'g':
+                return {'pickup': True}
+
+    #
+    #     # non-movement keys
+    #     if key.vk == tcod.KEY_ENTER:
+    #         message_log.add_message(message=Message('123456789012345678901234567890', color=tcod.white), game_config=game_config)
+    #     if key.vk == tcod.KEY_ENTER and key.lalt:
+    #         # Alt+Enter: toggle full screen
+    #         message_log.add_message(message=Message('Full screen mode activated', color=tcod.white), game_config=game_config)
+    #         return {'fullscreen': True}
+
+
 
     return {}
 
@@ -79,7 +82,6 @@ def handle_game_keys():
     myevent = ''
     for event in tcod.event.wait():
         if event.type == 'KEYDOWN':
-            # logger.info('KEYDOWN {}', event)
             if event.sym == tcod.event.K_ESCAPE:
                 myevent = 'keypress'
                 action = 'quit'
