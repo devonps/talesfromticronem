@@ -179,6 +179,19 @@ class MobileUtilities(numbers.Real):
                     mobile_inventory_component.items.append(ent)
                     logger.info('{} has been picked up', desc.name)
 
+    # drop item from inventory
+    @staticmethod
+    def drop_item_from_inventory(gameworld, mobile, entity):
+        # is item in inventory
+        # add dungeon position component to entity based on mobiles current position
+        px, py = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=mobile)
+        gameworld.add_component(entity, items.Location(x=px, y=py))
+
+        # add is_renderable component to entity
+        # remove item_in_inventory component from entity
+        mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
+        mobile_inventory_component.items.remove(entity)
+
 
     #
     # Get primary attributes
