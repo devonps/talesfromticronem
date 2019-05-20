@@ -250,8 +250,9 @@ class RenderConsole(esper.Processor):
                         else:
                             ia = ord(event_action) - 49
                             if ia < len(item_actions):
-                                logger.info('Action initiated: {}', item_actions[ia])
                                 display_action_menu = False
+                                if item_actions[ia] == 'drop':
+                                    MobileUtilities.drop_item_from_inventory(gameworld=self.gameworld, mobile=player, entity=inv_id)
 
             inv_panel.clear(ch=ord(' '), fg=inv_def_fg, bg=inv_def_bg)
 
