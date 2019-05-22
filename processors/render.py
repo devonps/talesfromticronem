@@ -253,6 +253,14 @@ class RenderConsole(esper.Processor):
                                 display_action_menu = False
                                 if item_actions[ia] == 'drop':
                                     MobileUtilities.drop_item_from_inventory(gameworld=self.gameworld, mobile=player, entity=inv_id)
+                                if item_actions[ia] == 'inspect':
+                                    pass
+                                if item_actions[ia] == 'wield':
+                                    MobileUtilities.wield_weapon_from_inventory(gameworld=self.gameworld, mobile=player, entity=inv_id)
+                                if item_actions[ia] == 'wear':
+                                    pass
+                                if item_actions[ia] == 'destroy':
+                                    MobileUtilities.destroy_item_from_inventory(gameworld=self.gameworld, mobile=player, entity=inv_id)
 
             inv_panel.clear(ch=ord(' '), fg=inv_def_fg, bg=inv_def_bg)
 
@@ -262,14 +270,15 @@ class RenderConsole(esper.Processor):
         cnt = 0
 
         for item in inventory_items:
-            item_type = ItemUtilities.get_item_type(gameworld=gameworld, entity=item)
+            if item > 0:
+                item_type = ItemUtilities.get_item_type(gameworld=gameworld, entity=item)
 
-            if item_type == item_type_in_inv:
-                inv_items.append(item)
-                if cnt == 0:
-                    cnt = 2
-                else:
-                    cnt += 1
+                if item_type == item_type_in_inv:
+                    inv_items.append(item)
+                    if cnt == 0:
+                        cnt = 2
+                    else:
+                        cnt += 1
 
         return inv_items, cnt
 

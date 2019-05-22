@@ -288,7 +288,7 @@ class NewCharacter:
         MobileUtilities.equip_weapon(gameworld, player, weapon, 'main')
 
         # create an off-hand weapon for the player
-        weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='dagger', game_config=game_config)
+        weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='rod', game_config=game_config)
         weapon_type = gameworld.component_for_entity(weapon, items.WeaponType)
         # parameters are: gameworld, weapon object, weapon type as a string, mobile class
         logger.info('Loading that weapon with the necessary spells')
@@ -337,7 +337,6 @@ class NewCharacter:
 
     @staticmethod
     def display_selection(con, filename, element, posx, posy, width, flavour_x, flavour_y):
-
         letter_index = ord('a')
         for option in filename[element]:
             option_name = option['name']

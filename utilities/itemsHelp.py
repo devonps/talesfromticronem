@@ -61,8 +61,13 @@ class ItemUtilities:
         return item_location_component.posx, item_location_component.posy
 
     @staticmethod
-    def set_item_location(gameworld, entity, posx, posy):
-        item_location_component = gameworld.component_for_entity(entity, items.Location)
+    def add_dungeon_position_component(gameworld, entity):
+        gameworld.add_component(entity, items.Location(x=0, y=0))
+
+
+    @staticmethod
+    def set_item_location(gameworld, item_entity, posx, posy):
+        item_location_component = gameworld.component_for_entity(item_entity, items.Location)
         item_location_component.posx = posx
         item_location_component.posy = posy
 
@@ -85,6 +90,16 @@ class ItemUtilities:
     def get_item_quality(gameworld, entity):
         item_quality_component = gameworld.component_for_entity(entity, items.Quality)
         return item_quality_component.level
+
+    @staticmethod
+    def delete_item(gameworld, entity):
+        gameworld.delete_entity(entity=entity, immediate=True)
+
+    @staticmethod
+    def remove_item_from_inventory(gameworld, mobile, entity):
+        mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
+        mobile_inventory_component.items.remove(entity)
+
 
 ####################################################
 #
@@ -111,6 +126,11 @@ class ItemUtilities:
     def get_is_weapon_wielded(gameworld, weapon_entity):
         wielded_component = gameworld.component_for_entity(weapon_entity, items.Wielded)
         return wielded_component.true_or_false
+
+    @staticmethod
+    def get_hand_weapon_can_be_wielded_in(gameworld, weapon_entity):
+        wielded_component = gameworld.component_for_entity(weapon_entity, items.Wielded)
+        return wielded_component.hands
 
     @staticmethod
     def get_weapon_held_in_hand(gameworld, entity):

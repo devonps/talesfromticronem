@@ -183,14 +183,72 @@ class MobileUtilities(numbers.Real):
     @staticmethod
     def drop_item_from_inventory(gameworld, mobile, entity):
         # is item in inventory
-        # add dungeon position component to entity based on mobiles current position
-        px, py = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=mobile)
-        gameworld.add_component(entity, items.Location(x=px, y=py))
+        # add dungeon position component
+        ItemUtilities.add_dungeon_position_component(gameworld=gameworld, entity=entity)
 
-        # add is_renderable component to entity
-        # remove item_in_inventory component from entity
-        mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
-        mobile_inventory_component.items.remove(entity)
+        # set item location to mobile's location
+        px, py = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=mobile)
+        ItemUtilities.set_item_location(gameworld=gameworld, item_entity=entity, posx=px, posy=py)
+
+        # remove item from inventory component
+        ItemUtilities.remove_item_from_inventory(gameworld, mobile, entity)
+
+    # destroy item from inventory
+    @staticmethod
+    def destroy_item_from_inventory(gameworld, mobile, entity):
+
+        # remove item from inventory component
+        ItemUtilities.remove_item_from_inventory(gameworld, mobile, entity)
+
+        # remove entity from gameworld
+        ItemUtilities.delete_item(gameworld=gameworld, entity=entity)
+
+    @staticmethod
+    def wield_weapon_from_inventory(gameworld, mobile, entity):
+
+        # get list of weapons currently equipped as a list of entities
+        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld, mobile)
+
+        # remove unequipped weapon from inventory component
+        ItemUtilities.remove_item_from_inventory(gameworld, mobile, entity)
+
+        # determine which hand the weapon can be equipped in
+        hand_to_wield = ItemUtilities.get_hand_weapon_can_be_wielded_in(gameworld=gameworld, weapon_entity=entity)
+
+        if hand_to_wield == 'main':
+            MobileUtilities.equip_weapon(gameworld=gameworld, entity=mobile, weapon=entity, hand=hand_to_wield)
+            # add previously equipped weapon (item) to the inventory
+            mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
+            # add item entity to mobiles' inventory
+            mobile_inventory_component.items.append(equipped_weapons[0])
+            if equipped_weapons[2] > 0:
+                gameworld.component_for_entity(mobile, mobiles.Equipped).both_hands = 0
+                mobile_inventory_component.items.append(equipped_weapons[2])
+
+        if hand_to_wield == 'off':
+            MobileUtilities.equip_weapon(gameworld=gameworld, entity=mobile, weapon=entity, hand=hand_to_wield)
+            # add previously equipped weapon (item) to the inventory
+            mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
+            # add item entity to mobiles' inventory
+            mobile_inventory_component.items.append(equipped_weapons[1])
+            if equipped_weapons[2] > 0:
+                gameworld.component_for_entity(mobile, mobiles.Equipped).both_hands = 0
+                mobile_inventory_component.items.append(equipped_weapons[2])
+
+        if hand_to_wield == 'both':
+            MobileUtilities.equip_weapon(gameworld=gameworld, entity=mobile, weapon=entity, hand=hand_to_wield)
+            # add previously equipped weapon (item) to the inventory
+            mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
+            # add both items entities to mobiles' inventory
+            # is there a weapon in either the main or off hand - that's not a 2-handed weapon
+            if equipped_weapons[0] > 0:
+                mobile_inventory_component.items.append(equipped_weapons[0])
+                gameworld.component_for_entity(mobile, mobiles.Equipped).main_hand = 0
+            if equipped_weapons[1] > 0:
+                mobile_inventory_component.items.append(equipped_weapons[1])
+                gameworld.component_for_entity(mobile, mobiles.Equipped).off_hand = 0
+            elif equipped_weapons[2] > 0:
+                mobile_inventory_component.items.append(equipped_weapons[2])
 
 
     #

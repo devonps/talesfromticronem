@@ -103,10 +103,8 @@ class Hallmarks:
 # can this item be held in the hands
 # the true_or_false parameter drives this
 class Wielded:
-    def __init__(self, main_hand=False, off_hand=False, both_hands=False, true_or_false=True):
-        self.main_hand = main_hand
-        self.off_hand = off_hand
-        self.both_hands = both_hands
+    def __init__(self, hands='both', true_or_false=True):
+        self.hands = hands
         self.true_or_false = true_or_false
 
 
