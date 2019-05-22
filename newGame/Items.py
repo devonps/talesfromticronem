@@ -62,9 +62,7 @@ class ItemManager:
                     slot_five=weapon['spell_slot_five']))
 
                 gameworld.add_component(myweapon, items.Wielded(
-                    main_hand=weapon['wielded_main_hand'],
-                    off_hand=weapon['wielded_off_hand'],
-                    both_hands=weapon['wielded_both_hands'],
+                    hands=weapon['wielded_hands'],
                     true_or_false=True))
 
                 gameworld.add_component(myweapon, items.Experience(current_level=1))
@@ -362,7 +360,7 @@ class ItemManager:
                 iy = random.randrange(1, map_height)
                 tile = GameMap.get_type_of_tile(game_map, ix, iy)
                 if tile == tile_type_floor:
-                    ItemUtilities.set_item_location(gameworld=gameworld, entity=item_to_be_placed, posx=ix, posy=iy)
+                    ItemUtilities.set_item_location(gameworld=gameworld, item_entity=item_to_be_placed, posx=ix, posy=iy)
                     logger.info('...at location {} / {}', ix, iy)
                     logger.info('Player located at {}/{}', player_pos_x, player_pos_y)
                     attempts = 499
