@@ -190,17 +190,6 @@ def generate_items_and_place_them(gameworld, game_map, game_config):
     # generate jewellery
     new_piece_of_jewellery = ItemManager.create_jewellery(
         gameworld=gameworld,
-        bodylocation='neck',
-        e_setting='copper',
-        e_hook='copper',
-        e_activator='Amber', game_config=game_config)
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld,
-                                                             item_to_be_placed=new_piece_of_jewellery,
-                                                             game_map=game_map, game_config=game_config)
-    logger.info('Has jewellery been placed :{}', has_item_been_placed)
-    # generate jewellery
-    new_piece_of_jewellery = ItemManager.create_jewellery(
-        gameworld=gameworld,
         bodylocation='ear',
         e_setting='copper',
         e_hook='copper',

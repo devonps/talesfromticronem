@@ -79,12 +79,12 @@ class Armour:
 
 
 class Jewellery:
-    def __init__(self, ear_one=0, ear_two=0, amulet=0, ring_one=0, ring_two=0):
-        self.ear_one = ear_one
-        self.ear_two = ear_two
-        self.amulet = amulet
-        self.ring_one = ring_one
-        self.ring_two = ring_two
+    def __init__(self, left_ear=0, right_ear=0, neck=0, left_hand=0, right_hand=0):
+        self.left_ear = left_ear
+        self.right_ear = right_ear
+        self.neck = neck
+        self.left_hand = left_hand
+        self.right_hand = right_hand
 
 
 class Equipped:

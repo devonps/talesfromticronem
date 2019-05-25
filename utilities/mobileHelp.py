@@ -221,6 +221,7 @@ class MobileUtilities(numbers.Real):
             mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
             # add item entity to mobiles' inventory
             mobile_inventory_component.items.append(equipped_weapons[0])
+            # check for holding a 2-handed weapon
             if equipped_weapons[2] > 0:
                 gameworld.component_for_entity(mobile, mobiles.Equipped).both_hands = 0
                 mobile_inventory_component.items.append(equipped_weapons[2])
@@ -231,6 +232,7 @@ class MobileUtilities(numbers.Real):
             mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
             # add item entity to mobiles' inventory
             mobile_inventory_component.items.append(equipped_weapons[1])
+            # check for holding a 2-handed weapon
             if equipped_weapons[2] > 0:
                 gameworld.component_for_entity(mobile, mobiles.Equipped).both_hands = 0
                 mobile_inventory_component.items.append(equipped_weapons[2])
@@ -249,6 +251,61 @@ class MobileUtilities(numbers.Real):
                 gameworld.component_for_entity(mobile, mobiles.Equipped).off_hand = 0
             elif equipped_weapons[2] > 0:
                 mobile_inventory_component.items.append(equipped_weapons[2])
+
+    @staticmethod
+    def wear_jewellery_from_inventory(gameworld, mobile, jewellery_entity):
+        # get list of currently equipped jewellery
+        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld, mobile)
+
+        # remove unequipped jewelery from inventory
+        ItemUtilities.remove_item_from_inventory(gameworld, mobile, jewellery_entity)
+
+        # equip jewellery in correct location
+        body_location = ItemUtilities.get_jewellery_valid_body_location(gameworld=gameworld, entity=jewellery_entity)
+
+        if body_location[0]:
+            if equipped_jewellery[0] == 0:
+                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='left ear',
+                                              trinket=jewellery_entity)
+            if equipped_jewellery[1] == 0:
+                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='right ear',
+                                              trinket=jewellery_entity)
+            if equipped_jewellery[0] != 0 and equipped_jewellery[1] != 0:
+                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='left ear',
+                                              trinket=jewellery_entity)
+                ItemUtilities.add_previously_equipped_item_to_inventory(gameworld=gameworld, mobile=mobile,
+                                                                        item_to_inventory=equipped_jewellery[0])
+
+        if body_location[1]:
+            if equipped_jewellery[2] == 0:
+                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='left hand',
+                                              trinket=jewellery_entity)
+            if equipped_jewellery[3] == 0:
+                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='right hand',
+                                              trinket=jewellery_entity)
+            if equipped_jewellery[2] != 0 and equipped_jewellery[3] != 0:
+                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='left hand',
+                                              trinket=jewellery_entity)
+                ItemUtilities.add_previously_equipped_item_to_inventory(gameworld=gameworld, mobile=mobile,
+                                                                        item_to_inventory=equipped_jewellery[2])
+
+        if body_location[2]:
+            ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='neck',
+                                          trinket=jewellery_entity)
+            if equipped_jewellery[4] != 0:
+                ItemUtilities.add_previously_equipped_item_to_inventory(gameworld=gameworld, mobile=mobile,
+                                                                        item_to_inventory=equipped_jewellery[4])
+
+    @staticmethod
+    def get_jewellery_already_equipped(gameworld, mobile):
+        equipped = [gameworld.component_for_entity(mobile, mobiles.Jewellery).left_ear,
+                    gameworld.component_for_entity(mobile, mobiles.Jewellery).right_ear,
+                    gameworld.component_for_entity(mobile, mobiles.Jewellery).left_hand,
+                    gameworld.component_for_entity(mobile, mobiles.Jewellery).right_hand,
+                    gameworld.component_for_entity(mobile, mobiles.Jewellery).neck]
+
+        return equipped
+
 
 
     #
