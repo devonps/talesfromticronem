@@ -258,7 +258,7 @@ class RenderConsole(esper.Processor):
                                 if item_actions[ia] == 'wield':
                                     MobileUtilities.wield_weapon_from_inventory(gameworld=self.gameworld, mobile=player, entity=inv_id)
                                 if item_actions[ia] == 'wear':
-                                    pass
+                                    MobileUtilities.wear_jewellery_from_inventory(gameworld=self.gameworld, mobile=player, jewellery_entity=inv_id)
                                 if item_actions[ia] == 'destroy':
                                     MobileUtilities.destroy_item_from_inventory(gameworld=self.gameworld, mobile=player, entity=inv_id)
 
