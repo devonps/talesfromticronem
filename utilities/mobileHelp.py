@@ -3,6 +3,7 @@ from loguru import logger
 from utilities.itemsHelp import ItemUtilities
 from utilities import world
 from utilities import configUtilities
+from ui.character_screen import display_inspect_panel
 import numbers
 
 
@@ -164,6 +165,11 @@ class MobileUtilities(numbers.Real):
     #
     # Mobile actions
     #
+
+    # inspect an item
+    @staticmethod
+    def inspect_item(gameworld, item_entity, game_config):
+        display_inspect_panel(gameworld=gameworld, display_mode='inspect', item_entity=item_entity, game_config=game_config)
 
     # pick up item from dungeon floor
     def mobile_pick_up_item(gameworld, mobile):

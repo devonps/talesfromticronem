@@ -134,23 +134,23 @@ def generate_monsters_and_place_them(gameworld):
 def generate_items_and_place_them(gameworld, game_map, game_config):
     logger.debug('Creating items as entities - for testing purposes only')
 
-    # # generate weapons
-    # new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='sword', game_config=game_config)
-    # has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon, game_map=game_map, game_config=game_config)
-    # logger.info('Has weapon been placed :{}', has_item_been_placed)
-    #
-    # new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='dagger', game_config=game_config)
-    # has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon,
-    #                                                          game_map=game_map, game_config=game_config)
-    # logger.info('Has weapon been placed :{}', has_item_been_placed)
-    # new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='focus', game_config=game_config)
-    # has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon,
-    #                                                          game_map=game_map, game_config=game_config)
-    # logger.info('Has weapon been placed :{}', has_item_been_placed)
-    # new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='staff', game_config=game_config)
-    # has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon,
-    #                                                          game_map=game_map, game_config=game_config)
-    # logger.info('Has weapon been placed :{}', has_item_been_placed)
+    # generate weapons
+    new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='sword', game_config=game_config)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon, game_map=game_map, game_config=game_config)
+    logger.info('Has weapon been placed :{}', has_item_been_placed)
+
+    new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='dagger', game_config=game_config)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon,
+                                                             game_map=game_map, game_config=game_config)
+    logger.info('Has weapon been placed :{}', has_item_been_placed)
+    new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='focus', game_config=game_config)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon,
+                                                             game_map=game_map, game_config=game_config)
+    logger.info('Has weapon been placed :{}', has_item_been_placed)
+    new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='staff', game_config=game_config)
+    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon,
+                                                             game_map=game_map, game_config=game_config)
+    logger.info('Has weapon been placed :{}', has_item_been_placed)
     new_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='scepter', game_config=game_config)
     has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_weapon,
                                                              game_map=game_map, game_config=game_config)
@@ -207,66 +207,77 @@ def generate_items_and_place_them(gameworld, game_map, game_config):
         setname='Apprentice',
         prefix='',
         level=0,
-        majorname='',
-        majorbonus=0,
-        minoronename='',
-        minoronebonus=0, game_config=game_config)
+        majorname='power',
+        majorbonus=3,
+        minoronename='toughness',
+        minoronebonus=5,
+        component1='cloth',
+        componet2='',
+        game_config=game_config)
     has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
     logger.info('Has armour been placed :{}', has_item_been_placed)
-
-# generate armour
-    new_piece_of_armour = ItemManager.create_piece_of_armour(
-        gameworld=gameworld,
-        bodylocation='chest',
-        quality='basic',
-        setname='Apprentice',
-        prefix='',
-        level=0,
-        majorname='',
-        majorbonus=0,
-        minoronename='',
-        minoronebonus=0, game_config=game_config)
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
-    logger.info('Has armour been placed :{}', has_item_been_placed)
-# generate armour
-    new_piece_of_armour = ItemManager.create_piece_of_armour(
-        gameworld=gameworld,
-        bodylocation='feet',
-        quality='basic',
-        setname='Apprentice',
-        prefix='',
-        level=0,
-        majorname='',
-        majorbonus=0,
-        minoronename='',
-        minoronebonus=0, game_config=game_config)
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
-    logger.info('Has armour been placed :{}', has_item_been_placed)
-# generate armour
-    new_piece_of_armour = ItemManager.create_piece_of_armour(
-        gameworld=gameworld,
-        bodylocation='hands',
-        quality='basic',
-        setname='Apprentice',
-        prefix='',
-        level=0,
-        majorname='',
-        majorbonus=0,
-        minoronename='',
-        minoronebonus=0, game_config=game_config)
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
-    logger.info('Has armour been placed :{}', has_item_been_placed)
-# generate armour
-    new_piece_of_armour = ItemManager.create_piece_of_armour(
-        gameworld=gameworld,
-        bodylocation='head',
-        quality='basic',
-        setname='Apprentice',
-        prefix='',
-        level=0,
-        majorname='',
-        majorbonus=0,
-        minoronename='',
-        minoronebonus=0, game_config=game_config)
-    has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
-    logger.info('Has armour been placed :{}', has_item_been_placed)
+#
+# # generate armour
+#     new_piece_of_armour = ItemManager.create_piece_of_armour(
+#         gameworld=gameworld,
+#         bodylocation='chest',
+#         quality='basic',
+#         setname='Apprentice',
+#         prefix='',
+#         level=0,
+#         majorname='power',
+#         majorbonus=1,
+#         minoronename='toughness',
+#         minoronebonus=1,
+#         component1='cloth',
+#         componet2='', game_config=game_config)
+#     has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
+#     logger.info('Has armour been placed :{}', has_item_been_placed)
+# # generate armour
+#     new_piece_of_armour = ItemManager.create_piece_of_armour(
+#         gameworld=gameworld,
+#         bodylocation='feet',
+#         quality='basic',
+#         setname='Apprentice',
+#         prefix='',
+#         level=0,
+#         majorname='toughness',
+#         majorbonus=6,
+#         minoronename='power',
+#         minoronebonus=2,
+#         component1='cloth',
+#         componet2='', game_config=game_config)
+#     has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
+#     logger.info('Has armour been placed :{}', has_item_been_placed)
+# # generate armour
+#     new_piece_of_armour = ItemManager.create_piece_of_armour(
+#         gameworld=gameworld,
+#         bodylocation='hands',
+#         quality='basic',
+#         setname='Apprentice',
+#         prefix='',
+#         level=0,
+#         majorname='toughness',
+#         majorbonus=1,
+#         minoronename='power',
+#         minoronebonus=3,
+#         component1='cloth',
+#         componet2='', game_config=game_config)
+#     has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
+#     logger.info('Has armour been placed :{}', has_item_been_placed)
+# # generate armour
+#     new_piece_of_armour = ItemManager.create_piece_of_armour(
+#         gameworld=gameworld,
+#         bodylocation='head',
+#         quality='basic',
+#         setname='Apprentice',
+#         prefix='',
+#         level=0,
+#         majorname='toughness',
+#         majorbonus=4,
+#         minoronename='power',
+#         minoronebonus=4,
+#         component1='cloth',
+#         componet2='', game_config=game_config)
+#     has_item_been_placed = ItemManager.place_item_in_dungeon(gameworld=gameworld, item_to_be_placed=new_piece_of_armour, game_map=game_map, game_config=game_config)
+#     logger.info('Has armour been placed :{}', has_item_been_placed)

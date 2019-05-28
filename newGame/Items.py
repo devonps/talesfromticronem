@@ -36,7 +36,7 @@ class ItemManager:
                 myweapon = world.get_next_entity_id(gameworld=gameworld)
                 # generate common item components
                 gameworld.add_component(myweapon, items.TypeOfItem(label='weapon'))
-                gameworld.add_component(myweapon, items.Material)
+                gameworld.add_component(myweapon, items.Material(texture='wooden'))
                 gameworld.add_component(myweapon, items.Actionlist(action_list=weapon_action_list))
                 gameworld.add_component(myweapon, items.Describable(
                     description=weapon['description'],
@@ -74,7 +74,7 @@ class ItemManager:
                 logger.info('Entity {} has been created using the {} template', myweapon, weapon['name'])
                 return myweapon  # this is the entity id for the newly created weapon
 
-    def create_piece_of_armour(gameworld, bodylocation, quality, setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus, game_config):
+    def create_piece_of_armour(gameworld, bodylocation, quality, setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus, component1, componet2, game_config):
         """
         This method creates a gameworld entity that's used as a piece of armour. It uses the Json file
         to create the 'base' entity - it's up to other methods to add flesh to these bones.
@@ -88,6 +88,8 @@ class ItemManager:
         :param bodylocation:
         :param quality:
         :param gameworld:
+        :param component1:
+        :param componet2:
 
         """
         armour_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
@@ -102,6 +104,7 @@ class ItemManager:
 
                 # generate common item components
                 gameworld.add_component(armour_piece, items.TypeOfItem(label='armour'))
+                gameworld.add_component(armour_piece, items.Material(texture=component1))
 
                 gameworld.add_component(armour_piece, items.Actionlist(action_list=armour_action_list))
                 gameworld.add_component(armour_piece, items.Describable(
@@ -193,7 +196,7 @@ class ItemManager:
                         minortwobonus = this_armour['minortwobonus']
 
                         piece_of_armour = ItemManager.create_piece_of_armour(gameworld, bodylocation, quality,
-                                            setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus, game_config)
+                                            setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus, 'cloth', '', game_config)
 
                         full_armour_set.append(piece_of_armour)
 

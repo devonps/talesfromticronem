@@ -1,12 +1,138 @@
 import tcod.event
 
-from utilities.mobileHelp import MobileUtilities
-from utilities.display import display_coloured_box
+from utilities.display import display_coloured_box, draw_colourful_frame
 from utilities.itemsHelp import ItemUtilities
-from components import mobiles
 from utilities import configUtilities
 from utilities import colourUtilities
+from utilities.spellHelp import SpellUtilities
+from utilities.input_handlers import handle_game_keys
 from loguru import logger
+
+from components import mobiles
+
+
+def display_inspect_panel(gameworld, display_mode, item_entity, game_config):
+    """
+
+    :param gameworld:
+    :param display_mode: inspect = full info, look = generic info, partial=limited
+    :param item_entity:
+    :return:
+    """
+
+    disp_inspect_panel = True
+
+    item_type = ItemUtilities.get_item_type(gameworld=gameworld, entity=item_entity)
+
+    insp_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_MAX_WIDTH')
+    insp_panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_MAX_HEIGHT')
+    insp_panel_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_LEFT_X')
+    insp_panel_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_LEFT_Y')
+    other_game_state = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='DISPLAY_GAME_MAP')
+    portrait_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_ITEM_PORTRAIT_X')
+    portrait_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_ITEM_PORTRAIT_Y')
+    portrait_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_ITEM_PORTRAIT_WIDTH')
+    portrait_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_ITEM_PORTRAIT_HEIGHT')
+
+    # create console & draw pretty frame
+    inspect_panel = tcod.console_new(insp_panel_width, insp_panel_height)
+
+    while disp_inspect_panel:
+
+        draw_colourful_frame(console=inspect_panel, game_config=game_config, startx=0, starty=0,
+                             width=insp_panel_width, height=insp_panel_height,
+                             title='Inspect', title_loc='right', corner_decorator='',
+                             corner_studs='round', msg='ESC to quit')
+
+        # draw item portrait
+        inspect_panel.draw_frame(x=portrait_start_x,y=portrait_start_y, width=portrait_width, height=portrait_height, title='Item', clear=True, fg=colourUtilities.GREENYELLOW, bg=colourUtilities.BLACK)
+        # display general item properties
+        item_display_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=item_entity)
+        item_description = ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
+        item_texture = ItemUtilities.get_item_texture(gameworld=gameworld, entity=item_entity)
+
+        item_general_info_x = portrait_start_x + portrait_width + 2
+
+        inspect_panel.print(x=item_general_info_x, y=portrait_start_y, string=item_display_name)
+        inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 1, string=item_description)
+        inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 2, string=item_texture)
+
+        # display specific item properties - defense values, bonuses,
+        if item_type == 'armour':
+            am_set_name = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=item_entity)
+            am_quality_level = ItemUtilities.get_item_quality(gameworld=gameworld, entity=item_entity)
+            am_weight = ItemUtilities.get_armour_piece_weight(gameworld=gameworld, entity=item_entity)
+            am_defense_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=item_entity)
+            am_major_attributes = ItemUtilities.get_armour_major_attributes(gameworld=gameworld, entity=item_entity)
+            am_minor_attributes = ItemUtilities.get_armour_minor_attributes(gameworld=gameworld, entity=item_entity)
+
+            major_attr = am_major_attributes[0] + ' +' + str(am_major_attributes[1])
+            minor_attr = am_minor_attributes[0] + ' +' + str(am_minor_attributes[1])
+
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 4, string=am_set_name)
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 5, string=am_quality_level)
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 6, string=am_weight)
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 7, string=str(am_defense_value))
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 8, string=major_attr)
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 9, string=minor_attr)
+
+        if item_type == 'jewellery':
+            jw_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=item_entity)
+
+            jewel_stat_bonus = jw_stat_bonus[0] + ' +' + str(jw_stat_bonus[1])
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 4, string=jewel_stat_bonus)
+        if item_type == 'weapon':
+            wp_hallmarks = ItemUtilities.get_weapon_hallmarks(gameworld=gameworld, entity=item_entity)
+            hallmarks = 'no hallmarks'
+            if len(wp_hallmarks) > 0:
+                if int(wp_hallmarks[0]) > 0 and int(wp_hallmarks[1]) > 0:
+                    hallmarks = 'hallmarks x2'
+                else:
+                        hallmarks = 'hallmarks x1'
+            wp_experience = ItemUtilities.get_weapon_experience_values(gameworld=gameworld, entity=item_entity)
+
+            wp_cur_exp_level = wp_experience[0]
+            wp_max_exp_level = wp_experience[1]
+
+            wp_exp = str(wp_cur_exp_level) + '/' + str(wp_max_exp_level)
+
+            spell_slot_one = ItemUtilities.get_weapon_spell_slot_one_information(gameworld=gameworld, entity=item_entity)
+            spell_slot_two = ItemUtilities.get_weapon_spell_slot_two_information(gameworld=gameworld, entity=item_entity)
+            spell_slot_three = ItemUtilities.get_weapon_spell_slot_three_information(gameworld=gameworld, entity=item_entity)
+            spell_slot_four = ItemUtilities.get_weapon_spell_slot_four_information(gameworld=gameworld, entity=item_entity)
+            spell_slot_five = ItemUtilities.get_weapon_spell_slot_five_information(gameworld=gameworld, entity=item_entity)
+
+            slot_one_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=1)
+            slot_two_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=2)
+            slot_three_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=3)
+            slot_four_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=4)
+            slot_five_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=5)
+
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 4, string=wp_exp)
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 5, string=hallmarks)
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 6, string=slot_one_spell_name)
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 7, string=slot_two_spell_name)
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 8, string=slot_three_spell_name)
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 9, string=slot_four_spell_name)
+            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 10, string=slot_five_spell_name)
+
+
+        # display dynamic item properties
+
+        tcod.console_blit(inspect_panel, 0, 0, insp_panel_width, insp_panel_height, 0, insp_panel_start_x, insp_panel_start_y)
+
+        tcod.console_flush()
+
+        event_to_be_processed, event_action = handle_game_keys()
+        if event_action != '':
+            if event_action == 'quit':
+                disp_inspect_panel = False
+                configUtilities.write_config_value(configfile=game_config, section='game',
+                                                   parameter='DISPLAY_GAME_STATE', value=str(other_game_state))
+
+    tcod.console_blit(inspect_panel, 0, 0, insp_panel_width, insp_panel_height, 0, insp_panel_start_x, 10)
+    #
+    tcod.console_flush()
 
 
 def display_hero_panel(gameworld, game_config):

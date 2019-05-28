@@ -300,7 +300,8 @@ class NewCharacter:
 
         # load spell bar with spells from weapon
         logger.info('Loading spell bar')
-        SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spellbar)
+        weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
+        SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spellbar, wpns_equipped=weapons_equipped)
 
         # create inventory bags
         ItemManager.create_bag(gameworld=gameworld, game_config=game_config)

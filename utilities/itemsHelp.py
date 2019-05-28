@@ -178,7 +178,7 @@ class ItemUtilities:
         return slot
 
     @staticmethod
-    def get_weapon_spell_lot_four_information(gameworld, entity):
+    def get_weapon_spell_slot_four_information(gameworld, entity):
         slot_component = gameworld.component_for_entity(entity,items.Spells)
         slot = [slot_component.slot_four, slot_component.slot_four_disabled]
         return slot
