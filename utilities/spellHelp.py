@@ -1,10 +1,11 @@
 from loguru import logger
 from components import spells, spellBar, items
-from utilities.mobileHelp import MobileUtilities
+# from utilities.mobileHelp import MobileUtilities
 
 
 class SpellUtilities:
 
+    @staticmethod
     def get_spell_name_in_weapon_slot(gameworld, weapon_equipped, slotid):
         """
         Returns the spell name from weapon slot
@@ -14,11 +15,12 @@ class SpellUtilities:
         """
         spell_name = 'no spell'
         spell = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld, weapon_equipped, slotid)
-        if spell > 0:
+        if int(spell) > 0:
             spell_name = gameworld.component_for_entity(spell, spells.Name).label
 
         return spell_name
 
+    @staticmethod
     def get_spell_entity_at_weapon_slot(gameworld, weapon_equipped, slotid):
 
         spell_entity = 0
@@ -36,11 +38,12 @@ class SpellUtilities:
 
         return spell_entity
 
-    def populate_spell_bar_from_weapon(gameworld, player_entity, spellbar):
+    def populate_spell_bar_from_weapon(gameworld, player_entity, spellbar, wpns_equipped):
 
         # this method takes each of the spells 'loaded into the weapon' and 'loads them into the spellbar entity'
 
-        weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
+        # weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
+        weapons_equipped = wpns_equipped
 
         # are there any weapons equippped
         if len(weapons_equipped) == 0:

@@ -223,8 +223,8 @@ class RenderConsole(esper.Processor):
             else:
                 # display action menu --> works like a mini inventory panel
 
+                action_panel = tcod.console_new(act_menu_width, act_menu_height)
                 while display_action_menu:
-                    action_panel = tcod.console_new(act_menu_width, act_menu_height)
 
                     draw_colourful_frame(console=action_panel, game_config=game_config, startx=0, starty=0,
                                          width=act_menu_width, height=act_menu_height,
@@ -235,11 +235,9 @@ class RenderConsole(esper.Processor):
                     for action in item_actions:
                         action_panel.print(x=3, y=cnt, string=str(cnt) + ':' + action, fg=def_wd, bg=None)
                         cnt += 1
-                    tcod.console_blit(action_panel, 0, 0,
-                                      act_menu_width,  act_menu_height,
-                                      0, inv_key_pos + 10, 10)
+                    tcod.console_blit(action_panel, 0, 0, act_menu_width,  act_menu_height, 0, inv_key_pos + 10, 10)
 
-                    action_panel.clear(ch=ord(' '), fg=colourUtilities.GHOSTWHITE, bg=colourUtilities.SEAGREEN1)
+                    action_panel.clear(ch=ord(' '), fg=colourUtilities.BLACK, bg=colourUtilities.BLACK)
                     tcod.console_flush()
                     event_to_be_processed, event_action = handle_game_keys()
                     if event_action != '':
@@ -251,10 +249,11 @@ class RenderConsole(esper.Processor):
                             ia = ord(event_action) - 49
                             if ia < len(item_actions):
                                 display_action_menu = False
+                                inv_panel_displayed = False
                                 if item_actions[ia] == 'drop':
                                     MobileUtilities.drop_item_from_inventory(gameworld=self.gameworld, mobile=player, entity=inv_id)
                                 if item_actions[ia] == 'inspect':
-                                    pass
+                                    MobileUtilities.inspect_item(gameworld=self.gameworld, item_entity=inv_id, game_config=game_config)
                                 if item_actions[ia] == 'wield':
                                     MobileUtilities.wield_weapon_from_inventory(gameworld=self.gameworld, mobile=player, entity=inv_id)
                                 if item_actions[ia] == 'wear':
