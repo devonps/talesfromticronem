@@ -261,10 +261,13 @@ class RenderConsole(esper.Processor):
                                     MobileUtilities.wear_jewellery_from_inventory(gameworld=self.gameworld, mobile=player, jewellery_entity=inv_id)
                                 if item_actions[ia] == 'destroy':
                                     MobileUtilities.destroy_item_from_inventory(gameworld=self.gameworld, mobile=player, entity=inv_id)
+                                if item_actions[ia] == 'equip':
+                                    MobileUtilities.equip_armour_from_inventory(gameworld=self.gameworld, mobile=player, armour_piece=inv_id)
 
             inv_panel.clear(ch=ord(' '), fg=inv_def_fg, bg=inv_def_bg)
 
-    def populate_inv_lists(self, inventory_items, gameworld, item_type_in_inv):
+    @staticmethod
+    def populate_inv_lists(inventory_items, gameworld, item_type_in_inv):
 
         inv_items = []
         cnt = 0
