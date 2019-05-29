@@ -1,6 +1,5 @@
 from loguru import logger
 from components import spells, spellBar, items
-# from utilities.mobileHelp import MobileUtilities
 
 
 class SpellUtilities:
@@ -38,6 +37,7 @@ class SpellUtilities:
 
         return spell_entity
 
+    @staticmethod
     def populate_spell_bar_from_weapon(gameworld, player_entity, spellbar, wpns_equipped):
 
         # this method takes each of the spells 'loaded into the weapon' and 'loads them into the spellbar entity'
@@ -79,6 +79,7 @@ class SpellUtilities:
             this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,weapon_equipped=off_hand_weapon, slotid=5)
             gameworld.component_for_entity(spellbar, spellBar.SlotFive).id = this_spell_entity
 
+    @staticmethod
     def get_spell_bar_slot_componet(gameworld, spell_bar, slotid):
         if slotid == 1:
             return gameworld.component_for_entity(spell_bar, spellBar.SlotOne)
@@ -101,3 +102,15 @@ class SpellUtilities:
         if slotid == 10:
             return gameworld.component_for_entity(spell_bar, spellBar.SlotTen)
         return -1
+
+    @staticmethod
+    def get_spell_name(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.Name).label
+
+    @staticmethod
+    def get_spell_cast_time(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.CastTime).number_of_turns
+
+    @staticmethod
+    def get_spell_cooldown_time(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.CoolDown).number_of_turns

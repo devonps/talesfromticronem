@@ -1,7 +1,7 @@
 import tcod.console
 
 
-from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, create_and_place_world_entities
+from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, create_and_place_world_entities, create_spell_entities
 from utilities.game_messages import MessageLog, Message
 from processors.render import RenderGameStartScreen
 from utilities.mobileHelp import MobileUtilities
@@ -19,6 +19,7 @@ def start_game(con, gameworld, game_config):
     msg_panel_lines = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_LINES')
 
     setup_game(game_config)
+    create_spell_entities(gameworld, game_config)
     player, spell_bar = create_new_character(con, gameworld, game_config)
     message_log = MessageLog(x=msg_panel_across_pos, width=msg_panel_width, height=msg_panel_lines)
     game_map = initialise_game_map(con, gameworld, player, spell_bar, message_log, game_config)
@@ -73,15 +74,16 @@ def game_replay(con, game_config):
 @logger.catch()
 def main():
 
-    # logger.add(constants.LOGFILE, format=constants.LOGFORMAT)
+    game_config = configUtilities.load_config()
+
+    # logfile = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFILE')
+    # logformat = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFORMAT')
+
+    # logger.add(logfile, format=logformat)
 
     logger.info('*********************')
     logger.info('* Initialising game *')
     logger.info('*********************')
-
-    game_config = configUtilities.load_config()
-
-    sects = configUtilities.get_config_file_sections(game_config)
 
     game_title1 = configUtilities.get_config_value_as_string(game_config, 'default', 'GAME_WINDOW_TITLE')
 
@@ -150,7 +152,6 @@ def main():
             # this was a write back to the constants file. This doesn't work with the config file
             # need another option issue #57 created
             # constants.PLAYER_SEED = player_supplied_seed
-            pass
 
             my_random = tcod.random_new_from_seed(1059)
             logger.info('random seed set up {}', my_random)
