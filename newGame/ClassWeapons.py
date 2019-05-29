@@ -1,13 +1,13 @@
-
-
 from loguru import logger
 from components import spells, items
 
 
 class WeaponClass:
 
+    @staticmethod
     def load_weapon_with_spells(gameworld, weapon_obj, weapon_type, mobile_class):
         # get list of spells for that weapon and mobile class
+        logger.warning('loading weapon {} / {} with spells for {}', weapon_obj, weapon_type, mobile_class)
         for ent, (cl, wpn, weapon_slot) in gameworld.get_components(spells.ClassName, spells.WeaponType, spells.WeaponSlot):
             if (wpn.label == weapon_type) and (cl.label == mobile_class):
                 if weapon_slot.slot == '1':

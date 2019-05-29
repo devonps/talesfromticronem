@@ -160,34 +160,34 @@ class ItemUtilities:
         return hallmarks
 
     @staticmethod
-    def get_weapon_spell_slot_one_information(gameworld, entity):
+    def get_weapon_spell_slot_one_entity(gameworld, entity):
         slot_component = gameworld.component_for_entity(entity,items.Spells)
-        slot = [slot_component.slot_one, slot_component.slot_one_disabled]
-        return slot
+        slot = slot_component.slot_one
+        return int(slot)
 
     @staticmethod
-    def get_weapon_spell_slot_two_information(gameworld, entity):
+    def get_weapon_spell_slot_two_entity(gameworld, entity):
         slot_component = gameworld.component_for_entity(entity,items.Spells)
-        slot = [slot_component.slot_two, slot_component.slot_two_disabled]
-        return slot
+        slot = slot_component.slot_two
+        return int(slot)
 
     @staticmethod
-    def get_weapon_spell_slot_three_information(gameworld, entity):
+    def get_weapon_spell_slot_three_entity(gameworld, entity):
         slot_component = gameworld.component_for_entity(entity, items.Spells)
-        slot = [slot_component.slot_three, slot_component.slot_three_disabled]
-        return slot
+        slot = slot_component.slot_three
+        return int(slot)
 
     @staticmethod
-    def get_weapon_spell_slot_four_information(gameworld, entity):
+    def get_weapon_spell_slot_four_entity(gameworld, entity):
         slot_component = gameworld.component_for_entity(entity,items.Spells)
-        slot = [slot_component.slot_four, slot_component.slot_four_disabled]
-        return slot
+        slot = slot_component.slot_four
+        return int(slot)
 
     @staticmethod
-    def get_weapon_spell_slot_five_information(gameworld, entity):
+    def get_weapon_spell_slot_five_entity(gameworld, entity):
         slot_component = gameworld.component_for_entity(entity,items.Spells)
-        slot = [slot_component.slot_five, slot_component.slot_five_disabled]
-        return slot
+        slot = slot_component.slot_five
+        return int(slot)
 
 ####################################################
 #
