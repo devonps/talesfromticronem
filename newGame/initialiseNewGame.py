@@ -119,7 +119,11 @@ def generate_spells(gameworld, game_config):
         gameworld.add_component(thisspell, spells.WeaponSlot(spell['weapon_slot']))
         gameworld.add_component(thisspell, spells.MaxTargets(spell['max_targets']))
         gameworld.add_component(thisspell, spells.GroundTargeted(spell['ground_targeted']))
-        gameworld.add_component(thisspell, spells.MaxRange(spell['max_range']))
+
+        spell_range_in_file = spell['max_range']
+        spell_range = configUtilities.get_config_value_as_string(configfile=game_config, section='spells', parameter=spell_range_in_file.upper())
+
+        gameworld.add_component(thisspell, spells.MaxRange(spell_range))
         gameworld.add_component(thisspell, spells.AreaOfEffect(spell['aoe']))
         gameworld.add_component(thisspell, spells.AreaOfEffectSize(spell['aoe_size']))
         effects = spell['effects']

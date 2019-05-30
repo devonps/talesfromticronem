@@ -85,6 +85,12 @@ def handle_game_keys():
             if event.sym == tcod.event.K_ESCAPE:
                 myevent = 'keypress'
                 action = 'quit'
+            if event.sym == tcod.event.K_LEFT:
+                myevent = 'keypress'
+                action = 'left'
+            if event.sym == tcod.event.K_RIGHT:
+                myevent = 'keypress'
+                action = 'right'
         if event.type == "TEXTINPUT":
             myevent = 'keypress'
             action = event.text

@@ -21,6 +21,10 @@ def display_inspect_panel(gameworld, display_mode, item_entity, game_config):
     """
 
     disp_inspect_panel = True
+    spell_display_index = 0
+    spell_display_index_max = 3
+
+    spell_display_mode = ['cast time  ','cool down  ','max targets','max range  ']
 
     item_type = ItemUtilities.get_item_type(gameworld=gameworld, entity=item_entity)
 
@@ -36,13 +40,17 @@ def display_inspect_panel(gameworld, display_mode, item_entity, game_config):
 
     # create console & draw pretty frame
     inspect_panel = tcod.console_new(insp_panel_width, insp_panel_height)
+    panel_msg = 'ESC to quit'
+
+    if display_mode == 'inspect':
+        panel_msg += ', arrows to change info'
 
     while disp_inspect_panel:
 
         draw_colourful_frame(console=inspect_panel, game_config=game_config, startx=0, starty=0,
                              width=insp_panel_width, height=insp_panel_height,
                              title='Inspect', title_loc='right', corner_decorator='',
-                             corner_studs='round', msg='ESC to quit')
+                             corner_studs='round', msg=panel_msg)
 
         # draw item portrait
         inspect_panel.draw_frame(x=portrait_start_x, y=portrait_start_y, width=portrait_width, height=portrait_height, title='Item', clear=True, fg=colourUtilities.GREENYELLOW, bg=colourUtilities.BLACK)
@@ -82,8 +90,9 @@ def display_inspect_panel(gameworld, display_mode, item_entity, game_config):
             jewel_stat_bonus = jw_stat_bonus[0] + ' +' + str(jw_stat_bonus[1])
             inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 4, string=jewel_stat_bonus)
         if item_type == 'weapon':
-            spell_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect',
-                                                                          parameter='INSP_PANEL_SPELL_Y')
+            spell_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_SPELL_Y')
+            spell_name_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_SPELL_NAME')
+            spell_info_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_SPELL_INFO')
 
             wp_hallmarks = ItemUtilities.get_weapon_hallmarks(gameworld=gameworld, entity=item_entity)
             hallmarks = 'no hallmarks'
@@ -97,52 +106,62 @@ def display_inspect_panel(gameworld, display_mode, item_entity, game_config):
             inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 5, string=hallmarks)
 
             inspect_panel.print(x=portrait_start_x, y=spell_y, string='Spell Slots', fg=colourUtilities.BLUE, bg=colourUtilities.BLACK)
+            inspect_panel.print(x=spell_info_x, y=spell_y, string=spell_display_mode[spell_display_index], fg=colourUtilities.YELLOW1, bg=colourUtilities.BLACK)
 
             spell_slot_one = ItemUtilities.get_weapon_spell_slot_one_entity(gameworld=gameworld, entity=item_entity)
-
+            spell_y += 1
             if spell_slot_one > 0:
                 slot_one_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=1)
-                spell_one_cast_time = SpellUtilities.get_spell_cast_time(gameworld=gameworld, spell_entity=spell_slot_one)
-                spell_one_cooldown_time = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld, spell_entity=spell_slot_one)
-                inspect_panel.print(x=portrait_start_x, y=spell_y + 1, string='1. ' + slot_one_spell_name)
-                inspect_panel.print(x=portrait_start_x + 20, y=spell_y + 1, string=str(spell_one_cast_time))
-                inspect_panel.print(x=portrait_start_x + 23, y=spell_y + 1, string=str(spell_one_cooldown_time))
+                spell_information = str(get_spell_additional_information(gameworld=gameworld, spell_entity=spell_slot_one, display_mode=spell_display_index))
 
-            # spell_slot_two = ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, entity=item_entity)
-            # spell_slot_three = ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld, entity=item_entity)
-            # spell_slot_four = ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, entity=item_entity)
-            # spell_slot_five = ItemUtilities.get_weapon_spell_slot_five_entity(gameworld=gameworld, entity=item_entity)
-            #
-            #
-            # slot_two_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=2)
-            # slot_three_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=3)
-            # slot_four_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=4)
-            # slot_five_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=5)
+                inspect_panel.print(x=spell_name_x, y=spell_y, string='1. ' + slot_one_spell_name)
+                inspect_panel.print(x=spell_info_x, y=spell_y, string=spell_information)
+            else:
+                inspect_panel.print(x=spell_name_x, y=spell_y, string='1. No spell')
 
+            spell_slot_two = ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, entity=item_entity)
+            spell_y += 1
+            if spell_slot_two > 0:
+                slot_two_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=2)
+                spell_information = str(get_spell_additional_information(gameworld=gameworld, spell_entity=spell_slot_two, display_mode=spell_display_index))
 
-            # spell_two_cast_time = SpellUtilities.get_spell_cast_time(gameworld=gameworld, spell_entity=spell_slot_two)
-            # spell_three_cast_time = SpellUtilities.get_spell_cast_time(gameworld=gameworld, spell_entity=spell_slot_three)
-            # spell_four_cast_time = SpellUtilities.get_spell_cast_time(gameworld=gameworld, spell_entity=spell_slot_four)
-            # spell_five_cast_time = SpellUtilities.get_spell_cast_time(gameworld=gameworld, spell_entity=spell_slot_five)
-            #
-            #
-            # spell_two_cooldown_time = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld, spell_entity=spell_slot_two)
-            # spell_three_cooldown_time = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld, spell_entity=spell_slot_three)
-            # spell_four_cooldown_time = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld, spell_entity=spell_slot_four)
-            # spell_five_cooldown_time = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld, spell_entity=spell_slot_five)
+                inspect_panel.print(x=spell_name_x, y=spell_y, string='2. ' + slot_two_spell_name)
+                inspect_panel.print(x=spell_info_x, y=spell_y, string=spell_information)
+            else:
+                inspect_panel.print(x=portrait_start_x, y=spell_y, string='2. No spell')
 
+            spell_slot_three = ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld, entity=item_entity)
+            spell_y += 1
+            if spell_slot_three > 0:
+                slot_three_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=3)
+                spell_information = str(get_spell_additional_information(gameworld=gameworld, spell_entity=spell_slot_three, display_mode=spell_display_index))
 
+                inspect_panel.print(x=spell_name_x, y=spell_y, string='3. ' + slot_three_spell_name)
+                inspect_panel.print(x=spell_info_x, y=spell_y, string=spell_information)
+            else:
+                inspect_panel.print(x=spell_name_x, y=spell_y, string='3. No spell')
 
+            spell_slot_four = ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, entity=item_entity)
+            spell_y += 1
+            if spell_slot_four > 0:
+                slot_four_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=4)
+                spell_information = str(get_spell_additional_information(gameworld=gameworld, spell_entity=spell_slot_four, display_mode=spell_display_index))
 
+                inspect_panel.print(x=spell_name_x, y=spell_y, string='4. ' + slot_four_spell_name)
+                inspect_panel.print(x=spell_info_x, y=spell_y, string=spell_information)
+            else:
+                inspect_panel.print(x=spell_name_x, y=spell_y, string='4. No spell')
 
+            spell_slot_five = ItemUtilities.get_weapon_spell_slot_five_entity(gameworld=gameworld, entity=item_entity)
+            spell_y += 1
+            if spell_slot_five > 0:
+                slot_five_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=5)
+                spell_information = str(get_spell_additional_information(gameworld=gameworld, spell_entity=spell_slot_five, display_mode=spell_display_index))
 
-
-
-            # inspect_panel.print(x=portrait_start_x, y=spell_y + 1, string='2. ' + slot_two_spell_name)
-            # inspect_panel.print(x=portrait_start_x, y=spell_y + 2, string='3. ' + slot_three_spell_name)
-            # inspect_panel.print(x=portrait_start_x, y=spell_y + 3, string='4. ' + slot_four_spell_name)
-            # inspect_panel.print(x=portrait_start_x, y=spell_y + 4, string='5. ' + slot_five_spell_name)
-
+                inspect_panel.print(x=spell_name_x, y=spell_y, string='5. ' + slot_five_spell_name)
+                inspect_panel.print(x=spell_info_x, y=spell_y, string=spell_information)
+            else:
+                inspect_panel.print(x=spell_name_x, y=spell_y, string='5. No spell')
 
         # display dynamic item properties
 
@@ -156,10 +175,44 @@ def display_inspect_panel(gameworld, display_mode, item_entity, game_config):
                 disp_inspect_panel = False
                 configUtilities.write_config_value(configfile=game_config, section='game',
                                                    parameter='DISPLAY_GAME_STATE', value=str(other_game_state))
+            if event_action == 'left':
+                spell_display_index -= 1
+            if event_action == 'right':
+                spell_display_index += 1
+
+            if spell_display_index > spell_display_index_max:
+                spell_display_index = 0
+            if spell_display_index < 0:
+                spell_display_index = spell_display_index_max
 
     tcod.console_blit(inspect_panel, 0, 0, insp_panel_width, insp_panel_height, 0, insp_panel_start_x, 10)
-    #
+
     tcod.console_flush()
+
+
+def get_spell_additional_information(gameworld, spell_entity, display_mode):
+    spell_info = ''
+    if display_mode == 0:
+        ret_val = int(SpellUtilities.get_spell_cast_time(gameworld=gameworld, spell_entity=spell_entity))
+        if ret_val == 1:
+            spell_info = str(ret_val) + '  turn'
+        else:
+            spell_info = str(ret_val) + ' turns'
+    if display_mode == 1:
+        ret_val = int(SpellUtilities.get_spell_cooldown_time(gameworld=gameworld, spell_entity=spell_entity))
+        if ret_val == 1:
+            spell_info = str(ret_val) + '  turn'
+        else:
+            spell_info = str(ret_val) + ' turns'
+    if display_mode == 2:
+        spell_info = SpellUtilities.get_spell_max_targets(gameworld=gameworld, spell_entity=spell_entity) + '      '
+    if display_mode == 3:
+        ret_val = int(SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity))
+        if ret_val == 1:
+            spell_info = str(ret_val) + ' tile'
+        else:
+            spell_info = str(ret_val) + ' tiles'
+    return spell_info
 
 
 def display_hero_panel(gameworld, game_config):

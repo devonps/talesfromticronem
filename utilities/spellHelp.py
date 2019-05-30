@@ -114,3 +114,15 @@ class SpellUtilities:
     @staticmethod
     def get_spell_cooldown_time(gameworld, spell_entity):
         return gameworld.component_for_entity(spell_entity, spells.CoolDown).number_of_turns
+
+    @staticmethod
+    def get_spell_description(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.Description).label
+
+    @staticmethod
+    def get_spell_max_targets(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.MaxTargets).number_of_targets
+
+    @staticmethod
+    def get_spell_max_range(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.MaxRange).max_range
