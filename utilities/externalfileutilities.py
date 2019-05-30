@@ -1,4 +1,6 @@
 
+import os.path
+
 class Externalfiles:
 
     @staticmethod
@@ -24,3 +26,18 @@ class Externalfiles:
 
         return filecontent
 
+    @staticmethod
+    def start_new_game_replay_file(filename):
+        Externalfiles.delete_existing_file(filename)
+        Externalfiles.create_new_file(filename)
+
+    @staticmethod
+    def does_file_exist(filename):
+        if os.path.exists(filename):
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def delete_existing_file(filename):
+        os.remove(filename)

@@ -26,7 +26,16 @@ from mapRelated.gameMap import GameMap
 def setup_game(game_config):
 
     # world seed generation
-    generate_world_seed(game_config)
+    world_seed = generate_world_seed(game_config)
+    store_world_seed(game_config, world_seed)
+
+
+def store_world_seed(game_config, world_seed):
+    action_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='GAME_ACTIONS_FILE')
+    Externalfiles.start_new_game_replay_file(action_file)
+
+    value = 'world_seed:' + str(world_seed)
+    Externalfiles.write_to_existing_file(action_file, value)
 
 
 def create_spell_entities(gameworld, game_config):
@@ -49,10 +58,8 @@ def generate_world_seed(game_config):
     else:
         world_seed = random.getrandbits(30)
         logger.info('No player seed, using large random number for world seed {}', world_seed)
-    value = 'world_seed:' + str(world_seed)
-    action_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='GAME_ACTIONS_FILE')
 
-    Externalfiles.write_to_existing_file(action_file, value)
+    return world_seed
 
 
 def create_new_character(con, gameworld, game_config):
