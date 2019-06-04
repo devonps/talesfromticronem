@@ -3,7 +3,7 @@
 reserve_gfx
 todo*
 build/
-dist
+dist/
 *.spec
 *.dll
 sdl2/
