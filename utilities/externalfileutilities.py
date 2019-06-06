@@ -28,7 +28,8 @@ class Externalfiles:
 
     @staticmethod
     def start_new_game_replay_file(filename):
-        Externalfiles.delete_existing_file(filename)
+        if Externalfiles.does_file_exist(filename):
+            Externalfiles.delete_existing_file(filename)
         Externalfiles.create_new_file(filename)
 
     @staticmethod
