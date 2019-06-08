@@ -1,0 +1,1 @@
+pyinstaller engine.py --add-data "C:\Program Files (x86)\Jenkins\workspace\TicTest\static", "static/"
