@@ -12,6 +12,12 @@ class Tile:
         self.explored = explored
         self.status_effects = []
         self.placed_spells = []
+        self.region = 0
+        self.flow_x = 0
+        self.flow_y = 0
+        self.posx = 0
+        self.posy = 0
+        self.glyph = ''
 
     def does_tile_block_sight(self):
         return self.block_sight
