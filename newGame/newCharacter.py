@@ -310,6 +310,8 @@ class NewCharacter:
 
     @staticmethod
     def create_starting_armour(gameworld, player, game_config):
+        # every class gets the same starting armour
+
         logger.info('Creating starting armour')
 
         my_armour = ItemManager.create_full_armour_set(gameworld=gameworld, armourset='Apprentice', level=0,
@@ -324,17 +326,32 @@ class NewCharacter:
 
     @staticmethod
     def create_starting_jewellery(gameworld, player, game_config):
-        stud = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator='Amber', game_config=game_config)
-        stud2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator='Amber', game_config=game_config)
-        ring1 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator='Amber', game_config=game_config)
-        ring2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator='Amber', game_config=game_config)
-        amulet = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper', e_hook='copper', e_activator='Amber', game_config=game_config)
 
-        ItemUtilities.equip_jewellery(gameworld, player, 'left ear', stud)
-        ItemUtilities.equip_jewellery(gameworld, player, 'right ear', stud2)
-        ItemUtilities.equip_jewellery(gameworld, player, 'left hand', ring1)
-        ItemUtilities.equip_jewellery(gameworld, player, 'right hand', ring2)
-        ItemUtilities.equip_jewellery(gameworld, player, 'neck', amulet)
+        player_character_style = MobileUtilities.get_character_style(gameworld=gameworld, entity=player)
+        player_character_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player)
+
+        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                      parameter='CLASSESFILE')
+
+        class_file = read_json_file(player_class_file)
+
+        for player_class in class_file['classes']:
+
+            if player_class['name'] == player_character_class:
+                if player_character_style == 'balanced':
+                    jewellery = player_class['balanced']
+
+                    stud = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator=jewellery['earring1'], game_config=game_config)
+                    stud2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator=jewellery['earring1'], game_config=game_config)
+                    ring1 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator=jewellery['ring1'], game_config=game_config)
+                    ring2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator=jewellery['ring2'], game_config=game_config)
+                    amulet = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper', e_hook='copper', e_activator=jewellery['neck'], game_config=game_config)
+
+                    ItemUtilities.equip_jewellery(gameworld, player, 'left ear', stud)
+                    ItemUtilities.equip_jewellery(gameworld, player, 'right ear', stud2)
+                    ItemUtilities.equip_jewellery(gameworld, player, 'left hand', ring1)
+                    ItemUtilities.equip_jewellery(gameworld, player, 'right hand', ring2)
+                    ItemUtilities.equip_jewellery(gameworld, player, 'neck', amulet)
 
     @staticmethod
     def display_selection(con, filename, element, posx, posy, width, flavour_x, flavour_y):

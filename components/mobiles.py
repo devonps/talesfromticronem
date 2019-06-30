@@ -31,9 +31,10 @@ class Race:
 
 
 class CharacterClass:
-    def __init__(self, label='undefined', base_health=0):
+    def __init__(self, label='undefined', base_health=0, style='balanced'):
         self.label = label
         self.baseHealth = base_health
+        self.style = style
 
 
 class AI:

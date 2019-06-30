@@ -74,88 +74,60 @@ class ItemManager:
                 logger.info('Entity {} has been created using the {} template', myweapon, weapon['name'])
                 return myweapon  # this is the entity id for the newly created weapon
 
-    def create_piece_of_armour(gameworld, bodylocation, quality, setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus, component1, componet2, game_config):
-        """
-        This method creates a gameworld entity that's used as a piece of armour. It uses the Json file
-        to create the 'base' entity - it's up to other methods to add flesh to these bones.
-        :param setname:
-        :param prefix:
-        :param level:
-        :param majorname:
-        :param majorbonus:
-        :param minoronename:
-        :param minoronebonus:
-        :param bodylocation:
-        :param quality:
-        :param gameworld:
-        :param component1:
-        :param componet2:
+    def create_piece_of_armour(gameworld, bodylocation, quality, setname, prefix, level, majorname, majorbonus,
+                            minoronename, minoronebonus, component1, componet2,
+                            location_aka, weight, defense, game_config):
 
-        """
-        armour_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
-                                                                    parameter='ARMOURFILE')
         armour_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
                                                                       parameter='ITEM_ARMOUR_ACTIONS')
 
-        armour_file = jsonUtilities.read_json_file(armour_file_path)
-        for piece_of_armour in armour_file['armour']:
-            if piece_of_armour['location'] == bodylocation and piece_of_armour['quality'] == quality:
-                armour_piece = world.get_next_entity_id(gameworld=gameworld)
+        armour_piece = world.get_next_entity_id(gameworld=gameworld)
 
-                # generate common item components
-                gameworld.add_component(armour_piece, items.TypeOfItem(label='armour'))
-                gameworld.add_component(armour_piece, items.Material(texture=component1))
+        # generate common item components
+        gameworld.add_component(armour_piece, items.TypeOfItem(label='armour'))
+        gameworld.add_component(armour_piece, items.Material(texture=component1))
+        gameworld.add_component(armour_piece, items.Actionlist(action_list=armour_action_list))
+        gameworld.add_component(armour_piece, items.Describable(
+            name=bodylocation + ' armour',
+            glyph=")",
+            description=bodylocation + ' armour',
+            fg=tcod.white,
+            bg=tcod.black,
+            displayname=component1 + ' ' + location_aka))
+        gameworld.add_component(armour_piece, items.RenderItem(istrue=True))
+        gameworld.add_component(armour_piece, items.Quality(level=quality))
+        # generate armour specifics
+        gameworld.add_component(armour_piece, items.Weight(label=weight))
+        gameworld.add_component(armour_piece, items.Defense(value=defense))
+        if bodylocation == 'head':
+            gameworld.add_component(armour_piece, items.ArmourBodyLocation(head=True))
 
-                gameworld.add_component(armour_piece, items.Actionlist(action_list=armour_action_list))
-                gameworld.add_component(armour_piece, items.Describable(
-                    name=piece_of_armour['location'] + ' armour',
-                    glyph=piece_of_armour['glyph'],
-                    description=piece_of_armour['location'] + ' armour',
-                    fg=tcod.white,
-                    bg=tcod.black,
-                    displayname='cloth ' + piece_of_armour['type']))
+        if bodylocation == 'chest':
+            gameworld.add_component(armour_piece, items.ArmourBodyLocation(chest=True))
 
-                # gameworld.add_component(armour_piece, items.Location)
-                gameworld.add_component(armour_piece, items.Material)
-                gameworld.add_component(armour_piece, items.RenderItem(istrue=True))
-                gameworld.add_component(armour_piece, items.Quality(level=piece_of_armour['quality']))
+        if bodylocation == 'hands':
+            gameworld.add_component(armour_piece, items.ArmourBodyLocation(hands=True))
 
-                # generate armour specifics
-                gameworld.add_component(armour_piece, items.Weight(label=piece_of_armour['weight']))
-                gameworld.add_component(armour_piece, items.Defense(value=piece_of_armour['defense']))
+        if bodylocation == 'feet':
+            gameworld.add_component(armour_piece, items.ArmourBodyLocation(feet=True))
 
-                if bodylocation == 'head':
-                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(head=True))
+        if bodylocation == 'legs':
+            gameworld.add_component(armour_piece, items.ArmourBodyLocation(legs=True))
 
-                if bodylocation == 'chest':
-                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(chest=True))
+        gameworld.add_component(armour_piece, items.AttributeBonus(
+            majorname=majorname,
+            majorbonus=majorbonus,
+            minoronename=minoronename,
+            minoronebonus=minoronebonus))
 
-                if bodylocation == 'hands':
-                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(hands=True))
+        gameworld.add_component(armour_piece, items.ArmourSet(label=setname, prefix=prefix, level=level))
 
-                if bodylocation == 'feet':
-                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(feet=True))
+        gameworld.add_component(armour_piece, items.ArmourBeingWorn(status=False))
 
-                if bodylocation == 'legs':
-                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(legs=True))
+        logger.info('Entity {} has been created as a piece of {} armour', armour_piece, bodylocation)
+        logger.info('Item Type set to {}', ItemUtilities.get_item_type(gameworld, armour_piece))
 
-                gameworld.add_component(armour_piece, items.AttributeBonus(
-                    majorname=majorname,
-                    majorbonus=majorbonus,
-                    minoronename=minoronename,
-                    minoronebonus=minoronebonus))
-
-                gameworld.add_component(armour_piece, items.ArmourSet(
-                    label=setname,
-                    prefix=prefix,
-                    level=level))
-
-                gameworld.add_component(armour_piece, items.ArmourBeingWorn(status=False))
-
-                logger.info('Entity {} has been created as a piece of {} armour', armour_piece, bodylocation)
-                logger.info('Item Type set to {}', ItemUtilities.get_item_type(gameworld, armour_piece))
-
-                return armour_piece
+        return armour_piece
 
     def create_full_armour_set(gameworld, armourset, level, quality, game_config):
         """
@@ -196,7 +168,8 @@ class ItemManager:
                         minortwobonus = this_armour['minortwobonus']
 
                         piece_of_armour = ItemManager.create_piece_of_armour(gameworld, bodylocation, quality,
-                                            setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus, 'cloth', '', game_config)
+                                            setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus,
+                                            'cloth', '', location_aka, weight, defense, game_config)
 
                         full_armour_set.append(piece_of_armour)
 
@@ -248,37 +221,42 @@ class ItemManager:
         :param e_activator: the gemstone used in the jewellery, drives the attribute bonus
         :return:
         """
+        trinket_setting = e_setting.lower()
+        trinket_hook = e_hook.lower()
+        trinket_activator = e_activator.lower()
+
         gemstones_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                       parameter='GEMSTONESFILE')
         jewellery_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
                                                                       parameter='ITEM_JEWELLERY_ACTIONS')
-        if e_setting == '' or e_activator == '' or e_hook == '':
+        if trinket_setting == '' or trinket_activator == '' or trinket_hook == '':
             logger.debug('At least one base component is missing')
             return 0
-        if e_setting != e_hook:
+        if trinket_setting != trinket_hook:
             logger.debug("Jewellery setting and hook base metals don't match")
             return 0
 
         gemstone_file = jsonUtilities.read_json_file(gemstones_file_path)
 
         for gemstone in gemstone_file['gemstones']:
-            if gemstone['Stone'] == e_activator:
+            file_gemstone = gemstone['Stone'].lower()
+            if file_gemstone == trinket_activator:
                 piece_of_jewellery = world.get_next_entity_id(gameworld=gameworld)
                 # generate common item components
                 gameworld.add_component(piece_of_jewellery, items.TypeOfItem(label='jewellery'))
-                gameworld.add_component(piece_of_jewellery, items.Material(texture=e_setting))
+                gameworld.add_component(piece_of_jewellery, items.Material(texture=trinket_setting))
                 gameworld.add_component(piece_of_jewellery, items.RenderItem(istrue=True))
                 gameworld.add_component(piece_of_jewellery, items.Quality(level='common'))
                 gameworld.add_component(piece_of_jewellery, items.Actionlist(action_list=jewellery_action_list))
 
                 # create jewellery specific components
                 gameworld.add_component(piece_of_jewellery, items.JewelleryEquipped(istrue=False))
-                desc = 'a ' + e_setting
+                desc = 'a ' + trinket_setting
                 nm = ''
 
-                if bodylocation == 'ear':
+                if 'ear' in bodylocation:
                     # create an earring
-                    desc += ' earring, offset with a ' + e_activator + ' gemstone.'
+                    desc += ' earring, offset with a ' + trinket_activator + ' gemstone.'
                     nm = 'earring'
                     gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(ears=True))
                     gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
@@ -286,7 +264,7 @@ class ItemManager:
                         statbonus=gemstone['Earring']))
                 elif bodylocation == 'neck':
                     # create an amulet
-                    desc += ' amulet, offset with a ' + e_activator + ' gemstone.'
+                    desc += ' amulet, offset with a ' + trinket_activator + ' gemstone.'
                     nm = 'amulet'
                     gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(neck=True))
                     gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
@@ -294,7 +272,7 @@ class ItemManager:
                         statbonus=gemstone['Amulet']))
                 else:
                     # create a ring
-                    desc += ' ring, offset with a ' + e_activator + ' gemstone.'
+                    desc += ' ring, offset with a ' + trinket_activator + ' gemstone.'
                     nm = 'ring'
                     gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(fingers=True))
                     gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
@@ -307,7 +285,7 @@ class ItemManager:
                     glyph=gemstone['glyph'],
                     fg=tcod.blue,
                     bg=tcod.black,
-                    displayname=e_activator + ' ' + nm))
+                    displayname=trinket_activator + ' ' + nm))
                 logger.info('Created {}', desc)
                 return piece_of_jewellery
 
