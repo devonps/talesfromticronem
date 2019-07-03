@@ -137,6 +137,11 @@ class ItemUtilities:
         return wielded_component.hands
 
     @staticmethod
+    def get_weapon_type(gameworld, weapon_entity):
+        weapon_type_component = gameworld.component_for_entity(weapon_entity, items.WeaponType)
+        return weapon_type_component.label
+
+    @staticmethod
     def get_weapon_held_in_hand(gameworld, entity):
         wielded_component = gameworld.component_for_entity(entity, items.Wielded)
         if wielded_component.both_hands != 0:
