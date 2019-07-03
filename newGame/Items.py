@@ -142,9 +142,9 @@ class ItemManager:
 
         :return: a list of entities created in the order [head, chest, hands, legs, feet]
         """
-        json_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='JSONFILEPATH')
+        armour_set_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='ARMOURSETFILE')
 
-        armour_set_file = jsonUtilities.read_json_file(json_file_path + 'armoursets.json')
+        armour_set_file = jsonUtilities.read_json_file(armour_set_path)
 
         full_armour_set = []
 

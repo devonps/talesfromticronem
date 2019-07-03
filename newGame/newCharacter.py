@@ -273,30 +273,35 @@ class NewCharacter:
         NewCharacter.create_starting_jewellery(gameworld, player, game_config)
 
         # create starting weapons
-        logger.info('creating a weapon for the player')
-        class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
+        logger.info('creating a starting weapon for the player')
+        created_weapon, hands_to_hold = NewCharacter.create_starting_weapon(gameworld, player, game_config)
 
-        weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='wand', game_config=game_config)
-        weapon_type = gameworld.component_for_entity(weapon, items.WeaponType)
+        # equip player with newly created starting weapon
+        NewCharacter.equip_starting_weapon(gameworld, player, created_weapon, hands_to_hold)
 
-        # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-        logger.info('Loading that weapon with the necessary spells')
-        WeaponClass.load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)
+        # class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
+        #
+        # weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='wand', game_config=game_config)
+        # weapon_type = gameworld.component_for_entity(weapon, items.WeaponType)
+        #
+        # # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+        # logger.info('Loading that weapon with the necessary spells')
+        # WeaponClass.load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)
+        #
+        # # equip player with weapon
+        # logger.info('Equipping player with that loaded weapon')
+        # MobileUtilities.equip_weapon(gameworld, player, weapon, 'main')
 
-        # equip player with weapon
-        logger.info('Equipping player with that loaded weapon')
-        MobileUtilities.equip_weapon(gameworld, player, weapon, 'main')
-
-        # create an off-hand weapon for the player
-        weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='rod', game_config=game_config)
-        weapon_type = gameworld.component_for_entity(weapon, items.WeaponType)
-        # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-        logger.info('Loading that weapon with the necessary spells')
-        WeaponClass.load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)
-
-        # equip player with weapon
-        logger.info('Equipping player with that loaded weapon')
-        MobileUtilities.equip_weapon(gameworld, player, weapon, 'off')
+        # # create an off-hand weapon for the player
+        # weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='rod', game_config=game_config)
+        # weapon_type = gameworld.component_for_entity(weapon, items.WeaponType)
+        # # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+        # logger.info('Loading that weapon with the necessary spells')
+        # WeaponClass.load_weapon_with_spells(gameworld, weapon, weapon_type.label, class_component.label)
+        #
+        # # equip player with weapon
+        # logger.info('Equipping player with that loaded weapon')
+        # MobileUtilities.equip_weapon(gameworld, player, weapon, 'off')
 
         # load spell bar with spells from weapon
         logger.info('Loading spell bar')
@@ -307,6 +312,41 @@ class NewCharacter:
         ItemManager.create_bag(gameworld=gameworld, game_config=game_config)
 
         logger.debug('Player is ready to rock and roll!')
+
+    @staticmethod
+    def create_starting_weapon(gameworld, player, game_config):
+        logger.info('Creating starting weapon')
+
+        player_character_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player)
+
+        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                      parameter='CLASSESFILE')
+        class_file = read_json_file(player_class_file)
+
+        for player_class in class_file['classes']:
+
+            if player_class['name'] == player_character_class:
+                weapon_object = player_class['weapon']
+                weapon_to_create = weapon_object['type']
+                hands = weapon_object['hands']
+
+                class_component = MobileUtilities.get_character_class(gameworld, player)
+                # class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
+
+                weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=weapon_to_create, game_config=game_config)
+                weapon_type = ItemUtilities.get_weapon_type(gameworld, weapon)
+
+                # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+                logger.info('Loading that weapon with the necessary spells')
+                WeaponClass.load_weapon_with_spells(gameworld, weapon, weapon_type, class_component)
+
+        return weapon, hands
+
+    @staticmethod
+    def equip_starting_weapon(gameworld, player, weapon, hands):
+        # equip player with weapon
+        logger.info('Equipping player with that loaded weapon')
+        MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=weapon, hand=hands)
 
     @staticmethod
     def create_starting_armour(gameworld, player, game_config):
@@ -327,6 +367,8 @@ class NewCharacter:
     @staticmethod
     def create_starting_jewellery(gameworld, player, game_config):
 
+        logger.info('Creating starting jewellery')
+
         player_character_style = MobileUtilities.get_character_style(gameworld=gameworld, entity=player)
         player_character_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player)
 
@@ -340,18 +382,22 @@ class NewCharacter:
             if player_class['name'] == player_character_class:
                 if player_character_style == 'balanced':
                     jewellery = player_class['balanced']
+                if player_character_style == 'defensive':
+                    jewellery = player_class['defensive']
+                if player_character_style == 'offensive':
+                    jewellery = player_class['offensive']
 
-                    stud = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator=jewellery['earring1'], game_config=game_config)
-                    stud2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator=jewellery['earring1'], game_config=game_config)
-                    ring1 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator=jewellery['ring1'], game_config=game_config)
-                    ring2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator=jewellery['ring2'], game_config=game_config)
-                    amulet = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper', e_hook='copper', e_activator=jewellery['neck'], game_config=game_config)
+                stud = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator=jewellery['earring1'], game_config=game_config)
+                stud2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator=jewellery['earring1'], game_config=game_config)
+                ring1 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator=jewellery['ring1'], game_config=game_config)
+                ring2 = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='finger', e_setting='copper', e_hook='copper', e_activator=jewellery['ring2'], game_config=game_config)
+                amulet = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper', e_hook='copper', e_activator=jewellery['neck'], game_config=game_config)
 
-                    ItemUtilities.equip_jewellery(gameworld, player, 'left ear', stud)
-                    ItemUtilities.equip_jewellery(gameworld, player, 'right ear', stud2)
-                    ItemUtilities.equip_jewellery(gameworld, player, 'left hand', ring1)
-                    ItemUtilities.equip_jewellery(gameworld, player, 'right hand', ring2)
-                    ItemUtilities.equip_jewellery(gameworld, player, 'neck', amulet)
+                ItemUtilities.equip_jewellery(gameworld, player, 'left ear', stud)
+                ItemUtilities.equip_jewellery(gameworld, player, 'right ear', stud2)
+                ItemUtilities.equip_jewellery(gameworld, player, 'left hand', ring1)
+                ItemUtilities.equip_jewellery(gameworld, player, 'right hand', ring2)
+                ItemUtilities.equip_jewellery(gameworld, player, 'neck', amulet)
 
     @staticmethod
     def display_selection(con, filename, element, posx, posy, width, flavour_x, flavour_y):
