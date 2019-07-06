@@ -1,4 +1,5 @@
 import tcod.console
+import tcod.event
 
 
 from newGame.initialiseNewGame import setup_game, create_game_world, initialise_game_map, create_new_character, create_and_place_world_entities, create_spell_entities
@@ -32,10 +33,11 @@ def start_game(con, gameworld, game_config):
 
     key = tcod.Key()
     mouse = tcod.Mouse()
+    playing_game = True
 
     message_log.add_message(message=Message('New game starting', color=tcod.yellow), game_config=game_config)
 
-    while not tcod.console_is_window_closed():
+    while playing_game:
         action = handle_keys(mouse, key, gameworld, player, message_log, game_config)
 
         exit_game = action.get('exit')
@@ -56,7 +58,7 @@ def start_game(con, gameworld, game_config):
         if exit_game:
             value = 'exit:true'
             ReplayGame.update_game_replay_file(game_config, value)
-            return True
+            playing_game = False
 
         if fullscreen:
             tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
@@ -94,13 +96,14 @@ def main():
     game_title = configUtilities.get_config_value_as_string(game_config, 'default', 'GAME_WINDOW_TITLE')
 
     tcod.console_set_custom_font('static/fonts/prestige12x12_gs_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
-    tcod.console_init_root(con_width, con_height, game_title, False)
+    tcod.console_init_root(w=con_width, h=con_height, title=game_title, fullscreen=False, renderer=tcod.RENDERER_SDL2, order='F')
 
-    con = tcod.console.Console(con_width, con_height)
+    con = tcod.console.Console(con_width, con_height, 'F')
 
     key = tcod.Key()
     mouse = tcod.Mouse()
     action = {}
+    show_main_menu = True
 
     # Esper initialisation
     gameworld = create_game_world()
@@ -117,31 +120,26 @@ def main():
 
     gameworld.add_processor(render_game_screen)
 
-    while not tcod.console_is_window_closed():
+    while show_main_menu:
         gameworld.process(game_config)
         tcod.console_flush()
-        new_game = load_saved_game = save_game = exit_game = player_seed = replay_game = False
+        new_game = load_saved_game = save_game = player_seed = replay_game = False
 
         action = handle_menus(key, mouse, gameworld)
 
         if action == 'a':
-            # return {'new_game': True}
             new_game = True
         elif action == 'b':
-            # return {'load_game': True}
             load_saved_game = True
         elif action == 'c':
             # save current game
             save_game = True
         elif action == 'd':
-            # return {'player_seed': True}
             player_seed = True
         elif action == 'e':
-            # return {'replay': True}
             replay_game = True
         elif action == 'f':
-            # return {'exit': True}
-            exit_game = True
+            show_main_menu = False
 
         if replay_game:
             logger.info('Replaying game')
@@ -184,8 +182,6 @@ def main():
             pass
         elif save_game:
             pass
-        elif exit_game:
-            break
 
 
 if __name__ == '__main__':

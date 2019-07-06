@@ -484,8 +484,7 @@ class RenderConsole(esper.Processor):
         viewport_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_START_Y')
         viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_WIDTH')
         viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_HEIGHT')
-
-        tcod.console_set_default_foreground(self.con, tcod.yellow)
+        self.con.default_fg = tcod.yellow
 
         tcod.console_print_frame(self.con,
                                  x=viewport_across,
@@ -504,7 +503,7 @@ class RenderConsole(esper.Processor):
 
         # draw the message box area
 
-        tcod.console_set_default_foreground(self.con, tcod.yellow)
+        self.con.default_fg = tcod.yellow
 
         tcod.console_print_frame(self.con,
                                  x=msg_start_across,
@@ -517,13 +516,14 @@ class RenderConsole(esper.Processor):
         # render messages in message log
         y = 1
         for message in self.message_log.messages:
-            tcod.console_set_default_foreground(self.con, message.color)
+            # tcod.console_set_default_foreground(self.con, message.color)
+            self.con.default_fg = message.color
             tcod.console_print_ex(self.con, 1, msg_start_down + y, tcod.BKGND_NONE, tcod.LEFT, message.text)
             y += 1
 
     def render_v_bar(self, posx, posy, depth, border_colour):
 
-        tcod.console_set_default_foreground(self.con, border_colour)
+        self.con.default_fg = border_colour
         tcod.console_print_frame(self.con, x=posx, y=posy, w=3, h=depth, clear=False, flag=tcod.BKGND_DEFAULT,
                                  fmt='')
 
@@ -533,7 +533,7 @@ class RenderConsole(esper.Processor):
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_Y')
         rs = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='BCC_BAR_RIGHT_SIDE')
 
-        tcod.console_set_default_foreground(self.con, border_colour)
+        self.con.default_fg = border_colour
         tcod.console_print_frame(self.con, x=px, y=py + posy, w=rs, h=3, clear=False, flag=tcod.BKGND_DEFAULT, fmt='')
 
     def render_entity(self, posx, posy, glyph, fg, bg):
@@ -604,7 +604,7 @@ class RenderGameStartScreen(esper.Processor):
         con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
         con_height = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_HEIGHT')
 
-        tcod.console_set_default_foreground(self.con, tcod.yellow)
-        tcod.console_print_ex(self.con, 10, 10, tcod.BKGND_NONE, tcod.LEFT, game_title)
-        tcod.console_print_ex(self.con, 10, 42, tcod.BKGND_NONE, tcod.LEFT, author)
+        self.con.print(x=10, y=10, string=game_title, bg_blend=tcod.BKGND_NONE, alignment=tcod.LEFT)
+        self.con.print(x=10, y=42, string=author, bg_blend=tcod.BKGND_NONE, alignment=tcod.LEFT)
+
         tcod.console_blit(self.con, 0, 0, con_width, con_height, 0, 0, 0)
