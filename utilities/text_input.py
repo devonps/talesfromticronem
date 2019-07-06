@@ -1,4 +1,5 @@
 import tcod
+import tcod.console
 from utilities import configUtilities
 
 
@@ -19,17 +20,9 @@ def text_entry(game_config):
     bg = tcod.grey
 
     # set offscreen console for the text entry system
-    text_console = tcod.console_new(TXT_PANEL_WIDTH, TXT_PANEL_HEIGHT)
-    tcod.console_set_default_background(text_console, bg)
-    tcod.console_clear(text_console)
-    tcod.console_print_frame(text_console,
-                             x=0,
-                             y=0,
-                             w=TXT_PANEL_WIDTH,
-                             h=TXT_PANEL_HEIGHT,
-                             clear=False,
-                             flag=tcod.BKGND_DEFAULT,
-                             fmt='Name Your Character')
+    text_console = tcod.console.Console(TXT_PANEL_WIDTH, TXT_PANEL_HEIGHT, 'F')
+    text_console.clear(ch=32, bg=bg)
+    text_console.draw_frame(x=0, y=0, width=TXT_PANEL_WIDTH, height=TXT_PANEL_HEIGHT, title='Name Your Character', clear=False, bg_blend=tcod.BKGND_DEFAULT)
 
     while not key_pressed:
 
@@ -40,23 +33,29 @@ def text_entry(game_config):
         if timer % (TXT_PANEL_FPS // 8) == 0:
             if timer % (TXT_PANEL_FPS // 2) == 0:
                 timer = 0
-                tcod.console_set_char(text_console, TXT_PANEL_WRITE_X + letter_count, TXT_PANEL_WRITE_Y, "_")
+                text_console.put_char(x=TXT_PANEL_WRITE_X + letter_count, y=TXT_PANEL_WRITE_Y, ch=95)
                 tcod.console_set_char_foreground(text_console, TXT_PANEL_WRITE_X + letter_count, TXT_PANEL_WRITE_Y, tcod.white)
             else:
-                tcod.console_set_char(text_console, TXT_PANEL_WRITE_X + letter_count, TXT_PANEL_WRITE_Y, " ")
+                text_console.put_char(x=TXT_PANEL_WRITE_X + letter_count, y=TXT_PANEL_WRITE_Y, ch=32)
                 tcod.console_set_char_foreground(text_console, TXT_PANEL_WRITE_X + letter_count, TXT_PANEL_WRITE_Y, tcod.white)
             # draw horizontal line
-            tcod.console_hline(text_console, 1, 5, TXT_PANEL_WIDTH - 2, tcod.BKGND_DEFAULT)
+            text_console.hline(x=1, y=5, width=TXT_PANEL_WIDTH - 2, bg_blend=tcod.BKGND_DEFAULT)
             # word count
-            tcod.console_set_alignment(text_console, tcod.RIGHT)
+            # tcod.console_set_alignment(text_console, tcod.RIGHT)
+            text_console.default_alignment = tcod.RIGHT
             tcod.console_print_rect(con=text_console,
                                     x=TXT_PANEL_WIDTH - 1,
                                     y=TXT_PANEL_WRITE_Y + 2,
                                     w=TXT_PANEL_WIDTH - 5,
                                     h=TXT_PANEL_HEIGHT - 10,
                                     fmt=letters_left)
+            # text_console.print_box(x=TXT_PANEL_WIDTH - 1, y=TXT_PANEL_WRITE_Y + 2, width=TXT_PANEL_WIDTH - 5,
+            #                        height=TXT_PANEL_HEIGHT - 10, string=letters_left,
+            #                        fg=tcod.white, bg=tcod.black, bg_blend=tcod.BKGND_DEFAULT)
+
             # instructions
-            tcod.console_set_alignment(text_console, tcod.LEFT)
+            # tcod.console_set_alignment(text_console, tcod.LEFT)
+            text_console.default_alignment = tcod.LEFT
             tcod.console_print_rect(con=text_console,
                                     x=2,
                                     y=6,
@@ -98,7 +97,7 @@ def text_entry(game_config):
             tcod.console_flush()
 
         if key.vk == tcod.KEY_BACKSPACE and letter_count > 0:
-            tcod.console_set_char(text_console, TXT_PANEL_WRITE_X + letter_count, TXT_PANEL_WRITE_Y, " ")
+            text_console.put_char(x=TXT_PANEL_WRITE_X + letter_count, y=TXT_PANEL_WRITE_Y, ch=32)
             tcod.console_set_char_foreground(text_console, TXT_PANEL_WRITE_X + letter_count, TXT_PANEL_WRITE_Y, tcod.white)
             my_word = my_word[:-1]
             letter_count -= 1
@@ -111,7 +110,7 @@ def text_entry(game_config):
         elif key.c > 0:
             letter = chr(key.c)
             if 96 < ord(letter) < 123 and letters_remaining > 0:
-                tcod.console_set_char(text_console, TXT_PANEL_WRITE_X + letter_count, TXT_PANEL_WRITE_Y, letter)
+                text_console.put_char(x=TXT_PANEL_WRITE_X + letter_count, y=TXT_PANEL_WRITE_Y, ch=ord(letter))
                 tcod.console_set_char_foreground(text_console, TXT_PANEL_WRITE_X + letter_count, TXT_PANEL_WRITE_Y, tcod.white)
                 my_word += letter
                 letter_count += 1

@@ -30,7 +30,8 @@ class Externalfiles:
     def start_new_game_replay_file(filename):
         if Externalfiles.does_file_exist(filename):
             Externalfiles.delete_existing_file(filename)
-        Externalfiles.create_new_file(filename)
+        fileobject = Externalfiles.create_new_file(filename)
+        return fileobject
 
     @staticmethod
     def does_file_exist(filename):

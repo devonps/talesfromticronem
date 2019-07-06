@@ -102,7 +102,6 @@ class NewCharacter:
 
         key = tcod.Key()
         mouse = tcod.Mouse()
-        tcod.console_clear(con)
         selected_race = ''
 
         while race_not_selected:
@@ -140,7 +139,6 @@ class NewCharacter:
                 logger.info('Racial Size {}', race_size[index])
 
                 race_not_selected = False
-                tcod.console_clear(con)
 
     def select_character_class(con, gameworld, player, game_config):
 
@@ -203,7 +201,6 @@ class NewCharacter:
                 logger.info('Selected class {}', selected_class)
                 gameworld.add_component(player, mobiles.CharacterClass(label=selected_class))
                 class_not_selected = False
-                tcod.console_clear(con)
 
     def select_profession_background(con, gameworld, player):
         # The profession-oriented question affects a character's starting armor

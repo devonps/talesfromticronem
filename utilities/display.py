@@ -13,25 +13,26 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
         raise ValueError('Cannot have a menu with more than 26 options.')
 
     # calculate the total height for the menu header with one line per option
-    header_height = tcod.console_get_height_rect(con, 0, 0, width, screen_height, header)
+    # header_height = tcod.console_get_height_rect(con, 0, 0, width, screen_height, header)
+    header_height = con.get_height_rect(x=0, y=0, width=width, height=screen_height, string=header)
     if header == '':
         header_height = 0
     height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MENU_MAX_HEIGHT')
 
 
     # create an off-screen window - this is where the menu options will be displayed
-    window = tcod.console_new(width, height)
+    window = tcod.console.Console(width, height)
 
     # print the header, with auto-wrap
-    tcod.console_set_default_foreground(window, foreground)
-    tcod.console_print_rect_ex(window, 0, 0, width, height, tcod.BKGND_NONE, tcod.LEFT, header)
+    window.print(x=0, y=0, string=header, bg_blend=tcod.BKGND_NONE, alignment=tcod.LEFT)
 
     # print the options
     y = header_height
     letter_index = ord('a')
     for option_text in options:
         text = '(' + chr(letter_index) + ') ' + option_text
-        tcod.console_print_ex(window, 0, y, tcod.BKGND_NONE, tcod.LEFT, text)
+        # tcod.console_print_ex(window, 0, y, tcod.BKGND_NONE, tcod.LEFT, text)
+        window.print(x=0, y=y, string=text, bg_blend=tcod.BKGND_NONE, alignment=tcod.LEFT)
         y += 1
         letter_index += 1
 
@@ -58,7 +59,8 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
         key_char = chr(key.c)
 
         if 0 <= index <= len(options):
-            tcod.console_clear(window)
+            window.clear()
+            # tcod.console_clear(window)
             return key_char
 
         if 0 <= index <= 26:
