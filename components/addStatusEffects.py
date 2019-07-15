@@ -14,7 +14,7 @@ def process_status_effect(world, entity, spell_name, effects, game_config):
     boons = configUtilities.get_config_value_as_list(configfile=game_config, section='spells', parameter='boon_effects')
     resources = configUtilities.get_config_value_as_list(configfile=game_config, section='spells', parameter='class_resources')
 
-    logger.info('---> Working on spell {} with {}', spell_name, effects)
+    # logger.info('---> Working on spell {} with {}', spell_name, effects)
     for key, val in effects[0].items():
         spell_not_added = True
         if key.lower() in condis:
@@ -39,7 +39,7 @@ def add_class_resource(world, entity, effect, resource_value):
         world.add_component(entity, resources.Strikesfor())
     if effect =='boonsconverted':
         world.add_component(entity, resources.ConvertBoons())
-    logger.info('Class resource {} added to spell', effect)
+    # logger.info('Class resource {} added to spell', effect)
 
 
 def add_condition(world, entity, effect, condi_value):

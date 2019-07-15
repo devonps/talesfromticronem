@@ -12,6 +12,8 @@ from utilities.replayGame import ReplayGame
 from loguru import logger
 from utilities import configUtilities
 
+import sys
+
 
 def start_game(con, gameworld, game_config):
 
@@ -80,8 +82,8 @@ def main():
     #
     # logfile = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFILE')
     # logformat = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFORMAT')
-
-    # logger.add(logfile, format=logformat)
+    #
+    # logger.add(sink=logfile, format=logformat, level='WARNING')
 
     logger.info('*********************')
     logger.info('* Initialising game *')
