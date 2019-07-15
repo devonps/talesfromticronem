@@ -28,3 +28,6 @@ Actions.txt
 venv/
 ENV/
 .pytest_cache
+
+# sonar qube
+.scannerwork

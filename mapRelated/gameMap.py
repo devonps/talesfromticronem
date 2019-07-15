@@ -47,7 +47,7 @@ class GameMap:
             x = random.randint(0, map_width - w - 1)
             y = random.randint(0, map_height - h - 1)
 
-            logger.info('Room r {}. x {} / y {} / w {}/ h {}', r, x,y,w,h)
+            # logger.info('Room r {}. x {} / y {} / w {}/ h {}', r, x,y,w,h)
 
             new_room = Rect(x, y, w, h)
             for other_room in rooms:
