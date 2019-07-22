@@ -24,9 +24,14 @@
       "earring1": "amber",
       "earring2": "malachite"
     },
-    "weapon": {
-      "type": "staff",
-      "hands": "both"
+    "weapons": {
+      "sword": "true",
+      "wand": "true",
+      "scepter": "false",
+      "staff": "true",
+      "dagger": "false",
+      "rod": "true",
+      "focus": "true"
     }
   },
   {
@@ -53,9 +58,14 @@
       "earring1": "amber",
       "earring2": "malachite"
     },
-    "weapon": {
-      "type": "staff",
-      "hands": "both"
+    "weapons": {
+      "sword": "false",
+      "wand": "false",
+      "scepter": "true",
+      "staff": "true",
+      "dagger": "true",
+      "rod": "true",
+      "focus": "true"
     }
   },
   {
@@ -82,9 +92,14 @@
       "earring1": "amber",
       "earring2": "malachite"
     },
-    "weapon": {
-      "type": "staff",
-      "hands": "both"
+    "weapons": {
+      "sword": "true",
+      "wand": "true",
+      "scepter": "false",
+      "staff": "true",
+      "dagger": "true",
+      "rod": "true",
+      "focus": "false"
     }
   },
   {
@@ -111,13 +126,18 @@
       "earring1": "amber",
       "earring2": "malachite"
     },
-    "weapon": {
-      "type": "staff",
-      "hands": "both"
+    "weapons": {
+      "sword": "true",
+      "wand": "true",
+      "scepter": "true",
+      "staff": "false",
+      "dagger": "false",
+      "rod": "true",
+      "focus": "true"
     }
   },
     {
-      "name": "Elementalist",
+      "name": "elementalist",
     "flavour": "Elementalists channel elemental forces, making fire, air, earth, and water do their bidding, their powers of destruction are drawn from an affinity with the four elements",
     "balanced": {
       "neck": "amber",
@@ -140,9 +160,14 @@
       "earring1": "amber",
       "earring2": "malachite"
     },
-    "weapon": {
-      "type": "staff",
-      "hands": "both"
+    "weapons": {
+      "sword": "true",
+      "wand": "false",
+      "scepter": "true",
+      "staff": "true",
+      "dagger": "true",
+      "rod": "false",
+      "focus": "true"
     }
     },
     {
@@ -169,9 +194,14 @@
       "earring1": "amber",
       "earring2": "malachite"
     },
-    "weapon": {
-      "type": "staff",
-      "hands": "both"
+    "weapons": {
+      "sword": "false",
+      "wand": "false",
+      "scepter": "true",
+      "staff": "true",
+      "dagger": "true",
+      "rod": "true",
+      "focus": "true"
     }
     }
 ]
