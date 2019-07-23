@@ -1,5 +1,10 @@
+import esper
 from loguru import logger
 from processors import move_entities, render, updateEntities
+
+
+def create_game_world():
+    return esper.World()
 
 
 def remove_all_processors(gameworld):
