@@ -110,58 +110,6 @@ def display_coloured_box(console, title, posx, posy, width, height, fg, bg ):
                       width=width - 2, height=height - 2, ch=0, fg=fg, bg=bg)
 
 
-def draw_colourful_frame(console, game_config, startx, starty, endx, endy, title, title_decorator, title_loc,
-                         corner_decorator, corner_studs, msg):
-    # check inbound values
-    if (endx >= console.width) or (endy >= console.height):
-        logger.warning('Frame for panel will not fit inside root console - frame aborted')
-        logger.info('panel stuff {} / {}', console.width, console.height)
-        logger.info('frame start stuff {} / {}', startx, starty)
-        logger.info('frame stuff {} / {}', endx, endy)
-        return
-        # load glyphs for frames
-    gui_frame = configUtilities.get_config_value_as_string(configfile=game_config, section='gui',
-                                                           parameter='frame_border_pipe_type')
-    across_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                              parameter='frame_' + gui_frame + '_across_pipe')
-    bottom_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                              parameter='frame_' + gui_frame + '_bottom_left')
-    bottom_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                               parameter='frame_' + gui_frame + '_bottom_right')
-    down_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                            parameter='frame_' + gui_frame + '_down_pipe')
-    top_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                           parameter='frame_' + gui_frame + '_top_left')
-    top_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                            parameter='frame_' + gui_frame + '_top_right')
-
-    fg = colourUtilities.WHITE
-    bg = colourUtilities.BLACK
-    corner_decorator_fg = colourUtilities.YELLOW1
-    corner_decorator_bg = colourUtilities.BLACK
-
-    # draw basic frame
-    #  top left corner
-    console.print(x=startx, y=starty, string=chr(top_left), fg=fg, bg=bg)
-    # top left --> top right
-    console.draw_rect(x=startx + 1, y=starty, width=(endx - startx) - 2, height=1, ch=across_pipe, fg=fg, bg=bg)
-    # top right
-    console.print(x=endx - 1, y=starty, string=chr(top_right), fg=fg, bg=bg)
-    # # right side down
-    console.draw_rect(x=endx - 1, y=starty + 1, width=1, height=(endy - starty) - 2, ch=down_pipe, fg=fg, bg=bg)
-    # right corner
-    console.print(x=endx - 1, y=endy - 1, string=chr(bottom_right), fg=fg, bg=bg)
-    # # bottom left --> bottom right
-    console.draw_rect(x=startx + 1, y=endy - 1, width=(endx - startx) - 2, height=1, ch=across_pipe, fg=fg, bg=bg)
-    # # bottom left
-    console.print(x=startx, y=endy - 1, string=chr(bottom_left), fg=fg, bg=bg)
-    # # left side down
-    console.draw_rect(x=startx, y=starty + 1, width=1, height=(endy - starty) - 2, ch=down_pipe, fg=fg, bg=bg)
-
-    # draw string title + decorator if needed
-
-    if title:
-
 def draw_colourful_frame(console, game_config, startx, starty, width, height, title, title_decorator, title_loc, corner_decorator, corner_studs, msg):
     # get config items
     root_con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
