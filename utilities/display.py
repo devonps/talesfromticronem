@@ -98,6 +98,39 @@ def better_menu(console, header, menu_options, menu_id_format, menu_start_x, bla
         letter_index += 1
 
 
+def pointy_menu(console, header, menu_options, menu_id_format, menu_start_x, menu_start_y, blank_line, selected_option):
+    if len(menu_options) > 26:
+        raise ValueError('Cannot have a menu with more than 26 options.')
+
+    # print the header, with auto-wrap
+    if header != '':
+        console.print(x=menu_start_x, y=10, string=header, bg_blend=tcod.BKGND_NONE, alignment=tcod.LEFT)
+
+    # print the menu options
+    menu_count = len(menu_options) + 15
+    mnu = 0
+    letter_index = ord('a')
+    for option_text in menu_options:
+        menu_id = chr(letter_index)
+        menu_text = ')' + option_text
+        if selected_option == mnu:
+            bg_color = tcod.black
+            fg_color = tcod.yellow
+            mnu_pointer = '>'
+        else:
+            bg_color = tcod.black
+            fg_color = tcod.white
+            mnu_pointer = ' '
+        men_text = mnu_pointer + ' ' + option_text
+        console.print(x=menu_start_x, y=menu_count, string=men_text, fg=fg_color, bg=bg_color, bg_blend=tcod.BKGND_NONE,
+                      alignment=tcod.LEFT)
+        menu_count += 1
+        mnu += 1
+        if blank_line:
+            menu_count += 1
+        letter_index += 1
+
+
 def display_coloured_box(console, title, posx, posy, width, height, fg, bg ):
     console.print_box(x=posx + 1, y=posy,
                       width=len(title), height=1,
@@ -132,8 +165,9 @@ def draw_colourful_frame(console, game_config, startx, starty, width, height, ti
                                                             parameter='frame_' + gui_frame + '_down_pipe')
     top_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                            parameter='frame_' + gui_frame + '_top_left')
-    top_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                            parameter='frame_' + gui_frame + '_top_right')
+    top_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_right')
+    msg_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='newgame', parameter='PRETTY_FRAME_MSG_X')
+    msg_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='newgame', parameter='PRETTY_FRAME_MSG_Y')
 
     fg = colourUtilities.WHITE
     bg = colourUtilities.BLACK
@@ -144,19 +178,19 @@ def draw_colourful_frame(console, game_config, startx, starty, width, height, ti
     #  top left corner
     console.print(x=startx, y=starty, string=chr(top_left), fg=fg, bg=bg)
     # top left --> top right
-    console.draw_rect(x=startx + 1, y=starty, width=width - 2, height=1, ch=across_pipe, fg=fg, bg=bg)
+    console.draw_rect(x=startx + 1, y=starty, width=width - 7, height=1, ch=across_pipe, fg=fg, bg=bg)
     # top right
     console.print(x=width-1, y=starty, string=chr(top_right), fg=fg, bg=bg)
     # right side down
-    console.draw_rect(x=width - 1, y=starty + 1, width=1, height=height - 1, ch=down_pipe, fg=fg, bg=bg)
-    # right corner
+    console.draw_rect(x=width - 1, y=starty + 1, width=1, height=height - 4, ch=down_pipe, fg=fg, bg=bg)
+    # # right corner
     console.print(x=width - 1, y=height - 1, string=chr(bottom_right), fg=fg, bg=bg)
-    # bottom left --> bottom right
-    console.draw_rect(x=startx + 1, y=height - 1, width=width - 2, height=1, ch=across_pipe, fg=fg, bg=bg)
-    # bottom left
+    # # bottom left --> bottom right
+    console.draw_rect(x=startx + 1, y=height - 1, width=width - 7, height=1, ch=across_pipe, fg=fg, bg=bg)
+    # # bottom left
     console.print(x=startx, y=height - 1, string=chr(bottom_left), fg=fg, bg=bg)
-    # left side down
-    console.draw_rect(x=startx, y=starty + 1, width=1, height=height - 2, ch=down_pipe, fg=fg, bg=bg)
+    # # left side down
+    console.draw_rect(x=startx, y=starty + 1, width=1, height=height - 4, ch=down_pipe, fg=fg, bg=bg)
 
     # draw string title + decorator if needed
 
@@ -181,8 +215,8 @@ def draw_colourful_frame(console, game_config, startx, starty, width, height, ti
 
     if msg != '':
         s = msg.split('/')
-        console.print(x=startx + 5, y=endy - 1, fg=tcod.yellow, string=s[0])
-        console.print(x=(startx + 5) + len(s[0]), y=endy - 1, fg=tcod.white, string=s[1])
+        console.print(x=msg_x, y=msg_y, fg=tcod.yellow, string=s[0])
+        console.print(x=msg_x + len(s[0]), y=msg_y, fg=tcod.white, string=s[1])
 
     # You can only draw corner decorators or studs
     if corner_decorator != '':

@@ -91,8 +91,17 @@ def handle_game_keys():
             if event.sym == tcod.event.K_RIGHT:
                 myevent = 'keypress'
                 action = 'right'
+            if event.sym == tcod.event.K_UP:
+                myevent = 'keypress'
+                action = 'up'
+            if event.sym == tcod.event.K_DOWN:
+                myevent = 'keypress'
+                action = 'down'
+            if event.sym == tcod.event.K_RETURN:
+                myevent = 'keypress'
+                action = 'enter'
         if event.type == "TEXTINPUT":
-            myevent = 'keypress'
+            myevent = 'textinput'
             action = event.text
         elif event.type == "MOUSEBUTTONDOWN":
             myevent = 'mousebutton'

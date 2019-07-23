@@ -12,6 +12,17 @@ class MobileUtilities(numbers.Real):
     #
     # general methods
     #
+
+    @staticmethod
+    def setup_racial_attributes(gameworld, player, selected_race, race_size, bg):
+        gameworld.add_component(player, mobiles.Describable(background=bg))
+        gameworld.add_component(player, mobiles.Race(race=selected_race, size=race_size))
+
+    @staticmethod
+    def setup_class_attributes(gameworld, player, selected_class, health):
+        gameworld.add_component(player, mobiles.CharacterClass(base_health=health))
+        gameworld.add_component(player, mobiles.CharacterClass(label=selected_class))
+
     @staticmethod
     def get_player_entity(gameworld, game_config):
         player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_PLAYER')

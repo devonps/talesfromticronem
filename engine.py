@@ -12,6 +12,8 @@ from utilities.replayGame import ReplayGame
 from loguru import logger
 from utilities import configUtilities
 
+from newGame import newGame
+
 import sys
 
 
@@ -78,112 +80,114 @@ def game_replay(con, game_config):
 @logger.catch()
 def main():
 
-    game_config = configUtilities.load_config()
+    newGame.new_game()
+
+    # game_config = configUtilities.load_config()
+    # #
+    # # logfile = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFILE')
+    # # logformat = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFORMAT')
+    # #
+    # # logger.add(sink=logfile, format=logformat, level='WARNING')
     #
-    # logfile = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFILE')
-    # logformat = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFORMAT')
+    # logger.info('*********************')
+    # logger.info('* Initialising game *')
+    # logger.info('*********************')
     #
-    # logger.add(sink=logfile, format=logformat, level='WARNING')
-
-    logger.info('*********************')
-    logger.info('* Initialising game *')
-    logger.info('*********************')
-
-    game_title1 = configUtilities.get_config_value_as_string(game_config, 'default', 'GAME_WINDOW_TITLE')
-
-    logger.info('config file test:{}', str(game_title1))
-
-    con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
-    con_height = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_HEIGHT')
-    game_title = configUtilities.get_config_value_as_string(game_config, 'default', 'GAME_WINDOW_TITLE')
-
-    tcod.console_set_custom_font('static/fonts/prestige12x12_gs_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
-    tcod.console_init_root(w=con_width, h=con_height, title=game_title, fullscreen=False, renderer=tcod.RENDERER_SDL2, order='F')
-
-    con = tcod.console.Console(con_width, con_height, 'F')
-
-    key = tcod.Key()
-    mouse = tcod.Mouse()
-    action = {}
-    show_main_menu = True
-
-    # Esper initialisation
-    gameworld = create_game_world()
-
-    # needed here to gather player input from the main menu
-    MobileUtilities.create_player_input_entity(gameworld)
-
-    # start game screen image
-    background_image = tcod.image_load('static/images/menu_background.png')
-
-    # add the processors we need to display the game start screen
-
-    render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse, gameworld=gameworld)
-
-    gameworld.add_processor(render_game_screen)
-
-    while show_main_menu:
-        gameworld.process(game_config)
-        tcod.console_flush()
-        new_game = load_saved_game = save_game = player_seed = replay_game = False
-
-        action = handle_menus(key, mouse, gameworld)
-
-        if action == 'a':
-            new_game = True
-        elif action == 'b':
-            load_saved_game = True
-        elif action == 'c':
-            # save current game
-            save_game = True
-        elif action == 'd':
-            player_seed = True
-        elif action == 'e':
-            replay_game = True
-        elif action == 'f':
-            show_main_menu = False
-
-        if replay_game:
-            logger.info('Replaying game')
-            game_replay(con, game_config)
-
-        if player_seed:
-            player_supplied_seed = "ABSTRACTIONISM"
-            # this was a write back to the constants file. This doesn't work with the config file
-            # need another option issue #57 created
-            # constants.PLAYER_SEED = player_supplied_seed
-
-            my_random = tcod.random_new_from_seed(1059)
-            logger.info('random seed set up {}', my_random)
-
-            for x in range(11):
-                r = my_random.randint(0,10)
-                logger.info('random number chosen {}', r)
-
-        if new_game:
-            logger.info('New game starting')
-            gameworld.remove_processor(RenderGameStartScreen)
-            # tcod.console_clear(con)
-            con.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
-            game_config = configUtilities.load_config()
-
-            start_game(con, gameworld, game_config)
-            logger.info('*********************')
-            logger.info('* Left Game         *')
-            logger.info('*********************')
-            reset_gameworld(gameworld)
-            # Esper initialisation
-            gameworld = create_game_world()
-
-            # tcod.console_clear(con)
-            con.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
-            render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse, gameworld=gameworld)
-            gameworld.add_processor(render_game_screen)
-
-        elif load_saved_game:
-            pass
-        elif save_game:
-            pass
+    # game_title1 = configUtilities.get_config_value_as_string(game_config, 'default', 'GAME_WINDOW_TITLE')
+    #
+    # logger.info('config file test:{}', str(game_title1))
+    #
+    # con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
+    # con_height = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_HEIGHT')
+    # game_title = configUtilities.get_config_value_as_string(game_config, 'default', 'GAME_WINDOW_TITLE')
+    #
+    # tcod.console_set_custom_font('static/fonts/prestige12x12_gs_tc.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
+    # tcod.console_init_root(w=con_width, h=con_height, title=game_title, fullscreen=False, renderer=tcod.RENDERER_SDL2, order='F')
+    #
+    # con = tcod.console.Console(con_width, con_height, 'F')
+    #
+    # key = tcod.Key()
+    # mouse = tcod.Mouse()
+    # action = {}
+    # show_main_menu = True
+    #
+    # # Esper initialisation
+    # gameworld = create_game_world()
+    #
+    # # needed here to gather player input from the main menu
+    # MobileUtilities.create_player_input_entity(gameworld)
+    #
+    # # start game screen image
+    # background_image = tcod.image_load('static/images/menu_background.png')
+    #
+    # # add the processors we need to display the game start screen
+    #
+    # render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse, gameworld=gameworld)
+    #
+    # gameworld.add_processor(render_game_screen)
+    #
+    # while show_main_menu:
+    #     gameworld.process(game_config)
+    #     tcod.console_flush()
+    #     new_game = load_saved_game = save_game = player_seed = replay_game = False
+    #
+    #     action = handle_menus(key, mouse, gameworld)
+    #
+    #     if action == 'a':
+    #         new_game = True
+    #     elif action == 'b':
+    #         load_saved_game = True
+    #     elif action == 'c':
+    #         # save current game
+    #         save_game = True
+    #     elif action == 'd':
+    #         player_seed = True
+    #     elif action == 'e':
+    #         replay_game = True
+    #     elif action == 'f':
+    #         show_main_menu = False
+    #
+    #     if replay_game:
+    #         logger.info('Replaying game')
+    #         game_replay(con, game_config)
+    #
+    #     if player_seed:
+    #         player_supplied_seed = "ABSTRACTIONISM"
+    #         # this was a write back to the constants file. This doesn't work with the config file
+    #         # need another option issue #57 created
+    #         # constants.PLAYER_SEED = player_supplied_seed
+    #
+    #         my_random = tcod.random_new_from_seed(1059)
+    #         logger.info('random seed set up {}', my_random)
+    #
+    #         for x in range(11):
+    #             r = my_random.randint(0,10)
+    #             logger.info('random number chosen {}', r)
+    #
+    #     if new_game:
+    #         logger.info('New game starting')
+    #         gameworld.remove_processor(RenderGameStartScreen)
+    #         # tcod.console_clear(con)
+    #         con.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
+    #         game_config = configUtilities.load_config()
+    #
+    #         start_game(con, gameworld, game_config)
+    #         logger.info('*********************')
+    #         logger.info('* Left Game         *')
+    #         logger.info('*********************')
+    #         reset_gameworld(gameworld)
+    #         # Esper initialisation
+    #         gameworld = create_game_world()
+    #
+    #         # tcod.console_clear(con)
+    #         con.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
+    #         render_game_screen = RenderGameStartScreen(con=con, image=background_image, key=key, mouse=mouse, gameworld=gameworld)
+    #         gameworld.add_processor(render_game_screen)
+    #
+    #     elif load_saved_game:
+    #         pass
+    #     elif save_game:
+    #         pass
 
 
 if __name__ == '__main__':

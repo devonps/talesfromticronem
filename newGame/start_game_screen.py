@@ -32,8 +32,7 @@ class StartGame:
 
         draw_colourful_frame(console=start_game_console, game_config=game_config,
                              startx=start_panel_frame_x, starty=start_panel_frame_y,
-                             endx=start_panel_frame_width,
-                             endy=start_panel_frame_height,
+                             width=start_panel_frame_width, height=start_panel_frame_height,
                              title=game_title, title_loc='centre',
                              title_decorator=True,
                              corner_decorator='', corner_studs='',
@@ -41,7 +40,7 @@ class StartGame:
 
         # place game menu options
         better_menu(console=start_game_console, header='',
-            menu_options=['New Game', 'Continue', 'Replay', 'Options', 'Help', 'Quit'], menu_id_format=True,
+                    menu_options=['New Game', 'Continue', 'Replay', 'Options', 'Help', 'Quit'], menu_id_format=True,
                     menu_start_x=menu_start_x, blank_line=True)
 
         # place game version message
