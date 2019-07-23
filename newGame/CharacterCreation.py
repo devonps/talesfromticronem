@@ -3,7 +3,7 @@ import tcod.console
 
 from loguru import logger
 from utilities import configUtilities
-from utilities.display import draw_colourful_frame, better_menu, pointy_menu
+from utilities.display import draw_colourful_frame, pointy_menu
 from utilities.input_handlers import handle_game_keys
 from utilities.world import create_game_world
 from utilities.jsonUtilities import read_json_file

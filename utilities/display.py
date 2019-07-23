@@ -67,7 +67,7 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
             return None
 
 
-def better_menu(console, header, menu_options, menu_id_format, menu_start_x, blank_line):
+def XXbetter_menu(console, header, menu_options, menu_id_format, menu_start_x, blank_line):
     if len(menu_options) > 26:
         raise ValueError('Cannot have a menu with more than 26 options.')
 
