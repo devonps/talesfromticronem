@@ -32,7 +32,8 @@
       "dagger": "false",
       "rod": "true",
       "focus": "true"
-    }
+    },
+    "health": "20"
   },
   {
     "name": "witch doctor",
@@ -66,7 +67,8 @@
       "dagger": "true",
       "rod": "true",
       "focus": "true"
-    }
+    },
+    "health": "20"
   },
   {
     "name": "druid",
@@ -100,7 +102,8 @@
       "dagger": "true",
       "rod": "true",
       "focus": "false"
-    }
+    },
+    "health": "20"
   },
   {
     "name": "mesmer",
@@ -134,7 +137,8 @@
       "dagger": "false",
       "rod": "true",
       "focus": "true"
-    }
+    },
+    "health": "20"
   },
     {
       "name": "elementalist",
@@ -168,7 +172,8 @@
       "dagger": "true",
       "rod": "false",
       "focus": "true"
-    }
+    },
+    "health": "20"
     },
     {
       "name": "chronomancer",
@@ -202,7 +207,8 @@
       "dagger": "true",
       "rod": "true",
       "focus": "true"
-    }
+    },
+    "health": "20"
     }
 ]
 }

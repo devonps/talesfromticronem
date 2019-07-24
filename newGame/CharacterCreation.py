@@ -206,10 +206,20 @@ class CharacterCreation:
 
         menu_options = []
         menu_options_flavour = []
+        class_health = []
+        class_weapons = []
+        class_balanced = []
+        class_defensive = []
+        class_offensive= []
 
         for option in class_file['classes']:
             menu_options.append(option['name'])
             menu_options_flavour.append(option['flavour'])
+            class_health.append(option['health'])
+            class_weapons.append(option['weapons'])
+            class_balanced.append(option['balanced'])
+            class_offensive.append(option['offensive'])
+            class_defensive.append(option['defensive'])
 
         class_not_selected = True
         selected_menu_option = 0
@@ -239,32 +249,13 @@ class CharacterCreation:
                             selected_menu_option = 0
                     if event_action == 'enter':
                         if selected_menu_option == 0:  # necromancer selected
-                            selected_class = 'necromancer'
                             MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
-                                                                   selected_class=selected_class, health=22)
-                        if selected_menu_option == 1:  # witch doctor selected
-                            selected_class = 'witch doctor'
-                            MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
-                                                                   selected_class=selected_class, health=22)
-                        if selected_menu_option == 2:  # druid selected
-                            selected_class = 'druid'
-                            MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
-                                                                   selected_class=selected_class, health=18)
-                        if selected_menu_option == 3:  # mesmer selected
-                            selected_class = 'mesmer'
-                            MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
-                                                                   selected_class=selected_class, health=18)
-                        if selected_menu_option == 4:  # elementalist selected
-                            selected_class = 'elementalist'
-                            MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
-                                                                   selected_class=selected_class, health=5)
-                        if selected_menu_option == 5:  # chronomancer selected
-                            selected_class = 'chronomancer'
-                            MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
-                                                                   selected_class=selected_class, health=5)
+                                                                   selected_class=menu_options[selected_menu_option],
+                                                                   health=class_health[selected_menu_option])
 
                         CharacterCreation.choose_starting_weapons(root_console=root_console, gameworld=gameworld,
-                                                                  player=player, game_config=game_config, selected_class=selected_class)
+                                                                  player=player, game_config=game_config,
+                                                                  selected_class=menu_options[selected_menu_option])
 
     @staticmethod
     def select_personality_choices(con, gameworld, player, game_config):
