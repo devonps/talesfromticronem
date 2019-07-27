@@ -2,8 +2,8 @@ import tcod
 import tcod.console
 
 from loguru import logger
-from utilities import configUtilities
-from utilities.display import draw_colourful_frame, pointy_menu
+from utilities import configUtilities, colourUtilities
+from utilities.display import draw_colourful_frame, pointy_menu, coloured_list, draw_clear_text_box
 from utilities.input_handlers import handle_game_keys
 from utilities.world import create_game_world
 from utilities.jsonUtilities import read_json_file
@@ -102,6 +102,11 @@ class CharacterCreation:
         start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_WIDTH')
         start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_X')
+        primary_attributes = configUtilities.get_config_value_as_list(game_config, 'newgame', 'PRIMARY_ATTRIBUTES')
+        race_flavour_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'RACE_CONSOLE_FLAVOR_X')
+        race_flavour_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'RACE_CONSOLE_FLAVOR_Y')
+        race_benefits_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'RACE_CONSOLE_BENEFITS_X')
+        race_benefits_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'RACE_CONSOLE_BENEFITS_Y')
 
         race_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
 
@@ -117,29 +122,57 @@ class CharacterCreation:
         logger.info('Select Race options')
         race_file = read_json_file(player_race_file)
 
-        menu_options = []
-        menu_options_flavour = []
+        race_name = []
+        race_flavour = []
         race_prefix = []
         race_bg_colour = []
         race_size = []
-        race_glyph = []
+        race_attributes = []
 
         for option in race_file['races']:
-            menu_options.append(option['name'])
-            menu_options_flavour.append(option['flavour'])
+            race_name.append(option['name'])
+            race_flavour.append(option['flavour'])
             race_prefix.append(option['prefix'])
             race_bg_colour.append(option['bg_colour'])
             race_size.append(option['size'])
-            race_glyph.append(option['glyph'])
+            race_attributes.append(option['attributes'])
 
         show_race_options = True
         selected_menu_option = 0
-        max_menu_option = len(menu_options) - 1
+        max_menu_option = len(race_name) - 1
 
         while show_race_options:
             pointy_menu(console=race_console, header='',
-                        menu_options=menu_options, menu_id_format=True, menu_start_x=menu_start_x, menu_start_y= 0,
+                        menu_options=race_name, menu_id_format=True, menu_start_x=menu_start_x, menu_start_y=0,
                         blank_line=True, selected_option=selected_menu_option)
+
+            # racial flavour text
+            draw_clear_text_box(console=race_console,
+                                posx=race_flavour_x, posy=race_flavour_y,
+                                width=30, height=10,
+                                text=race_flavour[selected_menu_option],
+                                fg=colourUtilities.WHITE, bg=colourUtilities.BLACK)
+
+            # racial benefits
+            race_console.print(x=race_benefits_x, y=race_benefits_y, string='Benefit', fg=colourUtilities.GREEN)
+            race_benefit = race_attributes[selected_menu_option]
+            benefit_value = race_benefit['benefitValue']
+            benefit_name = race_benefit['benefitName']
+
+            coloured_list(console=race_console, list_options=primary_attributes,
+                          list_x=race_benefits_x + 3, list_y=race_benefits_y + 2, selected_option=benefit_name)
+
+            posy = 0
+            for benefit in primary_attributes:
+                if benefit_name.lower() == benefit.lower():
+
+                    race_console.print(x=race_benefits_x, y=(race_benefits_y + 2) + posy, string='+' + benefit_value,
+                                       fg=colourUtilities.YELLOW1, bg=colourUtilities.BLACK)
+                else:
+                    race_console.print(x=race_benefits_x, y=(race_benefits_y + 2) + posy, string='   ',
+                                       fg=colourUtilities.BLACK, bg=colourUtilities.BLACK)
+                posy += 1
+
             # blit changes to root console
             race_console.blit(dest=root_console, dest_x=5, dest_y=5)
             tcod.console_flush()
@@ -158,23 +191,10 @@ class CharacterCreation:
                         if selected_menu_option > max_menu_option:
                             selected_menu_option = 0
                     if event_action == 'enter':
-                        if selected_menu_option == 0:  # Human selected
-                            MobileUtilities.setup_racial_attributes(gameworld=gameworld,
-                                                                    player=player, selected_race='human',
-                                                                    race_size=race_size[0], bg=tcod.black)
-                        if selected_menu_option == 1:  # Elf selected
-                            MobileUtilities.setup_racial_attributes(gameworld=gameworld,
-                                                                    player=player, selected_race='elf',
-                                                                    race_size=race_size[1], bg=tcod.blue)
-                        if selected_menu_option == 2:  # Orc selected
-                            MobileUtilities.setup_racial_attributes(gameworld=gameworld,
-                                                                    player=player, selected_race='orc',
-                                                                    race_size=race_size[2], bg=tcod.red)
-                        if selected_menu_option == 3:  # Troll selected
-                            MobileUtilities.setup_racial_attributes(gameworld=gameworld,
-                                                                    player=player, selected_race='troll',
-                                                                    race_size=race_size[3], bg=tcod.white)
-
+                        MobileUtilities.setup_racial_attributes(
+                            gameworld=gameworld,player=player, selected_race=race_name[selected_menu_option],
+                            race_size=race_size[selected_menu_option], bg=race_bg_colour[selected_menu_option])
+                        logger.info('Race selected:' + race_name[selected_menu_option])
                         CharacterCreation.choose_player_class(root_console, gameworld, player, game_config)
 
     @staticmethod
@@ -252,7 +272,7 @@ class CharacterCreation:
                             MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
                                                                    selected_class=menu_options[selected_menu_option],
                                                                    health=class_health[selected_menu_option])
-
+                            logger.info('{} class chosen', menu_options[selected_menu_option])
                         CharacterCreation.choose_starting_weapons(root_console=root_console, gameworld=gameworld,
                                                                   player=player, game_config=game_config,
                                                                   selected_class=menu_options[selected_menu_option])
@@ -292,7 +312,7 @@ class CharacterCreation:
                              corner_decorator='', corner_studs='square',
                              msg='ESC/ to go back, up & down, left & right arrows to select, Enter to accept')
 
-        logger.info('Selecting character class')
+        logger.info('Selecting weapons')
         class_file = read_json_file(player_class_file)
 
         available_weapons = []

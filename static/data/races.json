@@ -1,36 +1,48 @@
 {
   "races" : [
     {
-      "name": "Human",
-      "flavour": "Humans have lost everything, including their former glory, through their incessient hunger for power . Even their gods have withdrawn. And yet, they still believe.",
-      "prefix": "human",
+      "name": "Dilga",
+      "flavour": "The Dilga are a religious race",
+      "prefix": "dilga",
       "bg_colour": "black",
       "size": "normal",
-      "glyph": "H"
+      "attributes": {
+        "benefitName": "precision",
+        "benefitValue": "1"
+      }
     },
     {
-      "name": "Elf",
-      "flavour": "Elves are born with a desire to travel the world, they seek travel, adventure, and above all else knowledge. They struggle to balance the spirit of adventure with duty, and curiosity with honor.",
-      "prefix": "elven",
+      "name": "Eskeri",
+      "flavour": "Eskeri are born with a desire to travel the world.",
+      "prefix": "eskeri",
       "bg_colour": "blue",
       "size": "normal",
-      "glyph": "E"
+      "attributes": {
+        "benefitName": "power",
+        "benefitValue": "1"
+      }
     },
     {
-      "name": "Orc",
-      "flavour": "Orcs are by nature large, savage, and short tempered. They have renounced all gods as false and view life through a cynical lens.",
-      "prefix": "orcish",
+      "name": "Jogah",
+      "flavour": "Jogah are by nature large, savage, and short tempered.",
+      "prefix": "jogah",
       "bg_colour": "red",
       "size": "big",
-      "glyph": "O"
+      "attributes": {
+        "benefitName": "vitality",
+        "benefitValue": "1"
+      }
     },
     {
-      "name": "Troll",
-      "flavour": "Trolls are raised as warriors from birth, their combat skills make them dangerous enemies and invaluable allies. As individuals they favour hunting and tracking but when gathered together they are formidable warband.",
-      "prefix": "troll",
+      "name": "Oshun",
+      "flavour": "Oshun are raised as warriors from birth.",
+      "prefix": "oshun",
       "bg_colour": "white",
       "size": "huge",
-      "glyph": "D"
+      "attributes": {
+        "benefitName": "toughness",
+        "benefitValue": "1"
+      }
     }
   ]
 }

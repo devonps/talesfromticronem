@@ -67,35 +67,24 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
             return None
 
 
-def XXbetter_menu(console, header, menu_options, menu_id_format, menu_start_x, blank_line):
-    if len(menu_options) > 26:
-        raise ValueError('Cannot have a menu with more than 26 options.')
+# the selected option is the choice from list_options that will be highlighted
+# so if list_options were  [apple, orange, grape] and selected_option were 'grape' then grape would be highlighted
+def coloured_list(console, list_options, list_x, list_y, selected_option):
+    lst = 0
+    list_count = 0
+    bg_color = colourUtilities.BLACK
 
-    # print the header, with auto-wrap
-    if header != '':
-        console.print(x=menu_start_x, y=10, string=header, bg_blend=tcod.BKGND_NONE, alignment=tcod.LEFT)
+    for option in list_options:
+        if selected_option.lower() == option.lower():
 
-    # print the menu options
-    menu_count = len(menu_options) + 15
-    letter_index = ord('a')
-    for option_text in menu_options:
-        menu_id = chr(letter_index)
-        menu_text = ')' + option_text
-        bg_color = tcod.black
-        fg_color = tcod.white
+            fg_color = colourUtilities.YELLOW1
+        else:
+            fg_color = colourUtilities.WHITE
 
-        if menu_id_format:
-            fg_color = tcod.light_blue
-        console.print(x=menu_start_x, y=menu_count, string=menu_id, fg=fg_color, bg=bg_color, bg_blend=tcod.BKGND_NONE,
+        console.print(x=list_x, y=list_y + list_count, string=option, fg=fg_color, bg=bg_color, bg_blend=tcod.BKGND_NONE,
                       alignment=tcod.LEFT)
-        fg_color = tcod.white
-        console.print(x=menu_start_x + 1, y=menu_count, string=menu_text, fg=fg_color, bg=bg_color,
-                      bg_blend=tcod.BKGND_NONE,
-                      alignment=tcod.LEFT)
-        menu_count += 1
-        if blank_line:
-            menu_count += 1
-        letter_index += 1
+        lst += 1
+        list_count += 1
 
 
 def pointy_menu(console, header, menu_options, menu_id_format, menu_start_x, menu_start_y, blank_line, selected_option):
@@ -109,17 +98,17 @@ def pointy_menu(console, header, menu_options, menu_id_format, menu_start_x, men
     # print the menu options
     menu_count = len(menu_options) + 15
     mnu = 0
+    bg_color = colourUtilities.BLACK
+
     letter_index = ord('a')
     for option_text in menu_options:
         menu_id = chr(letter_index)
         menu_text = ')' + option_text
         if selected_option == mnu:
-            bg_color = tcod.black
-            fg_color = tcod.yellow
+            fg_color = colourUtilities.YELLOW1
             mnu_pointer = '>'
         else:
-            bg_color = tcod.black
-            fg_color = tcod.white
+            fg_color = colourUtilities.WHITE
             mnu_pointer = ' '
         men_text = mnu_pointer + ' ' + option_text
         console.print(x=menu_start_x, y=menu_count, string=men_text, fg=fg_color, bg=bg_color, bg_blend=tcod.BKGND_NONE,
@@ -244,3 +233,8 @@ def draw_colourful_frame(console, game_config, startx, starty, width, height, ti
             console.print(x=startx + 1, y=height - 2, string=chr(corner_stud_decorator), fg=corner_decorator_fg, bg=corner_decorator_bg)
             # bottom right
             console.print(x=width - 2, y=height - 2, string=chr(corner_stud_decorator), fg=corner_decorator_fg, bg=corner_decorator_bg)
+
+
+def draw_clear_text_box(console, posx, posy, width, height, text, fg, bg):
+    console.draw_rect(x=posx, y=posy, width=width, height=height, ch=32, fg=colourUtilities.BLACK)
+    console.print_box(x=posx, y=posy, width=width, height=height, string=text, fg=fg, bg=bg)

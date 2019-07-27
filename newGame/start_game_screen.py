@@ -11,8 +11,9 @@ from newGame.CharacterCreation import CharacterCreation
 class StartGame:
 
     @staticmethod
-    def start_game_screen(root_console, game_config):
+    def start_game_screen(root_console):
         logger.info('Game Start Screen')
+        game_config = configUtilities.load_config()
 
         game_title = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='GAME_TITLE')
         game_version = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='VERSION')
@@ -75,9 +76,11 @@ class StartGame:
                             selected_menu_option = 0
                     if event_action == 'enter':
                         if selected_menu_option == 0:
+                            game_config = configUtilities.load_config()
                             CharacterCreation.display_character_creation_options(root_console=root_console, game_config=game_config)
                             root_console.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
-                            StartGame.start_game_screen(root_console, game_config)
+
+                            # StartGame.start_game_screen(root_console)
                         if selected_menu_option == 1:     # continue existing game
                             pass
                         if selected_menu_option == 2:     # Replay old game
