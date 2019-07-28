@@ -26,6 +26,7 @@ class CharacterCreation:
         start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_WIDTH')
         start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_X')
+        menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_Y')
 
         character_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
 
@@ -46,7 +47,7 @@ class CharacterCreation:
             pointy_menu(console=character_console, header='',
                         menu_options=['Create New Character', 'Random Character', 'Choose build from your library',
                                       'Replay most recent character'], menu_id_format=True, menu_start_x=menu_start_x,
-                        menu_start_y=0,  blank_line=True, selected_option=selected_menu_option)
+                        menu_start_y=menu_start_y,  blank_line=True, selected_option=selected_menu_option)
 
             # blit changes to root console
             character_console.blit(dest=root_console, dest_x=5, dest_y=5)
@@ -102,6 +103,7 @@ class CharacterCreation:
         start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_WIDTH')
         start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_X')
+        menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_Y')
         primary_attributes = configUtilities.get_config_value_as_list(game_config, 'newgame', 'PRIMARY_ATTRIBUTES')
         race_flavour_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'RACE_CONSOLE_FLAVOR_X')
         race_flavour_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'RACE_CONSOLE_FLAVOR_Y')
@@ -143,7 +145,7 @@ class CharacterCreation:
 
         while show_race_options:
             pointy_menu(console=race_console, header='',
-                        menu_options=race_name, menu_id_format=True, menu_start_x=menu_start_x, menu_start_y=0,
+                        menu_options=race_name, menu_id_format=True, menu_start_x=menu_start_x, menu_start_y=menu_start_y,
                         blank_line=True, selected_option=selected_menu_option)
 
             # racial flavour text
@@ -195,10 +197,10 @@ class CharacterCreation:
                             gameworld=gameworld,player=player, selected_race=race_name[selected_menu_option],
                             race_size=race_size[selected_menu_option], bg=race_bg_colour[selected_menu_option])
                         logger.info('Race selected:' + race_name[selected_menu_option])
-                        CharacterCreation.choose_player_class(root_console, gameworld, player, game_config)
+                        CharacterCreation.choose_class(root_console, gameworld, player, game_config)
 
     @staticmethod
-    def choose_player_class(root_console, gameworld, player, game_config):
+    def choose_class(root_console, gameworld, player, game_config):
 
         player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                        parameter='CLASSESFILE')
@@ -208,7 +210,14 @@ class CharacterCreation:
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
         start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_WIDTH')
         start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
-        menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_X')
+        class_flavour_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_CONSOLE_FLAVOR_X')
+        class_flavour_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_CONSOLE_FLAVOR_Y')
+        class_menu_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_MENU_X')
+        class_menu_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_MENU_Y')
+        class_package_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_PACKAGE_X')
+        class_package_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_PACKAGE_Y')
+        class_packages = configUtilities.get_config_value_as_list(game_config, 'newgame', 'CLASS_PACKAGES')
+        jewellery_locations = configUtilities.get_config_value_as_list(game_config, 'newgame', 'JEWELLERY_LOCATIONS')
 
         class_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
 
@@ -228,27 +237,98 @@ class CharacterCreation:
         menu_options_flavour = []
         class_health = []
         class_weapons = []
-        class_balanced = []
-        class_defensive = []
-        class_offensive= []
+        class_defense_benefits = []
+        class_balanced_benefits = []
+        class_offense_benefits = []
 
         for option in class_file['classes']:
             menu_options.append(option['name'])
             menu_options_flavour.append(option['flavour'])
             class_health.append(option['health'])
             class_weapons.append(option['weapons'])
-            class_balanced.append(option['balanced'])
-            class_offensive.append(option['offensive'])
-            class_defensive.append(option['defensive'])
+            class_defense_benefits.append(option['defensive'])
+            class_balanced_benefits.append(option['balanced'])
+            class_offense_benefits.append(option['offensive'])
+
+        defensive_class = [['' for x in range(5)] for x in range(len(menu_options))]
+        balanced_class = [['' for x in range(5)] for x in range(len(menu_options))]
+        offensive_class = [['' for x in range(5)] for x in range(len(menu_options))]
+
+        for class_counter in range(len(menu_options)):
+            defensive_class[class_counter][0] = class_defense_benefits[class_counter]['neck']
+            defensive_class[class_counter][1] = class_defense_benefits[class_counter]['ring1']
+            defensive_class[class_counter][2] = class_defense_benefits[class_counter]['ring2']
+            defensive_class[class_counter][3] = class_defense_benefits[class_counter]['earring1']
+            defensive_class[class_counter][4] = class_defense_benefits[class_counter]['earring2']
+
+            balanced_class[class_counter][0] = class_balanced_benefits[class_counter]['neck']
+            balanced_class[class_counter][1] = class_balanced_benefits[class_counter]['ring1']
+            balanced_class[class_counter][2] = class_balanced_benefits[class_counter]['ring2']
+            balanced_class[class_counter][3] = class_balanced_benefits[class_counter]['earring1']
+            balanced_class[class_counter][4] = class_balanced_benefits[class_counter]['earring2']
+
+            offensive_class[class_counter][0] = class_offense_benefits[class_counter]['neck']
+            offensive_class[class_counter][1] = class_offense_benefits[class_counter]['ring1']
+            offensive_class[class_counter][2] = class_offense_benefits[class_counter]['ring2']
+            offensive_class[class_counter][3] = class_offense_benefits[class_counter]['earring1']
+            offensive_class[class_counter][4] = class_offense_benefits[class_counter]['earring2']
 
         class_not_selected = True
         selected_menu_option = 0
         max_menu_option = len(menu_options) - 1
+        package_selected = 1
 
         while class_not_selected:
             pointy_menu(console=class_console, header='',
-                        menu_options=menu_options, menu_id_format=True, menu_start_x=menu_start_x, menu_start_y=0,
+                        menu_options=menu_options, menu_id_format=True, menu_start_x=class_menu_x, menu_start_y=class_menu_y,
                         blank_line=True, selected_option=selected_menu_option)
+
+            # draw class flavour text
+            draw_clear_text_box(console=class_console,
+                                posx=class_flavour_x, posy=class_flavour_y,
+                                width=30, height=10,
+                                text=menu_options_flavour[selected_menu_option],
+                                fg=colourUtilities.WHITE, bg=colourUtilities.BLACK)
+
+            # draw jewellery title
+            class_console.print(x=class_package_x + 15, y=class_package_y - 2, string='Jewellery Bonus', fg=colourUtilities.YELLOW1)
+
+            coloured_list(console=class_console,
+                          list_options=jewellery_locations,
+                          list_x=class_package_x, list_y=class_package_y + 2,
+                          selected_option='nothing')
+
+            # draw class packages incl jewellery benefits
+            pkg_pointer = '>'
+            pkg_empty = ' '
+            p1 = 9
+            p2 = 24
+            p3 = 39
+            if package_selected == 1:
+                class_console.print(x=class_package_x + p1, y=class_package_y, string=pkg_pointer + class_packages[0], fg=colourUtilities.YELLOW1)
+                class_console.print(x=class_package_x + p2, y=class_package_y, string=pkg_empty + class_packages[1], fg=colourUtilities.WHITE)
+                class_console.print(x=class_package_x + p3, y=class_package_y, string=pkg_empty + class_packages[2], fg=colourUtilities.WHITE)
+            if package_selected == 2:
+                class_console.print(x=class_package_x + p1, y=class_package_y, string=pkg_empty + class_packages[0], fg=colourUtilities.WHITE)
+                class_console.print(x=class_package_x + p2, y=class_package_y, string=pkg_pointer + class_packages[1], fg=colourUtilities.YELLOW1)
+                class_console.print(x=class_package_x + p3, y=class_package_y, string=pkg_empty + class_packages[2], fg=colourUtilities.WHITE)
+            if package_selected == 3:
+                class_console.print(x=class_package_x + p1, y=class_package_y, string=pkg_empty + class_packages[0], fg=colourUtilities.WHITE)
+                class_console.print(x=class_package_x + p2, y=class_package_y, string=pkg_empty + class_packages[1], fg=colourUtilities.WHITE)
+                class_console.print(x=class_package_x + p3, y=class_package_y, string=pkg_pointer + class_packages[2], fg=colourUtilities.YELLOW1)
+
+            counter = class_package_y + 2
+            for loc in range(5):
+                class_console.draw_rect(x=class_package_x + 10, y=counter, width=20, height=5, ch=32, fg=colourUtilities.BLACK)
+                class_console.print(x=class_package_x + 10, y=counter, string=defensive_class[selected_menu_option][loc], fg=colourUtilities.WHITE)
+                class_console.draw_rect(x=class_package_x + 25, y=counter, width=20, height=5, ch=32, fg=colourUtilities.BLACK)
+                class_console.print(x=class_package_x + 25, y=counter, string=balanced_class[selected_menu_option][loc], fg=colourUtilities.WHITE)
+                class_console.draw_rect(x=class_package_x + 40, y=counter, width=14, height=5, ch=32, fg=colourUtilities.BLACK)
+                class_console.print(x=class_package_x + 40, y=counter, string=offensive_class[selected_menu_option][loc], fg=colourUtilities.WHITE)
+                counter += 1
+
+            # draw class attribute bonus
+
 
             # blit changes to root console
             class_console.blit(dest=root_console, dest_x=5, dest_y=5)
@@ -267,6 +347,14 @@ class CharacterCreation:
                         selected_menu_option += 1
                         if selected_menu_option > max_menu_option:
                             selected_menu_option = 0
+                    if event_action == 'left':
+                        package_selected -= 1
+                        if package_selected < 1:
+                            package_selected = 3
+                    if event_action == 'right':
+                        package_selected += 1
+                        if package_selected > 3:
+                            package_selected = 1
                     if event_action == 'enter':
                         if selected_menu_option == 0:  # necromancer selected
                             MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,

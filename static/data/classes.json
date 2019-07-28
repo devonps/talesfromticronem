@@ -8,21 +8,33 @@
       "ring1": "tigerseye",
       "ring2": "turquoise",
       "earring1": "malachite",
-      "earring2": "pearl"
+      "earring2": "pearl",
+      "attributes": {
+        "benefitName": "ferocity",
+        "benefitValue": "15"
+      }
     },
     "defensive": {
       "neck": "amber",
       "ring1": "malachite",
       "ring2": "amber",
       "earring1": "pearl",
-      "earring2": "pearl"
+      "earring2": "pearl",
+      "attributes": {
+        "benefitName": "healing",
+        "benefitValue": "15"
+      }
     },
     "offensive": {
       "neck": "amber",
       "ring1": "garnet",
       "ring2": "garnet",
       "earring1": "amber",
-      "earring2": "malachite"
+      "earring2": "malachite",
+      "attributes": {
+        "benefitName": "expertise",
+        "benefitValue": "15"
+      }
     },
     "weapons": {
       "sword": "true",
@@ -43,21 +55,33 @@
       "ring1": "tigerseye",
       "ring2": "turquoise",
       "earring1": "malachite",
-      "earring2": "pearl"
+      "earring2": "pearl",
+      "attributes": {
+        "benefitName": "concentration",
+        "benefitValue": "15"
+      }
       },
     "defensive": {
       "neck": "amber",
       "ring1": "malachite",
       "ring2": "amber",
       "earring1": "pearl",
-      "earring2": "pearl"
+      "earring2": "pearl",
+      "attributes": {
+        "benefitName": "healing",
+        "benefitValue": "15"
+      }
     },
     "offensive": {
       "neck": "amber",
       "ring1": "garnet",
       "ring2": "garnet",
       "earring1": "amber",
-      "earring2": "malachite"
+      "earring2": "malachite",
+      "attributes": {
+        "benefitName": "expertise",
+        "benefitValue": "15"
+      }
     },
     "weapons": {
       "sword": "false",
@@ -74,25 +98,37 @@
     "name": "druid",
     "flavour": "Druids capable of channeling the might of the heavens allowing them to accumulate astral force to become a celestial avatar, a paragon of reactive recovery and strong sustainability in a dangerous world.",
     "balanced": {
-      "neck": "amber",
+      "neck": "tigerseye",
       "ring1": "tigerseye",
-      "ring2": "turquoise",
+      "ring2": "pearl",
       "earring1": "malachite",
-      "earring2": "pearl"
+      "earring2": "turquoise",
+      "attributes": {
+        "benefitName": "ferocity",
+        "benefitValue": "15"
+      }
       },
     "defensive": {
-      "neck": "amber",
+      "neck": "pearl",
       "ring1": "malachite",
-      "ring2": "amber",
-      "earring1": "pearl",
-      "earring2": "pearl"
+      "ring2": "turquoise",
+      "earring1": "malachite",
+      "earring2": "malachite",
+      "attributes": {
+        "benefitName": "concentration",
+        "benefitValue": "15"
+      }
     },
     "offensive": {
-      "neck": "amber",
-      "ring1": "garnet",
+      "neck": "pearl",
+      "ring1": "turquoise",
       "ring2": "garnet",
-      "earring1": "amber",
-      "earring2": "malachite"
+      "earring1": "pearl",
+      "earring2": "pearl",
+      "attributes": {
+        "benefitName": "healing",
+        "benefitValue": "15"
+      }
     },
     "weapons": {
       "sword": "true",
@@ -109,25 +145,37 @@
     "name": "mesmer",
     "flavour": "Mesmers weave deception magic that seeks to confound, disorient and dumbfound their enemies.",
     "balanced": {
-      "neck": "amber",
-      "ring1": "tigerseye",
-      "ring2": "turquoise",
+      "neck": "tigerseye",
+      "ring1": "turquoise",
+      "ring2": "garnet",
       "earring1": "malachite",
-      "earring2": "pearl"
+      "earring2": "pearl",
+      "attributes": {
+        "benefitName": "concentration",
+        "benefitValue": "15"
+      }
       },
     "defensive": {
-      "neck": "amber",
-      "ring1": "malachite",
-      "ring2": "amber",
-      "earring1": "pearl",
-      "earring2": "pearl"
+      "neck": "tigerseye",
+      "ring1": "turquoise",
+      "ring2": "garnet",
+      "earring1": "malachite",
+      "earring2": "malachite",
+      "attributes": {
+        "benefitName": "concentration",
+        "benefitValue": "15"
+      }
     },
     "offensive": {
-      "neck": "amber",
-      "ring1": "garnet",
-      "ring2": "garnet",
-      "earring1": "amber",
-      "earring2": "malachite"
+      "neck": "tigerseye",
+      "ring1": "turquoise",
+      "ring2": "turquoise",
+      "earring1": "garnet",
+      "earring2": "pearl",
+      "attributes": {
+        "benefitName": "ferocity",
+        "benefitValue": "15"
+      }
     },
     "weapons": {
       "sword": "true",
@@ -144,25 +192,37 @@
       "name": "elementalist",
     "flavour": "Elementalists channel elemental forces, making fire, air, earth, and water do their bidding, their powers of destruction are drawn from an affinity with the four elements",
     "balanced": {
-      "neck": "amber",
+      "neck": "garnet",
       "ring1": "tigerseye",
       "ring2": "turquoise",
-      "earring1": "malachite",
-      "earring2": "pearl"
+      "earring1": "pearl",
+      "earring2": "pearl",
+      "attributes": {
+        "benefitName": "ferocity",
+        "benefitValue": "15"
+      }
       },
     "defensive": {
-      "neck": "amber",
-      "ring1": "malachite",
-      "ring2": "amber",
+      "neck": "malachite",
+      "ring1": "turquoise",
+      "ring2": "turquoise",
       "earring1": "pearl",
-      "earring2": "pearl"
+      "earring2": "tigerseye",
+      "attributes": {
+        "benefitName": "healing",
+        "benefitValue": "15"
+      }
     },
     "offensive": {
-      "neck": "amber",
+      "neck": "garnet",
       "ring1": "garnet",
       "ring2": "garnet",
-      "earring1": "amber",
-      "earring2": "malachite"
+      "earring1": "turquoise",
+      "earring2": "turquoise",
+      "attributes": {
+        "benefitName": "expertise",
+        "benefitValue": "15"
+      }
     },
     "weapons": {
       "sword": "true",
@@ -179,25 +239,37 @@
       "name": "chronomancer",
     "flavour": "The path of the Chronomancer allows them to rend both space and time, allowing them to focus on past versus future and fast versus slow as key themes",
     "balanced": {
-      "neck": "amber",
-      "ring1": "tigerseye",
-      "ring2": "turquoise",
-      "earring1": "malachite",
-      "earring2": "pearl"
+      "neck": "turquoise",
+      "ring1": "pearl",
+      "ring2": "malachite",
+      "earring1": "turquoise",
+      "earring2": "garnet",
+      "attributes": {
+        "benefitName": "expertise",
+        "benefitValue": "15"
+      }
       },
     "defensive": {
-      "neck": "amber",
+      "neck": "turquoise",
       "ring1": "malachite",
-      "ring2": "amber",
-      "earring1": "pearl",
-      "earring2": "pearl"
+      "ring2": "malachite",
+      "earring1": "garnet",
+      "earring2": "garnet",
+      "attributes": {
+        "benefitName": "expertise",
+        "benefitValue": "15"
+      }
     },
     "offensive": {
-      "neck": "amber",
-      "ring1": "garnet",
-      "ring2": "garnet",
-      "earring1": "amber",
-      "earring2": "malachite"
+      "neck": "tigerseye",
+      "ring1": "turquoise",
+      "ring2": "turquoise",
+      "earring1": "garnet",
+      "earring2": "garnet",
+      "attributes": {
+        "benefitName": "expertise",
+        "benefitValue": "15"
+      }
     },
     "weapons": {
       "sword": "false",

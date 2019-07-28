@@ -30,6 +30,7 @@ class StartGame:
         start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_X')
+        menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_Y')
 
         start_game_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
 
@@ -55,7 +56,7 @@ class StartGame:
 
             pointy_menu(console=start_game_console, header='',
                         menu_options=['New Game', 'Continue', 'Replay', 'Options', 'Help', 'Quit'], menu_id_format=True, menu_start_x=menu_start_x,
-                        menu_start_y=0,  blank_line=True, selected_option=selected_menu_option)
+                        menu_start_y=menu_start_y,  blank_line=True, selected_option=selected_menu_option)
 
             # blit changes to root console
             start_game_console.blit(dest=root_console, dest_x=5, dest_y=5)

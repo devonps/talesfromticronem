@@ -76,7 +76,6 @@ def coloured_list(console, list_options, list_x, list_y, selected_option):
 
     for option in list_options:
         if selected_option.lower() == option.lower():
-
             fg_color = colourUtilities.YELLOW1
         else:
             fg_color = colourUtilities.WHITE
@@ -96,14 +95,12 @@ def pointy_menu(console, header, menu_options, menu_id_format, menu_start_x, men
         console.print(x=menu_start_x, y=10, string=header, bg_blend=tcod.BKGND_NONE, alignment=tcod.LEFT)
 
     # print the menu options
-    menu_count = len(menu_options) + 15
+    menu_count = 0
     mnu = 0
     bg_color = colourUtilities.BLACK
 
     letter_index = ord('a')
     for option_text in menu_options:
-        menu_id = chr(letter_index)
-        menu_text = ')' + option_text
         if selected_option == mnu:
             fg_color = colourUtilities.YELLOW1
             mnu_pointer = '>'
@@ -111,7 +108,7 @@ def pointy_menu(console, header, menu_options, menu_id_format, menu_start_x, men
             fg_color = colourUtilities.WHITE
             mnu_pointer = ' '
         men_text = mnu_pointer + ' ' + option_text
-        console.print(x=menu_start_x, y=menu_count, string=men_text, fg=fg_color, bg=bg_color, bg_blend=tcod.BKGND_NONE,
+        console.print(x=menu_start_x, y=menu_start_y + menu_count, string=men_text, fg=fg_color, bg=bg_color, bg_blend=tcod.BKGND_NONE,
                       alignment=tcod.LEFT)
         menu_count += 1
         mnu += 1
