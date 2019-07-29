@@ -69,7 +69,7 @@ def menu(con, header, options, width, screen_width, screen_height, posx, posy, f
 
 # the selected option is the choice from list_options that will be highlighted
 # so if list_options were  [apple, orange, grape] and selected_option were 'grape' then grape would be highlighted
-def coloured_list(console, list_options, list_x, list_y, selected_option):
+def coloured_list(console, list_options, list_x, list_y, selected_option, blank_line, fg):
     lst = 0
     list_count = 0
     bg_color = colourUtilities.BLACK
@@ -78,12 +78,15 @@ def coloured_list(console, list_options, list_x, list_y, selected_option):
         if selected_option.lower() == option.lower():
             fg_color = colourUtilities.YELLOW1
         else:
-            fg_color = colourUtilities.WHITE
+            fg_color = fg
 
         console.print(x=list_x, y=list_y + list_count, string=option, fg=fg_color, bg=bg_color, bg_blend=tcod.BKGND_NONE,
                       alignment=tcod.LEFT)
-        lst += 1
+
         list_count += 1
+        lst += 1
+        if blank_line:
+            list_count += 1
 
 
 def pointy_menu(console, header, menu_options, menu_id_format, menu_start_x, menu_start_y, blank_line, selected_option):

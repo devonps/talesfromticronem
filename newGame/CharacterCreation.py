@@ -162,7 +162,8 @@ class CharacterCreation:
             benefit_name = race_benefit['benefitName']
 
             coloured_list(console=race_console, list_options=primary_attributes,
-                          list_x=race_benefits_x + 3, list_y=race_benefits_y + 2, selected_option=benefit_name)
+                          list_x=race_benefits_x + 3, list_y=race_benefits_y + 2,
+                          selected_option=benefit_name, blank_line=False, fg=colourUtilities.WHITE)
 
             posy = 0
             for benefit in primary_attributes:
@@ -296,7 +297,8 @@ class CharacterCreation:
             coloured_list(console=class_console,
                           list_options=jewellery_locations,
                           list_x=class_package_x, list_y=class_package_y + 2,
-                          selected_option='nothing')
+                          selected_option='nothing',
+                          blank_line=False, fg=colourUtilities.WHITE)
 
             # draw class packages incl jewellery benefits
             pkg_pointer = '>'
@@ -361,7 +363,7 @@ class CharacterCreation:
                                                                    selected_class=menu_options[selected_menu_option],
                                                                    health=class_health[selected_menu_option])
                             logger.info('{} class chosen', menu_options[selected_menu_option])
-                        CharacterCreation.choose_starting_weapons(root_console=root_console, gameworld=gameworld,
+                        CharacterCreation.choose_weapons(root_console=root_console, gameworld=gameworld,
                                                                   player=player, game_config=game_config,
                                                                   selected_class=menu_options[selected_menu_option])
 
@@ -378,7 +380,7 @@ class CharacterCreation:
         logger.debug('Your personality is viewed as {} by other NPCs', personality_component.personality_title)
 
     @staticmethod
-    def choose_starting_weapons(root_console, gameworld, player, game_config, selected_class):
+    def choose_weapons(root_console, gameworld, player, game_config, selected_class):
 
         player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                        parameter='CLASSESFILE')
@@ -559,7 +561,7 @@ class CharacterCreation:
                             hand_choice = 1
                     if event_action == 'enter':
                         if main_hand_selected_weapon != 'nothing' and off_hand_selected_weapon != 'nothing':
-                            CharacterCreation.choose_starting_armour(root_console, gameworld, player, game_config, selected_class, main_hand_selected_weapon, off_hand_selected_weapon)
+                            CharacterCreation.choose_armourset(root_console, gameworld, player, game_config, main_hand_selected_weapon, off_hand_selected_weapon)
 
                         if weapon_info[selected_menu_option][1] == 'off' and hand_choice == 2:
                             off_hand_selected_weapon = available_weapons[selected_menu_option]
@@ -568,18 +570,61 @@ class CharacterCreation:
                             main_hand_selected_weapon = available_weapons[selected_menu_option]
 
     @staticmethod
-    def choose_starting_armour(root_console, gameworld, player, game_config, selected_class, main_hand, off_hand):
+    def choose_armourset(root_console, gameworld, player, game_config, main_hand, off_hand):
 
-        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
-                                                                       parameter='CLASSESFILE')
+        armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='ARMOURSETFILE')
         start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
         start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
         start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
                                                                               'START_PANEL_FRAME_WIDTH')
-        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
-                                                                               'START_PANEL_FRAME_HEIGHT')
+        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
+        armour_menu_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'ARMOUR_MENU_X')
+        armour_menu_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'ARMOUR_MENU_Y')
+        armour_desc_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'ARMOUR_DESCRIPTION_X')
+        armour_desc_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'ARMOUR_DESCRIPTION_Y')
+
+        logger.info('Selecting armourset')
+        armour_file = read_json_file(armourset_file)
+
+        as_internal_name = []
+        as_display_name = ''
+        as_weight = ''
+        as_flavour = ''
+        as_material = ''
+        as_prefix_list = []
+        px_flavour = []
+        px_att_name = []
+        px_att_bonus = []
+        pxstring = 'prefix'
+        attnamestring = 'attributename'
+        attvaluestring = 'attributebonus'
+
+        for armourset in armour_file['armoursets']:
+            if armourset['startset'] == 'true':
+                as_internal_name.append(armourset['internalsetname'])
+                as_display_name = (armourset['displayname'])
+                as_weight = (armourset['weight'])
+                as_flavour = (armourset['flavour'])
+                as_material = (armourset['material'])
+                as_prefix_list = armourset['prefixlist'].split(",")
+                prefix_count = armourset['prefixcount']
+                attribute_bonus_count = armourset['attributebonuscount']
+
+                for px in range(1, prefix_count + 1):
+                    prefix_string = pxstring + str(px)
+                    px_flavour.append(armourset[prefix_string]['flavour'])
+
+                    if attribute_bonus_count > 1:
+                        att_bonus_string = attvaluestring + str(px)
+                        att_name_string = attnamestring + str(px)
+                    else:
+                        att_bonus_string = attvaluestring + str(1)
+                        att_name_string = attnamestring + str(1)
+
+                    px_att_bonus.append(armourset[prefix_string][att_bonus_string])
+                    px_att_name.append(armourset[prefix_string][att_name_string])
 
         armour_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
 
@@ -587,14 +632,28 @@ class CharacterCreation:
                              startx=start_panel_frame_x, starty=start_panel_frame_y,
                              width=start_panel_frame_width,
                              height=start_panel_frame_height,
-                             title='[ Character Creation - Select Armour ]', title_loc='centre',
+                             title='[ Character Creation - Choose Armourset ]', title_loc='centre',
                              title_decorator=False,
                              corner_decorator='', corner_studs='square',
                              msg='ESC/ to go back, up & down arrows to select, Enter to accept')
 
+        armour_description = 'You will be wearing ' + as_display_name + ' armour, ' + 'which is made from ' +\
+                             as_material + '. ' + 'Your colleagues would describe it as ' + as_flavour
+
+        armour_console.print_box(x=armour_desc_x, y=armour_desc_y, width=50, height=6, string=armour_description, fg=colourUtilities.PALEGREEN)
+        # list available armour
+        armour_console.print(x=23, y=8, string='You can modify your armour thus...', fg=colourUtilities.BLUE)
+
+        flx = 38
+        attx= 20
+        # armour column titles
+        armour_console.print(x=armour_menu_x + 2, y=armour_menu_y - 1, string='Prefix', fg=colourUtilities.LIGHTSLATEGRAY)
+        armour_console.print(x=attx, y=armour_menu_y - 1, string='Bonus to...', fg=colourUtilities.LIGHTSLATEGRAY)
+        armour_console.print(x=flx, y=armour_menu_y - 1, string='Flavour', fg=colourUtilities.LIGHTSLATEGRAY)
+
         show_armour_options = True
         selected_menu_option = 0
-        menu_options = ['head', 'chest', 'hands', 'legs', 'feet']
+        menu_options = as_prefix_list
         max_menu_option = len(menu_options) - 1
 
         while show_armour_options:
@@ -603,10 +662,19 @@ class CharacterCreation:
             armour_console.blit(dest=root_console, dest_x=5, dest_y=5)
             tcod.console_flush()
 
-            # list available armour
             pointy_menu(console=armour_console, header='',
-                        menu_options=menu_options, menu_id_format=True, menu_start_x=start_panel_frame_x + 3,
-                        menu_start_y=start_panel_frame_y + 4, blank_line=True, selected_option=selected_menu_option)
+                        menu_options=menu_options, menu_id_format=True, menu_start_x=armour_menu_x,
+                        menu_start_y=armour_menu_y, blank_line=True, selected_option=selected_menu_option)
+
+            # display attribute to be modified
+            coloured_list(console=armour_console, list_options=px_att_name,
+                          list_x=attx, list_y=armour_menu_y,
+                          selected_option='nothing', blank_line=True, fg=colourUtilities.LIGHTBLUE1)
+
+            # display flavour text
+            coloured_list(console=armour_console, list_options=px_flavour,
+                          list_x=flx, list_y=armour_menu_y,
+                          selected_option='nothing', blank_line=True, fg=colourUtilities.LIGHTBLUE1)
 
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '':
