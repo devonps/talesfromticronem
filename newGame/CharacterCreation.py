@@ -438,8 +438,11 @@ class CharacterCreation:
 
         #initialise blank 2D list (array)
         weapon_info = [['' for x in range(3)] for x in range(len(available_weapons))]
-        spell_info = [['' for x in range(6)] for x in range(len(available_weapons))]
-        spellPrint1 = []
+        spell_name = [['' for x in range(6)] for x in range(len(available_weapons))]
+        spell_descripton = [['' for x in range(6)] for x in range(len(available_weapons))]
+        spell_cast_time = [['' for x in range(6)] for x in range(len(available_weapons))]
+        spell_cool_down = [['' for x in range(6)] for x in range(len(available_weapons))]
+        spell_range = [['' for x in range(6)] for x in range(len(available_weapons))]
 
         weapon_counter = 0
         for weapon in available_weapons:
@@ -453,11 +456,11 @@ class CharacterCreation:
                         if spell['weapon_type'] == weapon:
                             slot_id = int(spell['weapon_slot'])
 
-                            spell_info[weapon_counter][slot_id] = spell['name'] \
-                                                                  + '.\n\n' + spell['description']\
-                                                                  + '\ncast time:' + spell['cast_time'] \
-                                                                  + '\ncool down' + spell['cool_down'] \
-                                                                  + '\nmax range' + spell['max_range']
+                            spell_name[weapon_counter][slot_id] = spell['name']
+                            spell_descripton[weapon_counter][slot_id] = spell['short_description']
+                            spell_cast_time[weapon_counter][slot_id] = 'Cast time:' + spell['cast_time']
+                            spell_cool_down[weapon_counter][slot_id] = 'Cool down:' + spell['cool_down']
+                            spell_range[weapon_counter][slot_id] = 'Range:' + spell['max_range']
 
                             # spell_info[weapon_counter][slot_id] = spell['aoe']
                             # spell_info[weapon_counter][slot_id] = spell['aoe_size']
@@ -473,24 +476,28 @@ class CharacterCreation:
         off_hand_selected_weapon = 'nothing'
         hand_choice = 1
         hand_selector = chr(62)
+        main_hand_color = colourUtilities.DARKORANGE4
+        off_hand_color = colourUtilities.BLUE
+        spell_name_color = colourUtilities.PALEGREEN
+        spell_description_color = colourUtilities.BISQUE4
+        spell_cast_time_color = colourUtilities.KHAKI3
+        spell_cool_down_color = colourUtilities.LIGHTBLUE3
+        spell_range_color = colourUtilities.MOCCASIN
 
         max_menu_option = len(menu_options) - 1
         # display spell slot labels x,y values
-        px = start_panel_frame_x + 1
+        px = start_panel_frame_x + 5
         py = start_panel_frame_y + 17
         panellWidth = start_panel_frame_width - start_panel_frame_x
         slot_box_gap = int((panellWidth / 5))
         wd = slot_box_gap - 2
         for weapon_slot in range(1, 6):
             strToPrint = 'SLOT ' + str(weapon_slot)
-            if weapon_slot < 3:
-                foreground_colour = tcod.yellow
+            if weapon_slot < 4:
+                foreground_colour = main_hand_color
             else:
-                foreground_colour = tcod.blue
-            weapons_console.print_box(x=px + 4, y=py - 1, width=wd, height=9, string=strToPrint, fg=foreground_colour)
-
-            # spell information
-            weapons_console.print_box(x=px, y=py, width=wd, height=9, string=spell_info[selected_menu_option][weapon_slot],fg=foreground_colour)
+                foreground_colour = off_hand_color
+            weapons_console.print_box(x=px, y=py - 1, width=wd, height=1, string=strToPrint, fg=foreground_colour)
 
             px += slot_box_gap
 
@@ -510,12 +517,33 @@ class CharacterCreation:
                                       string=weaponInfoString, fg=tcod.white)
 
             # display spell information for each of the weapon/spell slots
-            px = start_panel_frame_x + 1
+            px = start_panel_frame_x + 5
             for weapon_slot in range(1, 6):
                 # spell information
 
-                weapons_console.draw_rect(x=px, y=py, width=wd, height=9, ch=32, fg=tcod.white)
-                weapons_console.print_box(x=px, y=py, width=wd, height=9, string=spell_info[selected_menu_option][weapon_slot])
+                weapons_console.draw_rect(x=px, y=py, width=wd, height=15, ch=32, fg=tcod.white)
+
+                weapons_console.print_box(
+                    x=px, y=py,
+                    width=wd, height=2,
+                    string=spell_name[selected_menu_option][weapon_slot], fg=spell_name_color)
+                weapons_console.print_box(
+                    x=px, y=py + 3,
+                    width=wd, height=8,
+                    string=spell_descripton[selected_menu_option][weapon_slot], fg=spell_description_color)
+                weapons_console.print_box(
+                    x=px, y=py + 12,
+                    width=wd, height=1,
+                    string=spell_cast_time[selected_menu_option][weapon_slot], fg=spell_cast_time_color)
+                weapons_console.print_box(
+                    x=px, y=py + 13,
+                    width=wd, height=1,
+                    string=spell_cool_down[selected_menu_option][weapon_slot], fg=spell_cool_down_color)
+                weapons_console.print_box(
+                    x=px, y=py + 14,
+                    width=wd, height=1,
+                    string=spell_range[selected_menu_option][weapon_slot], fg=spell_range_color)
+
                 px += slot_box_gap
 
             # display main / off hand labels + weapon type selected
@@ -529,10 +557,10 @@ class CharacterCreation:
                 weapons_console.print(x=start_panel_frame_x + 49, y=start_panel_frame_y + 14, string=hand_selector, fg=tcod.blue)
 
             weapons_console.print(x=start_panel_frame_x + 20, y=start_panel_frame_y + 14, string=main_hand_weapon,
-                                  fg=tcod.yellow)
+                                  fg=main_hand_color)
 
             weapons_console.print(x=start_panel_frame_x + 50, y=start_panel_frame_y + 14, string=off_hand_weapon,
-                                  fg=tcod.blue)
+                                  fg=off_hand_color)
 
             # blit changes to root console
             weapons_console.blit(dest=root_console, dest_x=5, dest_y=5)
