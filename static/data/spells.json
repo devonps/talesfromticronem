@@ -371,53 +371,6 @@
         "bleeding":"1"
         }
       ]
-    },
-    {
-      "name": "rending curse",
-      "description": "Bleed your foe.",
-      "short_description": "Bleed your foe.",
-      "weapon_type": "wand",
-      "class": "necromancer",
-      "cast_time": "0",
-      "cool_down": "1",
-      "lives_for": "0",
-      "weapon_slot": "4",
-      "max_targets": "1",
-      "ground_targeted": "False",
-      "max_range": "spell_dist_far",
-      "aoe": "False",
-      "aoe_size": "none",
-      "effects":
-      [
-        {"damage": "0.35",
-        "bleeding":"1",
-        "vulnerability":"3"
-        }
-      ]
-    },
-    {
-      "name": "feast of corruption",
-      "description": "Strike your target, gain life force, immobilise, and corrupt boons on your foe.",
-      "short_description": "Strike your target and gain life force.",
-      "weapon_type": "wand",
-      "class": "necromancer",
-      "cast_time": "0",
-      "cool_down": "3",
-      "lives_for": "0",
-      "weapon_slot": "5",
-      "max_targets": "1",
-      "ground_targeted": "False",
-      "max_range": "spell_dist_far",
-      "aoe": "False",
-      "aoe_size": "none",
-      "effects":
-      [
-        {"damage": "1.0",
-        "lifeforce":"8",
-        "torment":"3",
-        "BoonsConverted": "3"
-        }
-      ]
     }
   ]
 }
