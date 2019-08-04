@@ -444,13 +444,17 @@ class CharacterCreation:
         spell_cool_down = [['' for x in range(6)] for x in range(len(available_weapons))]
         spell_range = [['' for x in range(6)] for x in range(len(available_weapons))]
 
+        weapon_name = 0
+        weapon_hands = 1
+        weapon_quality = 2
+
         weapon_counter = 0
         for weapon in available_weapons:
             for wpn in weapon_file['weapons']:
                 if wpn['name'] == weapon:
-                    weapon_info[weapon_counter][0] = wpn['display_name']
-                    weapon_info[weapon_counter][1] = wpn['wielded_hands']
-                    weapon_info[weapon_counter][2] = wpn['quality_level']
+                    weapon_info[weapon_counter][weapon_name] = wpn['display_name']
+                    weapon_info[weapon_counter][weapon_hands] = wpn['wielded_hands']
+                    weapon_info[weapon_counter][weapon_quality] = wpn['quality_level']
 
                     for spell in spell_file['spells']:
                         if spell['weapon_type'] == weapon:
@@ -500,6 +504,8 @@ class CharacterCreation:
             weapons_console.print_box(x=px, y=py - 1, width=wd, height=1, string=strToPrint, fg=foreground_colour)
 
             px += slot_box_gap
+            off_hand_weapon_id = 0
+            main_hand_weapon_id = 0
 
         while show_weapons_options:
 
@@ -508,9 +514,9 @@ class CharacterCreation:
                         menu_options=menu_options, menu_id_format=True, menu_start_x=start_panel_frame_x + 3,
                         menu_start_y=start_panel_frame_y + 4, blank_line=True, selected_option=selected_menu_option)
 
-            weaponInfoString = 'This is ' + weapon_info[selected_menu_option][0] + '\n' + \
-                               'Wielded in ' + weapon_info[selected_menu_option][1] + ' hand(s) \n' + \
-                               'Weapon quality ' + weapon_info[selected_menu_option][2]
+            weaponInfoString = 'This is ' + weapon_info[selected_menu_option][weapon_name] + '\n' + \
+                               'Wielded in ' + weapon_info[selected_menu_option][weapon_hands] + ' hand(s) \n' + \
+                               'Weapon quality ' + weapon_info[selected_menu_option][weapon_quality]
 
             # display weapon info as a block of information
             weapons_console.print_box(x=start_panel_frame_x + 15, y=(start_panel_frame_y + 5), width=25, height=4,
@@ -518,33 +524,133 @@ class CharacterCreation:
 
             # display spell information for each of the weapon/spell slots
             px = start_panel_frame_x + 5
-            for weapon_slot in range(1, 6):
-                # spell information
 
-                weapons_console.draw_rect(x=px, y=py, width=wd, height=15, ch=32, fg=tcod.white)
+            weapons_console.draw_rect(x=px, y=py, width=panellWidth - 6, height=17, ch=32, fg=tcod.white)
+
+            if main_hand_selected_weapon != 'nothing':
 
                 weapons_console.print_box(
                     x=px, y=py,
                     width=wd, height=2,
-                    string=spell_name[selected_menu_option][weapon_slot], fg=spell_name_color)
+                    string=spell_name[main_hand_weapon_id][1], fg=spell_name_color)
                 weapons_console.print_box(
                     x=px, y=py + 3,
                     width=wd, height=8,
-                    string=spell_descripton[selected_menu_option][weapon_slot], fg=spell_description_color)
+                    string=spell_descripton[main_hand_weapon_id][1], fg=spell_description_color)
                 weapons_console.print_box(
                     x=px, y=py + 12,
                     width=wd, height=1,
-                    string=spell_cast_time[selected_menu_option][weapon_slot], fg=spell_cast_time_color)
+                    string=spell_cast_time[main_hand_weapon_id][1], fg=spell_cast_time_color)
+
                 weapons_console.print_box(
                     x=px, y=py + 13,
                     width=wd, height=1,
-                    string=spell_cool_down[selected_menu_option][weapon_slot], fg=spell_cool_down_color)
+                    string=spell_cool_down[main_hand_weapon_id][1], fg=spell_cool_down_color)
                 weapons_console.print_box(
                     x=px, y=py + 14,
                     width=wd, height=1,
-                    string=spell_range[selected_menu_option][weapon_slot], fg=spell_range_color)
+                    string=spell_range[main_hand_weapon_id][1], fg=spell_range_color)
 
                 px += slot_box_gap
+
+                weapons_console.print_box(
+                    x=px, y=py,
+                    width=wd, height=2,
+                    string=spell_name[main_hand_weapon_id][2], fg=spell_name_color)
+                weapons_console.print_box(
+                    x=px, y=py + 3,
+                    width=wd, height=8,
+                    string=spell_descripton[main_hand_weapon_id][2], fg=spell_description_color)
+                weapons_console.print_box(
+                    x=px, y=py + 12,
+                    width=wd, height=1,
+                    string=spell_cast_time[main_hand_weapon_id][2], fg=spell_cast_time_color)
+
+                weapons_console.print_box(
+                    x=px, y=py + 13,
+                    width=wd, height=1,
+                    string=spell_cool_down[main_hand_weapon_id][2], fg=spell_cool_down_color)
+                weapons_console.print_box(
+                    x=px, y=py + 14,
+                    width=wd, height=1,
+                    string=spell_range[main_hand_weapon_id][2], fg=spell_range_color)
+
+                px += slot_box_gap
+
+                weapons_console.print_box(
+                    x=px, y=py,
+                    width=wd, height=2,
+                    string=spell_name[main_hand_weapon_id][3], fg=spell_name_color)
+                weapons_console.print_box(
+                    x=px, y=py + 3,
+                    width=wd, height=8,
+                    string=spell_descripton[main_hand_weapon_id][3], fg=spell_description_color)
+                weapons_console.print_box(
+                    x=px, y=py + 12,
+                    width=wd, height=1,
+                    string=spell_cast_time[main_hand_weapon_id][3], fg=spell_cast_time_color)
+
+                weapons_console.print_box(
+                    x=px, y=py + 13,
+                    width=wd, height=1,
+                    string=spell_cool_down[main_hand_weapon_id][3], fg=spell_cool_down_color)
+                weapons_console.print_box(
+                    x=px, y=py + 14,
+                    width=wd, height=1,
+                    string=spell_range[main_hand_weapon_id][3], fg=spell_range_color)
+
+                px += slot_box_gap
+
+            if off_hand_selected_weapon != 'nothing':
+
+                px = 52
+
+                weapons_console.print_box(
+                    x=px, y=py,
+                    width=wd, height=2,
+                    string=spell_name[off_hand_weapon_id][4], fg=spell_name_color)
+                weapons_console.print_box(
+                    x=px, y=py + 3,
+                    width=wd, height=8,
+                    string=spell_descripton[off_hand_weapon_id][4], fg=spell_description_color)
+                weapons_console.print_box(
+                    x=px, y=py + 12,
+                    width=wd, height=1,
+                    string=spell_cast_time[off_hand_weapon_id][4], fg=spell_cast_time_color)
+
+                weapons_console.print_box(
+                    x=px, y=py + 13,
+                    width=wd, height=1,
+                    string=spell_cool_down[off_hand_weapon_id][4], fg=spell_cool_down_color)
+                weapons_console.print_box(
+                    x=px, y=py + 14,
+                    width=wd, height=1,
+                    string=spell_range[off_hand_weapon_id][4], fg=spell_range_color)
+
+                px += slot_box_gap
+
+                weapons_console.print_box(
+                    x=px, y=py,
+                    width=wd, height=2,
+                    string=spell_name[off_hand_weapon_id][5], fg=spell_name_color)
+                weapons_console.print_box(
+                    x=px, y=py + 3,
+                    width=wd, height=8,
+                    string=spell_descripton[off_hand_weapon_id][5], fg=spell_description_color)
+                weapons_console.print_box(
+                    x=px, y=py + 12,
+                    width=wd, height=1,
+                    string=spell_cast_time[off_hand_weapon_id][5], fg=spell_cast_time_color)
+
+                weapons_console.print_box(
+                    x=px, y=py + 13,
+                    width=wd, height=1,
+                    string=spell_cool_down[off_hand_weapon_id][5], fg=spell_cool_down_color)
+                weapons_console.print_box(
+                    x=px, y=py + 14,
+                    width=wd, height=1,
+                    string=spell_range[off_hand_weapon_id][5], fg=spell_range_color)
+
 
             # display main / off hand labels + weapon type selected
             main_hand_weapon = 'MAIN HAND (' + main_hand_selected_weapon + ')    '
@@ -568,6 +674,14 @@ class CharacterCreation:
 
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '':
+                if event_to_be_processed == 'textinput':
+                    if event_action == 'z':
+                        logger.info('clear weapons')
+                        main_hand_weapon_id = 0
+                        main_hand_selected_weapon = 'nothing'
+                        off_hand_weapon_id = 0
+                        off_hand_selected_weapon = 'nothing'
+
                 if event_to_be_processed == 'keypress':
                     if event_action == 'quit':
                         show_weapons_options = False
@@ -589,13 +703,29 @@ class CharacterCreation:
                             hand_choice = 1
                     if event_action == 'enter':
                         if main_hand_selected_weapon != 'nothing' and off_hand_selected_weapon != 'nothing':
-                            CharacterCreation.choose_armourset(root_console, gameworld, player, game_config, main_hand_selected_weapon, off_hand_selected_weapon)
+                            CharacterCreation.choose_armourset(root_console, gameworld, player, game_config,
+                                                               main_hand_selected_weapon, off_hand_selected_weapon)
 
-                        if weapon_info[selected_menu_option][1] == 'off' and hand_choice == 2:
+                        if weapon_info[selected_menu_option][weapon_hands] == 'off' and hand_choice == 2:
+                            if off_hand_weapon_id == main_hand_weapon_id:
+                                main_hand_weapon_id = 0
+                                main_hand_selected_weapon = 'nothing'
                             off_hand_selected_weapon = available_weapons[selected_menu_option]
+                            off_hand_weapon_id = selected_menu_option
 
-                        if weapon_info[selected_menu_option][1] == 'main' and hand_choice == 1:
+                        if weapon_info[selected_menu_option][weapon_hands] == 'main' and hand_choice == 1:
+                            if off_hand_weapon_id == main_hand_weapon_id:
+                                off_hand_weapon_id = 0
+                                off_hand_selected_weapon = 'nothing'
                             main_hand_selected_weapon = available_weapons[selected_menu_option]
+                            main_hand_weapon_id = selected_menu_option
+
+                        if weapon_info[selected_menu_option][weapon_hands] == 'both':
+                            main_hand_selected_weapon = available_weapons[selected_menu_option]
+                            off_hand_selected_weapon = available_weapons[selected_menu_option]
+                            off_hand_weapon_id = selected_menu_option
+                            main_hand_weapon_id = selected_menu_option
+
 
     @staticmethod
     def choose_armourset(root_console, gameworld, player, game_config, main_hand, off_hand):
