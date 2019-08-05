@@ -11,6 +11,9 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 from newGame.newCharacter import NewCharacter
 from newGame.initialiseNewGame import setup_game
+from newGame.Items import ItemManager
+from newGame.ClassWeapons import WeaponClass
+from utilities.itemsHelp import ItemUtilities
 
 
 class CharacterCreation:
@@ -861,15 +864,51 @@ class CharacterCreation:
         # create starting weapon(s) - based on what's passed into this method
         if main_hand == off_hand:
             logger.info('creating a starting 2-handed weapon for the player')
-            created_weapon, hands_to_hold = NewCharacter.create_starting_weapon(gameworld, player, game_config)
+
+            class_component = MobileUtilities.get_character_class(gameworld, player)
+            # class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
+
+            created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand, game_config=game_config)
+            weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
+
+            # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+            logger.info('Loading that weapon with the necessary spells')
+            WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
+
+            # created_weapon, hands_to_hold = NewCharacter.create_starting_weapon(gameworld, player, game_config)
             # equip player with newly created starting weapon
             NewCharacter.equip_starting_weapon(gameworld, player, created_weapon, 'both')
+
         if main_hand != '' and main_hand != off_hand:
             logger.info('creating a 1-handed weapon (main hand) for the player')
-            created_weapon, hands_to_hold = NewCharacter.create_starting_weapon(gameworld, player, game_config)
+
+            class_component = MobileUtilities.get_character_class(gameworld, player)
+            # class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
+
+            # created_weapon, hands_to_hold = NewCharacter.create_starting_weapon(gameworld, player, game_config)
+            created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand, game_config=game_config)
+            weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
+
+            # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+            logger.info('Loading that weapon with the necessary spells')
+            WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
+
             # equip player with newly created starting weapon
             NewCharacter.equip_starting_weapon(gameworld, player, created_weapon, 'main')
-        if off_hand !='' and off_hand != main_hand:
+
+        if off_hand != '' and off_hand != main_hand:
+            class_component = MobileUtilities.get_character_class(gameworld, player)
+            # class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
+
+            # created_weapon, hands_to_hold = NewCharacter.create_starting_weapon(gameworld, player, game_config)
+            created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand,
+                                                       game_config=game_config)
+            weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
+
+            # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+            logger.info('Loading that weapon with the necessary spells')
+            WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
+
             # equip player with newly created starting weapon
             NewCharacter.equip_starting_weapon(gameworld, player, created_weapon, 'off')
 
