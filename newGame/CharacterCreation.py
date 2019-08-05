@@ -469,10 +469,6 @@ class CharacterCreation:
                             spell_cool_down[weapon_counter][slot_id] = 'Cool down:' + spell['cool_down']
                             spell_range[weapon_counter][slot_id] = 'Range:' + spell['max_range']
 
-                            # spell_info[weapon_counter][slot_id] = spell['aoe']
-                            # spell_info[weapon_counter][slot_id] = spell['aoe_size']
-                            # spell_info[weapon_counter][slot_id] = spell['effects']
-
                     weapon_counter += 1
 
         menu_options = available_weapons
@@ -729,7 +725,6 @@ class CharacterCreation:
                             off_hand_weapon_id = selected_menu_option
                             main_hand_weapon_id = selected_menu_option
 
-
     @staticmethod
     def choose_armourset(root_console, gameworld, player, game_config, main_hand, off_hand):
 
@@ -917,14 +912,17 @@ class CharacterCreation:
         weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
         SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spell_bar_entity, wpns_equipped=weapons_equipped)
 
-        CharacterCreation.tweak_starting_attributes(root_console=root_console, player=player, game_config=game_config)
+        CharacterCreation.tweak_starting_attributes(root_console=root_console, player=player, game_config=game_config, gameworld=gameworld)
 
     @staticmethod
-    def tweak_starting_attributes(root_console, player, game_config):
-        CharacterCreation.name_your_character(root_console=root_console, game_config=game_config)
+    def tweak_starting_attributes(root_console, player, game_config, gameworld):
+        racial_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
+        player_race_component = racial_details[0]
+
+        CharacterCreation.name_your_character(root_console=root_console, game_config=game_config, gameworld=gameworld, player_race_component=player_race_component)
 
     @staticmethod
-    def name_your_character(root_console, game_config):
+    def name_your_character(root_console, game_config, gameworld, player_race_component):
 
         start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
@@ -932,18 +930,29 @@ class CharacterCreation:
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
         start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_WIDTH')
         start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
+        name_menu_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_MENU_X')
+        name_menu_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_MENU_Y')
 
-        txt_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_WIDTH')
-        txt_panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_HEIGHT')
-        txt_panel_write_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_WRITE_X')
-        txt_panel_write_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_WRITE_Y')
-        txt_panel_ins_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_INS_X')
-        txt_panel_ins_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_INS_Y')
-        txt_panel_cursor = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_CURSOR')
-        txt_panel_letters_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_LETTERS_LEFT_X')
-        txt_panel_cursor_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_CURSOR_X')
-        txt_panel_cursor_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_CURSOR_Y')
+        # txt_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_WIDTH')
+        # txt_panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_HEIGHT')
+        # txt_panel_write_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_WRITE_X')
+        # txt_panel_write_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_WRITE_Y')
+        # txt_panel_ins_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_INS_X')
+        # txt_panel_ins_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_INS_Y')
+        # txt_panel_cursor = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_CURSOR')
+        # txt_panel_letters_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_LETTERS_LEFT_X')
+        # txt_panel_cursor_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_CURSOR_X')
+        # txt_panel_cursor_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_CURSOR_Y')
 
+        # Dilga_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',parameter='DILGANAMESFILE')
+        # Eskeri_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        #                                                            parameter='ESKERINAMESFILE')
+        # Jogah_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='JOGAHNAMESFILE')
+        # Oshun_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='OSHUNNAMESFILE')
+
+        menu_options = ['Choose Gender', 'Enter a Name', 'Choose Name From List', 'Random Name']
+        logger.info('Race selected {}', player_race_component)
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         textinput_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
 
         draw_colourful_frame(console=textinput_console, game_config=game_config,
@@ -953,68 +962,112 @@ class CharacterCreation:
                              title='[ Character Creation - Name Your Character ]', title_loc='centre',
                              title_decorator=False,
                              corner_decorator='', corner_studs='square',
-                             msg='ESC/ to go back.')
-        letter_count = 0
-        my_word = ""
-        max_letters = 15
+                             msg='ESC/ to go back. Enter to choose.')
+        # letter_count = 0
+        # my_word = ""
+        # max_letters = 15
         character_not_named = True
-        text_controls = ['Backspace to delete', 'Escape to quit', 'Enter to accept', 'Leave blank for random name', 'Only alphas allowed']
+        selected_menu_option = 0
+        max_menu_option = len(menu_options) - 1
+        gender_choice = 1
+        gender_selector = chr(62)
 
-        # draw horizontal line
-        textinput_console.hline(x=txt_panel_ins_x, y=txt_panel_ins_y - 1, width=txt_panel_width - 2, bg_blend=tcod.BKGND_DEFAULT)
+        mx = start_panel_frame_x + 35
+        fx = start_panel_frame_x + 45
+        gy = start_panel_frame_y + 8
+        cxoffset = 2
 
-        # instructions
-        textinput_console.default_alignment = tcod.LEFT
+        # text_controls = ['Backspace to delete', 'Escape to quit', 'Enter to accept', 'Leave blank for random name', 'Only alphas allowed']
+        #
+        # # draw horizontal line
+        # textinput_console.hline(x=txt_panel_ins_x, y=txt_panel_ins_y - 1, width=txt_panel_width - 2, bg_blend=tcod.BKGND_DEFAULT)
+        #
+        # # instructions
+        # textinput_console.default_alignment = tcod.LEFT
+        #
+        # for instruction in text_controls:
+        #     textinput_console.print_box(x=txt_panel_ins_x, y=txt_panel_ins_y, width=txt_panel_width - 5, height=txt_panel_height - 10,
+        #                                 string=instruction)
+        #     txt_panel_ins_y += 1
+        #
+        # # display cursor
+        # textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, ch=txt_panel_cursor)
+        #
+        # # display letters remaining
+        # letters_remaining = max_letters - letter_count
+        # letters_left = ' ' + str(letters_remaining) + ' letters left'
+        # textinput_console.default_alignment = tcod.RIGHT
+        # textinput_console.print_box(x=txt_panel_letters_x, y=txt_panel_write_y, fg=tcod.yellow,
+        #                             width=txt_panel_width - 5, height=txt_panel_height - 10, string=letters_left)
 
-        for instruction in text_controls:
-            textinput_console.print_box(x=txt_panel_ins_x, y=txt_panel_ins_y, width=txt_panel_width - 5, height=txt_panel_height - 10,
-                                        string=instruction)
-            txt_panel_ins_y += 1
-
-        # display cursor
-        textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, ch=txt_panel_cursor)
-
-        # display letters remaining
-        letters_remaining = max_letters - letter_count
-        letters_left = ' ' + str(letters_remaining) + ' letters left'
-        textinput_console.default_alignment = tcod.RIGHT
-        textinput_console.print_box(x=txt_panel_letters_x, y=txt_panel_write_y, fg=tcod.yellow,
-                                    width=txt_panel_width - 5, height=txt_panel_height - 10, string=letters_left)
-
+        textinput_console.print(x=mx, y=gy, string='Male', fg=tcod.white)
+        textinput_console.print(x=fx, y=gy, string='Female', fg=tcod.white)
         while character_not_named:
+
+            if gender_choice == 1:
+                textinput_console.draw_rect(x=fx - cxoffset, y=gy, width=1, height=1, ch=32, fg=tcod.white)
+                textinput_console.print(x=mx - cxoffset, y=gy, string=gender_selector, fg=tcod.yellow)
+            else:
+                textinput_console.draw_rect(x=mx - cxoffset, y=gy, width=1, height=1, ch=32, fg=tcod.white)
+                textinput_console.print(x=fx - cxoffset, y=gy, string=gender_selector, fg=tcod.yellow)
 
             # blit changes to root console
             textinput_console.blit(dest=root_console, dest_x=5, dest_y=5)
             tcod.console_flush()
+
+            pointy_menu(console=textinput_console, header='',
+                        menu_options=menu_options, menu_id_format=True, menu_start_x=name_menu_x,
+                        menu_start_y=name_menu_y, blank_line=True, selected_option=selected_menu_option)
 
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '':
                 if event_to_be_processed == 'keypress':
                     if event_action == 'quit':
                         character_not_named = False
-                    if event_action == 'delete':
-                        if letter_count > 0:
-                            textinput_console.default_fg = tcod.white
-                            textinput_console.put_char(x=(txt_panel_write_x + letter_count) - 1, y=txt_panel_write_y, ch=32)
-                            textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, ch=32)
-                            my_word = my_word[:-1]
-                            letter_count -= 1
+                    if event_action == 'up':
+                        selected_menu_option -= 1
+                        if selected_menu_option < 0:
+                            selected_menu_option = max_menu_option
+                    if event_action == 'down':
+                        selected_menu_option += 1
+                        if selected_menu_option > max_menu_option:
+                            selected_menu_option = 0
+                    if event_action == 'left':
+                        if selected_menu_option == 0:
+                            gender_choice -= 1
+                            if gender_choice < 1:
+                                gender_choice = 2
+                    if event_action == 'right':
+                        if selected_menu_option == 0:
+                            gender_choice += 1
+                            if gender_choice > 2:
+                                gender_choice = 1
                     if event_action == 'enter':
-                        pass
-                if event_to_be_processed == 'textinput' and letter_count < max_letters:
-                    if (64 < ord(event_action) < 91) or (96 < ord(event_action) < 123):
-                        textinput_console.put_char(x=txt_panel_write_x + letter_count, y=txt_panel_write_y, ch=ord(event_action))
-                        textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, ch=32)
-                        textinput_console.default_fg = tcod.white
-                        my_word += event_action
-                        letter_count += 1
+                        if selected_menu_option == max_menu_option:
+                            MobileUtilities.choose_random_name(gameworld=gameworld, game_config=game_config, entity=player_entity, gender=gender_choice, race=player_race_component)
 
-                # display cursor
-                textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, ch=txt_panel_cursor)
+                #     if event_action == 'delete':
+                #         if letter_count > 0:
+                #             textinput_console.default_fg = tcod.white
+                #             textinput_console.put_char(x=(txt_panel_write_x + letter_count) - 1, y=txt_panel_write_y, ch=32)
+                #             textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, ch=32)
+                #             my_word = my_word[:-1]
+                #             letter_count -= 1
 
-                # display letters remaining
-                letters_remaining = max_letters - letter_count
-                letters_left = ' ' + str(letters_remaining) + ' letters left '
-                textinput_console.default_alignment = tcod.RIGHT
-                textinput_console.print_box(x=txt_panel_letters_x, y=txt_panel_write_y, fg=tcod.yellow,
-                                        width=txt_panel_width - 5, height=txt_panel_height - 10, string=letters_left)
+                # if event_to_be_processed == 'textinput' and letter_count < max_letters:
+                #     if (64 < ord(event_action) < 91) or (96 < ord(event_action) < 123):
+                #         textinput_console.put_char(x=txt_panel_write_x + letter_count, y=txt_panel_write_y, ch=ord(event_action))
+                #         textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, ch=32)
+                #         textinput_console.default_fg = tcod.white
+                #         my_word += event_action
+                #         letter_count += 1
+
+                # # display cursor
+                # textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, ch=txt_panel_cursor)
+                #
+                # # display letters remaining
+                # letters_remaining = max_letters - letter_count
+                # letters_left = ' ' + str(letters_remaining) + ' letters left '
+                # textinput_console.default_alignment = tcod.RIGHT
+                # textinput_console.print_box(x=txt_panel_letters_x, y=txt_panel_write_y, fg=tcod.yellow,
+                #                         width=txt_panel_width - 5, height=txt_panel_height - 10, string=letters_left)
