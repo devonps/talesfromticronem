@@ -410,30 +410,43 @@ class MobileUtilities(numbers.Real):
         return equipped
 
     @staticmethod
-    def choose_random_name(gameworld, game_config, entity, gender, race):
-
-        logger.info('MobileUtiities::: Race {}', race)
+    def generate_list_of_random_names(gameworld, game_config, entity, gender, race):
 
         base_file_name = 'NAMESFILE'
+        race_file = race.upper() + base_file_name
+        race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                    parameter=race_file)
+        tcod.namegen_parse(race_name_file)
+
+        nameList = []
+
+        for randomName in range(10):
+            if gender == 1:
+                sn = tcod.namegen_generate('male')
+            else:
+                sn = tcod.namegen_generate('female')
+
+            nameList.append(sn.capitalize())
+        tcod.namegen_destroy()
+        return nameList
+
+    @staticmethod
+    def choose_random_name(gameworld, game_config, entity, gender, race):
+        base_file_name = 'NAMESFILE'
         race_file = race.upper()+base_file_name
-
-        logger.info('MobileUtiities::: race_file {}', race_file)
-
         race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                      parameter=race_file)
         tcod.namegen_parse(race_name_file)
 
         if gender == 1:
             sn = tcod.namegen_generate('male')
-            MobileUtilities.set_player_gender(gameworld=gameworld, entity=entity, gender='male')
         else:
             sn = tcod.namegen_generate('female')
-            MobileUtilities.set_player_gender(gameworld=gameworld, entity=entity, gender='female')
 
         selected_name = sn.capitalize()
-        logger.info('MobileUtilities:::Random name chosen {}', selected_name)
-
         tcod.namegen_destroy()
+
+        return selected_name
 
     #
     # Get primary attributes

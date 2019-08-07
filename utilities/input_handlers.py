@@ -100,6 +100,9 @@ def handle_game_keys():
             if event.sym == tcod.event.K_RETURN:
                 myevent = 'keypress'
                 action = 'enter'
+            if event.sym == tcod.event.K_BACKSPACE:
+                myevent = 'keypress'
+                action = 'delete'
         if event.type == "TEXTINPUT":
             myevent = 'textinput'
             action = event.text
