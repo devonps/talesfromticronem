@@ -5,6 +5,7 @@ from utilities import world
 from utilities import configUtilities
 from ui.character_screen import display_inspect_panel
 import numbers
+import tcod
 
 
 class MobileUtilities(numbers.Real):
@@ -12,6 +13,13 @@ class MobileUtilities(numbers.Real):
     #
     # general methods
     #
+    @staticmethod
+    def set_player_gender(gameworld, entity, gender):
+        gameworld.component_for_entity(entity, mobiles.Describable).gender = gender
+
+    @staticmethod
+    def get_player_gender(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.Describable).gender
 
     @staticmethod
     def setup_racial_attributes(gameworld, player, selected_race, race_size, bg):
@@ -169,7 +177,7 @@ class MobileUtilities(numbers.Real):
         player_name_component = gameworld.component_for_entity(entity, mobiles.Name)
         player_race_component = gameworld.component_for_entity(entity, mobiles.Race)
         player_class = MobileUtilities.get_character_class(gameworld, entity)
-        player_gender_component = gameworld.component_for_entity(entity, mobiles.Describable)
+        player_gender_component = MobileUtilities.get_player_gender(gameworld, entity)
         player_style = MobileUtilities.get_character_style(gameworld, entity)
 
         return player_name_component.first + ' is a ' + player_gender_component.gender + ' ' + player_race_component.label + ' ' + player_class + ' ( ' + player_style + ' )'
@@ -401,7 +409,44 @@ class MobileUtilities(numbers.Real):
 
         return equipped
 
+    @staticmethod
+    def generate_list_of_random_names(gameworld, game_config, entity, gender, race):
 
+        base_file_name = 'NAMESFILE'
+        race_file = race.upper() + base_file_name
+        race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                    parameter=race_file)
+        tcod.namegen_parse(race_name_file)
+
+        nameList = []
+
+        for randomName in range(10):
+            if gender == 1:
+                sn = tcod.namegen_generate('male')
+            else:
+                sn = tcod.namegen_generate('female')
+
+            nameList.append(sn.capitalize())
+        tcod.namegen_destroy()
+        return nameList
+
+    @staticmethod
+    def choose_random_name(gameworld, game_config, entity, gender, race):
+        base_file_name = 'NAMESFILE'
+        race_file = race.upper()+base_file_name
+        race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                     parameter=race_file)
+        tcod.namegen_parse(race_name_file)
+
+        if gender == 1:
+            sn = tcod.namegen_generate('male')
+        else:
+            sn = tcod.namegen_generate('female')
+
+        selected_name = sn.capitalize()
+        tcod.namegen_destroy()
+
+        return selected_name
 
     #
     # Get primary attributes
