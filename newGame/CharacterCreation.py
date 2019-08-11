@@ -1055,6 +1055,7 @@ class CharacterCreation:
                                         selected_name = my_word
                                         my_word = ''
                                         enter_name = False
+                                        character_not_named = False
                                         textinput_console.put_char(x=txt_panel_cursor_x + letter_count,
                                                                    y=txt_panel_cursor_y, ch=32)
                                         letter_count = 0
@@ -1081,13 +1082,16 @@ class CharacterCreation:
                                 event_to_be_processed, event_action = handle_game_keys()
                                 if event_to_be_processed == 'textinput':
                                     if 47 < ord(event_action) < 58:
-                                        logger.info('key pressed:{}', event_action)
                                         selected_name = listOfNames[int(event_action)]
                                         name_not_chosen = False
+                                        character_not_named = False
+                                        textinput_console.draw_rect(x=name_list_x, y=name_list_y, width=35,
+                                                                    height=11, ch=32, fg=tcod.white)
                                 if event_to_be_processed == 'keypress':
                                     if event_action == 'quit':
                                         name_not_chosen = False
                                         selected_name = ''
+                                textinput_console.draw_rect(x=name_list_x, y=name_list_y, width=35, height=11, ch=32, fg=tcod.white)
 
                         if selected_menu_option == 3:
                             if selected_name != '':
@@ -1096,3 +1100,4 @@ class CharacterCreation:
                             selected_name = MobileUtilities.choose_random_name(gameworld=gameworld, game_config=game_config, entity=player_entity, gender=gender_choice, race=player_race_component)
                             textinput_console.draw_rect(x=mx, y=(name_menu_y + 3) + max_menu_option, width=35, height=1, ch=32, fg=tcod.white)
                             textinput_console.print(x=mx, y=(name_menu_y + 3) + max_menu_option, string=selected_name, fg=tcod.white)
+                            character_not_named = False
