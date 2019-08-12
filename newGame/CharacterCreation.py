@@ -372,7 +372,6 @@ class CharacterCreation:
 
     @staticmethod
     def select_personality_choices(con, gameworld, player, game_config):
-        logger.info('Selecting character personality choices')
         # The personality-oriented question affects the conversational options that NPCs provide.
         # there will be 3 options: charm, dignity, ferocity
 
@@ -846,15 +845,20 @@ class CharacterCreation:
                         if selected_menu_option > max_menu_option:
                             selected_menu_option = 0
                     if event_action == 'enter':
-                        armourset = 'apprentice'
+                        armourset = as_display_name
+                        armour_prefix = menu_options[selected_menu_option]
                         CharacterCreation.generate_player_character_from_choices(
                             root_console=root_console, gameworld=gameworld, game_config=game_config, player=player,
-                            main_hand=main_hand, off_hand=off_hand, armourset=armourset)
+                            main_hand=main_hand, off_hand=off_hand, armourset=armourset, armour_prefix=armour_prefix)
 
     @staticmethod
-    def generate_player_character_from_choices(root_console, gameworld, game_config, player, main_hand, off_hand, armourset):
+    def generate_player_character_from_choices(root_console, gameworld, game_config, player, main_hand, off_hand, armourset, armour_prefix):
 
-        spell_bar_entity = NewCharacter.generate_spell_bar(gameworld=gameworld)
+        # create starting armour from armourset and prefix
+        this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=armourset, prefix=armour_prefix, game_config=game_config)
+
+        logger.info('Armourset entities are: {}', this_armourset)
+        ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=this_armourset)
 
         # create starting weapon(s) - based on what's passed into this method
         if main_hand == off_hand:
@@ -904,6 +908,7 @@ class CharacterCreation:
             NewCharacter.equip_starting_weapon(gameworld, player, created_weapon, 'off')
 
         # load spell bar with spells from weapon
+        spell_bar_entity = NewCharacter.generate_spell_bar(gameworld=gameworld)
         logger.info('Loading spell bar based on equipped weapons')
         weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
         SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spell_bar_entity, wpns_equipped=weapons_equipped)
@@ -940,7 +945,6 @@ class CharacterCreation:
         txt_panel_cursor_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_CURSOR_Y')
         txt_panel_letters_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_LETTERS_LEFT_X')
         menu_options = ['Choose Gender', 'Enter a Name', 'Choose Name From List', 'Random Name']
-        logger.info('Race selected {}', player_race_component)
         letter_count = 0
         my_word = ""
         max_letters = 15

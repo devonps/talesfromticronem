@@ -74,62 +74,99 @@ class ItemManager:
                 logger.info('Entity {} has been created using the {} template', myweapon, weapon['name'])
                 return myweapon  # this is the entity id for the newly created weapon
 
-    def create_piece_of_armour(gameworld, bodylocation, quality, setname, prefix, level, majorname, majorbonus,
-                            minoronename, minoronebonus, component1, componet2,
-                            location_aka, weight, defense, game_config):
+    @staticmethod
+    def create_piece_of_armour(gameworld, bodylocation, setname, prefix, game_config):
 
         armour_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
                                                                       parameter='ITEM_ARMOUR_ACTIONS')
 
+        armour_set_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                     parameter='ARMOURSETFILE')
+
+        armour_set_file = jsonUtilities.read_json_file(armour_set_path)
+
         armour_piece = world.get_next_entity_id(gameworld=gameworld)
+
+        pxstring = 'prefix'
+        attnamestring = 'attributename'
+        attvaluestring = 'attributebonus'
+        display = ''
+        defense = ''
+
+        for armourset in armour_set_file['armoursets']:
+            if armourset['displayname'] == setname:
+                as_display_name = (armourset['displayname'])
+                as_weight = (armourset['weight'])
+                as_quality = armourset['quality']
+                as_flavour = (armourset['flavour'])
+                as_material = (armourset['material'])
+                prefix_count = armourset['prefixcount']
+                attribute_bonus_count = armourset['attributebonuscount']
+                if bodylocation == 'head':
+                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(head=True))
+                    display = armourset['head']['display']
+                    defense = armourset['head']['defense']
+                if bodylocation == 'chest':
+                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(chest=True))
+                    display = armourset['chest']['display']
+                    defense = armourset['chest']['defense']
+                if bodylocation == 'hands':
+                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(hands=True))
+                    display = armourset['hands']['display']
+                    defense = armourset['hands']['defense']
+                if bodylocation == 'feet':
+                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(feet=True))
+                    display = armourset['feet']['display']
+                    defense = armourset['feet']['defense']
+                if bodylocation == 'legs':
+                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(legs=True))
+                    display = armourset['legs']['display']
+                    defense = armourset['legs']['defense']
+
+                for px in range(1, prefix_count + 1):
+                    prefix_string = pxstring + str(px)
+                    if armourset[prefix_string]['name'] == prefix:
+                        as_prefix = prefix
+                        if attribute_bonus_count > 1:
+                            att_bonus_string = attvaluestring + str(px)
+                            att_name_string = attnamestring + str(px)
+                        else:
+                            att_bonus_string = attvaluestring + str(1)
+                            att_name_string = attnamestring + str(1)
+
+                        px_att_bonus = armourset[prefix_string][att_bonus_string]
+                        px_att_name = armourset[prefix_string][att_name_string]
 
         # generate common item components
         gameworld.add_component(armour_piece, items.TypeOfItem(label='armour'))
-        gameworld.add_component(armour_piece, items.Material(texture=component1))
+        gameworld.add_component(armour_piece, items.Material(texture=as_material))
         gameworld.add_component(armour_piece, items.Actionlist(action_list=armour_action_list))
         gameworld.add_component(armour_piece, items.Describable(
             name=bodylocation + ' armour',
             glyph=")",
-            description=bodylocation + ' armour',
+            description='a ' + display + ' made from ' + as_material,
             fg=tcod.white,
             bg=tcod.black,
-            displayname=component1 + ' ' + location_aka))
+            displayname='a ' + display))
         gameworld.add_component(armour_piece, items.RenderItem(istrue=True))
-        gameworld.add_component(armour_piece, items.Quality(level=quality))
+        gameworld.add_component(armour_piece, items.Quality(level=as_quality))
+
         # generate armour specifics
-        gameworld.add_component(armour_piece, items.Weight(label=weight))
-        gameworld.add_component(armour_piece, items.Defense(value=defense))
-        if bodylocation == 'head':
-            gameworld.add_component(armour_piece, items.ArmourBodyLocation(head=True))
-
-        if bodylocation == 'chest':
-            gameworld.add_component(armour_piece, items.ArmourBodyLocation(chest=True))
-
-        if bodylocation == 'hands':
-            gameworld.add_component(armour_piece, items.ArmourBodyLocation(hands=True))
-
-        if bodylocation == 'feet':
-            gameworld.add_component(armour_piece, items.ArmourBodyLocation(feet=True))
-
-        if bodylocation == 'legs':
-            gameworld.add_component(armour_piece, items.ArmourBodyLocation(legs=True))
+        gameworld.add_component(armour_piece, items.Weight(label=as_weight))
+        gameworld.add_component(armour_piece, items.Defense(value=int(defense)))
 
         gameworld.add_component(armour_piece, items.AttributeBonus(
-            majorname=majorname,
-            majorbonus=majorbonus,
-            minoronename=minoronename,
-            minoronebonus=minoronebonus))
+            majorname=px_att_name,
+            majorbonus=int(px_att_bonus),
+            minoronename='',
+            minoronebonus=0))
 
-        gameworld.add_component(armour_piece, items.ArmourSet(label=setname, prefix=prefix, level=level))
-
+        gameworld.add_component(armour_piece, items.ArmourSet(label=setname, prefix=prefix, level=0))
         gameworld.add_component(armour_piece, items.ArmourBeingWorn(status=False))
-
-        logger.info('Entity {} has been created as a piece of {} armour', armour_piece, bodylocation)
-        logger.info('Item Type set to {}', ItemUtilities.get_item_type(gameworld, armour_piece))
 
         return armour_piece
 
-    def create_full_armour_set(gameworld, armourset, level, quality, game_config):
+    def create_full_armour_set(gameworld, armourset, prefix, game_config):
         """
         This method creates a full set of armour (as game entities), it calls the method create_piece_of_armour
         to create the actual piece of armour.
@@ -142,36 +179,27 @@ class ItemManager:
 
         :return: a list of entities created in the order [head, chest, hands, legs, feet]
         """
-        armour_set_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='ARMOURSETFILE')
-
-        armour_set_file = jsonUtilities.read_json_file(armour_set_path)
-
         full_armour_set = []
 
-        for this_armour in armour_set_file['armoursets']:
-            if this_armour['setname'] == armourset:
-                if this_armour['level'] == level:
-                    if this_armour['quality'] == quality:
-                        bodylocation = this_armour['location']
-                        quality = quality
-                        weight = this_armour['weight']
-                        setname = armourset
-                        prefix = this_armour['prefix']
-                        location_aka = this_armour['location aka']
-                        level = level
-                        defense = this_armour['defense']
-                        majorname = this_armour['majorname']
-                        majorbonus = this_armour['majorbonus']
-                        minoronename = this_armour['minoronename']
-                        minoronebonus = this_armour['minoronebonus']
-                        minortwoname = this_armour['minortwoname']
-                        minortwobonus = this_armour['minortwobonus']
+        head_armour = ItemManager.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
+                                                         setname=armourset, prefix=prefix, bodylocation='head')
+        full_armour_set.append(head_armour)
 
-                        piece_of_armour = ItemManager.create_piece_of_armour(gameworld, bodylocation, quality,
-                                            setname, prefix, level, majorname, majorbonus, minoronename, minoronebonus,
-                                            'cloth', '', location_aka, weight, defense, game_config)
+        chest_armour = ItemManager.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
+                                                          setname=armourset, prefix=prefix, bodylocation='chest')
+        full_armour_set.append(chest_armour)
 
-                        full_armour_set.append(piece_of_armour)
+        hands_armour = ItemManager.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
+                                                          setname=armourset, prefix=prefix, bodylocation='hands')
+        full_armour_set.append(hands_armour)
+
+        legs_armour = ItemManager.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
+                                                         setname=armourset, prefix=prefix, bodylocation='legs')
+        full_armour_set.append(legs_armour)
+
+        feet_armour = ItemManager.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
+                                                         setname=armourset, prefix=prefix, bodylocation='feet')
+        full_armour_set.append(feet_armour)
 
         return full_armour_set
 
