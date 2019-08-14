@@ -81,6 +81,16 @@ class MobileUtilities(numbers.Real):
         return names
 
     @staticmethod
+    def set_mobile_first_name(gameworld, entity, name):
+        firstname_component = gameworld.component_for_entity(entity, mobiles.Name)
+        firstname_component.first = name
+
+    @staticmethod
+    def set_mobile_last_name(gameworld, entity, name):
+        firstname_component = gameworld.component_for_entity(entity, mobiles.Name)
+        firstname_component.suffix = name
+
+    @staticmethod
     def get_mobile_race_details(gameworld, entity):
         race_component = gameworld.component_for_entity(entity, mobiles.Race)
         racial = [race_component.label, race_component.size]
