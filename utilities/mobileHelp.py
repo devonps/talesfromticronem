@@ -201,6 +201,7 @@ class MobileUtilities(numbers.Real):
     def get_character_class(gameworld, entity):
         player_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
         return player_class_component.label
+
     #
     # Mobile actions
     #

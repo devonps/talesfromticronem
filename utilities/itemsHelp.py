@@ -200,8 +200,8 @@ class ItemUtilities:
 #
 ####################################################
     @staticmethod
-    def get_armour_defense_value(gameworld, body_location):
-        return gameworld.component_for_entity(body_location, items.Defense).value
+    def get_armour_defense_value(gameworld, entity):
+        return gameworld.component_for_entity(entity, items.Defense).value
 
     @staticmethod
     def get_armour_set_name(gameworld, entity):

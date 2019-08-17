@@ -1153,6 +1153,27 @@ class CharacterCreation:
         display_char_sec_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_SEC_ATTR_X')
         display_char_sec_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_SEC_ATTR_Y')
 
+        display_char_der_attributes_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_DER_ATTRIBUTES_X')
+        display_char_der_attributes_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_DER_ATTRIBUTES_Y')
+        display_char_der_attributes_w = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_DER_ATTRIBUTES_W')
+        display_char_der_attributes_h = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_DER_ATTRIBUTES_H')
+        display_char_der_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_DER_ATTR_X')
+        display_char_der_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_DER_ATTR_Y')
+
+        display_char_hea_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_HEA_ATTR_X')
+        display_char_hea_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_HEA_ATTR_Y')
+
+        display_char_man_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_MAN_ATTR_X')
+        display_char_man_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_MAN_ATTR_Y')
+
+        display_char_armset_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMSET_ATTR_X')
+        display_char_armset_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMSET_ATTR_Y')
+        display_char_armset_attr_w = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMSET_W')
+        display_char_armset_attr_h = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMSET_H')
+
+        display_char_armour_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMOUR_ATTR_X')
+        display_char_armour_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMOUR_ATTR_Y')
+
         display_char_personal_fg = colourUtilities.colors[dcp_fg]
         display_char_personal_bg = colourUtilities.colors[dcp_bg]
         display_char_attributes_fg = colourUtilities.colors[dca_fg]
@@ -1190,12 +1211,9 @@ class CharacterCreation:
         player_personality = MobileUtilities.get_mobile_personality_title(gameworld=gameworld, entity=player_entity)
 
         personal_info = 'You, ' + first_name + ' ' + last_name + ', are a ' + player_gender + ', ' + player_race + ', ' + player_class + '.'
-        personality_info = ' Your personality would be described as ' + player_personality + '.'
+        personality_info = ' Your personality would be described as ' + player_personality.lower() + '.'
 
         personal_details = personal_info + personality_info
-
-        # personal_panel_height = tcod.console.get_height_rect(width=display_char_personal_w, string=personal_info + personality_info)
-        # logger.info('Personal panel height {}', personal_panel_height)
 
         display_coloured_box(console=character_display, title='Personal Info',
                              posx=display_char_personal_x, posy=display_char_personal_y,
@@ -1206,9 +1224,37 @@ class CharacterCreation:
                                     string=personal_details,
                                     fg=display_char_personal_fg, bg=display_char_personal_bg)
         # armour
+        display_coloured_box(console=character_display, title='Armour',
+                             posx=display_char_armset_attr_x, posy=display_char_armset_attr_y,
+                             width=display_char_armset_attr_w, height=display_char_armset_attr_h,
+                             fg=display_char_personal_fg, bg=display_char_personal_bg)
         # armourset / prefix + flavour text / bonus attribute
         # bodylocation / armour display name / defense value
 
+        head_armour_id = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player_entity)
+        def_head_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=head_armour_id)
+        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 2, width=len("Head:" + str(def_head_value)), height=1,
+                             string="Head:" + str(def_head_value))
+
+        chest_armour_id = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=player_entity)
+        def_chest_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest_armour_id)
+        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 3, width=len("Chest:" + str(def_chest_value)), height=1,
+                             string="Chest:" + str(def_chest_value))
+
+        hands_armour_id = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=player_entity)
+        def_hands_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands_armour_id)
+        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 4, width=len("Hands:" + str(def_hands_value)), height=1,
+                             string="Hands:" + str(def_hands_value))
+
+        legs_armour_id = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player_entity)
+        def_legs_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs_armour_id)
+        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 5, width=len("Legs:" + str(def_legs_value)), height=1,
+                             string="Legs:" + str(def_legs_value))
+
+        feet_armour_id = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player_entity)
+        def_feet_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet_armour_id)
+        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 6, width=len("Feet:" + str(def_feet_value)), height=1,
+                             string="Feet:" + str(def_feet_value))
         # attributes
 
         display_coloured_box(console=character_display, title="Attributes",
@@ -1230,15 +1276,11 @@ class CharacterCreation:
         player_healing_power = MobileUtilities.get_mobile_healing_power(gameworld=gameworld, entity=player_entity)
         player_armour = MobileUtilities.get_derived_armour_value(gameworld=gameworld, entity=player_entity)
         player_boon_duration = MobileUtilities.get_derived_boon_duration(gameworld=gameworld, entity=player_entity)
-        player_personality_title = MobileUtilities.get_mobile_personality_title(gameworld=gameworld, entity=player_entity)
 
         player_critical_chance = MobileUtilities.get_derived_critical_hit_chance(gameworld=gameworld, entity=player_entity)
         player_critical_damage = MobileUtilities.get_derived_critical_damage(gameworld=gameworld, entity=player_entity)
         player_condi_duration = MobileUtilities.get_derived_condition_duration(gameworld=gameworld, entity=player_entity)
         player_max_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=player_entity)
-        player_current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=player_entity)
-
-        player_current_mana = MobileUtilities.get_derived_current_mana(gameworld=gameworld, entity=player_entity)
         player_maximum_mana = MobileUtilities.get_derived_maximum_mana(gameworld=gameworld, entity=player_entity)
 
         # primary / secondary / derived / bonuses highlighted
@@ -1278,25 +1320,32 @@ class CharacterCreation:
                              string="Ferocity:" + str(player_ferocity))
         character_display.print_box(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 4, width=len("Healing Power:" + str(player_healing_power)), height=1,
                              string="Healing Power:" + str(player_healing_power))
-        #
-        # display_coloured_box(console=hero_panel, title="Derived Attributes",
-        #                      posx=hp_left_col,
-        #                      posy=hp_def_y + 22,
-        #                      width=24,
-        #                      height=9,
-        #                      fg=tcod.white,
-        #                      bg=tcod.grey)
-        #
-        # character_display.print_box(x=hp_left_col + 1, y=hp_def_y + 24, width=hp_info_width, height=1,
-        #                      string="Armour:" + str(player_armour))
-        # character_display.print_box(x=hp_left_col + 1, y=hp_def_y + 25, width=hp_info_width, height=1,
-        #                      string="Boon Duration:" + str(player_boon_duration))
-        # character_display.print_box(x=hp_left_col + 1, y=hp_def_y + 26, width=hp_info_width, height=1,
-        #                      string="Critical Chance:" + str(player_critical_chance) + '%')
-        # character_display.print_box(x=hp_left_col + 1, y=hp_def_y + 27, width=hp_info_width, height=1,
-        #                      string="Critical Damage:" + str(player_critical_damage) + '%')
-        # character_display.print_box(x=hp_left_col + 1, y=hp_def_y + 28, width=hp_info_width, height=1,
-        #                      string="Condition Duration:" + str(player_condi_duration))
+
+        display_coloured_box(console=character_display, title="Derived",
+                             posx=display_char_der_attributes_x,
+                             posy=display_char_der_attributes_y,
+                             width=display_char_der_attributes_w,
+                             height=display_char_der_attributes_h,
+                             fg=display_char_attributes_fg,
+                             bg=display_char_attributes_bg)
+
+        character_display.print_box(x=display_char_der_attr_x, y=display_char_der_attr_y, width=len("Armour:" + str(player_armour)), height=1,
+                             string="Armour:" + str(player_armour))
+        character_display.print_box(x=display_char_der_attr_x, y=display_char_der_attr_y + 1, width=len("Boon Duration:" + str(player_boon_duration)), height=1,
+                             string="Boon Duration:" + str(player_boon_duration))
+        character_display.print_box(x=display_char_der_attr_x, y=display_char_der_attr_y + 2, width=len("Critical Chance:" + str(player_critical_chance) + '%'), height=1,
+                             string="Critical Chance:" + str(player_critical_chance) + '%')
+        character_display.print_box(x=display_char_der_attr_x, y=display_char_der_attr_y + 3, width=len("Critical Damage:" + str(player_critical_damage) + '%'), height=1,
+                             string="Critical Damage:" + str(player_critical_damage) + '%')
+        character_display.print_box(x=display_char_der_attr_x, y=display_char_der_attr_y + 4, width=len("Condition Duration:" + str(player_condi_duration)), height=1,
+                             string="Condition Duration:" + str(player_condi_duration))
+        # health
+        character_display.print_box(x=display_char_hea_attr_x, y=display_char_hea_attr_y, width=len("Health:" + str(player_max_health)), height=1,
+                             string="Health:" + str(player_max_health))
+        # mana
+        character_display.print_box(x=display_char_man_attr_x, y=display_char_man_attr_y, width=len("Mana:" + str(player_maximum_mana)), height=1,
+                             string="Mana:" + str(player_maximum_mana))
+
         # weapons
         # main hand / off hand
         # spells per hand / name only
