@@ -147,7 +147,7 @@ class ItemManager:
             description='a ' + display + ' made from ' + as_material,
             fg=tcod.white,
             bg=tcod.black,
-            displayname='a ' + display))
+            displayname=display))
         gameworld.add_component(armour_piece, items.RenderItem(istrue=True))
         gameworld.add_component(armour_piece, items.Quality(level=as_quality))
 

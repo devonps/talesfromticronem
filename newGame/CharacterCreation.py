@@ -857,8 +857,9 @@ class CharacterCreation:
         # create starting armour from armourset and prefix
         this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=armourset, prefix=armour_prefix, game_config=game_config)
 
-        logger.info('Armourset entities are: {}', this_armourset)
         ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=this_armourset)
+
+        MobileUtilities.calculate_derived_attributes(gameworld=gameworld, entity=player)
 
         # create starting weapon(s) - based on what's passed into this method
         if main_hand == off_hand:
@@ -1231,30 +1232,49 @@ class CharacterCreation:
         # armourset / prefix + flavour text / bonus attribute
         # bodylocation / armour display name / defense value
 
+        strToPrint = "Location Material Display Defense"
+        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 1, width=len(strToPrint), height=1,
+                             string=strToPrint)
+
         head_armour_id = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player_entity)
+        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=head_armour_id)
+        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=head_armour_id)
         def_head_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=head_armour_id)
-        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 2, width=len("Head:" + str(def_head_value)), height=1,
-                             string="Head:" + str(def_head_value))
+        strToPrint = "Head:    " + armour_material + '  ' + armour_displayname + '         ' + str(def_head_value)
+        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 2, width=len(strToPrint), height=1,
+                             string=strToPrint)
 
         chest_armour_id = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=player_entity)
+        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=chest_armour_id)
+        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=chest_armour_id)
         def_chest_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest_armour_id)
-        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 3, width=len("Chest:" + str(def_chest_value)), height=1,
-                             string="Chest:" + str(def_chest_value))
+        strToPrint = "Chest:   " + armour_material + '  ' + armour_displayname + '        ' + str(def_chest_value)
+        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 3, width=len(strToPrint), height=1,
+                             string=strToPrint)
 
         hands_armour_id = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=player_entity)
+        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=hands_armour_id)
+        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=hands_armour_id)
         def_hands_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands_armour_id)
-        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 4, width=len("Hands:" + str(def_hands_value)), height=1,
-                             string="Hands:" + str(def_hands_value))
+        strToPrint = "Hands:   " + armour_material + '  ' + armour_displayname + ' ' + str(def_hands_value)
+        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 4, width=len(strToPrint), height=1,
+                             string=strToPrint)
 
         legs_armour_id = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player_entity)
+        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=legs_armour_id)
+        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=legs_armour_id)
         def_legs_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs_armour_id)
-        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 5, width=len("Legs:" + str(def_legs_value)), height=1,
-                             string="Legs:" + str(def_legs_value))
+        strToPrint = "Legs:    " + armour_material + '  ' + armour_displayname + '    ' + str(def_legs_value)
+        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 5, width=len(strToPrint), height=1,
+                             string=strToPrint)
 
-        feet_armour_id = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player_entity)
+        feet_armour_id = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=player_entity)
+        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=feet_armour_id)
+        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=feet_armour_id)
         def_feet_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet_armour_id)
-        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 6, width=len("Feet:" + str(def_feet_value)), height=1,
-                             string="Feet:" + str(def_feet_value))
+        strToPrint = "Feet:    " + armour_material + '  ' + armour_displayname + '     ' + str(def_feet_value)
+        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 6, width=len(strToPrint), height=1,
+                             string=strToPrint)
         # attributes
 
         display_coloured_box(console=character_display, title="Attributes",
