@@ -31,3 +31,5 @@ ENV/
 
 # sonar qube
 .scannerwork
+/.coverage
+/coverage_html/

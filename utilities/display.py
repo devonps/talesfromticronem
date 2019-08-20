@@ -120,13 +120,10 @@ def pointy_menu(console, header, menu_options, menu_id_format, menu_start_x, men
         letter_index += 1
 
 
-def display_coloured_box(console, title, posx, posy, width, height, fg, bg ):
-    console.print_box(x=posx + 1, y=posy,
-                      width=len(title), height=1,
-                      string=title)
+def display_coloured_box(console, title, posx, posy, width, height, fg, bg):
 
     console.draw_frame(x=posx - 1, y=posy -1, width=width, height=height,
-                       clear=False, bg_blend=tcod.BKGND_DEFAULT, title='')
+                       clear=False, bg_blend=tcod.BKGND_DEFAULT, title=title)
 
     console.draw_rect(x=posx, y=posy,
                       width=width - 2, height=height - 2, ch=0, fg=fg, bg=bg)

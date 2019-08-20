@@ -20,19 +20,7 @@ from utilities import configUtilities
 
 class NewCharacter:
 
-    def create(con, gameworld, game_config):
-        player = NewCharacter.generate_player_character(gameworld=gameworld, game_config=game_config)
-        NewCharacter.select_race(con=con, gameworld=gameworld, player=player, game_config=game_config)
-        NewCharacter.select_character_class(con=con, gameworld=gameworld, player=player, game_config=game_config)
-        NewCharacter.select_personality_choices(con=con, gameworld=gameworld, player=player, game_config=game_config)
-        NewCharacter.name_your_character(con=con, gameworld=gameworld, player=player, game_config=game_config)
-        spell_bar_entity = NewCharacter.generate_spell_bar(gameworld=gameworld)
-        NewCharacter.get_starting_equipment(con=con, gameworld=gameworld, player=player, spellbar=spell_bar_entity, game_config=game_config)
-
-        MobileUtilities.calculate_derived_attributes(gameworld, player)
-
-        return player, spell_bar_entity
-
+    @staticmethod
     def generate_spell_bar(gameworld):
         logger.debug('Creating the spell bar')
         spell_bar = get_next_entity_id(gameworld=gameworld)
@@ -50,6 +38,7 @@ class NewCharacter:
 
         return spell_bar
 
+    @staticmethod
     def generate_player_character(gameworld, game_config):
         player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_PLAYER')
         logger.debug('Creating the player character entity')
@@ -73,6 +62,25 @@ class NewCharacter:
         logger.info('stored as entity {}', player)
 
         return player
+
+    @staticmethod
+    def equip_starting_weapon(gameworld, player, weapon, hands):
+        # equip player with weapon
+        logger.info('Equipping player with that loaded weapon')
+        MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=weapon, hand=hands)
+
+    def create(con, gameworld, game_config):
+        player = NewCharacter.generate_player_character(gameworld=gameworld, game_config=game_config)
+        NewCharacter.select_race(con=con, gameworld=gameworld, player=player, game_config=game_config)
+        NewCharacter.select_character_class(con=con, gameworld=gameworld, player=player, game_config=game_config)
+        NewCharacter.select_personality_choices(con=con, gameworld=gameworld, player=player, game_config=game_config)
+        NewCharacter.name_your_character(con=con, gameworld=gameworld, player=player, game_config=game_config)
+        spell_bar_entity = NewCharacter.generate_spell_bar(gameworld=gameworld)
+        NewCharacter.get_starting_equipment(con=con, gameworld=gameworld, player=player, spellbar=spell_bar_entity, game_config=game_config)
+
+        MobileUtilities.calculate_derived_attributes(gameworld, player)
+
+        return player, spell_bar_entity
 
     def select_race(con, gameworld, player, game_config):
 
@@ -339,13 +347,6 @@ class NewCharacter:
 
         return weapon, hands
 
-    @staticmethod
-    def equip_starting_weapon(gameworld, player, weapon, hands):
-        # equip player with weapon
-        logger.info('Equipping player with that loaded weapon')
-        MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=weapon, hand=hands)
-
-    @staticmethod
     def create_starting_armour(gameworld, player, game_config):
         # every class gets the same starting armour
 

@@ -25,6 +25,11 @@ class ItemUtilities:
         return item_described_component.name
 
     @staticmethod
+    def get_item_material(gameworld, entity):
+        item_material_component = gameworld.component_for_entity(entity, items.Material)
+        return item_material_component.texture
+
+    @staticmethod
     def get_item_displayname(gameworld, entity):
         item_described_component = gameworld.component_for_entity(entity, items.Describable)
         return item_described_component.displayname
@@ -200,8 +205,8 @@ class ItemUtilities:
 #
 ####################################################
     @staticmethod
-    def get_armour_defense_value(gameworld, body_location):
-        return gameworld.component_for_entity(body_location, items.Defense).value
+    def get_armour_defense_value(gameworld, entity):
+        return gameworld.component_for_entity(entity, items.Defense).value
 
     @staticmethod
     def get_armour_set_name(gameworld, entity):
@@ -286,8 +291,6 @@ class ItemUtilities:
         if bodylocation == 'feet':
             gameworld.component_for_entity(entity, mobiles.Armour).feet = piece_of_armour
 
-            # ItemUtilities.set_armour_being_worn_status_to_true(gameworld, piece_of_armour)
-
     @staticmethod
     def unequip_piece_of_armour(gameworld, entity, bodylocation):
         # armour_is_already_worn = ItemUtilities.get_armour_being_worn_status(gameworld, entity)
@@ -303,24 +306,17 @@ class ItemUtilities:
         if bodylocation == 'feet':
             gameworld.component_for_entity(entity, mobiles.Armour).feet = 0
 
-            # ItemUtilities.set_armour_being_worn_status_to_false(gameworld, entity)
-
     def equip_full_set_of_armour(gameworld, entity, armourset):
 
         if armourset[0] > 0:
-            # gameworld.component_for_entity(entity, mobiles.Armour).chest = armourset[0]
-            ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[0], 'chest')
+            ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[0], 'head')
         if armourset[1] > 0:
-            # gameworld.component_for_entity(entity, mobiles.Armour).head = armourset[1]
-            ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[1], 'head')
+            ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[1], 'chest')
         if armourset[2] > 0:
-            # gameworld.component_for_entity(entity, mobiles.Armour).hands = armourset[2]
             ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[2], 'hands')
         if armourset[3] > 0:
-            # gameworld.component_for_entity(entity, mobiles.Armour).legs = armourset[3]
             ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[3], 'legs')
         if armourset[4] > 0:
-            # gameworld.component_for_entity(entity, mobiles.Armour).feet = armourset[4]
             ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[4], 'feet')
 
 ####################################################

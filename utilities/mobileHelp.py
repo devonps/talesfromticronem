@@ -81,6 +81,16 @@ class MobileUtilities(numbers.Real):
         return names
 
     @staticmethod
+    def set_mobile_first_name(gameworld, entity, name):
+        firstname_component = gameworld.component_for_entity(entity, mobiles.Name)
+        firstname_component.first = name
+
+    @staticmethod
+    def set_mobile_last_name(gameworld, entity, name):
+        firstname_component = gameworld.component_for_entity(entity, mobiles.Name)
+        firstname_component.suffix = name
+
+    @staticmethod
     def get_mobile_race_details(gameworld, entity):
         race_component = gameworld.component_for_entity(entity, mobiles.Race)
         racial = [race_component.label, race_component.size]
@@ -191,6 +201,7 @@ class MobileUtilities(numbers.Real):
     def get_character_class(gameworld, entity):
         player_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
         return player_class_component.label
+
     #
     # Mobile actions
     #
@@ -564,27 +575,27 @@ class MobileUtilities(numbers.Real):
         hands = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity)
 
         if chest != 0:
-            def_chest_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=chest)
+            def_chest_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest)
         else:
             def_chest_value = 0
 
         if head != 0:
-            def_head_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=head)
+            def_head_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=head)
         else:
             def_head_value = 0
 
         if legs != 0:
-            def_legs_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=legs)
+            def_legs_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs)
         else:
             def_legs_value = 0
 
         if feet != 0:
-            def_feet_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=feet)
+            def_feet_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet)
         else:
             def_feet_value = 0
 
         if hands != 0:
-            def_hands_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=hands)
+            def_hands_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands)
         else:
             def_hands_value = 0
 

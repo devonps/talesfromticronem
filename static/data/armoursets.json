@@ -6,6 +6,7 @@
       "displayname": "Embroided",
       "weight": "light",
       "material": "hessian",
+      "quality": "basic",
       "flavour": "an armour set made from combining several different plant fibres.",
       "head": {
         "display": "cap",
@@ -79,6 +80,7 @@
       "displayname": "Student",
       "weight": "light",
       "material": "wool",
+      "quality": "fine",
       "flavour": "an armour set made from combining different wool types tightly together.",
       "head": {
         "display": "circlet",
