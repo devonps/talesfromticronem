@@ -10,7 +10,7 @@ from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 from newGame.newCharacter import NewCharacter
-from newGame.initialiseNewGame import setup_game
+from newGame.initialiseNewGame import setup_game, create_spell_entities
 from newGame.Items import ItemManager
 from newGame.ClassWeapons import WeaponClass
 from utilities.itemsHelp import ItemUtilities
@@ -361,11 +361,10 @@ class CharacterCreation:
                         if package_selected > 3:
                             package_selected = 1
                     if event_action == 'enter':
-                        if selected_menu_option == 0:  # necromancer selected
-                            MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
-                                                                   selected_class=menu_options[selected_menu_option],
-                                                                   health=class_health[selected_menu_option])
-                            logger.info('{} class chosen', menu_options[selected_menu_option])
+                        MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
+                                                               selected_class=menu_options[selected_menu_option],
+                                                               health=class_health[selected_menu_option])
+                        logger.info('{} class chosen', menu_options[selected_menu_option])
                         CharacterCreation.choose_weapons(root_console=root_console, gameworld=gameworld,
                                                                   player=player, game_config=game_config,
                                                                   selected_class=menu_options[selected_menu_option])
@@ -861,6 +860,9 @@ class CharacterCreation:
 
         MobileUtilities.calculate_derived_attributes(gameworld=gameworld, entity=player)
 
+        # creating spells --> this loads all spells into the game as entities
+        create_spell_entities(gameworld, game_config)
+
         # create starting weapon(s) - based on what's passed into this method
         if main_hand == off_hand:
             logger.info('creating a starting 2-handed weapon for the player')
@@ -871,11 +873,11 @@ class CharacterCreation:
             weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
 
             # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-            logger.info('Loading that weapon with the necessary spells')
+            logger.info('Loading the {} with the necessary spells', weapon_type)
             WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
 
             # equip player with newly created starting weapon
-            NewCharacter.equip_starting_weapon(gameworld, player, created_weapon, 'both')
+            MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='both')
 
         if main_hand != '' and main_hand != off_hand:
             logger.info('creating a 1-handed weapon (main hand) for the player')
@@ -892,12 +894,12 @@ class CharacterCreation:
             WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
 
             # equip player with newly created starting weapon
-            NewCharacter.equip_starting_weapon(gameworld, player, created_weapon, 'main')
+            MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='main')
 
         if off_hand != '' and off_hand != main_hand:
             class_component = MobileUtilities.get_character_class(gameworld, player)
 
-            created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand,
+            created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=off_hand,
                                                        game_config=game_config)
             weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
 
@@ -906,7 +908,7 @@ class CharacterCreation:
             WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
 
             # equip player with newly created starting weapon
-            NewCharacter.equip_starting_weapon(gameworld, player, created_weapon, 'off')
+            MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='off')
 
         # load spell bar with spells from weapon
         spell_bar_entity = NewCharacter.generate_spell_bar(gameworld=gameworld)
@@ -1119,6 +1121,7 @@ class CharacterCreation:
 
     @staticmethod
     def display_starting_character(root_console, gameworld):
+        logger.info('Displaying character starting stats')
         game_config = configUtilities.load_config()
         start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
@@ -1174,11 +1177,24 @@ class CharacterCreation:
 
         display_char_armour_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMOUR_ATTR_X')
         display_char_armour_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMOUR_ATTR_Y')
+        dap_fg = configUtilities.get_config_value_as_string(game_config, 'newgame', 'DISPLAY_ARMOUR_INFO_BG')
+
+        display_wpn_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_WPN_X')
+        display_wpn_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_WPN_Y')
+        display_wpn_w = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_WPN_W')
+        display_wpn_h = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_WPN_H')
+
+        display_main_wpn_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_MAIN_WPN_X')
+        display_main_wpn_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_MAIN_WPN_Y')
+
+        display_off_wpn_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_OFF_WPN_X')
+        display_off_wpn_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_OFF_WPN_Y')
 
         display_char_personal_fg = colourUtilities.colors[dcp_fg]
         display_char_personal_bg = colourUtilities.colors[dcp_bg]
         display_char_attributes_fg = colourUtilities.colors[dca_fg]
         display_char_attributes_bg = colourUtilities.colors[dca_bg]
+        display_armour_info_bg = colourUtilities.colors[dap_fg]
 
         character_display = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
@@ -1211,24 +1227,24 @@ class CharacterCreation:
         # personality
         player_personality = MobileUtilities.get_mobile_personality_title(gameworld=gameworld, entity=player_entity)
 
-        personal_info = 'You, ' + first_name + ' ' + last_name + ', are a ' + player_gender + ', ' + player_race + ', ' + player_class + '.'
+        personal_info = 'You are ' + first_name + ' ' + last_name + ', a ' + player_gender + ', ' + player_class + ' from ' + player_race + '.'
         personality_info = ' Your personality would be described as ' + player_personality.lower() + '.'
 
         personal_details = personal_info + personality_info
 
-        display_coloured_box(console=character_display, title='Personal Info',
-                             posx=display_char_personal_x, posy=display_char_personal_y,
-                             width=display_char_personal_w, height=display_char_personal_h,
-                             fg=display_char_personal_fg, bg=display_char_personal_bg)
+        # display_coloured_box(console=character_display, title='Personal Info',
+        #                      posx=display_char_personal_x, posy=display_char_personal_y,
+        #                      width=display_char_personal_w, height=display_char_personal_h,
+        #                      fg=display_char_personal_fg, bg=display_char_personal_bg)
         character_display.print_box(x=display_char_personal_x, y=display_char_personal_y,
                                     width=display_char_personal_w, height=display_char_personal_h,
                                     string=personal_details,
-                                    fg=display_char_personal_fg, bg=display_char_personal_bg)
+                                    fg=display_char_personal_fg)
         # armour
         display_coloured_box(console=character_display, title='Armour',
                              posx=display_char_armset_attr_x, posy=display_char_armset_attr_y,
                              width=display_char_armset_attr_w, height=display_char_armset_attr_h,
-                             fg=display_char_personal_fg, bg=display_char_personal_bg)
+                             fg=display_char_personal_fg, bg=display_armour_info_bg)
         # armourset / prefix + flavour text / bonus attribute
         # bodylocation / armour display name / defense value
 
@@ -1367,8 +1383,62 @@ class CharacterCreation:
                              string="Mana:" + str(player_maximum_mana))
 
         # weapons
-        # main hand / off hand
-        # spells per hand / name only
+
+        display_coloured_box(console=character_display, title="Weapons",
+                             posx=display_wpn_x,
+                             posy=display_wpn_y,
+                             width=display_wpn_w,
+                             height=display_wpn_h,
+                             fg=display_char_attributes_fg,
+                             bg=display_char_attributes_bg)
+
+        weapons_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
+        logger.info('Equipped weapons:{}', weapons_list[2])
+        main_weapon = weapons_list[0]
+        off_weapon = weapons_list[1]
+        both_weapon = weapons_list[2]
+        main_hand_weapon_name = 'undefined'
+        off_hand_weapon_name = 'undefined'
+
+        if both_weapon > 0:
+            main_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=both_weapon)
+            slot1_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=1)
+            slot2_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=2)
+            slot3_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=3)
+
+            off_hand_weapon_name = main_hand_weapon_name
+            slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=4)
+            slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=5)
+        else:
+            main_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=main_weapon)
+            slot1_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon, slotid=1)
+            slot2_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon, slotid=2)
+            slot3_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon, slotid=3)
+
+            off_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=off_weapon)
+            slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=off_weapon, slotid=4)
+            slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=off_weapon, slotid=5)
+
+        main_wpn_display = 'Main Hand: ' + main_hand_weapon_name
+        slot1_display = 'Slot 1:' + slot1_name
+        slot2_display = 'Slot 2:' + slot2_name
+        slot3_display = 'Slot 3:' + slot3_name
+        slot4_display = 'Slot 4:' + slot4_name
+        slot5_display = 'Slot 5:' + slot5_name
+
+        off_wpn_display = 'Off Hand: ' + off_hand_weapon_name
+
+        # main hand
+        character_display.print_box(x=display_main_wpn_x, y=display_main_wpn_y, width=len(main_wpn_display), height=1, string=main_wpn_display)
+        character_display.print_box(x=display_main_wpn_x, y=display_main_wpn_y + 1, width=len(slot1_display), height=1, string=slot1_display)
+        character_display.print_box(x=display_main_wpn_x, y=display_main_wpn_y + 2, width=len(slot2_display), height=1, string=slot2_display)
+        character_display.print_box(x=display_main_wpn_x, y=display_main_wpn_y + 3, width=len(slot3_display), height=1, string=slot3_display)
+
+        # off hand
+        character_display.print_box(x=display_off_wpn_x, y=display_off_wpn_y, width=len(off_wpn_display), height=1, string=off_wpn_display)
+        character_display.print_box(x=display_off_wpn_x, y=display_off_wpn_y + 1, width=len(slot4_display), height=1, string=slot4_display)
+        character_display.print_box(x=display_off_wpn_x, y=display_off_wpn_y + 2, width=len(slot5_display), height=1, string=slot5_display)
+
         while not_ready_to_proceed:
             # blit changes to root console
             character_display.blit(dest=root_console, dest_x=5, dest_y=5)
