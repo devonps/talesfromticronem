@@ -10,7 +10,7 @@ from utilities.replayGame import ReplayGame
 from loguru import logger
 from utilities import configUtilities
 
-from newGame import newGame
+from newGame import newGame, LoadPrefab
 
 
 def start_game(con, gameworld, game_config):
@@ -20,8 +20,9 @@ def start_game(con, gameworld, game_config):
     msg_panel_lines = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_LINES')
 
     setup_game(game_config)
-    create_spell_entities(gameworld, game_config)
-    player, spell_bar = create_new_character(con, gameworld, game_config)
+    # create_spell_entities(gameworld, game_config)
+    # player, spell_bar = create_new_character(con, gameworld, game_config)
+
     message_log = MessageLog(x=msg_panel_across_pos, width=msg_panel_width, height=msg_panel_lines)
     game_map = initialise_game_map(con, gameworld, player, spell_bar, message_log, game_config)
     create_and_place_world_entities(gameworld=gameworld, game_map=game_map, game_config=game_config)
@@ -76,6 +77,7 @@ def game_replay(con, game_config):
 @logger.catch()
 def main():
 
+    # LoadPrefab.loadPrefab()
     newGame.new_game()
 
 

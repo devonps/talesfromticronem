@@ -15,6 +15,8 @@ from newGame.Items import ItemManager
 from newGame.ClassWeapons import WeaponClass
 from utilities.itemsHelp import ItemUtilities
 
+from engine import start_game
+
 
 class CharacterCreation:
 
@@ -244,11 +246,13 @@ class CharacterCreation:
         class_defense_benefits = []
         class_balanced_benefits = []
         class_offense_benefits = []
+        class_spell_file = []
 
         for option in class_file['classes']:
             menu_options.append(option['name'])
             menu_options_flavour.append(option['flavour'])
             class_health.append(option['health'])
+            class_spell_file.append(option['spellfile'])
             class_weapons.append(option['weapons'])
             class_defense_benefits.append(option['defensive'])
             class_balanced_benefits.append(option['balanced'])
@@ -1461,7 +1465,7 @@ class CharacterCreation:
                             selected_menu_option = 0
                     if event_action == 'enter':
                         if selected_menu_option == 0:   # accept character build and start game
-                            pass
+                            start_game(con=root_console, gameworld=gameworld, game_config=game_config)
                         if selected_menu_option == 1:   # save current build
                             pass
                         if selected_menu_option == 2:   # reject build and start again
