@@ -1,0 +1,1125 @@
+{
+    {
+      "name": "necrotic grasp",
+      "description": "Send out a grasping hand that damages foes in a line and grants you life force.",
+      "short_description": "Send out a grasping hand that damages foes in a line and grants you life force.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "staff",
+          "weapon_slot": "1",
+          "max_targets": "5",
+          "ground_targeted": "False"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "0.666"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "1",
+          "condi1_name": "drain_lifeforce",
+          "condi1_stacks": "4",
+          "condi1_duration": "1"
+        }
+        ]
+    },
+    {
+      "name": "mark of blood",
+      "description": "Inscribe a mark that bleeds foes when they trigger it, and grants regeneration to allies.",
+      "short_description": "Inscribe a mark that bleeds foes when they trigger it, and grants regeneration to allies.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "3",
+      "max_range": "spell_dist_very_far",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "staff",
+          "weapon_slot": "2",
+          "max_targets": "99",
+          "ground_targeted": "True",
+          "lives_for": "3",
+          "aoe": "True",
+          "aoe_size": "aoe_medium"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "0.33"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "2",
+          "condi1_name": "bleeding",
+          "condi1_stacks": "2",
+          "condi1_duration": "1",
+          "condi2_name": "drain_lifeforce",
+          "condi2_stacks": "4",
+          "condi2_duration": "1"
+        }
+        ],
+      "boons":
+      [
+        {
+          "count": "1",
+          "boon1_name": "regeneration",
+          "boon1_duration": "5"
+        }
+        ]
+    },
+    {
+      "name": "life blood",
+      "description": "Inscribe a mark that bleeds foes and drains life force in the target area.",
+      "short_description": "Inscribe a mark that bleeds foes and drains life force in the target area.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "2",
+      "max_range": "spell_dist_very_far",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "staff",
+          "weapon_slot": "3",
+          "max_targets": "99",
+          "lives_for": "3",
+          "ground_targeted": "True",
+          "aoe": "True",
+          "aoe_size": "aoe_medium"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "0.565"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "2",
+          "condi1_name": "bleeding",
+          "condi1_stacks": "2",
+          "condi1_duration": "1",
+          "condi2_name": "drain_lifeforce",
+          "condi2_stacks": "4",
+          "condi2_duration": "1"
+        }
+        ],
+      "boons":
+      [
+        {
+          "count": "1",
+          "boon1_name": "regeneration",
+          "boon1_duration": "5"
+        }
+        ]
+    },
+    {
+      "name": "putrid mark",
+      "description": "Inscribe a mark that transfers conditions from yourself to foes when they trigger it.",
+      "short_description": "Inscribe a mark that transfers conditions to your enemies.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "3",
+      "max_range": "spell_dist_very_far",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "staff",
+          "weapon_slot": "4",
+          "max_targets": "5",
+          "ground_targeted": "True",
+          "aoe": "True",
+          "aoe_size": "aoe_medium",
+          "lives_for": "3"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "1.32"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "2",
+          "condi1_name": "transfer_conditions",
+          "condi1_stacks": "3",
+          "condi1_duration": "1",
+          "condi2_name": "drain_lifeforce",
+          "condi2_stacks": "4",
+          "condi2_duration": "1"
+        }
+        ]
+    },
+    {
+      "name": "reaper's mark",
+      "description": "Inscribe a mark that causes fear when foes trigger it.",
+      "short_description": "Inscribe a mark that causes fear when foes trigger it.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "4",
+      "max_range": "spell_dist_very_far",
+      "weapon_stuff":
+      [
+        {
+      "weapon_type": "staff",
+      "weapon_slot": "5",
+      "max_targets": "99",
+      "lives_for": "3",
+      "ground_targeted": "True",
+      "aoe": "True",
+      "aoe_size": "aoe_medium"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "0.275"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "2",
+          "condi1_name": "fear",
+          "condi1_stacks": "1",
+          "condi1_duration": "1",
+          "condi2_name": "drain_lifeforce",
+          "condi2_stacks": "2",
+          "condi2_duration": "1"
+        }
+        ]
+    },
+    {
+      "name": "necrotic slash",
+      "description": "Slash two of your foes and drain their lifeforce.",
+      "short_description": "Slash two of your foes and drain their lifeforce.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "lives_for": "0",
+      "max_range": "spell_dist_personal",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "focus",
+          "weapon_slot": "4",
+          "max_targets": "2",
+          "aoe": "False",
+          "aoe_size": "none",
+          "ground_targeted": "False"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "0.9"
+        }
+      ]
+    },
+    {
+      "name": "reaper's touch",
+      "description": "Send out a scythe that bounces between your foes, causing vulnerability.",
+      "short_description": "Send out a scythe that bounces between your foes, causing vulnerability.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "2",
+      "max_range": "spell_dist_very_far",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "focus",
+          "weapon_slot": "5",
+          "max_targets": "5",
+          "ground_targeted": "False",
+          "lives_for": "0",
+          "aoe": "False",
+          "aoe_size": "none"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "0.75"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "2",
+          "condi1_name": "vulnerability",
+          "condi1_stacks": "4",
+          "condi1_duration": "1",
+          "condi2_name": "drain_lifeforce",
+          "condi2_stacks": "3",
+          "condi2_duration": "1"
+        }
+      ],
+      "boons":
+      [
+        {
+          "count": "1",
+          "boon1_name": "regeneration",
+          "boon1_duration": "5"
+        }
+      ]
+    },
+    {
+      "name": "dark pact",
+      "description": "Immobilize your foe and bleed yourself.",
+      "short_description": "Immobilize your foe and bleed yourself.",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "2",
+      "max_range": "spell_dist_nearby",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "rod",
+          "lives_for": "0",
+          "weapon_slot": "4",
+          "max_targets": "5",
+          "ground_targeted": "False",
+          "aoe": "False",
+          "aoe_size": "none"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "1.2"
+        }
+      ],
+      "conditions":
+      [
+        {
+        "count": "3",
+          "condi1_name": "immobilize",
+          "condi1_stacks": "2",
+          "condi1_duration": "1",
+          "condi2_name": "drain_lifeforce",
+          "condi2_stacks": "2",
+          "condi2_duration": "1",
+          "condi3_name": "selfbleeding",
+          "condi3_stacks": "2",
+          "condi3_duration": "1"
+        }
+        ]
+    },
+    {
+      "name": "burning blood",
+      "description": "Inflict burning and bleeding on foes in the target area.",
+      "short_description": "Inflict burning and bleeding on foes in the target area.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "5",
+      "max_range": "spell_dist_nearby",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "rod",
+          "lives_for": "0",
+          "weapon_slot": "5",
+          "max_targets": "5",
+          "ground_targeted": "True",
+          "aoe": "True",
+          "aoe_size": "aoe_medium"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "1.0"
+
+        }
+      ],
+      "conditions":
+      [
+        {
+        "count": "2",
+          "condi1_name": "burning",
+          "condi1_stacks": "2",
+          "condi1_duration": "1",
+          "condi2_name": "bleeding",
+          "condi2_stacks": "2",
+          "condi2_duration": "1"
+        }
+        ]
+    },
+    {
+      "name": "necrotic bite",
+      "description": "Strike your foe and gain life force.",
+      "short_description": "Strike your foe and gain life force.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "max_range": "spell_dist_personal",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "sword",
+          "lives_for": "0",
+          "weapon_slot": "1",
+          "max_targets": "2",
+          "ground_targeted": "False",
+          "aoe": "False",
+          "aoe_size": "none"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "1.2"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "1",
+          "condi1_name": "drain_lifeforce",
+          "condi1_stacks": "2",
+          "condi1_duration": "1"
+        }
+        ]
+    },
+    {
+      "name": "fading twilight",
+      "description": "Cleave foes in front of you and strip their life from them.",
+      "short_description": "Cleave foes in front of you and strip their life from them.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "2",
+      "max_range": "spell_dist_personal",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "sword",
+          "lives_for": "0",
+          "weapon_slot": "2",
+          "max_targets": "3",
+          "ground_targeted": "False",
+          "aoe": "False",
+          "aoe_size": "none"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "1.3"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "1",
+          "condi1_name": "drain_lifeforce",
+          "condi1_stacks": "1",
+          "condi1_duration": "1"
+        }
+        ]
+    },
+    {
+      "name": "death spiral",
+      "description": "Rend the armor of foes in front of you, deal increased damage to foes above the health threshold.",
+      "short_description": "Rend the armor of foes in front of you, deal increased damage.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "2",
+      "max_range": "spell_dist_close",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "sword",
+          "lives_for": "0",
+          "weapon_slot": "3",
+          "max_targets": "3",
+          "ground_targeted": "False",
+          "aoe": "False",
+          "aoe_size": "none"
+        }
+      ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "1.98"
+        }
+      ],
+      "conditions":
+      [
+        {
+        "count": "3",
+          "condi1_name": "vulnerability",
+          "condi1_stacks": "12",
+          "condi1_duration": "1",
+          "condi2_name": "drain_lifeforce",
+          "condi2_stacks": "2",
+          "condi2_duration": "1",
+          "condi3_name": "strikes_for",
+          "condi3_stacks": "6",
+          "condi3_duration": "1"
+        }
+        ]
+    },
+    {
+      "name": "gravedigger",
+      "description": "Perform a huge swing that deals heavy damage.",
+      "short_description": "Perform a huge swing that deals heavy damage.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "3",
+      "max_range": "spell_dist_close",
+      "weapon_stuff":
+      [
+        {
+      "weapon_type": "sword",
+      "lives_for": "0",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "aoe_size": "none"
+        }
+      ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "3.0"
+
+        }
+      ]
+    },
+    {
+      "name": "grasping Darkness",
+      "description": "Conjure claws of darkness from the shadows to attack foes, slowing them and gain life force for each struck foe.",
+      "short_description": "Conjure claws of darkness from the shadows to attack foes and slow them.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "8",
+      "max_range": "spell_dist_nearby",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "sword",
+          "lives_for": "0",
+          "weapon_slot": "5",
+          "max_targets": "5",
+          "ground_targeted": "False",
+          "aoe": "False",
+          "aoe_size": "none"
+        }
+      ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "1.3"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "1",
+          "condi1_name": "drain_lifeforce",
+          "condi1_stacks": "4",
+          "condi1_duration": "1"
+        }
+      ]
+    },
+    {
+      "name": "rending claws",
+      "description": "Slash your foe twice with ghostly claws to make them vulnerable.",
+      "short_description": "Slash your foe twice with ghostly claws to make them vulnerable.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "max_range": "spell_dist_nearby",
+      "weapon_stuff":
+      [
+        {
+          "weapon_type": "wand",
+          "weapon_slot": "1",
+          "max_targets": "5",
+          "ground_targeted": "False",
+          "lives_for": "0",
+          "aoe": "False",
+          "aoe_size": "none"
+        }
+      ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "1.0"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "1",
+          "condi1_name": "vulnerability",
+          "condi1_stacks": "3",
+          "condi1_duration": "1"
+        }
+        ]
+    },
+    {
+      "name": "ghastly claws",
+      "description": "Summon spectral claws to slash your foe in a quick flurry of strikes, gaining life force per strike.",
+      "short_description": "Summon spectral claws to slash your foe and gain life force.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "1",
+      "max_range": "spell_dist_nearby",
+      "weapon_stuff":
+      [
+        {
+      "weapon_type": "wand",
+      "lives_for": "0",
+      "weapon_slot": "2",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "aoe_size": "none"
+        }
+      ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "4.0"
+        }
+      ],
+      "conditions":
+      [
+        {
+        "count": "2",
+          "condi1_name": "strikes_for",
+          "condi1_stacks": "8",
+          "condi1_duration": "1",
+          "condi2_name": "drain_lifeforce",
+          "condi2_stacks": "2",
+          "condi2_duration": "1"
+        }
+      ]
+    },
+    {
+      "name": "blood curse",
+      "description": "Bleed your foe.",
+      "short_description": "Bleed your foe.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "max_range": "spell_dist_far",
+      "weapon_stuff":
+      [
+        {
+      "weapon_type": "wand",
+      "lives_for": "0",
+      "weapon_slot": "3",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "aoe_size": "none"
+        }
+      ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "0.35"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "1",
+          "condi1_name": "bleeding",
+          "condi1_stacks": "1",
+          "condi1_duration": "1"
+        }
+        ]
+    },
+    {
+      "name": "Your soul is mine",
+      "description": "Heal yourself and strike foes around you, absorbing life force for each foe struck.",
+      "short_description": "Heal, strike foes, and absorb their lifeforce.",
+      "type_of_spell": "heal",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_personal",
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "0.25"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "2",
+          "condi1_name": "strikes_for",
+          "condi1_stacks": "8",
+          "condi1_duration": "1",
+          "condi2_name": "drain_lifeforce",
+          "condi2_stacks": "5",
+          "condi2_duration": "1"
+
+        }
+      ],
+      "boons":
+      [
+        {
+        "count": "1",
+        "boon1_name": "gain_health",
+        "boon1_stack": "1",
+        "boon1_duration": "1",
+        "boon1_value": "4555",
+        "boon1_coef": "0.7"
+        }
+        ]
+    },
+    {
+      "name": "Blood Is Power",
+      "description": "Bleed yourself to grant might to allies around you and bleed your target.",
+      "short_description": "Bleed yourself to gain might.",
+      "type_of_spell": "utility",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "2",
+      "spell_range": "spell_dist_personal",
+      "connected_item":
+      [
+        {
+          "type": "jewellery",
+          "location": "earring1"
+        }
+      ],
+      "utility_stuff":
+      [
+        {
+          "conditions": "true",
+          "boons": "true"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "2",
+          "condi1_name": "bleeding",
+          "condi1_stacks": "2",
+          "condi1_duration": "1",
+          "condi2_name": "self_bleed",
+          "condi2_stacks": "1",
+          "condi2_duration": "1"
+        }
+        ],
+        "boons":
+        [
+          {
+            "count": "1",
+            "boon1_name": "gain_might",
+            "boon1_stacks": "2",
+            "boon1_duration": "1"
+          }
+          ]
+    },
+    {
+      "name": "Epidemic",
+      "description": "Apply vulnerability on yourself. Spread conditions on a target foe to all nearby foes at a reduced duration.",
+      "short_description": "Become vulnerable to spread conditions to foes.",
+      "type_of_spell": "utility",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "2",
+      "spell_range": "spell_dist_personal",
+      "connected_item":
+      [
+        {
+          "type": "jewellery",
+          "location": "earring2"
+        }
+      ],
+      "utility_stuff":
+      [
+        {
+          "conditions": "true",
+          "boons": "false"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "2",
+          "condi1_name": "vulnerability",
+          "condi1_stacks": "2",
+          "condi1_duration": "2",
+          "condi2_name": "spread_condis",
+          "condi2_stacks": "3",
+          "condi2_duration": "2"
+        }
+        ]
+    },
+    {
+      "name": "Signet of the locust",
+      "description": "Gain movement speed and drain lifeforce.",
+      "short_description": "Gain movement speed and drain lifeforce.",
+      "type_of_spell": "utility",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "4",
+      "spell_range": "spell_dist_personal",
+      "connected_item":
+      [
+        {
+          "type": "jewellery",
+          "location": "pendant"
+        }
+      ],
+      "utility_stuff":
+      [
+        {
+          "conditions": "true",
+          "boons": "true"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "1",
+          "condi1_name": "drain_lifeforce",
+          "condi1_stacks": "1",
+          "condi1_duration": "1"
+        }
+        ],
+        "boons":
+        [
+          {
+          "count": "1",
+          "boon1_name": "move_faster",
+          "boon1_stacks": "1",
+          "boon1_duration": "5"
+          }
+          ]
+    },
+    {
+      "name": "Spectral Armor",
+      "description": "Gain life force as you take damage.",
+      "short_description": "Gain life force as you take damage.",
+      "type_of_spell": "utility",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_personal",
+      "connected_item":
+      [
+        {
+          "type": "jewellery",
+          "location": "ring1"
+        }
+      ],
+      "utility_stuff":
+      [
+        {
+          "conditions": "true",
+          "boons": "false"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "1",
+          "condi1_name": "drain_lifeforce",
+          "condi1_stacks": "1",
+          "condi1_duration": "1"
+        }
+        ]
+    },
+    {
+      "name": "Spectre's Hand",
+      "description": "Pull target foe and all nearby foes to you, fear them, and gain life force.",
+      "short_description": "Pull foes and gain life force.",
+      "type_of_spell": "utility",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "9",
+      "spell_range": "spell_dist_personal",
+      "connected_item":
+      [
+        {
+          "type": "jewellery",
+          "location": "ring2"
+        }
+      ],
+      "utility_stuff":
+      [
+        {
+          "conditions": "true",
+          "boons": "false"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "3",
+          "condi1_name": "drain_lifeforce",
+          "condi1_stacks": "3",
+          "condi1_duration": "1",
+          "condi2_name": "fear",
+          "condi2_stacks": "1",
+          "condi2_duration": "2",
+          "condi3_name": "pull_foes",
+          "condi3_stacks": "1",
+          "condi3_duration": "1"
+
+        }
+        ]
+    },
+    {
+      "name": "Summon Flesh Wurm",
+      "description": "Summon an immobile flesh wurm to attack foes.",
+      "short_description": "Summon an immobile flesh wurm to attack foes.",
+      "type_of_spell": "utility",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "8",
+      "spell_range": "spell_dist_personal",
+      "connected_item":
+      [
+        {
+          "type": "armour",
+          "location": "head"
+        }
+      ],
+      "utility_stuff":
+      [
+        {
+          "conditions": "false",
+          "boons": "false",
+          "summon": "true"
+        }
+      ],
+      "summon":
+      [
+        {
+          "count": "1",
+          "minion1_name": "Flesh Worm",
+          "minion1_damage": "5",
+          "minion1_duration": "5"
+        }
+        ]
+    },
+    {
+      "name": "Well of Suffering",
+      "description": "Target area pulses, damaging foes and inflicting vulnerability.",
+      "short_description": "Target area pulses, damaging foes and inflicting vulnerability.",
+      "type_of_spell": "utility",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "9",
+      "spell_range": "spell_dist_personal",
+      "connected_item":
+      [
+        {
+          "type": "armour",
+          "location": "chest"
+        }
+      ],
+      "utility_stuff":
+      [
+        {
+          "conditions": "true",
+          "boons": "false",
+          "damage": "true"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "1",
+          "condi1_name": "vulnerability",
+          "condi1_stacks": "3",
+          "condi1_duration": "1"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "2.6"
+        }
+      ]
+    },
+    {
+      "name": "Nothing Can Save You!",
+      "description": "Damage foes around you, converting their boons into vulnerability. Your attacks become unblockable for a short time.",
+      "short_description": "Damage foes around you, converting their boons into vulnerability",
+      "type_of_spell": "utility",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "6",
+      "spell_range": "spell_dist_personal",
+      "connected_item":
+      [
+        {
+          "type": "armour",
+          "location": "legs"
+        }
+      ],
+      "utility_stuff":
+      [
+        {
+          "conditions": "true",
+          "boons": "true",
+          "damage": "true"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "1",
+          "condi1_name": "vulnerability",
+          "condi1_stacks": "3",
+          "condi1_duration": "1"
+        }
+        ],
+      "damage":
+      [
+        {
+          "damage_duration": "instant",
+          "damage_coef": "2.6"
+        }
+      ],
+      "boons":
+      [
+        {
+          "count": "1",
+          "boon1_name": "unblockable",
+          "boon1_stacks": "1",
+          "boon1_duration": "2"
+        }
+      ]
+    },
+    {
+      "name": "Trail of Anguish",
+      "description": "Leave a trail of sand as you travel. Grant swiftness to allies passing through it. Inflict burning on enemies and corrupt a boon into slow",
+      "short_description": "Leave a trail of sand as you travel, burn foes who follow.",
+      "type_of_spell": "utility",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "9",
+      "spell_range": "spell_dist_personal",
+      "connected_item":
+      [
+        {
+          "type": "armour",
+          "location": "feet"
+        }
+      ],
+      "utility_stuff":
+      [
+        {
+          "conditions": "true",
+          "boons": "false",
+          "aoe": "true"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "1",
+          "condi1_name": "burning",
+          "condi1_stacks": "1",
+          "condi1_duration": "2"
+        }
+        ],
+      "aoe":
+      [
+        {
+          "type": "cell",
+          "size": "cell",
+          "duration": "2"
+        }
+      ]
+    },
+    {
+      "name": "Dessicate",
+      "description": "Draw in vital energy from your foes to gain life force. Convert boons on enemies into bleed, burn, or vulnerability.",
+      "short_description": "Draw in vital energy from your foes to gain life force.",
+      "type_of_spell": "utility",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "5",
+      "spell_range": "spell_dist_personal",
+      "connected_item":
+      [
+        {
+          "type": "armour",
+          "location": "hands"
+        }
+      ],
+      "utility_stuff":
+      [
+        {
+          "conditions": "true",
+          "boons": "false"
+        }
+      ],
+      "conditions":
+      [
+        {
+          "count": "2",
+          "condi1_name": "convert_boons",
+          "condi1_stacks": "3",
+          "condi1_duration": "1",
+          "condi2_name": "drain_lifeforce",
+          "condi2_stacks": "2",
+          "condi2_duration": "1"
+        }
+        ]
+    }
+}

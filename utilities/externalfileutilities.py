@@ -1,7 +1,16 @@
 
 import os.path
+import csv
+
 
 class Externalfiles:
+
+    @staticmethod
+    def read_prefab_from_csv(filename):
+        fileContent = Externalfiles.load_existing_file(filename=filename)
+        csvReader = csv.reader(fileContent)
+
+        return csvReader
 
     @staticmethod
     def create_new_file(filename):
