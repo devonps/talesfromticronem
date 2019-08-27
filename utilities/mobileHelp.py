@@ -27,9 +27,10 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(player, mobiles.Race(race=selected_race, size=race_size))
 
     @staticmethod
-    def setup_class_attributes(gameworld, player, selected_class, health):
+    def setup_class_attributes(gameworld, player, selected_class, health, spellfile):
         gameworld.add_component(player, mobiles.CharacterClass(base_health=health))
         gameworld.add_component(player, mobiles.CharacterClass(label=selected_class))
+        gameworld.add_component(player, mobiles.CharacterClass(spellfile=spellfile))
 
     @staticmethod
     def get_player_entity(gameworld, game_config):

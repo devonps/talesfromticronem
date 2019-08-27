@@ -6,6 +6,16 @@ def base_direct_damage(weapon_strength, power, spell_coefficient, target_armour)
     return base_damage
 
 
+def calculate_duration_per_condition(condition_duration):
+    base_duration = 5
+    duration_percent = 0
+    if condition_duration > 0:
+        duration_percent = (base_duration / condition_duration) * 100
+    calculated_duration = base_duration * (1 + duration_percent)
+
+    return calculated_duration
+
+
 def base_condi_damage(condition_damage_modifier, condition_damage_stat, weapon_level_modifier, base_damage_per_stack, weapon_level):
 
     base_damage = (condition_damage_modifier * condition_damage_stat) + (weapon_level_modifier * weapon_level) + base_damage_per_stack

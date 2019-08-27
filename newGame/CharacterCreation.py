@@ -367,7 +367,8 @@ class CharacterCreation:
                     if event_action == 'enter':
                         MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
                                                                selected_class=menu_options[selected_menu_option],
-                                                               health=class_health[selected_menu_option])
+                                                               health=class_health[selected_menu_option],
+                                                               spellfile=class_spell_file[selected_menu_option])
                         logger.info('{} class chosen', menu_options[selected_menu_option])
                         CharacterCreation.choose_weapons(root_console=root_console, gameworld=gameworld,
                                                                   player=player, game_config=game_config,
@@ -416,6 +417,7 @@ class CharacterCreation:
         for option in class_file['classes']:
             if option['name'] == selected_class:
                 class_weapons = option['weapons']
+                class_spellfile = option['spellfile']
 
         if class_weapons['sword'] == 'true':
             available_weapons.append('sword')
@@ -436,7 +438,10 @@ class CharacterCreation:
 
         # for each available weapon, gather: weapon info & spells associated to it
         weapon_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='WEAPONSFILE')
-        spell_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='SPELLSFILE')
+
+        spellsfile = class_spellfile.upper() + '_SPELLSFILE'
+
+        spell_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter=spellsfile)
 
         weapon_file = read_json_file(weapon_class_file)
         spell_file = read_json_file(spell_class_file)
@@ -460,17 +465,27 @@ class CharacterCreation:
                     weapon_info[weapon_counter][weapon_name] = wpn['display_name']
                     weapon_info[weapon_counter][weapon_hands] = wpn['wielded_hands']
                     weapon_info[weapon_counter][weapon_quality] = wpn['quality_level']
+                    spellCounter = 0
 
                     for spell in spell_file['spells']:
-                        if spell['weapon_type'] == weapon:
-                            slot_id = int(spell['weapon_slot'])
+                        if spell['type_of_spell'] == 'combat':
+                            if spell['weapon_type'] == weapon:
+                                slot_id = int(spell['weapon_slot'])
 
-                            spell_name[weapon_counter][slot_id] = spell['name']
-                            spell_descripton[weapon_counter][slot_id] = spell['short_description']
-                            spell_cast_time[weapon_counter][slot_id] = 'Cast time:' + spell['cast_time']
-                            spell_cool_down[weapon_counter][slot_id] = 'Cool down:' + spell['cool_down']
-                            spell_range[weapon_counter][slot_id] = 'Range:' + spell['max_range']
-
+                                spell_name[weapon_counter][slot_id] = spell['name']
+                                spell_descripton[weapon_counter][slot_id] = spell['short_description']
+                                spell_cast_time[weapon_counter][slot_id] = 'Cast time:' + spell['turns_to_cast']
+                                spell_cool_down[weapon_counter][slot_id] = 'Cool down:' + spell['cool_down']
+                                spellRange = -1
+                                RangeOfSpell = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                                              section='spells',
+                                                                                              parameter=spell['spell_range'])
+                                if RangeOfSpell != '':
+                                    spellRange = int(RangeOfSpell)
+                                else:
+                                    logger.warning('Spell Range is set to zero! file:{} spell name:{}', spellsfile, spell['name'])
+                                spell_range[weapon_counter][slot_id] = 'Range:' + str(spellRange)
+                        spellCounter += 1
                     weapon_counter += 1
 
         menu_options = available_weapons
