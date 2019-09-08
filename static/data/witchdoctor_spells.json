@@ -1,0 +1,663 @@
+{
+  "spells": [
+    {
+      "name": "necrotic grasp",
+      "description": "Send out a grasping hand that damages foes in a line and grants you life force.",
+      "short_description": "Send out a grasping hand that damages foes in a line and grants you life force.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "staff",
+      "weapon_slot": "1",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.666",
+      "effects": [
+        {
+          "name": "gain_lifeforce",
+          "value": "4"
+        }
+        ]
+    },
+    {
+      "name": "mark of pain",
+      "description": "Place a totem that torments foes when they trigger it, and grants regeneration to allies.",
+      "short_description": "Place a totem that torments foes when they trigger it, and grants regeneration to allies.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "staff",
+      "weapon_slot": "2",
+      "max_targets": "99",
+      "lives_for": "3",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.33",
+      "effects": [
+        {
+          "name": "torment",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "chillblains",
+      "description": "Place a totem that damages, chills, and poisons foes when they trigger it.",
+      "short_description": "Place a totem that chills and poisons foes when they trigger it.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "staff",
+      "weapon_slot": "3",
+      "max_targets": "5",
+      "lives_for": "3",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "overtime",
+      "damage_coef": "0.55",
+      "effects": [
+        {
+          "name": "chilled",
+          "value": "1"
+        },
+        {
+          "name": "poison",
+          "value": "2"
+        },
+        {
+          "name": "strikes_for",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "putrid mark",
+      "description": "Inscribe a mark that transfers conditions from yourself to foes when they trigger it.",
+      "short_description": "Inscribe a mark that transfers conditions to your enemies.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "3",
+      "spell_range": "spell_dist_very_far",
+      "weapon_type": "staff",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "ground_targeted": "True",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "lives_for": "3",
+      "damage_duration": "instant",
+      "damage_coef": "1.32",
+      "effects": [
+        {
+          "name": "gain_lifeforce",
+          "value": "4"
+        },
+        {
+          "name": "transfer_conditions",
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "name": "reaper's mark",
+      "description": "Place a totem that causes foes to flee in fear when they trigger it.",
+      "short_description": "Place a totem that causes foes to flee in fear when they trigger it.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "staff",
+      "weapon_slot": "5",
+      "max_targets": "5",
+      "lives_for": "3",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.275",
+      "effects": [
+        {
+          "name": "fear",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "confusion's curse",
+      "description": "Confuse and poison the enemy target.",
+      "short_description": "Confuse and poison the enemy target.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "scepter",
+      "weapon_slot": "1",
+      "max_targets": "1",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "poison",
+          "value": "1"
+        },
+        {
+          "name": "confusion",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "grasping dead",
+      "description": "Summon skeletal hands to cripple foes in the target area.",
+      "short_description": "Summon skeletal hands to cripple foes in the target area.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "scepter",
+      "weapon_slot": "2",
+      "max_targets": "5",
+      "lives_for": "3",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.8",
+      "effects": [
+        {
+          "name": "bleeding",
+          "value": "3"
+        },
+        {
+          "name": "cripple",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "oppresive collapse",
+      "description": "Corrupt the ground under your target, grant might to allies based on number of conditions they have.",
+      "short_description": "Corrupt the ground under your target and grant might to your allies.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "scepter",
+      "weapon_slot": "3",
+      "max_targets": "1",
+      "lives_for": "3",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "1.2",
+      "effects": [
+        {
+          "name": "torment",
+          "value": "2"
+        },
+        {
+          "name": "might",
+          "value": "2"
+        }
+        ]
+    },
+    {
+      "name": "deathly swarm",
+      "description": "Unleash an insect swarm, blinding your foes, transfer conditions to your foes.",
+      "short_description": "Unleash an insect swarm, blinding your foes, transfer conditions to your foes.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "dagger",
+      "weapon_slot": "4",
+      "max_targets": "3",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.6",
+      "effects": [
+        {
+          "name": "blindness",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "scaredy cat",
+      "description": "Taunt your foe an inflict weakness on them.",
+      "short_description": "Taunt your foe an inflict weakness on them.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "dagger",
+      "weapon_slot": "5",
+      "max_targets": "1",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.6",
+      "effects": [
+        {
+          "name": "taunt",
+          "value": "1"
+        },
+        {
+          "name": "weakness",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "necrotic slash",
+      "description": "Slash two of your foes and drain their lifeforce.",
+      "short_description": "Slash two of your foes and drain their lifeforce.",
+      "type_of_spell": "combat",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_personal",
+      "weapon_type": "dagger",
+      "weapon_slot": "1",
+      "max_targets": "2",
+      "lives_for": "0",
+      "aoe": "False",
+      "aoe_size": "none",
+      "ground_targeted": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.9"
+    },
+    {
+      "name": "life siphon",
+      "description": "Drain your enemy of health and gain lifeforce.",
+      "short_description": "Drain your enemy of health and gain lifeforce.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "dagger",
+      "weapon_slot": "3",
+      "max_targets": "1",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "2.7",
+      "effects": [
+        {
+          "name": "strikes_for",
+          "value": "9"
+        },
+        {
+          "name": "gain_lifeforce",
+          "value": "2"
+        }
+        ]
+    },
+    {
+      "name": "chilling blade",
+      "description": "Throw your dagger at your foes, striking your foes will chill them and gain you lifeforce.",
+      "short_description": "Strike your foes, chill them and gain lifeforce.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "combat",
+      "weapon_slot": "2",
+      "max_targets": "3",
+      "lives_for": "0",
+      "aoe": "false",
+      "damage_duration": "instant",
+      "damage_coef": "1.7",
+      "effects": [
+        {
+          "name": "chilled",
+          "value": "1"
+        },
+        {
+          "name": "gain_lifeforce",
+          "value": "5"
+        }
+        ]
+    },
+    {
+      "name": "locust swarm",
+      "description": "Summon a swarm of locusts, cripple nearby foes and gain swiftness.",
+      "short_description": "Cripple nearby foes and gain swiftness.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "rod",
+      "weapon_slot": "5",
+      "max_targets": "99",
+      "lives_for": "0",
+      "aoe": "false",
+      "damage_duration": "instant",
+      "damage_coef": "0.2",
+      "effects": [
+        {
+          "name": "swiftness",
+          "value": "1"
+        },
+        {
+          "name": "gain_lifeforce",
+          "value": "1.5"
+        },
+        {
+          "name": "cripple",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "harrowing wave",
+      "description": "Unleash a storm of magic, confusing and tormenting foes. Gain life force for each enemy.",
+      "short_description": "Confuse, torment, and gain lifeforce for each enemy struck.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "rod",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "lives_for": "0",
+      "aoe": "false",
+      "damage_duration": "instant",
+      "damage_coef": "0.8",
+      "effects": [
+        {
+          "name": "confusion",
+          "value": "1"
+        },
+        {
+          "name": "torment",
+          "value": "2"
+        },
+        {
+          "name": "gain_lifeforce",
+          "value": "3"
+        }
+        ]
+    },
+    {
+      "name": "spinal shivers",
+      "description": "Chill your target and remove 3 boons.",
+      "short_description": "Chill your target and remove 3 boons.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "focus",
+      "weapon_slot": "5",
+      "max_targets": "1",
+      "lives_for": "0",
+      "aoe": "false",
+      "damage_duration": "instant",
+      "damage_coef": "2.62",
+      "effects": [
+        {
+          "name": "boon_removal",
+          "value": "3"
+        },
+        {
+          "name": "chill",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "nightfall",
+      "description": "Place a totem that damages, applies blind, and cripples foes. Convert any boons to conditions.",
+      "short_description": "Place a totem that damages, applies blind and cripples foes. Convert boons to conditions.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "focus",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "lives_for": "4",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "1.05",
+      "effects": [
+        {
+          "name": "blind",
+          "value": "1"
+        },
+        {
+          "name": "cripple",
+          "value": "1"
+        },
+        {
+          "name": "convert_boons",
+          "value": "4"
+        }
+        ]
+    },
+    {
+      "name": "consume conditions",
+      "description": "Consume your conditions and gain health for each one consumed.",
+      "short_description": "Consume your conditions and gain health for each one consumed.",
+      "type_of_spell": "heal",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_personal",
+      "heal_duration": "instant",
+      "heal_coef": "1.0",
+      "effects": [
+        {
+          "name": "gain_health",
+          "value": "5240"
+        }
+        ]
+    },
+    {
+      "name": "poison cloud",
+      "description": "Release a noxious cloud that poisons and weakens all foes in the cloud.",
+      "short_description": "Release a noxious cloud that poisons and weakens all foes in the cloud.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "jewellery",
+      "location": "earring1",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "effects": [
+        {
+          "name": "poison",
+          "value": "4"
+        },
+        {
+          "name": "weakness",
+          "value": "2"
+        }
+        ]
+    },
+    {
+      "name": "corrupt boon",
+      "description": "Convert all boons on your enemy into conditions.",
+      "short_description": "Convert all boons on your enemy into conditions.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "jewellery",
+      "location": "earring2",
+      "effects": [
+        {
+          "name": "convert_boons",
+          "value": "99"
+        }
+        ]
+    },
+    {
+      "name": "epidemic",
+      "description": "Spread your conditions to all nearby foes.",
+      "short_description": "Spread your conditions to all nearby foes.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "jewellery",
+      "location": "pendant",
+      "effects": [
+        {
+          "name": "spread_conditions",
+          "value": "99"
+        }
+        ]
+    },
+    {
+      "name": "spectral armour",
+      "description": "Gain life force as you take damage.",
+      "short_description": "Gain life force as you take damage.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "jewellery",
+      "location": "ring1",
+      "effects": [
+        {
+          "name": "protection",
+          "value": "1"
+        },
+        {
+          "name": "gain_lifeforce",
+          "value": "8"
+        }
+        ]
+    },
+    {
+      "name": "spectal grasp",
+      "description": "Pull nearby foes to you, chill them, and gain life force.",
+      "short_description": "Pull nearby foes to you, chill them, and gain life force.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "jewellery",
+      "location": "ring2",
+      "effects": [
+        {
+          "name": "gain_lifeforce",
+          "value": "15"
+        },
+        {
+          "name": "chill",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "totem of corruption",
+      "description": "Place a totem that converts boons into conditions on all foes.",
+      "short_description": "Place a totem that converts boons into conditions on all foes.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "armour",
+      "location": "head",
+      "effects": [
+        {
+          "name": "convert_boons",
+          "value": "99"
+        }
+        ]
+    },
+    {
+      "name": "totem of darkness",
+      "description": "Place a totem that blinds all foes",
+      "short_description": "Place a totem that blinds all foes",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "armour",
+      "location": "chest",
+      "effects": [
+        {
+          "name": "blindness",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "totem of power",
+      "description": "Place a totem that converts conditions into boons and gain might.",
+      "short_description": "Place a totem that converts conditions into boons and gain might.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "armour",
+      "location": "legs",
+      "effects": [
+        {
+          "name": "conditions_to_boons",
+          "value": "99"
+        },
+        {
+          "name": "might",
+          "value": "5"
+        }
+        ]
+    },
+    {
+      "name": "totem of suffering",
+      "description": "Place a totem that damages foes and inflicts vulnerability.",
+      "short_description": "Place a totem that damages foes and inflicts vulnerability.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "armour",
+      "location": "feet",
+      "damage_duration": "instant",
+      "damage_coef": "6.0",
+      "effects": [
+        {
+          "name": "vulnerability",
+          "value": "2"
+        },
+        {
+          "name": "strikes_for",
+          "value": "6"
+        }
+        ]
+    },
+    {
+      "name": "you will suffer",
+      "description": "Strike foes around you, chill them and inflict poison on them.",
+      "short_description": "Strike foes around you, chill them and inflict poison on them.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "lives_for": "0",
+      "damage_duration": "instant",
+      "damage_coef": "0.7",
+      "effects": [
+        {
+          "name": "chilled",
+          "value": "2"
+        },
+        {
+          "name": "poison",
+          "value": "3"
+        }
+        ]
+    }
+  ]
+}

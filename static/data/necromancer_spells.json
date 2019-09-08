@@ -1,4 +1,5 @@
 {
+  "spells": [
     {
       "name": "necrotic grasp",
       "description": "Send out a grasping hand that damages foes in a line and grants you life force.",
@@ -8,29 +9,16 @@
       "turns_to_cast": "0",
       "cool_down": "0",
       "spell_range": "spell_dist_far",
-      "weapon_stuff":
-      [
+      "weapon_type": "staff",
+      "weapon_slot": "1",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.666",
+      "effects": [
         {
-          "weapon_type": "staff",
-          "weapon_slot": "1",
-          "max_targets": "5",
-          "ground_targeted": "False"
-        }
-        ],
-      "damage":
-      [
-        {
-          "damage_duration": "instant",
-          "damage_coef": "0.666"
-        }
-      ],
-      "conditions":
-      [
-        {
-          "count": "1",
-          "condi1_name": "drain_lifeforce",
-          "condi1_stacks": "4",
-          "condi1_duration": "1"
+          "name": "gain_lifeforce",
+          "value": "4"
         }
         ]
     },
@@ -42,46 +30,30 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "3",
-      "max_range": "spell_dist_very_far",
-      "weapon_stuff":
-      [
+      "spell_range": "spell_dist_very_far",
+      "weapon_type": "staff",
+      "weapon_slot": "2",
+      "max_targets": "99",
+      "ground_targeted": "True",
+      "lives_for": "3",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.33",
+      "effects": [
         {
-          "weapon_type": "staff",
-          "weapon_slot": "2",
-          "max_targets": "99",
-          "ground_targeted": "True",
-          "lives_for": "3",
-          "aoe": "True",
-          "aoe_size": "aoe_medium"
-        }
-        ],
-      "damage":
-      [
+          "name": "gain_lifeforce",
+          "value": "4"
+        },
         {
-          "damage_duration": "instant",
-          "damage_coef": "0.33"
-        }
-      ],
-      "conditions":
-      [
+          "name": "bleeding",
+          "value": "2"
+        },
         {
-          "count": "2",
-          "condi1_name": "bleeding",
-          "condi1_stacks": "2",
-          "condi1_duration": "1",
-          "condi2_name": "drain_lifeforce",
-          "condi2_stacks": "4",
-          "condi2_duration": "1"
+          "name": "regeneration",
+          "value": ""
         }
-        ],
-      "boons":
-      [
-        {
-          "count": "1",
-          "boon1_name": "regeneration",
-          "boon1_duration": "5"
-        }
-        ]
+      ]
     },
     {
       "name": "life blood",
@@ -91,46 +63,26 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "2",
-      "max_range": "spell_dist_very_far",
-      "weapon_stuff":
-      [
+      "spell_range": "spell_dist_very_far",
+      "weapon_type": "staff",
+      "weapon_slot": "3",
+      "max_targets": "99",
+      "lives_for": "3",
+      "ground_targeted": "True",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.565",
+      "effects": [
         {
-          "weapon_type": "staff",
-          "weapon_slot": "3",
-          "max_targets": "99",
-          "lives_for": "3",
-          "ground_targeted": "True",
-          "aoe": "True",
-          "aoe_size": "aoe_medium"
-        }
-        ],
-      "damage":
-      [
+          "name": "gain_lifeforce",
+          "value": "4"
+        },
         {
-          "damage_duration": "instant",
-          "damage_coef": "0.565"
+          "name": "bleeding",
+          "value": "2"
         }
-      ],
-      "conditions":
-      [
-        {
-          "count": "2",
-          "condi1_name": "bleeding",
-          "condi1_stacks": "2",
-          "condi1_duration": "1",
-          "condi2_name": "drain_lifeforce",
-          "condi2_stacks": "4",
-          "condi2_duration": "1"
-        }
-        ],
-      "boons":
-      [
-        {
-          "count": "1",
-          "boon1_name": "regeneration",
-          "boon1_duration": "5"
-        }
-        ]
+      ]
     },
     {
       "name": "putrid mark",
@@ -140,38 +92,26 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "3",
-      "max_range": "spell_dist_very_far",
-      "weapon_stuff":
-      [
+      "spell_range": "spell_dist_very_far",
+      "weapon_type": "staff",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "ground_targeted": "True",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "lives_for": "3",
+      "damage_duration": "instant",
+      "damage_coef": "1.32",
+      "effects": [
         {
-          "weapon_type": "staff",
-          "weapon_slot": "4",
-          "max_targets": "5",
-          "ground_targeted": "True",
-          "aoe": "True",
-          "aoe_size": "aoe_medium",
-          "lives_for": "3"
-        }
-        ],
-      "damage":
-      [
+          "name": "gain_lifeforce",
+          "value": "4"
+        },
         {
-          "damage_duration": "instant",
-          "damage_coef": "1.32"
+          "name": "transfer_conditions",
+          "value": "3"
         }
-      ],
-      "conditions":
-      [
-        {
-          "count": "2",
-          "condi1_name": "transfer_conditions",
-          "condi1_stacks": "3",
-          "condi1_duration": "1",
-          "condi2_name": "drain_lifeforce",
-          "condi2_stacks": "4",
-          "condi2_duration": "1"
-        }
-        ]
+      ]
     },
     {
       "name": "reaper's mark",
@@ -181,38 +121,26 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "4",
-      "max_range": "spell_dist_very_far",
-      "weapon_stuff":
-      [
-        {
+      "spell_range": "spell_dist_very_far",
       "weapon_type": "staff",
       "weapon_slot": "5",
       "max_targets": "99",
       "lives_for": "3",
       "ground_targeted": "True",
       "aoe": "True",
-      "aoe_size": "aoe_medium"
-        }
-        ],
-      "damage":
-      [
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.275",
+      "effects": [
         {
-          "damage_duration": "instant",
-          "damage_coef": "0.275"
-        }
-      ],
-      "conditions":
-      [
+          "name": "gain_lifeforce",
+          "value": "2"
+        },
         {
-          "count": "2",
-          "condi1_name": "fear",
-          "condi1_stacks": "1",
-          "condi1_duration": "1",
-          "condi2_name": "drain_lifeforce",
-          "condi2_stacks": "2",
-          "condi2_duration": "1"
+          "name": "fear",
+          "value": "1"
         }
-        ]
+      ]
     },
     {
       "name": "necrotic slash",
@@ -222,26 +150,16 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "0",
+      "spell_range": "spell_dist_personal",
+      "weapon_type": "focus",
+      "weapon_slot": "4",
+      "max_targets": "2",
       "lives_for": "0",
-      "max_range": "spell_dist_personal",
-      "weapon_stuff":
-      [
-        {
-          "weapon_type": "focus",
-          "weapon_slot": "4",
-          "max_targets": "2",
-          "aoe": "False",
-          "aoe_size": "none",
-          "ground_targeted": "False"
-        }
-        ],
-      "damage":
-      [
-        {
-          "damage_duration": "instant",
-          "damage_coef": "0.9"
-        }
-      ]
+      "aoe": "False",
+      "aoe_size": "none",
+      "ground_targeted": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.9"
     },
     {
       "name": "reaper's touch",
@@ -251,44 +169,28 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "2",
-      "max_range": "spell_dist_very_far",
-      "weapon_stuff":
-      [
+      "spell_range": "spell_dist_very_far",
+      "weapon_type": "focus",
+      "weapon_slot": "5",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "lives_for": "0",
+      "aoe": "False",
+      "aoe_size": "none",
+      "damage_duration": "instant",
+      "damage_coef": "0.75",
+      "effects": [
         {
-          "weapon_type": "focus",
-          "weapon_slot": "5",
-          "max_targets": "5",
-          "ground_targeted": "False",
-          "lives_for": "0",
-          "aoe": "False",
-          "aoe_size": "none"
-        }
-        ],
-      "damage":
-      [
+          "name": "vulnerability",
+          "value": "4"
+        },
         {
-          "damage_duration": "instant",
-          "damage_coef": "0.75"
-        }
-      ],
-      "conditions":
-      [
+          "name": "gain_lifeforce",
+          "value": "3"
+        },
         {
-          "count": "2",
-          "condi1_name": "vulnerability",
-          "condi1_stacks": "4",
-          "condi1_duration": "1",
-          "condi2_name": "drain_lifeforce",
-          "condi2_stacks": "3",
-          "condi2_duration": "1"
-        }
-      ],
-      "boons":
-      [
-        {
-          "count": "1",
-          "boon1_name": "regeneration",
-          "boon1_duration": "5"
+          "name": "regeneration",
+          "value": "5"
         }
       ]
     },
@@ -296,44 +198,34 @@
       "name": "dark pact",
       "description": "Immobilize your foe and bleed yourself.",
       "short_description": "Immobilize your foe and bleed yourself.",
+      "type_of_spell": "combat",
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "2",
-      "max_range": "spell_dist_nearby",
-      "weapon_stuff":
-      [
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "rod",
+      "lives_for": "0",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "aoe_size": "none",
+      "damage_duration": "instant",
+      "damage_coef": "1.2",
+      "effects": [
         {
-          "weapon_type": "rod",
-          "lives_for": "0",
-          "weapon_slot": "4",
-          "max_targets": "5",
-          "ground_targeted": "False",
-          "aoe": "False",
-          "aoe_size": "none"
-        }
-        ],
-      "damage":
-      [
+          "name": "immobilize",
+          "value": "2"
+        },
         {
-          "damage_duration": "instant",
-          "damage_coef": "1.2"
-        }
-      ],
-      "conditions":
-      [
+          "name": "gain_lifeforce",
+          "value": "1"
+        },
         {
-        "count": "3",
-          "condi1_name": "immobilize",
-          "condi1_stacks": "2",
-          "condi1_duration": "1",
-          "condi2_name": "drain_lifeforce",
-          "condi2_stacks": "2",
-          "condi2_duration": "1",
-          "condi3_name": "selfbleeding",
-          "condi3_stacks": "2",
-          "condi3_duration": "1"
+          "name": "selfbleeding",
+          "value": "2"
         }
-        ]
+      ]
     },
     {
       "name": "burning blood",
@@ -343,39 +235,26 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "5",
-      "max_range": "spell_dist_nearby",
-      "weapon_stuff":
-      [
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "rod",
+      "lives_for": "0",
+      "weapon_slot": "5",
+      "max_targets": "5",
+      "ground_targeted": "True",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "1.0",
+      "effects": [
         {
-          "weapon_type": "rod",
-          "lives_for": "0",
-          "weapon_slot": "5",
-          "max_targets": "5",
-          "ground_targeted": "True",
-          "aoe": "True",
-          "aoe_size": "aoe_medium"
-        }
-        ],
-      "damage":
-      [
+          "name": "burning",
+          "value": "2"
+        },
         {
-          "damage_duration": "instant",
-          "damage_coef": "1.0"
-
+          "name": "bleeding",
+          "value": "2"
         }
-      ],
-      "conditions":
-      [
-        {
-        "count": "2",
-          "condi1_name": "burning",
-          "condi1_stacks": "2",
-          "condi1_duration": "1",
-          "condi2_name": "bleeding",
-          "condi2_stacks": "2",
-          "condi2_duration": "1"
-        }
-        ]
+      ]
     },
     {
       "name": "necrotic bite",
@@ -385,35 +264,22 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "0",
-      "max_range": "spell_dist_personal",
-      "weapon_stuff":
-      [
+      "spell_range": "spell_dist_personal",
+      "weapon_type": "sword",
+      "lives_for": "0",
+      "weapon_slot": "1",
+      "max_targets": "2",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "aoe_size": "none",
+      "damage_duration": "instant",
+      "damage_coef": "1.2",
+      "effects": [
         {
-          "weapon_type": "sword",
-          "lives_for": "0",
-          "weapon_slot": "1",
-          "max_targets": "2",
-          "ground_targeted": "False",
-          "aoe": "False",
-          "aoe_size": "none"
+          "name": "gain_lifeforce",
+          "value": "2"
         }
-        ],
-      "damage":
-      [
-        {
-          "damage_duration": "instant",
-          "damage_coef": "1.2"
-        }
-      ],
-      "conditions":
-      [
-        {
-          "count": "1",
-          "condi1_name": "drain_lifeforce",
-          "condi1_stacks": "2",
-          "condi1_duration": "1"
-        }
-        ]
+      ]
     },
     {
       "name": "fading twilight",
@@ -423,35 +289,22 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "2",
-      "max_range": "spell_dist_personal",
-      "weapon_stuff":
-      [
+      "spell_range": "spell_dist_personal",
+      "weapon_type": "sword",
+      "lives_for": "0",
+      "weapon_slot": "2",
+      "max_targets": "3",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "aoe_size": "none",
+      "damage_duration": "instant",
+      "damage_coef": "1.3",
+      "effects": [
         {
-          "weapon_type": "sword",
-          "lives_for": "0",
-          "weapon_slot": "2",
-          "max_targets": "3",
-          "ground_targeted": "False",
-          "aoe": "False",
-          "aoe_size": "none"
+          "name": "gain_lifeforce",
+          "value": "1"
         }
-        ],
-      "damage":
-      [
-        {
-          "damage_duration": "instant",
-          "damage_coef": "1.3"
-        }
-      ],
-      "conditions":
-      [
-        {
-          "count": "1",
-          "condi1_name": "drain_lifeforce",
-          "condi1_stacks": "1",
-          "condi1_duration": "1"
-        }
-        ]
+      ]
     },
     {
       "name": "death spiral",
@@ -461,41 +314,30 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "2",
-      "max_range": "spell_dist_close",
-      "weapon_stuff":
-      [
+      "spell_range": "spell_dist_close",
+      "weapon_type": "sword",
+      "lives_for": "0",
+      "weapon_slot": "3",
+      "max_targets": "3",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "aoe_size": "none",
+      "damage_duration": "instant",
+      "damage_coef": "1.98",
+      "effects": [
         {
-          "weapon_type": "sword",
-          "lives_for": "0",
-          "weapon_slot": "3",
-          "max_targets": "3",
-          "ground_targeted": "False",
-          "aoe": "False",
-          "aoe_size": "none"
-        }
-      ],
-      "damage":
-      [
+          "name": "vulnerability",
+          "value": "12"
+        },
         {
-          "damage_duration": "instant",
-          "damage_coef": "1.98"
-        }
-      ],
-      "conditions":
-      [
+          "name": "gain_lifeforce",
+          "value": "2"
+        },
         {
-        "count": "3",
-          "condi1_name": "vulnerability",
-          "condi1_stacks": "12",
-          "condi1_duration": "1",
-          "condi2_name": "drain_lifeforce",
-          "condi2_stacks": "2",
-          "condi2_duration": "1",
-          "condi3_name": "strikes_for",
-          "condi3_stacks": "6",
-          "condi3_duration": "1"
+          "name": "strikes_for",
+          "value": "6"
         }
-        ]
+      ]
     },
     {
       "name": "gravedigger",
@@ -505,27 +347,16 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "3",
-      "max_range": "spell_dist_close",
-      "weapon_stuff":
-      [
-        {
+      "spell_range": "spell_dist_close",
       "weapon_type": "sword",
       "lives_for": "0",
       "weapon_slot": "4",
       "max_targets": "5",
       "ground_targeted": "False",
       "aoe": "False",
-      "aoe_size": "none"
-        }
-      ],
-      "damage":
-      [
-        {
-          "damage_duration": "instant",
-          "damage_coef": "3.0"
-
-        }
-      ]
+      "aoe_size": "none",
+      "damage_duration": "instant",
+      "damage_coef": "3.0"
     },
     {
       "name": "grasping Darkness",
@@ -535,33 +366,20 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "8",
-      "max_range": "spell_dist_nearby",
-      "weapon_stuff":
-      [
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "sword",
+      "lives_for": "0",
+      "weapon_slot": "5",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "aoe_size": "none",
+      "damage_duration": "instant",
+      "damage_coef": "1.3",
+      "effects": [
         {
-          "weapon_type": "sword",
-          "lives_for": "0",
-          "weapon_slot": "5",
-          "max_targets": "5",
-          "ground_targeted": "False",
-          "aoe": "False",
-          "aoe_size": "none"
-        }
-      ],
-      "damage":
-      [
-        {
-          "damage_duration": "instant",
-          "damage_coef": "1.3"
-        }
-      ],
-      "conditions":
-      [
-        {
-          "count": "1",
-          "condi1_name": "drain_lifeforce",
-          "condi1_stacks": "4",
-          "condi1_duration": "1"
+          "name": "gain_lifeforce",
+          "value": "4"
         }
       ]
     },
@@ -573,35 +391,22 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "0",
-      "max_range": "spell_dist_nearby",
-      "weapon_stuff":
-      [
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "wand",
+      "weapon_slot": "1",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "lives_for": "0",
+      "aoe": "False",
+      "aoe_size": "none",
+      "damage_duration": "instant",
+      "damage_coef": "1.0",
+      "effects": [
         {
-          "weapon_type": "wand",
-          "weapon_slot": "1",
-          "max_targets": "5",
-          "ground_targeted": "False",
-          "lives_for": "0",
-          "aoe": "False",
-          "aoe_size": "none"
+          "name": "vulnerability",
+          "value": "3"
         }
-      ],
-      "damage":
-      [
-        {
-          "damage_duration": "instant",
-          "damage_coef": "1.0"
-        }
-      ],
-      "conditions":
-      [
-        {
-          "count": "1",
-          "condi1_name": "vulnerability",
-          "condi1_stacks": "3",
-          "condi1_duration": "1"
-        }
-        ]
+      ]
     },
     {
       "name": "ghastly claws",
@@ -611,36 +416,24 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "1",
-      "max_range": "spell_dist_nearby",
-      "weapon_stuff":
-      [
-        {
+      "spell_range": "spell_dist_nearby",
       "weapon_type": "wand",
       "lives_for": "0",
       "weapon_slot": "2",
       "max_targets": "5",
       "ground_targeted": "False",
       "aoe": "False",
-      "aoe_size": "none"
-        }
-      ],
-      "damage":
-      [
+      "aoe_size": "none",
+      "damage_duration": "instant",
+      "damage_coef": "4.0",
+      "effects": [
         {
-          "damage_duration": "instant",
-          "damage_coef": "4.0"
-        }
-      ],
-      "conditions":
-      [
+          "name": "strikes_for",
+          "value": "8"
+        },
         {
-        "count": "2",
-          "condi1_name": "strikes_for",
-          "condi1_stacks": "8",
-          "condi1_duration": "1",
-          "condi2_name": "drain_lifeforce",
-          "condi2_stacks": "2",
-          "condi2_duration": "1"
+          "name": "gain_lifeforce",
+          "value": "2"
         }
       ]
     },
@@ -652,35 +445,22 @@
       "class": "necromancer",
       "turns_to_cast": "0",
       "cool_down": "0",
-      "max_range": "spell_dist_far",
-      "weapon_stuff":
-      [
-        {
+      "spell_range": "spell_dist_far",
       "weapon_type": "wand",
       "lives_for": "0",
       "weapon_slot": "3",
       "max_targets": "1",
       "ground_targeted": "False",
       "aoe": "False",
-      "aoe_size": "none"
-        }
-      ],
-      "damage":
-      [
+      "aoe_size": "none",
+      "damage_duration": "instant",
+      "damage_coef": "0.35",
+      "effects": [
         {
-          "damage_duration": "instant",
-          "damage_coef": "0.35"
+          "name": "bleeding",
+          "value": "1"
         }
-      ],
-      "conditions":
-      [
-        {
-          "count": "1",
-          "condi1_name": "bleeding",
-          "condi1_stacks": "1",
-          "condi1_duration": "1"
-        }
-        ]
+      ]
     },
     {
       "name": "Your soul is mine",
@@ -691,37 +471,22 @@
       "turns_to_cast": "0",
       "cool_down": "10",
       "spell_range": "spell_dist_personal",
-      "damage":
-      [
+      "heal_duration": "instant",
+      "heal_coef": "0.25",
+      "effects": [
         {
-          "damage_duration": "instant",
-          "damage_coef": "0.25"
-        }
-      ],
-      "conditions":
-      [
+          "name": "strikes_for",
+          "value": "8"
+        },
         {
-          "count": "2",
-          "condi1_name": "strikes_for",
-          "condi1_stacks": "8",
-          "condi1_duration": "1",
-          "condi2_name": "drain_lifeforce",
-          "condi2_stacks": "5",
-          "condi2_duration": "1"
-
-        }
-      ],
-      "boons":
-      [
+          "name": "gain_lifeforce",
+          "value": "5"
+        },
         {
-        "count": "1",
-        "boon1_name": "gain_health",
-        "boon1_stack": "1",
-        "boon1_duration": "1",
-        "boon1_value": "4555",
-        "boon1_coef": "0.7"
+          "name": "gain_health",
+          "value": "4555"
         }
-        ]
+      ]
     },
     {
       "name": "Blood Is Power",
@@ -732,41 +497,22 @@
       "turns_to_cast": "0",
       "cool_down": "2",
       "spell_range": "spell_dist_personal",
-      "connected_item":
-      [
+      "item_type": "jewellery",
+      "location": "earring1",
+      "effects": [
         {
-          "type": "jewellery",
-          "location": "earring1"
-        }
-      ],
-      "utility_stuff":
-      [
+          "name": "bleeding",
+          "value": "2"
+        },
         {
-          "conditions": "true",
-          "boons": "true"
-        }
-      ],
-      "conditions":
-      [
+          "name": "self_bleed",
+          "value": "1"
+        },
         {
-          "count": "2",
-          "condi1_name": "bleeding",
-          "condi1_stacks": "2",
-          "condi1_duration": "1",
-          "condi2_name": "self_bleed",
-          "condi2_stacks": "1",
-          "condi2_duration": "1"
+          "name": "gain_might",
+          "value": "2"
         }
-        ],
-        "boons":
-        [
-          {
-            "count": "1",
-            "boon1_name": "gain_might",
-            "boon1_stacks": "2",
-            "boon1_duration": "1"
-          }
-          ]
+      ]
     },
     {
       "name": "Epidemic",
@@ -777,32 +523,18 @@
       "turns_to_cast": "0",
       "cool_down": "2",
       "spell_range": "spell_dist_personal",
-      "connected_item":
-      [
+      "item_type": "jewellery",
+      "location": "earring2",
+      "effects": [
         {
-          "type": "jewellery",
-          "location": "earring2"
-        }
-      ],
-      "utility_stuff":
-      [
+          "name": "vulnerability",
+          "value": "2"
+        },
         {
-          "conditions": "true",
-          "boons": "false"
+          "name": "spread_condis",
+          "value": "3"
         }
-      ],
-      "conditions":
-      [
-        {
-          "count": "2",
-          "condi1_name": "vulnerability",
-          "condi1_stacks": "2",
-          "condi1_duration": "2",
-          "condi2_name": "spread_condis",
-          "condi2_stacks": "3",
-          "condi2_duration": "2"
-        }
-        ]
+      ]
     },
     {
       "name": "Signet of the locust",
@@ -813,38 +545,18 @@
       "turns_to_cast": "0",
       "cool_down": "4",
       "spell_range": "spell_dist_personal",
-      "connected_item":
-      [
+      "item_type": "jewellery",
+      "location": "pendant",
+      "effects": [
         {
-          "type": "jewellery",
-          "location": "pendant"
-        }
-      ],
-      "utility_stuff":
-      [
+          "name": "gain_lifeforce",
+          "value": "1"
+        },
         {
-          "conditions": "true",
-          "boons": "true"
+          "name": "move_faster",
+          "value": "1"
         }
-      ],
-      "conditions":
-      [
-        {
-          "count": "1",
-          "condi1_name": "drain_lifeforce",
-          "condi1_stacks": "1",
-          "condi1_duration": "1"
-        }
-        ],
-        "boons":
-        [
-          {
-          "count": "1",
-          "boon1_name": "move_faster",
-          "boon1_stacks": "1",
-          "boon1_duration": "5"
-          }
-          ]
+      ]
     },
     {
       "name": "Spectral Armor",
@@ -855,29 +567,14 @@
       "turns_to_cast": "0",
       "cool_down": "10",
       "spell_range": "spell_dist_personal",
-      "connected_item":
-      [
+      "item_type": "jewellery",
+      "location": "ring1",
+      "effects": [
         {
-          "type": "jewellery",
-          "location": "ring1"
+          "name": "gain_lifeforce",
+          "value": "1"
         }
-      ],
-      "utility_stuff":
-      [
-        {
-          "conditions": "true",
-          "boons": "false"
-        }
-      ],
-      "conditions":
-      [
-        {
-          "count": "1",
-          "condi1_name": "drain_lifeforce",
-          "condi1_stacks": "1",
-          "condi1_duration": "1"
-        }
-        ]
+      ]
     },
     {
       "name": "Spectre's Hand",
@@ -888,36 +585,22 @@
       "turns_to_cast": "0",
       "cool_down": "9",
       "spell_range": "spell_dist_personal",
-      "connected_item":
-      [
+      "item_type": "jewellery",
+      "location": "ring2",
+      "effects": [
         {
-          "type": "jewellery",
-          "location": "ring2"
-        }
-      ],
-      "utility_stuff":
-      [
+          "name": "gain_lifeforce",
+          "value": "3"
+        },
         {
-          "conditions": "true",
-          "boons": "false"
-        }
-      ],
-      "conditions":
-      [
+          "name": "fear",
+          "value": "1"
+        },
         {
-          "count": "3",
-          "condi1_name": "drain_lifeforce",
-          "condi1_stacks": "3",
-          "condi1_duration": "1",
-          "condi2_name": "fear",
-          "condi2_stacks": "1",
-          "condi2_duration": "2",
-          "condi3_name": "pull_foes",
-          "condi3_stacks": "1",
-          "condi3_duration": "1"
-
+          "name": "pull_foes",
+          "value": "1"
         }
-        ]
+      ]
     },
     {
       "name": "Summon Flesh Wurm",
@@ -928,30 +611,14 @@
       "turns_to_cast": "0",
       "cool_down": "8",
       "spell_range": "spell_dist_personal",
-      "connected_item":
-      [
+      "item_type": "armour",
+      "location": "head",
+      "effects": [
         {
-          "type": "armour",
-          "location": "head"
+          "name": "summon_fleshworm",
+          "value": "1"
         }
-      ],
-      "utility_stuff":
-      [
-        {
-          "conditions": "false",
-          "boons": "false",
-          "summon": "true"
-        }
-      ],
-      "summon":
-      [
-        {
-          "count": "1",
-          "minion1_name": "Flesh Worm",
-          "minion1_damage": "5",
-          "minion1_duration": "5"
-        }
-        ]
+      ]
     },
     {
       "name": "Well of Suffering",
@@ -962,35 +629,14 @@
       "turns_to_cast": "0",
       "cool_down": "9",
       "spell_range": "spell_dist_personal",
-      "connected_item":
-      [
+      "item_type": "armour",
+      "location": "chest",
+      "damage_duration": "instant",
+      "damage_coef": "2.6",
+      "effects": [
         {
-          "type": "armour",
-          "location": "chest"
-        }
-      ],
-      "utility_stuff":
-      [
-        {
-          "conditions": "true",
-          "boons": "false",
-          "damage": "true"
-        }
-      ],
-      "conditions":
-      [
-        {
-          "count": "1",
-          "condi1_name": "vulnerability",
-          "condi1_stacks": "3",
-          "condi1_duration": "1"
-        }
-        ],
-      "damage":
-      [
-        {
-          "damage_duration": "instant",
-          "damage_coef": "2.6"
+          "name": "vulnerability",
+          "value": "3"
         }
       ]
     },
@@ -1003,44 +649,18 @@
       "turns_to_cast": "0",
       "cool_down": "6",
       "spell_range": "spell_dist_personal",
-      "connected_item":
-      [
+      "item_type": "armour",
+      "location": "legs",
+      "damage_duration": "instant",
+      "damage_coef": "2.6",
+      "effects": [
         {
-          "type": "armour",
-          "location": "legs"
-        }
-      ],
-      "utility_stuff":
-      [
+          "name": "vulnerability",
+          "value": "3"
+        },
         {
-          "conditions": "true",
-          "boons": "true",
-          "damage": "true"
-        }
-      ],
-      "conditions":
-      [
-        {
-          "count": "1",
-          "condi1_name": "vulnerability",
-          "condi1_stacks": "3",
-          "condi1_duration": "1"
-        }
-        ],
-      "damage":
-      [
-        {
-          "damage_duration": "instant",
-          "damage_coef": "2.6"
-        }
-      ],
-      "boons":
-      [
-        {
-          "count": "1",
-          "boon1_name": "unblockable",
-          "boon1_stacks": "1",
-          "boon1_duration": "2"
+          "name": "unblockable",
+          "value": "1"
         }
       ]
     },
@@ -1053,38 +673,18 @@
       "turns_to_cast": "0",
       "cool_down": "9",
       "spell_range": "spell_dist_personal",
-      "connected_item":
-      [
+      "item_type": "armour",
+      "location": "feet",
+      "effects": [
         {
-          "type": "armour",
-          "location": "feet"
+          "name": "burning",
+          "value": "1"
         }
       ],
-      "utility_stuff":
-      [
-        {
-          "conditions": "true",
-          "boons": "false",
-          "aoe": "true"
-        }
-      ],
-      "conditions":
-      [
-        {
-          "count": "1",
-          "condi1_name": "burning",
-          "condi1_stacks": "1",
-          "condi1_duration": "2"
-        }
-        ],
-      "aoe":
-      [
-        {
-          "type": "cell",
-          "size": "cell",
-          "duration": "2"
-        }
-      ]
+      "aoe_count": "1",
+      "aoe_type": "cell",
+      "aoe_size": "cell",
+      "aoe_duration": "2"
     },
     {
       "name": "Dessicate",
@@ -1095,31 +695,18 @@
       "turns_to_cast": "0",
       "cool_down": "5",
       "spell_range": "spell_dist_personal",
-      "connected_item":
-      [
+      "item_type": "armour",
+      "location": "hands",
+      "effects": [
         {
-          "type": "armour",
-          "location": "hands"
-        }
-      ],
-      "utility_stuff":
-      [
+          "name": "convert_boons",
+          "value": "3"
+        },
         {
-          "conditions": "true",
-          "boons": "false"
+          "name": "gain_lifeforce",
+          "value": "2"
         }
-      ],
-      "conditions":
-      [
-        {
-          "count": "2",
-          "condi1_name": "convert_boons",
-          "condi1_stacks": "3",
-          "condi1_duration": "1",
-          "condi2_name": "drain_lifeforce",
-          "condi2_stacks": "2",
-          "condi2_duration": "1"
-        }
-        ]
+      ]
     }
+  ]
 }
