@@ -95,7 +95,7 @@
       "quality_level": "normal",
       "description": "a dagger",
       "can_be_rendered": "True",
-      "wielded_hands": "main",
+      "wielded_hands": "both",
       "spell_slot_one": "00",
       "spell_slot_two": "00",
       "spell_slot_three": "00",

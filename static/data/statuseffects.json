@@ -1,0 +1,204 @@
+{
+  "status-effects": [
+    {
+      "name": "bleeding",
+      "type": "condition",
+      "duration": "5",
+      "stacks": "intensity",
+      "description": "Deals damage every turn",
+      "value": ""
+    },
+    {
+      "name": "burning",
+      "type": "condition",
+      "duration": "5",
+      "stacks": "intensity",
+      "description": "Deals damage every turn",
+      "value": ""
+    },
+    {
+      "name": "confusion",
+      "type": "condition",
+      "duration": "2",
+      "stacks": "duration",
+      "description": "Causes damage to caster when attempting to perform an action",
+      "value": ""
+    },
+    {
+      "name": "poison",
+      "type": "condition",
+      "duration": "5",
+      "stacks": "intensity",
+      "description": "Deals damage every turn, reduces healing",
+      "value": ""
+    },
+    {
+      "name": "torment",
+      "type": "condition",
+      "duration": "5",
+      "stacks": "intensity",
+      "description": "Deals damage every turn when moving",
+      "value": ""
+    },
+    {
+      "name": "blinded",
+      "type": "control",
+      "duration": "1",
+      "stacks": "duration",
+      "description": "Next spell fizzles out",
+      "value": ""
+    },
+    {
+      "name": "chilled",
+      "type": "conrol",
+      "duration": "1",
+      "stacks": "intensity",
+      "description": "Spell recharges slowed by",
+      "value": "33"
+    },
+    {
+      "name": "crippled",
+      "type": "control",
+      "duration": "5",
+      "stacks": "duration",
+      "description": "Movement slowed by",
+      "value": "50"
+    },
+    {
+      "name": "Fear",
+      "type": "control",
+      "duration": "3",
+      "stacks": "duration",
+      "description": "Forces retreat, no other actions allowed",
+      "value": ""
+    },
+    {
+      "name": "immobilized",
+      "type": "control",
+      "duration": "2",
+      "stacks": "duration",
+      "description": "Unable to move",
+      "value": ""
+    },
+    {
+      "name": "slow",
+      "type": "control",
+      "duration": "1",
+      "stacks": "duration",
+      "description": "All actions take longer",
+      "value": "25"
+    },
+    {
+      "name": "taunt",
+      "type": "control",
+      "duration": "1",
+      "stacks": "intensity",
+      "description": "Forces all enemies to attack caster/target",
+      "value": ""
+    },
+    {
+      "name": "weakness",
+      "type": "condition",
+      "duration": "3",
+      "stacks": "duration",
+      "description": "Outgoing damage reduced by",
+      "value": "50"
+    },
+    {
+      "name": "vulnerability",
+      "type": "condition",
+      "duration": "5",
+      "stacks": "intensity",
+      "description": "Incoming damage increased by",
+      "value": "50"
+    },
+    {
+      "name": "aegis",
+      "type": "boon",
+      "duration": "1",
+      "stacks": "duration",
+      "description": "Block the next incoming attack",
+      "value": ""
+    },
+    {
+      "name": "alacrity",
+      "type": "boon",
+      "duration": "1",
+      "stacks": "duration",
+      "description": "Spells recharge increased by",
+      "value": "25"
+    },
+    {
+      "name": "fury",
+      "type": "boon",
+      "duration": "2",
+      "stacks": "duration",
+      "description": "Critical chance increased by",
+      "value": "20"
+    },
+    {
+      "name": "might",
+      "type": "boon",
+      "duration": "5",
+      "stacks": "intensity",
+      "description": "Increased outgoing damage by",
+      "value": "20"
+    },
+    {
+      "name": "protection",
+      "type": "boon",
+      "duration": "2",
+      "stacks": "duration",
+      "description": "Incoming damage decreased by",
+      "value": "33"
+    },
+    {
+      "name": "quickness",
+      "type": "boon",
+      "duration": "3",
+      "stacks": "duration",
+      "description": "Spells recharge increased by",
+      "value": "10"
+    },
+    {
+      "name": "regeneration",
+      "type": "boon",
+      "duration": "2",
+      "stacks": "duration",
+      "description": "Mana recharges increased by",
+      "value": "10"
+    },
+    {
+      "name": "resistance",
+      "type": "boon",
+      "duration": "5",
+      "stacks": "duration",
+      "description": "Remove conditions",
+      "value": ""
+    },
+    {
+      "name": "retaliation",
+      "type": "boon",
+      "duration": "1",
+      "stacks": "duration",
+      "description": "Reflect incoming back to the source",
+      "value": ""
+    },
+    {
+      "name": "stability",
+      "type": "boon",
+      "duration": "2",
+      "stacks": "duration",
+      "description": "Crowd-control effects have no impact",
+      "value": ""
+    },
+    {
+      "name": "swiftness",
+      "type": "boon",
+      "duration": "5",
+      "stacks": "duration",
+      "description": "Movement speed increased by",
+      "value": "33"
+    }
+  ]
+}
