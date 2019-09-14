@@ -1,0 +1,640 @@
+{
+  "spells": [
+{
+      "name": "mind slash",
+      "description": "Slash your foe to make them vulnerable.",
+      "short_description": "Slash your foe to make them vulnerable.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "sword",
+      "weapon_slot": "1",
+      "max_targets": "3",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.75",
+      "effects": [
+        {
+          "name": "vulnerability",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "blurred frenzy ",
+      "description": "Strike your foe with a flurry of strikes, distorting the space around you, allowing you to evade attacks.",
+      "short_description": "Strike your foe with a flurry of strikes allowing you to evade attacks.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "sword",
+      "weapon_slot": "2",
+      "max_targets": "3",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "3.077",
+      "effects": [
+        {
+          "name": "evade",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "ilusionary leap",
+      "description": "Summon an illusion that leaps at your target, crippling them. After the initial leap, the clone will execute the Mind Slash sword chain.",
+      "short_description": "Summon an illusion that leaps at your target, crippling them.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "sword",
+      "weapon_slot": "3",
+      "max_targets": "0",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.1",
+      "effects": [
+        {
+          "name": "clone",
+          "value": "1"
+        },
+        {
+          "name": "cripple",
+          "value": "1"
+        },
+        {
+          "name": "vulnerability",
+          "value": "2"
+        }
+        ]
+    },
+    {
+      "name": "illusionary riposte",
+      "description": "Block your foe and create an illusion when attacked.",
+      "short_description": "Block your foe and create an illusion when attacked.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "sword",
+      "weapon_slot": "4",
+      "max_targets": "2",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "2.0",
+      "effects": [
+        {
+          "name": "evade",
+          "value": "1"
+        },
+        {
+          "name": "block",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "phantasmal swordsman",
+      "description": "Perform a sword strike and create an illusion that attacks your foe. If the sword strike hits, you gain might.",
+      "short_description": "Perform a sword strike and create an illusion that attacks your foe. If the sword strike hits, you gain might.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "sword",
+      "weapon_slot": "5",
+      "max_targets": "0",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "phantasm",
+          "value": "1"
+        },
+        {
+          "name": "might",
+          "value": "8"
+        }
+        ]
+    },
+    {
+      "name": "mirror strikes",
+      "description": "Inflict bleeding and torment on your target.",
+      "short_description": "Inflict bleeding and torment on your target.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "wand",
+      "weapon_slot": "1",
+      "max_targets": "3",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.1",
+      "effects": [
+        {
+          "name": "bleeding",
+          "value": "1"
+        },
+        {
+          "name": "torment",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "lingering thoughts",
+      "description": "Spin forward and strike multiple times, inflicting conditions and leaving a clone at your starting position",
+      "short_description": "Spin forward and strike multiple times, inflicting conditions and leaving a clone at your starting position",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "wand",
+      "weapon_slot": "2",
+      "max_targets": "3",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.2",
+      "effects": [
+        {
+          "name": "torment",
+          "value": "3"
+        },
+        {
+          "name": "crpple",
+          "value": "3"
+        }
+        ]
+    },
+    {
+      "name": "wand of symmetry",
+      "description": "You and all your clones shadowstep to a random location around your target and strike, applying confusion.",
+      "short_description": "You and all your clones shadowstep to a random location around your target and strike, applying confusion.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "wand",
+      "weapon_slot": "3",
+      "max_targets": "1",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.75",
+      "effects": [
+        {
+          "name": "confusion",
+          "value": "3"
+        },
+        {
+          "name": "evade",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "ether clone",
+      "description": "Deliver a damaging attack directly to your target. Summon a clone that casts Ether Bolt and inflicts torment.",
+      "short_description": "Deliver a damaging attack directly to your target. Summon a clone that casts Ether Bolt and inflicts torment.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "scepter",
+      "weapon_slot": "1",
+      "max_targets": "1",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.75",
+      "effects": [
+        {
+          "name": "clone",
+          "value": "1"
+        },
+        {
+          "name": "torment",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "illusionary counter",
+      "description": "Block the next attack and counter by inflicting torment and creating two clones that cast Ether Bolt.",
+      "short_description": "Block the next attack and counter by inflicting torment and creating two clones that cast Ether Bolt.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "scepter",
+      "weapon_slot": "2",
+      "max_targets": "0",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.0",
+      "effects": [
+        {
+          "name": "torment",
+          "value": "5"
+        },
+        {
+          "name": "etherbolt",
+          "value": "1"
+        },
+        {
+          "name": "block",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "counterspell",
+      "description": "Shoot out a bolt that blinds foes in a line and summons a clone to attack the first foe it strikes..",
+      "short_description": "Shoot out a bolt that blinds foes in a line and summons a clone to attack the first foe it strikes..",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "scepter",
+      "weapon_slot": "3",
+      "max_targets": "5",
+      "lives_for": "0",
+      "aoe": "false",
+      "damage_duration": "instant",
+      "damage_coef": "0.1",
+      "effects": [
+        {
+          "name": "clone",
+          "value": "1"
+        },
+        {
+          "name": "blind",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "the prestige",
+      "description": "Disappear in a cloud of smoke, blinding nearby foes and losing conditions. Reappear three turns later, burning nearby foes.",
+      "short_description": "Disappear in a cloud of smoke, blinding nearby foes and losing conditions. Reappear three turns later, burning nearby foes.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "rod",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "lives_for": "0",
+      "aoe": "True",
+      "aoe_size": "240",
+      "damage_duration": "instant",
+      "damage_coef": "1.0",
+      "effects": [
+        {
+          "name": "blind",
+          "value": "1"
+        },
+        {
+          "name": "burning",
+          "value": "1"
+        },
+        {
+          "name": "stealth",
+          "value": "3"
+        },
+        {
+          "name": "condiremoval",
+          "value": "99"
+        }
+        ]
+    },
+    {
+      "name": "phantasmal mage",
+      "description": "Strike and burn nearby foes. Create an illusion that releases a massive wave of fire that burns, confuses, and interrupts foes.",
+      "short_description": "Strike and burn nearby foes. Create an illusion that releases a massive wave of fire that burns, confuses, and interrupts foes.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "rod",
+      "weapon_slot": "5",
+      "max_targets": "5",
+      "lives_for": "0",
+      "aoe": "True",
+      "aoe_size": "240",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "phantasm",
+          "value": "1"
+        },
+        {
+          "name": "burning",
+          "value": "1"
+        },
+        {
+          "name": "confusion",
+          "value": "3"
+        },
+        {
+          "name": "daze",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "phase retreat",
+      "description": "Teleport away from your target, summoning a clone that casts Winds of Chaos.",
+      "short_description": "Teleport away from your target, summoning a clone that casts Winds of Chaos.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "focus",
+      "weapon_slot": "4",
+      "max_targets": "0",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "clone",
+          "value": "1"
+        },
+        {
+          "name": "teleport",
+          "value": "6"
+        }
+        ]
+    },
+    {
+      "name": "phantasmal warden",
+      "description": "Create a phantasm that throws axes at nearby targets and creates a defensive bubble, protecting itself and allies from projectiles.",
+      "short_description": "Create a phantasm that throws axes at nearby targets and creates a defensive bubble, protecting itself and allies from projectiles.",
+      "type_of_spell": "combat",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "focus",
+      "weapon_slot": "5",
+      "max_targets": "0",
+      "lives_for": "0",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.68",
+      "effects": [
+        {
+          "name": "phantasm",
+          "value": "1"
+        },
+        {
+          "name": "vulnerability",
+          "value": "12"
+        }
+        ]
+    },
+    {
+      "name": "ether's friend",
+      "description": "Heal yourself when you summon an illusion.",
+      "short_description": "Heal yourself when you summon an illusion.",
+      "type_of_spell": "heal",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_personal",
+      "heal_duration": "instant",
+      "heal_coef": "0.85",
+      "effects": [
+        {
+          "name": "gain_health",
+          "value": "5560"
+        }
+        ]
+    },
+    {
+      "name": "feedback",
+      "description": "Create a dome around your foes that reflects projectiles.",
+      "short_description": "Create a dome around your foes that reflects projectiles.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "jewellery",
+      "location": "earring1",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "effects": [
+        {
+          "name": "mirror",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "decoy",
+      "description": "Gain stealth and summon an illusion to attack your foe..",
+      "short_description": "Gain stealth and summon an illusion to attack your foe.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "jewellery",
+      "location": "earring2",
+      "aoe": "False",
+      "effects": [
+        {
+          "name": "clone",
+          "value": "1"
+        },
+        {
+          "name": "stealth",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "mirror images",
+      "description": "Summon two clones to attack your foe.",
+      "short_description": "Summon two clones to attack your foe.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "jewellery",
+      "location": "ring1",
+      "aoe": "False",
+      "effects": [
+        {
+          "name": "clone",
+          "value": "2"
+        }
+        ]
+    },
+    {
+      "name": "null field",
+      "description": "Create a field of energy that rips boons from foes and cures conditions on allies.",
+      "short_description": "Create a field of energy that rips boons from foes and cures conditions on allies.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "lives_for": "3",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "jewellery",
+      "location": "ring2",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "effects": [
+        {
+          "name": "condiremove",
+          "value": "1"
+        },
+        {
+          "name": "boonremove",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "arcane thievery",
+      "description": "Send three conditions you have to your foe and give them slow",
+      "short_description": "Send three conditions you have to your foe and give them slow",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "jewellery",
+      "location": "pendent",
+      "aoe": "False",
+      "effects": [
+        {
+          "name": "slow",
+          "value": "1"
+        },
+        {
+          "name": "quickness",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "blink",
+      "description": "Teleport to a target location.",
+      "short_description": "Teleport to a target location.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "armour",
+      "location": "head",
+      "aoe": "False",
+      "effects": [
+        {
+          "name": "teleport",
+          "value": "5"
+        }
+        ]
+    },
+    {
+      "name": "illusion of life",
+      "description": "Gives allies Illusion of Life at the target location, allowing them to get up from downed state and keep fighting",
+      "short_description": "Gives allies Illusion of Life at the target location, allowing them to get up from downed state and keep fighting",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "armour",
+      "location": "chest",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "effects": [
+        {
+          "name": "zombie",
+          "value": "5"
+        }
+        ]
+    },
+    {
+      "name": "power spike",
+      "description": "Damage your target and nearby foes. Inflict vulnerability on foes.",
+      "short_description": "Damage your target and nearby foes. Inflict vulnerability on foes.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "armour",
+      "location": "legs",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "effects": [
+        {
+          "name": "vulnerability",
+          "value": "5"
+        },
+        {
+          "name": "damage",
+          "value": "1.33"
+        }
+        ]
+    },
+    {
+      "name": "power cleanse",
+      "description": "Remove conditions from you and nearby allies.",
+      "short_description": "Remove conditions from you and nearby allies.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "armour",
+      "location": "feet",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "effects": [
+        {
+          "name": "condiremove",
+          "value": "3"
+        }
+        ]
+    },
+    {
+      "name": "phantasmal defender",
+      "description": "Summon an illusion that taunts your target and all nearby targets while blocking. When it finishes blocking, the illusion explodes, dealing increased damage for each attack it blocked.",
+      "short_description": "Summon an illusion that taunts your target and all nearby targets while blocking. When it finishes blocking, the illusion explodes, dealing increased damage for each attack it blocked.",
+      "type_of_spell": "utility",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "item_type": "armour",
+      "location": "gloves",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "effects": [
+        {
+          "name": "phantasm",
+          "value": "1"
+        },
+        {
+          "name": "damage",
+          "value": "0.4"
+        },
+        {
+          "name": "taunt",
+          "value": "5"
+        }
+        ]
+    }
+  ]
+}
