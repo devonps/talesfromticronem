@@ -645,6 +645,8 @@
       "turns_to_cast": "0",
       "cool_down": "0",
       "spell_range": "spell_dist_nearby",
+      "item_type": "armour",
+      "location": "gloves",
       "lives_for": "0",
       "damage_duration": "instant",
       "damage_coef": "0.7",
