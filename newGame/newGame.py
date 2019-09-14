@@ -5,9 +5,14 @@ from newGame.start_game_screen import StartGame
 from loguru import logger
 from utilities import configUtilities
 
+from utilities.validate_spells_with_status_effects import validate_spells
+
 
 def new_game():
     game_config = configUtilities.load_config()
+
+    validate_spells(game_config)
+
     #
     # logfile = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFILE')
     # logformat = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFORMAT')

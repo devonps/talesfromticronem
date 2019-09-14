@@ -62,7 +62,7 @@
       "damage_coef": "0.55",
       "effects": [
         {
-          "name": "chilled",
+          "name": "chill",
           "value": "1"
         },
         {
@@ -171,7 +171,7 @@
       "damage_coef": "0.8",
       "effects": [
         {
-          "name": "bleeding",
+          "name": "bleed",
           "value": "3"
         },
         {
@@ -224,7 +224,7 @@
       "damage_coef": "0.6",
       "effects": [
         {
-          "name": "blindness",
+          "name": "blind",
           "value": "1"
         }
         ]
@@ -272,7 +272,13 @@
       "aoe_size": "none",
       "ground_targeted": "False",
       "damage_duration": "instant",
-      "damage_coef": "0.9"
+      "damage_coef": "0.9",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+      ]
     },
     {
       "name": "life siphon",
@@ -317,7 +323,7 @@
       "damage_coef": "1.7",
       "effects": [
         {
-          "name": "chilled",
+          "name": "chill",
           "value": "1"
         },
         {
@@ -588,7 +594,7 @@
       "location": "chest",
       "effects": [
         {
-          "name": "blindness",
+          "name": "blind",
           "value": "1"
         }
         ]
@@ -652,7 +658,7 @@
       "damage_coef": "0.7",
       "effects": [
         {
-          "name": "chilled",
+          "name": "chill",
           "value": "2"
         },
         {
