@@ -479,7 +479,7 @@ class CharacterCreation:
                                 spellRange = -1
                                 RangeOfSpell = configUtilities.get_config_value_as_string(configfile=game_config,
                                                                                               section='spells',
-                                                                                              parameter=spell['spell_range'])
+                                                                                              parameter=spell['spell_range'].upper())
                                 if RangeOfSpell != '':
                                     spellRange = int(RangeOfSpell)
                                 else:
