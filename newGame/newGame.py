@@ -11,7 +11,7 @@ from utilities.validate_spells_with_status_effects import validate_spells
 def new_game():
     game_config = configUtilities.load_config()
 
-    validate_spells(game_config)
+    # validate_spells(game_config)
 
     #
     # logfile = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFILE')
