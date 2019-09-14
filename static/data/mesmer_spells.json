@@ -143,7 +143,7 @@
       "damage_coef": "1.1",
       "effects": [
         {
-          "name": "bleeding",
+          "name": "bleed",
           "value": "1"
         },
         {
@@ -173,7 +173,7 @@
           "value": "3"
         },
         {
-          "name": "crpple",
+          "name": "cripple",
           "value": "3"
         }
         ]
@@ -308,7 +308,7 @@
           "value": "1"
         },
         {
-          "name": "burning",
+          "name": "burn",
           "value": "1"
         },
         {
@@ -343,7 +343,7 @@
           "value": "1"
         },
         {
-          "name": "burning",
+          "name": "burn",
           "value": "1"
         },
         {

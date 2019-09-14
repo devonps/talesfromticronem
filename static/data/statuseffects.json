@@ -1,7 +1,7 @@
 {
   "status-effects": [
     {
-      "name": "bleeding",
+      "name": "bleed",
       "type": "condition",
       "duration": "5",
       "stacks": "intensity",
@@ -9,7 +9,23 @@
       "value": ""
     },
     {
-      "name": "burning",
+      "name": "gain_lifeforce",
+      "type": "resource",
+      "duration": "1",
+      "stacks": "intensity",
+      "description": "Syphon the health of your enemy.",
+      "value": ""
+    },
+    {
+      "name": "gain_health",
+      "type": "resource",
+      "duration": "1",
+      "stacks": "intensity",
+      "description": "Gain health.",
+      "value": ""
+    },
+    {
+      "name": "burn",
       "type": "condition",
       "duration": "5",
       "stacks": "intensity",
@@ -41,7 +57,7 @@
       "value": ""
     },
     {
-      "name": "blinded",
+      "name": "blind",
       "type": "control",
       "duration": "1",
       "stacks": "duration",
@@ -49,15 +65,40 @@
       "value": ""
     },
     {
-      "name": "chilled",
-      "type": "conrol",
+      "name": "evade",
+      "type": "control",
+      "duration": "1",
+      "stacks": "duration",
+      "description": "Evade the next attack.",
+      "value": ""
+    },
+    {
+      "name": "stealth",
+      "type": "control",
+      "duration": "1",
+      "stacks": "duration",
+      "description": "Vanish.",
+      "value": ""
+    },
+
+    {
+      "name": "daze",
+      "type": "control",
+      "duration": "1",
+      "stacks": "duration",
+      "description": "Daze your enemy.",
+      "value": ""
+    },
+    {
+      "name": "chill",
+      "type": "control",
       "duration": "1",
       "stacks": "intensity",
       "description": "Spell recharges slowed by",
       "value": "33"
     },
     {
-      "name": "crippled",
+      "name": "cripple",
       "type": "control",
       "duration": "5",
       "stacks": "duration",
@@ -65,7 +106,7 @@
       "value": "50"
     },
     {
-      "name": "Fear",
+      "name": "fear",
       "type": "control",
       "duration": "3",
       "stacks": "duration",
@@ -73,7 +114,7 @@
       "value": ""
     },
     {
-      "name": "immobilized",
+      "name": "immobilize",
       "type": "control",
       "duration": "2",
       "stacks": "duration",
@@ -111,6 +152,14 @@
       "stacks": "intensity",
       "description": "Incoming damage increased by",
       "value": "50"
+    },
+    {
+      "name": "selfbleed",
+      "type": "condition",
+      "duration": "1",
+      "stacks": "intensity",
+      "description": "Bleed yourself.",
+      "value": ""
     },
     {
       "name": "aegis",

@@ -13,6 +13,7 @@ from utilities import configUtilities
 from newGame import newGame, LoadPrefab
 
 
+
 def start_game(con, gameworld, game_config):
 
     msg_panel_across_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_START_X')

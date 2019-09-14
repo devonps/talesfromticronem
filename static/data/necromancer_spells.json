@@ -159,7 +159,13 @@
       "aoe_size": "none",
       "ground_targeted": "False",
       "damage_duration": "instant",
-      "damage_coef": "0.9"
+      "damage_coef": "0.9",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+      ]
     },
     {
       "name": "reaper's touch",
@@ -222,7 +228,7 @@
           "value": "1"
         },
         {
-          "name": "selfbleeding",
+          "name": "selfbleed",
           "value": "2"
         }
       ]
@@ -247,11 +253,11 @@
       "damage_coef": "1.0",
       "effects": [
         {
-          "name": "burning",
+          "name": "burn",
           "value": "2"
         },
         {
-          "name": "bleeding",
+          "name": "bleed",
           "value": "2"
         }
       ]
@@ -356,7 +362,13 @@
       "aoe": "False",
       "aoe_size": "none",
       "damage_duration": "instant",
-      "damage_coef": "3.0"
+      "damage_coef": "3.0",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+      ]
     },
     {
       "name": "grasping Darkness",
@@ -501,15 +513,15 @@
       "location": "earring1",
       "effects": [
         {
-          "name": "bleeding",
+          "name": "bleed",
           "value": "2"
         },
         {
-          "name": "self_bleed",
+          "name": "selfbleed",
           "value": "1"
         },
         {
-          "name": "gain_might",
+          "name": "might",
           "value": "2"
         }
       ]
