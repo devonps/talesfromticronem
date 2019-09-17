@@ -171,6 +171,22 @@ class MobileUtilities(numbers.Real):
             gameworld.component_for_entity(entity, mobiles.Equipped).both_hands = weapon
 
     @staticmethod
+    def unequip_all_weapons(gameworld, entity):
+        MobileUtilities.unequip_weapon(gameworld, entity, 'main')
+        MobileUtilities.unequip_weapon(gameworld, entity, 'off')
+        MobileUtilities.unequip_weapon(gameworld, entity, 'both')
+
+    @staticmethod
+    def unequip_weapon(gameworld, entity, hand):
+
+        if hand == 'main':
+            gameworld.component_for_entity(entity, mobiles.Equipped).main_hand = 0
+        if hand == 'off':
+            gameworld.component_for_entity(entity, mobiles.Equipped).off_hand = 0
+        if hand == 'both':
+            gameworld.component_for_entity(entity, mobiles.Equipped).both_hands = 0
+
+    @staticmethod
     def generate_base_mobile(gameworld, game_config):
         player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_NONE')
 

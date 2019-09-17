@@ -887,7 +887,7 @@ class CharacterCreation:
         if spellfile == '':
             logger.warning('Spell file name not set')
 
-        generate_spells(gameworld=gameworld, game_config=game_config, player_class=spellfile)
+        generate_spells(gameworld=gameworld, game_config=game_config, spell_file=spellfile, player_class=class_component)
 
         # create starting weapon(s) - based on what's passed into this method
         if main_hand == off_hand:
@@ -1411,9 +1411,9 @@ class CharacterCreation:
                              height=display_wpn_h,
                              fg=display_char_attributes_fg,
                              bg=display_char_attributes_bg)
-
+        weapons_list = []
         weapons_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
-        logger.info('Equipped weapons:{}', weapons_list[2])
+        logger.info('Equipped weapons:{}', weapons_list)
         main_weapon = weapons_list[0]
         off_weapon = weapons_list[1]
         both_weapon = weapons_list[2]
@@ -1486,3 +1486,5 @@ class CharacterCreation:
                             pass
                         if selected_menu_option == 2:   # reject build and start again
                             not_ready_to_proceed = False
+                            MobileUtilities.unequip_all_weapons(gameworld=gameworld, entity=player_entity)
+

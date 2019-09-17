@@ -109,9 +109,9 @@ def create_game_world():
     return esper.World()
 
 
-def generate_spells(gameworld, game_config, player_class):
+def generate_spells(gameworld, game_config, spell_file, player_class):
 
-    spellsfile = player_class.upper() + '_SPELLSFILE'
+    spellsfile = spell_file.upper() + '_SPELLSFILE'
 
     spell_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter=spellsfile)
     spell_file = read_json_file(spell_file_path)
@@ -125,6 +125,7 @@ def generate_spells(gameworld, game_config, player_class):
         gameworld.add_component(thisspell, spells.ShortDescription(spell['short_description']))
         gameworld.add_component(thisspell, spells.CastTime(spell['turns_to_cast']))
         gameworld.add_component(thisspell, spells.CoolDown(spell['cool_down']))
+        gameworld.add_component(thisspell, spells.ClassName(player_class))
         if spell['type_of_spell'] == 'combat':
             gameworld.add_component(thisspell, spells.WeaponType(spell['weapon_type']))
             gameworld.add_component(thisspell, spells.WeaponSlot(spell['weapon_slot']))
@@ -150,8 +151,6 @@ def generate_spells(gameworld, game_config, player_class):
         if spell['type_of_spell'] == 'utility':
             gameworld.add_component(thisspell, spells.ItemLocation(spell['location']))
             gameworld.add_component(thisspell, spells.ItemType(spell['item_type']))
-
-        # gameworld.add_component(thisspell, spells.ClassName(spell['class']))
 
         effects = spell['effects']
         process_status_effect(gameworld, thisspell, spell['name'], effects, game_config)
