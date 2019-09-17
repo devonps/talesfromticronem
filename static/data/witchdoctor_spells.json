@@ -11,6 +11,7 @@
       "weapon_type": "staff",
       "weapon_slot": "1",
       "max_targets": "5",
+      "aoe": "False",
       "ground_targeted": "False",
       "damage_duration": "instant",
       "damage_coef": "0.666",
@@ -32,7 +33,7 @@
       "weapon_type": "staff",
       "weapon_slot": "2",
       "max_targets": "99",
-      "lives_for": "3",
+      "ground_targeted": "True",
       "aoe": "True",
       "aoe_size": "aoe_medium",
       "damage_duration": "instant",
@@ -41,6 +42,10 @@
         {
           "name": "torment",
           "value": "1"
+        },
+        {
+          "name": "lives_for",
+          "value": "3"
         }
         ]
     },
@@ -55,7 +60,7 @@
       "weapon_type": "staff",
       "weapon_slot": "3",
       "max_targets": "5",
-      "lives_for": "3",
+      "ground_targeted": "True",
       "aoe": "True",
       "aoe_size": "aoe_medium",
       "damage_duration": "overtime",
@@ -72,6 +77,10 @@
         {
           "name": "strikes_for",
           "value": "1"
+        },
+        {
+          "name": "lives_for",
+          "value": "3"
         }
         ]
     },
@@ -90,7 +99,6 @@
       "ground_targeted": "True",
       "aoe": "True",
       "aoe_size": "aoe_medium",
-      "lives_for": "3",
       "damage_duration": "instant",
       "damage_coef": "1.32",
       "effects": [
@@ -100,6 +108,10 @@
         },
         {
           "name": "transfer_conditions",
+          "value": "3"
+        },
+        {
+          "name": "lives_for",
           "value": "3"
         }
       ]
@@ -115,7 +127,7 @@
       "weapon_type": "staff",
       "weapon_slot": "5",
       "max_targets": "5",
-      "lives_for": "3",
+      "ground_targeted": "True",
       "aoe": "True",
       "aoe_size": "aoe_medium",
       "damage_duration": "instant",
@@ -124,6 +136,10 @@
         {
           "name": "fear",
           "value": "1"
+        },
+        {
+          "name": "lives_for",
+          "value": "3"
         }
         ]
     },
@@ -138,7 +154,7 @@
       "weapon_type": "scepter",
       "weapon_slot": "1",
       "max_targets": "1",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "0.5",
@@ -164,7 +180,7 @@
       "weapon_type": "scepter",
       "weapon_slot": "2",
       "max_targets": "5",
-      "lives_for": "3",
+      "ground_targeted": "False",
       "aoe": "True",
       "aoe_size": "aoe_medium",
       "damage_duration": "instant",
@@ -177,6 +193,10 @@
         {
           "name": "cripple",
           "value": "1"
+        },
+        {
+          "name": "lives_for",
+          "value": "3"
         }
         ]
     },
@@ -191,7 +211,7 @@
       "weapon_type": "scepter",
       "weapon_slot": "3",
       "max_targets": "1",
-      "lives_for": "3",
+      "ground_targeted": "True",
       "aoe": "True",
       "aoe_size": "aoe_medium",
       "damage_duration": "instant",
@@ -204,6 +224,10 @@
         {
           "name": "might",
           "value": "2"
+        },
+        {
+          "name": "lives_for",
+          "value": "3"
         }
         ]
     },
@@ -218,7 +242,7 @@
       "weapon_type": "dagger",
       "weapon_slot": "4",
       "max_targets": "3",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "0.6",
@@ -240,7 +264,7 @@
       "weapon_type": "dagger",
       "weapon_slot": "5",
       "max_targets": "1",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "0.6",
@@ -267,7 +291,6 @@
       "weapon_type": "dagger",
       "weapon_slot": "1",
       "max_targets": "2",
-      "lives_for": "0",
       "aoe": "False",
       "aoe_size": "none",
       "ground_targeted": "False",
@@ -291,7 +314,7 @@
       "weapon_type": "dagger",
       "weapon_slot": "3",
       "max_targets": "1",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "2.7",
@@ -317,7 +340,7 @@
       "weapon_type": "dagger",
       "weapon_slot": "2",
       "max_targets": "3",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "false",
       "damage_duration": "instant",
       "damage_coef": "1.7",
@@ -343,7 +366,7 @@
       "weapon_type": "rod",
       "weapon_slot": "5",
       "max_targets": "99",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "false",
       "damage_duration": "instant",
       "damage_coef": "0.2",
@@ -373,7 +396,7 @@
       "weapon_type": "rod",
       "weapon_slot": "4",
       "max_targets": "5",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "false",
       "damage_duration": "instant",
       "damage_coef": "0.8",
@@ -403,7 +426,7 @@
       "weapon_type": "focus",
       "weapon_slot": "5",
       "max_targets": "1",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "false",
       "damage_duration": "instant",
       "damage_coef": "2.62",
@@ -429,7 +452,7 @@
       "weapon_type": "focus",
       "weapon_slot": "4",
       "max_targets": "5",
-      "lives_for": "4",
+      "ground_targeted": "True",
       "aoe": "True",
       "aoe_size": "aoe_medium",
       "damage_duration": "instant",
@@ -445,6 +468,10 @@
         },
         {
           "name": "convert_boons",
+          "value": "4"
+        },
+        {
+          "name": "lives_for",
           "value": "4"
         }
         ]
@@ -476,8 +503,6 @@
       "spell_range": "spell_dist_nearby",
       "item_type": "jewellery",
       "location": "earring1",
-      "aoe": "True",
-      "aoe_size": "aoe_medium",
       "effects": [
         {
           "name": "poison",
@@ -486,6 +511,10 @@
         {
           "name": "weakness",
           "value": "2"
+        },
+        {
+          "name": "aoe",
+          "value": "aoe_medium"
         }
         ]
     },
@@ -630,8 +659,6 @@
       "spell_range": "spell_dist_nearby",
       "item_type": "armour",
       "location": "feet",
-      "damage_duration": "instant",
-      "damage_coef": "6.0",
       "effects": [
         {
           "name": "vulnerability",
@@ -640,6 +667,10 @@
         {
           "name": "strikes_for",
           "value": "6"
+        },
+        {
+          "name": "damage",
+          "value": "6.0"
         }
         ]
     },
@@ -653,9 +684,6 @@
       "spell_range": "spell_dist_nearby",
       "item_type": "armour",
       "location": "gloves",
-      "lives_for": "0",
-      "damage_duration": "instant",
-      "damage_coef": "0.7",
       "effects": [
         {
           "name": "chill",
@@ -664,6 +692,10 @@
         {
           "name": "poison",
           "value": "3"
+        },
+        {
+          "name": "damage",
+          "value": "0.7"
         }
         ]
     }

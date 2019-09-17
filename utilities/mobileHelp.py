@@ -28,9 +28,9 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def setup_class_attributes(gameworld, player, selected_class, health, spellfile):
-        gameworld.add_component(player, mobiles.CharacterClass(base_health=health))
-        gameworld.add_component(player, mobiles.CharacterClass(label=selected_class))
-        gameworld.add_component(player, mobiles.CharacterClass(spellfile=spellfile))
+        gameworld.component_for_entity(player, mobiles.CharacterClass).label = selected_class
+        gameworld.component_for_entity(player, mobiles.CharacterClass).spellfile = spellfile
+        gameworld.component_for_entity(player, mobiles.CharacterClass).base_health = health
 
     @staticmethod
     def get_player_entity(gameworld, game_config):
@@ -202,6 +202,11 @@ class MobileUtilities(numbers.Real):
     def get_character_class(gameworld, entity):
         player_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
         return player_class_component.label
+
+    @staticmethod
+    def get_character_class_spellfilename(gameworld, entity):
+        player_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
+        return player_class_component.spellfile
 
     #
     # Mobile actions

@@ -13,6 +13,7 @@
       "weapon_slot": "1",
       "max_targets": "5",
       "ground_targeted": "False",
+      "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "0.666",
       "effects": [
@@ -35,7 +36,6 @@
       "weapon_slot": "2",
       "max_targets": "99",
       "ground_targeted": "True",
-      "lives_for": "3",
       "aoe": "True",
       "aoe_size": "aoe_medium",
       "damage_duration": "instant",
@@ -52,6 +52,10 @@
         {
           "name": "regeneration",
           "value": ""
+        },
+        {
+          "name": "lives_for",
+          "value": "3"
         }
       ]
     },
@@ -67,7 +71,6 @@
       "weapon_type": "staff",
       "weapon_slot": "3",
       "max_targets": "99",
-      "lives_for": "3",
       "ground_targeted": "True",
       "aoe": "True",
       "aoe_size": "aoe_medium",
@@ -81,6 +84,10 @@
         {
           "name": "bleeding",
           "value": "2"
+        },
+        {
+          "name": "lives_for",
+          "value": "3"
         }
       ]
     },
@@ -99,7 +106,6 @@
       "ground_targeted": "True",
       "aoe": "True",
       "aoe_size": "aoe_medium",
-      "lives_for": "3",
       "damage_duration": "instant",
       "damage_coef": "1.32",
       "effects": [
@@ -109,6 +115,10 @@
         },
         {
           "name": "transfer_conditions",
+          "value": "3"
+        },
+        {
+          "name": "lives_for",
           "value": "3"
         }
       ]
@@ -125,7 +135,6 @@
       "weapon_type": "staff",
       "weapon_slot": "5",
       "max_targets": "99",
-      "lives_for": "3",
       "ground_targeted": "True",
       "aoe": "True",
       "aoe_size": "aoe_medium",
@@ -139,6 +148,10 @@
         {
           "name": "fear",
           "value": "1"
+        },
+        {
+          "name": "lives_for",
+          "value": "3"
         }
       ]
     },
@@ -154,9 +167,7 @@
       "weapon_type": "focus",
       "weapon_slot": "4",
       "max_targets": "2",
-      "lives_for": "0",
       "aoe": "False",
-      "aoe_size": "none",
       "ground_targeted": "False",
       "damage_duration": "instant",
       "damage_coef": "0.9",
@@ -180,9 +191,7 @@
       "weapon_slot": "5",
       "max_targets": "5",
       "ground_targeted": "False",
-      "lives_for": "0",
       "aoe": "False",
-      "aoe_size": "none",
       "damage_duration": "instant",
       "damage_coef": "0.75",
       "effects": [
@@ -210,12 +219,10 @@
       "cool_down": "2",
       "spell_range": "spell_dist_nearby",
       "weapon_type": "rod",
-      "lives_for": "0",
       "weapon_slot": "4",
       "max_targets": "5",
       "ground_targeted": "False",
       "aoe": "False",
-      "aoe_size": "none",
       "damage_duration": "instant",
       "damage_coef": "1.2",
       "effects": [
@@ -243,7 +250,6 @@
       "cool_down": "5",
       "spell_range": "spell_dist_nearby",
       "weapon_type": "rod",
-      "lives_for": "0",
       "weapon_slot": "5",
       "max_targets": "5",
       "ground_targeted": "True",
@@ -272,12 +278,10 @@
       "cool_down": "0",
       "spell_range": "spell_dist_touch",
       "weapon_type": "sword",
-      "lives_for": "0",
       "weapon_slot": "1",
       "max_targets": "2",
       "ground_targeted": "False",
       "aoe": "False",
-      "aoe_size": "none",
       "damage_duration": "instant",
       "damage_coef": "1.2",
       "effects": [
@@ -297,12 +301,10 @@
       "cool_down": "2",
       "spell_range": "spell_dist_touch",
       "weapon_type": "sword",
-      "lives_for": "0",
       "weapon_slot": "2",
       "max_targets": "3",
       "ground_targeted": "False",
       "aoe": "False",
-      "aoe_size": "none",
       "damage_duration": "instant",
       "damage_coef": "1.3",
       "effects": [
@@ -322,12 +324,10 @@
       "cool_down": "2",
       "spell_range": "spell_dist_touch",
       "weapon_type": "sword",
-      "lives_for": "0",
       "weapon_slot": "3",
       "max_targets": "3",
       "ground_targeted": "False",
       "aoe": "False",
-      "aoe_size": "none",
       "damage_duration": "instant",
       "damage_coef": "1.98",
       "effects": [
@@ -355,12 +355,10 @@
       "cool_down": "3",
       "spell_range": "spell_dist_touch",
       "weapon_type": "sword",
-      "lives_for": "0",
       "weapon_slot": "4",
       "max_targets": "5",
       "ground_targeted": "False",
       "aoe": "False",
-      "aoe_size": "none",
       "damage_duration": "instant",
       "damage_coef": "3.0",
       "effects": [
@@ -380,12 +378,10 @@
       "cool_down": "8",
       "spell_range": "spell_dist_nearby",
       "weapon_type": "sword",
-      "lives_for": "0",
       "weapon_slot": "5",
       "max_targets": "5",
       "ground_targeted": "False",
       "aoe": "False",
-      "aoe_size": "none",
       "damage_duration": "instant",
       "damage_coef": "1.3",
       "effects": [
@@ -408,9 +404,7 @@
       "weapon_slot": "1",
       "max_targets": "5",
       "ground_targeted": "False",
-      "lives_for": "0",
       "aoe": "False",
-      "aoe_size": "none",
       "damage_duration": "instant",
       "damage_coef": "1.0",
       "effects": [
@@ -430,12 +424,10 @@
       "cool_down": "1",
       "spell_range": "spell_dist_nearby",
       "weapon_type": "wand",
-      "lives_for": "0",
       "weapon_slot": "2",
       "max_targets": "5",
       "ground_targeted": "False",
       "aoe": "False",
-      "aoe_size": "none",
       "damage_duration": "instant",
       "damage_coef": "4.0",
       "effects": [
@@ -459,12 +451,10 @@
       "cool_down": "0",
       "spell_range": "spell_dist_far",
       "weapon_type": "wand",
-      "lives_for": "0",
       "weapon_slot": "3",
       "max_targets": "1",
       "ground_targeted": "False",
       "aoe": "False",
-      "aoe_size": "none",
       "damage_duration": "instant",
       "damage_coef": "0.35",
       "effects": [
@@ -643,12 +633,14 @@
       "spell_range": "spell_dist_touch",
       "item_type": "armour",
       "location": "chest",
-      "damage_duration": "instant",
-      "damage_coef": "2.6",
       "effects": [
         {
           "name": "vulnerability",
           "value": "3"
+        },
+        {
+          "name": "damage",
+          "value": "2.6"
         }
       ]
     },
@@ -663,8 +655,6 @@
       "spell_range": "spell_dist_touch",
       "item_type": "armour",
       "location": "legs",
-      "damage_duration": "instant",
-      "damage_coef": "2.6",
       "effects": [
         {
           "name": "vulnerability",
@@ -673,6 +663,10 @@
         {
           "name": "unblockable",
           "value": "1"
+        },
+        {
+          "name": "damage",
+          "value": "2.6"
         }
       ]
     },
@@ -691,12 +685,20 @@
         {
           "name": "burning",
           "value": "1"
+        },
+        {
+          "name": "aoe_trail",
+          "value": "1"
+        },
+        {
+          "name": "aoe_trail_width",
+          "value": "1"
+        },
+        {
+          "name": "aoe_trail_duration",
+          "value": "3"
         }
-      ],
-      "aoe_count": "1",
-      "aoe_type": "cell",
-      "aoe_size": "cell",
-      "aoe_duration": "2"
+      ]
     },
     {
       "name": "Dessicate",

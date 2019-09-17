@@ -10,7 +10,7 @@ from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 from newGame.newCharacter import NewCharacter
-from newGame.initialiseNewGame import setup_game, create_spell_entities
+from newGame.initialiseNewGame import setup_game, generate_spells
 from newGame.Items import ItemManager
 from newGame.ClassWeapons import WeaponClass
 from utilities.itemsHelp import ItemUtilities
@@ -520,8 +520,8 @@ class CharacterCreation:
             weapons_console.print_box(x=px, y=py - 1, width=wd, height=1, string=strToPrint, fg=foreground_colour)
 
             px += slot_box_gap
-            off_hand_weapon_id = 0
-            main_hand_weapon_id = 0
+        off_hand_weapon_id = 0
+        main_hand_weapon_id = 0
 
         while show_weapons_options:
 
@@ -866,11 +866,14 @@ class CharacterCreation:
                         armourset = as_display_name
                         armour_prefix = menu_options[selected_menu_option]
                         CharacterCreation.generate_player_character_from_choices(
-                            root_console=root_console, gameworld=gameworld, game_config=game_config, player=player,
-                            main_hand=main_hand, off_hand=off_hand, armourset=armourset, armour_prefix=armour_prefix)
+                            root_console=root_console, gameworld=gameworld, game_config=game_config, main_hand=main_hand,
+                            off_hand=off_hand, armourset=armourset, armour_prefix=armour_prefix)
 
     @staticmethod
-    def generate_player_character_from_choices(root_console, gameworld, game_config, player, main_hand, off_hand, armourset, armour_prefix):
+    def generate_player_character_from_choices(root_console, gameworld, game_config, main_hand, off_hand, armourset, armour_prefix):
+
+        # get player entity
+        player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
         # create starting armour from armourset and prefix
         this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=armourset, prefix=armour_prefix, game_config=game_config)
@@ -879,14 +882,16 @@ class CharacterCreation:
 
         MobileUtilities.calculate_derived_attributes(gameworld=gameworld, entity=player)
 
-        # creating spells --> this loads all spells into the game as entities
-        create_spell_entities(gameworld, game_config)
+        spellfile = MobileUtilities.get_character_class_spellfilename(gameworld, player)
+        class_component = MobileUtilities.get_character_class(gameworld, player)
+        if spellfile == '':
+            logger.warning('Spell file name not set')
+
+        generate_spells(gameworld=gameworld, game_config=game_config, player_class=spellfile)
 
         # create starting weapon(s) - based on what's passed into this method
         if main_hand == off_hand:
             logger.info('creating a starting 2-handed weapon for the player')
-
-            class_component = MobileUtilities.get_character_class(gameworld, player)
 
             created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand, game_config=game_config)
             weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
@@ -901,9 +906,6 @@ class CharacterCreation:
         if main_hand != '' and main_hand != off_hand:
             logger.info('creating a 1-handed weapon (main hand) for the player')
 
-            class_component = MobileUtilities.get_character_class(gameworld, player)
-            # class_component = gameworld.component_for_entity(player, mobiles.CharacterClass)
-
             # created_weapon, hands_to_hold = NewCharacter.create_starting_weapon(gameworld, player, game_config)
             created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand, game_config=game_config)
             weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
@@ -916,7 +918,6 @@ class CharacterCreation:
             MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='main')
 
         if off_hand != '' and off_hand != main_hand:
-            class_component = MobileUtilities.get_character_class(gameworld, player)
 
             created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=off_hand,
                                                        game_config=game_config)
