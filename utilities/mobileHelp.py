@@ -1,4 +1,4 @@
-from components import mobiles, userInput, items
+from components import mobiles, userInput, items, spellBar
 from loguru import logger
 from utilities.itemsHelp import ItemUtilities
 from utilities import world
@@ -188,16 +188,45 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def generate_base_mobile(gameworld, game_config):
-        player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_NONE')
+        player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_PLAYER')
 
-        mobile = world.get_next_entity_id(gameworld=gameworld)
-        logger.info('Base mobile entity ID ' + str(mobile))
-        gameworld.add_component(mobile, mobiles.Name(first='xyz', suffix=''))
-        gameworld.add_component(mobile, mobiles.Describable())
-        gameworld.add_component(mobile, mobiles.CharacterClass())
-        gameworld.add_component(mobile, mobiles.AI(ailevel=player_ai))
+        player_entity = world.get_next_entity_id(gameworld=gameworld)
+        gameworld.add_component(player_entity, mobiles.Name(first='undefined', suffix=''))
+        gameworld.add_component(player_entity, mobiles.Describable())
+        gameworld.add_component(player_entity, mobiles.CharacterClass())
+        gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai))
+        gameworld.add_component(player_entity, mobiles.Inventory())
+        gameworld.add_component(player_entity, mobiles.Armour())
+        gameworld.add_component(player_entity, mobiles.Jewellery())
+        gameworld.add_component(player_entity, mobiles.Equipped())
+        gameworld.add_component(player_entity, mobiles.Velocity())
+        gameworld.add_component(player_entity, mobiles.Personality())
+        gameworld.add_component(player_entity, mobiles.ManaPool(current=500, maximum=1000))
+        gameworld.add_component(player_entity, mobiles.SpecialBar(valuecurrent=10, valuemaximum=100))
+        gameworld.add_component(player_entity, mobiles.Renderable(is_visible=True))
+        gameworld.add_component(player_entity, mobiles.StatusEffects())
+        gameworld.add_component(player_entity, mobiles.PrimaryAttributes())
+        gameworld.add_component(player_entity, mobiles.SecondaryAttributes())
+        gameworld.add_component(player_entity, mobiles.DerivedAttributes())
 
-        return mobile
+        return player_entity
+
+    @staticmethod
+    def create_spell_bar_as_entity(gameworld):
+        spell_bar = world.get_next_entity_id(gameworld=gameworld)
+
+        gameworld.add_component(spell_bar, spellBar.SlotOne())
+        gameworld.add_component(spell_bar, spellBar.SlotTwo())
+        gameworld.add_component(spell_bar, spellBar.SlotThree())
+        gameworld.add_component(spell_bar, spellBar.SlotFour())
+        gameworld.add_component(spell_bar, spellBar.SlotFive())
+        gameworld.add_component(spell_bar, spellBar.SlotSix())
+        gameworld.add_component(spell_bar, spellBar.SlotSeven())
+        gameworld.add_component(spell_bar, spellBar.SlotEight())
+        gameworld.add_component(spell_bar, spellBar.SlotNine())
+        gameworld.add_component(spell_bar, spellBar.SlotTen())
+
+        return spell_bar
 
     @staticmethod
     def describe_the_mobile(gameworld, entity):
