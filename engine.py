@@ -1,7 +1,7 @@
 import tcod.console
 import tcod.event
 
-from newGame.initialiseNewGame import setup_game, initialise_game_map
+from newGame.initialiseNewGame import setup_gameworld, initialise_game_map
 from utilities.game_messages import MessageLog, Message
 from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys
@@ -18,7 +18,7 @@ def start_game(con, gameworld, game_config):
     msg_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_WIDTH')
     msg_panel_lines = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_LINES')
 
-    setup_game(game_config)
+    setup_gameworld(game_config)
     # create_spell_entities(gameworld, game_config)
     # player, spell_bar = create_new_character(con, gameworld, game_config)
 

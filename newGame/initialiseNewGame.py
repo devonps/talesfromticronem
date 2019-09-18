@@ -18,7 +18,7 @@ from mapRelated.fov import FieldOfView
 from mapRelated.gameMap import GameMap
 
 
-def setup_game(game_config):
+def setup_gameworld(game_config):
 
     # world seed generation
     world_seed = generate_world_seed(game_config)
