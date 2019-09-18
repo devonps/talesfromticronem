@@ -9,6 +9,11 @@ class Description:
         self.label = text
 
 
+class ShortDescription:
+    def __init__(self, text='no description'):
+        self.label = text
+
+
 class WeaponType:
     def __init__(self, text='no such weapon'):
         self.label = text
@@ -62,3 +67,33 @@ class AreaOfEffect:
 class AreaOfEffectSize:
     def __init__(self, area_of_effect_size=1):
         self.area_of_effect_size = area_of_effect_size
+
+
+class DamageDuration:
+    def __init__(self, duration=1):
+        self.is_set_to = duration
+
+
+class DamageCoefficient:
+    def __init__(self, value=0.0):
+        self.is_set_to=value
+
+
+class HealingDuration:
+    def __init__(self, duration=0):
+        self.value=duration
+
+
+class HealingCoef:
+    def __init__(self,coef=0.0):
+        self.value=coef
+
+
+class ItemType:
+    def __init__(self, label=''):
+        self.label = label
+
+
+class ItemLocation:
+    def __init__(self, label=''):
+        self.label = label

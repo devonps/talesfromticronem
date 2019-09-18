@@ -28,9 +28,9 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def setup_class_attributes(gameworld, player, selected_class, health, spellfile):
-        gameworld.add_component(player, mobiles.CharacterClass(base_health=health))
-        gameworld.add_component(player, mobiles.CharacterClass(label=selected_class))
-        gameworld.add_component(player, mobiles.CharacterClass(spellfile=spellfile))
+        gameworld.component_for_entity(player, mobiles.CharacterClass).label = selected_class
+        gameworld.component_for_entity(player, mobiles.CharacterClass).spellfile = spellfile
+        gameworld.component_for_entity(player, mobiles.CharacterClass).base_health = health
 
     @staticmethod
     def get_player_entity(gameworld, game_config):
@@ -171,6 +171,22 @@ class MobileUtilities(numbers.Real):
             gameworld.component_for_entity(entity, mobiles.Equipped).both_hands = weapon
 
     @staticmethod
+    def unequip_all_weapons(gameworld, entity):
+        MobileUtilities.unequip_weapon(gameworld, entity, 'main')
+        MobileUtilities.unequip_weapon(gameworld, entity, 'off')
+        MobileUtilities.unequip_weapon(gameworld, entity, 'both')
+
+    @staticmethod
+    def unequip_weapon(gameworld, entity, hand):
+
+        if hand == 'main':
+            gameworld.component_for_entity(entity, mobiles.Equipped).main_hand = 0
+        if hand == 'off':
+            gameworld.component_for_entity(entity, mobiles.Equipped).off_hand = 0
+        if hand == 'both':
+            gameworld.component_for_entity(entity, mobiles.Equipped).both_hands = 0
+
+    @staticmethod
     def generate_base_mobile(gameworld, game_config):
         player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_NONE')
 
@@ -202,6 +218,11 @@ class MobileUtilities(numbers.Real):
     def get_character_class(gameworld, entity):
         player_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
         return player_class_component.label
+
+    @staticmethod
+    def get_character_class_spellfilename(gameworld, entity):
+        player_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
+        return player_class_component.spellfile
 
     #
     # Mobile actions

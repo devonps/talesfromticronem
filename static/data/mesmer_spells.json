@@ -11,7 +11,7 @@
       "weapon_type": "sword",
       "weapon_slot": "1",
       "max_targets": "3",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "0.75",
@@ -33,7 +33,7 @@
       "weapon_type": "sword",
       "weapon_slot": "2",
       "max_targets": "3",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "3.077",
@@ -55,7 +55,7 @@
       "weapon_type": "sword",
       "weapon_slot": "3",
       "max_targets": "0",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "0.1",
@@ -85,7 +85,7 @@
       "weapon_type": "sword",
       "weapon_slot": "4",
       "max_targets": "2",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "2.0",
@@ -111,7 +111,7 @@
       "weapon_type": "sword",
       "weapon_slot": "5",
       "max_targets": "0",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "0.5",
@@ -137,7 +137,7 @@
       "weapon_type": "wand",
       "weapon_slot": "1",
       "max_targets": "3",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "1.1",
@@ -163,7 +163,7 @@
       "weapon_type": "wand",
       "weapon_slot": "2",
       "max_targets": "3",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "1.2",
@@ -189,7 +189,7 @@
       "weapon_type": "wand",
       "weapon_slot": "3",
       "max_targets": "1",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "1.75",
@@ -215,7 +215,7 @@
       "weapon_type": "scepter",
       "weapon_slot": "1",
       "max_targets": "1",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "0.75",
@@ -241,7 +241,7 @@
       "weapon_type": "scepter",
       "weapon_slot": "2",
       "max_targets": "0",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "1.0",
@@ -271,7 +271,7 @@
       "weapon_type": "scepter",
       "weapon_slot": "3",
       "max_targets": "5",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "false",
       "damage_duration": "instant",
       "damage_coef": "0.1",
@@ -297,7 +297,7 @@
       "weapon_type": "rod",
       "weapon_slot": "4",
       "max_targets": "5",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "True",
       "aoe_size": "240",
       "damage_duration": "instant",
@@ -332,7 +332,7 @@
       "weapon_type": "rod",
       "weapon_slot": "5",
       "max_targets": "5",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "True",
       "aoe_size": "240",
       "damage_duration": "instant",
@@ -367,7 +367,7 @@
       "weapon_type": "focus",
       "weapon_slot": "4",
       "max_targets": "0",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "0.0",
@@ -393,7 +393,7 @@
       "weapon_type": "focus",
       "weapon_slot": "5",
       "max_targets": "0",
-      "lives_for": "0",
+      "ground_targeted": "False",
       "aoe": "False",
       "damage_duration": "instant",
       "damage_coef": "1.68",
@@ -435,12 +435,14 @@
       "spell_range": "spell_dist_nearby",
       "item_type": "jewellery",
       "location": "earring1",
-      "aoe": "True",
-      "aoe_size": "aoe_medium",
       "effects": [
         {
           "name": "mirror",
           "value": "1"
+        },
+        {
+          "name": "aoe",
+          "value": "aoe_medium"
         }
         ]
     },
@@ -476,7 +478,6 @@
       "spell_range": "spell_dist_nearby",
       "item_type": "jewellery",
       "location": "ring1",
-      "aoe": "False",
       "effects": [
         {
           "name": "clone",
@@ -491,12 +492,9 @@
       "type_of_spell": "utility",
       "turns_to_cast": "0",
       "cool_down": "0",
-      "lives_for": "3",
       "spell_range": "spell_dist_nearby",
       "item_type": "jewellery",
       "location": "ring2",
-      "aoe": "True",
-      "aoe_size": "aoe_medium",
       "effects": [
         {
           "name": "condiremove",
@@ -505,6 +503,14 @@
         {
           "name": "boonremove",
           "value": "1"
+        },
+        {
+          "name": "aoe",
+          "value": "aoe_medium"
+        },
+        {
+          "name": "lives_for",
+          "value": "3"
         }
         ]
     },
@@ -518,7 +524,6 @@
       "spell_range": "spell_dist_nearby",
       "item_type": "jewellery",
       "location": "pendent",
-      "aoe": "False",
       "effects": [
         {
           "name": "slow",
@@ -540,7 +545,6 @@
       "spell_range": "spell_dist_nearby",
       "item_type": "armour",
       "location": "head",
-      "aoe": "False",
       "effects": [
         {
           "name": "teleport",
@@ -558,12 +562,14 @@
       "spell_range": "spell_dist_nearby",
       "item_type": "armour",
       "location": "chest",
-      "aoe": "True",
-      "aoe_size": "aoe_medium",
       "effects": [
         {
           "name": "zombie",
           "value": "5"
+        },
+        {
+          "name": "aoe",
+          "value": "aoe_medium"
         }
         ]
     },
@@ -577,8 +583,6 @@
       "spell_range": "spell_dist_nearby",
       "item_type": "armour",
       "location": "legs",
-      "aoe": "True",
-      "aoe_size": "aoe_medium",
       "effects": [
         {
           "name": "vulnerability",
@@ -587,6 +591,10 @@
         {
           "name": "damage",
           "value": "1.33"
+        },
+        {
+          "name": "aoe",
+          "value": "aoe_medium"
         }
         ]
     },
@@ -600,12 +608,14 @@
       "spell_range": "spell_dist_nearby",
       "item_type": "armour",
       "location": "feet",
-      "aoe": "True",
-      "aoe_size": "aoe_medium",
       "effects": [
         {
           "name": "condiremove",
           "value": "3"
+        },
+        {
+          "name": "aoe",
+          "value": "aoe_medium"
         }
         ]
     },
@@ -619,8 +629,6 @@
       "spell_range": "spell_dist_nearby",
       "item_type": "armour",
       "location": "gloves",
-      "aoe": "True",
-      "aoe_size": "aoe_medium",
       "effects": [
         {
           "name": "phantasm",
@@ -633,6 +641,10 @@
         {
           "name": "taunt",
           "value": "5"
+        },
+        {
+          "name": "aoe",
+          "value": "aoe_medium"
         }
         ]
     }

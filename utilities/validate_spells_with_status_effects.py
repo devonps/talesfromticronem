@@ -19,14 +19,15 @@ def validate_spells(game_config):
         statuseffect_file = read_json_file(status_effects_file)
 
         for spell in spell_file['spells']:
-            spelleffects = spell['effects']
-            for effect in spelleffects:
-                effectname = effect['name']
-                effectIsValid = False
-                for statuseffect in statuseffect_file['status-effects']:
-                    if statuseffect['name'] == effectname:
-                        effectIsValid = True
-                if not effectIsValid:
-                    logger.warning('Status effect {} is not present - spell {} - class {}', effectname, spell['name'], playerclass)
-
+            # spelleffects = spell['effects']
+            # for effect in spelleffects:
+            #     effectname = effect['name']
+            #     effectIsValid = False
+            #     for statuseffect in statuseffect_file['status-effects']:
+            #         if statuseffect['name'] == effectname:
+            #             effectIsValid = True
+            #     if not effectIsValid:
+            #         logger.warning('Status effect {} is not present - spell {} - class {}', effectname, spell['name'], playerclass)
+            if spell['type_of_spell'] == 'utility':
+                logger.info('spell name {}: {}', spell['name'], spell.keys())
 
