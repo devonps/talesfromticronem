@@ -15,6 +15,9 @@ class StartGame:
         logger.info('Game Start Screen')
         game_config = configUtilities.load_config()
 
+        # 'clears' the root console, therfore the other consoles are not showing
+        root_console.clear()
+
         game_title = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='GAME_TITLE')
         game_version = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='VERSION')
         game_copyright = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='COPYRIGHT')
