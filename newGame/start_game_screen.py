@@ -81,7 +81,6 @@ class StartGame:
                             CharacterCreation.display_character_creation_options(root_console=root_console, game_config=game_config)
                             root_console.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
 
-                            # StartGame.start_game_screen(root_console)
                         if selected_menu_option == 1:     # continue existing game
                             pass
                         if selected_menu_option == 2:     # Replay old game

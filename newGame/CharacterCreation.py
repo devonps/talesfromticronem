@@ -9,7 +9,7 @@ from utilities.world import create_game_world
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
-from newGame.initialiseNewGame import setup_game, generate_spells
+from newGame.initialiseNewGame import setup_gameworld, generate_spells
 from newGame.Items import ItemManager
 from newGame.ClassWeapons import WeaponClass
 from utilities.itemsHelp import ItemUtilities
@@ -89,7 +89,7 @@ class CharacterCreation:
     def create_world(gameconfig):
         # Esper initialisation
         gameworld = create_game_world()
-        setup_game(game_config=gameconfig)
+        setup_gameworld(game_config=gameconfig)
 
         return gameworld
 
