@@ -233,10 +233,10 @@ class MobileUtilities(numbers.Real):
         player_name_component = gameworld.component_for_entity(entity, mobiles.Name)
         player_race_component = gameworld.component_for_entity(entity, mobiles.Race)
         player_class = MobileUtilities.get_character_class(gameworld, entity)
-        player_gender_component = MobileUtilities.get_player_gender(gameworld, entity)
+        player_gender = MobileUtilities.get_player_gender(gameworld, entity)
         player_style = MobileUtilities.get_character_style(gameworld, entity)
 
-        return player_name_component.first + ' is a ' + player_gender_component.gender + ' ' + player_race_component.label + ' ' + player_class + ' ( ' + player_style + ' )'
+        return player_name_component.first + ' is a ' + player_gender + ' ' + player_race_component.label + ' ' + player_class + ' ( ' + player_style + ' )'
 
     @staticmethod
     def get_character_style(gameworld, entity):

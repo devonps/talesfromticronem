@@ -50,7 +50,7 @@ class RenderConsole(esper.Processor):
         # GUI viewport and message box borders
         self.render_viewport(game_config)
         self.render_message_box(game_config)
-        self.render_spell_bar(game_config)
+        # self.render_spell_bar(game_config)
         self.render_player_status_effects(game_config)
         self.render_player_vitals(game_config)
 
@@ -301,7 +301,9 @@ class RenderConsole(esper.Processor):
         scr_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='tcod', parameter='SCREEN_WIDTH')
         scr_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='tcod', parameter='SCREEN_HEIGHT')
 
+        # blit changes to root console
         tcod.console_blit(self.con, 0, 0, scr_width, scr_height, 0, 0, 0)
+        # todo stop drawing on the root console and create a game map console!
 
     def render_player_status_effects(self, game_config):
         # draw the boon, condition, and control bar borders (horizontal)
@@ -484,16 +486,17 @@ class RenderConsole(esper.Processor):
         viewport_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_START_Y')
         viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_WIDTH')
         viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_HEIGHT')
-        self.con.default_fg = tcod.yellow
 
-        tcod.console_print_frame(self.con,
-                                 x=viewport_across,
-                                 y=viewport_down,
-                                 w=viewport_width,
-                                 h=viewport_height,
-                                 clear=False,
-                                 flag=tcod.BKGND_DEFAULT,
-                                 fmt='')
+        self.con.draw_frame(
+            x=viewport_across,
+            y=viewport_down,
+            width=viewport_width,
+            height=viewport_height,
+            title='',
+            clear=False,
+            fg=tcod.yellow,
+            bg_blend=tcod.BKGND_DEFAULT
+        )
 
     def render_message_box(self, game_config):
         msg_start_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_START_X')
@@ -502,30 +505,45 @@ class RenderConsole(esper.Processor):
         msg_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_DEPTH')
 
         # draw the message box area
+        self.con.draw_frame(
+            x=msg_start_across,
+            y=msg_start_down,
+            width=msg_width,
+            height=msg_depth,
+            title='',
+            clear=False,
+            fg=tcod.yellow,
+            bg_blend=tcod.BKGND_DEFAULT
+        )
 
-        self.con.default_fg = tcod.yellow
 
-        tcod.console_print_frame(self.con,
-                                 x=msg_start_across,
-                                 y=msg_start_down,
-                                 w=msg_width,
-                                 h=msg_depth,
-                                 clear=False,
-                                 flag=tcod.BKGND_DEFAULT,
-                                 fmt='')
         # render messages in message log
         y = 1
         for message in self.message_log.messages:
-            # tcod.console_set_default_foreground(self.con, message.color)
-            self.con.default_fg = message.color
-            tcod.console_print_ex(self.con, 1, msg_start_down + y, tcod.BKGND_NONE, tcod.LEFT, message.text)
+            self.con.print(
+                x=1,
+                y=msg_start_down + y,
+                string=message.text,
+                fg=message.color,
+                bg_blend=tcod.BKGND_NONE,
+                alignment=tcod.LEFT
+            )
+
             y += 1
 
     def render_v_bar(self, posx, posy, depth, border_colour):
-
-        self.con.default_fg = border_colour
-        tcod.console_print_frame(self.con, x=posx, y=posy, w=3, h=depth, clear=False, flag=tcod.BKGND_DEFAULT,
-                                 fmt='')
+        self.con.draw_frame(
+            x=posx,
+            y=posy,
+            width=3,
+            height=depth,
+            title='',
+            fg=border_colour,
+            bg_blend=tcod.BKGND_DEFAULT
+        )
+        # self.con.default_fg = border_colour
+        # tcod.console_print_frame(self.con, x=posx, y=posy, w=3, h=depth, clear=False, flag=tcod.BKGND_DEFAULT,
+        #                          fmt='')
 
     def render_h_bar(self, posy, border_colour, game_config):
 
@@ -533,8 +551,16 @@ class RenderConsole(esper.Processor):
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_Y')
         rs = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='BCC_BAR_RIGHT_SIDE')
 
-        self.con.default_fg = border_colour
-        tcod.console_print_frame(self.con, x=px, y=py + posy, w=rs, h=3, clear=False, flag=tcod.BKGND_DEFAULT, fmt='')
+        self.con.draw_frame(
+            x=px,
+            y=py,
+            width=rs,
+            height=3,
+            title='',
+            fg=border_colour,
+            bg_blend=tcod.BKGND_DEFAULT
+        )
+
 
     def render_entity(self, posx, posy, glyph, fg, bg):
         tcod.console_put_char_ex(self.con, posx, posy, glyph, fg, bg)
