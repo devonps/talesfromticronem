@@ -1,8 +1,7 @@
 import tcod.console
 import tcod.event
 
-
-from newGame.initialiseNewGame import setup_game, initialise_game_map, create_new_character, create_and_place_world_entities, create_spell_entities
+from newGame.initialiseNewGame import setup_game, initialise_game_map
 from utilities.game_messages import MessageLog, Message
 from utilities.mobileHelp import MobileUtilities
 from utilities.input_handlers import handle_keys
@@ -11,7 +10,6 @@ from loguru import logger
 from utilities import configUtilities
 
 from newGame import newGame, LoadPrefab
-
 
 
 def start_game(con, gameworld, game_config):
@@ -26,7 +24,6 @@ def start_game(con, gameworld, game_config):
 
     message_log = MessageLog(x=msg_panel_across_pos, width=msg_panel_width, height=msg_panel_lines)
     game_map = initialise_game_map(con, gameworld, player, spell_bar, message_log, game_config)
-    create_and_place_world_entities(gameworld=gameworld, game_map=game_map, game_config=game_config)
 
     # test code
 

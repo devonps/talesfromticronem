@@ -9,11 +9,11 @@ from utilities.world import create_game_world
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
-from newGame.newCharacter import NewCharacter
 from newGame.initialiseNewGame import setup_game, generate_spells
 from newGame.Items import ItemManager
 from newGame.ClassWeapons import WeaponClass
 from utilities.itemsHelp import ItemUtilities
+from components import mobiles
 
 from engine import start_game
 
@@ -95,7 +95,11 @@ class CharacterCreation:
 
     @staticmethod
     def create_new_character(gameworld, gameconfig, root_console):
-        player_entity = NewCharacter.generate_player_character(gameworld=gameworld, game_config=gameconfig)
+
+        logger.debug('Creating the player character entity')
+        player_entity = MobileUtilities.generate_base_mobile(gameworld, gameconfig)
+        logger.info('Player character stored as entity {}', player_entity)
+
         CharacterCreation.choose_race(root_console=root_console, gameworld=gameworld, player=player_entity, game_config=gameconfig)
 
     @staticmethod
@@ -931,7 +935,7 @@ class CharacterCreation:
             MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='off')
 
         # load spell bar with spells from weapon
-        spell_bar_entity = NewCharacter.generate_spell_bar(gameworld=gameworld)
+        spell_bar_entity = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
         logger.info('Loading spell bar based on equipped weapons')
         weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
         SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spell_bar_entity, wpns_equipped=weapons_equipped)
