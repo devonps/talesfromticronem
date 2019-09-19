@@ -15,15 +15,11 @@ from utilities.input_handlers import handle_game_keys
 
 
 class RenderConsole(esper.Processor):
-    def __init__(self, con, game_map, gameworld, fov_compute, fov_object, spell_bar, message_log):
+    def __init__(self, con, game_map, gameworld):
         super().__init__()
         self.con = con
         self.game_map = game_map
         self.gameworld = gameworld
-        self.fov_compute = fov_compute
-        self.fov_object = fov_object
-        self.spell_bar = spell_bar
-        self.message_log = message_log
 
     def process(self, game_config):
         game_state = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='DISPLAY_GAME_STATE')
@@ -50,7 +46,7 @@ class RenderConsole(esper.Processor):
         # GUI viewport and message box borders
         self.render_viewport(game_config)
         self.render_message_box(game_config)
-        # self.render_spell_bar(game_config)
+        self.render_spell_bar(game_config)
         self.render_player_status_effects(game_config)
         self.render_player_vitals(game_config)
 
@@ -303,6 +299,7 @@ class RenderConsole(esper.Processor):
 
         # blit changes to root console
         tcod.console_blit(self.con, 0, 0, scr_width, scr_height, 0, 0, 0)
+        tcod.console_flush()
         # todo stop drawing on the root console and create a game map console!
 
     def render_player_status_effects(self, game_config):
@@ -329,18 +326,21 @@ class RenderConsole(esper.Processor):
         spell_bar_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BOX_DEPTH')
         spell_slots = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_SLOTS')
 
-        tcod.console_set_default_foreground(self.con, tcod.yellow)
         for spellSlot in range(1, spell_slots):
             spell_slot_posx = spell_bar_across + (spellSlot * spell_box_width)
-            tcod.console_print_frame(self.con,
-                                     x=spell_slot_posx,
-                                     y=spell_bar_down,
-                                     w=spell_bar_width,
-                                     h=spell_bar_depth,
-                                     clear=False,
-                                     flag=tcod.BKGND_DEFAULT,
-                                     fmt='')
-            slot_component = SpellUtilities.get_spell_bar_slot_componet(self.gameworld, spell_bar=self.spell_bar, slotid=spellSlot)
+            self.con.draw_frame(
+                x=spell_slot_posx,
+                y=spell_bar_down,
+                width=spell_bar_width,
+                height=spell_bar_depth,
+                title='',
+                clear=False,
+                fg=tcod.yellow,
+                bg_blend=tcod.BKGND_DEFAULT
+            )
+            player = MobileUtilities.get_player_entity(self.gameworld, game_config)
+            spell_bar_entity = MobileUtilities.get_spellbar_id_for_entity(gameworld=self.gameworld, entity=player)
+            slot_component = SpellUtilities.get_spell_bar_slot_componet(self.gameworld, spell_bar=spell_bar_entity, slotid=spellSlot)
             if slot_component == -1:
                 logger.warning('Could not get slot component from spell bar')
             else:
@@ -363,10 +363,6 @@ class RenderConsole(esper.Processor):
         dwd = configUtilities.get_config_value_as_string(configfile=game_config, section='colours', parameter='DUNGEON_WALL_DARK')
         dfl = configUtilities.get_config_value_as_string(configfile=game_config, section='colours', parameter='DUNGEON_FLOOR_LIGHT')
         dfd = configUtilities.get_config_value_as_string(configfile=game_config, section='colours', parameter='DUNGEON_FLOOR_DARK')
-
-        # thisplayer = MobileUtilities.get_player_entity(self.gameworld)
-        # player_position_component = self.gameworld.component_for_entity(thisplayer, mobiles.Position)
-        # fov_map = self.fov_object.create_fov_map_via_raycasting(player_position_component.x, player_position_component.y)
 
         player_has_moved = MobileUtilities.has_player_moved(self.gameworld, game_config)
         # player_has_moved = True
@@ -518,18 +514,18 @@ class RenderConsole(esper.Processor):
 
 
         # render messages in message log
-        y = 1
-        for message in self.message_log.messages:
-            self.con.print(
-                x=1,
-                y=msg_start_down + y,
-                string=message.text,
-                fg=message.color,
-                bg_blend=tcod.BKGND_NONE,
-                alignment=tcod.LEFT
-            )
-
-            y += 1
+        # y = 1
+        # for message in self.message_log.messages:
+        #     self.con.print(
+        #         x=1,
+        #         y=msg_start_down + y,
+        #         string=message.text,
+        #         fg=message.color,
+        #         bg_blend=tcod.BKGND_NONE,
+        #         alignment=tcod.LEFT
+        #     )
+        #
+        #     y += 1
 
     def render_v_bar(self, posx, posy, depth, border_colour):
         self.con.draw_frame(
@@ -544,6 +540,7 @@ class RenderConsole(esper.Processor):
         # self.con.default_fg = border_colour
         # tcod.console_print_frame(self.con, x=posx, y=posy, w=3, h=depth, clear=False, flag=tcod.BKGND_DEFAULT,
         #                          fmt='')
+
 
     def render_h_bar(self, posy, border_colour, game_config):
 
@@ -561,11 +558,9 @@ class RenderConsole(esper.Processor):
             bg_blend=tcod.BKGND_DEFAULT
         )
 
-
     def render_entity(self, posx, posy, glyph, fg, bg):
         tcod.console_put_char_ex(self.con, posx, posy, glyph, fg, bg)
 
-    # clear the entity from the screen - this is used in conjunction with the Renderable component
     def clear_entity(self):
         for ent, (rend, pos, desc) in self.world.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
             if rend.isVisible:

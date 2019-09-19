@@ -15,7 +15,7 @@ from newGame.ClassWeapons import WeaponClass
 from utilities.itemsHelp import ItemUtilities
 from components import mobiles
 
-from engine import start_game
+from ticronem import start_game, game_loop
 
 
 class CharacterCreation:
@@ -937,6 +937,7 @@ class CharacterCreation:
 
         # load spell bar with spells from weapon
         spell_bar_entity = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
+        MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player, spellbarEntity=spell_bar_entity)
         logger.info('Loading spell bar based on equipped weapons')
         weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
         SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spell_bar_entity, wpns_equipped=weapons_equipped)
@@ -1486,7 +1487,8 @@ class CharacterCreation:
                             selected_menu_option = 0
                     if event_action == 'enter':
                         if selected_menu_option == 0:   # accept character build and start game
-                            start_game(con=root_console, gameworld=gameworld, game_config=game_config)
+                            # start_game(con=root_console, gameworld=gameworld, game_config=game_config)
+                            game_loop(con=root_console, gameworld=gameworld, game_config=game_config)
                         if selected_menu_option == 1:   # save current build
                             pass
                         if selected_menu_option == 2:   # reject build and start again

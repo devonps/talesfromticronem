@@ -66,6 +66,31 @@ class MobileUtilities(numbers.Real):
         return position_component.hasMoved
 
     @staticmethod
+    def set_player_velocity(gameworld, player_entity, direction, speed):
+        player_velocity_component = gameworld.component_for_entity(player_entity, mobiles.Velocity)
+        dx = 0
+        dy = 0
+        if direction == 'left':
+            dx = -speed
+            dy = 0
+        if direction == 'right':
+            dx = speed
+            dy = 0
+        if direction == 'up':
+            dx = 0
+            dy = -speed
+        if direction == 'down':
+            dx = 0
+            dy = speed
+        player_velocity_component.dx = dx
+        player_velocity_component.dy = dy
+
+    @staticmethod
+    def get_player_velocity(gameworld, player_entity):
+        player_velocity_component = gameworld.component_for_entity(player_entity, mobiles.Velocity)
+        return player_velocity_component.dx, player_velocity_component.dy
+
+    @staticmethod
     def set_mobile_has_moved(gameworld, mobile):
         position_component = gameworld.component_for_entity(mobile, mobiles.Position)
         position_component.hasMoved = True
@@ -208,6 +233,7 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(player_entity, mobiles.PrimaryAttributes())
         gameworld.add_component(player_entity, mobiles.SecondaryAttributes())
         gameworld.add_component(player_entity, mobiles.DerivedAttributes())
+        gameworld.add_component(player_entity, mobiles.SpellBar(entityId=0))
 
         return player_entity
 
@@ -227,6 +253,20 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(spell_bar, spellBar.SlotTen())
 
         return spell_bar
+
+    @staticmethod
+    def set_spellbar_for_entity(gameworld, entity, spellbarEntity):
+        gameworld.add_component(entity, mobiles.SpellBar(entityId=spellbarEntity))
+        # spellbar_component = gameworld.component_for_entity(entity, mobiles.SpellBar)
+        # spellbar_component.entityId = spellbarEntity
+
+
+    @staticmethod
+    def get_spellbar_id_for_entity(gameworld, entity):
+        spellbar_component = gameworld.component_for_entity(entity, mobiles.SpellBar)
+
+        return spellbar_component.entityId
+
 
     @staticmethod
     def describe_the_mobile(gameworld, entity):

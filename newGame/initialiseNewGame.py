@@ -2,7 +2,7 @@ import random
 
 
 from loguru import logger
-from components import spells
+from components import spells, mobiles
 from components.addStatusEffects import process_status_effect
 
 from utilities.jsonUtilities import read_json_file
@@ -71,17 +71,22 @@ def initialise_game_map(con, gameworld, player, spell_bar, message_log, game_con
     # logger.info("Map Generated in %s" % (str(secondsToText(time() - start_time))))
 
     fov_compute = True
+    #
+    fov = ''
 
-    fov = FieldOfView(game_map)
+    # gameworld.add_component(player, mobiles.Position(
+    #     x=5,
+    #     y=5,
+    #     hasMoved=True))
 
-    render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld, fov_compute=fov_compute, fov_object=fov, spell_bar=spell_bar, message_log=message_log )
+    logger.info('init:::game_map type is {}', type(game_map))
+
+    render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld)
     move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
     update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
     gameworld.add_processor(render_console_process)
     gameworld.add_processor(move_entities_processor)
     gameworld.add_processor(update_entities_processor)
-
-    return game_map
 
 
 def generate_spells(gameworld, game_config, spell_file, player_class):
