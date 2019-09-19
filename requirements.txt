@@ -2,7 +2,7 @@ ansimarkup==1.4.0
 better-exceptions-fork==0.2.1.post6
 cffi==1.11.5
 colorama==0.4.1
-esper==1.0
+esper==1.2
 loguru==0.2.5
 numpy==1.15.4
 pycparser==2.19
