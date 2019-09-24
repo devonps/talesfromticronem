@@ -37,6 +37,42 @@
       "theme": "dungeon",
       "sceneExits": "enemyCamp"
     },
+        {
+      "name": "enemycamp",
+      "loadMap": "enemycamp",
+      "mapx": "40",
+      "mapy": "21",
+      "npcs": [
+        {
+          "displayName": "Joe",
+          "internalName": "academyMaster",
+          "class": "player",
+          "weapon": "staff",
+          "location": [
+            {
+              "prefab": "0",
+              "x": "55",
+              "y": "random"
+            }
+            ]
+        },
+        {
+          "displayName": "random",
+          "internalName": "practiceMaster",
+          "class": "random",
+          "weapon": "random",
+          "location": [
+            {
+              "prefab": "1",
+              "x": "10",
+              "y": "15"
+            }
+            ]
+        }
+        ],
+      "theme": "dungeon",
+      "sceneExits": "startArea"
+    },
     {
       "name": "dummy-never-used-shows-possibilities",
       "loadMap": "startArea",

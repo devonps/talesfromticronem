@@ -1,7 +1,7 @@
 import tcod.console
 import tcod.event
 
-from newGame.initialiseNewGame import setup_gameworld, initialise_game_map
+from newGame.initialiseNewGame import setup_gameworld
 from utilities.game_messages import MessageLog, Message
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
@@ -19,7 +19,6 @@ def game_loop(con, gameworld, game_config):
     msg_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_WIDTH')
     msg_panel_lines = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_LINES')
     player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-    spell_bar = MobileUtilities.get_spellbar_id_for_entity(gameworld=gameworld, entity=player)
     message_log = MessageLog(x=msg_panel_across_pos, width=msg_panel_width, height=msg_panel_lines)
 
     # 'clears' the root console, therefore the other consoles are not showing
@@ -29,7 +28,6 @@ def game_loop(con, gameworld, game_config):
     playing_game = True
     message_log.add_message(message=Message('New game starting', color=tcod.yellow), game_config=game_config)
 
-    game_map = initialise_game_map(con, gameworld, player, spell_bar, message_log, game_config)
     currentScene = 1
     previousScene = 0
     SceneChange = True
@@ -41,11 +39,8 @@ def game_loop(con, gameworld, game_config):
         #
         if SceneChange:
             # call scene manager
-            SceneManager.newScene(currentscene=currentScene, gameConfig=game_config)
+            SceneManager.newScene(currentscene=currentScene, gameConfig=game_config, gameworld=gameworld)
             SceneChange = False
-            # initialise_game_map(con, gameworld, player, spell_bar, message_log, game_config, game_map)
-
-        # I'm thinking about bringing 'render' out of the esper model
 
         # run ALL game processors
         gameworld.process(game_config)
@@ -60,6 +55,15 @@ def game_loop(con, gameworld, game_config):
                     raise SystemExit()
                 if event_action in ('left', 'right', 'up', 'down'):
                     MobileUtilities.set_player_velocity(gameworld=gameworld, player_entity=player, direction=event_action, speed=1)
+
+            if event_to_be_processed == 'textinput':
+                if event_action == 'n':
+                    SceneChange = True
+                    previousScene = currentScene
+                    currentScene += 1
+                    if currentScene > 2:
+                        currentScene = 1
+
 
 
 def start_game(con, gameworld, game_config):

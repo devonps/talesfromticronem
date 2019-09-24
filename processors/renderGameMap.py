@@ -25,10 +25,10 @@ class RenderGameMap(esper.Processor):
 
         # draw the entities
         # self.render_items(game_config)
-        self.render_entities(game_config)
+        self.render_entities(self.con, game_config, self.gameworld)
 
         # blit the console
-        self.blit_the_console(game_config)
+        self.blit_the_console(self.con, game_config)
 
     @staticmethod
     def render_map(console, gameworld, game_config, game_map):
@@ -48,7 +48,6 @@ class RenderGameMap(esper.Processor):
         dfd = configUtilities.get_config_value_as_string(configfile=game_config, section='colours', parameter='DUNGEON_FLOOR_DARK')
 
         player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
-        # player_has_moved = True
 
         if player_has_moved:
             bgnd = colourUtilities.BLACK
@@ -65,14 +64,23 @@ class RenderGameMap(esper.Processor):
                     draw_pos_y = map_view_down + y
                     tile = game_map.tiles[x][y].type_of_tile
                     if isVisible:
-                        if tile == tile_type_wall:
-                            tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_wall, dng_wall_light, bgnd)
-                        elif tile == tile_type_floor:
+
+                        if tile == 32:
                             tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_light_ground, bgnd)
-                        elif tile == tile_type_door:
+                        elif tile == 43:
                             tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_door, dng_light_ground, bgnd)
-                        elif tile == tile_type_corridor:
-                            tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_light_ground, bgnd)
+                        else:
+                            tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, chr(tile), dng_light_ground, bgnd)
+
+
+                        # if tile == tile_type_wall:
+                        #     tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_wall, dng_wall_light, bgnd)
+                        # elif tile == tile_type_floor:
+                        #     tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_light_ground, bgnd)
+                        # elif tile == tile_type_door:
+                        #     tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_door, dng_light_ground, bgnd)
+                        # elif tile == tile_type_corridor:
+                        #     tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_light_ground, bgnd)
 
                     else:
                         if tile == tile_type_wall:
@@ -85,34 +93,38 @@ class RenderGameMap(esper.Processor):
                             tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_dark_ground, bgnd)
 
     @staticmethod
-    def render_entities(game_config):
+    def render_entities(con, game_config, gameworld):
         px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
 
-        for ent, (rend, pos, desc) in self.world.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
+        for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
             if rend.isVisible:
                 draw_pos_x = px + pos.x
                 draw_pos_y = py + pos.y
-                self.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.foreground, desc.background)
+                RenderGameMap.render_entity(con, draw_pos_x, draw_pos_y, desc.glyph, desc.foreground, desc.background)
+
+    # @staticmethod
+    # def render_items(game_config):
+        # px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
+        # py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
+        #
+        # for ent, (rend, loc, desc) in self.world.get_components(items.RenderItem, items.Location, items.Describable):
+        #     if rend.isTrue:
+        #         draw_pos_x = px + loc.posx
+        #         draw_pos_y = py + loc.posy
+        #         self.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
 
     @staticmethod
-    def render_items(game_config):
-        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
-        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
-
-        for ent, (rend, loc, desc) in self.world.get_components(items.RenderItem, items.Location, items.Describable):
-            if rend.isTrue:
-                draw_pos_x = px + loc.posx
-                draw_pos_y = py + loc.posy
-                self.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
-
-    @staticmethod
-    def blit_the_console(game_config):
+    def blit_the_console(con, game_config):
         # update console with latest changes
         scr_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='tcod', parameter='SCREEN_WIDTH')
         scr_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='tcod', parameter='SCREEN_HEIGHT')
 
         # blit changes to root console
-        tcod.console_blit(self.con, 0, 0, scr_width, scr_height, 0, 0, 0)
+        tcod.console_blit(con, 0, 0, scr_width, scr_height, 0, 0, 0)
         tcod.console_flush()
         # todo stop drawing on the root console and create a game map console!
+
+    @staticmethod
+    def render_entity(con, posx, posy, glyph, fg, bg):
+        tcod.console_put_char_ex(con, posx, posy, glyph, fg, bg)
