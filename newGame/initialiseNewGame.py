@@ -1,8 +1,7 @@
 import random
 
-
 from loguru import logger
-from components import spells, mobiles
+from components import spells
 from components.addStatusEffects import process_status_effect
 
 from utilities.jsonUtilities import read_json_file
@@ -10,12 +9,6 @@ from utilities.randomNumberGenerator import PCG32Generator
 from utilities.externalfileutilities import Externalfiles
 from utilities import world
 from utilities import configUtilities
-
-from processors.render import RenderConsole
-from processors.move_entities import MoveEntities
-from processors.updateEntities import UpdateEntitiesProcessor
-from mapRelated.fov import FieldOfView
-from mapRelated.gameMap import GameMap
 
 
 def setup_gameworld(game_config):
@@ -46,47 +39,6 @@ def store_world_seed(game_config, world_seed):
     value = 'world_seed:' + str(world_seed)
     Externalfiles.write_to_existing_file(action_file, value)
     Externalfiles.close_existing_file(fileobject)
-
-
-def initialise_game_map(con, gameworld, player, spell_bar, message_log, game_config):
-
-    map_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='MAP_WIDTH')
-    map_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='MAP_HEIGHT')
-    max_rooms_per_level = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_MAX_ROOMS')
-    room_min = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_ROOM_MIN_SIZE')
-    room_max = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_ROOM_MAX_SIZE')
-
-    # create game map
-    game_map = GameMap(mapwidth=map_width, mapheight=map_height)
-    game_map.make_map(
-        max_rooms=max_rooms_per_level,
-        room_min_size=room_min,
-        room_max_size=room_max,
-        map_width=map_width,
-        map_height=map_height,
-        gameworld=gameworld,
-        player=player,
-        game_config=game_config)
-
-    # logger.info("Map Generated in %s" % (str(secondsToText(time() - start_time))))
-
-    fov_compute = True
-    #
-    fov = ''
-
-    # gameworld.add_component(player, mobiles.Position(
-    #     x=5,
-    #     y=5,
-    #     hasMoved=True))
-
-    logger.info('init:::game_map type is {}', type(game_map))
-
-    render_console_process = RenderConsole(con=con, game_map=game_map, gameworld=gameworld)
-    move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
-    update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
-    gameworld.add_processor(render_console_process)
-    gameworld.add_processor(move_entities_processor)
-    gameworld.add_processor(update_entities_processor)
 
 
 def generate_spells(gameworld, game_config, spell_file, player_class):
