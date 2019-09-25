@@ -1,9 +1,12 @@
 import esper
 import tcod
 
-from components import mobiles
+from components import mobiles, items
 from utilities import configUtilities, colourUtilities
+from utilities.display import display_coloured_box
 from utilities.mobileHelp import MobileUtilities
+from utilities.spellHelp import SpellUtilities
+from loguru import logger
 
 
 class RenderGameMap(esper.Processor):
@@ -14,17 +17,17 @@ class RenderGameMap(esper.Processor):
 
     def process(self, game_config):
         # GUI viewport and message box borders
-        # self.render_viewport(game_config)
-        # self.render_message_box(game_config)
-        # self.render_spell_bar(game_config)
-        # self.render_player_status_effects(game_config)
-        # self.render_player_vitals(game_config)
+        self.render_viewport(self.con, game_config)
+        self.render_message_box(self.con, game_config)
+        self.render_spell_bar(self, self.con, game_config)
+        self.render_player_status_effects(self, self.con, game_config)
+        self.render_player_vitals(self, self.con, game_config)
 
         # render the game map
         self.render_map(self.con, self.gameworld, game_config, self.game_map)
 
         # draw the entities
-        # self.render_items(game_config)
+        self.render_items(game_config, self.gameworld)
         self.render_entities(self.con, game_config, self.gameworld)
 
         # blit the console
@@ -82,15 +85,15 @@ class RenderGameMap(esper.Processor):
                         # elif tile == tile_type_corridor:
                         #     tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_light_ground, bgnd)
 
-                    else:
-                        if tile == tile_type_wall:
-                            tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_wall, dng_dark_wall, bgnd)
-                        elif tile == tile_type_floor:
-                            tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_dark_ground, bgnd)
-                        elif tile == tile_type_door:
-                            tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_door, dng_dark_ground, bgnd)
-                        elif tile == tile_type_corridor:
-                            tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_dark_ground, bgnd)
+                    # else:
+                    #     if tile == tile_type_wall:
+                    #         tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_wall, dng_dark_wall, bgnd)
+                    #     elif tile == tile_type_floor:
+                    #         tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_dark_ground, bgnd)
+                    #     elif tile == tile_type_door:
+                    #         tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_door, dng_dark_ground, bgnd)
+                    #     elif tile == tile_type_corridor:
+                    #         tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_dark_ground, bgnd)
 
     @staticmethod
     def render_entities(con, game_config, gameworld):
@@ -103,16 +106,16 @@ class RenderGameMap(esper.Processor):
                 draw_pos_y = py + pos.y
                 RenderGameMap.render_entity(con, draw_pos_x, draw_pos_y, desc.glyph, desc.foreground, desc.background)
 
-    # @staticmethod
-    # def render_items(game_config):
-        # px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
-        # py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
-        #
-        # for ent, (rend, loc, desc) in self.world.get_components(items.RenderItem, items.Location, items.Describable):
-        #     if rend.isTrue:
-        #         draw_pos_x = px + loc.posx
-        #         draw_pos_y = py + loc.posy
-        #         self.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
+    @staticmethod
+    def render_items(game_config, gameworld):
+        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
+        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
+
+        for ent, (rend, loc, desc) in gameworld.get_components(items.RenderItem, items.Location, items.Describable):
+            if rend.isTrue:
+                draw_pos_x = px + loc.posx
+                draw_pos_y = py + loc.posy
+                RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
 
     @staticmethod
     def blit_the_console(con, game_config):
@@ -128,3 +131,224 @@ class RenderGameMap(esper.Processor):
     @staticmethod
     def render_entity(con, posx, posy, glyph, fg, bg):
         tcod.console_put_char_ex(con, posx, posy, glyph, fg, bg)
+
+    @staticmethod
+    def render_viewport(con, game_config):
+        # draw the outer bounds of the map viewport
+
+        viewport_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_START_X')
+        viewport_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='VIEWPORT_START_Y')
+        viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                     parameter='VIEWPORT_WIDTH')
+        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_HEIGHT')
+
+        con.draw_frame(
+            x=viewport_across,
+            y=viewport_down,
+            width=viewport_width,
+            height=viewport_height,
+            title='',
+            clear=False,
+            fg=tcod.yellow,
+            bg_blend=tcod.BKGND_DEFAULT
+        )
+
+    @staticmethod
+    def render_message_box(con, game_config):
+        msg_start_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_START_X')
+        msg_start_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_START_Y')
+        msg_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_WIDTH')
+        msg_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_DEPTH')
+
+        # draw the message box area
+        con.draw_frame(
+            x=msg_start_across,
+            y=msg_start_down,
+            width=msg_width,
+            height=msg_depth,
+            title='',
+            clear=False,
+            fg=tcod.yellow,
+            bg_blend=tcod.BKGND_DEFAULT
+        )
+
+    @staticmethod
+    def render_player_status_effects(self, con, game_config):
+        # draw the boon, condition, and control bar borders (horizontal)
+        self.render_boons(self, con, game_config)
+        self.render_conditions(self, con, game_config)
+        self.render_controls(self, con, game_config)
+
+    @staticmethod
+    def render_boons(self, con, game_config):
+        self.render_h_bar(con, posy=0, border_colour=tcod.darker_gray, game_config=game_config)
+        self.render_player_status_effects_content(self, 0, tcod.CHAR_SUBP_DIAG, tcod.green, game_config)
+
+    @staticmethod
+    def render_conditions(self, con, game_config):
+        self.render_h_bar(con, posy=3, border_colour=tcod.darker_gray, game_config=game_config)
+        self.render_player_status_effects_content(self, 3, chr(9), tcod.red, game_config)
+
+    @staticmethod
+    def render_controls(self, con, game_config):
+        self.render_h_bar(con, posy=6, border_colour=tcod.darker_gray, game_config=game_config)
+        self.render_player_status_effects_content(self, 6, chr(10), tcod.white, game_config)
+
+    @staticmethod
+    def render_player_status_effects_content(self, posy, glyph, foreground, game_config):
+        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_X')
+        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_Y') + posy
+
+        x = 0
+        for a in range(10):
+            self.render_entity(self.con, 1 + px + x, py + 1, glyph, foreground, tcod.black)
+            if a < 9:
+                x += 1
+                self.render_entity(self.con, 1 + px + x, py + 1, chr(179), tcod.darker_gray, tcod.black)
+            x += 1
+
+    @staticmethod
+    def render_h_bar(con, posy, border_colour, game_config):
+
+        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_X')
+        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_Y')
+        rs = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='BCC_BAR_RIGHT_SIDE')
+
+        con.draw_frame(
+            x=px,
+            y=py + posy,
+            width=rs,
+            height=3,
+            title='',
+            fg=border_colour,
+            bg_blend=tcod.BKGND_DEFAULT
+        )
+
+    @staticmethod
+    def render_player_vitals(self, con, game_config):
+        player_entity = MobileUtilities.get_player_entity(self.gameworld, game_config)
+        player_derived_attributes_component = self.gameworld.component_for_entity(player_entity,
+                                                                                  mobiles.DerivedAttributes)
+
+        self.render_health_bar(self, player_derived_attributes_component, game_config)
+        self.render_mana_bar(self, player_entity, game_config)
+
+        self.render_f1_bar(self, player_entity, game_config)
+
+    @staticmethod
+    def render_health_bar(self, player_derived_attributes_component, game_config):
+
+        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_X')
+        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_Y')
+        bd2 = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_D')
+        current_health = player_derived_attributes_component.currentHealth
+        maximum_health = player_derived_attributes_component.maximumHealth
+        current_health_percentage = MobileUtilities.get_number_as_a_percentage(current_health, maximum_health)
+
+        self.render_v_bar(con=self.con, posx=px, posy=py, depth=bd2, border_colour=tcod.darker_gray)
+        self.render_player_vertical_bar_content(self, 0, current_health_percentage, tcod.red, tcod.black, game_config)
+
+    @staticmethod
+    def render_mana_bar(self, player_entity, game_config):
+
+        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_X')
+        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_Y')
+        bd2 = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_D')
+        player_current_mana = MobileUtilities.calculate_current_mana(self.gameworld, player_entity)
+        player_maximum_mana = MobileUtilities.get_derived_maximum_mana(self.gameworld, player_entity)
+
+        current_mana_percentage = MobileUtilities.get_number_as_a_percentage(player_current_mana, player_maximum_mana)
+
+        self.render_v_bar(con=self.con, posx=px + 3, posy=py, depth=bd2, border_colour=tcod.darker_gray)
+        self.render_player_vertical_bar_content(self, 3, current_mana_percentage, tcod.blue, tcod.black, game_config)
+
+    @staticmethod
+    def render_f1_bar(self, player_entity, game_config):
+        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_X')
+        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_Y')
+        bd2 = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_D')
+        psc = MobileUtilities.get_derived_special_bar_current_value(self.gameworld, player_entity)
+        psm = MobileUtilities.get_derived_special_bar_max_value(self.gameworld, player_entity)
+
+        current_special_percentage = MobileUtilities.get_number_as_a_percentage(psc, psm)
+
+        self.render_player_vertical_bar_content(self, 6, current_special_percentage, tcod.white, tcod.black, game_config)
+        self.render_v_bar(con=self.con, posx=px + 6, posy=py, depth=bd2, border_colour=tcod.darker_gray)
+
+    @staticmethod
+    def render_v_bar(con, posx, posy, depth, border_colour):
+        con.draw_frame(
+            x=posx,
+            y=posy,
+            width=3,
+            height=depth,
+            title='',
+            fg=border_colour,
+            bg_blend=tcod.BKGND_DEFAULT
+        )
+        # self.con.default_fg = border_colour
+        # tcod.console_print_frame(self.con, x=posx, y=posy, w=3, h=depth, clear=False, flag=tcod.BKGND_DEFAULT,
+        #                          fmt='')
+
+    @staticmethod
+    def render_player_vertical_bar_content(self, x, current_value, foreground, background, game_config):
+
+        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_X')
+        posx = 1 + px + x
+        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_Y')
+        bar_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_DEPTH')
+        posy = py + bar_depth
+
+        bar_count = int(MobileUtilities.get_bar_count(current_value, bar_depth))
+
+        for y in range(bar_count):
+            tcod.console_put_char_ex(self.con, posx, posy - y, chr(176), foreground, background)
+
+    @staticmethod
+    def render_spell_bar(self, con, game_config):
+
+        game_config = configUtilities.load_config()
+
+        spell_box_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BOX_WIDTH')
+        spell_bar_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BOX_X')
+        spell_bar_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BAR_Y')
+        spell_bar_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BAR_WIDTH')
+        spell_bar_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BOX_DEPTH')
+        spell_slots = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_SLOTS')
+
+        personal_details = '.12345.'
+
+        for spellSlot in range(1, spell_slots):
+            spell_slot_posx = spell_bar_across
+
+            if spellSlot < 10:
+                sp = str(spellSlot)
+            else:
+                sp = str(spellSlot)[-1:]
+
+            display_coloured_box(console=con, title=sp,
+                                 posx=spell_slot_posx, posy=spell_bar_down,
+                                 width=spell_box_width, height=spell_bar_depth,
+                                 fg=tcod.yellow, bg=tcod.gray)
+
+            con.print_box(x=spell_slot_posx, y=spell_bar_down + 1,
+                                        width=spell_bar_width, height=spell_bar_depth,
+                                        string=personal_details,
+                                        fg=tcod.yellow)
+
+            spell_bar_across += spell_box_width
+
+            # player = MobileUtilities.get_player_entity(self.gameworld, game_config)
+            # spell_bar_entity = MobileUtilities.get_spellbar_id_for_entity(gameworld=self.gameworld, entity=player)
+            # slot_component = SpellUtilities.get_spell_bar_slot_componet(self.gameworld, spell_bar=spell_bar_entity, slotid=spellSlot + 1)
+            # if slot_component == -1:
+            #     logger.warning('Could not get slot component from spell bar')
+            # else:
+            #     z = str(slot_component.sid)
+            #     zz = ord(z)
+            #     con.put_char(x=spell_slot_posx + 1, y=spell_bar_down, ch=zz)
+            #     con.put_char(x=spell_slot_posx + 2, y=spell_bar_down + 1, ch=38)
+            #     con.put_char(x=spell_slot_posx + 3, y=spell_bar_down, ch=42)

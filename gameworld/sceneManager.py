@@ -14,12 +14,12 @@ from utilities.mobileHelp import MobileUtilities
 class SceneManager:
 
     @staticmethod
-    def newScene(currentscene, gameConfig, gameworld):
-        SceneManager.loadSceneCard(currentscene=currentscene, game_config=gameConfig, gameworld=gameworld)
+    def newScene(console, currentscene, gameConfig, gameworld):
+        SceneManager.loadSceneCard(console=console, currentscene=currentscene, game_config=gameConfig, gameworld=gameworld)
         SceneManager.generateGameMap()
 
     @staticmethod
-    def loadSceneCard(currentscene, game_config, gameworld):
+    def loadSceneCard(console, currentscene, game_config, gameworld):
         # load scene list into memory
         sceneList = configUtilities.get_config_value_as_list(game_config, 'game', 'SCENES')
         sceneFound = False
@@ -86,7 +86,7 @@ class SceneManager:
                         logger.info('The map dimensions are {} by {}', mapAreaMaxX, mapAreaMaxY)
 
         if currentscene == 1:
-            renderGameMapProcessor = RenderGameMap(con=0, game_map=game_map, gameworld=gameworld)
+            renderGameMapProcessor = RenderGameMap(con=console, game_map=game_map, gameworld=gameworld)
             move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
             update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
             gameworld.add_processor(renderGameMapProcessor)
