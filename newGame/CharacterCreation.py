@@ -9,13 +9,14 @@ from utilities.world import create_game_world
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
+from utilities.itemsHelp import ItemUtilities
 from newGame.initialiseNewGame import setup_gameworld, generate_spells
 from newGame.Items import ItemManager
 from newGame.ClassWeapons import WeaponClass
-from utilities.itemsHelp import ItemUtilities
 from components import mobiles
+from ui.build_library import display_build_library
 
-from ticronem import start_game, game_loop
+from ticronem import game_loop
 
 
 class CharacterCreation:
@@ -81,7 +82,7 @@ class CharacterCreation:
                         if selected_menu_option == 1:     # create random character
                             pass
                         if selected_menu_option == 2:     # use existing build
-                            pass
+                            display_build_library(root_console=root_console)
                         if selected_menu_option == 3:     # replay most recent character
                             pass
 
@@ -1488,7 +1489,7 @@ class CharacterCreation:
                     if event_action == 'enter':
                         if selected_menu_option == 0:   # accept character build and start game
                             # start_game(con=root_console, gameworld=gameworld, game_config=game_config)
-                            game_loop(con=root_console, gameworld=gameworld, game_config=game_config)
+                            game_loop(con=root_console, gameworld=gameworld)
                         if selected_menu_option == 1:   # save current build
                             pass
                         if selected_menu_option == 2:   # reject build and start again

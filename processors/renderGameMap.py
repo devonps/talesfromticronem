@@ -321,7 +321,7 @@ class RenderGameMap(esper.Processor):
 
         personal_details = '.12345.'
 
-        for spellSlot in range(1, spell_slots):
+        for spellSlot in range(1, spell_slots + 1):
             spell_slot_posx = spell_bar_across
 
             if spellSlot < 10:
@@ -340,15 +340,4 @@ class RenderGameMap(esper.Processor):
                                         fg=tcod.yellow)
 
             spell_bar_across += spell_box_width
-
-            # player = MobileUtilities.get_player_entity(self.gameworld, game_config)
-            # spell_bar_entity = MobileUtilities.get_spellbar_id_for_entity(gameworld=self.gameworld, entity=player)
-            # slot_component = SpellUtilities.get_spell_bar_slot_componet(self.gameworld, spell_bar=spell_bar_entity, slotid=spellSlot + 1)
-            # if slot_component == -1:
-            #     logger.warning('Could not get slot component from spell bar')
-            # else:
-            #     z = str(slot_component.sid)
-            #     zz = ord(z)
-            #     con.put_char(x=spell_slot_posx + 1, y=spell_bar_down, ch=zz)
-            #     con.put_char(x=spell_slot_posx + 2, y=spell_bar_down + 1, ch=38)
-            #     con.put_char(x=spell_slot_posx + 3, y=spell_bar_down, ch=42)
+            
