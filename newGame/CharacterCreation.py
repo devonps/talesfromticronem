@@ -2,7 +2,8 @@ import tcod
 import tcod.console
 
 from loguru import logger
-from utilities import configUtilities, colourUtilities
+from utilities import configUtilities, colourUtilities, world, buildLibrary
+from utilities.buildLibrary import BuildLibrary
 from utilities.display import draw_colourful_frame, pointy_menu, coloured_list, draw_clear_text_box, display_coloured_box
 from utilities.input_handlers import handle_game_keys
 from utilities.world import create_game_world
@@ -881,12 +882,31 @@ class CharacterCreation:
         # get player entity
         player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
+        # get build entity
+        build_entity = BuildLibrary.create_build_entity(gameworld=gameworld)
+
         # create starting armour from armourset and prefix
         this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=armourset, prefix=armour_prefix, game_config=game_config)
 
         ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=this_armourset)
 
         MobileUtilities.calculate_derived_attributes(gameworld=gameworld, entity=player)
+
+        # update buildcode
+        if armour_prefix.lower() == 'giver':
+            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='A')
+        if armour_prefix.lower() == 'healer':
+            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='B')
+        if armour_prefix.lower() == 'malign':
+            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='C')
+        if armour_prefix.lower() == 'mighty':
+            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='D')
+        if armour_prefix.lower() == 'precise':
+            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='E')
+        if armour_prefix.lower() == 'resilient':
+            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='F')
+        if armour_prefix.lower() == 'vital':
+            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='G')
 
         spellfile = MobileUtilities.get_character_class_spellfilename(gameworld, player)
         class_component = MobileUtilities.get_character_class(gameworld, player)
@@ -902,6 +922,14 @@ class CharacterCreation:
             created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand, game_config=game_config)
             weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
 
+            if weapon_type == 'staff':
+                BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='C')
+                BuildLibrary.set_build_off_hand(gameworld=gameworld, entity=build_entity, label='C')
+
+            if weapon_type == 'sword':
+                BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='A')
+                BuildLibrary.set_build_off_hand(gameworld=gameworld, entity=build_entity, label='A')
+
             # parameters are: gameworld, weapon object, weapon type as a string, mobile class
             logger.info('Loading the {} with the necessary spells', weapon_type)
             WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
@@ -916,6 +944,15 @@ class CharacterCreation:
             created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand, game_config=game_config)
             weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
 
+            if weapon_type == 'wand':
+                BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='B')
+
+            if weapon_type == 'dagger':
+                BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='F')
+
+            if weapon_type == 'scepter':
+                BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='G')
+
             # parameters are: gameworld, weapon object, weapon type as a string, mobile class
             logger.info('Loading that weapon with the necessary spells')
             WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
@@ -928,6 +965,12 @@ class CharacterCreation:
             created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=off_hand,
                                                        game_config=game_config)
             weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
+
+            if weapon_type == 'rod':
+                BuildLibrary.set_build_off_hand(gameworld=gameworld, entity=build_entity, label='D')
+
+            if weapon_type == 'focus':
+                BuildLibrary.set_build_off_hand(gameworld=gameworld, entity=build_entity, label='E')
 
             # parameters are: gameworld, weapon object, weapon type as a string, mobile class
             logger.info('Loading that weapon with the necessary spells')
@@ -1239,18 +1282,63 @@ class CharacterCreation:
         selected_menu_option = 0
         not_ready_to_proceed = True
 
+        # get build entity
+        build_entity = BuildLibrary.create_build_entity(gameworld=gameworld)
+
         # personal information
         # name
         player_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player_entity)
         first_name = player_names[0]
         last_name = player_names[1]
+
+        BuildLibrary.set_build_name(gameworld=gameworld, entity=build_entity, label=first_name + ' ' + last_name)
+
         # gender
         player_gender = MobileUtilities.get_player_gender(gameworld=gameworld, entity=player_entity)
+
+        if player_gender == 'male':
+            BuildLibrary.set_build_gender(gameworld=gameworld, entity=build_entity, label='A')
+
+        if player_gender == 'female':
+            BuildLibrary.set_build_gender(gameworld=gameworld, entity=build_entity, label='B')
+
         # race
         racial_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player_entity)
         player_race = racial_details[0]
+
+        if player_race.lower() == 'dilga':
+            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='A')
+
+        if player_race.lower() == 'eskeri':
+            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='B')
+
+        if player_race.lower() == 'jogah':
+            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='C')
+
+        if player_race.lower() == 'oshun':
+            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='D')
+
         # class
         player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
+
+        if player_class == 'necromancer':
+            BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='A')
+
+        if player_class == 'witch doctor':
+            BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='B')
+
+        if player_class == 'druid':
+            BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='C')
+
+        if player_class == 'mesmer':
+            BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='D')
+
+        if player_class == 'elementalist':
+            BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='E')
+
+        if player_class == 'chronomancer':
+            BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='F')
+
         # personality
         player_personality = MobileUtilities.get_mobile_personality_title(gameworld=gameworld, entity=player_entity)
 
@@ -1466,6 +1554,7 @@ class CharacterCreation:
         character_display.print_box(x=display_off_wpn_x, y=display_off_wpn_y + 1, width=len(slot4_display), height=1, string=slot4_display)
         character_display.print_box(x=display_off_wpn_x, y=display_off_wpn_y + 2, width=len(slot5_display), height=1, string=slot5_display)
 
+        saved_build = False
         while not_ready_to_proceed:
             # blit changes to root console
             character_display.blit(dest=root_console, dest_x=5, dest_y=5)
@@ -1488,10 +1577,10 @@ class CharacterCreation:
                             selected_menu_option = 0
                     if event_action == 'enter':
                         if selected_menu_option == 0:   # accept character build and start game
-                            # start_game(con=root_console, gameworld=gameworld, game_config=game_config)
                             game_loop(con=root_console, gameworld=gameworld)
                         if selected_menu_option == 1:   # save current build
-                            pass
+                            if not saved_build:
+                                BuildLibrary.save_build_to_library(gameworld=gameworld)
                         if selected_menu_option == 2:   # reject build and start again
                             not_ready_to_proceed = False
                             MobileUtilities.unequip_all_weapons(gameworld=gameworld, entity=player_entity)

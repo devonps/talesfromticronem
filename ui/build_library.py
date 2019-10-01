@@ -1,15 +1,12 @@
 from loguru import logger
-from utilities import configUtilities
-from utilities import colourUtilities
+from utilities import configUtilities, colourUtilities
 from utilities.input_handlers import handle_game_keys
 from utilities.display import display_coloured_box, draw_colourful_frame
+from utilities.jsonUtilities import read_json_file
 
 import tcod
 import tcod.console
 import tcod.event
-
-from utilities.jsonUtilities import read_json_file
-from utilities.mobileHelp import MobileUtilities
 
 
 def display_build_library(root_console):
@@ -23,7 +20,6 @@ def display_build_library(root_console):
     build_library_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame','BUILD_LIBRARY_FRAME_WIDTH')
     build_library_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame','BUILD_LIBRARY_FRAME_HEIGHT')
     player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',parameter='CLASSESFILE')
-
     saved_build_template_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_TEMPLATE_WIDTH')
     saved_build_template_height = configUtilities.get_config_value_as_integer(game_config, 'newgame','BUILD_LIBRARY_TEMPLATE_HEIGHT')
     saved_build_template_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_TEMPLATE_Y')
@@ -38,6 +34,10 @@ def display_build_library(root_console):
     saved_build_template_info_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_TEMPLATE_INFO_Y')
     saved_build_avatar_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_AVATAR_X')
     saved_build_avatar_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_AVATAR_Y')
+    saved_build_code_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_CODE_X')
+    saved_build_code_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_CODE_Y')
+    saved_build_play_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_PLAY_X')
+    saved_build_play_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_PLAY_Y')
 
     personal_info = 'You are known as Steve D a, male, witch doctor from the Dilga race.'
 
@@ -49,8 +49,9 @@ def display_build_library(root_console):
     template_view_current_min = 1
     template_view_current_max = 10
     template_view_template_max = 100
-    selected_template = 0
+    selected_template = 1
     draw_template_ui = True
+    build_grid = []
 
     # load playable classes
     class_file = read_json_file(player_class_file)
@@ -70,7 +71,7 @@ def display_build_library(root_console):
                          title='[ Character Build Library ]', title_loc='centre',
                          title_decorator=False,
                          corner_decorator='', corner_studs='square',
-                         msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
+                         msg='ESC/ to go back, mouse to select.')
 
     while build_library_is_displayed:
         if draw_template_ui:
@@ -119,21 +120,22 @@ def display_build_library(root_console):
                 build_library_console.print(x=saved_build_page_max_x, y=saved_build_pagination_y, string='NEXT PAGE',
                                             fg=colourUtilities.YELLOW)
 
-
             # display class filter options
             for clfilter in range(len(playable_classes)):
                 build_library_console.print(x=saved_build_class_filter_x, y=saved_build_class_filter_y + clfilter, string=playable_classes[clfilter],
                                             fg=colourUtilities.BLUE)
 
-
             # display selected build template info
             build_library_console.print(x=saved_build_template_info_x, y=saved_build_template_info_y, string=personal_info,
                                         fg=colourUtilities.BLUE)
 
+            # display build code
+            build_library_console.print(x=saved_build_code_x, y=saved_build_code_y, string='BUILD CODE: ABCDEFGH',
+                                        fg=colourUtilities.YELLOW)
 
             # display PLAY button
-
-
+            build_library_console.print(x=saved_build_play_x, y=saved_build_play_y, string='START GAME',
+                                        fg=colourUtilities.RED)
 
             build_library_console.blit(dest=root_console, dest_x=5, dest_y=5)
             tcod.console_flush()
@@ -145,5 +147,9 @@ def display_build_library(root_console):
                 if event_action == 'quit':
                     build_library_is_displayed = False
 
-            if event_to_be_processed == 'mouse':
-                pass
+            if event_to_be_processed == 'mousebutton':
+                if event_action[0] == 'left':
+                    mx = event_action[1]
+                    my = event_action[2]
+                    logger.info('Mouse x {} ' + str(mx))
+                    logger.info('Mouse y {} ' + str(my))
