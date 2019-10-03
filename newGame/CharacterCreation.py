@@ -991,6 +991,7 @@ class CharacterCreation:
             # equip player with newly created starting weapon
             MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='both')
 
+
         if main_hand != '' and main_hand != off_hand:
             logger.info('creating a 1-handed weapon (main hand) for the player')
 
@@ -1658,15 +1659,29 @@ class CharacterCreation:
             off_hand_weapon_name = main_hand_weapon_name
             slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=4)
             slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=5)
+
+            slot1_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=both_weapon, power=player_power, slot=1) / player_armour)
+            slot2_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=both_weapon, power=player_power, slot=2) / player_armour)
+            slot3_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=both_weapon, power=player_power, slot=3) / player_armour)
+            slot4_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=both_weapon, power=player_power, slot=4) / player_armour)
+            slot5_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=both_weapon, power=player_power, slot=5) / player_armour)
+
         else:
             main_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=main_weapon)
             slot1_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon, slotid=1)
             slot2_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon, slotid=2)
             slot3_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon, slotid=3)
 
+            slot1_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=main_weapon, power=player_power, slot=1) / player_armour)
+            slot2_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=main_weapon, power=player_power, slot=2) / player_armour)
+            slot3_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=main_weapon, power=player_power, slot=3) / player_armour)
+
             off_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=off_weapon)
             slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=off_weapon, slotid=4)
             slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=off_weapon, slotid=5)
+
+            slot4_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=off_weapon, power=player_power, slot=4) / player_armour)
+            slot5_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=off_weapon, power=player_power, slot=5) / player_armour)
 
         main_wpn_display = 'Main Hand: ' + main_hand_weapon_name
         slot1_display = 'Slot 1:' + slot1_name
@@ -1680,16 +1695,23 @@ class CharacterCreation:
         # main hand
         dmg_acr = display_wpn_w - len('damage')
         character_display.print_box(x=display_main_wpn_x, y=display_main_wpn_y, width=len(main_wpn_display), height=1, string=main_wpn_display)
-        character_display.print_box(x=dmg_acr, y=display_main_wpn_y, width=len('Damage'), height=1, string='Damage')
         character_display.print_box(x=display_main_wpn_x, y=display_main_wpn_y + 1, width=len(slot1_display), height=1, string=slot1_display)
-
         character_display.print_box(x=display_main_wpn_x, y=display_main_wpn_y + 2, width=len(slot2_display), height=1, string=slot2_display)
         character_display.print_box(x=display_main_wpn_x, y=display_main_wpn_y + 3, width=len(slot3_display), height=1, string=slot3_display)
+
+        character_display.print_box(x=dmg_acr, y=display_main_wpn_y, width=len('dph'), height=1, string='dph')
+        character_display.print_box(x=dmg_acr, y=display_main_wpn_y + 1, width=len(str(slot1_damage)), height=1, string=str(slot1_damage))
+        character_display.print_box(x=dmg_acr, y=display_main_wpn_y + 2, width=len(str(slot2_damage)), height=1, string=str(slot2_damage))
+        character_display.print_box(x=dmg_acr, y=display_main_wpn_y + 3, width=len(str(slot3_damage)), height=1, string=str(slot3_damage))
+
 
         # off hand
         character_display.print_box(x=display_off_wpn_x, y=display_off_wpn_y, width=len(off_wpn_display), height=1, string=off_wpn_display)
         character_display.print_box(x=display_off_wpn_x, y=display_off_wpn_y + 1, width=len(slot4_display), height=1, string=slot4_display)
         character_display.print_box(x=display_off_wpn_x, y=display_off_wpn_y + 2, width=len(slot5_display), height=1, string=slot5_display)
+
+        character_display.print_box(x=dmg_acr, y=display_off_wpn_y + 1, width=len(str(slot4_damage)), height=1, string=str(slot4_damage))
+        character_display.print_box(x=dmg_acr, y=display_off_wpn_y + 2, width=len(str(slot5_damage)), height=1, string=str(slot5_damage))
 
         saved_build = False
         while not_ready_to_proceed:

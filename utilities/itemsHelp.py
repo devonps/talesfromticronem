@@ -1,7 +1,10 @@
 import random
 
+from loguru import logger
+
 from components import items, mobiles
 from utilities import formulas
+from utilities.spellHelp import SpellUtilities
 
 
 class ItemUtilities:
@@ -200,25 +203,47 @@ class ItemUtilities:
         slot = slot_component.slot_five
         return int(slot)
 
+    @staticmethod
+    def get_weapon_damage_ranges(gameworld, weapon):
+        return gameworld.component_for_entity(weapon, items.DamageRange).ranges
 
     @staticmethod
-    def get_weapon_outgoing_damage(gameworld, weapon, weapon_slot):
+    def get_weapon_outgoing_damage(gameworld, weapon, power, slot):
         weapon_level = ItemUtilities.get_weapon_experience_values(gameworld=gameworld, entity=weapon)
         current_weapon_level = weapon_level[0]
-        weapon_type = ItemUtilities.get_weapon_type(gameworld=gameworld, weapon_entity=weapon)
 
-        weapon_strength = ItemUtilities.get_weapon_strength(weapon_type=weapon_type, weapon_level=current_weapon_level)
+        weapon_strength = ItemUtilities.get_weapon_strength(gameworld=gameworld, weapon=weapon, weapon_level=current_weapon_level)
 
-        formulas.base_direct_damage(weapon_strength=weapon_strength, power=0, spell_coefficient=0, target_armour=0)
+        spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=weapon, slotid=slot)
+
+        spell_coeff = float(SpellUtilities.get_spell_DamageCoeff(gameworld=gameworld, spell_entity=spell_entity))
+
+        outgoing_base_damage = formulas.outgoing_base_damage(weapon_strength=weapon_strength, power=power, spell_coefficient=spell_coeff)
+
+        # outgoing_base_damage = weapon_strength * power * spell_coeff
+
+        # logger.debug('weapon strength {}', weapon_strength)
+        # logger.debug('spell entity {}', spell_entity)
+        # logger.debug('spell coeff {}', spell_coeff)
+        # logger.debug('base damage {}', int(outgoing_base_damage))
+
+        return outgoing_base_damage
 
     @staticmethod
-    def get_weapon_strength(weapon_type, weapon_level):
+    def get_weapon_strength(gameworld, weapon, weapon_level):
         wpn_dmg_min = 0
         wpn_dmg_max = 0
-        if weapon_type == 'sword':
-            if weapon_level < 5:
-                wpn_dmg_min = 70
-                wpn_dmg_max = 83
+        range_chosen = False
+        weapon_damage_range = ItemUtilities.get_weapon_damage_ranges(gameworld=gameworld, weapon=weapon)
+        weapon_type = ItemUtilities.get_weapon_type(gameworld=gameworld, weapon_entity=weapon)
+
+        for lvl in weapon_damage_range:
+            wid = lvl['id']
+            if int(wid) > (weapon_level - 1) and range_chosen is False:
+                range_chosen = True
+                wpn_dmg_min = int(lvl['min'])
+                wpn_dmg_max = int(lvl['max'])
+                logger.info('Weapon damage range found: min {} max {}', str(wpn_dmg_min), str(wpn_dmg_max))
 
         if wpn_dmg_min == 0 or wpn_dmg_max == 0:
             # raise logger warning

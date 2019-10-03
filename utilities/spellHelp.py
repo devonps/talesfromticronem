@@ -126,3 +126,11 @@ class SpellUtilities:
     @staticmethod
     def get_spell_max_range(gameworld, spell_entity):
         return gameworld.component_for_entity(spell_entity, spells.MaxRange).max_range
+
+    @staticmethod
+    def get_spell_DamageCoeff(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.DamageCoefficient).is_set_to
+
+    @staticmethod
+    def get_spell_HealingCoeff(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.HealingCoef).value

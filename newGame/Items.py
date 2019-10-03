@@ -71,7 +71,12 @@ class ItemManager:
                     hallmark_slot_one='00',
                     hallmark_slot_two='00'))
 
+                dmgRange = weapon['damage_ranges']
+
+                gameworld.add_component(myweapon, items.DamageRange(ranges=weapon['damage_ranges']))
+
                 logger.info('Entity {} has been created using the {} template', myweapon, weapon['name'])
+                logger.info('Weapon damage ranges {}', dmgRange)
                 return myweapon  # this is the entity id for the newly created weapon
 
     @staticmethod
