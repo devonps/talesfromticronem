@@ -1,5 +1,7 @@
 from loguru import logger
 from utilities import configUtilities, colourUtilities
+from utilities.buildLibrary import BuildLibrary
+from utilities.externalfileutilities import Externalfiles
 from utilities.input_handlers import handle_game_keys
 from utilities.display import display_coloured_box, draw_colourful_frame
 from utilities.jsonUtilities import read_json_file
@@ -38,6 +40,7 @@ def display_build_library(root_console):
     saved_build_code_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_CODE_Y')
     saved_build_play_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_PLAY_X')
     saved_build_play_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_PLAY_Y')
+    fileName = configUtilities.get_config_value_as_string(game_config, 'default', 'BUILDLIBRARYFILE')
 
     personal_info = 'You are known as Steve D a, male, witch doctor from the Dilga race.'
 
@@ -46,12 +49,34 @@ def display_build_library(root_console):
     template_position_x = saved_build_template_original_x
     saved_build_template_x = saved_build_template_original_x
     saved_cur_avatar_x = saved_build_avatar_x
-    template_view_current_min = 1
-    template_view_current_max = 10
-    template_view_template_max = 100
     selected_template = 1
     draw_template_ui = True
     build_grid = []
+    build_codes = []
+    build_names = []
+    build_dates = []
+    build_times = []
+    buildCount = 0
+    template_view_current_min = 1
+
+    # load saved builds
+    buildContent = Externalfiles.load_existing_file(filename=fileName)
+    for row in buildContent:
+        logger.info('row {}', row)
+        elements = row.split(':')
+        build_codes.append(elements[0])
+        build_names.append(elements[1])
+        build_dates.append(elements[2])
+        build_times.append(elements[3])
+        decoded_build = BuildLibrary.decode_saved_build(build_codes[buildCount])
+        logger.info('Decoded build {}', decoded_build)
+        buildCount += 1
+
+    if buildCount < 10:
+        template_view_current_max = buildCount
+    else:
+        template_view_current_max = 10
+    template_view_template_max = buildCount
 
     # load playable classes
     class_file = read_json_file(player_class_file)
@@ -78,7 +103,7 @@ def display_build_library(root_console):
             draw_template_ui = False
             template_box_posx = saved_build_template_original_x
             # display build library grid
-            for template_id in range(1, 11):
+            for template_id in range(template_view_current_min, template_view_current_max + 1):
                 if template_id == selected_template:
                     fg = colourUtilities.YELLOW
                 else:
@@ -90,8 +115,11 @@ def display_build_library(root_console):
                                      fg=fg, bg=tcod.black)
 
                 # draw build template info/avatar here
-                build_library_console.print(x=saved_cur_avatar_x, y=saved_build_avatar_y, string='NECRO',
-                                            fg=fg)
+                # build_library_console.print(x=saved_cur_avatar_x, y=saved_build_avatar_y, string='NECRO',
+                #                             fg=fg)
+                if template_id < buildCount + 1:
+                    build_library_console.print(x=saved_cur_avatar_x, y=saved_build_avatar_y, string=build_names[template_id - 1],
+                                                fg=fg)
 
                 template_position_x += saved_build_template_width
                 saved_cur_avatar_x += saved_build_template_width

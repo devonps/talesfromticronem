@@ -33,6 +33,94 @@ class BuildLibrary:
         return build_entity
 
     @staticmethod
+    def decode_saved_build(buildcode):
+        decoded = []
+        if len(buildcode) < 7:
+            logger.warning('Incorrect buildcode length of {}', len(buildcode))
+            return 0
+
+        r = buildcode[0]
+        if r == 'A':
+            decoded.append('Dilga')
+        if r == 'B':
+            decoded.append('Eskeri')
+        if r == 'C':
+            decoded.append('Jogah')
+        if r == 'D':
+            decoded.append('Oshun')
+
+        c = buildcode[1]
+        if c == 'A':
+            decoded.append('necromancer')
+        if c == 'B':
+            decoded.append('witch doctor')
+        if c == 'C':
+            decoded.append('druid')
+        if c == 'D':
+            decoded.append('mesmer')
+        if c == 'E':
+            decoded.append('elementalist')
+        if c == 'F':
+            decoded.append('chronomancer')
+
+        j = buildcode[2]
+        if j == 'A':
+            decoded.append('defensive')
+        if j == 'B':
+            decoded.append('balanced')
+        if j == 'C':
+            decoded.append('offensive')
+
+        m = buildcode[3]
+        if m == 'A':
+            decoded.append('sword')
+        if m == 'B':
+            decoded.append('wand')
+        if m == 'C':
+            decoded.append('staff')
+        if m == 'F':
+            decoded.append('dagger')
+        if m == 'G':
+            decoded.append('scepter')
+
+        o = buildcode[4]
+        if o == 'A':
+            decoded.append('sword')
+        if o == 'C':
+            decoded.append('staff')
+        if o == 'D':
+            decoded.append('rod')
+        if o == 'E':
+            decoded.append('focus')
+        if o == 'F':
+            decoded.append('dagger')
+
+        a = buildcode[5]
+        if a == 'A':
+            decoded.append('giver')
+        if a == 'B':
+            decoded.append('healer')
+        if a == 'C':
+            decoded.append('malign')
+        if a == 'D':
+            decoded.append('mighty')
+        if a == 'E':
+            decoded.append('precise')
+        if a == 'F':
+            decoded.append('resilient')
+        if a == 'G':
+            decoded.append('vital')
+
+        g = buildcode[6]
+        if g == 'A':
+            decoded.append('male')
+        if g == 'B':
+            decoded.append('male')
+
+        return decoded
+
+
+    @staticmethod
     def save_build_to_library(gameworld):
 
         build_entity = BuildLibrary.get_build_entity(gameworld=gameworld)
