@@ -33,3 +33,5 @@ ENV/
 .scannerwork
 /.coverage
 /coverage_html/
+# build library
+/builds.txt

@@ -123,6 +123,13 @@ class Spells:
         self.slot_five_disabled = False
 
 
+# weapon damage range
+class DamageRange:
+    def __init__(self, ranges=''):
+        self.ranges = ranges
+
+
+
 ####################################################
 #
 #   ARMOUR

@@ -1,6 +1,10 @@
-from components import items, mobiles
-from utilities import world
+import random
+
 from loguru import logger
+
+from components import items, mobiles
+from utilities import formulas
+from utilities.spellHelp import SpellUtilities
 
 
 class ItemUtilities:
@@ -199,6 +203,60 @@ class ItemUtilities:
         slot = slot_component.slot_five
         return int(slot)
 
+    @staticmethod
+    def get_weapon_damage_ranges(gameworld, weapon):
+        return gameworld.component_for_entity(weapon, items.DamageRange).ranges
+
+    @staticmethod
+    def get_weapon_outgoing_damage(gameworld, weapon, power, slot):
+        weapon_level = ItemUtilities.get_weapon_experience_values(gameworld=gameworld, entity=weapon)
+        current_weapon_level = weapon_level[0]
+
+        weapon_strength = ItemUtilities.get_weapon_strength(gameworld=gameworld, weapon=weapon, weapon_level=current_weapon_level)
+
+        spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=weapon, slotid=slot)
+
+        spell_coeff = float(SpellUtilities.get_spell_DamageCoeff(gameworld=gameworld, spell_entity=spell_entity))
+
+        outgoing_base_damage = formulas.outgoing_base_damage(weapon_strength=weapon_strength, power=power, spell_coefficient=spell_coeff)
+
+        # outgoing_base_damage = weapon_strength * power * spell_coeff
+
+        # logger.debug('weapon strength {}', weapon_strength)
+        # logger.debug('spell entity {}', spell_entity)
+        # logger.debug('spell coeff {}', spell_coeff)
+        # logger.debug('base damage {}', int(outgoing_base_damage))
+
+        return outgoing_base_damage
+
+    @staticmethod
+    def get_weapon_strength(gameworld, weapon, weapon_level):
+        wpn_dmg_min = 0
+        wpn_dmg_max = 0
+        range_chosen = False
+        weapon_damage_range = ItemUtilities.get_weapon_damage_ranges(gameworld=gameworld, weapon=weapon)
+        weapon_type = ItemUtilities.get_weapon_type(gameworld=gameworld, weapon_entity=weapon)
+
+        for lvl in weapon_damage_range:
+            wid = lvl['id']
+            if int(wid) > (weapon_level - 1) and range_chosen is False:
+                range_chosen = True
+                wpn_dmg_min = int(lvl['min'])
+                wpn_dmg_max = int(lvl['max'])
+                logger.info('Weapon damage range found: min {} max {}', str(wpn_dmg_min), str(wpn_dmg_max))
+
+        if wpn_dmg_min == 0 or wpn_dmg_max == 0:
+            # raise logger warning
+            # return 0 damage
+            return 0
+        else:
+            return random.randrange(wpn_dmg_min, wpn_dmg_max)
+
+
+
+
+
+
 ####################################################
 #
 #   ARMOUR
@@ -367,9 +425,6 @@ class ItemUtilities:
 
             ItemUtilities.set_jewellery_equipped_status_to_true(gameworld, entity=trinket)
 
-            # if world.does_entity_have_component(gameworld=gameworld, entity=trinket, component=items.Location):
-            #     world.remove_component_from_entity(gameworld=gameworld, entity=trinket, component=items.Location)
-
     @staticmethod
     def unequp_piece_of_jewellery(gameworld, entity, bodylocation):
 
@@ -385,3 +440,39 @@ class ItemUtilities:
             gameworld.component_for_entity(entity, mobiles.Jewellery).neck = 0
 
         ItemUtilities.set_jewellery_equipped_status_to_false(gameworld, entity=entity)
+
+    @staticmethod
+    def add_jewellery_benefit(gameworld, entity, statbonus):
+
+        stat = statbonus[0]
+        benefit = statbonus[1]
+
+        if stat.lower() == 'condition damage':
+            currentStatBonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).conditionDamage
+            newStatBonus = currentStatBonus + benefit
+            gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).conditionDamage=newStatBonus
+
+        if stat.lower() == 'power':
+            currentStatBonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power
+            newStatBonus = currentStatBonus + benefit
+            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power=newStatBonus
+
+        if stat.lower() == 'vitality':
+            currentStatBonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality
+            newStatBonus = currentStatBonus + benefit
+            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality=newStatBonus
+
+        if stat.lower() == 'toughness':
+            currentStatBonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness
+            newStatBonus = currentStatBonus + benefit
+            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness=newStatBonus
+
+        if stat.lower() == 'healing power':
+            currentStatBonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healingPower
+            newStatBonus = currentStatBonus + benefit
+            gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healingPower=newStatBonus
+
+        if stat.lower() == 'precision':
+            currentStatBonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision
+            newStatBonus = currentStatBonus + benefit
+            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision=newStatBonus

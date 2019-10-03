@@ -28,9 +28,10 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def setup_class_attributes(gameworld, player, selected_class, health, spellfile):
+
         gameworld.component_for_entity(player, mobiles.CharacterClass).label = selected_class
         gameworld.component_for_entity(player, mobiles.CharacterClass).spellfile = spellfile
-        gameworld.component_for_entity(player, mobiles.CharacterClass).base_health = health
+        gameworld.component_for_entity(player, mobiles.CharacterClass).baseHealth = health
 
     @staticmethod
     def get_player_entity(gameworld, game_config):
@@ -218,7 +219,7 @@ class MobileUtilities(numbers.Real):
         player_entity = world.get_next_entity_id(gameworld=gameworld)
         gameworld.add_component(player_entity, mobiles.Name(first='undefined', suffix=''))
         gameworld.add_component(player_entity, mobiles.Describable())
-        gameworld.add_component(player_entity, mobiles.CharacterClass())
+        gameworld.add_component(player_entity, mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
         gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai))
         gameworld.add_component(player_entity, mobiles.Inventory())
         gameworld.add_component(player_entity, mobiles.Armour())
@@ -257,8 +258,6 @@ class MobileUtilities(numbers.Real):
     @staticmethod
     def set_spellbar_for_entity(gameworld, entity, spellbarEntity):
         gameworld.add_component(entity, mobiles.SpellBar(entityId=spellbarEntity))
-        # spellbar_component = gameworld.component_for_entity(entity, mobiles.SpellBar)
-        # spellbar_component.entityId = spellbarEntity
 
 
     @staticmethod
@@ -557,18 +556,37 @@ class MobileUtilities(numbers.Real):
     def get_mobile_power(gameworld, entity):
         primary_components = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
         return primary_components.power
+
+    @staticmethod
+    def set_mobile_power(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power = value
+
     @staticmethod
     def get_mobile_precision(gameworld, entity):
         primary_components = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
         return primary_components.precision
+
+    @staticmethod
+    def set_mobile_precision(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision = value
+
     @staticmethod
     def get_mobile_toughness(gameworld, entity):
         primary_components = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
         return primary_components.toughness
+
+    @staticmethod
+    def set_mobile_toughness(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness = value
+
     @staticmethod
     def get_mobile_vitality(gameworld, entity):
         primary_components = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
         return primary_components.vitality
+
+    @staticmethod
+    def set_mobile_vitality(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality = value
 
     #
     # Get secondary attributes
@@ -584,6 +602,10 @@ class MobileUtilities(numbers.Real):
         return secondary_components.conditionDamage
 
     @staticmethod
+    def set_mobile_condition_damage(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).conditionDamage = value
+
+    @staticmethod
     def get_mobile_expertise(gameworld, entity):
         secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         return secondary_components.expertise
@@ -597,6 +619,10 @@ class MobileUtilities(numbers.Real):
     def get_mobile_healing_power(gameworld, entity):
         secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         return secondary_components.healingPower
+
+    @staticmethod
+    def set_mobile_healing_power(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healingPower = value
 
     @staticmethod
     def is_entity_wearing_armour(gameworld, entity):
@@ -625,18 +651,18 @@ class MobileUtilities(numbers.Real):
 # Calculate derived attributes
 #
     @staticmethod
-    def calculate_derived_attributes(gameworld, entity):
-        MobileUtilities.calculate_armour_attribute(gameworld, entity)
-        MobileUtilities.calculate_boon_duration(gameworld, entity)
-        MobileUtilities.calculate_condition_duration(gameworld, entity)
-        MobileUtilities.calculate_critical_damage(gameworld, entity)
-        MobileUtilities.calculate_critical_hit_chance(gameworld, entity)
-        MobileUtilities.calculate_max_health(gameworld, entity)
-        MobileUtilities.calculate_current_health(gameworld, entity)
-        MobileUtilities.get_derived_special_bar_current_value(gameworld, entity)
+    def calculate_derived_attributes(gameworld, gameconfig):
+        MobileUtilities.calculate_armour_attribute(gameworld, gameconfig)
+        MobileUtilities.calculate_boon_duration(gameworld, gameconfig)
+        MobileUtilities.calculate_condition_duration(gameworld, gameconfig)
+        MobileUtilities.calculate_critical_damage(gameworld, gameconfig)
+        MobileUtilities.calculate_critical_hit_chance(gameworld, gameconfig)
+        MobileUtilities.calculate_max_health(gameworld, gameconfig)
+        MobileUtilities.calculate_current_health(gameworld, gameconfig)
+        MobileUtilities.get_derived_special_bar_current_value(gameworld, gameconfig)
 
     @staticmethod
-    def calculate_armour_attribute(gameworld, entity):
+    def calculate_armour_attribute(gameworld, gameconfig):
         """
         Need to calculate the 'defense' value first
         Then get the toughness attribute value
@@ -644,7 +670,7 @@ class MobileUtilities(numbers.Real):
         :param entity: integer: represents the entity in the gameworld
         :return: None
         """
-
+        entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
         # get toughness value from primary attributes
         primary_attribute_component = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
         toughness_value = primary_attribute_component.toughness
@@ -695,13 +721,9 @@ class MobileUtilities(numbers.Real):
         return defense_value
 
     @staticmethod
-    def calculate_boon_duration(gameworld, entity):
-        """
-        calculates the duration of the boon(s) when they are applied to the target entity
-        :param gameworld: object: the game world
-        :param entity: integer: represents the mobile in the gameworld
-        :return: None
-        """
+    def calculate_boon_duration(gameworld, gameconfig):
+
+        entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
         entity_secondary_component = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
 
         concentration_value = entity_secondary_component.concentration
@@ -711,16 +733,9 @@ class MobileUtilities(numbers.Real):
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).boonDuration = boon_duration_value
 
     @staticmethod
-    def calculate_critical_hit_chance(gameworld, entity):
-        """
-        calculates the chance the entity has to generate a critical hit.
-        The boon 'fury' gives a flat 20% increase
-        Precision, traits, spells, and weapons can all affect the value
+    def calculate_critical_hit_chance(gameworld, gameconfig):
 
-        :param gameword:
-        :param entity:
-        :return: None
-        """
+        entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
         base_value = 5  # every hit has a 5% chance of causing a critical hit
 
         status_effects_component = gameworld.component_for_entity(entity, mobiles.StatusEffects)
@@ -741,14 +756,9 @@ class MobileUtilities(numbers.Real):
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalChance = critical_chance_value
 
     @staticmethod
-    def calculate_critical_damage(gameworld, entity):
-        """
-        calculates the damage caused when a critical hit has landed
-        :param gameworld:
-        :param entity:
-        :return:
-        """
+    def calculate_critical_damage(gameworld, gameconfig):
 
+        entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
         base_value = 150
         entity_secondary_component = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
 
@@ -761,13 +771,9 @@ class MobileUtilities(numbers.Real):
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalDamage = critical_damage_value
 
     @staticmethod
-    def calculate_condition_duration(gameworld, entity):
-        """
-        caluclates the duration for conditions when they are applied to the target
-        :param gameworld:
-        :param entity:
-        :return:
-        """
+    def calculate_condition_duration(gameworld, gameconfig):
+
+        entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
         entity_secondary_component = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         expertise_value = entity_secondary_component.expertise
 
@@ -777,18 +783,17 @@ class MobileUtilities(numbers.Real):
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).conditionDuration = cond_duration_bonus
 
     @staticmethod
-    def calculate_max_health(gameworld, entity):
-        """
-        Calculates the health of the entity. Base health is based on character class & vitality.
-        Health value can be affected by traits, boons, conditions, etc.
+    def calculate_max_health(gameworld, gameconfig):
 
-        :param gameworld:
-        :param entity:
-        :return:
-        """
+        # get player entity id
+        entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
+
+        # get primary attributes component
         primary_attribute_component = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
-        entity_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
         vitality_value = primary_attribute_component.vitality
+
+        # get character class attributes component
+        entity_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
         class_base_health = entity_class_component.baseHealth
 
         vitality_calculated_health = vitality_value * 10
@@ -797,35 +802,27 @@ class MobileUtilities(numbers.Real):
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth = health_value
 
     @staticmethod
-    def calculate_current_health(gameworld, entity):
-        """
-        This method will take everything into account that could affect the entities health, and calculate
-        the current health
-        :param gameworld:
-        :param entity:
-        :return:
-        """
+    def calculate_current_health(gameworld, gameconfig):
+
+        entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
         current_health = 0
         maximum_health = gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth
-        # check boons
-        # check conditions
-        # check controls
+        # check boons --> increase health
+        # check conditions --> reduce health
+        # check controls --> can affect it either way
         # check traits
-        # check equipped items (armour, jewellery)
+        # check jewellery
+        # check armour
         # check weapons
 
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth = maximum_health
 
     @staticmethod
-    def calculate_current_mana(gameworld, entity):
-        """
-        This method will take everything into account that could affect the entities mana, and calculate
-        the current health
-        :param gameworld:
-        :param entity:
-        :return:
-        """
-        current_mana = MobileUtilities.get_derived_current_mana(gameworld, entity)
+    def calculate_current_mana(gameworld, gameconfig):
+
+        entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
+
+        current_mana = MobileUtilities.get_derived_current_mana(gameworld=gameworld, entity=entity)
         # check boons
         # check conditions
         # check controls
@@ -875,7 +872,8 @@ class MobileUtilities(numbers.Real):
         return gameworld.component_for_entity(entity, mobiles.ManaPool).maximum
 
     @staticmethod
-    def get_derived_special_bar_current_value(gameworld, entity):
+    def get_derived_special_bar_current_value(gameworld, gameconfig):
+        entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
         return gameworld.component_for_entity(entity, mobiles.SpecialBar).currentvalue
 
     @staticmethod

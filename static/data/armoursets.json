@@ -28,11 +28,11 @@
         "display": "sandals",
         "defense": 14
       },
-      "prefixcount": 7,
+      "prefixcount": 6,
       "attributebonuscount": 1,
-      "prefixlist": "Giver,Healer,Malign,Mighty,Precise,Resilient,Vital",
+      "prefixlist": "Resilient,Healer,Malign,Mighty,Precise,Vital",
       "prefix1": {
-        "name": "Giver",
+        "name": "Resilient",
         "flavour": "Take less damage, survive longer.",
         "attributename1": "toughness",
         "attributebonus1": 4
@@ -62,12 +62,6 @@
         "attributebonus1": 4
       },
       "prefix6": {
-        "name": "Resilient",
-        "flavour": "Stay safe, take less damage.",
-        "attributename1": "toughness",
-        "attributebonus1": 4
-      },
-      "prefix7": {
         "name": "Vital",
         "flavour": "Feel healthier, longer!",
         "attributename1": "vitality",

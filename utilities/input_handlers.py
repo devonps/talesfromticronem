@@ -109,9 +109,9 @@ def handle_game_keys():
         elif event.type == "MOUSEBUTTONDOWN":
             myevent = 'mousebutton'
             if event.button == tcod.event.BUTTON_LEFT:
-                action = 'left'
+                action = ('left', event.tile.x, event.tile.y)
             else:
-                action = 'right'
+                action = ('right', event.tile.x, event.tile.y)
         elif event.type == "MOUSEMOTION":
             pass
     return myevent, action

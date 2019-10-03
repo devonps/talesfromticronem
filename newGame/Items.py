@@ -55,11 +55,11 @@ class ItemManager:
                 # generate weapon specific components
                 gameworld.add_component(myweapon, items.WeaponType(label=weapon_type))
                 gameworld.add_component(myweapon, items.Spells(
-                    slot_one=weapon['spell_slot_one'],
-                    slot_two=weapon['spell_slot_two'],
-                    slot_three=weapon['spell_slot_three'],
-                    slot_four=weapon['spell_slot_four'],
-                    slot_five=weapon['spell_slot_five']))
+                    slot_one='00',
+                    slot_two='00',
+                    slot_three='00',
+                    slot_four='00',
+                    slot_five='00'))
 
                 gameworld.add_component(myweapon, items.Wielded(
                     hands=weapon['wielded_hands'],
@@ -68,10 +68,15 @@ class ItemManager:
                 gameworld.add_component(myweapon, items.Experience(current_level=1))
 
                 gameworld.add_component(myweapon, items.Hallmarks(
-                    hallmark_slot_one=weapon['hallmark_slot_one'],
-                    hallmark_slot_two=weapon['hallmark_slot_two']))
+                    hallmark_slot_one='00',
+                    hallmark_slot_two='00'))
+
+                dmgRange = weapon['damage_ranges']
+
+                gameworld.add_component(myweapon, items.DamageRange(ranges=weapon['damage_ranges']))
 
                 logger.info('Entity {} has been created using the {} template', myweapon, weapon['name'])
+                logger.info('Weapon damage ranges {}', dmgRange)
                 return myweapon  # this is the entity id for the newly created weapon
 
     @staticmethod
@@ -238,7 +243,8 @@ class ItemManager:
 
             return new_bag
 
-    def create_jewellery(gameworld, bodylocation, e_setting, e_hook, e_activator, game_config):
+    @staticmethod
+    def create_jewellery(gameworld, bodylocation, e_setting, e_hook, e_activator):
         """
         Will create a piece of jewellery the e_setting informs the tier, e.g. copper is only used in Tier 1 jewellery
         The e_activator is the gemstone - this drives the attribute bonuses
@@ -249,6 +255,7 @@ class ItemManager:
         :param e_activator: the gemstone used in the jewellery, drives the attribute bonus
         :return:
         """
+        game_config = configUtilities.load_config()
         trinket_setting = e_setting.lower()
         trinket_hook = e_hook.lower()
         trinket_activator = e_activator.lower()

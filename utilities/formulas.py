@@ -1,9 +1,9 @@
 
-def base_direct_damage(weapon_strength, power, spell_coefficient, target_armour):
-
-    base_damage = (weapon_strength * power * spell_coefficient) / target_armour
-
-    return base_damage
+def outgoing_base_damage(weapon_strength, power, spell_coefficient):
+    # weapon strength - random number representing potential damage for that weapon
+    # power - mobile's current power attribute
+    # spell coefficient - modifier taken from the spell
+    return int(weapon_strength * power * spell_coefficient)
 
 
 def calculate_duration_per_condition(condition_duration):
@@ -43,11 +43,7 @@ def critical_hit_damage_modifier(crit_hit_chance, base_damage, ferocity_stat):
 
 # TODO calculate defense forumla
 
+
 def calculate_defense():
     pass
 
-
-def calculate_armour(defense_stat, toughness_stat):
-    armour = defense_stat + toughness_stat
-
-    return armour

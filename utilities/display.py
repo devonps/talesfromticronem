@@ -1,70 +1,8 @@
 import tcod
 import tcod.console, tcod.event
-from utilities.input_handlers import get_user_input_entity, handle_mouse_in_menus, handle_game_keys
 
-from components import userInput
 from utilities import configUtilities, colourUtilities
 from loguru import logger
-
-
-def menu(con, header, options, width, screen_width, screen_height, posx, posy, foreground, key, mouse, gameworld, game_config):
-
-    if len(options) > 26:
-        raise ValueError('Cannot have a menu with more than 26 options.')
-
-    # calculate the total height for the menu header with one line per option
-    # header_height = tcod.console_get_height_rect(con, 0, 0, width, screen_height, header)
-    header_height = con.get_height_rect(x=0, y=0, width=width, height=screen_height, string=header)
-    if header == '':
-        header_height = 0
-    height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MENU_MAX_HEIGHT')
-
-
-    # create an off-screen window - this is where the menu options will be displayed
-    window = tcod.console.Console(width, height)
-
-    # print the header, with auto-wrap
-    window.print(x=0, y=0, string=header, bg_blend=tcod.BKGND_NONE, alignment=tcod.LEFT)
-
-    # print the options
-    y = header_height
-    letter_index = ord('a')
-    for option_text in options:
-        text = '(' + chr(letter_index) + ') ' + option_text
-        # tcod.console_print_ex(window, 0, y, tcod.BKGND_NONE, tcod.LEFT, text)
-        window.print(x=0, y=y, string=text, bg_blend=tcod.BKGND_NONE, alignment=tcod.LEFT)
-        y += 1
-        letter_index += 1
-
-    # compute x and y offsets
-    x_offset = posx
-    y_offset = posy + header_height
-    player_input_entity = get_user_input_entity(gameworld)
-
-    while True:
-        tcod.console_blit(window, 0, 0, width, height, 0, posx, posy, 1.0, 0.7)
-        tcod.console_flush()
-        tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS | tcod.EVENT_MOUSE, key, mouse)
-
-        ret_value = handle_mouse_in_menus(mouse=mouse, width=width, height=height, header_height=header_height, x_offset=x_offset, y_offset=y_offset)
-
-        if ret_value > -1:
-            gameworld.component_for_entity(player_input_entity, userInput.Keyboard).keypressed = chr(97 + ret_value)
-            gameworld.component_for_entity(player_input_entity, userInput.Mouse).lbutton = True
-            tcod.console_clear(window)
-            return ret_value
-
-        # convert the ASCII code to a menu option
-        index = key.c - ord('a')
-        key_char = chr(key.c)
-
-        if 0 <= index <= len(options):
-            window.clear()
-            # tcod.console_clear(window)
-            return key_char
-
-        if 0 <= index <= 26:
-            return None
 
 
 # the selected option is the choice from list_options that will be highlighted

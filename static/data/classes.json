@@ -46,7 +46,7 @@
       "rod": "true",
       "focus": "true"
     },
-    "health": "20"
+    "health": "28"
   },
   {
     "name": "witch doctor",
@@ -94,7 +94,7 @@
       "rod": "true",
       "focus": "true"
     },
-    "health": "20"
+    "health": "28"
   },
   {
     "name": "druid",
@@ -238,10 +238,10 @@
       "rod": "false",
       "focus": "true"
     },
-    "health": "20"
+    "health": "15"
     },
     {
-      "name": "chronomancer",
+    "name": "chronomancer",
     "spellfile": "chronomancer",
     "flavour": "The path of the Chronomancer allows them to rend both space and time, allowing them to focus on past versus future and fast versus slow as key themes",
     "balanced": {
@@ -286,7 +286,7 @@
       "rod": "true",
       "focus": "true"
     },
-    "health": "20"
+    "health": "15"
     }
 ]
 }
