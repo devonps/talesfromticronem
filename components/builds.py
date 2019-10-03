@@ -4,7 +4,7 @@ from datetime import datetime
 class DateTimeStamp:
     def __init__(self):
         self.dt = datetime.now().strftime('%d-%m-%Y')
-        self.tm = datetime.now().strftime('%H:%M:%S')
+        self.tm = datetime.now().time().strftime('%H:%M:%S')
 
 
 class BuildName:

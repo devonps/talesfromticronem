@@ -11,15 +11,7 @@
       "quality_level": "normal",
       "description": "a sword",
       "can_be_rendered": "True",
-      "wielded_hands": "both",
-      "spell_slot_one": "00",
-      "spell_slot_two": "00",
-      "spell_slot_three": "00",
-      "spell_slot_four": "00",
-      "spell_slot_five": "00",
-      "current_xp_level": "01",
-      "hallmark_slot_one": "00",
-      "hallmark_slot_two": "00"
+      "wielded_hands": "both"
     },
     {
       "name": "wand",
@@ -32,15 +24,7 @@
       "quality_level": "normal",
       "description": "a wand",
       "can_be_rendered": "True",
-      "wielded_hands": "main",
-      "spell_slot_one": "00",
-      "spell_slot_two": "00",
-      "spell_slot_three": "00",
-      "spell_slot_four": "00",
-      "spell_slot_five": "00",
-      "current_xp_level": "01",
-      "hallmark_slot_one": "00",
-      "hallmark_slot_two": "00"
+      "wielded_hands": "main"
     },
     {
       "name": "scepter",
@@ -53,15 +37,7 @@
       "quality_level": "normal",
       "description": "a scepter",
       "can_be_rendered": "True",
-      "wielded_hands": "main",
-      "spell_slot_one": "00",
-      "spell_slot_two": "00",
-      "spell_slot_three": "00",
-      "spell_slot_four": "00",
-      "spell_slot_five": "00",
-      "current_xp_level": "01",
-      "hallmark_slot_one": "00",
-      "hallmark_slot_two": "00"
+      "wielded_hands": "main"
     },
     {
       "name": "staff",
@@ -74,15 +50,7 @@
       "quality_level": "normal",
       "description": "a staff",
       "can_be_rendered": "True",
-      "wielded_hands": "both",
-      "spell_slot_one": "00",
-      "spell_slot_two": "00",
-      "spell_slot_three": "00",
-      "spell_slot_four": "00",
-      "spell_slot_five": "00",
-      "current_xp_level": "01",
-      "hallmark_slot_one": "00",
-      "hallmark_slot_two": "00"
+      "wielded_hands": "both"
     },
     {
       "name": "dagger",
@@ -95,15 +63,7 @@
       "quality_level": "normal",
       "description": "a dagger",
       "can_be_rendered": "True",
-      "wielded_hands": "both",
-      "spell_slot_one": "00",
-      "spell_slot_two": "00",
-      "spell_slot_three": "00",
-      "spell_slot_four": "00",
-      "spell_slot_five": "00",
-      "current_xp_level": "01",
-      "hallmark_slot_one": "00",
-      "hallmark_slot_two": "00"
+      "wielded_hands": "both"
     },
     {
       "name": "rod",
@@ -116,15 +76,7 @@
       "quality_level": "normal",
       "description": "a rod",
       "can_be_rendered": "True",
-      "wielded_hands": "off",
-      "spell_slot_one": "00",
-      "spell_slot_two": "00",
-      "spell_slot_three": "00",
-      "spell_slot_four": "00",
-      "spell_slot_five": "00",
-      "current_xp_level": "01",
-      "hallmark_slot_one": "00",
-      "hallmark_slot_two": "00"
+      "wielded_hands": "off"
     },
     {
       "name": "focus",
@@ -137,15 +89,7 @@
       "quality_level": "normal",
       "description": "a focus",
       "can_be_rendered": "True",
-      "wielded_hands": "off",
-      "spell_slot_one": "00",
-      "spell_slot_two": "00",
-      "spell_slot_three": "00",
-      "spell_slot_four": "00",
-      "spell_slot_five": "00",
-      "current_xp_level": "01",
-      "hallmark_slot_one": "00",
-      "hallmark_slot_two": "00"
+      "wielded_hands": "off"
     }
   ]
 }

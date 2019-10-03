@@ -257,7 +257,7 @@ class RenderGameMap(esper.Processor):
         px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_X')
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_Y')
         bd2 = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_D')
-        player_current_mana = MobileUtilities.calculate_current_mana(self.gameworld, player_entity)
+        player_current_mana = MobileUtilities.calculate_current_mana(self.gameworld, gameconfig=game_config)
         player_maximum_mana = MobileUtilities.get_derived_maximum_mana(self.gameworld, player_entity)
 
         current_mana_percentage = MobileUtilities.get_number_as_a_percentage(player_current_mana, player_maximum_mana)
@@ -270,7 +270,7 @@ class RenderGameMap(esper.Processor):
         px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_X')
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_Y')
         bd2 = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_D')
-        psc = MobileUtilities.get_derived_special_bar_current_value(self.gameworld, player_entity)
+        psc = MobileUtilities.get_derived_special_bar_current_value(self.gameworld, gameconfig=game_config)
         psm = MobileUtilities.get_derived_special_bar_max_value(self.gameworld, player_entity)
 
         current_special_percentage = MobileUtilities.get_number_as_a_percentage(psc, psm)

@@ -31,7 +31,7 @@ class Race:
 
 
 class CharacterClass:
-    def __init__(self, label='undefined', base_health=0, style='balanced', spellfile=''):
+    def __init__(self, label='undefined', base_health=99, style='balanced', spellfile=''):
         self.label = label
         self.baseHealth = base_health
         self.style = style

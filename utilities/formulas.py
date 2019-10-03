@@ -1,6 +1,11 @@
 
 def base_direct_damage(weapon_strength, power, spell_coefficient, target_armour):
 
+    # weapon strength - random number representing potential damage for that weapon
+    # power - mobile's current power attribute
+    # spell coefficient - modifier taken from the spell
+    # target's armour - armour attribute of target
+
     base_damage = (weapon_strength * power * spell_coefficient) / target_armour
 
     return base_damage

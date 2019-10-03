@@ -1,5 +1,6 @@
 from components import builds
 from utilities import world
+from loguru import logger
 
 
 class BuildLibrary:
@@ -27,6 +28,7 @@ class BuildLibrary:
         gameworld.add_component(build_entity, builds.BuildArmour())
         gameworld.add_component(build_entity, builds.BuildGender())
         gameworld.add_component(build_entity, builds.BuildName())
+        gameworld.add_component(build_entity, builds.DateTimeStamp())
 
         return build_entity
 
@@ -35,6 +37,28 @@ class BuildLibrary:
 
         build_entity = BuildLibrary.get_build_entity(gameworld=gameworld)
 
+        buildCode = BuildLibrary.get_build_race(gameworld=gameworld, entity=build_entity)
+        buildCode += BuildLibrary.get_build_class(gameworld=gameworld, entity=build_entity)
+        buildCode += BuildLibrary.get_build_jewellery(gameworld=gameworld, entity=build_entity)
+        buildCode += BuildLibrary.get_build_main_hand(gameworld=gameworld, entity=build_entity)
+        buildCode += BuildLibrary.get_build_off_hand(gameworld=gameworld, entity=build_entity)
+        buildCode += BuildLibrary.get_build_armour(gameworld=gameworld, entity=build_entity)
+        buildCode += BuildLibrary.get_build_gender(gameworld=gameworld, entity=build_entity)
+        build_name = BuildLibrary.get_build_name(gameworld=gameworld, entity=build_entity)
+        build_date = BuildLibrary.get_build_date(gameworld=gameworld, entity=build_entity)
+        build_time = BuildLibrary.get_build_time(gameworld=gameworld, entity=build_entity)
+        build_info = buildCode + ':' + build_name + ':' + build_date + ':' + build_time
+
+        return build_info
+
+    @staticmethod
+    def get_build_date(gameworld, entity):
+        return gameworld.component_for_entity(entity, builds.DateTimeStamp).dt
+
+
+    @staticmethod
+    def get_build_time(gameworld, entity):
+        return gameworld.component_for_entity(entity, builds.DateTimeStamp).tm
 
 
     @staticmethod
@@ -92,3 +116,11 @@ class BuildLibrary:
     @staticmethod
     def get_build_class(gameworld, entity):
         return gameworld.component_for_entity(entity, builds.BuildClass).label
+
+    @staticmethod
+    def set_build_jewellery(gameworld, entity, label):
+        gameworld.component_for_entity(entity, builds.BuildJewellery).label = label
+
+    @staticmethod
+    def get_build_jewellery(gameworld, entity):
+        return gameworld.component_for_entity(entity, builds.BuildJewellery).label

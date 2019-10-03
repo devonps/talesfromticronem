@@ -24,7 +24,7 @@ def new_game():
     con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
     con_height = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_HEIGHT')
 
-    fileName = 'builds.txt'
+    fileName = configUtilities.get_config_value_as_string(game_config, 'default', 'BUILDLIBRARYFILE')
 
     # does file exist
     fileExists = Externalfiles.does_file_exist(fileName)
