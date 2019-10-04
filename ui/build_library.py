@@ -3,12 +3,21 @@ from utilities import configUtilities, colourUtilities
 from utilities.buildLibrary import BuildLibrary
 from utilities.externalfileutilities import Externalfiles
 from utilities.input_handlers import handle_game_keys
-from utilities.display import display_coloured_box, draw_colourful_frame
+from utilities.display import display_coloured_box, draw_colourful_frame, draw_clear_text_box
 from utilities.jsonUtilities import read_json_file
-
 import tcod
 import tcod.console
 import tcod.event
+
+
+class Build:
+    BUILDRACE = 0
+    BUILDCLASS = 1
+    BUILDJEWELLERY = 2
+    BUILDMAINHAND = 3
+    BUILDOFFHAND = 4
+    BUILDARMOUR = 5
+    BUILDGENDER = 6
 
 
 def display_build_library(root_console):
@@ -42,35 +51,51 @@ def display_build_library(root_console):
     saved_build_play_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_PLAY_Y')
     fileName = configUtilities.get_config_value_as_string(game_config, 'default', 'BUILDLIBRARYFILE')
 
-    personal_info = 'You are known as Steve D a, male, witch doctor from the Dilga race.'
+    personal_info = 'You are known as '
 
     playable_classes = []
     build_library_is_displayed = True
     template_position_x = saved_build_template_original_x
     saved_build_template_x = saved_build_template_original_x
     saved_cur_avatar_x = saved_build_avatar_x
-    selected_template = 1
+    selected_build = 0
+    build_grid_selected = 1
     draw_template_ui = True
-    build_grid = []
     build_codes = []
     build_names = []
     build_dates = []
     build_times = []
+    decoded_build = []
     buildCount = 0
     template_view_current_min = 1
+    buildZoneLeft = 0
+    buildZoneRight = 1
+    buildZoneTop = 2
+    buildZoneBottom = 3
+    buildZoneXOffset = 5
+    buildZoneYOffset = 5
 
     # load saved builds
     buildContent = Externalfiles.load_existing_file(filename=fileName)
     for row in buildContent:
-        logger.info('row {}', row)
         elements = row.split(':')
         build_codes.append(elements[0])
         build_names.append(elements[1])
         build_dates.append(elements[2])
         build_times.append(elements[3])
-        decoded_build = BuildLibrary.decode_saved_build(build_codes[buildCount])
-        logger.info('Decoded build {}', decoded_build)
+        decoded_build.append(BuildLibrary.decode_saved_build(build_codes[buildCount]))
         buildCount += 1
+
+    personal_info += build_names[selected_build] + 'a ' + decoded_build[selected_build][Build.BUILDGENDER] + ' ' + decoded_build[selected_build][Build.BUILDCLASS]
+    personal_info += ' from the ' + decoded_build[selected_build][Build.BUILDRACE] + '.'
+    personal_info += ' You are wearing ' + decoded_build[selected_build][Build.BUILDARMOUR] + ' armour and a '
+    personal_info += decoded_build[selected_build][Build.BUILDJEWELLERY] + ' set of jewellery.'
+
+    if decoded_build[selected_build][Build.BUILDMAINHAND] == decoded_build[selected_build][Build.BUILDOFFHAND]:
+        personal_info += ' You are wielding a ' + decoded_build[selected_build][Build.BUILDMAINHAND] + ' in both hands.'
+    else:
+        personal_info += ' You are wielding a ' + decoded_build[selected_build][Build.BUILDMAINHAND] + ' in your main hand'
+        personal_info += ' and a ' + decoded_build[selected_build][Build.BUILDOFFHAND] + ' in your off hand.'
 
     if buildCount < 10:
         template_view_current_max = buildCount
@@ -101,10 +126,11 @@ def display_build_library(root_console):
     while build_library_is_displayed:
         if draw_template_ui:
             draw_template_ui = False
+            build_zones = []
             template_box_posx = saved_build_template_original_x
             # display build library grid
             for template_id in range(template_view_current_min, template_view_current_max + 1):
-                if template_id == selected_template:
+                if template_id == build_grid_selected:
                     fg = colourUtilities.YELLOW
                 else:
                     fg = colourUtilities.GREEN
@@ -113,17 +139,16 @@ def display_build_library(root_console):
                                      posx=template_box_posx, posy=saved_build_template_y,
                                      width=saved_build_template_width, height=saved_build_template_height,
                                      fg=fg, bg=tcod.black)
-
+                build_zones.append((buildZoneXOffset + template_box_posx, buildZoneXOffset + template_box_posx + 8,
+                                    buildZoneYOffset + saved_build_template_y, buildZoneYOffset + saved_build_template_y + 8))
                 # draw build template info/avatar here
-                # build_library_console.print(x=saved_cur_avatar_x, y=saved_build_avatar_y, string='NECRO',
-                #                             fg=fg)
                 if template_id < buildCount + 1:
                     build_library_console.print(x=saved_cur_avatar_x, y=saved_build_avatar_y, string=build_names[template_id - 1],
                                                 fg=fg)
 
                 template_position_x += saved_build_template_width
                 saved_cur_avatar_x += saved_build_template_width
-
+                logger.info('Build Zones {}', build_zones)
                 if template_id == 5:
                     saved_build_template_y += saved_build_template_height
                     template_position_x = saved_build_template_x
@@ -154,17 +179,24 @@ def display_build_library(root_console):
                                             fg=colourUtilities.BLUE)
 
             # display selected build template info
-            build_library_console.print(x=saved_build_template_info_x, y=saved_build_template_info_y, string=personal_info,
-                                        fg=colourUtilities.BLUE)
+
+            draw_clear_text_box(console=build_library_console,
+                                posx=saved_build_template_info_x, posy=saved_build_template_info_y,
+                                width=70, height=3,
+                                text=personal_info,
+                                fg=colourUtilities.BLUE, bg=colourUtilities.BLACK)
 
             # display build code
-            build_library_console.print(x=saved_build_code_x, y=saved_build_code_y, string='BUILD CODE: ABCDEFGH',
+            build_library_console.print(x=saved_build_code_x, y=saved_build_code_y, string='BUILD CODE: ' + build_codes[selected_build],
                                         fg=colourUtilities.YELLOW)
 
             # display PLAY button
+            bz = len(build_zones) + 1
+            build_zones.append((buildZoneXOffset + saved_build_play_x, buildZoneXOffset + saved_build_play_x + len('START GAME') - 1, saved_build_play_y + 4, (saved_build_play_y + 4) + 1))
             build_library_console.print(x=saved_build_play_x, y=saved_build_play_y, string='START GAME',
                                         fg=colourUtilities.RED)
 
+            # blit to the root console
             build_library_console.blit(dest=root_console, dest_x=5, dest_y=5)
             tcod.console_flush()
 
@@ -181,3 +213,8 @@ def display_build_library(root_console):
                     my = event_action[2]
                     logger.info('Mouse x {} ' + str(mx))
                     logger.info('Mouse y {} ' + str(my))
+                    for zone in range(len(build_zones)):
+                        if build_zones[zone][buildZoneLeft] <= mx <= build_zones[zone][buildZoneRight]:
+                            if build_zones[zone][buildZoneTop] <= my <= build_zones[zone][buildZoneBottom]:
+                                logger.info('Zone {} clicked', zone)
+
