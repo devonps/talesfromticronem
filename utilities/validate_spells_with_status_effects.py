@@ -7,7 +7,7 @@ from utilities.jsonUtilities import read_json_file
 
 def validate_spells(game_config):
 
-    classes = ['necromancer', 'witchdoctor', 'mesmer']
+    classes = ['necromancer', 'witchdoctor', 'illusionist']
 
     for playerclass in classes:
         spellsfile = playerclass.upper() + '_SPELLSFILE'

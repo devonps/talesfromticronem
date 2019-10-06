@@ -18,7 +18,7 @@
           "default": "You will not hit me",
           "necromancer": "",
           "witchdoctor": "",
-          "mesmer": "",
+          "illusionist": "",
           "elementalist": "",
           "druid": ""
         }
@@ -43,7 +43,7 @@
           "default": "You're so slow!",
           "necromancer": "",
           "witchdoctor": "",
-          "mesmer": "",
+          "illusionist": "",
           "elementalist": "",
           "druid": ""
         }
@@ -68,7 +68,7 @@
           "default": "fury rising!",
           "necromancer": "Kill 'em all",
           "witchdoctor": "Urge to kill rising",
-          "mesmer": "Feel the fury",
+          "illusionist": "Feel the fury",
           "elementalist": "Rage at maximum",
           "druid": "Anger is rising"
         }
@@ -93,7 +93,7 @@
           "default": "There's the power",
           "necromancer": "Time to do some real damage",
           "witchdoctor": "I feel...strong",
-          "mesmer": "Might makes right",
+          "illusionist": "Might makes right",
           "elementalist": "",
           "druid": ""
         }
@@ -118,7 +118,7 @@
           "default": "Armour enhanced",
           "necromancer": "",
           "witchdoctor": "",
-          "mesmer": "Strength is mine",
+          "illusionist": "Strength is mine",
           "elementalist": "Protected",
           "druid": "Safe from harm!"
         }
@@ -144,7 +144,7 @@
           "default": "Invigorating",
           "necromancer": "Getting healthy",
           "witchdoctor": "On the mend",
-          "mesmer": "Refreshing",
+          "illusionist": "Refreshing",
           "elementalist": "",
           "druid": "I'm renewed"
         }
@@ -168,7 +168,7 @@
           "default": "Ahh! You don't scare me",
           "necromancer": "",
           "witchdoctor": "",
-          "mesmer": "",
+          "illusionist": "",
           "elementalist": "",
           "druid": ""
         }
@@ -192,7 +192,7 @@
           "default": "Hit me, if you dare!",
           "necromancer": "",
           "witchdoctor": "",
-          "mesmer": "",
+          "illusionist": "",
           "elementalist": "",
           "druid": ""
         }
@@ -216,7 +216,7 @@
           "default": "You can't control me!",
           "necromancer": "",
           "witchdoctor": "",
-          "mesmer": "",
+          "illusionist": "",
           "elementalist": "",
           "druid": ""
         }
@@ -241,7 +241,7 @@
           "default": "Catch me if you can!",
           "necromancer": "Accelerating",
           "witchdoctor": "",
-          "mesmer": "Eat my dust!",
+          "illusionist": "Eat my dust!",
           "elementalist": "",
           "druid": ""
         }
