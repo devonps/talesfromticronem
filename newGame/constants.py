@@ -149,7 +149,7 @@
 # playable_races = ['human', 'elf', 'orc', 'troll']
 #
 # # playable classes
-# character_classes = ['necromancer', 'witch doctor', 'druid', 'mesmer', 'elementalist', 'chronomancer']
+# character_classes = ['necromancer', 'witch doctor', 'druid', 'illusionist', 'elementalist', 'chronomancer']
 #
 # playable_classes = ['necromancer']
 #

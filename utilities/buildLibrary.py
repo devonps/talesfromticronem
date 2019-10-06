@@ -57,7 +57,7 @@ class BuildLibrary:
         if c == 'C':
             decoded.append('druid')
         if c == 'D':
-            decoded.append('mesmer')
+            decoded.append('illusionist')
         if c == 'E':
             decoded.append('elementalist')
         if c == 'F':

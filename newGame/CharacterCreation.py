@@ -1459,7 +1459,7 @@ class CharacterCreation:
         if player_class == 'druid':
             BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='C')
 
-        if player_class == 'mesmer':
+        if player_class == 'illusionist':
             BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='D')
 
         if player_class == 'elementalist':
