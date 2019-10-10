@@ -4,6 +4,7 @@ import tcod
 from components import mobiles, items
 from utilities import configUtilities, colourUtilities
 from utilities.display import display_coloured_box
+from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 from loguru import logger
@@ -19,8 +20,8 @@ class RenderGameMap(esper.Processor):
         # GUI viewport and message box borders
         self.render_viewport(self.con, game_config)
         # self.render_message_box(self.con, game_config, self.gameworld)
-        self.render_spell_bar(self, self.con, game_config)
-        self.render_player_status_effects(self, self.con, game_config)
+        self.render_spell_bar(self, self.con)
+        # self.render_player_status_effects(self, self.con, game_config)
         self.render_player_vitals(self, self.con, game_config)
 
         # render the game map
@@ -175,8 +176,6 @@ class RenderGameMap(esper.Processor):
             bg_blend=tcod.BKGND_DEFAULT
         )
 
-
-
     @staticmethod
     def render_player_status_effects(self, con, game_config):
         # draw the boon, condition, and control bar borders (horizontal)
@@ -243,42 +242,72 @@ class RenderGameMap(esper.Processor):
     @staticmethod
     def render_health_bar(self, player_derived_attributes_component, game_config):
 
-        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_X')
-        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_Y')
-        bd2 = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_D')
+        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HEALTH_BAR_X')
+        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HEALTH_BAR_Y')
+        wd = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HEALTH_BAR_W')
         current_health = player_derived_attributes_component.currentHealth
         maximum_health = player_derived_attributes_component.maximumHealth
         current_health_percentage = MobileUtilities.get_number_as_a_percentage(current_health, maximum_health)
 
-        self.render_v_bar(con=self.con, posx=px, posy=py, depth=bd2, border_colour=tcod.darker_gray)
-        self.render_player_vertical_bar_content(self, 0, current_health_percentage, tcod.red, tcod.black, game_config)
+        self.con.draw_frame(x=px, y=py, width=wd, height=3, title='', fg=colourUtilities.WHITE, bg_blend=tcod.BKGND_DEFAULT)
+
+        bar_count = int(MobileUtilities.get_bar_count(current_health_percentage, wd - 2))
+
+        hlth = px + 1
+
+        for x in range(bar_count):
+            self.con.print(x=hlth + x, y=py + 1, string=chr(219), fg=colourUtilities.WHITE, bg=colourUtilities.RED)
+
+        health = str(current_health) + ' / ' + str(maximum_health)
+        self.con.print(x=int(wd/2), y=py + 1, string=health, fg=colourUtilities.WHITE, bg_blend=tcod.BKGND_SET)
+
 
     @staticmethod
     def render_mana_bar(self, player_entity, game_config):
 
-        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_X')
-        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_Y')
-        bd2 = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_D')
+        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MANA_BAR_X')
+        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MANA_BAR_Y')
+        wd = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MANA_BAR_W')
         player_current_mana = MobileUtilities.calculate_current_mana(self.gameworld, gameconfig=game_config)
         player_maximum_mana = MobileUtilities.get_derived_maximum_mana(self.gameworld, player_entity)
 
         current_mana_percentage = MobileUtilities.get_number_as_a_percentage(player_current_mana, player_maximum_mana)
 
-        self.render_v_bar(con=self.con, posx=px + 3, posy=py, depth=bd2, border_colour=tcod.darker_gray)
-        self.render_player_vertical_bar_content(self, 3, current_mana_percentage, tcod.blue, tcod.black, game_config)
+        self.con.draw_frame(x=px, y=py, width=wd, height=3, title='', fg=colourUtilities.WHITE,
+                            bg_blend=tcod.BKGND_DEFAULT)
+
+        bar_count = int(MobileUtilities.get_bar_count(current_mana_percentage, wd - 2))
+
+        hlth = px + 1
+
+        for x in range(bar_count):
+            self.con.print(x=hlth + x, y=py + 1, string=chr(219), fg=colourUtilities.WHITE, bg=colourUtilities.BLUE)
+
+        mana = str(player_current_mana) + ' / ' + str(player_maximum_mana)
+        self.con.print(x=px + int(wd / 2), y=py + 1, string=mana, fg=colourUtilities.WHITE, bg_blend=tcod.BKGND_SET)
 
     @staticmethod
     def render_f1_bar(self, player_entity, game_config):
-        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_X')
-        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_Y')
-        bd2 = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_D')
+        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='F1_BAR_X')
+        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='F1_BAR_Y')
+        wd = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='F1_BAR_W')
         psc = MobileUtilities.get_derived_special_bar_current_value(self.gameworld, gameconfig=game_config)
         psm = MobileUtilities.get_derived_special_bar_max_value(self.gameworld, player_entity)
 
         current_special_percentage = MobileUtilities.get_number_as_a_percentage(psc, psm)
 
-        self.render_player_vertical_bar_content(self, 6, current_special_percentage, tcod.white, tcod.black, game_config)
-        self.render_v_bar(con=self.con, posx=px + 6, posy=py, depth=bd2, border_colour=tcod.darker_gray)
+        self.con.draw_frame(x=px, y=py, width=wd, height=3, title='', fg=colourUtilities.WHITE, bg_blend=tcod.BKGND_DEFAULT)
+
+        bar_count = int(MobileUtilities.get_bar_count(current_special_percentage, wd - 2))
+
+        hlth = px + 1
+
+        for x in range(bar_count):
+            self.con.print(x=hlth + x, y=py + 1, string=chr(219), fg=colourUtilities.WHITE, bg=colourUtilities.GREEN)
+
+        mana = str(psc) + ' / ' + str(psm)
+        self.con.print(x=px + int(wd / 2), y=py + 1, string=mana, fg=colourUtilities.WHITE, bg_blend=tcod.BKGND_SET)
+
 
     @staticmethod
     def render_v_bar(con, posx, posy, depth, border_colour):
@@ -291,9 +320,6 @@ class RenderGameMap(esper.Processor):
             fg=border_colour,
             bg_blend=tcod.BKGND_DEFAULT
         )
-        # self.con.default_fg = border_colour
-        # tcod.console_print_frame(self.con, x=posx, y=posy, w=3, h=depth, clear=False, flag=tcod.BKGND_DEFAULT,
-        #                          fmt='')
 
     @staticmethod
     def render_player_vertical_bar_content(self, x, current_value, foreground, background, game_config):
@@ -310,7 +336,7 @@ class RenderGameMap(esper.Processor):
             tcod.console_put_char_ex(self.con, posx, posy - y, chr(176), foreground, background)
 
     @staticmethod
-    def render_spell_bar(self, con, game_config):
+    def render_spell_bar(self, con):
 
         game_config = configUtilities.load_config()
 
@@ -321,15 +347,35 @@ class RenderGameMap(esper.Processor):
         spell_bar_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BOX_DEPTH')
         spell_slots = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_SLOTS')
 
-        personal_details = '.12345.'
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+        weapons_list = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=player_entity)
+        main_weapon = weapons_list[0]
+        off_weapon = weapons_list[1]
+        both_weapon = weapons_list[2]
+        slot = ['NO SPEL'] * 10
 
-        for spellSlot in range(1, spell_slots + 1):
+        if both_weapon > 0:
+            slot[0] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=1)
+            slot[1] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=2)
+            slot[2] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=3)
+            slot[3] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=4)
+            slot[4] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=5)
+
+        else:
+            slot[0] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=1)
+            slot[1] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=2)
+            slot[2] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=3)
+            slot[3] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=off_weapon, slotid=4)
+            slot[4] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=off_weapon, slotid=5)
+
+        ps = 1
+        for spellSlot in range(spell_slots):
             spell_slot_posx = spell_bar_across
 
-            if spellSlot < 10:
-                sp = str(spellSlot)
+            if spellSlot < 9:
+                sp = str(ps)
             else:
-                sp = str(spellSlot)[-1:]
+                sp = str(ps)[-1:]
 
             display_coloured_box(console=con, title=sp,
                                  posx=spell_slot_posx, posy=spell_bar_down,
@@ -338,8 +384,9 @@ class RenderGameMap(esper.Processor):
 
             con.print_box(x=spell_slot_posx, y=spell_bar_down + 1,
                                         width=spell_bar_width, height=spell_bar_depth,
-                                        string=personal_details,
+                                        string=slot[spellSlot][:7],
                                         fg=tcod.yellow)
 
             spell_bar_across += spell_box_width
+            ps += 1
             
