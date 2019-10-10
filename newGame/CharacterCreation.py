@@ -1631,7 +1631,7 @@ class CharacterCreation:
                              height=display_wpn_h,
                              fg=display_char_attributes_fg,
                              bg=display_char_attributes_bg)
-        weapons_list = []
+
         weapons_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
         main_weapon = weapons_list[0]
         off_weapon = weapons_list[1]
