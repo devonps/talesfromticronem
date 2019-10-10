@@ -2,7 +2,6 @@ import tcod.console
 import tcod.event
 
 from newGame.initialiseNewGame import setup_gameworld
-from utilities.game_messages import MessageLog, Message
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
@@ -16,14 +15,9 @@ from newGame import newGame
 def game_loop(con, gameworld):
 
     game_config = configUtilities.load_config()
-
-    msg_panel_across_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_START_X')
-    msg_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_WIDTH')
-    msg_panel_lines = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_LINES')
     con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
     con_height = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_HEIGHT')
     player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-    message_log = MessageLog(x=msg_panel_across_pos, width=msg_panel_width, height=msg_panel_lines)
 
     # 'clears' the root console, therefore the other consoles are not showing
     con.clear()
@@ -32,7 +26,6 @@ def game_loop(con, gameworld):
     gameDisplay = tcod.console.Console(width=con_width, height=con_height, order='F')
 
     playing_game = True
-    message_log.add_message(message=Message('New game starting', color=tcod.yellow), game_config=game_config)
 
     currentScene = 1
     previousScene = 0

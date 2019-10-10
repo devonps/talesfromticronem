@@ -3,7 +3,7 @@ from mapRelated.gameMap import GameMap
 from processors.move_entities import MoveEntities
 from processors.renderGameMap import RenderGameMap
 from processors.updateEntities import UpdateEntitiesProcessor
-from utilities import configUtilities
+from utilities import configUtilities, colourUtilities
 from loguru import logger
 
 from utilities.externalfileutilities import Externalfiles

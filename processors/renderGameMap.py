@@ -18,7 +18,7 @@ class RenderGameMap(esper.Processor):
     def process(self, game_config):
         # GUI viewport and message box borders
         self.render_viewport(self.con, game_config)
-        self.render_message_box(self.con, game_config)
+        # self.render_message_box(self.con, game_config, self.gameworld)
         self.render_spell_bar(self, self.con, game_config)
         self.render_player_status_effects(self, self.con, game_config)
         self.render_player_vitals(self, self.con, game_config)
@@ -157,7 +157,7 @@ class RenderGameMap(esper.Processor):
         )
 
     @staticmethod
-    def render_message_box(con, game_config):
+    def render_message_box(con, game_config, gameworld):
         msg_start_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_START_X')
         msg_start_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_START_Y')
         msg_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_WIDTH')
@@ -174,6 +174,8 @@ class RenderGameMap(esper.Processor):
             fg=tcod.yellow,
             bg_blend=tcod.BKGND_DEFAULT
         )
+
+
 
     @staticmethod
     def render_player_status_effects(self, con, game_config):
