@@ -12,7 +12,6 @@ class BuildLibrary:
         for ent, build_date in gameworld.get_component(builds.DateTimeStamp):
             if build_date:
                 build = ent
-
         return build
 
     @staticmethod
@@ -115,7 +114,7 @@ class BuildLibrary:
         if g == 'A':
             decoded.append('male')
         if g == 'B':
-            decoded.append('male')
+            decoded.append('female')
 
         return decoded
 

@@ -130,7 +130,7 @@ class ItemManager:
 
                 for px in range(1, prefix_count + 1):
                     prefix_string = pxstring + str(px)
-                    if armourset[prefix_string]['name'] == prefix:
+                    if armourset[prefix_string]['name'].lower() == prefix.lower():
                         as_prefix = prefix
                         if attribute_bonus_count > 1:
                             att_bonus_string = attvaluestring + str(px)
@@ -171,6 +171,7 @@ class ItemManager:
 
         return armour_piece
 
+    @staticmethod
     def create_full_armour_set(gameworld, armourset, prefix, game_config):
         """
         This method creates a full set of armour (as game entities), it calls the method create_piece_of_armour

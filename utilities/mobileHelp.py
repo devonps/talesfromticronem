@@ -15,16 +15,21 @@ class MobileUtilities(numbers.Real):
     #
     @staticmethod
     def set_player_gender(gameworld, entity, gender):
-        gameworld.component_for_entity(entity, mobiles.Describable).gender = gender
+        describable_component = gameworld.component_for_entity(entity, mobiles.Describable)
+        describable_component.gender = gender
 
     @staticmethod
     def get_player_gender(gameworld, entity):
-        return gameworld.component_for_entity(entity, mobiles.Describable).gender
+        gender = gameworld.component_for_entity(entity, mobiles.Describable).gender
+        return gender
 
     @staticmethod
     def setup_racial_attributes(gameworld, player, selected_race, race_size, bg):
-        gameworld.add_component(player, mobiles.Describable(background=bg))
-        gameworld.add_component(player, mobiles.Race(race=selected_race, size=race_size))
+        describable_component = gameworld.component_for_entity(player, mobiles.Describable)
+        describable_component.background = bg
+        race_component = gameworld.component_for_entity(player, mobiles.Race)
+        race_component.race = selected_race
+        race_component.size = race_size
 
     @staticmethod
     def setup_class_attributes(gameworld, player, selected_class, health, spellfile):
@@ -218,7 +223,7 @@ class MobileUtilities(numbers.Real):
 
         player_entity = world.get_next_entity_id(gameworld=gameworld)
         gameworld.add_component(player_entity, mobiles.Name(first='undefined', suffix=''))
-        gameworld.add_component(player_entity, mobiles.Describable())
+        gameworld.add_component(player_entity, mobiles.Describable(description='something', glyph='@', foreground=tcod.orange, background=tcod.black, personality='Unpredictable', gender='neutral'))
         gameworld.add_component(player_entity, mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
         gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai))
         gameworld.add_component(player_entity, mobiles.Inventory())
@@ -235,6 +240,7 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(player_entity, mobiles.SecondaryAttributes())
         gameworld.add_component(player_entity, mobiles.DerivedAttributes())
         gameworld.add_component(player_entity, mobiles.SpellBar(entityId=0))
+        gameworld.add_component(player_entity, mobiles.Race())
 
         return player_entity
 

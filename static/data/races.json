@@ -27,7 +27,7 @@
       "flavour": "Jogah are by nature large, savage, and short tempered.",
       "prefix": "jogah",
       "bg_colour": "red",
-      "size": "big",
+      "size": "normal",
       "attributes": {
         "benefitName": "vitality",
         "benefitValue": "1"
@@ -38,7 +38,7 @@
       "flavour": "Oshun are raised as warriors from birth.",
       "prefix": "oshun",
       "bg_colour": "white",
-      "size": "huge",
+      "size": "normal",
       "attributes": {
         "benefitName": "toughness",
         "benefitValue": "1"

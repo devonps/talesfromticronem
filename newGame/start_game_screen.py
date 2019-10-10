@@ -2,6 +2,8 @@ import tcod
 import tcod.console
 
 from loguru import logger
+
+from ui.build_library import display_build_library
 from utilities import configUtilities
 from utilities.display import draw_colourful_frame, pointy_menu
 from utilities.input_handlers import handle_game_keys
@@ -58,7 +60,7 @@ class StartGame:
         while show_game_start_screen:
 
             pointy_menu(console=start_game_console, header='',
-                        menu_options=['New Game', 'Continue', 'Replay', 'Options', 'Help', 'Quit'], menu_id_format=True, menu_start_x=menu_start_x,
+                        menu_options=['New Game', 'Choose build from library', 'Replay', 'Options', 'Help', 'Quit'], menu_id_format=True, menu_start_x=menu_start_x,
                         menu_start_y=menu_start_y,  blank_line=True, selected_option=selected_menu_option)
 
             # blit changes to root console
@@ -84,8 +86,8 @@ class StartGame:
                             CharacterCreation.display_character_creation_options(root_console=root_console, game_config=game_config)
                             root_console.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
 
-                        if selected_menu_option == 1:     # continue existing game
-                            pass
+                        if selected_menu_option == 1:     # use existing build
+                            display_build_library(root_console=root_console)
                         if selected_menu_option == 2:     # Replay old game
                             pass
                         if selected_menu_option == 3:     # Game options
