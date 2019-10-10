@@ -8,7 +8,7 @@ class Name:
 
 
 class Describable:
-    def __init__(self, description='undefined', glyph='@', foreground=tcod.orange, background=tcod.black, personality='Unpredictable', gender=''):
+    def __init__(self, description='undefined', glyph='@', foreground=tcod.orange, background=tcod.black, personality='Unpredictable', gender='undefined'):
         self.description = description
         self.glyph = glyph
         self.foreground = foreground

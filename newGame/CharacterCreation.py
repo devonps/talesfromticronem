@@ -16,7 +16,6 @@ from newGame.initialiseNewGame import setup_gameworld, generate_spells
 from newGame.Items import ItemManager
 from newGame.ClassWeapons import WeaponClass
 from components import mobiles
-from ui.build_library import display_build_library
 
 from ticronem import game_loop
 
@@ -54,7 +53,7 @@ class CharacterCreation:
         while show_character_options:
             # place game menu options
             pointy_menu(console=character_console, header='',
-                        menu_options=['Create New Character', 'Random Character', 'Choose build from your library',
+                        menu_options=['Create New Character', 'Random Character',
                                       'Replay most recent character'], menu_id_format=True, menu_start_x=menu_start_x,
                         menu_start_y=menu_start_y,  blank_line=True, selected_option=selected_menu_option)
 
@@ -84,9 +83,7 @@ class CharacterCreation:
                             tcod.console_flush()
                         if selected_menu_option == 1:     # create random character
                             pass
-                        if selected_menu_option == 2:     # use existing build
-                            display_build_library(root_console=root_console)
-                        if selected_menu_option == 3:     # replay most recent character
+                        if selected_menu_option == 2:     # replay most recent character
                             pass
 
     @staticmethod
@@ -1251,8 +1248,7 @@ class CharacterCreation:
                                         MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,name=selected_name)
 
                                         CharacterCreation.display_starting_character(root_console=root_console,
-                                                                                     gameworld=gameworld,
-                                                                                     player=player_entity)
+                                                                                     gameworld=gameworld, player=player_entity)
                                 # display letters remaining
                                 if enter_name:
                                     letters_remaining = max_letters - letter_count
@@ -1282,8 +1278,7 @@ class CharacterCreation:
 
                                         MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,name=selected_name)
                                         CharacterCreation.display_starting_character(root_console=root_console,
-                                                                                     gameworld=gameworld,
-                                                                                     player=player_entity)
+                                                                                     gameworld=gameworld, player=player_entity)
                                 if event_to_be_processed == 'keypress':
                                     if event_action == 'quit':
                                         name_not_chosen = False
@@ -1471,15 +1466,10 @@ class CharacterCreation:
         # personality
         player_personality = MobileUtilities.get_mobile_personality_title(gameworld=gameworld, entity=player_entity)
 
-        personal_info = 'You are ' + first_name + ' ' + last_name + ', a ' + player_gender + ', ' + player_class + ' from ' + player_race + '.'
+        personal_info = 'You are ' + first_name + ' a ' + player_gender + ' ' + player_class + ' from ' + player_race + '.'
         personality_info = ' Your personality would be described as ' + player_personality.lower() + '.'
 
         personal_details = personal_info + personality_info
-
-        # display_coloured_box(console=character_display, title='Personal Info',
-        #                      posx=display_char_personal_x, posy=display_char_personal_y,
-        #                      width=display_char_personal_w, height=display_char_personal_h,
-        #                      fg=display_char_personal_fg, bg=display_char_personal_bg)
         character_display.print_box(x=display_char_personal_x, y=display_char_personal_y,
                                     width=display_char_personal_w, height=display_char_personal_h,
                                     string=personal_details,
@@ -1643,7 +1633,6 @@ class CharacterCreation:
                              bg=display_char_attributes_bg)
         weapons_list = []
         weapons_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
-        logger.info('Equipped weapons:{}', weapons_list)
         main_weapon = weapons_list[0]
         off_weapon = weapons_list[1]
         both_weapon = weapons_list[2]

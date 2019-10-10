@@ -364,6 +364,7 @@ class ItemUtilities:
         if bodylocation == 'feet':
             gameworld.component_for_entity(entity, mobiles.Armour).feet = 0
 
+    @staticmethod
     def equip_full_set_of_armour(gameworld, entity, armourset):
 
         if armourset[0] > 0:
