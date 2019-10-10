@@ -17,21 +17,24 @@ def process_status_effect(world, entity, spell_name, effects, game_config):
     # logger.info('---> Working on spell {} with {}', spell_name, effects)
     for key, val in effects[0].items():
         spell_not_added = True
-        if key.lower() in condis:
-            add_condition(world, entity, key.lower(), val)
-            spell_not_added = False
-        if key.lower() in boons:
-            add_boon(world, entity, key.lower(), val)
-            spell_not_added = False
-        if key.lower() in resources:
-            add_class_resource(world, entity, key.lower(), val)
-            spell_not_added = False
-        if spell_not_added:
-            logger.warning("{} effect * {} * has no associated code - check constants", spell_name, key.lower())
+
+        if key.lower() == 'name':
+            spell_effect = val.lower()
+
+        if key.lower() == 'value':
+            if spell_effect in condis:
+                add_condition(world, entity, spell_effect, key.lower())
+                spell_not_added = False
+            if spell_effect in boons:
+                add_boon(world, entity, spell_effect, key.lower())
+                spell_not_added = False
+            if spell_effect in resources:
+                add_class_resource(world, entity, spell_effect, key.lower())
+                spell_not_added = False
 
 
 def add_class_resource(world, entity, effect, resource_value):
-    if effect == 'lifeforce':
+    if effect == 'gain_lifeforce':
         world.add_component(entity, resources.Lifeforce(onhit=resource_value))
     if effect == 'damage':
         world.add_component(entity, resources.Damage(coefficient=resource_value))
@@ -39,7 +42,7 @@ def add_class_resource(world, entity, effect, resource_value):
         world.add_component(entity, resources.Strikesfor())
     if effect =='boonsconverted':
         world.add_component(entity, resources.ConvertBoons())
-    # logger.info('Class resource {} added to spell', effect)
+    logger.info('Class resource {} added to spell', effect)
 
 
 def add_condition(world, entity, effect, condi_value):
