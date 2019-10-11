@@ -1,0 +1,627 @@
+{
+  "spells": [
+    {
+      "name": "richoet",
+      "description": "Bounce a beam of light between multiple foes, gaining might for each foe hit.",
+      "short_description": "Send a beam of light to your foes, gaining might.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "wand",
+      "weapon_slot": "1",
+      "max_targets": "2",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.8",
+      "effects": [
+        {
+          "name": "might",
+          "value": "5"
+        }
+        ]
+    },
+    {
+      "name": "split thorns",
+      "description": "Send a spread of thorns towards your enemies, bleeding them as they are hit.",
+      "short_description": "Throw thorns at your enemies, causing them to bleed.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "wand",
+      "weapon_slot": "2",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "bleeding",
+          "value": "6"
+        }
+        ]
+    },
+    {
+      "name": "winters bite",
+      "description": "Throw a snow leopards claw at your enemy, chilling them and causing them weakness if hit.",
+      "short_description": "Chill and weaken your enemy with a snow leopards claw.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "wand",
+      "weapon_slot": "3",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.25",
+      "effects": [
+        {
+          "name": "chill",
+          "value": "4"
+        },
+        {
+          "name": "weakness",
+          "value": "10"
+        }
+        ]
+    },
+    {
+      "name": "boomerang",
+      "description": "Throw your wand at your enemies, damaging them, and pull them to you.",
+      "short_description": "Pull your enemies towards you.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "wand",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "ground_targeted": "True",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.2",
+      "effects": [
+        {
+          "name": "pull",
+          "value": "5"
+        }
+        ]
+    },
+    {
+      "name": "whirling defense",
+      "description": "Block projectiles whilst damaging nearby foes.",
+      "short_description": "Block projectiles whilst damaging nearby foes.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "wand",
+      "weapon_slot": "5",
+      "max_targets": "1",
+      "ground_targeted": "True",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "7.92",
+      "effects": [
+        {
+          "name": "retaliation",
+          "value": "4"
+        },
+        {
+          "name": "vulnerability",
+          "value": "10"
+        },
+        {
+          "name": "lives_for",
+          "value": "5"
+        }
+        ]
+    },
+    {
+      "name": "stalkers strike",
+      "description": "Stab and poison your foe, whilst evading their attacks.",
+      "short_description": "Stab and poison your foe, whilst evading their attacks.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "dagger",
+      "weapon_slot": "4",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.6",
+      "effects": [
+        {
+          "name": "poison",
+          "value": "3"
+        },
+        {
+          "name": "evade",
+          "value": "2"
+        },
+        {
+          "name": "poison",
+          "value": "2"
+        }
+        ]
+    },
+    {
+      "name": "crippling talon",
+      "description": "Throw a dagger to bleed and cripple your target.",
+      "short_description": "Throw a dagger to bleed and cripple your target.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "dagger",
+      "weapon_slot": "5",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.75",
+      "effects": [
+        {
+          "name": "cripple",
+          "value": "4"
+        },
+        {
+          "name": "bleeding",
+          "value": "6"
+        }
+        ]
+    },
+    {
+      "name": "Throw torch",
+      "description": "Throw your torch and burn your target.",
+      "short_description": "Throw your torch and burn your target.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "rod",
+      "weapon_slot": "4",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.666",
+      "effects": [
+        {
+          "name": "burning",
+          "value": "6"
+        }
+        ]
+    },
+    {
+      "name": "Bonfire",
+      "description": "Set a fire around you and burn your foes.",
+      "short_description": "Set a fire around you and burn your foes.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "rod",
+      "weapon_slot": "5",
+      "max_targets": "5",
+      "ground_targeted": "True",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.9",
+      "effects": [
+        {
+          "name": "burning",
+          "value": "9"
+        },
+        {
+          "name": "lives_for",
+          "value": "5"
+        }
+        ]
+    },
+    {
+      "name": "Solar beam",
+      "description": "Fire a concentrated beam at your foes, healing yourself.",
+      "short_description": "Fire a concentrated beam at your foes, healing yourself.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "staff",
+      "weapon_slot": "1",
+      "max_targets": "3",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.3",
+      "effects": [
+        {
+          "name": "gain_heal",
+          "value": "66"
+        }
+        ]
+    },
+    {
+      "name": "Astral wisp",
+      "description": "Send a wisp to attack your target.",
+      "short_description": "Send a wisp to attack your target.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "staff",
+      "weapon_slot": "2",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.8",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Ancestral grace",
+      "description": "Become a wisp, evade all attacks, travel to your target and heal.",
+      "short_description": "Become a wisp, evade all attacks, and heal at your target.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "staff",
+      "weapon_slot": "3",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.1",
+      "effects": [
+        {
+          "name": "gain_heal",
+          "value": "1450"
+        }
+        ]
+    },
+    {
+      "name": "Vine surge",
+      "description": "Send forth vines to immobilise your foes and damage them.",
+      "short_description": "Send forth vines to immobilise your foes and damage them.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "staff",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "immobilise",
+          "value": "3"
+        }
+        ]
+    },
+    {
+      "name": "Sublime conversion",
+      "description": "Summon an energy barrier, enemy projectiles heal you.",
+      "short_description": "Summon an energy barrier, enemy projectiles heal you.",
+      "type_of_spell": "combat",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "staff",
+      "weapon_slot": "5",
+      "max_targets": "1",
+      "ground_targeted": "True",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.1",
+      "effects": [
+        {
+          "name": "gain_heal",
+          "value": "162"
+        },
+        {
+          "name": "regeneration",
+          "value": "3"
+        }
+        ]
+    },
+    {
+      "name": "Healing spring",
+      "description": "Create a spring that heals you and clears conditions.",
+      "short_description": "Create a spring that heals you and clears conditions.",
+      "type_of_spell": "heal",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_touch",
+      "heal_duration": "instant",
+      "heal_coef": "1.0",
+      "effects": [
+        {
+          "name": "gain_health",
+          "value": "4920"
+        },
+                {
+          "name": "condiremoval",
+          "value": "99"
+        }
+      ]
+    },
+    {
+      "name": "Signet of Renewal",
+      "description": "Recover health over time, gain resistance.",
+      "short_description": "Recover health over time.",
+      "type_of_spell": "utility",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "8",
+      "spell_range": "spell_dist_touch",
+      "item_type": "jewellery",
+      "location": "earring1",
+      "effects": [
+        {
+          "name": "gain_heal",
+          "value": "70"
+        },
+        {
+          "name": "lives_for",
+          "value": "5"
+        },
+        {
+          "name": "resistance",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "name": "Signet of Stone",
+      "description": "Improve your toughness and take no damage.",
+      "short_description": "Improve your toughness and take no damage.",
+      "type_of_spell": "utility",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "5",
+      "spell_range": "spell_dist_touch",
+      "item_type": "jewellery",
+      "location": "earring2",
+      "effects": [
+        {
+          "name": "toughness",
+          "value": "4"
+        },
+        {
+          "name": "block",
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "name": "Signet of the Hunt",
+      "description": "Gain movement speed and your attacks are unblockable.",
+      "short_description": "Gain movement speed and your attacks are unblockable.",
+      "type_of_spell": "utility",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "5",
+      "spell_range": "spell_dist_touch",
+      "item_type": "jewellery",
+      "location": "pendant",
+      "effects": [
+        {
+          "name": "unblock",
+          "value": "2"
+        },
+        {
+          "name": "move_faster",
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "name": "Signet of the Wild",
+      "description": "Increase your ferocity and root your foes.",
+      "short_description": "Increase your ferocity and root your foes.",
+      "type_of_spell": "utility",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "6",
+      "spell_range": "spell_dist_touch",
+      "item_type": "jewellery",
+      "location": "ring1",
+      "effects": [
+        {
+          "name": "immobilise",
+          "value": "2"
+        },
+                {
+          "name": "swiftness",
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "name": "Frost Spirit",
+      "description": "Summon a frost spirit that chills nearby enemies and increases your damage.",
+      "short_description": "Summon a frost spirit that chills nearby enemies.",
+      "type_of_spell": "utility",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_touch",
+      "item_type": "jewellery",
+      "location": "ring2",
+      "effects": [
+        {
+          "name": "chilled",
+          "value": "3"
+        },
+        {
+          "name": "summon_frostspirit",
+          "value": "1"
+        },
+        {
+          "name": "damage_increase",
+          "value": "10"
+        },
+        {
+          "name": "lives_for",
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "name": "Stone Spirit",
+      "description": "Summon a stone spirit that grants you protection.",
+      "short_description": "Summon a stone spirit that grants you protection.",
+      "type_of_spell": "utility",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_touch",
+      "item_type": "armour",
+      "location": "head",
+      "effects": [
+        {
+          "name": "summon_stonespirit",
+          "value": "1"
+        },
+        {
+          "name": "protection",
+          "value": "5"
+        },
+        {
+          "name": "lives_for",
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "name": "Storm Spirit",
+      "description": "Summon a storm spirit that grants vulnerability to your foes.",
+      "short_description": "Summon a storm spirit that grants vulnerability to your foes.",
+      "type_of_spell": "utility",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_touch",
+      "item_type": "armour",
+      "location": "chest",
+      "effects": [
+        {
+          "name": "vulnerability",
+          "value": "3"
+        },
+        {
+          "name": "summon_stormspirit",
+          "value": "1"
+        },
+        {
+          "name": "lives_for",
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "name": "Sun Spirit",
+      "description": "Summon a sun spirit that inflicts burning on your foes.",
+      "short_description": "Summon a sun spirit that inflicts burning on your foes.",
+      "type_of_spell": "utility",
+      "class": "druid",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_touch",
+      "item_type": "armour",
+      "location": "legs",
+      "effects": [
+        {
+          "name": "burning",
+          "value": "3"
+        },
+        {
+          "name": "summon_sunspirit",
+          "value": "1"
+        },
+        {
+          "name": "lives_for",
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "name": "Muddy Terrain",
+      "description": "Use mud to cripple, immobilise, and slow your foes.",
+      "short_description": "Use mud to cripple, immobilize, and slow your foes.",
+      "type_of_spell": "utility",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "9",
+      "spell_range": "spell_dist_far",
+      "item_type": "armour",
+      "location": "feet",
+      "effects": [
+        {
+          "name": "cripple",
+          "value": "3"
+        },
+        {
+          "name": "immobilise",
+          "value": "3"
+        },
+        {
+          "name": "slow",
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "name": "Sharpening Stone",
+      "description": "Sharpen your weapon and inflict bleeding with your attacks.",
+      "short_description": "Sharpen your weapon and inflict bleeding with your attacks.",
+      "type_of_spell": "utility",
+      "class": "necromancer",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_touch",
+      "item_type": "armour",
+      "location": "hands",
+      "effects": [
+        {
+          "name": "bleeding",
+          "value": "3"
+        }
+      ]
+    }
+    ]
+}

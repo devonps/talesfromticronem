@@ -134,7 +134,7 @@
       }
     },
     "weapons": {
-      "sword": "true",
+      "sword": "false",
       "wand": "true",
       "scepter": "false",
       "staff": "true",

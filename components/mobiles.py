@@ -25,7 +25,7 @@ class Personality:
 
 
 class Race:
-    def __init__(self, race='human', size='normal'):
+    def __init__(self, race='undefined', size='normal'):
         self.label = race
         self.size = size
 
