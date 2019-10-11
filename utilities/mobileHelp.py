@@ -28,7 +28,7 @@ class MobileUtilities(numbers.Real):
         describable_component = gameworld.component_for_entity(player, mobiles.Describable)
         describable_component.background = bg
         race_component = gameworld.component_for_entity(player, mobiles.Race)
-        race_component.race = selected_race
+        race_component.label = selected_race
         race_component.size = race_size
 
     @staticmethod
@@ -240,7 +240,7 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(player_entity, mobiles.SecondaryAttributes())
         gameworld.add_component(player_entity, mobiles.DerivedAttributes())
         gameworld.add_component(player_entity, mobiles.SpellBar(entityId=0))
-        gameworld.add_component(player_entity, mobiles.Race())
+        gameworld.add_component(player_entity, mobiles.Race(race='', size=''))
 
         return player_entity
 
