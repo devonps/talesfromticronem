@@ -1,7 +1,11 @@
 import tcod.console
 import tcod.event
 
+from components import items
+from newGame.Items import ItemManager
+from ui.character_screen import display_hero_panel
 from newGame.initialiseNewGame import setup_gameworld
+from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
@@ -22,6 +26,17 @@ def game_loop(con, gameworld):
     # 'clears' the root console, therefore the other consoles are not showing
     con.clear()
     setup_gameworld(game_config)
+
+
+    # create some weapons and drop them on the ground
+
+    created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='wand', game_config=game_config)
+    gameworld.add_component(created_weapon, items.Location(x=0, y=0))
+    ItemUtilities.set_item_location(gameworld=gameworld, item_entity=created_weapon, posx=5, posy=2)
+
+    # created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='staff', game_config=game_config)
+    # created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='dagger', game_config=game_config)
+    # created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='rod', game_config=game_config)
 
     gameDisplay = tcod.console.Console(width=con_width, height=con_height, order='F')
 
@@ -61,6 +76,10 @@ def game_loop(con, gameworld):
                     currentScene += 1
                     if currentScene > 2:
                         currentScene = 1
+                if event_action == 'h':
+                    display_hero_panel(gameworld=gameworld, root_console=con)
+                if event_action == 'g':
+                    MobileUtilities.mobile_pick_up_item(gameworld=gameworld, mobile=player)
         #
         # get monsters intended action
         #

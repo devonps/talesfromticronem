@@ -34,8 +34,8 @@ class Describable:
 # obviously no location means the item is not on the game map
 class Location:
     def __init__(self, x=0, y=0):
-        self.posx = x
-        self.posy = y
+        self.x = x
+        self.y = y
 
 
 # what is the item made of

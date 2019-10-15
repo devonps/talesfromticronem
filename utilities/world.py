@@ -1,6 +1,6 @@
 import esper
 from loguru import logger
-from processors import move_entities, updateEntities, renderGameMap
+# from processors import move_entities, updateEntities, renderGameMap
 
 
 def create_game_world():
@@ -8,9 +8,10 @@ def create_game_world():
 
 
 def remove_all_processors(gameworld):
-    gameworld.remove_processor(renderGameMap.RenderGameMap)
-    gameworld.remove_processor(move_entities.MoveEntities)
-    gameworld.remove_processor(updateEntities.UpdateEntitiesProcessor)
+    # gameworld.remove_processor(renderGameMap.RenderGameMap)
+    # gameworld.remove_processor(move_entities.MoveEntities)
+    # gameworld.remove_processor(updateEntities.UpdateEntitiesProcessor)
+    pass
 
 
 def clear_world_database(gameworld):
