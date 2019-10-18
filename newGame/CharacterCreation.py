@@ -988,7 +988,6 @@ class CharacterCreation:
             # equip player with newly created starting weapon
             MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='both')
 
-
         if main_hand != '' and main_hand != off_hand:
             logger.info('creating a 1-handed weapon (main hand) for the player')
 
@@ -1037,7 +1036,6 @@ class CharacterCreation:
         logger.info('Loading spell bar based on equipped weapons')
         weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
         SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spell_bar_entity, wpns_equipped=weapons_equipped)
-
 
         # create jewellery pieces and equip them
         jewellery_package = BuildLibrary.get_build_jewellery(gameworld=gameworld, entity=build_entity)

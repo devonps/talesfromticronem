@@ -28,7 +28,7 @@ class RenderGameMap(esper.Processor):
         self.render_map(self.con, self.gameworld, game_config, self.game_map)
 
         # draw the entities
-        self.render_items(game_config, self.gameworld)
+        self.render_items(self.con, game_config, self.gameworld)
         self.render_entities(self.con, game_config, self.gameworld)
 
         # blit the console
@@ -108,15 +108,15 @@ class RenderGameMap(esper.Processor):
                 RenderGameMap.render_entity(con, draw_pos_x, draw_pos_y, desc.glyph, desc.foreground, desc.background)
 
     @staticmethod
-    def render_items(game_config, gameworld):
+    def render_items(con, game_config, gameworld):
         px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
 
         for ent, (rend, loc, desc) in gameworld.get_components(items.RenderItem, items.Location, items.Describable):
             if rend.isTrue:
-                draw_pos_x = px + loc.posx
-                draw_pos_y = py + loc.posy
-                RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
+                draw_pos_x = px + loc.x
+                draw_pos_y = py + loc.y
+                RenderGameMap.render_entity(con, draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
 
     @staticmethod
     def blit_the_console(con, game_config):

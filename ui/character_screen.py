@@ -1,9 +1,10 @@
 import tcod.event
+import tcod.console
 
-from utilities.display import display_coloured_box, draw_colourful_frame
+from utilities.display import display_coloured_box
 from utilities.itemsHelp import ItemUtilities
-from utilities import configUtilities
-from utilities import colourUtilities
+from utilities import configUtilities, colourUtilities
+from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 from utilities.input_handlers import handle_game_keys
 from loguru import logger
@@ -11,213 +12,10 @@ from loguru import logger
 from components import mobiles
 
 
-def display_inspect_panel(gameworld, display_mode, item_entity, game_config):
-    """
-
-    :param gameworld:
-    :param display_mode: inspect = full info, look = generic info, partial=limited
-    :param item_entity:
-    :return:
-    """
-
-    disp_inspect_panel = True
-    spell_display_index = 0
-    spell_display_index_max = 3
-
-    spell_display_mode = ['cast time  ','cool down  ','max targets','max range  ']
-
-    item_type = ItemUtilities.get_item_type(gameworld=gameworld, entity=item_entity)
-
-    insp_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_MAX_WIDTH')
-    insp_panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_MAX_HEIGHT')
-    insp_panel_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_LEFT_X')
-    insp_panel_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_LEFT_Y')
-    other_game_state = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='DISPLAY_GAME_MAP')
-    portrait_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_ITEM_PORTRAIT_X')
-    portrait_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_ITEM_PORTRAIT_Y')
-    portrait_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_ITEM_PORTRAIT_WIDTH')
-    portrait_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_ITEM_PORTRAIT_HEIGHT')
-
-    # create console & draw pretty frame
-    inspect_panel = tcod.console_new(insp_panel_width, insp_panel_height)
-    panel_msg = 'ESC to quit'
-
-    if display_mode == 'inspect':
-        panel_msg += ', arrows to change info'
-
-    while disp_inspect_panel:
-
-        draw_colourful_frame(console=inspect_panel, game_config=game_config, startx=0, starty=0,
-                             width=insp_panel_width, height=insp_panel_height,
-                             title='Inspect', title_loc='right', corner_decorator='',
-                             corner_studs='round', msg=panel_msg)
-
-        # draw item portrait
-        inspect_panel.draw_frame(x=portrait_start_x, y=portrait_start_y, width=portrait_width, height=portrait_height, title='Item', clear=True, fg=colourUtilities.GREENYELLOW, bg=colourUtilities.BLACK)
-        # display general item properties
-        item_display_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=item_entity)
-        item_description = ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
-        item_texture = ItemUtilities.get_item_texture(gameworld=gameworld, entity=item_entity)
-
-        item_general_info_x = portrait_start_x + portrait_width + 2
-
-        inspect_panel.print(x=item_general_info_x, y=portrait_start_y, string=item_display_name)
-        inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 1, string=item_description)
-        inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 2, string=item_texture)
-
-        # display specific item properties - defense values, bonuses,
-        if item_type == 'armour':
-            am_set_name = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=item_entity)
-            am_quality_level = ItemUtilities.get_item_quality(gameworld=gameworld, entity=item_entity)
-            am_weight = ItemUtilities.get_armour_piece_weight(gameworld=gameworld, entity=item_entity)
-            am_defense_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=item_entity)
-            am_major_attributes = ItemUtilities.get_armour_major_attributes(gameworld=gameworld, entity=item_entity)
-            am_minor_attributes = ItemUtilities.get_armour_minor_attributes(gameworld=gameworld, entity=item_entity)
-
-            major_attr = am_major_attributes[0] + ' +' + str(am_major_attributes[1])
-            minor_attr = am_minor_attributes[0] + ' +' + str(am_minor_attributes[1])
-
-            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 4, string=am_set_name)
-            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 5, string=am_quality_level)
-            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 6, string=am_weight)
-            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 7, string=str(am_defense_value))
-            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 8, string=major_attr)
-            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 9, string=minor_attr)
-
-        if item_type == 'jewellery':
-            jw_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=item_entity)
-
-            jewel_stat_bonus = jw_stat_bonus[0] + ' +' + str(jw_stat_bonus[1])
-            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 4, string=jewel_stat_bonus)
-        if item_type == 'weapon':
-            spell_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_SPELL_Y')
-            spell_name_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_SPELL_NAME')
-            spell_info_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='inspect', parameter='INSP_PANEL_SPELL_INFO')
-
-            wp_hallmarks = ItemUtilities.get_weapon_hallmarks(gameworld=gameworld, entity=item_entity)
-            hallmarks = 'no hallmarks'
-            wp_experience = ItemUtilities.get_weapon_experience_values(gameworld=gameworld, entity=item_entity)
-
-            wp_cur_exp_level = wp_experience[0]
-            wp_max_exp_level = wp_experience[1]
-
-            wp_exp = str(wp_cur_exp_level) + '/' + str(wp_max_exp_level)
-            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 4, string=wp_exp)
-            inspect_panel.print(x=item_general_info_x, y=portrait_start_y + 5, string=hallmarks)
-
-            inspect_panel.print(x=portrait_start_x, y=spell_y, string='Spell Slots', fg=colourUtilities.BLUE, bg=colourUtilities.BLACK)
-            inspect_panel.print(x=spell_info_x, y=spell_y, string=spell_display_mode[spell_display_index], fg=colourUtilities.YELLOW1, bg=colourUtilities.BLACK)
-
-            spell_slot_one = ItemUtilities.get_weapon_spell_slot_one_entity(gameworld=gameworld, entity=item_entity)
-            spell_y += 1
-            if spell_slot_one > 0:
-                slot_one_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=1)
-                spell_information = str(get_spell_additional_information(gameworld=gameworld, spell_entity=spell_slot_one, display_mode=spell_display_index))
-
-                inspect_panel.print(x=spell_name_x, y=spell_y, string='1. ' + slot_one_spell_name)
-                inspect_panel.print(x=spell_info_x, y=spell_y, string=spell_information)
-            else:
-                inspect_panel.print(x=spell_name_x, y=spell_y, string='1. No spell')
-
-            spell_slot_two = ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, entity=item_entity)
-            spell_y += 1
-            if spell_slot_two > 0:
-                slot_two_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=2)
-                spell_information = str(get_spell_additional_information(gameworld=gameworld, spell_entity=spell_slot_two, display_mode=spell_display_index))
-
-                inspect_panel.print(x=spell_name_x, y=spell_y, string='2. ' + slot_two_spell_name)
-                inspect_panel.print(x=spell_info_x, y=spell_y, string=spell_information)
-            else:
-                inspect_panel.print(x=portrait_start_x, y=spell_y, string='2. No spell')
-
-            spell_slot_three = ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld, entity=item_entity)
-            spell_y += 1
-            if spell_slot_three > 0:
-                slot_three_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=3)
-                spell_information = str(get_spell_additional_information(gameworld=gameworld, spell_entity=spell_slot_three, display_mode=spell_display_index))
-
-                inspect_panel.print(x=spell_name_x, y=spell_y, string='3. ' + slot_three_spell_name)
-                inspect_panel.print(x=spell_info_x, y=spell_y, string=spell_information)
-            else:
-                inspect_panel.print(x=spell_name_x, y=spell_y, string='3. No spell')
-
-            spell_slot_four = ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, entity=item_entity)
-            spell_y += 1
-            if spell_slot_four > 0:
-                slot_four_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=4)
-                spell_information = str(get_spell_additional_information(gameworld=gameworld, spell_entity=spell_slot_four, display_mode=spell_display_index))
-
-                inspect_panel.print(x=spell_name_x, y=spell_y, string='4. ' + slot_four_spell_name)
-                inspect_panel.print(x=spell_info_x, y=spell_y, string=spell_information)
-            else:
-                inspect_panel.print(x=spell_name_x, y=spell_y, string='4. No spell')
-
-            spell_slot_five = ItemUtilities.get_weapon_spell_slot_five_entity(gameworld=gameworld, entity=item_entity)
-            spell_y += 1
-            if spell_slot_five > 0:
-                slot_five_spell_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=item_entity, slotid=5)
-                spell_information = str(get_spell_additional_information(gameworld=gameworld, spell_entity=spell_slot_five, display_mode=spell_display_index))
-
-                inspect_panel.print(x=spell_name_x, y=spell_y, string='5. ' + slot_five_spell_name)
-                inspect_panel.print(x=spell_info_x, y=spell_y, string=spell_information)
-            else:
-                inspect_panel.print(x=spell_name_x, y=spell_y, string='5. No spell')
-
-        # display dynamic item properties
-
-        tcod.console_blit(inspect_panel, 0, 0, insp_panel_width, insp_panel_height, 0, insp_panel_start_x, insp_panel_start_y)
-
-        tcod.console_flush()
-
-        event_to_be_processed, event_action = handle_game_keys()
-        if event_action != '':
-            if event_action == 'quit':
-                disp_inspect_panel = False
-                configUtilities.write_config_value(configfile=game_config, section='game',
-                                                   parameter='DISPLAY_GAME_STATE', value=str(other_game_state))
-            if event_action == 'left':
-                spell_display_index -= 1
-            if event_action == 'right':
-                spell_display_index += 1
-
-            if spell_display_index > spell_display_index_max:
-                spell_display_index = 0
-            if spell_display_index < 0:
-                spell_display_index = spell_display_index_max
-
-    tcod.console_blit(inspect_panel, 0, 0, insp_panel_width, insp_panel_height, 0, insp_panel_start_x, 10)
-
-    tcod.console_flush()
-
-
-def get_spell_additional_information(gameworld, spell_entity, display_mode):
-    spell_info = ''
-    if display_mode == 0:
-        ret_val = int(SpellUtilities.get_spell_cast_time(gameworld=gameworld, spell_entity=spell_entity))
-        if ret_val == 1:
-            spell_info = str(ret_val) + '  turn'
-        else:
-            spell_info = str(ret_val) + ' turns'
-    if display_mode == 1:
-        ret_val = int(SpellUtilities.get_spell_cooldown_time(gameworld=gameworld, spell_entity=spell_entity))
-        if ret_val == 1:
-            spell_info = str(ret_val) + '  turn'
-        else:
-            spell_info = str(ret_val) + ' turns'
-    if display_mode == 2:
-        spell_info = SpellUtilities.get_spell_max_targets(gameworld=gameworld, spell_entity=spell_entity) + '      '
-    if display_mode == 3:
-        ret_val = int(SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity))
-        if ret_val == 1:
-            spell_info = str(ret_val) + ' tile'
-        else:
-            spell_info = str(ret_val) + ' tiles'
-    return spell_info
-
-
-def display_hero_panel(gameworld, game_config):
+def display_hero_panel(gameworld, root_console):
 
     hero_panel_displayed = True
+    game_config = configUtilities.load_config()
 
     hp_def_fg = tcod.white
     hp_def_bg = tcod.dark_gray
@@ -233,9 +31,9 @@ def display_hero_panel(gameworld, game_config):
     # gather player entity
     player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
     # update player derived attributes - do that here to allow for mid-turn changes
-    MobileUtilities.calculate_derived_attributes(gameworld=gameworld, entity=player_entity)
-    # generate new tcod.console
-    hero_panel = tcod.console_new(panel_width, panel_height)
+    MobileUtilities.calculate_derived_attributes(gameworld=gameworld, gameconfig=game_config)
+
+    hero_panel = tcod.console.Console(width=panel_width, height=panel_height, order='F')
 
     x_offset = 11
 
@@ -245,27 +43,26 @@ def display_hero_panel(gameworld, game_config):
         draw_hero_panel_tabs(hero_panel, game_config, hp_def_fg, hp_def_bg)
         draw_hero_information(hero_panel=hero_panel, gameworld=gameworld, player=player_entity, game_config=game_config)
 
-        tcod.console_blit(hero_panel, 0, 0,
-                          panel_width,
-                          panel_height,
-                          0,
-                          panel_left_x,
-                          panel_left_y)
+        hero_panel.blit(dest=root_console, dest_x=panel_left_x, dest_y=panel_left_y)
         tcod.console_flush()
-        for event in tcod.event.wait():
-            if event.type == 'KEYDOWN':
-                if event.sym == tcod.event.K_ESCAPE:
+
+        event_to_be_processed, event_action = handle_game_keys()
+        if event_to_be_processed != '':
+            if event_to_be_processed == 'keypress':
+                if event_action == 'quit':
                     hero_panel_displayed = False
-            elif event.type == "MOUSEBUTTONDOWN":
-                x = event.tile.x
-                y = event.tile.y
-                if y in hp_tabs_offsets:
-                    if x_offset <= x <= (x_offset + hp_tab_max_width):
-                        ret_value = hp_tabs_offsets.index(y)
-                        configUtilities.write_config_value(configfile=game_config, section='gui', parameter='HERO_PANEL_SELECTED_TAB', value=str(ret_value))
-                if event.button == tcod.event.BUTTON_RIGHT:
+
+            if event_to_be_processed == 'mousebutton':
+                if event_action[0] == 'left':
+                    x = event_action[1]
+                    y = event_action[2]
+                    if y in hp_tabs_offsets:
+                        if x_offset <= x <= (x_offset + hp_tab_max_width):
+                            ret_value = hp_tabs_offsets.index(y)
+                            configUtilities.write_config_value(configfile=game_config, section='gui', parameter='HERO_PANEL_SELECTED_TAB', value=str(ret_value))
+                if event_action[0] == 'right':
                     logger.info('Right mouse button clicked')
-                    logger.info('Tile coords {}', event.tile)
+                    logger.info('Tile coords {}/{}', event_action[1], event_action[2])
 
         hero_panel.clear(ch=ord(' '), fg=hp_def_fg, bg=hp_def_bg)
 
@@ -343,26 +140,258 @@ def draw_hero_information(hero_panel, gameworld, player, game_config):
     hp_selected_tab = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_SELECTED_TAB')
 
     if hp_selected_tab == 0:
-        equipment_tab(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
+        tab_personal(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
     elif hp_selected_tab == 1:
-        personal_tab(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
+        tab_equipment(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
     elif hp_selected_tab == 2:
-        current_build_tab(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
+        tab_inventory(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
     elif hp_selected_tab == 3:
-        weapons_tab(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
+        tab_weapons(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
+    elif hp_selected_tab == 4:
+        tab_utilities()
+    elif hp_selected_tab == 5:
+        tab_traits()
     else:
-        inventory_tab(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
+        tab_stats()
 
 
-def equipment_tab(hero_panel, gameworld, player, game_config):
-    hp_def_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_X')
+def tab_equipment(hero_panel, gameworld, player, game_config):
+    hp_left_col = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_COL')
     hp_def_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_Y')
-    hp_info_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_WIDTH')
 
-    hero_panel.print_box(x=hp_def_x, y=hp_def_y, width=hp_info_width, height=1, string="Equipment:")
+    # gather current set of: spells, equipped armour, weapons, jewellery
+    # this creates a list of entities, i.e. weapons that are equipped in main hand, off hand, both hands
+    weapons_equipped_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
+    main_hand_weapon_entity = weapons_equipped_list[0]
+    off_hand_weapon_entity = weapons_equipped_list[1]
+    both_hands_weapon_entity = weapons_equipped_list[2]
+
+    # gather armour being worn
+    head_armour_id = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player)
+    chest_armour_id = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=player)
+    legs_armour_id = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player)
+    feet_armour_id = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=player)
+    hands_armour_id = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=player)
+
+    head_armour_display = ''
+
+    if head_armour_id == 0:
+        head_armour_display = 'None'
+    else:
+        am_set_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=head_armour_id)
+        am_set_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=head_armour_id)
+        am_set_name = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=head_armour_id)
+        am_quality_level = ItemUtilities.get_item_quality(gameworld=gameworld, entity=head_armour_id)
+        am_weight = ItemUtilities.get_armour_piece_weight(gameworld=gameworld, entity=head_armour_id)
+        am_defense_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=head_armour_id)
+
+        if am_set_name != '':
+            head_armour_display = '(' + am_set_name + ') '
+
+        if am_quality_level != '':
+            head_armour_display += am_quality_level + ' '
+
+        if am_weight != '':
+            head_armour_display += am_weight + ' '
+
+        if am_defense_value != 0:
+            head_armour_display += str(am_defense_value)
+
+    chest_armour_display = ''
+
+    if chest_armour_id == 0:
+        chest_armour_display = 'None'
+    else:
+        am_set_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=chest_armour_id)
+        am_set_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=chest_armour_id)
+        am_set_name = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=chest_armour_id)
+        am_quality_level = ItemUtilities.get_item_quality(gameworld=gameworld, entity=chest_armour_id)
+        am_weight = ItemUtilities.get_armour_piece_weight(gameworld=gameworld, entity=chest_armour_id)
+        am_defense_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest_armour_id)
+
+        if am_set_name != '':
+            chest_armour_display = '(' + am_set_name + ') '
+
+        if am_quality_level != '':
+            chest_armour_display += am_quality_level + ' '
+
+        if am_weight != '':
+            chest_armour_display += am_weight + ' '
+
+        if am_defense_value != 0:
+            chest_armour_display += str(am_defense_value)
+
+    legs_armour_display = ''
+
+    if legs_armour_id == 0:
+        legs_armour_display = 'None'
+    else:
+        am_set_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=legs_armour_id)
+        am_set_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=legs_armour_id)
+        am_set_name = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=legs_armour_id)
+        am_quality_level = ItemUtilities.get_item_quality(gameworld=gameworld, entity=legs_armour_id)
+        am_weight = ItemUtilities.get_armour_piece_weight(gameworld=gameworld, entity=legs_armour_id)
+        am_defense_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs_armour_id)
+
+        if am_set_name != '':
+            legs_armour_display = '(' + am_set_name + ') '
+
+        if am_quality_level != '':
+            legs_armour_display += am_quality_level + ' '
+
+        if am_weight != '':
+            legs_armour_display += am_weight + ' '
+
+        if am_defense_value != 0:
+            legs_armour_display += str(am_defense_value)
+
+    feet_armour_display = ''
+
+    if feet_armour_id == 0:
+        feet_armour_display = 'None'
+    else:
+        am_set_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=feet_armour_id)
+        am_set_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=feet_armour_id)
+        am_set_name = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=feet_armour_id)
+        am_quality_level = ItemUtilities.get_item_quality(gameworld=gameworld, entity=feet_armour_id)
+        am_weight = ItemUtilities.get_armour_piece_weight(gameworld=gameworld, entity=feet_armour_id)
+        am_defense_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet_armour_id)
+
+        if am_set_name != '':
+            feet_armour_display = '(' + am_set_name + ') '
+
+        if am_quality_level != '':
+            feet_armour_display += am_quality_level + ' '
+
+        if am_weight != '':
+            feet_armour_display += am_weight + ' '
+
+        if am_defense_value != 0:
+            feet_armour_display += str(am_defense_value)
+
+    hands_armour_display = ''
+
+    if hands_armour_id == 0:
+        hands_armour_display = 'None'
+    else:
+        am_set_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=hands_armour_id)
+        am_set_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=hands_armour_id)
+        am_set_name = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=hands_armour_id)
+        am_quality_level = ItemUtilities.get_item_quality(gameworld=gameworld, entity=hands_armour_id)
+        am_weight = ItemUtilities.get_armour_piece_weight(gameworld=gameworld, entity=hands_armour_id)
+        am_defense_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands_armour_id)
+
+        if am_set_name != '':
+            hands_armour_display = '(' + am_set_name + ') '
+
+        if am_quality_level != '':
+            hands_armour_display += am_quality_level + ' '
+
+        if am_weight != '':
+            hands_armour_display += am_weight + ' '
+
+        if am_defense_value != 0:
+            hands_armour_display += str(am_defense_value)
+
+    # gather jewellery being worn
+    equippedJewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=player)
+    left_ear = equippedJewellery[0]
+    right_ear = equippedJewellery[1]
+    left_hand = equippedJewellery[2]
+    right_hand = equippedJewellery[3]
+    neck = equippedJewellery[4]
+
+    # display current set of equipped weapons
+    box_height = 5
+    weapon_display_string = []
+
+    if both_hands_weapon_entity != 0:
+        box_height = 5
+        both_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=both_hands_weapon_entity)
+        weapon_display_string.append(both_weapon_display_name + ' is in both hands.')
+    if main_hand_weapon_entity != 0:
+        main_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=main_hand_weapon_entity)
+        box_height = 6
+        weapon_display_string.append(main_weapon_display_name + ' is in the main hand')
+    if off_hand_weapon_entity != 0:
+        off_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=off_hand_weapon_entity)
+        weapon_display_string.append(off_weapon_display_name + ' is in the off hand')
+        if box_height == 6:
+            box_height = 7
+        else:
+            box_height = 6
+
+    display_coloured_box(console=hero_panel, title="Equipped Weapons",
+                         posx=hp_left_col,
+                         posy=hp_def_y,
+                         width=30,
+                         height=box_height,
+                         fg=tcod.white,
+                         bg=tcod.dark_gray)
+    cnt = 2
+    for wpn in weapon_display_string:
+        hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + cnt,
+                      width=40,
+                      height=1, string=wpn)
+        cnt += 1
+
+    # display equipped armour
+    armcnt = cnt + 3
+    display_coloured_box(console=hero_panel, title="Equipped Armour",
+                         posx=hp_left_col,
+                         posy=hp_def_y + armcnt,
+                         width=30,
+                         height=10,
+                         fg=tcod.white,
+                         bg=tcod.dark_gray)
+
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 2,
+                      width=40,
+                      height=1, string='Head ' + head_armour_display)
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 3,
+                      width=40,
+                      height=1, string='Chest ' + chest_armour_display)
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 4,
+                      width=40,
+                      height=1, string='Hands ' + hands_armour_display)
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 5,
+                      width=40,
+                      height=1, string='Legs ' + legs_armour_display)
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 6,
+                      width=40,
+                      height=1, string='Feet ' + feet_armour_display)
+
+    # display current set of equipped Jewellery
+    jcnt = armcnt + 10
+    display_coloured_box(console=hero_panel, title="Equipped Jewellery",
+                         posx=hp_left_col,
+                         posy=hp_def_y + jcnt,
+                         width=30,
+                         height=10,
+                         fg=tcod.white,
+                         bg=tcod.dark_gray)
+
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 2,
+                      width=40,
+                      height=1, string='Left Ear ' + ItemUtilities.get_item_description(gameworld=gameworld, entity=left_ear))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 3,
+                      width=40,
+                      height=1, string='Right Ear ' + ItemUtilities.get_item_description(gameworld=gameworld, entity=right_ear))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 4,
+                      width=40,
+                      height=1, string='Left Hand ' + ItemUtilities.get_item_description(gameworld=gameworld, entity=left_hand))
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 5,
+                      width=40,
+                      height=1, string='Right Hand ' + ItemUtilities.get_item_description(gameworld=gameworld, entity=right_hand))
+
+    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 6,
+                      width=40,
+                      height=1, string='Neck ' + ItemUtilities.get_item_description(gameworld=gameworld, entity=neck))
+
+    # display current set of stats
 
 
-def personal_tab(hero_panel, gameworld, player, game_config):
+def tab_personal(hero_panel, gameworld, player, game_config):
 
     hp_left_col = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_COL')
     hp_right_col = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_RIGHT_COL')
@@ -464,157 +493,69 @@ def draw_bar(hero_panel, posx, posy, fg, bg, bg_break, break_point, game_config)
 
     for a in range(10):
         if a <= break_point:
-            hero_panel.print(x=posx + a, y=posy,
-                          string=chr(175), fg=fg, bg=bg)
+            hero_panel.print(x=posx + a, y=posy, string=chr(175), fg=fg, bg=bg)
         else:
-            hero_panel.print(x=hp_right_col + 7 + a, y=hp_def_y + 8,
-                          string=chr(175), fg=fg, bg=bg_break)
+            hero_panel.print(x=hp_right_col + 7 + a, y=hp_def_y + 8, string=chr(175), fg=fg, bg=bg_break)
 
 
-def current_build_tab(hero_panel, gameworld, player, game_config):
-    hp_left_col = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_COL')
-    hp_def_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_Y')
+def tab_weapons(hero_panel, gameworld, player, game_config):
 
-    # gather current set of: spells, equipped armour, weapons, jewellery
-    # this creates a list of entities, i.e. weapons that are equipped in main hand, off hand, both hands
-    weapons_equipped_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
-    main_hand_weapon_entity = weapons_equipped_list[0]
-    off_hand_weapon_entity = weapons_equipped_list[1]
-    both_hands_weapon_entity = weapons_equipped_list[2]
-
-    # gather armour being worn
-    head_armour = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player)
-    chest_armour = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=player)
-    legs_armour = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player)
-    feet_armour = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=player)
-    hands_armour= MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=player)
-
-    head_armour_display = ''
-
-    if head_armour == 0:
-        head_armour_display = 'None'
-    else:
-        am_set_name = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=head_armour)
-        am_quality_level = ItemUtilities.get_item_quality(gameworld=gameworld, entity=head_armour)
-        am_weight = ItemUtilities.get_armour_piece_weight(gameworld=gameworld, entity=head_armour)
-        am_defense_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, body_location=head_armour)
-
-        if am_set_name != '':
-            head_armour_display = '(' + am_set_name + ') '
-
-        if am_quality_level != '':
-            head_armour_display += am_quality_level + ' '
-
-        if am_weight != '':
-            head_armour_display += am_weight + ' '
-
-        if am_defense_value != 0:
-            head_armour_display += str(am_defense_value)
-
-    # gather jewellery being worn
-
-
-    # gather current stats
-
-    # display current set of equipped weapons
-    box_height = 5
-    weapon_display_string = []
-
-    if both_hands_weapon_entity != 0:
-        box_height = 5
-        both_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=both_hands_weapon_entity)
-        weapon_display_string.append(both_weapon_display_name + ' is in both hands.')
-    if main_hand_weapon_entity != 0:
-        main_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=main_hand_weapon_entity)
-        box_height = 6
-        weapon_display_string.append(main_weapon_display_name + ' is in the main hand')
-    if off_hand_weapon_entity != 0:
-        off_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=off_hand_weapon_entity)
-        weapon_display_string.append(off_weapon_display_name + ' is in the off hand')
-        if box_height == 6:
-            box_height = 7
-        else:
-            box_height = 6
-
-    display_coloured_box(console=hero_panel, title="Equipped Weapons",
-                         posx=hp_left_col,
-                         posy=hp_def_y,
-                         width=30,
-                         height=box_height,
-                         fg=tcod.white,
-                         bg=tcod.dark_gray)
-    cnt = 2
-    for wpn in weapon_display_string:
-        hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + cnt,
-                      width=40,
-                      height=1, string=wpn)
-        cnt += 1
-
-    # display equipped armour
-    armcnt = cnt + 3
-    display_coloured_box(console=hero_panel, title="Equipped Armour",
-                         posx=hp_left_col,
-                         posy=hp_def_y + armcnt,
-                         width=30,
-                         height=10,
-                         fg=tcod.white,
-                         bg=tcod.dark_gray)
-
-    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 2,
-                      width=40,
-                      height=1, string='Head ' + head_armour_display)
-    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 3,
-                      width=40,
-                      height=1, string='Chest')
-    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 4,
-                      width=40,
-                      height=1, string='Hands')
-    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 5,
-                      width=40,
-                      height=1, string='Legs')
-    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + armcnt + 6,
-                      width=40,
-                      height=1, string='Feet')
-
-    # display current set of equipped Jewellery
-    jcnt = armcnt + 10
-    display_coloured_box(console=hero_panel, title="Equipped Jewellery",
-                         posx=hp_left_col,
-                         posy=hp_def_y + jcnt,
-                         width=30,
-                         height=10,
-                         fg=tcod.white,
-                         bg=tcod.dark_gray)
-
-    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 2,
-                      width=40,
-                      height=1, string='Left Ear')
-    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 3,
-                      width=40,
-                      height=1, string='Right Ear')
-    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 4,
-                      width=40,
-                      height=1, string='Left Hand')
-    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 5,
-                      width=40,
-                      height=1, string='Right Hand')
-
-    hero_panel.print_box(x=hp_left_col + 1, y=hp_def_y + jcnt + 6,
-                      width=40,
-                      height=1, string='Neck')
-
-    # display current set of stats
-
-
-def weapons_tab(hero_panel, gameworld, player, game_config):
     hp_def_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_X')
     hp_def_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_Y')
     hp_info_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_WIDTH')
+    inv_wpn_list_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='weapons', parameter='HP_WPNS_LIST_X')
+    inv_wpn_list_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='weapons', parameter='HP_WPNS_LIST_Y')
+    inv_wpn_list_d = configUtilities.get_config_value_as_integer(configfile=game_config, section='weapons', parameter='HP_WPNS_LIST_D')
+    inv_wpn_list_w = configUtilities.get_config_value_as_integer(configfile=game_config, section='weapons', parameter='HP_WPNS_LIST_W')
 
-    hero_panel.print_box(x=hp_def_x, y=hp_def_y, width=hp_info_width, height=1, string="Weapons:" )
+    hero_panel.print_box(x=hp_def_x, y=hp_def_y, width=hp_info_width, height=1, string="Weapons:")
+
+    # list of weapons in inventory - need a call to something
+    weapons_list_inventory = []
+    mobile_inventory_component = gameworld.component_for_entity(player, mobiles.Inventory)
+    inventory_items = mobile_inventory_component.items
+    if len(inventory_items) != 0:
+        items_weapons, cnt = populate_inv_lists(inventory_items, gameworld, 'weapon')
+
+        if len(items_weapons) != 0:
+            for weapon in items_weapons:
+                weapons_list_inventory.append(weapon)
+    # list of weapons equipped
+    weapons_list_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
+    main_hand_weapon_entity = weapons_list_equipped[0]
+    off_hand_weapon_entity = weapons_list_equipped[1]
+    both_hands_weapon_entity = weapons_list_equipped[2]
+
+    click_zones = []
+    dwn = inv_wpn_list_y
+
+    if both_hands_weapon_entity != 0:
+        both_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=both_hands_weapon_entity)
+        hero_panel.print(x=inv_wpn_list_x, y=dwn, string=both_weapon_display_name, fg=tcod.yellow, bg=None)
+        click_zones.append((inv_wpn_list_x, inv_wpn_list_x + inv_wpn_list_w, dwn, dwn))
+        dwn += 1
+
+    if main_hand_weapon_entity != 0:
+        main_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=main_hand_weapon_entity)
+        hero_panel.print(x=inv_wpn_list_x, y=dwn, string=main_weapon_display_name, fg=tcod.yellow, bg=None)
+        click_zones.append((inv_wpn_list_x, inv_wpn_list_x + inv_wpn_list_w, dwn, dwn))
+
+        dwn += 1
+
+    if off_hand_weapon_entity != 0:
+        off_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=off_hand_weapon_entity)
+        hero_panel.print(x=inv_wpn_list_x, y=dwn, string=off_weapon_display_name, fg=tcod.yellow, bg=None)
+        click_zones.append((inv_wpn_list_x, inv_wpn_list_x + inv_wpn_list_w, dwn, dwn))
+
+        dwn += 1
+
+    for wpn in weapons_list_inventory:
+        weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=wpn)
+        hero_panel.print(x=inv_wpn_list_x, y=dwn, string=weapon_display_name, fg=tcod.yellow, bg=None)
+        dwn += 1
 
 
-def inventory_tab(hero_panel, gameworld, player, game_config):
+def tab_inventory(hero_panel, gameworld, player, game_config):
 
     gui_frame = configUtilities.get_config_value_as_string(configfile=game_config, section='gui', parameter='frame_border_pipe_type')
 
@@ -633,14 +574,14 @@ def inventory_tab(hero_panel, gameworld, player, game_config):
     down_pipe = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_down_pipe')
     top_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_left')
     top_right = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_' + gui_frame + '_top_right')
-    frame_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_left')
-    frame_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_down')
-    frame_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='frame_width')
-    inv_key_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_key_pos')
-    inv_glyph_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_glyph_pos')
-    inv_desc_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_desc_pos')
-    inv_section_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='inv_section_pos')
-    inv_actions = configUtilities.get_config_value_as_list(configfile=game_config, section='game', parameter='ITEM_INV_ACTIONS')
+    frame_left = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='INV_FRAME_LEFT')
+    frame_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_frame_down')
+    frame_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_frame_width')
+    inv_key_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_key_pos')
+    inv_glyph_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_glyph_pos')
+    inv_desc_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_desc_pos')
+    inv_section_pos = configUtilities.get_config_value_as_integer(configfile=game_config, section='inv', parameter='inv_section_pos')
+    # inv_actions = configUtilities.get_config_value_as_list(configfile=game_config, section='game', parameter='ITEM_INV_ACTIONS')
 
     # temp solution until I sort out how to store a dictionary of items in bags
     mobile_inventory_component = gameworld.component_for_entity(player, mobiles.Inventory)
@@ -744,6 +685,18 @@ def inventory_tab(hero_panel, gameworld, player, game_config):
         hero_panel.print(x=frame_left + frame_width - 1, y=iy, string=chr(bottom_right), fg=def_fg, bg=def_bg)
     else:
         hero_panel.print_box(x=inv_key_pos, y=iy, width=40, height=1, string='Nothing in Inventory')
+
+
+def tab_utilities():
+    pass
+
+
+def tab_traits():
+    pass
+
+
+def tab_stats():
+    pass
 
 
 def populate_inv_lists(inventory_items, gameworld, item_type_in_inv):

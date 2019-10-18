@@ -1,9 +1,8 @@
 from components import mobiles, userInput, items, spellBar
 from loguru import logger
-from utilities.itemsHelp import ItemUtilities
+from utilities.itemsHelp import ItemUtilities, display_inspect_panel
 from utilities import world
 from utilities import configUtilities
-from ui.character_screen import display_inspect_panel
 import numbers
 import tcod
 
@@ -308,11 +307,12 @@ class MobileUtilities(numbers.Real):
         display_inspect_panel(gameworld=gameworld, display_mode='inspect', item_entity=item_entity, game_config=game_config)
 
     # pick up item from dungeon floor
+    @staticmethod
     def mobile_pick_up_item(gameworld, mobile):
         px, py = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=mobile)
         mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
         for ent, (rend, loc, desc) in gameworld.get_components(items.RenderItem, items.Location, items.Describable):
-            if loc.posx == px and loc.posy == py:
+            if loc.x == px and loc.y == py:
                 if rend.isTrue:
                     # check if mobile has enough space in their inventory
                     # remove item location data
