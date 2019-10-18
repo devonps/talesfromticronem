@@ -149,8 +149,10 @@ def draw_hero_information(hero_panel, gameworld, player, game_config):
         tab_weapons(hero_panel=hero_panel, gameworld=gameworld, player=player, game_config=game_config)
     elif hp_selected_tab == 4:
         tab_utilities()
-    else:
+    elif hp_selected_tab == 5:
         tab_traits()
+    else:
+        tab_stats()
 
 
 def tab_equipment(hero_panel, gameworld, player, game_config):
@@ -497,16 +499,60 @@ def draw_bar(hero_panel, posx, posy, fg, bg, bg_break, break_point, game_config)
 
 
 def tab_weapons(hero_panel, gameworld, player, game_config):
+
     hp_def_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_X')
     hp_def_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_DEF_Y')
     hp_info_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_INFO_WIDTH')
+    inv_wpn_list_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='weapons', parameter='HP_WPNS_LIST_X')
+    inv_wpn_list_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='weapons', parameter='HP_WPNS_LIST_Y')
+    inv_wpn_list_d = configUtilities.get_config_value_as_integer(configfile=game_config, section='weapons', parameter='HP_WPNS_LIST_D')
+    inv_wpn_list_w = configUtilities.get_config_value_as_integer(configfile=game_config, section='weapons', parameter='HP_WPNS_LIST_W')
 
     hero_panel.print_box(x=hp_def_x, y=hp_def_y, width=hp_info_width, height=1, string="Weapons:")
 
     # list of weapons in inventory - need a call to something
     weapons_list_inventory = []
+    mobile_inventory_component = gameworld.component_for_entity(player, mobiles.Inventory)
+    inventory_items = mobile_inventory_component.items
+    if len(inventory_items) != 0:
+        items_weapons, cnt = populate_inv_lists(inventory_items, gameworld, 'weapon')
+
+        if len(items_weapons) != 0:
+            for weapon in items_weapons:
+                weapons_list_inventory.append(weapon)
     # list of weapons equipped
     weapons_list_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
+    main_hand_weapon_entity = weapons_list_equipped[0]
+    off_hand_weapon_entity = weapons_list_equipped[1]
+    both_hands_weapon_entity = weapons_list_equipped[2]
+
+    click_zones = []
+    dwn = inv_wpn_list_y
+
+    if both_hands_weapon_entity != 0:
+        both_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=both_hands_weapon_entity)
+        hero_panel.print(x=inv_wpn_list_x, y=dwn, string=both_weapon_display_name, fg=tcod.yellow, bg=None)
+        click_zones.append((inv_wpn_list_x, inv_wpn_list_x + inv_wpn_list_w, dwn, dwn))
+        dwn += 1
+
+    if main_hand_weapon_entity != 0:
+        main_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=main_hand_weapon_entity)
+        hero_panel.print(x=inv_wpn_list_x, y=dwn, string=main_weapon_display_name, fg=tcod.yellow, bg=None)
+        click_zones.append((inv_wpn_list_x, inv_wpn_list_x + inv_wpn_list_w, dwn, dwn))
+
+        dwn += 1
+
+    if off_hand_weapon_entity != 0:
+        off_weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=off_hand_weapon_entity)
+        hero_panel.print(x=inv_wpn_list_x, y=dwn, string=off_weapon_display_name, fg=tcod.yellow, bg=None)
+        click_zones.append((inv_wpn_list_x, inv_wpn_list_x + inv_wpn_list_w, dwn, dwn))
+
+        dwn += 1
+
+    for wpn in weapons_list_inventory:
+        weapon_display_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=wpn)
+        hero_panel.print(x=inv_wpn_list_x, y=dwn, string=weapon_display_name, fg=tcod.yellow, bg=None)
+        dwn += 1
 
 
 def tab_inventory(hero_panel, gameworld, player, game_config):
@@ -545,102 +591,100 @@ def tab_inventory(hero_panel, gameworld, player, game_config):
     def_bg = colourUtilities.DARKGRAY  # tcod.darker_gray
     def_wd = colourUtilities.WHITE  # tcod.white
 
-    hero_panel.print_box(x=inv_key_pos, y=iy, width=40, height=1, string='Nothing in Inventory')
+    inventory_items = mobile_inventory_component.items
+    if len(inventory_items) != 0:
+        max_lines = 2
 
-    # inventory_items = mobile_inventory_component.items
-    # if len(inventory_items) != 0:
-    #     max_lines = 2
-    #
-    #     items_armour, cnt = populate_inv_lists(inventory_items, gameworld, 'armour')
-    #     max_lines += cnt
-    #     items_weapons, cnt = populate_inv_lists(inventory_items, gameworld, 'weapon')
-    #     max_lines += cnt
-    #     items_jewellery, cnt = populate_inv_lists(inventory_items, gameworld, 'jewellery')
-    #     max_lines += cnt
-    #     items_bags, cnt = populate_inv_lists(inventory_items, gameworld, 'bag')
-    #     max_lines += cnt
-    #     items_gemstones, cnt = populate_inv_lists(inventory_items, gameworld, 'gemstone')
-    #     max_lines += cnt
-    #
-    #     if len(items_armour) != 0:
-    #         hero_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Armour')
-    #         iy += 1
-    #
-    #         for armour in items_armour:
-    #             item_glyph = ItemUtilities.get_item_glyph(gameworld=gameworld, entity=armour)
-    #             item_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=armour)
-    #             item_fg = ItemUtilities.get_item_fg_colour(gameworld=gameworld, entity=armour)
-    #             item_bg = ItemUtilities.get_item_bg_colour(gameworld=gameworld, entity=armour)
-    #
-    #             # KEY
-    #             hero_panel.print(x=inv_key_pos, y=iy, string=chr(letter_index), fg=def_wd, bg=None)
-    #             # GLYPH
-    #             hero_panel.print(x=inv_glyph_pos , y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
-    #             # DESCRIPTION
-    #             hero_panel.print(x=inv_desc_pos, y=iy, string=item_name, fg=def_wd, bg=None)
-    #
-    #             letter_index += 1
-    #             iy += 1
-    #
-    #     if len(items_weapons) != 0:
-    #         hero_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Weapons')
-    #         iy += 1
-    #
-    #         for weapon in items_weapons:
-    #             item_glyph = ItemUtilities.get_item_glyph(gameworld=gameworld, entity=weapon)
-    #             item_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=weapon)
-    #             item_fg = ItemUtilities.get_item_fg_colour(gameworld=gameworld, entity=weapon)
-    #             item_bg = ItemUtilities.get_item_bg_colour(gameworld=gameworld, entity=weapon)
-    #
-    #             # KEY
-    #             hero_panel.print(x=inv_key_pos, y=iy, string=chr(letter_index), fg=def_wd, bg=None)
-    #             # GLYPH
-    #             hero_panel.print(x=inv_glyph_pos, y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
-    #             # DESCRIPTION
-    #             hero_panel.print(x=inv_desc_pos, y=iy, string=item_name, fg=def_wd, bg=None)
-    #
-    #             letter_index += 1
-    #             iy += 1
-    #
-    #     if len(items_jewellery) != 0:
-    #         hero_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Jewellery')
-    #         iy += 1
-    #
-    #         for jewellery in items_jewellery:
-    #             item_glyph = ItemUtilities.get_item_glyph(gameworld=gameworld, entity=jewellery)
-    #             item_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=jewellery)
-    #             item_fg = ItemUtilities.get_item_fg_colour(gameworld=gameworld, entity=jewellery)
-    #             item_bg = ItemUtilities.get_item_bg_colour(gameworld=gameworld, entity=jewellery)
-    #
-    #             # KEY
-    #             hero_panel.print(x=inv_key_pos, y=iy, string=chr(letter_index), fg=def_wd, bg=None)
-    #             # GLYPH
-    #             hero_panel.print(x=inv_glyph_pos, y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
-    #             # DESCRIPTION
-    #             hero_panel.print(x=inv_desc_pos, y=iy, string=item_name, fg=def_wd, bg=None)
-    #
-    #             letter_index += 1
-    #             iy += 1
-    #
-    #     # draw surrounding frame
-    #     # left vertical line
-    #     hero_panel.draw_rect(x=frame_left, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg, bg=def_bg)
-    #     # right vertical line
-    #     hero_panel.draw_rect(x=frame_left + frame_width - 1, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg, bg=def_bg)
-    #     # top horizontal line
-    #     hero_panel.draw_rect(x=frame_left, y=frame_down, width=frame_width, height=1, ch=across_pipe, fg=def_fg, bg=def_bg)
-    #     # top left
-    #     hero_panel.print(x=frame_left, y=frame_down, string=chr(top_left), fg=def_fg, bg=def_bg)
-    #     # top right
-    #     hero_panel.print(x=frame_left + frame_width - 1, y=frame_down, string=chr(top_right), fg=def_fg, bg=def_bg)
-    #     # bottom horizontal line
-    #     hero_panel.draw_rect(x=frame_left, y=iy, width=frame_width, height=1, ch=across_pipe,fg=def_fg, bg=def_bg)
-    #     # bottom left
-    #     hero_panel.print(x=frame_left, y=iy, string=chr(bottom_left), fg=def_fg, bg=def_bg)
-    #     # bottom right
-    #     hero_panel.print(x=frame_left + frame_width - 1, y=iy, string=chr(bottom_right), fg=def_fg, bg=def_bg)
-    # else:
-    #     hero_panel.print_box(x=inv_key_pos, y=iy, width=40, height=1, string='Nothing in Inventory')
+        items_armour, cnt = populate_inv_lists(inventory_items, gameworld, 'armour')
+        max_lines += cnt
+        items_weapons, cnt = populate_inv_lists(inventory_items, gameworld, 'weapon')
+        max_lines += cnt
+        items_jewellery, cnt = populate_inv_lists(inventory_items, gameworld, 'jewellery')
+        max_lines += cnt
+        items_bags, cnt = populate_inv_lists(inventory_items, gameworld, 'bag')
+        max_lines += cnt
+        items_gemstones, cnt = populate_inv_lists(inventory_items, gameworld, 'gemstone')
+        max_lines += cnt
+
+        if len(items_armour) != 0:
+            hero_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Armour')
+            iy += 1
+
+            for armour in items_armour:
+                item_glyph = ItemUtilities.get_item_glyph(gameworld=gameworld, entity=armour)
+                item_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=armour)
+                item_fg = ItemUtilities.get_item_fg_colour(gameworld=gameworld, entity=armour)
+                item_bg = ItemUtilities.get_item_bg_colour(gameworld=gameworld, entity=armour)
+
+                # KEY
+                hero_panel.print(x=inv_key_pos, y=iy, string=chr(letter_index), fg=def_wd, bg=None)
+                # GLYPH
+                hero_panel.print(x=inv_glyph_pos , y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
+                # DESCRIPTION
+                hero_panel.print(x=inv_desc_pos, y=iy, string=item_name, fg=def_wd, bg=None)
+
+                letter_index += 1
+                iy += 1
+
+        if len(items_weapons) != 0:
+            hero_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Weapons')
+            iy += 1
+
+            for weapon in items_weapons:
+                item_glyph = ItemUtilities.get_item_glyph(gameworld=gameworld, entity=weapon)
+                item_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=weapon)
+                item_fg = ItemUtilities.get_item_fg_colour(gameworld=gameworld, entity=weapon)
+                item_bg = ItemUtilities.get_item_bg_colour(gameworld=gameworld, entity=weapon)
+
+                # KEY
+                hero_panel.print(x=inv_key_pos, y=iy, string=chr(letter_index), fg=def_wd, bg=None)
+                # GLYPH
+                hero_panel.print(x=inv_glyph_pos, y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
+                # DESCRIPTION
+                hero_panel.print(x=inv_desc_pos, y=iy, string=item_name, fg=def_wd, bg=None)
+
+                letter_index += 1
+                iy += 1
+
+        if len(items_jewellery) != 0:
+            hero_panel.print_box(x=inv_section_pos, y=iy, width=15, height=1, string='Jewellery')
+            iy += 1
+
+            for jewellery in items_jewellery:
+                item_glyph = ItemUtilities.get_item_glyph(gameworld=gameworld, entity=jewellery)
+                item_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=jewellery)
+                item_fg = ItemUtilities.get_item_fg_colour(gameworld=gameworld, entity=jewellery)
+                item_bg = ItemUtilities.get_item_bg_colour(gameworld=gameworld, entity=jewellery)
+
+                # KEY
+                hero_panel.print(x=inv_key_pos, y=iy, string=chr(letter_index), fg=def_wd, bg=None)
+                # GLYPH
+                hero_panel.print(x=inv_glyph_pos, y=iy, string=item_glyph, fg=item_fg, bg=item_bg)
+                # DESCRIPTION
+                hero_panel.print(x=inv_desc_pos, y=iy, string=item_name, fg=def_wd, bg=None)
+
+                letter_index += 1
+                iy += 1
+
+        # draw surrounding frame
+        # left vertical line
+        hero_panel.draw_rect(x=frame_left, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg, bg=def_bg)
+        # right vertical line
+        hero_panel.draw_rect(x=frame_left + frame_width - 1, y=frame_down, width=1, height=max_lines, ch=down_pipe, fg=def_fg, bg=def_bg)
+        # top horizontal line
+        hero_panel.draw_rect(x=frame_left, y=frame_down, width=frame_width, height=1, ch=across_pipe, fg=def_fg, bg=def_bg)
+        # top left
+        hero_panel.print(x=frame_left, y=frame_down, string=chr(top_left), fg=def_fg, bg=def_bg)
+        # top right
+        hero_panel.print(x=frame_left + frame_width - 1, y=frame_down, string=chr(top_right), fg=def_fg, bg=def_bg)
+        # bottom horizontal line
+        hero_panel.draw_rect(x=frame_left, y=iy, width=frame_width, height=1, ch=across_pipe,fg=def_fg, bg=def_bg)
+        # bottom left
+        hero_panel.print(x=frame_left, y=iy, string=chr(bottom_left), fg=def_fg, bg=def_bg)
+        # bottom right
+        hero_panel.print(x=frame_left + frame_width - 1, y=iy, string=chr(bottom_right), fg=def_fg, bg=def_bg)
+    else:
+        hero_panel.print_box(x=inv_key_pos, y=iy, width=40, height=1, string='Nothing in Inventory')
 
 
 def tab_utilities():

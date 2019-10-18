@@ -40,11 +40,11 @@ class ItemManager:
                 gameworld.add_component(myweapon, items.Actionlist(action_list=weapon_action_list))
                 gameworld.add_component(myweapon, items.Describable(
                     description=weapon['description'],
-                    name=weapon['display_name'],
+                    name=weapon['name'],
                     glyph=weapon['glyph'],
                     fg=tcod.white,
                     bg=tcod.black,
-                    displayname='wooden ' + weapon_type
+                    displayname=weapon['display_name']
                     # fg=weapon['fg_colour'],
                     # bg=weapon['bg_colour']
                 ))

@@ -2,6 +2,7 @@ import tcod.console
 import tcod.event
 
 from components import items
+from newGame.ClassWeapons import WeaponClass
 from newGame.Items import ItemManager
 from ui.character_screen import display_hero_panel
 from newGame.initialiseNewGame import setup_gameworld
@@ -29,14 +30,25 @@ def game_loop(con, gameworld):
 
 
     # create some weapons and drop them on the ground
+    class_component = MobileUtilities.get_character_class(gameworld, player)
 
     created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='wand', game_config=game_config)
     gameworld.add_component(created_weapon, items.Location(x=0, y=0))
     ItemUtilities.set_item_location(gameworld=gameworld, item_entity=created_weapon, posx=5, posy=2)
+    logger.info('Loading the wand with the necessary spells')
+    WeaponClass.load_weapon_with_spells(gameworld, created_weapon, 'wand', class_component)
 
-    # created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='staff', game_config=game_config)
-    # created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='dagger', game_config=game_config)
-    # created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='rod', game_config=game_config)
+    created_weapon2 = ItemManager.create_weapon(gameworld=gameworld, weapon_type='staff', game_config=game_config)
+    gameworld.add_component(created_weapon2, items.Location(x=0, y=0))
+    ItemUtilities.set_item_location(gameworld=gameworld, item_entity=created_weapon2, posx=14, posy=7)
+
+    created_weapon3 = ItemManager.create_weapon(gameworld=gameworld, weapon_type='dagger', game_config=game_config)
+    gameworld.add_component(created_weapon3, items.Location(x=0, y=0))
+    ItemUtilities.set_item_location(gameworld=gameworld, item_entity=created_weapon3, posx=17, posy=12)
+
+    created_weapon4 = ItemManager.create_weapon(gameworld=gameworld, weapon_type='rod', game_config=game_config)
+    gameworld.add_component(created_weapon4, items.Location(x=0, y=0))
+    ItemUtilities.set_item_location(gameworld=gameworld, item_entity=created_weapon4, posx=7, posy=6)
 
     gameDisplay = tcod.console.Console(width=con_width, height=con_height, order='F')
 
