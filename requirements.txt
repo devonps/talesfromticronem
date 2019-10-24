@@ -1,3 +1,4 @@
+bearlibterminal
 ansimarkup==1.4.0
 better-exceptions-fork==0.2.1.post6
 cffi==1.11.5
