@@ -33,8 +33,6 @@ class StartGame:
                                                                               'START_PANEL_FRAME_WIDTH')
         start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
                                                                                'START_PANEL_FRAME_HEIGHT')
-        start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
-        start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
         start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_X')
@@ -42,28 +40,25 @@ class StartGame:
 
         terminal.open()
 
-        draw_colourful_frame(game_config=game_config,
-                             startx=start_panel_frame_x, starty=start_panel_frame_y,
-                             width=start_panel_frame_width, height=start_panel_frame_height,
-                             title=game_title, title_loc='centre',
-                             title_decorator=True,
-                             corner_decorator='', corner_studs='',
-                             msg='')
-
-        # place game version message
-        string_to_print = '[color=light grey]' + game_version
-        terminal.printf(x=version_x, y=version_y, s=string_to_print)
-
-        # place game copyright message
-        string_to_print = '[color=white]' + game_copyright + ' [color=yellow]' + game_author
-        terminal.printf(x=copyright_x, y=copyright_y, s=string_to_print)
-
-        terminal.refresh()
-
         show_game_start_screen = True
         selected_menu_option = 0
 
         while show_game_start_screen:
+
+            draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
+                                 width=start_panel_frame_width, height=start_panel_frame_height,
+                                 title=game_title, title_loc='centre',
+                                 title_decorator=True,
+                                 corner_decorator='', corner_studs='',
+                                 msg='')
+
+            # place game version message
+            string_to_print = '[color=light grey]' + game_version
+            terminal.printf(x=version_x, y=version_y, s=string_to_print)
+
+            # place game copyright message
+            string_to_print = '[color=white]' + game_copyright + ' [color=yellow]' + game_author
+            terminal.printf(x=copyright_x, y=copyright_y, s=string_to_print)
 
             pointy_menu(header='', menu_options=['New Game', 'Choose build from library', 'Replay', 'Options', 'Help', 'Quit'],
                         menu_id_format=True, menu_start_x=menu_start_x,menu_start_y=menu_start_y,
@@ -98,8 +93,8 @@ class StartGame:
                             # root_console.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
                             pass
                         if selected_menu_option == 1:     # use existing build
-                            pass
-                            # display_build_library(root_console=root_console)
+                            display_build_library()
+                            terminal.clear()
                         if selected_menu_option == 2:     # Replay old game
                             pass
                         if selected_menu_option == 3:     # Game options

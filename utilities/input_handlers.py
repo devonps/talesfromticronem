@@ -21,12 +21,12 @@ def handle_game_keys():
         action = 'enter'
     if key == terminal.TK_MOUSE_MOVE:
         myevent = 'mousemove'
-        action = (terminal.TK_MOUSE_X, terminal.TK_MOUSE_Y)
+        action = (terminal.state(terminal.TK_MOUSE_X), terminal.state(terminal.TK_MOUSE_Y))
     if key == terminal.TK_MOUSE_LEFT:
         myevent = 'mouseleftbutton'
-        action = (terminal.TK_MOUSE_X, terminal.TK_MOUSE_Y)
+        action = (terminal.state(terminal.TK_MOUSE_X), terminal.state(terminal.TK_MOUSE_Y))
     if key == terminal.TK_MOUSE_RIGHT:
         myevent = 'mouserightbutton'
-        action = (terminal.TK_MOUSE_X, terminal.TK_MOUSE_Y)
+        action = (terminal.state(terminal.TK_MOUSE_X), terminal.state(terminal.TK_MOUSE_Y))
 
     return myevent, action
