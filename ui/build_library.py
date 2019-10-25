@@ -230,7 +230,6 @@ def display_build_library():
 
         # blit the terminal
         terminal.refresh()
-        logger.info('build zones {}', build_zones)
 
         # handle player events
         event_to_be_processed, event_action = handle_game_keys()
@@ -242,20 +241,16 @@ def display_build_library():
             if event_to_be_processed == 'mouseleftbutton':
                 mx = event_action[0]
                 my = event_action[1]
-                logger.info('mx {} / my {}', mx, my)
                 for zone in range(len(build_zones)):
                     if build_zones[zone][buildZoneLeft] <= mx <= build_zones[zone][buildZoneRight]:
                         if build_zones[zone][buildZoneTop] <= my <= build_zones[zone][buildZoneBottom]:
                             if zone < len(build_zones) - 1:
-                                logger.info('Zone {} clicked', zone)
                                 if zone == 0:
                                     build_grid_selected = 1
                                     selected_build = 0
                                 else:
                                     build_grid_selected = zone + 1
                                     selected_build = zone
-                                logger.info('build_grid_selected {}', build_grid_selected)
-                                logger.info('Number of zones {}', len(build_zones))
                                 draw_template_ui = True
                             if zone == len(build_zones) - 1:
                                 gameworld = world.create_game_world()
@@ -521,6 +516,6 @@ def display_build_library():
                                 #
                                 # calculate derived stats
                                 #
-                                MobileUtilities.calculate_derived_attributes(gameworld=gameworld,
-                                                                             gameconfig=game_config)
-                                # CharacterCreation.display_starting_character(root_console=root_console, gameworld=gameworld)
+                                MobileUtilities.calculate_derived_attributes(gameworld=gameworld,gameconfig=game_config)
+                                terminal.clear()
+                                CharacterCreation.display_starting_character(gameworld=gameworld)

@@ -36,3 +36,4 @@ ENV/
 # build library
 /builds.txt
 *.log
+bt.log

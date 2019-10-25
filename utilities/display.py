@@ -110,7 +110,7 @@ def draw_simple_frame(startx, starty, width, height, title, fg, bg):
         titlelen = len(title)
         titleminuspanel = width - titlelen
         pwx = int(titleminuspanel / 2)
-        terminal.print_(x=pwx, y=starty, s=titlestring)
+        terminal.print_(x=startx + pwx, y=starty, s=titlestring)
 
 
 def draw_colourful_frame(startx, starty, width, height, title, title_decorator, title_loc, corner_decorator,

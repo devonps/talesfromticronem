@@ -1,6 +1,8 @@
 import tcod
 import tcod.console
 
+from bearlibterminal import terminal
+
 from loguru import logger
 from utilities import configUtilities, colourUtilities
 from utilities.externalfileutilities import Externalfiles
@@ -37,14 +39,10 @@ class CharacterCreation:
 
         character_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
 
-
-        draw_colourful_frame(console=character_console, game_config=game_config,
-                             startx=start_panel_frame_x, starty=start_panel_frame_y,
-                             width=start_panel_frame_width,
-                             height=start_panel_frame_height,
+        draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
+                             width=start_panel_frame_width,height=start_panel_frame_height,
                              title='[ Character Creation Options ]', title_loc='centre',
-                             title_decorator=False,
-                             corner_decorator='', corner_studs='square',
+                             title_decorator=False,corner_decorator='', corner_studs='square',
                              msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
 
         show_character_options = True
@@ -52,7 +50,7 @@ class CharacterCreation:
 
         while show_character_options:
             # place game menu options
-            pointy_menu(console=character_console, header='',
+            pointy_menu(header='',
                         menu_options=['Create New Character', 'Random Character',
                                       'Replay most recent character'], menu_id_format=True, menu_start_x=menu_start_x,
                         menu_start_y=menu_start_y,  blank_line=True, selected_option=selected_menu_option)
@@ -78,7 +76,7 @@ class CharacterCreation:
                     if event_action == 'enter':
                         if selected_menu_option == 0:     # create new character
                             gameworld = CharacterCreation.create_world(gameconfig=game_config)
-                            CharacterCreation.create_new_character(gameworld=gameworld, gameconfig=game_config, root_console=root_console)
+                            CharacterCreation.create_new_character(gameworld=gameworld)
                             character_console.blit(dest=root_console, dest_x=5, dest_y=5)
                             tcod.console_flush()
                         if selected_menu_option == 1:     # create random character
@@ -95,7 +93,9 @@ class CharacterCreation:
         return gameworld
 
     @staticmethod
-    def create_new_character(gameworld, gameconfig, root_console):
+    def create_new_character(gameworld):
+
+        gameconfig = configUtilities.load_config()
 
         logger.debug('Creating the player character entity')
         player_entity = MobileUtilities.generate_base_mobile(gameworld, gameconfig)
@@ -1297,7 +1297,7 @@ class CharacterCreation:
                             CharacterCreation.display_starting_character(root_console=root_console, gameworld=gameworld)
 
     @staticmethod
-    def display_starting_character(root_console, gameworld):
+    def display_starting_character(gameworld):
         logger.info('Displaying character starting stats')
         game_config = configUtilities.load_config()
         fileName = configUtilities.get_config_value_as_string(game_config, 'default', 'BUILDLIBRARYFILE')
@@ -1368,23 +1368,21 @@ class CharacterCreation:
         display_off_wpn_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_OFF_WPN_X')
         display_off_wpn_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_OFF_WPN_Y')
 
-        display_char_personal_fg = colourUtilities.colors[dcp_fg]
-        display_char_personal_bg = colourUtilities.colors[dcp_bg]
-        display_char_attributes_fg = colourUtilities.colors[dca_fg]
-        display_char_attributes_bg = colourUtilities.colors[dca_bg]
-        display_armour_info_bg = colourUtilities.colors[dap_fg]
+        display_char_personal_fg = colourUtilities.get(dcp_fg)
+        display_char_personal_bg = colourUtilities.get(dcp_bg)
+        display_char_attributes_fg = colourUtilities.get(dca_fg)
+        display_char_attributes_bg = colourUtilities.get(dca_bg)
+        display_armour_info_bg = colourUtilities.get(dap_fg)
 
-        character_display = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
-        draw_colourful_frame(console=character_display, game_config=game_config,
-                             startx=start_panel_frame_x, starty=start_panel_frame_y,
+        draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
                              width=start_panel_frame_width,
                              height=start_panel_frame_height,
-                             title='[ Character Creation - Finished ]', title_loc='centre',
+                             title=' Character Creation - Finished ', title_loc='centre',
                              title_decorator=False,
-                             corner_decorator='', corner_studs='square',
-                             msg='')
+                             corner_decorator='', corner_studs='square', msg='')
+
         menu_options = ['Accept', 'Save Build', 'Start Again']
         max_menu_option = len(menu_options) - 1
         selected_menu_option = 0
@@ -1468,71 +1466,73 @@ class CharacterCreation:
         personality_info = ' Your personality would be described as ' + player_personality.lower() + '.'
 
         personal_details = personal_info + personality_info
-        character_display.print_box(x=display_char_personal_x, y=display_char_personal_y,
-                                    width=display_char_personal_w, height=display_char_personal_h,
-                                    string=personal_details,
-                                    fg=display_char_personal_fg)
-        #
+
+        string_to_print = personal_details
+        terminal.print_(x=display_char_personal_x, y=display_char_personal_y,
+                        width=display_char_personal_w, height=display_char_personal_h, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
         # armour
         #
-        display_coloured_box(console=character_display, title='Armour',
-                             posx=display_char_armset_attr_x, posy=display_char_armset_attr_y,
+        display_coloured_box(title='Armour',posx=display_char_armset_attr_x, posy=display_char_armset_attr_y,
                              width=display_char_armset_attr_w, height=display_char_armset_attr_h,
                              fg=display_char_personal_fg, bg=display_armour_info_bg)
 
-        strToPrint = "Location Material Display Defense"
-        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 1, width=len(strToPrint), height=1,
-                             string=strToPrint)
+        strToPrint = "[color=blue]Location Material Display Defense[/color]"
+        terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y,
+                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT,s=strToPrint)
 
         head_armour_id = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player_entity)
         armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=head_armour_id)
         armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=head_armour_id)
         def_head_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=head_armour_id)
         strToPrint = "Head:    " + armour_material + '  ' + armour_displayname + '         ' + str(def_head_value)
-        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 2, width=len(strToPrint), height=1,
-                             string=strToPrint)
+
+        terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 1,
+                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT,s=strToPrint)
 
         chest_armour_id = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=player_entity)
         armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=chest_armour_id)
         armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=chest_armour_id)
         def_chest_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest_armour_id)
         strToPrint = "Chest:   " + armour_material + '  ' + armour_displayname + '        ' + str(def_chest_value)
-        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 3, width=len(strToPrint), height=1,
-                             string=strToPrint)
+
+        terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 2,
+                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT,s=strToPrint)
 
         hands_armour_id = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=player_entity)
         armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=hands_armour_id)
         armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=hands_armour_id)
         def_hands_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands_armour_id)
         strToPrint = "Hands:   " + armour_material + '  ' + armour_displayname + ' ' + str(def_hands_value)
-        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 4, width=len(strToPrint), height=1,
-                             string=strToPrint)
+
+        terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 3,
+                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT,s=strToPrint)
 
         legs_armour_id = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player_entity)
         armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=legs_armour_id)
         armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=legs_armour_id)
         def_legs_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs_armour_id)
         strToPrint = "Legs:    " + armour_material + '  ' + armour_displayname + '    ' + str(def_legs_value)
-        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 5, width=len(strToPrint), height=1,
-                             string=strToPrint)
+
+        terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 4,
+                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT,s=strToPrint)
 
         feet_armour_id = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=player_entity)
         armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=feet_armour_id)
         armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=feet_armour_id)
         def_feet_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet_armour_id)
         strToPrint = "Feet:    " + armour_material + '  ' + armour_displayname + '     ' + str(def_feet_value)
-        character_display.print_box(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 6, width=len(strToPrint), height=1,
-                             string=strToPrint)
+
+        terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 5,
+                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT,s=strToPrint)
+
         #
         # attributes
-        #
-        display_coloured_box(console=character_display, title="Attributes",
-                             posx=display_char_attributes_x,
-                             posy=display_char_attributes_y,
-                             width=display_char_attributes_w,
-                             height=display_char_attributes_h,
-                             fg=display_char_attributes_fg,
-                             bg=display_char_attributes_bg)
+
+        display_coloured_box(title="Attributes",
+                             posx=display_char_attributes_x, posy=display_char_attributes_y,
+                             width=display_char_attributes_w, height=display_char_attributes_h,
+                             fg=display_char_attributes_fg, bg=display_char_attributes_bg)
 
         player_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=player_entity)
         player_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld, entity=player_entity)
@@ -1552,83 +1552,94 @@ class CharacterCreation:
         player_max_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=player_entity)
         player_cur_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=player_entity)
         player_maximum_mana = MobileUtilities.get_derived_maximum_mana(gameworld=gameworld, entity=player_entity)
+        #
+        # # primary / secondary / derived / bonuses highlighted
+        display_coloured_box(title="Primary",
+                             posx=display_char_pri_attributes_x, posy=display_char_pri_attributes_y,
+                             width=display_char_pri_attributes_w, height=display_char_pri_attributes_h,
+                             fg=display_char_attributes_fg, bg=display_char_attributes_bg)
 
-        # primary / secondary / derived / bonuses highlighted
-        display_coloured_box(console=character_display, title="Primary",
-                             posx=display_char_pri_attributes_x,
-                             posy=display_char_pri_attributes_y,
-                             width=display_char_pri_attributes_w,
-                             height=display_char_pri_attributes_h,
-                             fg=display_char_attributes_fg,
-                             bg=display_char_attributes_bg)
+        string_to_print = "Power:" + str(player_power)
+        terminal.print_(x=display_char_pri_attr_x, y=display_char_pri_attr_y, width=len("Power:" + str(player_power)), height=1, align=terminal.TK_ALIGN_LEFT, s=string_to_print)
 
-        character_display.print_box(x=display_char_pri_attr_x, y=display_char_pri_attr_y, width=len("Power:" + str(player_power)), height=1,
-                             string="Power:" + str(player_power))
+        string_to_print = "Precision:" + str(player_precision)
+        terminal.print_(x=display_char_pri_attr_x, y=display_char_pri_attr_y + 1, width=len("Precision:" + str(player_precision)), height=1, align=terminal.TK_ALIGN_LEFT, s=string_to_print)
+        string_to_print = "Toughness:" + str(player_toughness)
+        terminal.print_(x=display_char_pri_attr_x, y=display_char_pri_attr_y + 2, width=len("Toughness:" + str(player_toughness)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
+        string_to_print = "Vitality:" + str(player_vitality)
+        terminal.print_(x=display_char_pri_attr_x, y=display_char_pri_attr_y + 3, width=len("Vitality:" + str(player_vitality)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
 
-        character_display.print_box(x=display_char_pri_attr_x, y=display_char_pri_attr_y + 1, width=len("Precision:" + str(player_precision)),
-                             height=1, string="Precision:" + str(player_precision))
-        character_display.print_box(x=display_char_pri_attr_x, y=display_char_pri_attr_y + 2, width=len("Toughness:" + str(player_toughness)),
-                             height=1, string="Toughness:" + str(player_toughness))
-        character_display.print_box(x=display_char_pri_attr_x, y=display_char_pri_attr_y + 3, width=len("Vitality:" + str(player_vitality)), height=1,
-                             string="Vitality:" + str(player_vitality))
+        display_coloured_box(title="Secondary",
+                             posx=display_char_sec_attributes_x,posy=display_char_sec_attributes_y,
+                             width=display_char_sec_attributes_w,height=display_char_sec_attributes_h,
+                             fg=display_char_attributes_fg,bg=display_char_attributes_bg)
 
-        display_coloured_box(console=character_display, title="Secondary",
-                             posx=display_char_sec_attributes_x,
-                             posy=display_char_sec_attributes_y,
-                             width=display_char_sec_attributes_w,
-                             height=display_char_sec_attributes_h,
-                             fg=display_char_attributes_fg,
-                             bg=display_char_attributes_bg)
+        string_to_print = "Concentration:" + str(player_concentration)
+        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y, width=len("Concentration:" + str(player_concentration)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
 
-        character_display.print_box(x=display_char_sec_attr_x, y=display_char_sec_attr_y, width=len("Concentration:" + str(player_concentration)), height=1,
-                             string="Concentration:" + str(player_concentration))
-        character_display.print_box(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 1, width=len("Condition Damage:" + str(player_condi_damage)), height=1,
-                             string="Condition Damage:" + str(player_condi_damage))
-        character_display.print_box(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 2, width=len("Expertise:" + str(player_expertise)), height=1,
-                             string="Expertise:" + str(player_expertise))
-        character_display.print_box(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 3, width=len("Ferocity:" + str(player_ferocity)), height=1,
-                             string="Ferocity:" + str(player_ferocity))
-        character_display.print_box(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 4, width=len("Healing Power:" + str(player_healing_power)), height=1,
-                             string="Healing Power:" + str(player_healing_power))
+        string_to_print = "Condition Damage:" + str(player_condi_damage)
+        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 1, width=len("Condition Damage:" + str(player_condi_damage)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
 
-        display_coloured_box(console=character_display, title="Derived",
-                             posx=display_char_der_attributes_x,
-                             posy=display_char_der_attributes_y,
-                             width=display_char_der_attributes_w,
-                             height=display_char_der_attributes_h,
-                             fg=display_char_attributes_fg,
-                             bg=display_char_attributes_bg)
+        string_to_print = "Expertise:" + str(player_expertise)
+        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 2, width=len("Expertise:" + str(player_expertise)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
 
-        character_display.print_box(x=display_char_der_attr_x, y=display_char_der_attr_y, width=len("Armour:" + str(player_armour)), height=1,
-                             string="Armour:" + str(player_armour))
-        character_display.print_box(x=display_char_der_attr_x, y=display_char_der_attr_y + 1, width=len("Boon Duration:" + str(player_boon_duration)), height=1,
-                             string="Boon Duration:" + str(player_boon_duration))
-        character_display.print_box(x=display_char_der_attr_x, y=display_char_der_attr_y + 2, width=len("Critical Chance:" + str(player_critical_chance) + '%'), height=1,
-                             string="Critical Chance:" + str(player_critical_chance) + '%')
-        character_display.print_box(x=display_char_der_attr_x, y=display_char_der_attr_y + 3, width=len("Critical Damage:" + str(player_critical_damage) + '%'), height=1,
-                             string="Critical Damage:" + str(player_critical_damage) + '%')
-        character_display.print_box(x=display_char_der_attr_x, y=display_char_der_attr_y + 4, width=len("Condition Duration:" + str(player_condi_duration)), height=1,
-                             string="Condition Duration:" + str(player_condi_duration))
+        string_to_print = "Ferocity:" + str(player_ferocity)
+        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 3, width=len("Ferocity:" + str(player_ferocity)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
+
+        string_to_print = "Healing Power:" + str(player_healing_power)
+        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 4, width=len("Healing Power:" + str(player_healing_power)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
+
+        display_coloured_box(title="Derived",
+                             posx=display_char_der_attributes_x,posy=display_char_der_attributes_y,
+                             width=display_char_der_attributes_w,height=display_char_der_attributes_h,
+                             fg=display_char_attributes_fg,bg=display_char_attributes_bg)
+
+        string_to_print = "Armour:" + str(player_armour)
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y, width=len("Armour:" + str(player_armour)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
+
+        string_to_print = "Boon Duration:" + str(player_boon_duration)
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y +1, width=len("Boon Duration:" + str(player_boon_duration)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
+
+        string_to_print = "Critical Chance:" + str(player_critical_chance) + '%'
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y +2, width=len("Critical Chance:" + str(player_critical_chance) + '%'), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
+
+        string_to_print = "Critical Damage:" + str(player_critical_damage) + '%'
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y +3, width=len("Critical Damage:" + str(player_critical_damage) + '%'), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
+
+        string_to_print = "Condition Duration:" + str(player_condi_duration)
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y +4, width=len("Condition Duration:" + str(player_condi_duration)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
         # health
-        character_display.print_box(x=display_char_der_attr_x, y=display_char_der_attr_y + 6, width=len("Health:" + str(player_cur_health)), height=1,
-                             string="Health:" + str(player_cur_health))
+        string_to_print = "Health:" + str(player_cur_health)
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y +6, width=len("Health:" + str(player_cur_health)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
 
-        character_display.print_box(x=display_char_der_attr_x + 10, y=display_char_der_attr_y + 6, width=len(" / " + str(player_max_health)), height=1,
-                             string=" / " + str(player_max_health))
+        string_to_print = " / " + str(player_max_health)
+        terminal.print_(x=display_char_der_attr_x + 10, y=display_char_der_attr_y + 6, width=len(" / " + str(player_max_health)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
 
         # mana
-        character_display.print_box(x=display_char_der_attr_x, y=display_char_der_attr_y + 7, width=len("Mana:" + str(player_maximum_mana)), height=1,
-                             string="Mana:" + str(player_maximum_mana))
+        string_to_print = "Mana:" + str(player_maximum_mana)
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y + 7, width=len("Mana:" + str(player_maximum_mana)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
 
         # weapons
 
-        display_coloured_box(console=character_display, title="Weapons",
-                             posx=display_wpn_x,
-                             posy=display_wpn_y,
-                             width=display_wpn_w,
-                             height=display_wpn_h,
-                             fg=display_char_attributes_fg,
-                             bg=display_char_attributes_bg)
+        display_coloured_box(title="Weapons / Spells",
+                             posx=display_wpn_x,posy=display_wpn_y,
+                             width=display_wpn_w,height=display_wpn_h,
+                             fg=display_char_attributes_fg,bg=display_char_attributes_bg)
 
         weapons_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
         main_weapon = weapons_list[0]
@@ -1647,12 +1658,6 @@ class CharacterCreation:
             slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=4)
             slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=5)
 
-            slot1_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=both_weapon, power=player_power, slot=1) / player_armour)
-            slot2_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=both_weapon, power=player_power, slot=2) / player_armour)
-            slot3_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=both_weapon, power=player_power, slot=3) / player_armour)
-            slot4_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=both_weapon, power=player_power, slot=4) / player_armour)
-            slot5_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=both_weapon, power=player_power, slot=5) / player_armour)
-
         else:
             main_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=main_weapon)
             slot1_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon, slotid=1)
@@ -1670,49 +1675,48 @@ class CharacterCreation:
             slot4_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=off_weapon, power=player_power, slot=4) / player_armour)
             slot5_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=off_weapon, power=player_power, slot=5) / player_armour)
 
-        main_wpn_display = 'Main Hand: ' + main_hand_weapon_name
+        main_wpn_display = '[color=blue]Main Hand: ' + main_hand_weapon_name + '[\color]'
         slot1_display = 'Slot 1:' + slot1_name
         slot2_display = 'Slot 2:' + slot2_name
         slot3_display = 'Slot 3:' + slot3_name
         slot4_display = 'Slot 4:' + slot4_name
         slot5_display = 'Slot 5:' + slot5_name
 
-        off_wpn_display = 'Off Hand: ' + off_hand_weapon_name
+        off_wpn_display = '[color=green]Off Hand: ' + off_hand_weapon_name + '[\color]'
 
         # main hand
-        dmg_acr = display_wpn_w - len('damage')
-        character_display.print_box(x=display_main_wpn_x, y=display_main_wpn_y, width=len(main_wpn_display), height=1, string=main_wpn_display)
-        character_display.print_box(x=display_main_wpn_x, y=display_main_wpn_y + 1, width=len(slot1_display), height=1, string=slot1_display)
-        character_display.print_box(x=display_main_wpn_x, y=display_main_wpn_y + 2, width=len(slot2_display), height=1, string=slot2_display)
-        character_display.print_box(x=display_main_wpn_x, y=display_main_wpn_y + 3, width=len(slot3_display), height=1, string=slot3_display)
 
-        character_display.print_box(x=dmg_acr, y=display_main_wpn_y, width=len('dph'), height=1, string='dph')
-        character_display.print_box(x=dmg_acr, y=display_main_wpn_y + 1, width=len(str(slot1_damage)), height=1, string=str(slot1_damage))
-        character_display.print_box(x=dmg_acr, y=display_main_wpn_y + 2, width=len(str(slot2_damage)), height=1, string=str(slot2_damage))
-        character_display.print_box(x=dmg_acr, y=display_main_wpn_y + 3, width=len(str(slot3_damage)), height=1, string=str(slot3_damage))
-
+        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y, width=len(main_wpn_display), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=main_wpn_display)
+        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 1, width=len(slot1_display), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=slot1_display)
+        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 2,width=len(slot2_display), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=slot2_display)
+        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 3, width=len(slot3_display), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=slot3_display)
 
         # off hand
-        character_display.print_box(x=display_off_wpn_x, y=display_off_wpn_y, width=len(off_wpn_display), height=1, string=off_wpn_display)
-        character_display.print_box(x=display_off_wpn_x, y=display_off_wpn_y + 1, width=len(slot4_display), height=1, string=slot4_display)
-        character_display.print_box(x=display_off_wpn_x, y=display_off_wpn_y + 2, width=len(slot5_display), height=1, string=slot5_display)
-
-        character_display.print_box(x=dmg_acr, y=display_off_wpn_y + 1, width=len(str(slot4_damage)), height=1, string=str(slot4_damage))
-        character_display.print_box(x=dmg_acr, y=display_off_wpn_y + 2, width=len(str(slot5_damage)), height=1, string=str(slot5_damage))
+        terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y, width=len(off_wpn_display), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=off_wpn_display)
+        terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y + 1, width=len(slot4_display), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=slot4_display)
+        terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y + 2,width=len(slot5_display), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=slot5_display)
 
         saved_build = False
         while not_ready_to_proceed:
             # blit changes to root console
-            character_display.blit(dest=root_console, dest_x=5, dest_y=5)
-            tcod.console_flush()
+            terminal.refresh()
         # menu options
-            pointy_menu(console=character_display, header='',
+            pointy_menu(header='',
                         menu_options=menu_options, menu_id_format=True, menu_start_x=display_char_menu_x,
                         menu_start_y=display_char_menu_y, blank_line=True, selected_option=selected_menu_option)
 
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '':
                 if event_to_be_processed == 'keypress':
+                    if event_action == 'quit':
+                        not_ready_to_proceed = False
                     if event_action == 'up':
                         selected_menu_option -= 1
                         if selected_menu_option < 0:
@@ -1723,7 +1727,7 @@ class CharacterCreation:
                             selected_menu_option = 0
                     if event_action == 'enter':
                         if selected_menu_option == 0:   # accept character build and start game
-                            game_loop(con=root_console, gameworld=gameworld)
+                            game_loop(gameworld=gameworld)
                         if selected_menu_option == 1:   # save current build
                             if not saved_build:
                                 build_info = BuildLibrary.save_build_to_library(gameworld=gameworld)
@@ -1732,4 +1736,8 @@ class CharacterCreation:
                         if selected_menu_option == 2:   # reject build and start again
                             not_ready_to_proceed = False
                             MobileUtilities.unequip_all_weapons(gameworld=gameworld, entity=player_entity)
-
+                            # remove jewellery
+                            # delete player entity
+                            MobileUtilities.delete_entity(gameworld=gameworld, entity=player_entity)
+                            terminal.clear()
+                            CharacterCreation.create_new_character(gameworld=gameworld)

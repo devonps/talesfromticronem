@@ -17,7 +17,7 @@ from gameworld.sceneManager import SceneManager
 from newGame import newGame
 
 
-def game_loop(con, gameworld):
+def game_loop(gameworld):
 
     game_config = configUtilities.load_config()
     con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')

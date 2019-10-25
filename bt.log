@@ -1,56 +1,56 @@
-20:11:25.705 [info] OpenGL: maximum texture size is 16384x16384
-20:11:25.705 [info] OpenGL: GPU supports NPOTD textures
-20:11:25.707 [debug] Group "window":
-20:11:25.707 [debug] * "icon" = "default"
-20:11:25.707 [debug] * "size" = "80x25"
-20:11:25.707 [debug] Group "font":
-20:11:25.707 [debug] * "_" = "default"
-20:11:25.707 [info] New font 'main' -> index 0
-20:11:25.707 [debug] Requested resource "default" with possible prefix "tileset-"
-20:11:25.707 [debug] Resource "tileset-default" is built-in
-20:11:25.708 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-20:11:25.708 [debug] Requested resource "tileset-default" with possible prefix "codepage-"
-20:11:25.708 [debug] Resource "codepage-tileset-default" is built-in
-20:11:25.708 [debug] Custom codepage file encoding detected to be ASCII UTF-8
-20:11:25.710 [trace] Loaded PNG image, 256x320
-20:11:25.710 [debug] Tileset has 32x20 tiles
-20:11:25.711 [debug] Group "terminal":
-20:11:25.711 [debug] * "encoding" = "utf8"
-20:11:25.711 [debug] Group "input":
-20:11:25.711 [debug] * "filter" = "keyboard"
-20:11:25.711 [debug] SetOptions: new cell size is 8x16
-20:11:25.711 [debug] SetOptions: new window size is 80x25
-20:11:25.712 [info] Applying options from configuration file, if any
-20:11:25.712 [info] Trying to set "font._='./static/fonts/16x16_sm_ascii.png';font.codepage='437';font.size='16x16';"
-20:11:25.712 [debug] Group "font":
-20:11:25.712 [debug] * "_" = "./static/fonts/16x16_sm_ascii.png"
-20:11:25.713 [debug] * "codepage" = "437"
-20:11:25.713 [debug] * "size" = "16x16"
-20:11:25.713 [debug] Requested resource "./static/fonts/16x16_sm_ascii.png" with possible prefix "tileset-"
-20:11:25.713 [debug] Loaded resource from './static/fonts/16x16_sm_ascii.png' (5741 bytes)
-20:11:25.713 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-20:11:25.713 [debug] Requested resource "437" with possible prefix "codepage-"
-20:11:25.713 [debug] Resource "codepage-437" is built-in
-20:11:25.713 [debug] Custom codepage file encoding detected to be ASCII UTF-8
-20:11:25.715 [trace] Loaded PNG image, 256x256
-20:11:25.716 [debug] Tileset has 16x16 tiles
-20:11:25.717 [debug] SetOptions: new cell size is 16x16
-20:11:25.718 [info] Trying to set "input.filter='keyboard+, mouse+';input.precise-mouse='false';"
-20:11:25.718 [debug] Group "input":
-20:11:25.718 [debug] * "filter" = "keyboard+, mouse+"
-20:11:25.718 [debug] * "precise-mouse" = "false"
-20:11:25.719 [info] Trying to set "log.file='bt.log';log.level='trace';"
-20:11:25.719 [debug] Group "log":
-20:11:25.719 [debug] * "file" = "bt.log"
-20:11:25.719 [debug] * "level" = "trace"
-20:11:25.719 [info] Trying to set "window.resizeable='true';window.size='110x60';window.title='Tales from Ticronem';"
-20:11:25.719 [debug] Group "window":
-20:11:25.719 [debug] * "resizeable" = "true"
-20:11:25.719 [debug] * "size" = "110x60"
-20:11:25.719 [debug] * "title" = "Tales from Ticronem"
-20:11:25.721 [debug] SetOptions: new window size is 110x60
-20:11:25.728 [info] Applying palette from configuration file
-20:11:25.728 [info] Terminal initialization complete
-20:11:25.729 [info] Trying to set "terminal.encoding-affects-put=false"
-20:11:25.729 [debug] Group "terminal":
-20:11:25.729 [debug] * "encoding-affects-put" = "false"
+22:21:02.138 [info] OpenGL: maximum texture size is 16384x16384
+22:21:02.138 [info] OpenGL: GPU supports NPOTD textures
+22:21:02.142 [debug] Group "window":
+22:21:02.143 [debug] * "icon" = "default"
+22:21:02.143 [debug] * "size" = "80x25"
+22:21:02.143 [debug] Group "font":
+22:21:02.143 [debug] * "_" = "default"
+22:21:02.143 [info] New font 'main' -> index 0
+22:21:02.143 [debug] Requested resource "default" with possible prefix "tileset-"
+22:21:02.143 [debug] Resource "tileset-default" is built-in
+22:21:02.143 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+22:21:02.143 [debug] Requested resource "tileset-default" with possible prefix "codepage-"
+22:21:02.144 [debug] Resource "codepage-tileset-default" is built-in
+22:21:02.144 [debug] Custom codepage file encoding detected to be ASCII UTF-8
+22:21:02.146 [trace] Loaded PNG image, 256x320
+22:21:02.147 [debug] Tileset has 32x20 tiles
+22:21:02.148 [debug] Group "terminal":
+22:21:02.148 [debug] * "encoding" = "utf8"
+22:21:02.148 [debug] Group "input":
+22:21:02.148 [debug] * "filter" = "keyboard"
+22:21:02.148 [debug] SetOptions: new cell size is 8x16
+22:21:02.148 [debug] SetOptions: new window size is 80x25
+22:21:02.149 [info] Applying options from configuration file, if any
+22:21:02.150 [info] Trying to set "font._='./static/fonts/16x16_sm_ascii.png';font.codepage='437';font.size='16x16';"
+22:21:02.150 [debug] Group "font":
+22:21:02.150 [debug] * "_" = "./static/fonts/16x16_sm_ascii.png"
+22:21:02.150 [debug] * "codepage" = "437"
+22:21:02.150 [debug] * "size" = "16x16"
+22:21:02.150 [debug] Requested resource "./static/fonts/16x16_sm_ascii.png" with possible prefix "tileset-"
+22:21:02.151 [debug] Loaded resource from './static/fonts/16x16_sm_ascii.png' (5741 bytes)
+22:21:02.151 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+22:21:02.151 [debug] Requested resource "437" with possible prefix "codepage-"
+22:21:02.151 [debug] Resource "codepage-437" is built-in
+22:21:02.151 [debug] Custom codepage file encoding detected to be ASCII UTF-8
+22:21:02.154 [trace] Loaded PNG image, 256x256
+22:21:02.155 [debug] Tileset has 16x16 tiles
+22:21:02.156 [debug] SetOptions: new cell size is 16x16
+22:21:02.157 [info] Trying to set "input.filter='keyboard+, mouse+';input.precise-mouse='false';"
+22:21:02.158 [debug] Group "input":
+22:21:02.158 [debug] * "filter" = "keyboard+, mouse+"
+22:21:02.158 [debug] * "precise-mouse" = "false"
+22:21:02.158 [info] Trying to set "log.file='bt.log';log.level='trace';"
+22:21:02.158 [debug] Group "log":
+22:21:02.159 [debug] * "file" = "bt.log"
+22:21:02.159 [debug] * "level" = "trace"
+22:21:02.159 [info] Trying to set "window.resizeable='true';window.size='110x60';window.title='Tales from Ticronem';"
+22:21:02.159 [debug] Group "window":
+22:21:02.159 [debug] * "resizeable" = "true"
+22:21:02.159 [debug] * "size" = "110x60"
+22:21:02.159 [debug] * "title" = "Tales from Ticronem"
+22:21:02.161 [debug] SetOptions: new window size is 110x60
+22:21:02.170 [info] Applying palette from configuration file
+22:21:02.170 [info] Terminal initialization complete
+22:21:02.170 [info] Trying to set "terminal.encoding-affects-put=false"
+22:21:02.170 [debug] Group "terminal":
+22:21:02.170 [debug] * "encoding-affects-put" = "false"

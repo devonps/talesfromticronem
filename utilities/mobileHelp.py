@@ -12,6 +12,11 @@ class MobileUtilities(numbers.Real):
     #
     # general methods
     #
+
+    @staticmethod
+    def delete_entity(gameworld, entity):
+        world.delete_entity(gameworld=gameworld, entity=entity)
+
     @staticmethod
     def set_player_gender(gameworld, entity, gender):
         describable_component = gameworld.component_for_entity(entity, mobiles.Describable)
