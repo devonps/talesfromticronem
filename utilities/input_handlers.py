@@ -7,6 +7,38 @@ def handle_game_keys():
     myevent = ''
 
     key = terminal.read()
+
+    if key == terminal.TK_1:
+        myevent = 'keypress'
+        action = '1'
+    if key == terminal.TK_2:
+        myevent = 'keypress'
+        action = '2'
+    if key == terminal.TK_3:
+        myevent = 'keypress'
+        action = '3'
+    if key == terminal.TK_4:
+        myevent = 'keypress'
+        action = '4'
+    if key == terminal.TK_5:
+        myevent = 'keypress'
+        action = '5'
+    if key == terminal.TK_6:
+        myevent = 'keypress'
+        action = '6'
+    if key == terminal.TK_7:
+        myevent = 'keypress'
+        action = '7'
+    if key == terminal.TK_8:
+        myevent = 'keypress'
+        action = '8'
+    if key == terminal.TK_9:
+        myevent = 'keypress'
+        action = '9'
+    if key == terminal.TK_0:
+        myevent = 'keypress'
+        action = '0'
+
     if key == terminal.TK_ESCAPE:
         myevent = 'keypress'
         action = 'quit'
@@ -16,6 +48,12 @@ def handle_game_keys():
     if key == terminal.TK_DOWN:
         myevent = 'keypress'
         action = 'down'
+    if key == terminal.TK_LEFT:
+        myevent = 'keypress'
+        action = 'left'
+    if key == terminal.TK_RIGHT:
+        myevent = 'keypress'
+        action = 'right'
     if key == terminal.TK_ENTER:
         myevent = 'keypress'
         action = 'enter'

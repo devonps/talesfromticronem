@@ -50,7 +50,7 @@ class StartGame:
                                  title=game_title, title_loc='centre',
                                  title_decorator=True,
                                  corner_decorator='', corner_studs='',
-                                 msg='')
+                                 msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
 
             # place game version message
             string_to_print = '[color=light grey]' + game_version
@@ -88,10 +88,8 @@ class StartGame:
 
                     if event_action == 'enter':
                         if selected_menu_option == 0:
-                            game_config = configUtilities.load_config()
-                            # CharacterCreation.display_character_creation_options(root_console=root_console, game_config=game_config)
-                            # root_console.clear(ch=32, fg=(0, 0, 0), bg=(0, 0, 0))
-                            pass
+                            terminal.clear()
+                            CharacterCreation.display_character_creation_options()
                         if selected_menu_option == 1:     # use existing build
                             display_build_library()
                             terminal.clear()

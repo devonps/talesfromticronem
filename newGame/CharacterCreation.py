@@ -7,7 +7,8 @@ from loguru import logger
 from utilities import configUtilities, colourUtilities
 from utilities.externalfileutilities import Externalfiles
 from utilities.buildLibrary import BuildLibrary
-from utilities.display import draw_colourful_frame, pointy_menu, coloured_list, draw_clear_text_box, display_coloured_box
+from utilities.display import draw_colourful_frame, pointy_menu, coloured_list, draw_clear_text_box, \
+    display_coloured_box
 from utilities.input_handlers import handle_game_keys
 from utilities.world import create_game_world
 from utilities.jsonUtilities import read_json_file
@@ -25,39 +26,40 @@ from ticronem import game_loop
 class CharacterCreation:
 
     @staticmethod
-    def display_character_creation_options(root_console, game_config):
+    def display_character_creation_options():
         logger.info('Character creation options')
+        game_config = configUtilities.load_config()
 
         start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
         start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
-        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_WIDTH')
-        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
+        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'START_PANEL_FRAME_WIDTH')
+        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                               'START_PANEL_FRAME_HEIGHT')
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_X')
         menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_Y')
-
-        character_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
-
-        draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
-                             width=start_panel_frame_width,height=start_panel_frame_height,
-                             title='[ Character Creation Options ]', title_loc='centre',
-                             title_decorator=False,corner_decorator='', corner_studs='square',
-                             msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
 
         show_character_options = True
         selected_menu_option = 0
 
         while show_character_options:
+
+            draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
+                                 width=start_panel_frame_width, height=start_panel_frame_height,
+                                 title=' Character Creation Options ', title_loc='centre',
+                                 title_decorator=False, corner_decorator='', corner_studs='square',
+                                 msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
+
             # place game menu options
             pointy_menu(header='',
                         menu_options=['Create New Character', 'Random Character',
                                       'Replay most recent character'], menu_id_format=True, menu_start_x=menu_start_x,
-                        menu_start_y=menu_start_y,  blank_line=True, selected_option=selected_menu_option)
+                        menu_start_y=menu_start_y, blank_line=True, selected_option=selected_menu_option)
 
             # blit changes to root console
-            character_console.blit(dest=root_console, dest_x=5, dest_y=5)
-            tcod.console_flush()
+            terminal.refresh()
 
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '':
@@ -68,24 +70,24 @@ class CharacterCreation:
                     if event_action == 'up':
                         selected_menu_option -= 1
                         if selected_menu_option < 0:
-                            selected_menu_option = 3
+                            selected_menu_option = 2
                     if event_action == 'down':
                         selected_menu_option += 1
-                        if selected_menu_option > 3:
+                        if selected_menu_option > 2:
                             selected_menu_option = 0
                     if event_action == 'enter':
-                        if selected_menu_option == 0:     # create new character
-                            gameworld = CharacterCreation.create_world(gameconfig=game_config)
+                        if selected_menu_option == 0:  # create new character
+                            gameworld = CharacterCreation.create_world()
+                            terminal.clear()
                             CharacterCreation.create_new_character(gameworld=gameworld)
-                            character_console.blit(dest=root_console, dest_x=5, dest_y=5)
-                            tcod.console_flush()
-                        if selected_menu_option == 1:     # create random character
+                        if selected_menu_option == 1:  # create random character
                             pass
-                        if selected_menu_option == 2:     # replay most recent character
+                        if selected_menu_option == 2:  # replay most recent character
                             pass
 
     @staticmethod
-    def create_world(gameconfig):
+    def create_world():
+        gameconfig = configUtilities.load_config()
         # Esper initialisation
         gameworld = create_game_world()
         setup_gameworld(game_config=gameconfig)
@@ -101,17 +103,22 @@ class CharacterCreation:
         player_entity = MobileUtilities.generate_base_mobile(gameworld, gameconfig)
         logger.info('Player character stored as entity {}', player_entity)
 
-        CharacterCreation.choose_race(root_console=root_console, gameworld=gameworld, player=player_entity, game_config=gameconfig)
+        CharacterCreation.choose_race(gameworld=gameworld, player=player_entity)
 
     @staticmethod
-    def choose_race(root_console, gameworld, player, game_config):
-        player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='RACESFILE')
+    def choose_race(gameworld, player):
+        game_config = configUtilities.load_config()
+
+        player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                      parameter='RACESFILE')
         start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
         start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
-        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_WIDTH')
-        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
+        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'START_PANEL_FRAME_WIDTH')
+        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                               'START_PANEL_FRAME_HEIGHT')
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_X')
         menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_Y')
         primary_attributes = configUtilities.get_config_value_as_list(game_config, 'newgame', 'PRIMARY_ATTRIBUTES')
@@ -120,18 +127,8 @@ class CharacterCreation:
         race_benefits_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'RACE_CONSOLE_BENEFITS_X')
         race_benefits_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'RACE_CONSOLE_BENEFITS_Y')
 
-        race_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
         # get build entity
         build_entity = BuildLibrary.create_build_entity(gameworld=gameworld)
-
-        draw_colourful_frame(console=race_console, game_config=game_config,
-                             startx=start_panel_frame_x, starty=start_panel_frame_y,
-                             width=start_panel_frame_width,
-                             height=start_panel_frame_height,
-                             title='[ Character Creation - Select Race ]', title_loc='centre',
-                             title_decorator=False,
-                             corner_decorator='', corner_studs='square',
-                             msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
 
         logger.info('Select Race options')
         race_file = read_json_file(player_race_file)
@@ -157,44 +154,54 @@ class CharacterCreation:
         max_menu_option = len(race_name) - 1
 
         while show_race_options:
-            pointy_menu(console=race_console, header='',
-                        menu_options=race_name, menu_id_format=True, menu_start_x=menu_start_x, menu_start_y=menu_start_y,
+
+            draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
+                                 width=start_panel_frame_width,
+                                 height=start_panel_frame_height,
+                                 title=' Character Creation - Select Race ', title_loc='centre',
+                                 title_decorator=False,
+                                 corner_decorator='', corner_studs='square',
+                                 msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
+
+            pointy_menu(header='',
+                        menu_options=race_name, menu_id_format=True, menu_start_x=menu_start_x,
+                        menu_start_y=menu_start_y,
                         blank_line=True, selected_option=selected_menu_option)
 
             # racial flavour text
-            draw_clear_text_box(console=race_console,
-                                posx=race_flavour_x, posy=race_flavour_y,
-                                width=30, height=10,
-                                text=race_flavour[selected_menu_option],
-                                fg=colourUtilities.WHITE, bg=colourUtilities.BLACK)
+            wd = 37
+            terminal.clear_area(x=race_flavour_x, y=race_flavour_y, width=wd, height=2)
+            terminal.print_(x=race_flavour_x, y=race_flavour_y, s=race_flavour[selected_menu_option], width=wd,
+                            height=2)
 
             # racial benefits
-            race_console.print(x=race_benefits_x, y=race_benefits_y, string='Benefit', fg=colourUtilities.GREEN)
+            string_to_print = '[color=' + colourUtilities.get('GREEN') + '[/color]Benefit'
+            terminal.print_(x=race_benefits_x, y=race_benefits_y, s=string_to_print)
+
             race_benefit = race_attributes[selected_menu_option]
             benefit_value = race_benefit['benefitValue']
             benefit_name = race_benefit['benefitName']
 
-            coloured_list(console=race_console, list_options=primary_attributes,
+            coloured_list(list_options=primary_attributes,
                           list_x=race_benefits_x + 3, list_y=race_benefits_y + 2,
-                          selected_option=benefit_name, blank_line=False, fg=colourUtilities.WHITE)
+                          selected_option=benefit_name, blank_line=False, fg=colourUtilities.get('WHITE'))
 
             posy = 0
             for benefit in primary_attributes:
                 if benefit_name.lower() == benefit.lower():
-
-                    race_console.print(x=race_benefits_x, y=(race_benefits_y + 2) + posy, string='+' + benefit_value,
-                                       fg=colourUtilities.YELLOW1, bg=colourUtilities.BLACK)
+                    string_to_print = '[color=' + colourUtilities.get('YELLOW1') + '[/color]' + '+' + benefit_value
+                    terminal.print(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
                 else:
-                    race_console.print(x=race_benefits_x, y=(race_benefits_y + 2) + posy, string='   ',
-                                       fg=colourUtilities.BLACK, bg=colourUtilities.BLACK)
+                    string_to_print = '[color=' + colourUtilities.get('BLACK') + '   [/color]'
+                    terminal.print(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
                 posy += 1
 
             # blit changes to root console
-            race_console.blit(dest=root_console, dest_x=5, dest_y=5)
-            tcod.console_flush()
+            terminal.refresh()
 
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '':
+                terminal.clear()
                 if event_to_be_processed == 'keypress':
                     if event_action == 'quit':
                         show_race_options = False
@@ -208,13 +215,15 @@ class CharacterCreation:
                             selected_menu_option = 0
                     if event_action == 'enter':
                         MobileUtilities.setup_racial_attributes(
-                            gameworld=gameworld,player=player, selected_race=race_name[selected_menu_option],
+                            gameworld=gameworld, player=player, selected_race=race_name[selected_menu_option],
                             race_size=race_size[selected_menu_option], bg=race_bg_colour[selected_menu_option])
                         logger.info('Race selected:' + race_name[selected_menu_option])
-                        CharacterCreation.choose_class(root_console, gameworld, player, game_config)
+                        CharacterCreation.choose_class(gameworld)
+        terminal.clear()
 
     @staticmethod
-    def choose_class(root_console, gameworld, player, game_config):
+    def choose_class(gameworld):
+        game_config = configUtilities.load_config()
 
         player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                        parameter='CLASSESFILE')
@@ -224,8 +233,10 @@ class CharacterCreation:
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
         start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
-        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_WIDTH')
-        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
+        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'START_PANEL_FRAME_WIDTH')
+        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                               'START_PANEL_FRAME_HEIGHT')
         class_flavour_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_CONSOLE_FLAVOR_X')
         class_flavour_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_CONSOLE_FLAVOR_Y')
         class_menu_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_MENU_X')
@@ -234,17 +245,6 @@ class CharacterCreation:
         class_package_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_PACKAGE_Y')
         class_packages = configUtilities.get_config_value_as_list(game_config, 'newgame', 'CLASS_PACKAGES')
         jewellery_locations = configUtilities.get_config_value_as_list(game_config, 'newgame', 'JEWELLERY_LOCATIONS')
-
-        class_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
-
-        draw_colourful_frame(console=class_console, game_config=game_config,
-                             startx=start_panel_frame_x, starty=start_panel_frame_y,
-                             width=start_panel_frame_width,
-                             height=start_panel_frame_height,
-                             title='[ Character Creation - Select Class ]', title_loc='centre',
-                             title_decorator=False,
-                             corner_decorator='', corner_studs='square',
-                             msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
 
         logger.info('Selecting character class')
         class_file = read_json_file(player_class_file)
@@ -297,25 +297,33 @@ class CharacterCreation:
         package_selected = 1
 
         while class_not_selected:
-            pointy_menu(console=class_console, header='',
-                        menu_options=menu_options, menu_id_format=True, menu_start_x=class_menu_x, menu_start_y=class_menu_y,
+
+            draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
+                                 width=start_panel_frame_width,
+                                 height=start_panel_frame_height,
+                                 title='Character Creation - Select Class', title_loc='centre',
+                                 title_decorator=False,
+                                 corner_decorator='', corner_studs='square',
+                                 msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
+
+            pointy_menu(header='',
+                        menu_options=menu_options, menu_id_format=True, menu_start_x=class_menu_x,
+                        menu_start_y=class_menu_y,
                         blank_line=True, selected_option=selected_menu_option)
 
             # draw class flavour text
-            draw_clear_text_box(console=class_console,
-                                posx=class_flavour_x, posy=class_flavour_y,
-                                width=30, height=10,
-                                text=menu_options_flavour[selected_menu_option],
-                                fg=colourUtilities.WHITE, bg=colourUtilities.BLACK)
+            terminal.clear_area(x=class_flavour_x, y=class_flavour_y, width=30, height=10)
+            terminal.print_(x=class_flavour_x, y=class_flavour_y, width=30, height=10,
+                            s=menu_options_flavour[selected_menu_option])
 
             # draw jewellery title
-            class_console.print(x=class_package_x + 15, y=class_package_y - 2, string='Jewellery Bonus', fg=colourUtilities.YELLOW1)
+            string_to_print = '[color=' + colourUtilities.get('YELLOW1') + ']Jewellery Bonus[/color]'
+            terminal.print(x=class_package_x + 15, y=class_package_y - 2, s=string_to_print)
 
-            coloured_list(console=class_console,
-                          list_options=jewellery_locations,
+            coloured_list(list_options=jewellery_locations,
                           list_x=class_package_x, list_y=class_package_y + 2,
                           selected_option='nothing',
-                          blank_line=False, fg=colourUtilities.WHITE)
+                          blank_line=False, fg=colourUtilities.get('WHITE'))
 
             # draw class packages incl jewellery benefits
             pkg_pointer = '>'
@@ -324,37 +332,55 @@ class CharacterCreation:
             p2 = 24
             p3 = 39
             if package_selected == 1:
-                class_console.print(x=class_package_x + p1, y=class_package_y, string=pkg_pointer + class_packages[0], fg=colourUtilities.YELLOW1)
-                class_console.print(x=class_package_x + p2, y=class_package_y, string=pkg_empty + class_packages[1], fg=colourUtilities.WHITE)
-                class_console.print(x=class_package_x + p3, y=class_package_y, string=pkg_empty + class_packages[2], fg=colourUtilities.WHITE)
+                string_to_print = '[color=' + colourUtilities.get('BLUE') + ']' + pkg_pointer + '[/color]' + \
+                                  class_packages[0]
+                terminal.print(x=class_package_x + p1, y=class_package_y, s=string_to_print)
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + class_packages[1]
+                terminal.print(x=class_package_x + p2, y=class_package_y, s=string_to_print)
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + class_packages[2]
+                terminal.print(x=class_package_x + p3, y=class_package_y, s=string_to_print)
             if package_selected == 2:
-                class_console.print(x=class_package_x + p1, y=class_package_y, string=pkg_empty + class_packages[0], fg=colourUtilities.WHITE)
-                class_console.print(x=class_package_x + p2, y=class_package_y, string=pkg_pointer + class_packages[1], fg=colourUtilities.YELLOW1)
-                class_console.print(x=class_package_x + p3, y=class_package_y, string=pkg_empty + class_packages[2], fg=colourUtilities.WHITE)
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + class_packages[0]
+                terminal.print(x=class_package_x + p1, y=class_package_y, s=string_to_print)
+                string_to_print = '[color=' + colourUtilities.get('BLUE') + ']' + pkg_pointer + '[/color]' + \
+                                  class_packages[1]
+                terminal.print(x=class_package_x + p2, y=class_package_y, s=string_to_print)
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + class_packages[2]
+                terminal.print(x=class_package_x + p3, y=class_package_y, s=string_to_print)
             if package_selected == 3:
-                class_console.print(x=class_package_x + p1, y=class_package_y, string=pkg_empty + class_packages[0], fg=colourUtilities.WHITE)
-                class_console.print(x=class_package_x + p2, y=class_package_y, string=pkg_empty + class_packages[1], fg=colourUtilities.WHITE)
-                class_console.print(x=class_package_x + p3, y=class_package_y, string=pkg_pointer + class_packages[2], fg=colourUtilities.YELLOW1)
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + class_packages[0]
+                terminal.print(x=class_package_x + p1, y=class_package_y, s=string_to_print)
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + class_packages[1]
+                terminal.print(x=class_package_x + p2, y=class_package_y, s=string_to_print)
+                string_to_print = '[color=' + colourUtilities.get('BLUE') + ']' + pkg_pointer + '[/color]' + \
+                                  class_packages[2]
+                terminal.print(x=class_package_x + p3, y=class_package_y, s=string_to_print)
 
             counter = class_package_y + 2
             for loc in range(5):
-                class_console.draw_rect(x=class_package_x + 10, y=counter, width=20, height=5, ch=32, fg=colourUtilities.BLACK)
-                class_console.print(x=class_package_x + 10, y=counter, string=defensive_class[selected_menu_option][loc], fg=colourUtilities.WHITE)
-                class_console.draw_rect(x=class_package_x + 25, y=counter, width=20, height=5, ch=32, fg=colourUtilities.BLACK)
-                class_console.print(x=class_package_x + 25, y=counter, string=balanced_class[selected_menu_option][loc], fg=colourUtilities.WHITE)
-                class_console.draw_rect(x=class_package_x + 40, y=counter, width=14, height=5, ch=32, fg=colourUtilities.BLACK)
-                class_console.print(x=class_package_x + 40, y=counter, string=offensive_class[selected_menu_option][loc], fg=colourUtilities.WHITE)
+                terminal.clear_area(x=class_package_x + 10, y=counter, width=20, height=5)
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + \
+                                  defensive_class[selected_menu_option][loc]
+                terminal.print(class_package_x + 10, y=counter, s=string_to_print)
+
+                terminal.clear_area(x=class_package_x + 25, y=counter, width=20, height=5)
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + \
+                                  balanced_class[selected_menu_option][loc]
+                terminal.print(class_package_x + 25, y=counter, s=string_to_print)
+
+                terminal.clear_area(x=class_package_x + 40, y=counter, width=14, height=5)
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + \
+                                  offensive_class[selected_menu_option][loc]
+                terminal.print(class_package_x + 40, y=counter, s=string_to_print)
+
                 counter += 1
 
-            # draw class attribute bonus
-
-
             # blit changes to root console
-            class_console.blit(dest=root_console, dest_x=5, dest_y=5)
-            tcod.console_flush()
+            terminal.refresh()
 
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '':
+                terminal.clear()
                 if event_to_be_processed == 'keypress':
                     if event_action == 'quit':
                         class_not_selected = False
@@ -384,14 +410,15 @@ class CharacterCreation:
                         if package_selected == 3:
                             BuildLibrary.set_build_jewellery(gameworld=gameworld, entity=build_entity, label='C')
 
+                        player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
                         MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
                                                                selected_class=menu_options[selected_menu_option],
                                                                health=int(class_health[selected_menu_option]),
                                                                spellfile=class_spell_file[selected_menu_option])
 
-                        CharacterCreation.choose_weapons(root_console=root_console, gameworld=gameworld,
-                                                                  player=player, game_config=game_config,
-                                                                  selected_class=menu_options[selected_menu_option])
+                        CharacterCreation.choose_weapons(gameworld=gameworld,
+                                                         selected_class=menu_options[selected_menu_option])
+        terminal.clear()
 
     @staticmethod
     def select_personality_choices(con, gameworld, player, game_config):
@@ -405,7 +432,9 @@ class CharacterCreation:
         logger.debug('Your personality is viewed as {} by other NPCs', personality_component.personality_title)
 
     @staticmethod
-    def choose_weapons(root_console, gameworld, player, game_config, selected_class):
+    def choose_weapons(gameworld, selected_class):
+        # get config items
+        game_config = configUtilities.load_config()
 
         player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                        parameter='CLASSESFILE')
@@ -413,19 +442,10 @@ class CharacterCreation:
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
         start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
-        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_WIDTH')
-        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
-
-        weapons_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
-
-        draw_colourful_frame(console=weapons_console, game_config=game_config,
-                             startx=start_panel_frame_x, starty=start_panel_frame_y,
-                             width=start_panel_frame_width,
-                             height=start_panel_frame_height,
-                             title='[ Character Creation - Select Weapon ]', title_loc='centre',
-                             title_decorator=False,
-                             corner_decorator='', corner_studs='square',
-                             msg='ESC/ to go back, up & down, left & right arrows to select, Enter to accept')
+        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'START_PANEL_FRAME_WIDTH')
+        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                               'START_PANEL_FRAME_HEIGHT')
 
         logger.info('Selecting weapons')
         class_file = read_json_file(player_class_file)
@@ -456,16 +476,18 @@ class CharacterCreation:
         logger.info('Available weapons for a {} are {}', selected_class, available_weapons)
 
         # for each available weapon, gather: weapon info & spells associated to it
-        weapon_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='WEAPONSFILE')
+        weapon_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                       parameter='WEAPONSFILE')
 
         spellsfile = class_spellfile.upper() + '_SPELLSFILE'
 
-        spell_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter=spellsfile)
+        spell_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                      parameter=spellsfile)
 
         weapon_file = read_json_file(weapon_class_file)
         spell_file = read_json_file(spell_class_file)
 
-        #initialise blank 2D list (array)
+        # initialise blank 2D list (array)
         weapon_info = [['' for x in range(3)] for x in range(len(available_weapons))]
         spell_name = [['' for x in range(6)] for x in range(len(available_weapons))]
         spell_descripton = [['' for x in range(6)] for x in range(len(available_weapons))]
@@ -497,12 +519,14 @@ class CharacterCreation:
                                 spell_cool_down[weapon_counter][slot_id] = 'Cool down:' + spell['cool_down']
                                 spellRange = -1
                                 RangeOfSpell = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                                              section='spells',
-                                                                                              parameter=spell['spell_range'].upper())
+                                                                                          section='spells',
+                                                                                          parameter=spell[
+                                                                                              'spell_range'].upper())
                                 if RangeOfSpell != '':
                                     spellRange = int(RangeOfSpell)
                                 else:
-                                    logger.warning('Spell Range is set to zero! file:{} spell name:{}', spellsfile, spell['name'])
+                                    logger.warning('Spell Range is set to zero! file:{} spell name:{}', spellsfile,
+                                                   spell['name'])
                                 spell_range[weapon_counter][slot_id] = 'Range:' + str(spellRange)
                         spellCounter += 1
                     weapon_counter += 1
@@ -515,200 +539,195 @@ class CharacterCreation:
         off_hand_selected_weapon = 'nothing'
         hand_choice = 1
         hand_selector = chr(62)
-        main_hand_color = colourUtilities.DARKORANGE4
-        off_hand_color = colourUtilities.BLUE
-        spell_name_color = colourUtilities.PALEGREEN
-        spell_description_color = colourUtilities.BISQUE4
-        spell_cast_time_color = colourUtilities.KHAKI3
-        spell_cool_down_color = colourUtilities.LIGHTBLUE3
-        spell_range_color = colourUtilities.MOCCASIN
+        main_hand_color = colourUtilities.get('DARKORANGE4')
+        off_hand_color = colourUtilities.get('BLUE')
+        spell_name_color = colourUtilities.get('PALEGREEN')
+        spell_description_color = colourUtilities.get('BISQUE4')
+        spell_cast_time_color = colourUtilities.get('KHAKI3')
+        spell_cool_down_color = colourUtilities.get('LIGHTBLUE3')
+        spell_range_color = colourUtilities.get('MOCCASIN')
+        bg = colourUtilities.get('BLACK')
 
         max_menu_option = len(menu_options) - 1
-        # display spell slot labels x,y values
-        px = start_panel_frame_x + 5
-        py = start_panel_frame_y + 17
-        panellWidth = start_panel_frame_width - start_panel_frame_x
-        slot_box_gap = int((panellWidth / 5))
-        wd = slot_box_gap - 2
-        for weapon_slot in range(1, 6):
-            strToPrint = 'SLOT ' + str(weapon_slot)
-            if weapon_slot < 4:
-                foreground_colour = main_hand_color
-            else:
-                foreground_colour = off_hand_color
-            weapons_console.print_box(x=px, y=py - 1, width=wd, height=1, string=strToPrint, fg=foreground_colour)
-
-            px += slot_box_gap
         off_hand_weapon_id = 0
         main_hand_weapon_id = 0
 
         while show_weapons_options:
+            draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
+                                 width=start_panel_frame_width,
+                                 height=start_panel_frame_height,
+                                 title='Character Creation - Select Weapon', title_loc='centre',
+                                 title_decorator=False,
+                                 corner_decorator='', corner_studs='square',
+                                 msg='ESC/ to go back, up & down, left & right arrows to select, Enter to accept')
 
             # list available weapons
-            pointy_menu(console=weapons_console, header='',
+            pointy_menu(header='',
                         menu_options=menu_options, menu_id_format=True, menu_start_x=start_panel_frame_x + 3,
                         menu_start_y=start_panel_frame_y + 4, blank_line=True, selected_option=selected_menu_option)
 
             weaponInfoString = 'This is ' + weapon_info[selected_menu_option][weapon_name] + '\n' + \
                                'Wielded in ' + weapon_info[selected_menu_option][weapon_hands] + ' hand(s) \n' + \
                                'Weapon quality ' + weapon_info[selected_menu_option][weapon_quality]
+            # display weapon slot labels
+            # display spell slot labels x,y values
+            pxx = [10, 23, 36, 52, 65]
+            py = start_panel_frame_y + 17
+            panellWidth = start_panel_frame_width - start_panel_frame_x
+            slot_box_gap = int((panellWidth / 5))
+            wd = slot_box_gap - 2
+
+            for weapon_slot in range(1, 6):
+                if weapon_slot < 4:
+                    foreground_colour = main_hand_color
+                else:
+                    foreground_colour = off_hand_color
+                strToPrint = '[color=' + foreground_colour + ']SLOT ' + str(weapon_slot)
+                terminal.print_(x=pxx[weapon_slot - 1], y=py - 1, s=strToPrint)
 
             # display weapon info as a block of information
-            weapons_console.print_box(x=start_panel_frame_x + 15, y=(start_panel_frame_y + 5), width=25, height=4,
-                                      string=weaponInfoString, fg=tcod.white)
+            strToPrint = '[color=' + colourUtilities.get('WHITE') + '[/color]' + weaponInfoString
+            terminal.print_(x=start_panel_frame_x + 15, y=(start_panel_frame_y + 5), width=30, height=4, s=strToPrint)
 
             # display spell information for each of the weapon/spell slots
             px = start_panel_frame_x + 5
 
-            weapons_console.draw_rect(x=px, y=py, width=panellWidth - 6, height=17, ch=32, fg=tcod.white)
-
             if main_hand_selected_weapon != 'nothing':
+                string_to_print = '[color=' + spell_name_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_name[main_hand_weapon_id][1]
+                terminal.print_(x=px, y=py, width=wd, height=2, s=string_to_print)
 
-                weapons_console.print_box(
-                    x=px, y=py,
-                    width=wd, height=2,
-                    string=spell_name[main_hand_weapon_id][1], fg=spell_name_color)
-                weapons_console.print_box(
-                    x=px, y=py + 3,
-                    width=wd, height=8,
-                    string=spell_descripton[main_hand_weapon_id][1], fg=spell_description_color)
-                weapons_console.print_box(
-                    x=px, y=py + 12,
-                    width=wd, height=1,
-                    string=spell_cast_time[main_hand_weapon_id][1], fg=spell_cast_time_color)
+                string_to_print = '[color=' + spell_description_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_descripton[main_hand_weapon_id][1]
+                terminal.print_(x=px, y=py + 3, width=wd, height=8, s=string_to_print)
 
-                weapons_console.print_box(
-                    x=px, y=py + 13,
-                    width=wd, height=1,
-                    string=spell_cool_down[main_hand_weapon_id][1], fg=spell_cool_down_color)
-                weapons_console.print_box(
-                    x=px, y=py + 14,
-                    width=wd, height=1,
-                    string=spell_range[main_hand_weapon_id][1], fg=spell_range_color)
+                string_to_print = '[color=' + spell_cast_time_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_cast_time[main_hand_weapon_id][1]
+                terminal.print_(x=px, y=py + 12, width=wd, height=1, s=string_to_print)
+
+                string_to_print = '[color=' + spell_cool_down_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_cool_down[main_hand_weapon_id][1]
+                terminal.print_(x=px, y=py + 13, width=wd, height=1, s=string_to_print)
+
+                string_to_print = '[color=' + spell_range_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_range[main_hand_weapon_id][1]
+                terminal.print_(x=px, y=py + 14, width=wd, height=1, s=string_to_print)
 
                 px += slot_box_gap
 
-                weapons_console.print_box(
-                    x=px, y=py,
-                    width=wd, height=2,
-                    string=spell_name[main_hand_weapon_id][2], fg=spell_name_color)
-                weapons_console.print_box(
-                    x=px, y=py + 3,
-                    width=wd, height=8,
-                    string=spell_descripton[main_hand_weapon_id][2], fg=spell_description_color)
-                weapons_console.print_box(
-                    x=px, y=py + 12,
-                    width=wd, height=1,
-                    string=spell_cast_time[main_hand_weapon_id][2], fg=spell_cast_time_color)
+                string_to_print = '[color=' + spell_name_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_name[main_hand_weapon_id][2]
+                terminal.print_(x=px, y=py, width=wd, height=2, s=string_to_print)
 
-                weapons_console.print_box(
-                    x=px, y=py + 13,
-                    width=wd, height=1,
-                    string=spell_cool_down[main_hand_weapon_id][2], fg=spell_cool_down_color)
-                weapons_console.print_box(
-                    x=px, y=py + 14,
-                    width=wd, height=1,
-                    string=spell_range[main_hand_weapon_id][2], fg=spell_range_color)
+                string_to_print = '[color=' + spell_description_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_descripton[main_hand_weapon_id][2]
+                terminal.print_(x=px, y=py + 3, width=wd, height=8, s=string_to_print)
+
+                string_to_print = '[color=' + spell_cast_time_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_cast_time[main_hand_weapon_id][2]
+                terminal.print_(x=px, y=py + 12, width=wd, height=1, s=string_to_print)
+
+                string_to_print = '[color=' + spell_cool_down_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_cool_down[main_hand_weapon_id][2]
+                terminal.print_(x=px, y=py + 13, width=wd, height=1, s=string_to_print)
+
+                string_to_print = '[color=' + spell_range_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_range[main_hand_weapon_id][2]
+                terminal.print_(x=px, y=py + 14, width=wd, height=1, s=string_to_print)
 
                 px += slot_box_gap
 
-                weapons_console.print_box(
-                    x=px, y=py,
-                    width=wd, height=2,
-                    string=spell_name[main_hand_weapon_id][3], fg=spell_name_color)
-                weapons_console.print_box(
-                    x=px, y=py + 3,
-                    width=wd, height=8,
-                    string=spell_descripton[main_hand_weapon_id][3], fg=spell_description_color)
-                weapons_console.print_box(
-                    x=px, y=py + 12,
-                    width=wd, height=1,
-                    string=spell_cast_time[main_hand_weapon_id][3], fg=spell_cast_time_color)
+                string_to_print = '[color=' + spell_name_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_name[main_hand_weapon_id][3]
+                terminal.print_(x=px, y=py, width=wd, height=2, s=string_to_print)
 
-                weapons_console.print_box(
-                    x=px, y=py + 13,
-                    width=wd, height=1,
-                    string=spell_cool_down[main_hand_weapon_id][3], fg=spell_cool_down_color)
-                weapons_console.print_box(
-                    x=px, y=py + 14,
-                    width=wd, height=1,
-                    string=spell_range[main_hand_weapon_id][3], fg=spell_range_color)
+                string_to_print = '[color=' + spell_description_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_descripton[main_hand_weapon_id][3]
+                terminal.print_(x=px, y=py + 3, width=wd, height=8, s=string_to_print)
+
+                string_to_print = '[color=' + spell_cast_time_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_cast_time[main_hand_weapon_id][3]
+                terminal.print_(x=px, y=py + 12, width=wd, height=1, s=string_to_print)
+
+                string_to_print = '[color=' + spell_cool_down_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_cool_down[main_hand_weapon_id][3]
+                terminal.print_(x=px, y=py + 13, width=wd, height=1, s=string_to_print)
+
+                string_to_print = '[color=' + spell_range_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_range[main_hand_weapon_id][3]
+                terminal.print_(x=px, y=py + 14, width=wd, height=1, s=string_to_print)
 
                 px += slot_box_gap
 
             if off_hand_selected_weapon != 'nothing':
-
                 px = 52
 
-                weapons_console.print_box(
-                    x=px, y=py,
-                    width=wd, height=2,
-                    string=spell_name[off_hand_weapon_id][4], fg=spell_name_color)
-                weapons_console.print_box(
-                    x=px, y=py + 3,
-                    width=wd, height=8,
-                    string=spell_descripton[off_hand_weapon_id][4], fg=spell_description_color)
-                weapons_console.print_box(
-                    x=px, y=py + 12,
-                    width=wd, height=1,
-                    string=spell_cast_time[off_hand_weapon_id][4], fg=spell_cast_time_color)
+                string_to_print = '[color=' + spell_name_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_name[main_hand_weapon_id][4]
+                terminal.print_(x=px, y=py, width=wd, height=2, s=string_to_print)
 
-                weapons_console.print_box(
-                    x=px, y=py + 13,
-                    width=wd, height=1,
-                    string=spell_cool_down[off_hand_weapon_id][4], fg=spell_cool_down_color)
-                weapons_console.print_box(
-                    x=px, y=py + 14,
-                    width=wd, height=1,
-                    string=spell_range[off_hand_weapon_id][4], fg=spell_range_color)
+                string_to_print = '[color=' + spell_description_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_descripton[main_hand_weapon_id][4]
+                terminal.print_(x=px, y=py + 3, width=wd, height=8, s=string_to_print)
+
+                string_to_print = '[color=' + spell_cast_time_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_cast_time[main_hand_weapon_id][4]
+                terminal.print_(x=px, y=py + 12, width=wd, height=1, s=string_to_print)
+
+                string_to_print = '[color=' + spell_cool_down_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_cool_down[main_hand_weapon_id][4]
+                terminal.print_(x=px, y=py + 13, width=wd, height=1, s=string_to_print)
+
+                string_to_print = '[color=' + spell_range_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_range[main_hand_weapon_id][4]
+                terminal.print_(x=px, y=py + 14, width=wd, height=1, s=string_to_print)
 
                 px += slot_box_gap
 
-                weapons_console.print_box(
-                    x=px, y=py,
-                    width=wd, height=2,
-                    string=spell_name[off_hand_weapon_id][5], fg=spell_name_color)
-                weapons_console.print_box(
-                    x=px, y=py + 3,
-                    width=wd, height=8,
-                    string=spell_descripton[off_hand_weapon_id][5], fg=spell_description_color)
-                weapons_console.print_box(
-                    x=px, y=py + 12,
-                    width=wd, height=1,
-                    string=spell_cast_time[off_hand_weapon_id][5], fg=spell_cast_time_color)
+                string_to_print = '[color=' + spell_name_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_name[main_hand_weapon_id][5]
+                terminal.print_(x=px, y=py, width=wd, height=2, s=string_to_print)
 
-                weapons_console.print_box(
-                    x=px, y=py + 13,
-                    width=wd, height=1,
-                    string=spell_cool_down[off_hand_weapon_id][5], fg=spell_cool_down_color)
-                weapons_console.print_box(
-                    x=px, y=py + 14,
-                    width=wd, height=1,
-                    string=spell_range[off_hand_weapon_id][5], fg=spell_range_color)
+                string_to_print = '[color=' + spell_description_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_descripton[main_hand_weapon_id][5]
+                terminal.print_(x=px, y=py + 3, width=wd, height=8, s=string_to_print)
 
+                string_to_print = '[color=' + spell_cast_time_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_cast_time[main_hand_weapon_id][5]
+                terminal.print_(x=px, y=py + 12, width=wd, height=1, s=string_to_print)
+
+                string_to_print = '[color=' + spell_cool_down_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_cool_down[main_hand_weapon_id][5]
+                terminal.print_(x=px, y=py + 13, width=wd, height=1, s=string_to_print)
+
+                string_to_print = '[color=' + spell_range_color + '][/color][bkcolor=' + bg + '][/bkcolor]' + \
+                                  spell_range[main_hand_weapon_id][5]
+                terminal.print_(x=px, y=py + 14, width=wd, height=1, s=string_to_print)
 
             # display main / off hand labels + weapon type selected
             main_hand_weapon = 'MAIN HAND (' + main_hand_selected_weapon + ')    '
             off_hand_weapon = 'OFF HAND (' + off_hand_selected_weapon + ')    '
             if hand_choice == 1:
-                weapons_console.draw_rect(x=start_panel_frame_x + 49, y=start_panel_frame_y + 14, width=1, height=1, ch=32, fg=tcod.white)
-                weapons_console.print(x=start_panel_frame_x + 19, y=start_panel_frame_y + 14, string=hand_selector, fg=tcod.yellow)
+                terminal.clear_area(x=start_panel_frame_x + 49, y=start_panel_frame_y + 14, width=1, height=1)
+                string_to_print = '[color=' + colourUtilities.get('YELLOW1') + ']' + hand_selector
+                terminal.print(x=start_panel_frame_x + 19, y=start_panel_frame_y + 14, s=string_to_print)
             else:
-                weapons_console.draw_rect(x=start_panel_frame_x + 19, y=start_panel_frame_y + 14, width=1, height=1, ch=32, fg=tcod.white)
-                weapons_console.print(x=start_panel_frame_x + 49, y=start_panel_frame_y + 14, string=hand_selector, fg=tcod.blue)
+                terminal.clear_area(x=start_panel_frame_x + 19, y=start_panel_frame_y + 14, width=1, height=1)
+                string_to_print = '[color=' + colourUtilities.get('BLUE') + ']' + hand_selector
+                terminal.print(x=start_panel_frame_x + 49, y=start_panel_frame_y + 14, s=string_to_print)
 
-            weapons_console.print(x=start_panel_frame_x + 20, y=start_panel_frame_y + 14, string=main_hand_weapon,
-                                  fg=main_hand_color)
+            string_to_print = '[color=' + main_hand_color + '][/color]' + main_hand_weapon
+            terminal.print(x=start_panel_frame_x + 20, y=start_panel_frame_y + 14, s=string_to_print)
 
-            weapons_console.print(x=start_panel_frame_x + 50, y=start_panel_frame_y + 14, string=off_hand_weapon,
-                                  fg=off_hand_color)
+            string_to_print = '[color=' + off_hand_color + '][/color]' + off_hand_weapon
+            terminal.print(x=start_panel_frame_x + 50, y=start_panel_frame_y + 14, s=string_to_print)
 
             # blit changes to root console
-            weapons_console.blit(dest=root_console, dest_x=5, dest_y=5)
-            tcod.console_flush()
+            terminal.refresh()
 
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '':
+                terminal.clear()
                 if event_to_be_processed == 'textinput':
                     if event_action == 'z':
                         logger.info('clear weapons')
@@ -738,8 +757,7 @@ class CharacterCreation:
                             hand_choice = 1
                     if event_action == 'enter':
                         if main_hand_selected_weapon != 'nothing' and off_hand_selected_weapon != 'nothing':
-                            CharacterCreation.choose_armourset(root_console, gameworld, player, game_config,
-                                                               main_hand_selected_weapon, off_hand_selected_weapon)
+                            CharacterCreation.choose_armourset(gameworld=gameworld, main_hand=main_hand_selected_weapon, off_hand=off_hand_selected_weapon)
 
                         if weapon_info[selected_menu_option][weapon_hands] == 'off' and hand_choice == 2:
                             if off_hand_weapon_id == main_hand_weapon_id:
@@ -762,16 +780,20 @@ class CharacterCreation:
                             main_hand_weapon_id = selected_menu_option
 
     @staticmethod
-    def choose_armourset(root_console, gameworld, player, game_config, main_hand, off_hand):
+    def choose_armourset(gameworld, main_hand, off_hand):
+        # get config items
+        game_config = configUtilities.load_config()
 
-        armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='ARMOURSETFILE')
+        armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                    parameter='ARMOURSETFILE')
         start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
         start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
         start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
                                                                               'START_PANEL_FRAME_WIDTH')
-        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
+        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                               'START_PANEL_FRAME_HEIGHT')
         armour_menu_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'ARMOUR_MENU_X')
         armour_menu_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'ARMOUR_MENU_Y')
         armour_desc_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'ARMOUR_DESCRIPTION_X')
@@ -818,30 +840,8 @@ class CharacterCreation:
                     px_att_bonus.append(armourset[prefix_string][att_bonus_string])
                     px_att_name.append(armourset[prefix_string][att_name_string])
 
-        armour_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
-
-        draw_colourful_frame(console=armour_console, game_config=game_config,
-                             startx=start_panel_frame_x, starty=start_panel_frame_y,
-                             width=start_panel_frame_width,
-                             height=start_panel_frame_height,
-                             title='[ Character Creation - Choose Armourset ]', title_loc='centre',
-                             title_decorator=False,
-                             corner_decorator='', corner_studs='square',
-                             msg='ESC/ to go back, up & down arrows to select, Enter to accept')
-
-        armour_description = 'You will be wearing ' + as_display_name + ' armour, ' + 'which is made from ' +\
-                             as_material + '. ' + 'Your colleagues would describe it as ' + as_flavour
-
-        armour_console.print_box(x=armour_desc_x, y=armour_desc_y, width=50, height=6, string=armour_description, fg=colourUtilities.PALEGREEN)
-        # list available armour
-        armour_console.print(x=23, y=8, string='You can modify your armour thus...', fg=colourUtilities.BLUE)
-
         flx = 38
-        attx= 20
-        # armour column titles
-        armour_console.print(x=armour_menu_x + 2, y=armour_menu_y - 1, string='Prefix', fg=colourUtilities.LIGHTSLATEGRAY)
-        armour_console.print(x=attx, y=armour_menu_y - 1, string='Bonus to...', fg=colourUtilities.LIGHTSLATEGRAY)
-        armour_console.print(x=flx, y=armour_menu_y - 1, string='Flavour', fg=colourUtilities.LIGHTSLATEGRAY)
+        attx = 20
 
         show_armour_options = True
         selected_menu_option = 0
@@ -850,23 +850,50 @@ class CharacterCreation:
 
         while show_armour_options:
 
-            # blit changes to root console
-            armour_console.blit(dest=root_console, dest_x=5, dest_y=5)
-            tcod.console_flush()
+            draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
+                                 width=start_panel_frame_width,
+                                 height=start_panel_frame_height,
+                                 title=' Character Creation - Choose Armourset ', title_loc='centre',
+                                 title_decorator=False,
+                                 corner_decorator='', corner_studs='square',
+                                 msg='ESC/ to go back, up & down arrows to select, Enter to accept')
 
-            pointy_menu(console=armour_console, header='',
+            armour_description = 'You will be wearing ' + as_display_name + ' armour, ' + 'which is made from ' + \
+                                 as_material + '. ' + 'Your colleagues would describe it as ' + as_flavour
+
+            string_to_print = '[color=' + colourUtilities.get('PALEGREEN') + ']' + armour_description
+            terminal.print_(x=armour_desc_x, y=armour_desc_y, width=50, height=6, s=string_to_print)
+            # list available armour
+            string_to_print = '[color=' + colourUtilities.get('BLUE') + ']' + 'You can modify your armour thus...'
+            terminal.print_(x=23, y=8, s=string_to_print)
+
+            # armour column titles
+            string_to_print = '[color=' + colourUtilities.get('LIGHTSLATEGRAY') + ']' + 'Prefix'
+            terminal.print(x=armour_menu_x + 2, y=armour_menu_y - 1, s=string_to_print)
+
+            string_to_print = '[color=' + colourUtilities.get('LIGHTSLATEGRAY') + ']' + 'Bonus to...'
+            terminal.print(x=attx, y=armour_menu_y - 1, s=string_to_print)
+
+            string_to_print = '[color=' + colourUtilities.get('LIGHTSLATEGRAY') + ']' + 'Flavour'
+            terminal.print(x=flx, y=armour_menu_y - 1, s=string_to_print)
+
+            # blit changes to root console
+            terminal.refresh()
+
+            pointy_menu(header='',
                         menu_options=menu_options, menu_id_format=True, menu_start_x=armour_menu_x,
                         menu_start_y=armour_menu_y, blank_line=True, selected_option=selected_menu_option)
 
             # display attribute to be modified
-            coloured_list(console=armour_console, list_options=px_att_name,
+            fg = colourUtilities.get('LIGHTBLUE1')
+            coloured_list(list_options=px_att_name,
                           list_x=attx, list_y=armour_menu_y,
-                          selected_option='nothing', blank_line=True, fg=colourUtilities.LIGHTBLUE1)
+                          selected_option='nothing', blank_line=True, fg=fg)
 
             # display flavour text
-            coloured_list(console=armour_console, list_options=px_flavour,
+            coloured_list(list_options=px_flavour,
                           list_x=flx, list_y=armour_menu_y,
-                          selected_option='nothing', blank_line=True, fg=colourUtilities.LIGHTBLUE1)
+                          selected_option='nothing', blank_line=True, fg=fg)
 
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '':
@@ -886,17 +913,23 @@ class CharacterCreation:
                         armour_prefix = menu_options[selected_menu_option]
 
                         # assign armour prefix benefit
+                        player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+
                         if menu_options[selected_menu_option].lower() == 'healer':
-                            current_healingpower = MobileUtilities.get_mobile_healing_power(gameworld=gameworld, entity=player)
+                            current_healingpower = MobileUtilities.get_mobile_healing_power(gameworld=gameworld,
+                                                                                            entity=player)
                             px_bonus = int(px_att_bonus[selected_menu_option])
                             new_bonus = current_healingpower + px_bonus
-                            MobileUtilities.set_mobile_healing_power(gameworld=gameworld, entity=player, value=new_bonus)
+                            MobileUtilities.set_mobile_healing_power(gameworld=gameworld, entity=player,
+                                                                     value=new_bonus)
 
                         if menu_options[selected_menu_option].lower() == 'malign':
-                            current_condidamage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld, entity=player)
+                            current_condidamage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld,
+                                                                                              entity=player)
                             px_bonus = int(px_att_bonus[selected_menu_option])
                             new_bonus = current_condidamage + px_bonus
-                            MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=player, value=new_bonus)
+                            MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=player,
+                                                                        value=new_bonus)
 
                         if menu_options[selected_menu_option].lower() == 'mighty':
                             current_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=player)
@@ -924,14 +957,20 @@ class CharacterCreation:
                         #
                         # now generate the player character - part 1
                         #
-                        CharacterCreation.generate_player_character_from_choices(
-                            root_console=root_console, gameworld=gameworld, game_config=game_config, main_hand=main_hand,
-                            off_hand=off_hand, armourset=armourset, armour_prefix=armour_prefix)
+                        CharacterCreation.generate_player_character_from_choices(gameworld=gameworld,
+                                                                                 main_hand=main_hand, off_hand=off_hand,
+                                                                                 armourset=armourset,
+                                                                                 armour_prefix=armour_prefix)
 
     @staticmethod
-    def generate_player_character_from_choices(root_console, gameworld, game_config, main_hand, off_hand, armourset, armour_prefix):
+    def generate_player_character_from_choices(gameworld, main_hand, off_hand, armourset, armour_prefix):
+        # get config items
+        game_config = configUtilities.load_config()
+
         player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                        parameter='CLASSESFILE')
+        # get config items
+        game_config = configUtilities.load_config()
 
         # get player entity
         player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
@@ -939,7 +978,8 @@ class CharacterCreation:
         build_entity = BuildLibrary.get_build_entity(gameworld=gameworld)
 
         # create starting armour from armourset and prefix
-        this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=armourset, prefix=armour_prefix, game_config=game_config)
+        this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=armourset,
+                                                            prefix=armour_prefix, game_config=game_config)
 
         ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=this_armourset)
 
@@ -964,13 +1004,15 @@ class CharacterCreation:
         if spellfile == '':
             logger.warning('Spell file name not set')
 
-        generate_spells(gameworld=gameworld, game_config=game_config, spell_file=spellfile, player_class=class_component)
+        generate_spells(gameworld=gameworld, game_config=game_config, spell_file=spellfile,
+                        player_class=class_component)
 
         # create starting weapon(s) - based on what's passed into this method
         if main_hand == off_hand:
             logger.info('creating a starting 2-handed weapon for the player')
 
-            created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand, game_config=game_config)
+            created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand,
+                                                       game_config=game_config)
             weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
 
             if weapon_type == 'staff':
@@ -992,7 +1034,8 @@ class CharacterCreation:
             logger.info('creating a 1-handed weapon (main hand) for the player')
 
             # created_weapon, hands_to_hold = NewCharacter.create_starting_weapon(gameworld, player, game_config)
-            created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand, game_config=game_config)
+            created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand,
+                                                       game_config=game_config)
             weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
 
             if weapon_type == 'wand':
@@ -1035,7 +1078,8 @@ class CharacterCreation:
         MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player, spellbarEntity=spell_bar_entity)
         logger.info('Loading spell bar based on equipped weapons')
         weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
-        SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spell_bar_entity, wpns_equipped=weapons_equipped)
+        SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spell_bar_entity,
+                                                      wpns_equipped=weapons_equipped)
 
         # create jewellery pieces and equip them
         jewellery_package = BuildLibrary.get_build_jewellery(gameworld=gameworld, entity=build_entity)
@@ -1060,11 +1104,16 @@ class CharacterCreation:
                 ear2_gemstone = playerClass[jewellery_set]['earring2']
 
         # create jewellery entity
-        pendant = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper', e_hook='copper', e_activator=neck_gemstone)
-        left_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring', e_setting='copper', e_hook='copper', e_activator=ring1_gemstone)
-        right_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring', e_setting='copper', e_hook='copper', e_activator=ring2_gemstone)
-        left_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator=ear1_gemstone)
-        right_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper', e_hook='copper', e_activator=ear2_gemstone)
+        pendant = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper',
+                                               e_hook='copper', e_activator=neck_gemstone)
+        left_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring', e_setting='copper',
+                                                 e_hook='copper', e_activator=ring1_gemstone)
+        right_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring', e_setting='copper',
+                                                  e_hook='copper', e_activator=ring2_gemstone)
+        left_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper',
+                                                e_hook='copper', e_activator=ear1_gemstone)
+        right_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper',
+                                                 e_hook='copper', e_activator=ear2_gemstone)
 
         # equip jewellery entity to player character
         ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player, bodylocation='neck', trinket=pendant)
@@ -1097,18 +1146,23 @@ class CharacterCreation:
 
         racial_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
         player_race_component = racial_details[0]
-        CharacterCreation.name_your_character(root_console=root_console, game_config=game_config, gameworld=gameworld,
-                                              player_race_component=player_race_component)
+        terminal.clear()
+        CharacterCreation.name_your_character(gameworld=gameworld, player_race_component=player_race_component)
 
     @staticmethod
-    def name_your_character(root_console, game_config, gameworld, player_race_component):
+    def name_your_character(gameworld, player_race_component):
+
+        # get config items
+        game_config = configUtilities.load_config()
 
         start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
         start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
-        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_WIDTH')
-        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
+        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'START_PANEL_FRAME_WIDTH')
+        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                               'START_PANEL_FRAME_HEIGHT')
         name_menu_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_MENU_X')
         name_menu_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_MENU_Y')
         name_list_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_LIST_X')
@@ -1116,12 +1170,18 @@ class CharacterCreation:
         mx = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_MALE_TAG_X')
         fx = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_FEMALE_TAG_X')
         gy = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_MALE_TAG_Y')
-        txt_panel_write_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_WRITE_X')
-        txt_panel_write_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_WRITE_Y')
-        txt_panel_cursor = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_CURSOR')
-        txt_panel_cursor_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_CURSOR_X')
-        txt_panel_cursor_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_CURSOR_Y')
-        txt_panel_letters_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='TXT_PANEL_LETTERS_LEFT_X')
+        txt_panel_write_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                        parameter='TXT_PANEL_WRITE_X')
+        txt_panel_write_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                        parameter='TXT_PANEL_WRITE_Y')
+        txt_panel_cursor = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                       parameter='TXT_PANEL_CURSOR')
+        txt_panel_cursor_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                         parameter='TXT_PANEL_CURSOR_X')
+        txt_panel_cursor_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                         parameter='TXT_PANEL_CURSOR_Y')
+        txt_panel_letters_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                          parameter='TXT_PANEL_LETTERS_LEFT_X')
         menu_options = ['Choose Gender', 'Enter a Name', 'Choose Name From List', 'Random Name']
         letter_count = 0
         my_word = ""
@@ -1135,37 +1195,35 @@ class CharacterCreation:
         cxoffset = 2
 
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        textinput_console = tcod.console.Console(width=start_panel_width, height=start_panel_height, order='F')
 
-        textinput_console.print(x=mx, y=gy, string='Male', fg=tcod.white)
-        textinput_console.print(x=fx, y=gy, string='Female', fg=tcod.white)
+        terminal.print_(x=mx, y=gy, s='Male')
+        terminal.print_(x=fx, y=gy, s='Female')
 
-        draw_colourful_frame(console=textinput_console, game_config=game_config,
-                             startx=start_panel_frame_x, starty=start_panel_frame_y,
+        draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
                              width=start_panel_frame_width,
                              height=start_panel_frame_height,
-                             title='[ Character Creation - Name Your Character ]', title_loc='centre',
+                             title=' Character Creation - Name Your Character ', title_loc='centre',
                              title_decorator=False,
                              corner_decorator='', corner_studs='square',
                              msg='ESC/ to go back. Enter to choose.')
         while character_not_named:
 
             if gender_choice == 1:
-                textinput_console.draw_rect(x=fx - cxoffset, y=gy, width=1, height=1, ch=32, fg=tcod.white)
-                textinput_console.print(x=mx - cxoffset, y=gy, string=gender_selector, fg=tcod.yellow)
+                terminal.put(x=fx - cxoffset, y=gy, c=32)
+                terminal.put(x=mx - cxoffset, y=gy, c=gender_selector)
             else:
-                textinput_console.draw_rect(x=mx - cxoffset, y=gy, width=1, height=1, ch=32, fg=tcod.white)
-                textinput_console.print(x=fx - cxoffset, y=gy, string=gender_selector, fg=tcod.yellow)
+                terminal.put(x=mx - cxoffset, y=gy, c=32)
+                terminal.put(x=fx - cxoffset, y=gy, c=gender_selector)
 
             if selected_name != '':
-                textinput_console.draw_rect(x=name_menu_x, y=30, width=35, height=1, ch=32, fg=tcod.white)
-                textinput_console.print(x=name_menu_x, y=30, string='Selected Name: ' + selected_name, fg=tcod.desaturated_blue)
+                terminal.clear_area(x=name_menu_x, y=30, width=35, height=1)
+                string_to_print = 'color=[' + colourUtilities.get('MEDIUMSLATEBLUE') + ']' + 'Selected Name: ' + selected_name
+                terminal.print(x=name_menu_x, y=30, s=string_to_print)
 
             # blit changes to root console
-            textinput_console.blit(dest=root_console, dest_x=5, dest_y=5)
-            tcod.console_flush()
+            terminal.refresh()
 
-            pointy_menu(console=textinput_console, header='',
+            pointy_menu(header='',
                         menu_options=menu_options, menu_id_format=True, menu_start_x=name_menu_x,
                         menu_start_y=name_menu_y, blank_line=True, selected_option=selected_menu_option)
 
@@ -1196,26 +1254,30 @@ class CharacterCreation:
                         if gender_choice == 1:
                             MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity, gender='male')
                         else:
-                            MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity, gender='female')
+                            MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity,gender='female')
 
                         if selected_menu_option == 1:
                             enter_name = True
                             if my_word != '':
-                                textinput_console.draw_rect(x=txt_panel_write_x, y=txt_panel_write_y,
-                                                            width=35, height=1, ch=32, fg=tcod.white)
+                                terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y,width=35, height=1)
+
                             if selected_name != '':
-                                textinput_console.draw_rect(x=mx, y=(name_menu_y + 3) + max_menu_option, width=35,
-                                                            height=1, ch=32, fg=tcod.white)
+                                terminal.clear_area(x=mx, y=(name_menu_y + 3) + max_menu_option, width=35,height=1)
+                                # textinput_console.draw_rect(x=mx, y=(name_menu_y + 3) + max_menu_option, width=35,
+                                #                             height=1, ch=32, fg=tcod.white)
                             while enter_name:
-                                textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, ch=txt_panel_cursor)
+                                terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=txt_panel_cursor)
+                                # textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y,
+                                #                            ch=txt_panel_cursor)
                                 # blit changes to root console
-                                textinput_console.blit(dest=root_console, dest_x=5, dest_y=5)
-                                tcod.console_flush()
+                                terminal.refresh()
                                 event_to_be_processed, event_action = handle_game_keys()
                                 if event_to_be_processed == 'textinput' and letter_count < max_letters:
                                     if (64 < ord(event_action) < 91) or (96 < ord(event_action) < 123):
-                                        textinput_console.default_fg = tcod.white
-                                        textinput_console.put_char(x=txt_panel_write_x + letter_count, y=txt_panel_write_y, ch=ord(event_action))
+                                        # textinput_console.default_fg = tcod.white
+                                        terminal.put(x=txt_panel_write_x + letter_count, y=txt_panel_write_y, c=ord(event_action))
+                                        # textinput_console.put_char(x=txt_panel_write_x + letter_count,
+                                        #                            y=txt_panel_write_y, ch=ord(event_action))
                                         my_word += event_action
                                         letter_count += 1
                                 if event_to_be_processed == 'keypress':
@@ -1223,13 +1285,18 @@ class CharacterCreation:
                                         enter_name = False
                                         my_word = ''
                                         letter_count = 0
-                                        textinput_console.draw_rect(x=txt_panel_write_x, y=txt_panel_write_y,
-                                                                    width=35, height=1, ch=32, fg=tcod.white)
+                                        terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y, width=35, height=1)
+                                        # textinput_console.draw_rect(x=txt_panel_write_x, y=txt_panel_write_y,
+                                        #                             width=35, height=1, ch=32, fg=tcod.white)
                                     if event_action == 'delete':
                                         if letter_count > 0:
-                                            textinput_console.default_fg = tcod.white
-                                            textinput_console.put_char(x=(txt_panel_write_x + letter_count) - 1, y=txt_panel_write_y, ch=32)
-                                            textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, ch=32)
+                                            # textinput_console.default_fg = tcod.white
+                                            terminal.put(x=(txt_panel_write_x + letter_count) - 1, y=txt_panel_write_y,c=32)
+                                            terminal.put(x=txt_panel_cursor_x + letter_count,y=txt_panel_cursor_y, c=32)
+                                            # textinput_console.put_char(x=(txt_panel_write_x + letter_count) - 1,
+                                            #                            y=txt_panel_write_y, ch=32)
+                                            # textinput_console.put_char(x=txt_panel_cursor_x + letter_count,
+                                            #                            y=txt_panel_cursor_y, ch=32)
                                             my_word = my_word[:-1]
                                             letter_count -= 1
 
@@ -1238,63 +1305,82 @@ class CharacterCreation:
                                         my_word = ''
                                         enter_name = False
                                         character_not_named = False
-                                        textinput_console.put_char(x=txt_panel_cursor_x + letter_count,
-                                                                   y=txt_panel_cursor_y, ch=32)
+                                        terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y,c=32)
+                                        # textinput_console.put_char(x=txt_panel_cursor_x + letter_count,
+                                        #                            y=txt_panel_cursor_y, ch=32)
                                         letter_count = 0
-                                        textinput_console.draw_rect(x=txt_panel_letters_x, y=txt_panel_write_y,
-                                                                    width=18, height=1, ch=32, fg=tcod.white)
-                                        MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,name=selected_name)
+                                        terminal.clear_area(x=txt_panel_letters_x, y=txt_panel_write_y, width=18, height=1)
+                                        # textinput_console.draw_rect(x=txt_panel_letters_x, y=txt_panel_write_y,
+                                        #                             width=18, height=1, ch=32, fg=tcod.white)
+                                        MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
+                                                                              name=selected_name)
 
-                                        CharacterCreation.display_starting_character(root_console=root_console,
-                                                                                     gameworld=gameworld, player=player_entity)
+                                        CharacterCreation.display_starting_character(gameworld=gameworld)
                                 # display letters remaining
                                 if enter_name:
                                     letters_remaining = max_letters - letter_count
                                     letters_left = ' ' + str(letters_remaining) + ' letters left '
-                                    textinput_console.default_alignment = tcod.RIGHT
-                                    textinput_console.print(x=txt_panel_letters_x, y=txt_panel_write_y, fg=tcod.yellow, string=letters_left)
+                                    # textinput_console.default_alignment = tcod.RIGHT
+                                    string_to_print = '[color=' + colourUtilities.get('YELLOW1') + ']' + letters_left
+                                    terminal.print(x=txt_panel_letters_x, y=txt_panel_write_y, s=string_to_print)
+                                    # textinput_console.print(x=txt_panel_letters_x, y=txt_panel_write_y, fg=tcod.yellow,
+                                    #                         string=letters_left)
 
                         if selected_menu_option == 2:
-                            listOfNames = MobileUtilities.generate_list_of_random_names(gameworld=gameworld, game_config=game_config, entity=player_entity, gender=gender_choice, race=player_race_component)
+                            listOfNames = MobileUtilities.generate_list_of_random_names(gameworld=gameworld,
+                                                                                        game_config=game_config,
+                                                                                        entity=player_entity,
+                                                                                        gender=gender_choice,
+                                                                                        race=player_race_component)
                             for idx in range(10):
                                 strToPrint = str(idx) + '. ' + listOfNames[idx]
-                                textinput_console.draw_rect(x=name_list_x, y=name_list_y + idx, width=35, height=1, ch=32, fg=tcod.white)
-                                textinput_console.print(x=name_list_x, y=name_list_y + idx, string=strToPrint, fg=tcod.white)
+                                terminal.clear_area(x=name_list_x, y=name_list_y + idx, width=35, height=1)
+
+                                string_to_print = '[color=' + colourUtilities.get('WHITE') + ']' + strToPrint
+                                terminal.print(x=name_list_x, y=name_list_y + idx, s=string_to_print)
+
                             # blit changes to root console
-                            textinput_console.blit(dest=root_console, dest_x=5, dest_y=5)
-                            tcod.console_flush()
+                            terminal.refresh()
                             name_not_chosen = True
                             while name_not_chosen:
                                 event_to_be_processed, event_action = handle_game_keys()
-                                if event_to_be_processed == 'textinput':
-                                    if 47 < ord(event_action) < 58:
-                                        selected_name = listOfNames[int(event_action)]
-                                        name_not_chosen = False
-                                        character_not_named = False
-                                        textinput_console.draw_rect(x=name_list_x, y=name_list_y, width=35,
-                                                                    height=11, ch=32, fg=tcod.white)
+                                logger.info('special key pressed {}', event_action)
+                                if event_to_be_processed == 'keypress':
+                                    selName = int(event_action)
+                                    logger.info('Selected name index is {}', selName)
+                                    selected_name = listOfNames[int(selName)]
+                                    name_not_chosen = False
+                                    character_not_named = False
+                                    terminal.clear_area(x=name_list_x, y=name_list_y, width=35, height=11)
 
-                                        MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,name=selected_name)
-                                        CharacterCreation.display_starting_character(root_console=root_console,
-                                                                                     gameworld=gameworld, player=player_entity)
+                                    MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
+                                                                          name=selected_name)
+                                    terminal.clear()
+                                    CharacterCreation.display_starting_character(gameworld=gameworld)
+
                                 if event_to_be_processed == 'keypress':
                                     if event_action == 'quit':
                                         name_not_chosen = False
                                         selected_name = ''
-                                textinput_console.draw_rect(x=name_list_x, y=name_list_y, width=35, height=11, ch=32, fg=tcod.white)
+                                terminal.clear_area(x=name_list_x, y=name_list_y, width=35, height=11)
 
                         if selected_menu_option == 3:
                             if selected_name != '':
-                                textinput_console.draw_rect(x=txt_panel_write_x, y=txt_panel_write_y,
-                                                            width=35, height=1, ch=32, fg=tcod.white)
-                            selected_name = MobileUtilities.choose_random_name(gameworld=gameworld, game_config=game_config, entity=player_entity, gender=gender_choice, race=player_race_component)
-                            textinput_console.draw_rect(x=mx, y=(name_menu_y + 3) + max_menu_option, width=35, height=1, ch=32, fg=tcod.white)
-                            textinput_console.print(x=mx, y=(name_menu_y + 3) + max_menu_option, string=selected_name, fg=tcod.white)
+                                terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y,width=35, height=1)
+                            selected_name = MobileUtilities.choose_random_name(gameworld=gameworld,
+                                                                               game_config=game_config,
+                                                                               entity=player_entity,
+                                                                               gender=gender_choice,
+                                                                               race=player_race_component)
+                            terminal.clear_area(x=mx, y=(name_menu_y + 3) + max_menu_option, width=35, height=1)
+
+                            string_to_print = '[color=' + colourUtilities.get('WHITE') + ']' + selected_name
+                            terminal.print(x=mx, y=(name_menu_y + 3) + max_menu_option, s=string_to_print)
                             character_not_named = False
 
                             MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
                                                                   name=selected_name)
-                            CharacterCreation.display_starting_character(root_console=root_console, gameworld=gameworld)
+                            CharacterCreation.display_starting_character(gameworld=gameworld)
 
     @staticmethod
     def display_starting_character(gameworld):
@@ -1305,56 +1391,94 @@ class CharacterCreation:
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
         start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
-        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_WIDTH')
-        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_HEIGHT')
+        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'START_PANEL_FRAME_WIDTH')
+        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                               'START_PANEL_FRAME_HEIGHT')
         display_char_menu_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_MENU_X')
         display_char_menu_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_MENU_Y')
-        display_char_personal_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_PERSONAL_X')
-        display_char_personal_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_PERSONAL_Y')
-        display_char_personal_w = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_PERSONAL_W')
-        display_char_personal_h = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_PERSONAL_H')
+        display_char_personal_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_PERSONAL_X')
+        display_char_personal_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_PERSONAL_Y')
+        display_char_personal_w = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_PERSONAL_W')
+        display_char_personal_h = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_PERSONAL_H')
         dcp_fg = configUtilities.get_config_value_as_string(game_config, 'newgame', 'DISPLAY_CHAR_PERSONAL_FG')
         dcp_bg = configUtilities.get_config_value_as_string(game_config, 'newgame', 'DISPLAY_CHAR_PERSONAL_BG')
-        display_char_attributes_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ATTRIBUTES_FRAME_X')
-        display_char_attributes_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ATTRIBUTES_FRAME_Y')
-        display_char_attributes_w = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ATTRIBUTES_FRAME_W')
-        display_char_attributes_h = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ATTRIBUTES_FRAME_H')
+        display_char_attributes_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                'DISPLAY_CHAR_ATTRIBUTES_FRAME_X')
+        display_char_attributes_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                'DISPLAY_CHAR_ATTRIBUTES_FRAME_Y')
+        display_char_attributes_w = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                'DISPLAY_CHAR_ATTRIBUTES_FRAME_W')
+        display_char_attributes_h = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                'DISPLAY_CHAR_ATTRIBUTES_FRAME_H')
         dca_fg = configUtilities.get_config_value_as_string(game_config, 'newgame', 'DISPLAY_CHAR_ATTRIBUTES_FG')
         dca_bg = configUtilities.get_config_value_as_string(game_config, 'newgame', 'DISPLAY_CHAR_ATTRIBUTES_BG')
-        display_char_pri_attributes_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_PRI_ATTRIBUTES_X')
-        display_char_pri_attributes_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_PRI_ATTRIBUTES_Y')
-        display_char_pri_attributes_w = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_PRI_ATTRIBUTES_W')
-        display_char_pri_attributes_h = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_PRI_ATTRIBUTES_H')
-        display_char_pri_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_PRI_ATTR_X')
-        display_char_pri_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_PRI_ATTR_Y')
+        display_char_pri_attributes_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                    'DISPLAY_CHAR_PRI_ATTRIBUTES_X')
+        display_char_pri_attributes_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                    'DISPLAY_CHAR_PRI_ATTRIBUTES_Y')
+        display_char_pri_attributes_w = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                    'DISPLAY_CHAR_PRI_ATTRIBUTES_W')
+        display_char_pri_attributes_h = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                    'DISPLAY_CHAR_PRI_ATTRIBUTES_H')
+        display_char_pri_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_PRI_ATTR_X')
+        display_char_pri_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_PRI_ATTR_Y')
 
-        display_char_sec_attributes_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_SEC_ATTRIBUTES_X')
-        display_char_sec_attributes_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_SEC_ATTRIBUTES_Y')
-        display_char_sec_attributes_w = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_SEC_ATTRIBUTES_W')
-        display_char_sec_attributes_h = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_SEC_ATTRIBUTES_H')
-        display_char_sec_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_SEC_ATTR_X')
-        display_char_sec_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_SEC_ATTR_Y')
+        display_char_sec_attributes_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                    'DISPLAY_CHAR_SEC_ATTRIBUTES_X')
+        display_char_sec_attributes_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                    'DISPLAY_CHAR_SEC_ATTRIBUTES_Y')
+        display_char_sec_attributes_w = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                    'DISPLAY_CHAR_SEC_ATTRIBUTES_W')
+        display_char_sec_attributes_h = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                    'DISPLAY_CHAR_SEC_ATTRIBUTES_H')
+        display_char_sec_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_SEC_ATTR_X')
+        display_char_sec_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_SEC_ATTR_Y')
 
-        display_char_der_attributes_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_DER_ATTRIBUTES_X')
-        display_char_der_attributes_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_DER_ATTRIBUTES_Y')
-        display_char_der_attributes_w = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_DER_ATTRIBUTES_W')
-        display_char_der_attributes_h = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_DER_ATTRIBUTES_H')
-        display_char_der_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_DER_ATTR_X')
-        display_char_der_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_DER_ATTR_Y')
+        display_char_der_attributes_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                    'DISPLAY_CHAR_DER_ATTRIBUTES_X')
+        display_char_der_attributes_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                    'DISPLAY_CHAR_DER_ATTRIBUTES_Y')
+        display_char_der_attributes_w = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                    'DISPLAY_CHAR_DER_ATTRIBUTES_W')
+        display_char_der_attributes_h = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                    'DISPLAY_CHAR_DER_ATTRIBUTES_H')
+        display_char_der_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_DER_ATTR_X')
+        display_char_der_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_DER_ATTR_Y')
 
-        display_char_hea_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_HEA_ATTR_X')
-        display_char_hea_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_HEA_ATTR_Y')
+        display_char_hea_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_HEA_ATTR_X')
+        display_char_hea_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_HEA_ATTR_Y')
 
-        display_char_man_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_MAN_ATTR_X')
-        display_char_man_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_MAN_ATTR_Y')
+        display_char_man_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_MAN_ATTR_X')
+        display_char_man_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                              'DISPLAY_CHAR_MAN_ATTR_Y')
 
-        display_char_armset_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMSET_ATTR_X')
-        display_char_armset_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMSET_ATTR_Y')
-        display_char_armset_attr_w = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMSET_W')
-        display_char_armset_attr_h = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMSET_H')
+        display_char_armset_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                 'DISPLAY_CHAR_ARMSET_ATTR_X')
+        display_char_armset_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                 'DISPLAY_CHAR_ARMSET_ATTR_Y')
+        display_char_armset_attr_w = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                 'DISPLAY_CHAR_ARMSET_W')
+        display_char_armset_attr_h = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                 'DISPLAY_CHAR_ARMSET_H')
 
-        display_char_armour_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMOUR_ATTR_X')
-        display_char_armour_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_CHAR_ARMOUR_ATTR_Y')
+        display_char_armour_attr_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                 'DISPLAY_CHAR_ARMOUR_ATTR_X')
+        display_char_armour_attr_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                                 'DISPLAY_CHAR_ARMOUR_ATTR_Y')
         dap_fg = configUtilities.get_config_value_as_string(game_config, 'newgame', 'DISPLAY_ARMOUR_INFO_BG')
 
         display_wpn_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'DISPLAY_WPN_X')
@@ -1383,7 +1507,7 @@ class CharacterCreation:
                              title_decorator=False,
                              corner_decorator='', corner_studs='square', msg='')
 
-        menu_options = ['Accept', 'Save Build', 'Start Again']
+        menu_options = ['Accept', 'Save Build', 'New Character']
         max_menu_option = len(menu_options) - 1
         selected_menu_option = 0
         not_ready_to_proceed = True
@@ -1473,13 +1597,13 @@ class CharacterCreation:
                         s=string_to_print)
         # armour
         #
-        display_coloured_box(title='Armour',posx=display_char_armset_attr_x, posy=display_char_armset_attr_y,
+        display_coloured_box(title='Armour', posx=display_char_armset_attr_x, posy=display_char_armset_attr_y,
                              width=display_char_armset_attr_w, height=display_char_armset_attr_h,
                              fg=display_char_personal_fg, bg=display_armour_info_bg)
 
         strToPrint = "[color=blue]Location Material Display Defense[/color]"
         terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y,
-                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT,s=strToPrint)
+                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT, s=strToPrint)
 
         head_armour_id = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player_entity)
         armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=head_armour_id)
@@ -1488,7 +1612,7 @@ class CharacterCreation:
         strToPrint = "Head:    " + armour_material + '  ' + armour_displayname + '         ' + str(def_head_value)
 
         terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 1,
-                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT,s=strToPrint)
+                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT, s=strToPrint)
 
         chest_armour_id = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=player_entity)
         armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=chest_armour_id)
@@ -1497,7 +1621,7 @@ class CharacterCreation:
         strToPrint = "Chest:   " + armour_material + '  ' + armour_displayname + '        ' + str(def_chest_value)
 
         terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 2,
-                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT,s=strToPrint)
+                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT, s=strToPrint)
 
         hands_armour_id = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=player_entity)
         armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=hands_armour_id)
@@ -1506,7 +1630,7 @@ class CharacterCreation:
         strToPrint = "Hands:   " + armour_material + '  ' + armour_displayname + ' ' + str(def_hands_value)
 
         terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 3,
-                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT,s=strToPrint)
+                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT, s=strToPrint)
 
         legs_armour_id = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player_entity)
         armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=legs_armour_id)
@@ -1515,7 +1639,7 @@ class CharacterCreation:
         strToPrint = "Legs:    " + armour_material + '  ' + armour_displayname + '    ' + str(def_legs_value)
 
         terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 4,
-                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT,s=strToPrint)
+                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT, s=strToPrint)
 
         feet_armour_id = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=player_entity)
         armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=feet_armour_id)
@@ -1524,7 +1648,7 @@ class CharacterCreation:
         strToPrint = "Feet:    " + armour_material + '  ' + armour_displayname + '     ' + str(def_feet_value)
 
         terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 5,
-                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT,s=strToPrint)
+                        width=len(strToPrint), height=1, align=terminal.TK_ALIGN_LEFT, s=strToPrint)
 
         #
         # attributes
@@ -1546,9 +1670,11 @@ class CharacterCreation:
         player_armour = MobileUtilities.get_derived_armour_value(gameworld=gameworld, entity=player_entity)
         player_boon_duration = MobileUtilities.get_derived_boon_duration(gameworld=gameworld, entity=player_entity)
 
-        player_critical_chance = MobileUtilities.get_derived_critical_hit_chance(gameworld=gameworld, entity=player_entity)
+        player_critical_chance = MobileUtilities.get_derived_critical_hit_chance(gameworld=gameworld,
+                                                                                 entity=player_entity)
         player_critical_damage = MobileUtilities.get_derived_critical_damage(gameworld=gameworld, entity=player_entity)
-        player_condi_duration = MobileUtilities.get_derived_condition_duration(gameworld=gameworld, entity=player_entity)
+        player_condi_duration = MobileUtilities.get_derived_condition_duration(gameworld=gameworld,
+                                                                               entity=player_entity)
         player_max_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=player_entity)
         player_cur_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=player_entity)
         player_maximum_mana = MobileUtilities.get_derived_maximum_mana(gameworld=gameworld, entity=player_entity)
@@ -1560,86 +1686,108 @@ class CharacterCreation:
                              fg=display_char_attributes_fg, bg=display_char_attributes_bg)
 
         string_to_print = "Power:" + str(player_power)
-        terminal.print_(x=display_char_pri_attr_x, y=display_char_pri_attr_y, width=len("Power:" + str(player_power)), height=1, align=terminal.TK_ALIGN_LEFT, s=string_to_print)
+        terminal.print_(x=display_char_pri_attr_x, y=display_char_pri_attr_y, width=len("Power:" + str(player_power)),
+                        height=1, align=terminal.TK_ALIGN_LEFT, s=string_to_print)
 
         string_to_print = "Precision:" + str(player_precision)
-        terminal.print_(x=display_char_pri_attr_x, y=display_char_pri_attr_y + 1, width=len("Precision:" + str(player_precision)), height=1, align=terminal.TK_ALIGN_LEFT, s=string_to_print)
+        terminal.print_(x=display_char_pri_attr_x, y=display_char_pri_attr_y + 1,
+                        width=len("Precision:" + str(player_precision)), height=1, align=terminal.TK_ALIGN_LEFT,
+                        s=string_to_print)
         string_to_print = "Toughness:" + str(player_toughness)
-        terminal.print_(x=display_char_pri_attr_x, y=display_char_pri_attr_y + 2, width=len("Toughness:" + str(player_toughness)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_pri_attr_x, y=display_char_pri_attr_y + 2,
+                        width=len("Toughness:" + str(player_toughness)), height=1, align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
         string_to_print = "Vitality:" + str(player_vitality)
-        terminal.print_(x=display_char_pri_attr_x, y=display_char_pri_attr_y + 3, width=len("Vitality:" + str(player_vitality)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_pri_attr_x, y=display_char_pri_attr_y + 3,
+                        width=len("Vitality:" + str(player_vitality)), height=1, align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         display_coloured_box(title="Secondary",
-                             posx=display_char_sec_attributes_x,posy=display_char_sec_attributes_y,
-                             width=display_char_sec_attributes_w,height=display_char_sec_attributes_h,
-                             fg=display_char_attributes_fg,bg=display_char_attributes_bg)
+                             posx=display_char_sec_attributes_x, posy=display_char_sec_attributes_y,
+                             width=display_char_sec_attributes_w, height=display_char_sec_attributes_h,
+                             fg=display_char_attributes_fg, bg=display_char_attributes_bg)
 
         string_to_print = "Concentration:" + str(player_concentration)
-        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y, width=len("Concentration:" + str(player_concentration)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y,
+                        width=len("Concentration:" + str(player_concentration)), height=1, align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         string_to_print = "Condition Damage:" + str(player_condi_damage)
-        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 1, width=len("Condition Damage:" + str(player_condi_damage)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 1,
+                        width=len("Condition Damage:" + str(player_condi_damage)), height=1,
+                        align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         string_to_print = "Expertise:" + str(player_expertise)
-        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 2, width=len("Expertise:" + str(player_expertise)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 2,
+                        width=len("Expertise:" + str(player_expertise)), height=1, align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         string_to_print = "Ferocity:" + str(player_ferocity)
-        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 3, width=len("Ferocity:" + str(player_ferocity)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 3,
+                        width=len("Ferocity:" + str(player_ferocity)), height=1, align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         string_to_print = "Healing Power:" + str(player_healing_power)
-        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 4, width=len("Healing Power:" + str(player_healing_power)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_sec_attr_x, y=display_char_sec_attr_y + 4,
+                        width=len("Healing Power:" + str(player_healing_power)), height=1, align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         display_coloured_box(title="Derived",
-                             posx=display_char_der_attributes_x,posy=display_char_der_attributes_y,
-                             width=display_char_der_attributes_w,height=display_char_der_attributes_h,
-                             fg=display_char_attributes_fg,bg=display_char_attributes_bg)
+                             posx=display_char_der_attributes_x, posy=display_char_der_attributes_y,
+                             width=display_char_der_attributes_w, height=display_char_der_attributes_h,
+                             fg=display_char_attributes_fg, bg=display_char_attributes_bg)
 
         string_to_print = "Armour:" + str(player_armour)
-        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y, width=len("Armour:" + str(player_armour)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y, width=len("Armour:" + str(player_armour)),
+                        height=1, align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         string_to_print = "Boon Duration:" + str(player_boon_duration)
-        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y +1, width=len("Boon Duration:" + str(player_boon_duration)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y + 1,
+                        width=len("Boon Duration:" + str(player_boon_duration)), height=1, align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         string_to_print = "Critical Chance:" + str(player_critical_chance) + '%'
-        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y +2, width=len("Critical Chance:" + str(player_critical_chance) + '%'), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y + 2,
+                        width=len("Critical Chance:" + str(player_critical_chance) + '%'), height=1,
+                        align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         string_to_print = "Critical Damage:" + str(player_critical_damage) + '%'
-        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y +3, width=len("Critical Damage:" + str(player_critical_damage) + '%'), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y + 3,
+                        width=len("Critical Damage:" + str(player_critical_damage) + '%'), height=1,
+                        align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         string_to_print = "Condition Duration:" + str(player_condi_duration)
-        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y +4, width=len("Condition Duration:" + str(player_condi_duration)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y + 4,
+                        width=len("Condition Duration:" + str(player_condi_duration)), height=1,
+                        align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
         # health
         string_to_print = "Health:" + str(player_cur_health)
-        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y +6, width=len("Health:" + str(player_cur_health)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y + 6,
+                        width=len("Health:" + str(player_cur_health)), height=1, align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         string_to_print = " / " + str(player_max_health)
-        terminal.print_(x=display_char_der_attr_x + 10, y=display_char_der_attr_y + 6, width=len(" / " + str(player_max_health)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_der_attr_x + 10, y=display_char_der_attr_y + 6,
+                        width=len(" / " + str(player_max_health)), height=1, align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         # mana
         string_to_print = "Mana:" + str(player_maximum_mana)
-        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y + 7, width=len("Mana:" + str(player_maximum_mana)), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_char_der_attr_x, y=display_char_der_attr_y + 7,
+                        width=len("Mana:" + str(player_maximum_mana)), height=1, align=terminal.TK_ALIGN_LEFT,
                         s=string_to_print)
 
         # weapons
 
         display_coloured_box(title="Weapons / Spells",
-                             posx=display_wpn_x,posy=display_wpn_y,
-                             width=display_wpn_w,height=display_wpn_h,
-                             fg=display_char_attributes_fg,bg=display_char_attributes_bg)
+                             posx=display_wpn_x, posy=display_wpn_y,
+                             width=display_wpn_w, height=display_wpn_h,
+                             fg=display_char_attributes_fg, bg=display_char_attributes_bg)
 
         weapons_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
         main_weapon = weapons_list[0]
@@ -1650,30 +1798,33 @@ class CharacterCreation:
 
         if both_weapon > 0:
             main_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=both_weapon)
-            slot1_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=1)
-            slot2_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=2)
-            slot3_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=3)
+            slot1_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
+                                                                      slotid=1)
+            slot2_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
+                                                                      slotid=2)
+            slot3_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
+                                                                      slotid=3)
 
             off_hand_weapon_name = main_hand_weapon_name
-            slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=4)
-            slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon, slotid=5)
+            slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
+                                                                      slotid=4)
+            slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
+                                                                      slotid=5)
 
         else:
             main_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=main_weapon)
-            slot1_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon, slotid=1)
-            slot2_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon, slotid=2)
-            slot3_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon, slotid=3)
-
-            slot1_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=main_weapon, power=player_power, slot=1) / player_armour)
-            slot2_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=main_weapon, power=player_power, slot=2) / player_armour)
-            slot3_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=main_weapon, power=player_power, slot=3) / player_armour)
+            slot1_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon,
+                                                                      slotid=1)
+            slot2_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon,
+                                                                      slotid=2)
+            slot3_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon,
+                                                                      slotid=3)
 
             off_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=off_weapon)
-            slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=off_weapon, slotid=4)
-            slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=off_weapon, slotid=5)
-
-            slot4_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=off_weapon, power=player_power, slot=4) / player_armour)
-            slot5_damage = int(ItemUtilities.get_weapon_outgoing_damage(gameworld=gameworld, weapon=off_weapon, power=player_power, slot=5) / player_armour)
+            slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=off_weapon,
+                                                                      slotid=4)
+            slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=off_weapon,
+                                                                      slotid=5)
 
         main_wpn_display = '[color=blue]Main Hand: ' + main_hand_weapon_name + '[\color]'
         slot1_display = 'Slot 1:' + slot1_name
@@ -1682,32 +1833,39 @@ class CharacterCreation:
         slot4_display = 'Slot 4:' + slot4_name
         slot5_display = 'Slot 5:' + slot5_name
 
-        off_wpn_display = '[color=green]Off Hand: ' + off_hand_weapon_name + '[\color]'
+        off_wpn_display = '[color=green]Off Hand: ' + off_hand_weapon_name
 
         # main hand
 
-        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y, width=len(main_wpn_display), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y, width=len(main_wpn_display), height=1,
+                        align=terminal.TK_ALIGN_LEFT,
                         s=main_wpn_display)
-        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 1, width=len(slot1_display), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 1, width=len(slot1_display), height=1,
+                        align=terminal.TK_ALIGN_LEFT,
                         s=slot1_display)
-        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 2,width=len(slot2_display), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 2, width=len(slot2_display), height=1,
+                        align=terminal.TK_ALIGN_LEFT,
                         s=slot2_display)
-        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 3, width=len(slot3_display), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 3, width=len(slot3_display), height=1,
+                        align=terminal.TK_ALIGN_LEFT,
                         s=slot3_display)
 
         # off hand
-        terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y, width=len(off_wpn_display), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y, width=len(off_wpn_display), height=1,
+                        align=terminal.TK_ALIGN_LEFT,
                         s=off_wpn_display)
-        terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y + 1, width=len(slot4_display), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y + 1, width=len(slot4_display), height=1,
+                        align=terminal.TK_ALIGN_LEFT,
                         s=slot4_display)
-        terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y + 2,width=len(slot5_display), height=1, align=terminal.TK_ALIGN_LEFT,
+        terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y + 2, width=len(slot5_display), height=1,
+                        align=terminal.TK_ALIGN_LEFT,
                         s=slot5_display)
 
         saved_build = False
         while not_ready_to_proceed:
             # blit changes to root console
             terminal.refresh()
-        # menu options
+            # menu options
             pointy_menu(header='',
                         menu_options=menu_options, menu_id_format=True, menu_start_x=display_char_menu_x,
                         menu_start_y=display_char_menu_y, blank_line=True, selected_option=selected_menu_option)
@@ -1717,6 +1875,7 @@ class CharacterCreation:
                 if event_to_be_processed == 'keypress':
                     if event_action == 'quit':
                         not_ready_to_proceed = False
+                        terminal.clear()
                     if event_action == 'up':
                         selected_menu_option -= 1
                         if selected_menu_option < 0:
@@ -1726,14 +1885,14 @@ class CharacterCreation:
                         if selected_menu_option > max_menu_option:
                             selected_menu_option = 0
                     if event_action == 'enter':
-                        if selected_menu_option == 0:   # accept character build and start game
+                        if selected_menu_option == 0:  # accept character build and start game
                             game_loop(gameworld=gameworld)
-                        if selected_menu_option == 1:   # save current build
+                        if selected_menu_option == 1:  # save current build
                             if not saved_build:
                                 build_info = BuildLibrary.save_build_to_library(gameworld=gameworld)
                                 Externalfiles.write_to_existing_file(filename=fileName, value=build_info)
                                 saved_build = True
-                        if selected_menu_option == 2:   # reject build and start again
+                        if selected_menu_option == 2:  # reject build and start again
                             not_ready_to_proceed = False
                             MobileUtilities.unequip_all_weapons(gameworld=gameworld, entity=player_entity)
                             # remove jewellery

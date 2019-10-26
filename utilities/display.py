@@ -7,7 +7,7 @@ from bearlibterminal import terminal
 
 # the selected option is the choice from list_options that will be highlighted
 # so if list_options were  [apple, orange, grape] and selected_option were 'grape' then grape would be highlighted
-def coloured_list(console, list_options, list_x, list_y, selected_option, blank_line, fg):
+def coloured_list(list_options, list_x, list_y, selected_option, blank_line, fg):
     lst = 0
     list_count = 0
     bg_color = colourUtilities.get('BLACK')
@@ -227,7 +227,10 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
 
 def draw_clear_text_box(posx, posy, width, height, text, fg, bg):
 
-    draw_coloured_rectangle(startx=posx, starty=posy, width=width, height=height, ch=u'\u0020',
-                            fg=colourUtilities.get('BLACK'), bg=colourUtilities.get('BLACK'))
+    # draw_coloured_rectangle(startx=posx, starty=posy, width=width, height=height, ch=u'\u0020',
+    #                         fg=colourUtilities.get('BLACK'), bg=colourUtilities.get('BLACK'))
+
+    terminal.clear_area(x=posx, y=posy, width=width, height=height)
+
     string_to_print = '[color=' + fg + '][/color][bkcolor=' + bg + '][/bkcolor]' + text
     terminal.print_(x=posx, y=posy - 2, width=60, height=5, align=terminal.TK_ALIGN_LEFT, s=string_to_print )
