@@ -3,7 +3,7 @@ import configparser
 
 def load_config():
     config = configparser.ConfigParser()
-    config.read('static/data/config.ini')
+    config.read('config.ini')
 
     return config
 

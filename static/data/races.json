@@ -2,7 +2,7 @@
   "races" : [
     {
       "name": "Dilga",
-      "flavour": "The Dilga are a religious race",
+      "flavour": "The Dilga are a religious race.",
       "prefix": "dilga",
       "bg_colour": "black",
       "size": "normal",

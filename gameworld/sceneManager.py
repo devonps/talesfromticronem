@@ -3,7 +3,7 @@ from mapRelated.gameMap import GameMap
 from processors.move_entities import MoveEntities
 from processors.renderGameMap import RenderGameMap
 from processors.updateEntities import UpdateEntitiesProcessor
-from utilities import configUtilities, colourUtilities
+from utilities import configUtilities
 from loguru import logger
 
 from utilities.externalfileutilities import Externalfiles
@@ -11,16 +11,21 @@ from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 
 
+
 class SceneManager:
 
     @staticmethod
-    def newScene(console, currentscene, gameConfig, gameworld):
-        SceneManager.loadSceneCard(console=console, currentscene=currentscene, game_config=gameConfig, gameworld=gameworld)
+    def newScene(currentscene, gameworld):
+
+        SceneManager.loadSceneCard(currentscene=currentscene, gameworld=gameworld)
         SceneManager.generateGameMap()
 
     @staticmethod
-    def loadSceneCard(console, currentscene, game_config, gameworld):
+    def loadSceneCard(currentscene, gameworld):
         # load scene list into memory
+        # get config items
+        game_config = configUtilities.load_config()
+
         sceneList = configUtilities.get_config_value_as_list(game_config, 'game', 'SCENES')
         sceneFound = False
         thisScene = 0
@@ -86,7 +91,7 @@ class SceneManager:
                         logger.info('The map dimensions are {} by {}', mapAreaMaxX, mapAreaMaxY)
 
         if currentscene == 1:
-            renderGameMapProcessor = RenderGameMap(con=console, game_map=game_map, gameworld=gameworld)
+            renderGameMapProcessor = RenderGameMap(game_map=game_map, gameworld=gameworld)
             move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
             update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
             gameworld.add_processor(renderGameMapProcessor)

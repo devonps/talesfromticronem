@@ -33,6 +33,10 @@ def get_next_entity_id(gameworld):
     return gameworld.create_entity()
 
 
+def delete_entity(gameworld, entity):
+    gameworld.delete_entity(entity=entity, immediate=True)
+
+
 def remove_component_from_entity(gameworld, entity, component):
     gameworld.remove_component(entity, component)
 

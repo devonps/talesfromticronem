@@ -1,9 +1,11 @@
 import esper
 import tcod
 
+from bearlibterminal import terminal
+
 from components import mobiles, items
 from utilities import configUtilities, colourUtilities
-from utilities.display import display_coloured_box
+from utilities.display import display_coloured_box, draw_simple_frame
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
@@ -11,31 +13,30 @@ from loguru import logger
 
 
 class RenderGameMap(esper.Processor):
-    def __init__(self, con, game_map, gameworld):
-        self.con = con
+    def __init__(self, game_map, gameworld):
         self.game_map = game_map
         self.gameworld = gameworld
 
     def process(self, game_config):
         # GUI viewport and message box borders
-        self.render_viewport(self.con, game_config)
+        self.render_viewport(game_config)
         # self.render_message_box(self.con, game_config, self.gameworld)
-        self.render_spell_bar(self, self.con)
-        # self.render_player_status_effects(self, self.con, game_config)
-        self.render_player_vitals(self, self.con, game_config)
+        self.render_spell_bar(self)
+        self.render_player_status_effects(self, game_config)
+        # self.render_player_vitals(self, self.con, game_config)
 
         # render the game map
-        self.render_map(self.con, self.gameworld, game_config, self.game_map)
+        self.render_map(self.gameworld, game_config, self.game_map)
 
         # draw the entities
-        self.render_items(self.con, game_config, self.gameworld)
-        self.render_entities(self.con, game_config, self.gameworld)
+        self.render_items(game_config, self.gameworld)
+        self.render_entities(game_config, self.gameworld)
 
         # blit the console
-        self.blit_the_console(self.con, game_config)
+        terminal.refresh()
 
     @staticmethod
-    def render_map(console, gameworld, game_config, game_map):
+    def render_map(gameworld, game_config, game_map):
 
         map_view_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
         map_view_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
@@ -54,12 +55,12 @@ class RenderGameMap(esper.Processor):
         player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
 
         if player_has_moved:
-            bgnd = colourUtilities.BLACK
+            bgnd = colourUtilities.get('BLACK')
 
-            dng_wall_light = colourUtilities.colors[dwl]
-            dng_light_ground = colourUtilities.colors[dfl]
-            dng_dark_ground = colourUtilities.colors[dfd]
-            dng_dark_wall = colourUtilities.colors[dwd]
+            # dng_wall_light = colourUtilities.get(colors[dwl])
+            # dng_light_ground = colourUtilities.colors[dfl]
+            # dng_dark_ground = colourUtilities.colors[dfd]
+            # dng_dark_wall = colourUtilities.colors[dwd]
 
             for y in range(game_map.height):
                 for x in range(game_map.width):
@@ -70,11 +71,11 @@ class RenderGameMap(esper.Processor):
                     if isVisible:
 
                         if tile == 32:
-                            tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_light_ground, bgnd)
+                            terminal.put(x=draw_pos_x, y=draw_pos_y, c=dng_floor)
                         elif tile == 43:
-                            tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_door, dng_light_ground, bgnd)
+                            terminal.put(x=draw_pos_x, y=draw_pos_y, c=dng_door)
                         else:
-                            tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, chr(tile), dng_light_ground, bgnd)
+                            terminal.put(x=draw_pos_x, y=draw_pos_y, c=tile)
 
 
                         # if tile == tile_type_wall:
@@ -97,7 +98,7 @@ class RenderGameMap(esper.Processor):
                     #         tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_dark_ground, bgnd)
 
     @staticmethod
-    def render_entities(con, game_config, gameworld):
+    def render_entities(game_config, gameworld):
         px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
 
@@ -105,10 +106,10 @@ class RenderGameMap(esper.Processor):
             if rend.isVisible:
                 draw_pos_x = px + pos.x
                 draw_pos_y = py + pos.y
-                RenderGameMap.render_entity(con, draw_pos_x, draw_pos_y, desc.glyph, desc.foreground, desc.background)
+                RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.foreground, desc.background)
 
     @staticmethod
-    def render_items(con, game_config, gameworld):
+    def render_items(game_config, gameworld):
         px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
 
@@ -116,25 +117,15 @@ class RenderGameMap(esper.Processor):
             if rend.isTrue:
                 draw_pos_x = px + loc.x
                 draw_pos_y = py + loc.y
-                RenderGameMap.render_entity(con, draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
+                RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
 
     @staticmethod
-    def blit_the_console(con, game_config):
-        # update console with latest changes
-        scr_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='tcod', parameter='SCREEN_WIDTH')
-        scr_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='tcod', parameter='SCREEN_HEIGHT')
-
-        # blit changes to root console
-        tcod.console_blit(con, 0, 0, scr_width, scr_height, 0, 0, 0)
-        tcod.console_flush()
-        # todo stop drawing on the root console and create a game map console!
+    def render_entity(posx, posy, glyph, fg, bg):
+        string_to_print = '[color=' + fg + '][/color][bkcolor=' + bg + '][/bkcolor]' + glyph
+        terminal.print_(x=posx, y=posy, s=string_to_print)
 
     @staticmethod
-    def render_entity(con, posx, posy, glyph, fg, bg):
-        tcod.console_put_char_ex(con, posx, posy, glyph, fg, bg)
-
-    @staticmethod
-    def render_viewport(con, game_config):
+    def render_viewport(game_config):
         # draw the outer bounds of the map viewport
 
         viewport_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
@@ -145,17 +136,7 @@ class RenderGameMap(esper.Processor):
                                                                      parameter='VIEWPORT_WIDTH')
         viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='VIEWPORT_HEIGHT')
-
-        con.draw_frame(
-            x=viewport_across,
-            y=viewport_down,
-            width=viewport_width,
-            height=viewport_height,
-            title='',
-            clear=False,
-            fg=tcod.yellow,
-            bg_blend=tcod.BKGND_DEFAULT
-        )
+        draw_simple_frame(startx=viewport_across, starty=viewport_down, width=viewport_width, height=viewport_height, title='', fg=colourUtilities.get('YELLOW1'), bg=None)
 
     @staticmethod
     def render_message_box(con, game_config, gameworld):
@@ -177,26 +158,26 @@ class RenderGameMap(esper.Processor):
         )
 
     @staticmethod
-    def render_player_status_effects(self, con, game_config):
+    def render_player_status_effects(self, game_config):
         # draw the boon, condition, and control bar borders (horizontal)
-        self.render_boons(self, con, game_config)
-        self.render_conditions(self, con, game_config)
-        self.render_controls(self, con, game_config)
+        self.render_boons(self, game_config)
+        self.render_conditions(self, game_config)
+        self.render_controls(self, game_config)
 
     @staticmethod
-    def render_boons(self, con, game_config):
-        self.render_h_bar(con, posy=0, border_colour=tcod.darker_gray, game_config=game_config)
-        self.render_player_status_effects_content(self, 0, tcod.CHAR_SUBP_DIAG, tcod.green, game_config)
+    def render_boons(self, game_config):
+        self.render_h_bar(posy=0, border_colour=colourUtilities.get('GRAY'), game_config=game_config)
+        self.render_player_status_effects_content(self, 0, '*', colourUtilities.get('GREEN'), game_config)
 
     @staticmethod
-    def render_conditions(self, con, game_config):
-        self.render_h_bar(con, posy=3, border_colour=tcod.darker_gray, game_config=game_config)
-        self.render_player_status_effects_content(self, 3, chr(9), tcod.red, game_config)
+    def render_conditions(self, game_config):
+        self.render_h_bar(posy=3, border_colour=colourUtilities.get('GRAY'), game_config=game_config)
+        self.render_player_status_effects_content(self, 3, chr(9), colourUtilities.get('RED'), game_config)
 
     @staticmethod
-    def render_controls(self, con, game_config):
-        self.render_h_bar(con, posy=6, border_colour=tcod.darker_gray, game_config=game_config)
-        self.render_player_status_effects_content(self, 6, chr(10), tcod.white, game_config)
+    def render_controls(self, game_config):
+        self.render_h_bar(posy=6, border_colour=colourUtilities.get('GRAY'), game_config=game_config)
+        self.render_player_status_effects_content(self, 6, chr(10), colourUtilities.get('WHITE'), game_config)
 
     @staticmethod
     def render_player_status_effects_content(self, posy, glyph, foreground, game_config):
@@ -204,32 +185,36 @@ class RenderGameMap(esper.Processor):
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_Y') + posy
 
         x = 0
+        bg = colourUtilities.get('BLACK')
+        fg1 = foreground
+        fg2 = colourUtilities.get('GRAY')
         for a in range(10):
-            self.render_entity(self.con, 1 + px + x, py + 1, glyph, foreground, tcod.black)
+            self.render_entity(1 + px + x, py + 1, glyph, fg1, bg)
             if a < 9:
                 x += 1
-                self.render_entity(self.con, 1 + px + x, py + 1, chr(179), tcod.darker_gray, tcod.black)
+                self.render_entity(1 + px + x, py + 1, '*', fg2, bg)
             x += 1
 
     @staticmethod
-    def render_h_bar(con, posy, border_colour, game_config):
+    def render_h_bar(posy, border_colour, game_config):
 
         px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_X')
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_Y')
         rs = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='BCC_BAR_RIGHT_SIDE')
 
-        con.draw_frame(
-            x=px,
-            y=py + posy,
-            width=rs,
-            height=3,
-            title='',
-            fg=border_colour,
-            bg_blend=tcod.BKGND_DEFAULT
-        )
+        draw_simple_frame(startx=px, starty=py + posy, width=rs, height=3, title='', fg=border_colour, bg=None)
+        # con.draw_frame(
+        #     x=px,
+        #     y=py + posy,
+        #     width=rs,
+        #     height=3,
+        #     title='',
+        #     fg=border_colour,
+        #     bg_blend=tcod.BKGND_DEFAULT
+        # )
 
     @staticmethod
-    def render_player_vitals(self, con, game_config):
+    def render_player_vitals(self, game_config):
         player_entity = MobileUtilities.get_player_entity(self.gameworld, game_config)
         player_derived_attributes_component = self.gameworld.component_for_entity(player_entity,
                                                                                   mobiles.DerivedAttributes)
@@ -336,7 +321,7 @@ class RenderGameMap(esper.Processor):
             tcod.console_put_char_ex(self.con, posx, posy - y, chr(176), foreground, background)
 
     @staticmethod
-    def render_spell_bar(self, con):
+    def render_spell_bar(self):
 
         game_config = configUtilities.load_config()
 
@@ -369,23 +354,22 @@ class RenderGameMap(esper.Processor):
             slot[4] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=off_weapon, slotid=5)
 
         ps = 1
+        fg = colourUtilities.get('YELLOW1')
+        bg = colourUtilities.get('GRAY')
         for spellSlot in range(spell_slots):
-            spell_slot_posx = spell_bar_across
+            spell_slot_posx = spell_bar_across - 1
 
             if spellSlot < 9:
                 sp = str(ps)
             else:
                 sp = str(ps)[-1:]
 
-            display_coloured_box(console=con, title=sp,
-                                 posx=spell_slot_posx, posy=spell_bar_down,
+            display_coloured_box(title=sp,
+                                 posx=spell_slot_posx, posy=spell_bar_down + 1,
                                  width=spell_box_width, height=spell_bar_depth,
-                                 fg=tcod.yellow, bg=tcod.gray)
-
-            con.print_box(x=spell_slot_posx, y=spell_bar_down + 1,
-                                        width=spell_bar_width, height=spell_bar_depth,
-                                        string=slot[spellSlot][:7],
-                                        fg=tcod.yellow)
+                                 fg=fg, bg=bg)
+            string_to_print = '[color=' + fg + ']' + slot[spellSlot][:7]
+            terminal.print_(x=spell_slot_posx + 2, y=spell_bar_down + 3, width=spell_bar_width, height=spell_bar_depth, s=string_to_print)
 
             spell_bar_across += spell_box_width
             ps += 1
