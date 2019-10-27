@@ -1,28 +1,25 @@
 import tcod.event
 import tcod.console
 
-from utilities.display import display_coloured_box
+from utilities.display import display_coloured_box, draw_simple_frame
 from utilities.itemsHelp import ItemUtilities
 from utilities import configUtilities, colourUtilities
 from utilities.mobileHelp import MobileUtilities
-from utilities.spellHelp import SpellUtilities
 from utilities.input_handlers import handle_game_keys
 from loguru import logger
 
 from components import mobiles
 
+from bearlibterminal import terminal
 
-def display_hero_panel(gameworld, root_console):
+
+def display_hero_panel(gameworld):
 
     hero_panel_displayed = True
     game_config = configUtilities.load_config()
 
     hp_def_fg = tcod.white
     hp_def_bg = tcod.dark_gray
-    panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_WIDTH')
-    panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_HEIGHT')
-    panel_left_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_X')
-    panel_left_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_LEFT_Y')
     hp_tab_max_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_MAX_WIDTH')
     hp_tabs = configUtilities.get_config_value_as_list(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_OFFSETS')
 
@@ -33,18 +30,16 @@ def display_hero_panel(gameworld, root_console):
     # update player derived attributes - do that here to allow for mid-turn changes
     MobileUtilities.calculate_derived_attributes(gameworld=gameworld, gameconfig=game_config)
 
-    hero_panel = tcod.console.Console(width=panel_width, height=panel_height, order='F')
-
     x_offset = 11
 
     # main loop whilst hero panel is displayed
     while hero_panel_displayed:
+        terminal.clear()
         draw_hero_panel_frame(hero_panel, game_config)
         draw_hero_panel_tabs(hero_panel, game_config, hp_def_fg, hp_def_bg)
         draw_hero_information(hero_panel=hero_panel, gameworld=gameworld, player=player_entity, game_config=game_config)
 
-        hero_panel.blit(dest=root_console, dest_x=panel_left_x, dest_y=panel_left_y)
-        tcod.console_flush()
+        terminal.refresh()
 
         event_to_be_processed, event_action = handle_game_keys()
         if event_to_be_processed != '':
@@ -64,76 +59,85 @@ def display_hero_panel(gameworld, root_console):
                     logger.info('Right mouse button clicked')
                     logger.info('Tile coords {}/{}', event_action[1], event_action[2])
 
-        hero_panel.clear(ch=ord(' '), fg=hp_def_fg, bg=hp_def_bg)
+        terminal.clear()
 
 
-def draw_hero_panel_frame(hero_panel, game_config):
+def draw_hero_panel_frame(game_config):
     hp_tab_max_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_MAX_WIDTH')
     panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_WIDTH')
     panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_HEIGHT')
 
-    hero_panel.draw_frame(x=0, y=0,
-                          width=panel_width,
-                          height=panel_height,
-                          clear=False,
-                          bg_blend=tcod.BKGND_DEFAULT,
-                          title='Hero Panel')
+    draw_simple_frame(startx=0, starty=0, width=panel_width,height=panel_height,title='Hero Panel', fg=colourUtilities.get('WHITE'), bg=colourUtilities.get('BLACK'))
+    # hero_panel.draw_frame(x=0, y=0,
+    #                       width=panel_width,
+    #                       height=panel_height,
+    #                       clear=False,
+    #                       bg_blend=tcod.BKGND_DEFAULT,
+    #                       title='Hero Panel')
 
-    hero_panel.print_box(x=hp_tab_max_width + 15, y=panel_height- 2,
-                         width=40,
-                         height=1, string='Mouse to select, ESC to exit')
+    terminal.print_(x=hp_tab_max_width + 15, y=panel_height - 2,width=40,height=1, s='Mouse to select, ESC to exit')
+    # hero_panel.print_box(x=hp_tab_max_width + 15, y=panel_height- 2,
+    #                      width=40,
+    #                      height=1, string='Mouse to select, ESC to exit')
 
 
-def draw_hero_panel_tabs(hero_panel, game_config, def_fg, def_bg):
+def draw_hero_panel_tabs(game_config, def_fg, def_bg):
     hp_tab_max_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_TAB_MAX_WIDTH')
     hp_selected_tab = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HERO_PANEL_SELECTED_TAB')
     hp_tabs = configUtilities.get_config_value_as_list(configfile=game_config, section='gui', parameter='HERO_PANEL_TABS')
+    hp_height = configUtilities.get_config_value_as_list(configfile=game_config, section='gui', parameter='HERO_PANEL_HEIGHT')
 
     tab_down = 3
 
     # full length line
-    hero_panel.draw_rect(x=hp_tab_max_width + 1, y=1, width=1, height=hero_panel.height - 2, ch=179, fg=def_fg, bg=def_bg)
+    terminal.color(def_fg)
+    for i in range(hp_height - 1):
+        terminal.put(x=hp_tab_max_width + 1, y=1 + i, c=179)
+
+    # hero_panel.draw_rect(x=hp_tab_max_width + 1, y=1, width=1, height=hero_panel.height - 2, ch=179, fg=def_fg, bg=def_bg)
     # top bar decoration
-    hero_panel.put_char(x=hp_tab_max_width + 1, y=0, ch=194)
+    terminal.put(x=hp_tab_max_width + 1, y=0, c=194)
+    # hero_panel.put_char(x=hp_tab_max_width + 1, y=0, ch=194)
     # bottom bar decoration
-    hero_panel.put_char(x=hp_tab_max_width + 1, y=hero_panel.height - 1, ch=193)
-    for tab_count, tab in enumerate(hp_tabs):
-        if tab_down == 3:
-            # tab cross bar
-            hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=196, fg=def_fg, bg=def_bg)
-            # tab cross bar top decoration
-            hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down, ch=180)
-            hero_panel.put_char(x=0, y=tab_down, ch=195)
-            tab_down += 1
-        if hp_selected_tab != tab_count:
-
-            hero_panel.print_box(x=1, y=tab_down, width=hp_tab_max_width, height=1, string=tab)
-            hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=0, fg=tcod.white, bg=def_bg)
-            tab_down += 1
-            # tab cross bar
-            hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=196, fg=def_fg, bg=def_bg)
-            # tab cross bar top decoration
-            hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down, ch=180)
-            # left side tab cross bar decoration
-            hero_panel.put_char(x=0, y=tab_down, ch=195)
-            tab_down += 1
-
-        else:
-            hero_panel.print_box(x=1, y=tab_down, width=hp_tab_max_width, height=1, string=tab)
-            hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=0, fg=def_fg, bg=tcod.black)
-            # draws the 'space' at the end of the tab
-            hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down, ch=32)
-            tab_down += 1
-            # tab cross bar
-            hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=196, fg=def_fg, bg=def_bg)
-            # tab cross bar bottom right decoration
-            hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down, ch=191)
-            # tab cross bar top right decoration
-            hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down - 2, ch=217)
-            # left side tab cross bar decoration
-            hero_panel.put_char(x=0, y=tab_down, ch=195)
-
-            tab_down += 1
+    terminal.put(x=hp_tab_max_width + 1, y=hp_height - 1, c=193)
+    # hero_panel.put_char(x=hp_tab_max_width + 1, y=hero_panel.height - 1, ch=193)
+    # for tab_count, tab in enumerate(hp_tabs):
+    #     if tab_down == 3:
+    #         # tab cross bar
+    #         hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=196, fg=def_fg, bg=def_bg)
+    #         # tab cross bar top decoration
+    #         hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down, ch=180)
+    #         hero_panel.put_char(x=0, y=tab_down, ch=195)
+    #         tab_down += 1
+    #     if hp_selected_tab != tab_count:
+    #
+    #         hero_panel.print_box(x=1, y=tab_down, width=hp_tab_max_width, height=1, string=tab)
+    #         hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=0, fg=tcod.white, bg=def_bg)
+    #         tab_down += 1
+    #         # tab cross bar
+    #         hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=196, fg=def_fg, bg=def_bg)
+    #         # tab cross bar top decoration
+    #         hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down, ch=180)
+    #         # left side tab cross bar decoration
+    #         hero_panel.put_char(x=0, y=tab_down, ch=195)
+    #         tab_down += 1
+    #
+    #     else:
+    #         hero_panel.print_box(x=1, y=tab_down, width=hp_tab_max_width, height=1, string=tab)
+    #         hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=0, fg=def_fg, bg=tcod.black)
+    #         # draws the 'space' at the end of the tab
+    #         hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down, ch=32)
+    #         tab_down += 1
+    #         # tab cross bar
+    #         hero_panel.draw_rect(x=1, y=tab_down, width=hp_tab_max_width, height=1, ch=196, fg=def_fg, bg=def_bg)
+    #         # tab cross bar bottom right decoration
+    #         hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down, ch=191)
+    #         # tab cross bar top right decoration
+    #         hero_panel.put_char(x=hp_tab_max_width + 1, y=tab_down - 2, ch=217)
+    #         # left side tab cross bar decoration
+    #         hero_panel.put_char(x=0, y=tab_down, ch=195)
+    #
+    #         tab_down += 1
 
 
 def draw_hero_information(hero_panel, gameworld, player, game_config):

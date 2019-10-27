@@ -1,6 +1,8 @@
 import tcod.console
 import tcod.event
 
+from bearlibterminal import terminal
+
 from components import items
 from newGame.ClassWeapons import WeaponClass
 from newGame.Items import ItemManager
@@ -20,12 +22,10 @@ from newGame import newGame
 def game_loop(gameworld):
 
     game_config = configUtilities.load_config()
-    con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
-    con_height = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_HEIGHT')
     player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
-    # 'clears' the root console, therefore the other consoles are not showing
-    con.clear()
+    terminal.clear()
+
     setup_gameworld(game_config)
 
 
@@ -50,8 +50,6 @@ def game_loop(gameworld):
     gameworld.add_component(created_weapon4, items.Location(x=0, y=0))
     ItemUtilities.set_item_location(gameworld=gameworld, item_entity=created_weapon4, posx=7, posy=6)
 
-    gameDisplay = tcod.console.Console(width=con_width, height=con_height, order='F')
-
     playing_game = True
 
     currentScene = 1
@@ -65,7 +63,7 @@ def game_loop(gameworld):
         #
         if SceneChange:
             # call scene manager
-            SceneManager.newScene(console=gameDisplay, currentscene=currentScene, gameConfig=game_config, gameworld=gameworld)
+            SceneManager.newScene(currentscene=currentScene, gameworld=gameworld)
             SceneChange = False
         #
         # get player action aka their intent to do something
@@ -89,7 +87,7 @@ def game_loop(gameworld):
                     if currentScene > 2:
                         currentScene = 1
                 if event_action == 'h':
-                    display_hero_panel(gameworld=gameworld, root_console=con)
+                    display_hero_panel(gameworld=gameworld)
                 if event_action == 'g':
                     MobileUtilities.mobile_pick_up_item(gameworld=gameworld, mobile=player)
         #

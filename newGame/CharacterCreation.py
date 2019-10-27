@@ -7,8 +7,7 @@ from loguru import logger
 from utilities import configUtilities, colourUtilities
 from utilities.externalfileutilities import Externalfiles
 from utilities.buildLibrary import BuildLibrary
-from utilities.display import draw_colourful_frame, pointy_menu, coloured_list, draw_clear_text_box, \
-    display_coloured_box
+from utilities.display import draw_colourful_frame, pointy_menu, coloured_list, display_coloured_box
 from utilities.input_handlers import handle_game_keys
 from utilities.world import create_game_world
 from utilities.jsonUtilities import read_json_file

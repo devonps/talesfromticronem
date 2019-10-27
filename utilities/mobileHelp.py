@@ -2,7 +2,8 @@ from components import mobiles, userInput, items, spellBar
 from loguru import logger
 from utilities.itemsHelp import ItemUtilities, display_inspect_panel
 from utilities import world
-from utilities import configUtilities
+from utilities import configUtilities, colourUtilities
+
 import numbers
 import tcod
 
@@ -227,7 +228,7 @@ class MobileUtilities(numbers.Real):
 
         player_entity = world.get_next_entity_id(gameworld=gameworld)
         gameworld.add_component(player_entity, mobiles.Name(first='undefined', suffix=''))
-        gameworld.add_component(player_entity, mobiles.Describable(description='something', glyph='@', foreground=tcod.orange, background=tcod.black, personality='Unpredictable', gender='neutral'))
+        gameworld.add_component(player_entity, mobiles.Describable(description='something', glyph='@', foreground=colourUtilities.get('ORANGE'), background=colourUtilities.get('BLACK'), personality='Unpredictable', gender='neutral'))
         gameworld.add_component(player_entity, mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
         gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai))
         gameworld.add_component(player_entity, mobiles.Inventory())
