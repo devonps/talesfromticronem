@@ -21,7 +21,7 @@ class RenderGameMap(esper.Processor):
         # GUI viewport and message box borders
         self.render_viewport(game_config)
         # self.render_message_box(self.con, game_config, self.gameworld)
-        # self.render_spell_bar(self, self.con)
+        self.render_spell_bar(self)
         self.render_player_status_effects(self, game_config)
         # self.render_player_vitals(self, self.con, game_config)
 
@@ -29,12 +29,11 @@ class RenderGameMap(esper.Processor):
         self.render_map(self.gameworld, game_config, self.game_map)
 
         # draw the entities
-        # self.render_items(self.con, game_config, self.gameworld)
+        self.render_items(game_config, self.gameworld)
         self.render_entities(game_config, self.gameworld)
 
         # blit the console
         terminal.refresh()
-        # self.blit_the_console(self.con, game_config)
 
     @staticmethod
     def render_map(gameworld, game_config, game_map):
@@ -110,7 +109,7 @@ class RenderGameMap(esper.Processor):
                 RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.foreground, desc.background)
 
     @staticmethod
-    def render_items(con, game_config, gameworld):
+    def render_items(game_config, gameworld):
         px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
 
@@ -118,13 +117,12 @@ class RenderGameMap(esper.Processor):
             if rend.isTrue:
                 draw_pos_x = px + loc.x
                 draw_pos_y = py + loc.y
-                RenderGameMap.render_entity(con, draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
+                RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
 
     @staticmethod
     def render_entity(posx, posy, glyph, fg, bg):
         string_to_print = '[color=' + fg + '][/color][bkcolor=' + bg + '][/bkcolor]' + glyph
         terminal.print_(x=posx, y=posy, s=string_to_print)
-        # tcod.console_put_char_ex(con, posx, posy, glyph, fg, bg)
 
     @staticmethod
     def render_viewport(game_config):
@@ -323,7 +321,7 @@ class RenderGameMap(esper.Processor):
             tcod.console_put_char_ex(self.con, posx, posy - y, chr(176), foreground, background)
 
     @staticmethod
-    def render_spell_bar(self, con):
+    def render_spell_bar(self):
 
         game_config = configUtilities.load_config()
 
@@ -356,23 +354,22 @@ class RenderGameMap(esper.Processor):
             slot[4] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=off_weapon, slotid=5)
 
         ps = 1
+        fg = colourUtilities.get('YELLOW1')
+        bg = colourUtilities.get('GRAY')
         for spellSlot in range(spell_slots):
-            spell_slot_posx = spell_bar_across
+            spell_slot_posx = spell_bar_across - 1
 
             if spellSlot < 9:
                 sp = str(ps)
             else:
                 sp = str(ps)[-1:]
 
-            display_coloured_box(console=con, title=sp,
-                                 posx=spell_slot_posx, posy=spell_bar_down,
+            display_coloured_box(title=sp,
+                                 posx=spell_slot_posx, posy=spell_bar_down + 1,
                                  width=spell_box_width, height=spell_bar_depth,
-                                 fg=tcod.yellow, bg=tcod.gray)
-
-            con.print_box(x=spell_slot_posx, y=spell_bar_down + 1,
-                                        width=spell_bar_width, height=spell_bar_depth,
-                                        string=slot[spellSlot][:7],
-                                        fg=tcod.yellow)
+                                 fg=fg, bg=bg)
+            string_to_print = '[color=' + fg + ']' + slot[spellSlot][:7]
+            terminal.print_(x=spell_slot_posx + 2, y=spell_bar_down + 3, width=spell_bar_width, height=spell_bar_depth, s=string_to_print)
 
             spell_bar_across += spell_box_width
             ps += 1

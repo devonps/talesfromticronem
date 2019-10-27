@@ -3,12 +3,11 @@ from components import items
 from utilities import world, jsonUtilities
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
-from utilities import configUtilities
+from utilities import configUtilities, colourUtilities
 from loguru import logger
 from mapRelated.gameMap import GameMap
 
 import random
-import tcod
 
 
 class ItemManager:
@@ -42,8 +41,8 @@ class ItemManager:
                     description=weapon['description'],
                     name=weapon['name'],
                     glyph=weapon['glyph'],
-                    fg=tcod.white,
-                    bg=tcod.black,
+                    fg=colourUtilities.get('WHITE'),
+                    bg=colourUtilities.get('BLACK'),
                     displayname=weapon['display_name']
                     # fg=weapon['fg_colour'],
                     # bg=weapon['bg_colour']
@@ -146,8 +145,8 @@ class ItemManager:
             name=bodylocation + ' armour',
             glyph=")",
             description='a ' + display + ' made from ' + as_material,
-            fg=tcod.white,
-            bg=tcod.black,
+            fg=colourUtilities.get('WHITE'),
+            bg=colourUtilities.get('BLACK'),
             displayname=display))
         gameworld.add_component(armour_piece, items.RenderItem(istrue=True))
         gameworld.add_component(armour_piece, items.Quality(level=as_quality))
@@ -225,8 +224,7 @@ class ItemManager:
                 description=this_bag['description'],
                 name=this_bag['description'],
                 glyph=this_bag['glyph'],
-                fg=tcod.white,
-                bg=tcod.black))
+                fg=colourUtilities.get('WHITE'), bg=colourUtilities.get('BLACK')))
             # gameworld.add_component(new_bag, items.Location(x=0, y=0))
             gameworld.add_component(new_bag, items.Material(texture=this_bag['material']))
             gameworld.add_component(new_bag, items.RenderItem)
@@ -315,8 +313,8 @@ class ItemManager:
                     description=desc,
                     name=nm,
                     glyph=gemstone['glyph'],
-                    fg=tcod.blue,
-                    bg=tcod.black,
+                    fg=colourUtilities.get('BLUE'),
+                    bg=colourUtilities.get('BLACK'),
                     displayname=trinket_activator + ' ' + nm))
                 logger.info('Created {}', desc)
                 return piece_of_jewellery
