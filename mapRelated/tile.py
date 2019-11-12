@@ -18,6 +18,7 @@ class Tile:
         self.posx = 0
         self.posy = 0
         self.glyph = ''
+        self.image = -99
 
     def does_tile_block_sight(self):
         return self.block_sight
@@ -28,3 +29,5 @@ class Tile:
     def has_tile_been_explored(self):
         return self.explored
 
+    def get_tile_image(self):
+        return self.image
