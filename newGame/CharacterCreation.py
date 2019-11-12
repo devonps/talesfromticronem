@@ -1,5 +1,3 @@
-import tcod
-import tcod.console
 
 from bearlibterminal import terminal
 
@@ -144,7 +142,7 @@ class CharacterCreation:
             race_flavour.append(option['flavour'])
             race_prefix.append(option['prefix'])
             # race_bg_colour.append(option['bg_colour']) // TODO use colorutils to set the background colour
-            race_bg_colour.append(tcod.black)
+            race_bg_colour.append(colourUtilities.get('BLACK'))
             race_size.append(option['size'])
             race_attributes.append(option['attributes'])
 

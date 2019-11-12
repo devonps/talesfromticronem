@@ -21,7 +21,7 @@ class Actionlist:
 
 
 class Describable:
-    def __init__(self, name='', description='', glyph='', fg=tcod.white, bg=tcod.black, displayname=''):
+    def __init__(self, name='', description='', glyph='', fg=0, bg=0, displayname=''):
         self.name = name
         self.description = description
         self.glyph = glyph

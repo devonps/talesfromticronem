@@ -19,9 +19,6 @@ def coloured_list(list_options, list_x, list_y, selected_option, blank_line, fg)
             fg_color = fg
         string_to_print = '[color=' + fg_color + ']' + option
         terminal.print(x=list_x, y=list_y + list_count, s=string_to_print)
-        # console.print(x=list_x, y=list_y + list_count, string=option, fg=fg_color, bg=bg_color,
-        #               bg_blend=tcod.BKGND_NONE,
-        #               alignment=tcod.LEFT)
 
         list_count += 1
         lst += 1
@@ -226,9 +223,6 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
 
 
 def draw_clear_text_box(posx, posy, width, height, text, fg, bg):
-
-    # draw_coloured_rectangle(startx=posx, starty=posy, width=width, height=height, ch=u'\u0020',
-    #                         fg=colourUtilities.get('BLACK'), bg=colourUtilities.get('BLACK'))
 
     terminal.clear_area(x=posx, y=posy, width=width, height=height)
 
