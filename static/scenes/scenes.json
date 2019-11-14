@@ -4,8 +4,8 @@
     {
       "name": "academy",
       "loadMap": "startArea",
-      "mapx": "60",
-      "mapy": "32",
+      "mapx": "42",
+      "mapy": "41",
       "npcs": [
         {
           "displayName": "Joe",
@@ -15,7 +15,7 @@
           "location": [
             {
               "prefab": "0",
-              "x": "55",
+              "x": "30",
               "y": "random"
             }
             ]

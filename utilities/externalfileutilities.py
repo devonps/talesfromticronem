@@ -30,8 +30,9 @@ class Externalfiles:
     @staticmethod
     def load_existing_file(filename):
         fileobject = open(filename, 'r')
-        filecontent = fileobject.readlines()
+        fc = fileobject.readlines()
         fileobject.close()
+        filecontent = [line.rstrip('\n') for line in fc]
 
         return filecontent
 
