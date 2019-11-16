@@ -181,6 +181,12 @@ class SceneManager:
                     # top right
                     if xx == maxX - 1 and yy == 0:
                         game_map.tiles[xx][yy].image = 13
+                    # bottom left
+                    if xx == 0 and yy == maxY - 1:
+                        game_map.tiles[xx][yy].image = 15
+                    # bottom right
+                    if xx == maxX - 1 and yy == maxY - 1:
+                        game_map.tiles[xx][yy].image = 16
                     # left wall
                     if xx == 0 and yy > 0:
                         if game_map.tiles[xx + 1][yy].type_of_tile == tile_type_floor:
@@ -189,7 +195,28 @@ class SceneManager:
                     if xx > 0 and yy > 0:
                         if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_floor and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_floor:
                             game_map.tiles[xx][yy].image = 14
-
                     # right wall
                     if xx == maxX - 1 and yy > 0:
                         game_map.tiles[xx][yy].image = 14
+                    # inside top right
+                    if xx > 0 and yy > 0:
+                        if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_wall and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_floor:
+                            if game_map.tiles[xx][yy - 1].type_of_tile == tile_type_floor and game_map.tiles[xx][yy + 1].type_of_tile == tile_type_wall:
+                                game_map.tiles[xx][yy].image = 13
+                    # |- junction
+                    if 0 < yy < maxY:
+                        if xx < maxX - 1:
+                            if game_map.tiles[xx][yy - 1].type_of_tile == tile_type_wall and game_map.tiles[xx][yy + 1].type_of_tile == tile_type_wall:
+                                if game_map.tiles[xx + 1][yy].type_of_tile == tile_type_wall:
+                                    game_map.tiles[xx][yy].image = 17
+                    # -| junction
+                    if 0 < yy < maxY:
+                        if xx > 0:
+                            if game_map.tiles[xx][yy - 1].type_of_tile == tile_type_wall and game_map.tiles[xx][yy + 1].type_of_tile == tile_type_wall:
+                                if game_map.tiles[xx -1][yy].type_of_tile == tile_type_wall:
+                                    game_map.tiles[xx][yy].image = 18
+                    # T junction
+                    if xx > 0 and xx < maxX - 1:
+                        if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_wall and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_wall:
+                            if game_map.tiles[xx][yy + 1].type_of_tile == tile_type_wall:
+                                game_map.tiles[xx][yy].image = 19

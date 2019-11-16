@@ -63,7 +63,6 @@ class RenderGameMap(esper.Processor):
             # dng_light_ground = colourUtilities.colors[dfl]
             # dng_dark_ground = colourUtilities.colors[dfd]
             # dng_dark_wall = colourUtilities.colors[dwd]
-            logger.info('gx gy {} {}', game_map.width, game_map.height)
             for y in range(game_map.height - 1):
                 for x in range(game_map.width - 1):
                     isVisible = True
