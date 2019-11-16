@@ -131,8 +131,48 @@ class SceneManager:
         game_config = configUtilities.load_config()
         tile_type_wall = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                      parameter='TILE_TYPE_WALL')
-        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
-                                                                      parameter='TILE_TYPE_FLOOR')
+        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',parameter='TILE_TYPE_FLOOR')
+        FLOOR_TOP_LEFT = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='FLOOR_TOP_LEFT')
+        FLOOR_TOP_MIDDLE = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='FLOOR_TOP_MIDDLE')
+        FLOOR_TOP_RIGHT = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='FLOOR_TOP_RIGHT')
+        FLOOR_LEFT = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='FLOOR_LEFT')
+        FLOOR_MIDDLE = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='FLOOR_MIDDLE')
+        FLOOR_RIGHT = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='FLOOR_RIGHT')
+        FLOOR_BOTTOM_LEFT = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='FLOOR_BOTTOM_LEFT')
+        FLOOR_BOTTOM_MIDDLE = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='FLOOR_BOTTOM_MIDDLE')
+        FLOOR_BOTTOM_RIGHT = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='FLOOR_BOTTOM_RIGHT')
+        WALL_TOP = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='WALL_TOP')
+        CLOSED_DOOR = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='CLOSED_DOOR')
+        WALL_TOP_LEFT = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='WALL_TOP_LEFT')
+        WALL_TOP_RIGHT = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='WALL_TOP_RIGHT')
+        WALL_CENTRAL = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='WALL_CENTRAL')
+        WALL_BOTTOM_LEFT = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='WALL_BOTTOM_LEFT')
+        WALL_BOTTOM_RIGHT = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='WALL_BOTTOM_RIGHT')
+        WALL_T_JUNCTION_RIGHT = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='WALL_T_JUNCTION_RIGHT')
+        WALL_T_JUNCTION_LEFT = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='WALL_T_JUNCTION_LEFT')
+        WALL_T_JUNCTION_TOP = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='WALL_T_JUNCTION_TOP')
+        WALL_T_JUNCTION_BOTTOM = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='WALL_T_JUNCTION_BOTTOM')
+
         logger.info('mx my {} {}', maxX, maxY)
         for yy in range(maxY):
             for xx in range(maxX):
@@ -140,83 +180,91 @@ class SceneManager:
                     # top left
                     if (game_map.tiles[xx - 1][yy].blocked is True) and (game_map.tiles[xx][yy - 1].blocked is True) and \
                             (game_map.tiles[xx + 1][yy].blocked is False) and (game_map.tiles[xx][yy + 1].blocked is False):
-                        game_map.tiles[xx][yy].image = 0
+                        game_map.tiles[xx][yy].image = FLOOR_TOP_LEFT
                     # top middle
                     if (game_map.tiles[xx - 1][yy].blocked is False) and (game_map.tiles[xx][yy - 1].blocked is True) and \
                             (game_map.tiles[xx + 1][yy].blocked is False) and (game_map.tiles[xx][yy + 1].blocked is False):
-                        game_map.tiles[xx][yy].image = 1
+                        game_map.tiles[xx][yy].image = FLOOR_TOP_MIDDLE
                     # top right
                     if (game_map.tiles[xx - 1][yy].blocked is False) and (game_map.tiles[xx][yy - 1].blocked is True) and \
                             (game_map.tiles[xx + 1][yy].blocked is True) and (game_map.tiles[xx][yy + 1].blocked is False):
-                        game_map.tiles[xx][yy].image = 2
+                        game_map.tiles[xx][yy].image = FLOOR_TOP_RIGHT
                     # middle left
                     if (game_map.tiles[xx - 1][yy].blocked is True) and (game_map.tiles[xx][yy - 1].blocked is False) and \
                             (game_map.tiles[xx + 1][yy].blocked is False) and (game_map.tiles[xx][yy + 1].blocked is False):
-                        game_map.tiles[xx][yy].image = 3
+                        game_map.tiles[xx][yy].image = FLOOR_LEFT
                     # middle middle
                     if (game_map.tiles[xx - 1][yy].blocked is False) and (game_map.tiles[xx][yy - 1].blocked is False) and \
                             (game_map.tiles[xx + 1][yy].blocked is False) and (game_map.tiles[xx][yy + 1].blocked is False):
-                        game_map.tiles[xx][yy].image = 4
+                        game_map.tiles[xx][yy].image = FLOOR_MIDDLE
                     # middle right
                     if (game_map.tiles[xx - 1][yy].blocked is False) and (game_map.tiles[xx][yy - 1].blocked is False) and \
                             (game_map.tiles[xx + 1][yy].blocked is True) and (game_map.tiles[xx][yy + 1].blocked is False):
-                        game_map.tiles[xx][yy].image = 5
+                        game_map.tiles[xx][yy].image = FLOOR_RIGHT
                     # bottom left
                     if (game_map.tiles[xx - 1][yy].blocked is True) and (game_map.tiles[xx][yy - 1].blocked is False) and \
                             (game_map.tiles[xx + 1][yy].blocked is False) and (game_map.tiles[xx][yy + 1].blocked is True):
-                        game_map.tiles[xx][yy].image = 6
+                        game_map.tiles[xx][yy].image = FLOOR_BOTTOM_LEFT
                     # bottom middle
                     if (game_map.tiles[xx - 1][yy].blocked is False) and (game_map.tiles[xx][yy - 1].blocked is False) and \
                             (game_map.tiles[xx + 1][yy].blocked is False) and (game_map.tiles[xx][yy + 1].blocked is True):
-                        game_map.tiles[xx][yy].image = 7
+                        game_map.tiles[xx][yy].image = FLOOR_BOTTOM_MIDDLE
                     # bottom right
                     if (game_map.tiles[xx - 1][yy].blocked is False) and (game_map.tiles[xx][yy - 1].blocked is False) and \
                             (game_map.tiles[xx + 1][yy].blocked is True) and (game_map.tiles[xx][yy + 1].blocked is True):
-                        game_map.tiles[xx][yy].image = 8
+                        game_map.tiles[xx][yy].image = FLOOR_BOTTOM_RIGHT
 
                 if game_map.tiles[xx][yy].type_of_tile == tile_type_wall:
                     # top left
                     if xx == 0 and yy == 0:
-                        game_map.tiles[xx][yy].image = 12
+                        game_map.tiles[xx][yy].image = WALL_TOP_LEFT
                     # top right
                     if xx == maxX - 1 and yy == 0:
-                        game_map.tiles[xx][yy].image = 13
+                        game_map.tiles[xx][yy].image = WALL_TOP_RIGHT
                     # bottom left
                     if xx == 0 and yy == maxY - 1:
-                        game_map.tiles[xx][yy].image = 15
+                        game_map.tiles[xx][yy].image = WALL_BOTTOM_LEFT
                     # bottom right
                     if xx == maxX - 1 and yy == maxY - 1:
-                        game_map.tiles[xx][yy].image = 16
+                        game_map.tiles[xx][yy].image = WALL_BOTTOM_RIGHT
                     # left wall
                     if xx == 0 and yy > 0:
                         if game_map.tiles[xx + 1][yy].type_of_tile == tile_type_floor:
-                            game_map.tiles[xx][yy].image = 14
+                            game_map.tiles[xx][yy].image = WALL_CENTRAL
                     # central wall flanked by floor both sides
                     if xx > 0 and yy > 0:
                         if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_floor and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_floor:
-                            game_map.tiles[xx][yy].image = 14
+                            game_map.tiles[xx][yy].image = WALL_CENTRAL
                     # right wall
                     if xx == maxX - 1 and yy > 0:
-                        game_map.tiles[xx][yy].image = 14
+                        game_map.tiles[xx][yy].image = WALL_CENTRAL
                     # inside top right
                     if xx > 0 and yy > 0:
                         if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_wall and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_floor:
                             if game_map.tiles[xx][yy - 1].type_of_tile == tile_type_floor and game_map.tiles[xx][yy + 1].type_of_tile == tile_type_wall:
-                                game_map.tiles[xx][yy].image = 13
+                                game_map.tiles[xx][yy].image = WALL_TOP_RIGHT
                     # |- junction
                     if 0 < yy < maxY:
                         if xx < maxX - 1:
                             if game_map.tiles[xx][yy - 1].type_of_tile == tile_type_wall and game_map.tiles[xx][yy + 1].type_of_tile == tile_type_wall:
                                 if game_map.tiles[xx + 1][yy].type_of_tile == tile_type_wall:
-                                    game_map.tiles[xx][yy].image = 17
+                                    game_map.tiles[xx][yy].image = WALL_T_JUNCTION_RIGHT
                     # -| junction
                     if 0 < yy < maxY:
                         if xx > 0:
                             if game_map.tiles[xx][yy - 1].type_of_tile == tile_type_wall and game_map.tiles[xx][yy + 1].type_of_tile == tile_type_wall:
                                 if game_map.tiles[xx -1][yy].type_of_tile == tile_type_wall:
-                                    game_map.tiles[xx][yy].image = 18
+                                    game_map.tiles[xx][yy].image = WALL_T_JUNCTION_LEFT
                     # T junction
-                    if xx > 0 and xx < maxX - 1:
+                    if 0 < xx < maxX - 1:
                         if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_wall and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_wall:
                             if game_map.tiles[xx][yy + 1].type_of_tile == tile_type_wall:
-                                game_map.tiles[xx][yy].image = 19
+                                game_map.tiles[xx][yy].image = WALL_T_JUNCTION_TOP
+
+                    # T junction upwards
+                    if xx > 0 and xx <  maxX - 1:
+                        if 0 < yy < maxY - 1:
+                            if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_wall and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_wall:
+                                if game_map.tiles[xx][yy - 1].type_of_tile == tile_type_wall:
+                                    game_map.tiles[xx][yy].image = WALL_T_JUNCTION_BOTTOM
+

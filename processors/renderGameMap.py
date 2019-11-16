@@ -18,6 +18,7 @@ class RenderGameMap(esper.Processor):
         self.gameworld = gameworld
 
     def process(self, game_config):
+        terminal.clear()
         # GUI viewport and message box borders
         # self.render_viewport(game_config)
         # self.render_message_box(self.con, game_config, self.gameworld)
@@ -30,7 +31,7 @@ class RenderGameMap(esper.Processor):
 
         # draw the entities
         # self.render_items(game_config, self.gameworld)
-        # self.render_entities(game_config, self.gameworld)
+        self.render_entities(game_config, self.gameworld)
 
         # blit the console
         terminal.refresh()
@@ -87,12 +88,13 @@ class RenderGameMap(esper.Processor):
     def render_entities(game_config, gameworld):
         px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
-
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Xscale')
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
         for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
             if rend.isVisible:
                 draw_pos_x = px + pos.x
                 draw_pos_y = py + pos.y
-                RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.foreground, desc.background)
+                RenderGameMap.render_entity(draw_pos_x, draw_pos_y, 11, image_x_scale, image_y_scale)
 
     @staticmethod
     def render_items(game_config, gameworld):
@@ -106,9 +108,16 @@ class RenderGameMap(esper.Processor):
                 RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
 
     @staticmethod
-    def render_entity(posx, posy, glyph, fg, bg):
-        string_to_print = '[color=' + fg + '][/color][bkcolor=' + bg + '][/bkcolor]' + glyph
-        terminal.print_(x=posx, y=posy, s=string_to_print)
+    def render_entity(posx, posy, glyph, image_x_scale, image_y_scale):
+        cloak = 21
+        robe = 22
+        shoes = 23
+        weapon = 24
+
+        characterbits = [cloak, glyph, robe, shoes, weapon]
+
+        for cell in characterbits:
+            terminal.put(x=posx * image_x_scale, y=posy * image_y_scale, c=0xE300 + cell)
 
     @staticmethod
     def render_viewport(game_config):
