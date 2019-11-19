@@ -238,11 +238,28 @@ class SceneManager:
                     # right wall
                     if xx == maxX - 1 and yy > 0:
                         game_map.tiles[xx][yy].image = WALL_CENTRAL
+                    # inside top left
+                    if xx > 0 and yy > 0:
+                        if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_floor and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_wall:
+                            if game_map.tiles[xx][yy - 1].type_of_tile == tile_type_floor and game_map.tiles[xx][yy + 1].type_of_tile == tile_type_wall:
+                                game_map.tiles[xx][yy].image = WALL_TOP_LEFT
                     # inside top right
                     if xx > 0 and yy > 0:
                         if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_wall and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_floor:
                             if game_map.tiles[xx][yy - 1].type_of_tile == tile_type_floor and game_map.tiles[xx][yy + 1].type_of_tile == tile_type_wall:
                                 game_map.tiles[xx][yy].image = WALL_TOP_RIGHT
+
+                    # inside bottom left
+                    if xx > 0 and yy > 0:
+                        if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_floor and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_wall:
+                            if game_map.tiles[xx][yy - 1].type_of_tile == tile_type_wall and game_map.tiles[xx][yy + 1].type_of_tile == tile_type_floor:
+                                game_map.tiles[xx][yy].image = WALL_BOTTOM_LEFT
+                    # inside bottom right
+                    if xx > 0 and yy > 0:
+                        if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_wall and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_floor:
+                            if game_map.tiles[xx][yy - 1].type_of_tile == tile_type_wall and game_map.tiles[xx][yy + 1].type_of_tile == tile_type_floor:
+                                game_map.tiles[xx][yy].image = WALL_BOTTOM_RIGHT
+
                     # |- junction
                     if 0 < yy < maxY:
                         if xx < maxX - 1:

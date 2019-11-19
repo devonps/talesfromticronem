@@ -1,67 +1,69 @@
-15:48:07.500 [info] OpenGL: maximum texture size is 16384x16384
-15:48:07.501 [info] OpenGL: GPU supports NPOTD textures
-15:48:07.504 [debug] Group "window":
-15:48:07.504 [debug] * "icon" = "default"
-15:48:07.504 [debug] * "size" = "80x25"
-15:48:07.504 [debug] Group "font":
-15:48:07.504 [debug] * "_" = "default"
-15:48:07.504 [info] New font 'main' -> index 0
-15:48:07.504 [debug] Requested resource "default" with possible prefix "tileset-"
-15:48:07.504 [debug] Resource "tileset-default" is built-in
-15:48:07.504 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-15:48:07.505 [debug] Requested resource "tileset-default" with possible prefix "codepage-"
-15:48:07.505 [debug] Resource "codepage-tileset-default" is built-in
-15:48:07.505 [debug] Custom codepage file encoding detected to be ASCII UTF-8
-15:48:07.507 [trace] Loaded PNG image, 256x320
-15:48:07.507 [debug] Tileset has 32x20 tiles
-15:48:07.508 [debug] Group "terminal":
-15:48:07.508 [debug] * "encoding" = "utf8"
-15:48:07.508 [debug] Group "input":
-15:48:07.508 [debug] * "filter" = "keyboard"
-15:48:07.508 [debug] SetOptions: new cell size is 8x16
-15:48:07.508 [debug] SetOptions: new window size is 80x25
-15:48:07.509 [info] Applying options from configuration file, if any
-15:48:07.509 [info] Trying to set "U+E300._='static/assets/tilesets/tiles.png';U+E300.align='center';U+E300.size='32x32';"
-15:48:07.510 [debug] Group "U+E300":
-15:48:07.510 [debug] * "_" = "static/assets/tilesets/tiles.png"
-15:48:07.510 [debug] * "align" = "center"
-15:48:07.510 [debug] * "size" = "32x32"
-15:48:07.510 [debug] Requested resource "static/assets/tilesets/tiles.png" with possible prefix "tileset-"
-15:48:07.510 [debug] Loaded resource from 'static/assets/tilesets/tiles.png' (16566 bytes)
-15:48:07.510 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-15:48:07.513 [trace] Loaded PNG image, 320x96
-15:48:07.514 [debug] Tileset has 10x3 tiles
-15:48:07.514 [info] Trying to set "font._='static/assets/fonts/Kaishaku-16x16.png';font.codepage='437';font.size='16x16';"
-15:48:07.515 [debug] Group "font":
-15:48:07.515 [debug] * "_" = "static/assets/fonts/Kaishaku-16x16.png"
-15:48:07.515 [debug] * "codepage" = "437"
-15:48:07.515 [debug] * "size" = "16x16"
-15:48:07.515 [debug] Requested resource "static/assets/fonts/Kaishaku-16x16.png" with possible prefix "tileset-"
-15:48:07.515 [debug] Loaded resource from 'static/assets/fonts/Kaishaku-16x16.png' (4078 bytes)
-15:48:07.515 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-15:48:07.515 [debug] Requested resource "437" with possible prefix "codepage-"
-15:48:07.515 [debug] Resource "codepage-437" is built-in
-15:48:07.515 [debug] Custom codepage file encoding detected to be ASCII UTF-8
-15:48:07.517 [trace] Loaded PNG image, 256x256
-15:48:07.518 [debug] Tileset has 16x16 tiles
-15:48:07.518 [debug] SetOptions: new cell size is 16x16
-15:48:07.519 [info] Trying to set "input.filter='keyboard+, mouse+';input.precise-mouse='true';"
-15:48:07.519 [debug] Group "input":
-15:48:07.519 [debug] * "filter" = "keyboard+, mouse+"
-15:48:07.519 [debug] * "precise-mouse" = "true"
-15:48:07.520 [info] Trying to set "log.file='bt.log';log.level='trace';"
-15:48:07.520 [debug] Group "log":
-15:48:07.520 [debug] * "file" = "bt.log"
-15:48:07.520 [debug] * "level" = "trace"
-15:48:07.520 [info] Trying to set "window.cellsize='auto';window.resizeable='false';window.size='110x60';window.title='Tales from Ticronem';"
-15:48:07.520 [debug] Group "window":
-15:48:07.520 [debug] * "cellsize" = "auto"
-15:48:07.521 [debug] * "resizeable" = "false"
-15:48:07.521 [debug] * "size" = "110x60"
-15:48:07.521 [debug] * "title" = "Tales from Ticronem"
-15:48:07.522 [debug] SetOptions: new window size is 110x60
-15:48:07.531 [info] Applying palette from configuration file
-15:48:07.532 [info] Terminal initialization complete
-15:48:07.532 [info] Trying to set "terminal.encoding-affects-put=false"
-15:48:07.532 [debug] Group "terminal":
-15:48:07.532 [debug] * "encoding-affects-put" = "false"
+17:39:08.148 [info] OpenGL: maximum texture size is 16384x16384
+17:39:08.149 [info] OpenGL: GPU supports NPOTD textures
+17:39:08.152 [debug] Group "window":
+17:39:08.153 [debug] * "icon" = "default"
+17:39:08.153 [debug] * "size" = "80x25"
+17:39:08.153 [debug] Group "font":
+17:39:08.154 [debug] * "_" = "default"
+17:39:08.154 [info] New font 'main' -> index 0
+17:39:08.154 [debug] Requested resource "default" with possible prefix "tileset-"
+17:39:08.154 [debug] Resource "tileset-default" is built-in
+17:39:08.154 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+17:39:08.154 [debug] Requested resource "tileset-default" with possible prefix "codepage-"
+17:39:08.154 [debug] Resource "codepage-tileset-default" is built-in
+17:39:08.154 [debug] Custom codepage file encoding detected to be ASCII UTF-8
+17:39:08.156 [trace] Loaded PNG image, 256x320
+17:39:08.156 [debug] Tileset has 32x20 tiles
+17:39:08.157 [debug] Group "terminal":
+17:39:08.157 [debug] * "encoding" = "utf8"
+17:39:08.158 [debug] Group "input":
+17:39:08.158 [debug] * "filter" = "keyboard"
+17:39:08.158 [debug] SetOptions: new cell size is 8x16
+17:39:08.158 [debug] SetOptions: new window size is 80x25
+17:39:08.159 [info] Applying options from configuration file, if any
+17:39:08.159 [info] Trying to set "U+E300._='static/assets/tilesets/tiles.png';U+E300.align='center';U+E300.size='32x32';"
+17:39:08.159 [debug] Group "U+E300":
+17:39:08.160 [debug] * "_" = "static/assets/tilesets/tiles.png"
+17:39:08.160 [debug] * "align" = "center"
+17:39:08.160 [debug] * "size" = "32x32"
+17:39:08.160 [debug] Requested resource "static/assets/tilesets/tiles.png" with possible prefix "tileset-"
+17:39:08.160 [debug] Loaded resource from 'static/assets/tilesets/tiles.png' (17340 bytes)
+17:39:08.160 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+17:39:08.163 [trace] Loaded PNG image, 320x96
+17:39:08.163 [debug] Tileset has 10x3 tiles
+17:39:08.163 [info] Trying to set "font._='static/assets/fonts/Kaishaku-16x16.png';font.codepage='437';font.size='16x16';"
+17:39:08.163 [debug] Group "font":
+17:39:08.163 [debug] * "_" = "static/assets/fonts/Kaishaku-16x16.png"
+17:39:08.164 [debug] * "codepage" = "437"
+17:39:08.164 [debug] * "size" = "16x16"
+17:39:08.164 [debug] Requested resource "static/assets/fonts/Kaishaku-16x16.png" with possible prefix "tileset-"
+17:39:08.164 [debug] Loaded resource from 'static/assets/fonts/Kaishaku-16x16.png' (4078 bytes)
+17:39:08.164 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+17:39:08.164 [debug] Requested resource "437" with possible prefix "codepage-"
+17:39:08.164 [debug] Resource "codepage-437" is built-in
+17:39:08.164 [debug] Custom codepage file encoding detected to be ASCII UTF-8
+17:39:08.166 [trace] Loaded PNG image, 256x256
+17:39:08.167 [debug] Tileset has 16x16 tiles
+17:39:08.168 [debug] SetOptions: new cell size is 16x16
+17:39:08.170 [info] Trying to set "input.filter='keyboard+, mouse+';input.precise-mouse='true';"
+17:39:08.170 [debug] Group "input":
+17:39:08.170 [debug] * "filter" = "keyboard+, mouse+"
+17:39:08.171 [debug] * "precise-mouse" = "true"
+17:39:08.171 [info] Trying to set "log.file='bt.log';log.level='trace';"
+17:39:08.171 [debug] Group "log":
+17:39:08.171 [debug] * "file" = "bt.log"
+17:39:08.171 [debug] * "level" = "trace"
+17:39:08.171 [info] Trying to set "window.cellsize='auto';window.resizeable='false';window.size='110x60';window.title='Tales from Ticronem';"
+17:39:08.171 [debug] Group "window":
+17:39:08.172 [debug] * "cellsize" = "auto"
+17:39:08.172 [debug] * "resizeable" = "false"
+17:39:08.172 [debug] * "size" = "110x60"
+17:39:08.172 [debug] * "title" = "Tales from Ticronem"
+17:39:08.173 [debug] SetOptions: new window size is 110x60
+17:39:08.180 [info] Applying palette from configuration file
+17:39:08.180 [info] Terminal initialization complete
+17:39:08.180 [info] Trying to set "terminal.encoding-affects-put=false"
+17:39:08.181 [debug] Group "terminal":
+17:39:08.181 [debug] * "encoding-affects-put" = "false"
+17:39:08.190 [error] terminal_open: BearLibTerminal instance already initialized
+17:39:11.357 [trace] grow 256x256 -> 256x512
