@@ -24,6 +24,7 @@ def game_loop(gameworld):
     game_config = configUtilities.load_config()
     player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
+    terminal.composition(terminal.TK_ON)
     terminal.clear()
 
     setup_gameworld(game_config)
@@ -107,6 +108,7 @@ def game_replay(con, game_config):
 def main():
 
     # LoadPrefab.loadPrefab()
+    terminal.open()
     newGame.new_game()
 
 

@@ -18,18 +18,19 @@ class RenderGameMap(esper.Processor):
         self.gameworld = gameworld
 
     def process(self, game_config):
+        terminal.clear()
         # GUI viewport and message box borders
-        self.render_viewport(game_config)
+        # self.render_viewport(game_config)
         # self.render_message_box(self.con, game_config, self.gameworld)
-        self.render_spell_bar(self)
-        self.render_player_status_effects(self, game_config)
+        # self.render_spell_bar(self)
+        # self.render_player_status_effects(self, game_config)
         # self.render_player_vitals(self, self.con, game_config)
 
         # render the game map
         self.render_map(self.gameworld, game_config, self.game_map)
 
         # draw the entities
-        self.render_items(game_config, self.gameworld)
+        # self.render_items(game_config, self.gameworld)
         self.render_entities(game_config, self.gameworld)
 
         # blit the console
@@ -40,6 +41,8 @@ class RenderGameMap(esper.Processor):
 
         map_view_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
         map_view_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Xscale')
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
         tile_type_wall = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='TILE_TYPE_WALL')
         tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='TILE_TYPE_FLOOR')
         tile_type_door = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='TILE_TYPE_DOOR')
@@ -61,52 +64,37 @@ class RenderGameMap(esper.Processor):
             # dng_light_ground = colourUtilities.colors[dfl]
             # dng_dark_ground = colourUtilities.colors[dfd]
             # dng_dark_wall = colourUtilities.colors[dwd]
-
-            for y in range(game_map.height):
-                for x in range(game_map.width):
+            for y in range(game_map.height - 1):
+                for x in range(game_map.width - 1):
                     isVisible = True
                     draw_pos_x = map_view_across + x
                     draw_pos_y = map_view_down + y
                     tile = game_map.tiles[x][y].type_of_tile
+                    image = game_map.tiles[x][y].image
+                    terminal.put(x=draw_pos_x * image_x_scale, y=draw_pos_y * image_y_scale, c=0xE300 + image)
                     if isVisible:
-
-                        if tile == 32:
-                            terminal.put(x=draw_pos_x, y=draw_pos_y, c=dng_floor)
-                        elif tile == 43:
-                            terminal.put(x=draw_pos_x, y=draw_pos_y, c=dng_door)
-                        else:
-                            terminal.put(x=draw_pos_x, y=draw_pos_y, c=tile)
-
-
-                        # if tile == tile_type_wall:
-                        #     tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_wall, dng_wall_light, bgnd)
-                        # elif tile == tile_type_floor:
-                        #     tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_light_ground, bgnd)
-                        # elif tile == tile_type_door:
-                        #     tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_door, dng_light_ground, bgnd)
-                        # elif tile == tile_type_corridor:
-                        #     tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_light_ground, bgnd)
-
-                    # else:
-                    #     if tile == tile_type_wall:
-                    #         tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_wall, dng_dark_wall, bgnd)
-                    #     elif tile == tile_type_floor:
-                    #         tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_dark_ground, bgnd)
-                    #     elif tile == tile_type_door:
-                    #         tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_door, dng_dark_ground, bgnd)
-                    #     elif tile == tile_type_corridor:
-                    #         tcod.console_put_char_ex(console, draw_pos_x, draw_pos_y, dng_floor, dng_dark_ground, bgnd)
+                        pass
+                        # terminal.put(x=draw_pos_x * image_x_scale, y=draw_pos_y * image_y_scale, c=0xE300 + image)
+                        # if tile == 32:
+                        #     # terminal.put(x=draw_pos_x, y=draw_pos_y, c=dng_floor)
+                        #     terminal.put(x=draw_pos_x * image_x_scale, y=draw_pos_y * image_y_scale, c=0xE300 + image)
+                        # # elif tile == 43:
+                        # #     terminal.put(x=draw_pos_x, y=draw_pos_y, c=dng_door)
+                        # else:
+                        #     # terminal.put(x=draw_pos_x, y=draw_pos_y, c=tile)
+                        #     terminal.put(x=draw_pos_x * image_x_scale, y=draw_pos_y * image_y_scale, c=0xE300 + 9)
 
     @staticmethod
     def render_entities(game_config, gameworld):
         px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
         py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
-
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Xscale')
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
         for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
             if rend.isVisible:
                 draw_pos_x = px + pos.x
                 draw_pos_y = py + pos.y
-                RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.foreground, desc.background)
+                RenderGameMap.render_entity(draw_pos_x, draw_pos_y, 11, image_x_scale, image_y_scale)
 
     @staticmethod
     def render_items(game_config, gameworld):
@@ -120,9 +108,16 @@ class RenderGameMap(esper.Processor):
                 RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
 
     @staticmethod
-    def render_entity(posx, posy, glyph, fg, bg):
-        string_to_print = '[color=' + fg + '][/color][bkcolor=' + bg + '][/bkcolor]' + glyph
-        terminal.print_(x=posx, y=posy, s=string_to_print)
+    def render_entity(posx, posy, glyph, image_x_scale, image_y_scale):
+        cloak = 21
+        robe = 22
+        shoes = 23
+        weapon = 24
+
+        characterbits = [cloak, glyph, robe, shoes, weapon]
+
+        for cell in characterbits:
+            terminal.put(x=posx * image_x_scale, y=posy * image_y_scale, c=0xE300 + cell)
 
     @staticmethod
     def render_viewport(game_config):
