@@ -1,4 +1,4 @@
-import tcod
+from utilities import colourUtilities
 
 
 class Name:
@@ -8,13 +8,32 @@ class Name:
 
 
 class Describable:
-    def __init__(self, description='undefined', glyph='@', foreground=tcod.orange, background=tcod.black, personality='Unpredictable', gender='undefined'):
+    def __init__(self, description='undefined', glyph='@', foreground=colourUtilities.get('ORANGE'), background=colourUtilities.get('BLACK'),
+                 personality='Unpredictable', gender='undefined'):
         self.description = description
         self.glyph = glyph
         self.foreground = foreground
         self.background = background
         self.personality_title = personality
         self.gender = gender
+
+
+# This class holds the image id that correspond to what the mobile is wearing or wielding
+# Some of these settings are exclusive to each other
+# For example: front is designed to hold items such as robes and cannot be used with chest or legs
+#
+class ClothingImage:
+    def __init__(self, head=0, back=0, front=0, feet=0, weapon=0, hands=0, shield=0, legs=0, chest=0, shoulders=0):
+        self.head = head
+        self.back = back
+        self.front = front
+        self.feet = feet
+        self.weapon = weapon
+        self.hands = hands
+        self.shield = shield
+        self.legs = legs
+        self.chest = chest
+        self.shoulders = shoulders
 
 
 class Personality:
@@ -77,6 +96,7 @@ class Armour:
     from there I can get the individual components I need such as...
     defense.value
     """
+
     def __init__(self, head=0, chest=0, legs=0, feet=0, hands=0):
         self.head = head
         self.chest = chest
@@ -133,6 +153,7 @@ class PrimaryAttributes:
     toughness increases armour
     vitality increases health
     """
+
     def __init__(self, power=37, precision=37, toughness=37, vitality=37):
         self.power = power
         self.precision = precision
@@ -148,6 +169,7 @@ class SecondaryAttributes:
     ferocity increases critical damage
     healing power increases outgoing healiing, including self heals
     """
+
     def __init__(self, concentration=0, conditionDamage=0, expertise=0, ferocity=0, healingPower=0):
         self.concentration = concentration
         self.conditionDamage = conditionDamage
@@ -170,7 +192,9 @@ class DerivedAttributes:
     Health: The character's maximum health.
         Base value is determined by profession and increases with level. Increased by Vitality (1 Vitality = 10 Health).
     """
-    def __init__(self, armour=0, boonDuration=0, criticalChance=0, CriticalDamage=0, conditionDuration=0, maximumHealth=0):
+
+    def __init__(self, armour=0, boonDuration=0, criticalChance=0, CriticalDamage=0, conditionDuration=0,
+                 maximumHealth=0):
         self.armour = armour
         self.boonDuration = boonDuration
         self.criticalChance = criticalChance
