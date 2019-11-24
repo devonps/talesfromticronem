@@ -1,0 +1,548 @@
+{
+  "spells": [
+    {
+      "name": "spatial surge",
+      "description": "Shoot a beam at your foe. The farther away they are, the more damage you deal.",
+      "short_description": "Shoot a beam at your foe. The farther away they are, the more damage you deal.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "sword",
+      "weapon_slot": "1",
+      "max_targets": "3",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.005",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "mirror blade",
+      "description": "Throw an illusionary sword that bounces between targets, damaging foes and giving might to allies. It creates a clone at its first target.",
+      "short_description": "Throw a sword, damage multiple foes and create a clone.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "sword",
+      "weapon_slot": "2",
+      "max_targets": "4",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.0",
+      "effects": [
+        {
+          "name": "might",
+          "value": "3"
+        },
+        {
+          "name": "vulnerability",
+          "value": "3"
+        },
+         {
+          "name": "clone",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "mind stab",
+      "description": "Thrust your sword into the ground, damaging foes and removing 1 boon.",
+      "short_description": "Thrust your sword into the ground, damaging foes and removing 1 boon.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "sword",
+      "weapon_slot": "3",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "1.0",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Phantasmal Berserker",
+      "description": "Throw an illusionary sword that inflicts vulnerability in a line and then returns to you. Create a phantasm that uses a whirling attack to damage and cripple foes.",
+      "short_description": "Throw your sword, inflict vulnerability, and summon a phantasm.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "sword",
+      "weapon_slot": "4",
+      "max_targets": "3",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.92",
+      "effects": [
+        {
+          "name": "cripple",
+          "value": "4"
+        },
+        {
+          "name": "vulnerability",
+          "value": "3"
+        }
+        ]
+    },
+    {
+      "name": "Illusionary Wave",
+      "description": "Push back all foes in front of you with a wave of magical energy.",
+      "short_description": "Push back all foes in front of you with a wave of magical energy.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "sword",
+      "weapon_slot": "5",
+      "max_targets": "5",
+      "ground_targeted": "True",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.3",
+      "effects": [
+        {
+          "name": "knockback",
+          "value": "3"
+        }
+        ]
+    },
+    {
+      "name": "winds of chaos",
+      "description": "Bounce an orb of energy between foes and allies that applies random boons to allies and random conditions to foes.",
+      "short_description": "Bounce an orb of energy between foes and allies that applies random boons to allies and random conditions to foes.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "staff",
+      "weapon_slot": "1",
+      "max_targets": "3",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.3",
+      "effects": [
+        {
+          "name": "boon",
+          "value": "99"
+        },
+        {
+          "name": "condition",
+          "value": "99"
+        }
+        ]
+    },
+    {
+      "name": "phase retreat",
+      "description": "Teleport away from your target, summoning a clone that casts Winds of Chaos.",
+      "short_description": "Teleport away from your target, summoning a clone that casts Winds of Chaos.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "staff",
+      "weapon_slot": "2",
+      "max_targets": "0",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0",
+      "effects": [
+        {
+          "name": "teleport",
+          "value": "5"
+        },
+        {
+          "name": "clone",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Phantasmal Warlock",
+      "description": "Summon two illusions that deal damage and inflict vulnerability.",
+      "short_description": "Summon two illusions that deal damage and inflict vulnerability.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "staff",
+      "weapon_slot": "3",
+      "max_targets": "0",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0",
+      "effects": [
+        {
+          "name": "phantasm",
+          "value": "1"
+        },
+        {
+          "name": "phantasm",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "chaos armour",
+      "description": "Apply a random condition to nearby foes and gain chaos armor. Chaos armor gives you random boons and your foe random conditions whenever you are struck.",
+      "short_description": "Apply a random condition to nearby foes and gain chaos armor. Chaos armor gives you random boons and your foe random conditions whenever you are struck.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "staff",
+      "weapon_slot": "4",
+      "max_targets": "0",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0",
+      "effects": [
+        {
+          "name": "boon",
+          "value": "99"
+        },
+        {
+          "name": "condition",
+          "value": "99"
+        }
+        ]
+    },
+    {
+      "name": "chaos storm",
+      "description": "Create a magical storm at the target location that applies random conditions to foes and boons to allies.",
+      "short_description": "Create a magical storm at the target location that applies random conditions to foes and boons to allies.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "staff",
+      "weapon_slot": "5",
+      "max_targets": "0",
+      "ground_targeted": "True",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0",
+      "effects": [
+        {
+          "name": "boon",
+          "value": "99"
+        },
+        {
+          "name": "condition",
+          "value": "99"
+        }
+        ]
+    },
+    {
+      "name": "Temporal Curtain",
+      "description": "Create a wall of energy that grants swiftness to allies who cross it and cripples foes who touch it.",
+      "short_description": "Create a wall of energy that grants swiftness to allies who cross it and cripples foes who touch it.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "scepter",
+      "weapon_slot": "1",
+      "max_targets": "0",
+      "ground_targeted": "True",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0",
+      "effects": [
+        {
+          "name": "swiftness",
+          "value": "1"
+        },
+        {
+          "name": "cripple",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "into the void",
+      "description": "Shatter your Temporal Curtain, pulling nearby enemies toward its position.",
+      "short_description": "Shatter your Temporal Curtain, pulling nearby enemies toward its position.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "scepter",
+      "weapon_slot": "2",
+      "max_targets": "0",
+      "ground_targeted": "True",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0",
+      "effects": [
+        {
+          "name": "pullenemies",
+          "value": ""
+        },
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Deja Vu",
+      "description": "Disappear in a cloud of smoke, blinding nearby foes and losing conditions.",
+      "short_description": "Disappear in a cloud of smoke, blinding nearby foes and losing conditions.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "scepter",
+      "weapon_slot": "3",
+      "max_targets": "0",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0",
+      "effects": [
+        {
+          "name": "blind",
+          "value": "1"
+        },
+        {
+          "name": "removeconditions",
+          "value": "99"
+        }
+        ]
+    },
+    {
+      "name": "echo of memory",
+      "description": "Block incoming attacks for a short duration. If this skill fully channels, summon a phantasm that slows enemies and grants protection to allies",
+      "short_description": "Block incoming attacks for a short duration. If this skill fully channels, summon a phantasm that slows enemies and grants protection to allies",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "rod",
+      "weapon_slot": "4",
+      "max_targets": "0",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0",
+      "effects": [
+        {
+          "name": "blockable",
+          "value": "2"
+        },
+        {
+          "name": "phantasm",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Tides of Time",
+      "description": "Launch a wave of temporal energy that damages and stops enemies it passes through and buffs allies.",
+      "short_description": "Launch a wave of temporal energy that damages and stops enemies it passes through and buffs allies.",
+      "type_of_spell": "combat",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "rod",
+      "weapon_slot": "5",
+      "max_targets": "0",
+      "ground_targeted": "True",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0",
+      "effects": [
+        {
+          "name": "blockable",
+          "value": "2"
+        },
+        {
+          "name": "quickness",
+          "value": "2"
+        }
+        ]
+    },
+    {
+      "name": "Well of Eternity",
+      "description": "Create a well that rewinds time, removing conditions from allies. When it expires, the well heals all allies in the area.",
+      "short_description": "Create a well that rewinds time, removing conditions from allies. When it expires, the well heals all allies in the area.",
+      "type_of_spell": "heal",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_touch",
+      "heal_duration": "instant",
+      "heal_coef": "0.3",
+      "effects": [
+        {
+          "name": "gain_health",
+          "value": "3230"
+        },
+        {
+          "name": "condiremoval",
+          "value": "99"
+        }
+      ]
+    },
+    {
+      "name": "Well of Action",
+      "description": "Create a well of delayed time, damaging and slowing foes. When the well expires, time snaps back, granting quickness to allies",
+      "short_description": "Recover health over time.",
+      "type_of_spell": "utility",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "8",
+      "spell_range": "spell_dist_touch",
+      "item_type": "jewellery",
+      "location": "earring1",
+      "effects": [
+        {
+          "name": "slow",
+          "value": "1"
+        },
+        {
+          "name": "quickness",
+          "value": "1"
+        },
+        {
+          "name": "damage",
+          "value": "0.7"
+        }
+      ]
+    },
+    {
+      "name": "Well of Calamity",
+      "description": "Create a well that rends time,damaging,weakening, and crippling foes in the area. When the final pulse of Well of Calamity triggers, it deals massive damage to foes in the area.",
+      "short_description": "Create a well that rends time,damaging,weakening, and crippling foes in the area",
+      "type_of_spell": "utility",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "8",
+      "spell_range": "spell_dist_touch",
+      "item_type": "jewellery",
+      "location": "earring2",
+      "effects": [
+        {
+          "name": "weakness",
+          "value": "1"
+        },
+        {
+          "name": "cripple",
+          "value": "1"
+        },
+        {
+          "name": "damage",
+          "value": "3.0"
+        }
+      ]
+    },
+    {
+      "name": "Well of Precognition",
+      "description": "Create a well that gives allies the ability to see the future, allowing them to block incoming attacks. When the well ends, allies within the well regain endurance.",
+      "short_description": "Create a well that gives allies the ability to see the future, allowing them to block incoming attacks. When the well ends, allies within the well regain endurance.",
+      "type_of_spell": "utility",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "8",
+      "spell_range": "spell_dist_touch",
+      "item_type": "jewellery",
+      "location": "pendant",
+      "effects": [
+        {
+          "name": "aegis",
+          "value": "1"
+        },
+        {
+          "name": "stability",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "name": "Gravity Well",
+      "description": "Create a powerful well that warps space in an area, knocking down, floating, and pulling foes caught in its event horizon.",
+      "short_description": "Create a powerful well that warps space in an area, knocking down, floating, and pulling foes caught in its event horizon.",
+      "type_of_spell": "utility",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "8",
+      "spell_range": "spell_dist_touch",
+      "item_type": "jewellery",
+      "location": "ring1",
+      "effects": [
+        {
+          "name": "pull",
+          "value": "1"
+        },
+        {
+          "name": "knockdown",
+          "value": "1"
+        },
+        {
+          "name": "damage",
+          "value": "0.7"
+        }
+      ]
+    },
+    {
+      "name": "Well of Recall",
+      "description": "Creates a well that steals memories from foes, damaging and chilling them",
+      "short_description": "Creates a well that steals memories from foes, damaging and chilling them",
+      "type_of_spell": "utility",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "8",
+      "spell_range": "spell_dist_touch",
+      "item_type": "jewellery",
+      "location": "ring2",
+      "effects": [
+        {
+          "name": "chill",
+          "value": "1"
+        },
+        {
+          "name": "damage",
+          "value": "0.7"
+        }
+      ]
+    }
+    ]
+}
