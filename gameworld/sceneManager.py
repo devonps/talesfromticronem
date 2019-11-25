@@ -9,6 +9,7 @@ from loguru import logger
 from utilities.externalfileutilities import Externalfiles
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
+from mapRelated.camera import Camera
 
 
 class SceneManager:
@@ -113,7 +114,8 @@ class SceneManager:
                         pass
 
         if currentscene == 1:
-            renderGameMapProcessor = RenderGameMap(game_map=game_map, gameworld=gameworld)
+            camera = Camera(width=20, height=20)
+            renderGameMapProcessor = RenderGameMap(game_map=game_map, gameworld=gameworld, camera=camera)
             move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
             update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
             gameworld.add_processor(renderGameMapProcessor)

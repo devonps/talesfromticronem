@@ -102,9 +102,9 @@ class MobileUtilities(numbers.Real):
         return player_velocity_component.dx, player_velocity_component.dy
 
     @staticmethod
-    def set_mobile_has_moved(gameworld, mobile):
+    def set_mobile_has_moved(gameworld, mobile, status):
         position_component = gameworld.component_for_entity(mobile, mobiles.Position)
-        position_component.hasMoved = True
+        position_component.hasMoved = status
 
     @staticmethod
     def get_mobile_current_location(gameworld, mobile):

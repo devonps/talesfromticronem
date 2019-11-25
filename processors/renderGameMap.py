@@ -5,29 +5,42 @@ from bearlibterminal import terminal
 
 from components import mobiles, items
 from utilities import configUtilities, colourUtilities
-from utilities.display import display_coloured_box, draw_simple_frame
+from utilities.display import draw_simple_frame
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 from loguru import logger
+from mapRelated.gameMap import RenderLayer
 
 
 class RenderGameMap(esper.Processor):
-    def __init__(self, game_map, gameworld):
+    def __init__(self, game_map, gameworld, camera):
         self.game_map = game_map
         self.gameworld = gameworld
+        self.camera = camera
 
     def process(self, game_config):
+        """
+        Rendering during actual gameplay
+
+        Render Order:
+        1. game map                 dungeon floors, walls, furniture, spell effects??
+        2. Entities                 player, enemies, items, etc
+        3. HUD                      hp, mana, f1 bars, hotkeys, etc
+        4. Spellbar                 spell bar
+        5. Player status effects    effects player is suffering from
+
+        """
         terminal.clear()
         # GUI viewport and message box borders
         # self.render_viewport(game_config)
         # self.render_message_box(self.con, game_config, self.gameworld)
-        # self.render_spell_bar(self)
+        self.render_spell_bar(self)
         # self.render_player_status_effects(self, game_config)
         # self.render_player_vitals(self, self.con, game_config)
 
         # render the game map
-        self.render_map(self.gameworld, game_config, self.game_map)
+        self.render_map(self.gameworld, game_config, self.game_map, self.camera)
 
         # draw the entities
         # self.render_items(game_config, self.gameworld)
@@ -37,74 +50,56 @@ class RenderGameMap(esper.Processor):
         terminal.refresh()
 
     @staticmethod
-    def render_map(gameworld, game_config, game_map):
+    def render_map(gameworld, game_config, game_map, camera):
 
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Xscale')
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
+
+        offset = 1
+
+        player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
+        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        # where is the player in terms of the game map
+        playerx, playery = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=player_entity)
+
+        camera_moved = camera.move_camera(playerx, playery, game_map)
+        if camera_moved:
+            # this is a hard hack - but it works
+            # need to look at erasing
+            terminal.clear()
+        logger.info('camera newx/newy {}/{}', camera.topleft_x, camera.topleft_y)
+        # draw what the camera can see
+        for y in range(camera.height):
+            for x in range(camera.width):
+                map_x, map_y = camera.topleft_x + x, camera.topleft_y + y
+                if (0 <= map_x < game_map.width) and (0 <= map_y < game_map.height):
+                    image = game_map.tiles[map_x][map_y].image
+                    tile = game_map.tiles[map_x][map_y].type_of_tile
+                    if 0 < tile < 11:
+                        terminal.put(x=(map_x + offset) * image_x_scale, y=(map_y + offset) * image_y_scale, c=0xE300 + image)
+
+    @staticmethod
+    def render_entities(game_config, gameworld):
         map_view_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
         map_view_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
         image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Xscale')
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
-        tile_type_wall = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='TILE_TYPE_WALL')
-        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='TILE_TYPE_FLOOR')
-        tile_type_door = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='TILE_TYPE_DOOR')
-        tile_type_corridor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='TILE_TYPE_CORRIDOR')
-        dng_wall = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_WALL')
-        dng_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_FLOOR')
-        dng_door = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='DNG_DOOR')
-        dwl = configUtilities.get_config_value_as_string(configfile=game_config, section='colours', parameter='DUNGEON_WALL_LIGHT')
-        dwd = configUtilities.get_config_value_as_string(configfile=game_config, section='colours', parameter='DUNGEON_WALL_DARK')
-        dfl = configUtilities.get_config_value_as_string(configfile=game_config, section='colours', parameter='DUNGEON_FLOOR_LIGHT')
-        dfd = configUtilities.get_config_value_as_string(configfile=game_config, section='colours', parameter='DUNGEON_FLOOR_DARK')
 
-        player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
-
-        if player_has_moved:
-            bgnd = colourUtilities.get('BLACK')
-
-            # dng_wall_light = colourUtilities.get(colors[dwl])
-            # dng_light_ground = colourUtilities.colors[dfl]
-            # dng_dark_ground = colourUtilities.colors[dfd]
-            # dng_dark_wall = colourUtilities.colors[dwd]
-            for y in range(game_map.height - 1):
-                for x in range(game_map.width - 1):
-                    isVisible = True
-                    draw_pos_x = map_view_across + x
-                    draw_pos_y = map_view_down + y
-                    tile = game_map.tiles[x][y].type_of_tile
-                    image = game_map.tiles[x][y].image
-                    terminal.put(x=draw_pos_x * image_x_scale, y=draw_pos_y * image_y_scale, c=0xE300 + image)
-                    if isVisible:
-                        pass
-                        # terminal.put(x=draw_pos_x * image_x_scale, y=draw_pos_y * image_y_scale, c=0xE300 + image)
-                        # if tile == 32:
-                        #     # terminal.put(x=draw_pos_x, y=draw_pos_y, c=dng_floor)
-                        #     terminal.put(x=draw_pos_x * image_x_scale, y=draw_pos_y * image_y_scale, c=0xE300 + image)
-                        # # elif tile == 43:
-                        # #     terminal.put(x=draw_pos_x, y=draw_pos_y, c=dng_door)
-                        # else:
-                        #     # terminal.put(x=draw_pos_x, y=draw_pos_y, c=tile)
-                        #     terminal.put(x=draw_pos_x * image_x_scale, y=draw_pos_y * image_y_scale, c=0xE300 + 9)
-
-    @staticmethod
-    def render_entities(game_config, gameworld):
-        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
-        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
-        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Xscale')
-        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
         for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
             if rend.isVisible:
-                draw_pos_x = px + pos.x
-                draw_pos_y = py + pos.y
-                RenderGameMap.render_entity(draw_pos_x, draw_pos_y, 11, image_x_scale, image_y_scale)
+                draw_pos_x = map_view_across + pos.x
+                draw_pos_y = map_view_down + pos.y
+                RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.image, image_x_scale, image_y_scale)
 
     @staticmethod
     def render_items(game_config, gameworld):
-        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
-        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
+        map_view_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
+        map_view_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
 
         for ent, (rend, loc, desc) in gameworld.get_components(items.RenderItem, items.Location, items.Describable):
             if rend.isTrue:
-                draw_pos_x = px + loc.x
-                draw_pos_y = py + loc.y
+                draw_pos_x = map_view_across + loc.x
+                draw_pos_y = map_view_down + loc.y
                 RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg)
 
     @staticmethod
@@ -113,7 +108,7 @@ class RenderGameMap(esper.Processor):
         robe = 22
         shoes = 23
         weapon = 24
-
+        logger.info('at map x/y {}/{}', posx, posy)
         characterbits = [cloak, glyph, robe, shoes, weapon]
 
         for cell in characterbits:
@@ -327,6 +322,9 @@ class RenderGameMap(esper.Processor):
         spell_bar_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BOX_DEPTH')
         spell_slots = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_SLOTS')
 
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Xscale')
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
+
         player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
         weapons_list = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=player_entity)
         main_weapon = weapons_list[0]
@@ -334,38 +332,45 @@ class RenderGameMap(esper.Processor):
         both_weapon = weapons_list[2]
         slot = ['NO SPEL'] * 10
 
-        if both_weapon > 0:
-            slot[0] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=1)
-            slot[1] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=2)
-            slot[2] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=3)
-            slot[3] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=4)
-            slot[4] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=5)
+        ac = 4
+        for a in range(4):
 
-        else:
-            slot[0] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=1)
-            slot[1] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=2)
-            slot[2] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=3)
-            slot[3] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=off_weapon, slotid=4)
-            slot[4] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=off_weapon, slotid=5)
+            terminal.put(x=ac +a * image_x_scale, y=28 * image_y_scale, c=0xE400 + a)
 
-        ps = 1
-        fg = colourUtilities.get('YELLOW1')
-        bg = colourUtilities.get('GRAY')
-        for spellSlot in range(spell_slots):
-            spell_slot_posx = spell_bar_across - 1
+        terminal.put(x=37 * image_x_scale, y=28 * image_y_scale, c=0xE400 + 0)
 
-            if spellSlot < 9:
-                sp = str(ps)
-            else:
-                sp = str(ps)[-1:]
-
-            display_coloured_box(title=sp,
-                                 posx=spell_slot_posx, posy=spell_bar_down + 1,
-                                 width=spell_box_width, height=spell_bar_depth,
-                                 fg=fg, bg=bg)
-            string_to_print = '[color=' + fg + ']' + slot[spellSlot][:7]
-            terminal.print_(x=spell_slot_posx + 2, y=spell_bar_down + 3, width=spell_bar_width, height=spell_bar_depth, s=string_to_print)
-
-            spell_bar_across += spell_box_width
-            ps += 1
-            
+        # if both_weapon > 0:
+        #     slot[0] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=1)
+        #     slot[1] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=2)
+        #     slot[2] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=3)
+        #     slot[3] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=4)
+        #     slot[4] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=5)
+        #
+        # else:
+        #     slot[0] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=1)
+        #     slot[1] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=2)
+        #     slot[2] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=3)
+        #     slot[3] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=off_weapon, slotid=4)
+        #     slot[4] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=off_weapon, slotid=5)
+        #
+        # ps = 1
+        # fg = colourUtilities.get('YELLOW1')
+        # bg = colourUtilities.get('GRAY')
+        # for spellSlot in range(spell_slots):
+        #     spell_slot_posx = spell_bar_across - 1
+        #
+        #     if spellSlot < 9:
+        #         sp = str(ps)
+        #     else:
+        #         sp = str(ps)[-1:]
+        #
+        #     display_coloured_box(title=sp,
+        #                          posx=spell_slot_posx, posy=spell_bar_down + 1,
+        #                          width=spell_box_width, height=spell_bar_depth,
+        #                          fg=fg, bg=bg)
+        #     string_to_print = '[color=' + fg + ']' + slot[spellSlot][:7]
+        #     terminal.print_(x=spell_slot_posx + 2, y=spell_bar_down + 3, width=spell_bar_width, height=spell_bar_depth, s=string_to_print)
+        #
+        #     spell_bar_across += spell_box_width
+        #     ps += 1
+        #
