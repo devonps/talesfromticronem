@@ -4,6 +4,7 @@ from components import mobiles
 from mapRelated.gameMap import GameMap
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
+from loguru import logger
 
 
 class MoveEntities(esper.Processor):

@@ -32,63 +32,110 @@ class RenderGameMap(esper.Processor):
 
         """
         terminal.clear()
-        # GUI viewport and message box borders
+        # render the game map
+        self.render_map(self.gameworld, game_config, self.game_map, self.camera)
+        # draw the entities
+        # self.render_items(game_config, self.gameworld)
+        self.render_mobiles(game_config, self.gameworld)
+
+        # GUI viewport
         # self.render_viewport(game_config)
         # self.render_message_box(self.con, game_config, self.gameworld)
         self.render_spell_bar(self)
         # self.render_player_status_effects(self, game_config)
         # self.render_player_vitals(self, self.con, game_config)
 
-        # render the game map
-        self.render_map(self.gameworld, game_config, self.game_map, self.camera)
-
-        # draw the entities
-        # self.render_items(game_config, self.gameworld)
-        self.render_entities(game_config, self.gameworld)
-
         # blit the console
         terminal.refresh()
 
     @staticmethod
-    def render_map(gameworld, game_config, game_map, camera):
+    def clear_map_layer():
+        prev_layer = terminal.state(terminal.TK_LAYER)
+        terminal.layer(RenderLayer.MAP.value)
+        terminal.bkcolor('black')
+        terminal.clear_area(0, 0, terminal.state(terminal.TK_WIDTH), terminal.state(terminal.TK_HEIGHT))
 
+        terminal.layer(prev_layer)
+
+    @staticmethod
+    def render_map(gameworld, game_config, game_map, camera):
         image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Xscale')
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
-
-        offset = 1
 
         player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
-        # where is the player in terms of the game map
-        playerx, playery = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=player_entity)
 
-        camera_moved = camera.move_camera(playerx, playery, game_map)
-        if camera_moved:
-            # this is a hard hack - but it works
-            # need to look at erasing
-            terminal.clear()
-        logger.info('camera newx/newy {}/{}', camera.topleft_x, camera.topleft_y)
-        # draw what the camera can see
-        for y in range(camera.height):
-            for x in range(camera.width):
-                map_x, map_y = camera.topleft_x + x, camera.topleft_y + y
-                if (0 <= map_x < game_map.width) and (0 <= map_y < game_map.height):
-                    image = game_map.tiles[map_x][map_y].image
-                    tile = game_map.tiles[map_x][map_y].type_of_tile
-                    if 0 < tile < 11:
-                        terminal.put(x=(map_x + offset) * image_x_scale, y=(map_y + offset) * image_y_scale, c=0xE300 + image)
+        y_offset = 0
+        x_offset = 0
+
+        x_min, x_max, y_min, y_max = RenderGameMap.get_viewport_boundary(gameworld=gameworld, game_map=game_map, game_config=game_config, player_entity=player_entity)
+
+        if player_has_moved:
+            RenderGameMap.clear_map_layer()
+
+        scry = 0
+
+        for y in range(y_min, y_max):
+            scrx = 0
+            for x in range(x_min, x_max):
+                image = game_map.tiles[x][y].image
+                tile = game_map.tiles[x][y].type_of_tile
+                if tile > 0:
+                    terminal.put(x=(scrx + x_offset) * image_x_scale, y=(scry + y_offset) * image_y_scale, c=0xE300 + image)
+                scrx += 1
+            scry += 1
 
     @staticmethod
-    def render_entities(game_config, gameworld):
-        map_view_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
-        map_view_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
+    def get_viewport_boundary(gameworld, player_entity, game_config, game_map):
+
+        viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_WIDTH')
+        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_HEIGHT')
+        x_centre, y_centre = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=player_entity)
+
+        x_min = x_centre - viewport_width // 2
+        x_max = x_centre + viewport_width // 2
+
+        y_min = y_centre - viewport_height // 2
+        y_max = y_centre + viewport_height // 2
+
+        if x_min < 0:
+            x_min = 0
+        if x_max > game_map.width:
+            x_max = game_map.width
+        if x_max < viewport_width:
+            x_max = viewport_width
+
+        if y_min < 0:
+            y_min = 0
+        if y_max > game_map.height:
+            y_max = game_map.height
+        if y_max < viewport_height:
+            y_max = viewport_height
+
+        return x_min, x_max, y_min, y_max
+
+
+    @staticmethod
+    def render_mobiles(game_config, gameworld):
         image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Xscale')
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
+        viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_WIDTH')
+        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_HEIGHT')
+
+        terminal.layer(RenderLayer.ENTITIES.value)
 
         for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
             if rend.isVisible:
-                draw_pos_x = map_view_across + pos.x
-                draw_pos_y = map_view_down + pos.y
+
+                if pos.x < viewport_width // 2:
+                    draw_pos_x = pos.x
+                else:
+                    draw_pos_x = 10
+
+                if pos.y < viewport_height // 2:
+                    draw_pos_y = pos.y
+                else:
+                    draw_pos_y = 10
                 RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.image, image_x_scale, image_y_scale)
 
     @staticmethod
@@ -108,7 +155,6 @@ class RenderGameMap(esper.Processor):
         robe = 22
         shoes = 23
         weapon = 24
-        logger.info('at map x/y {}/{}', posx, posy)
         characterbits = [cloak, glyph, robe, shoes, weapon]
 
         for cell in characterbits:
@@ -337,7 +383,7 @@ class RenderGameMap(esper.Processor):
 
             terminal.put(x=ac +a * image_x_scale, y=28 * image_y_scale, c=0xE400 + a)
 
-        terminal.put(x=37 * image_x_scale, y=28 * image_y_scale, c=0xE400 + 0)
+        terminal.put(x=40 * image_x_scale, y=28 * image_y_scale, c=0xE400 + 0)
 
         # if both_weapon > 0:
         #     slot[0] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=1)

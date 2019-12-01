@@ -246,7 +246,7 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(player_entity, mobiles.DerivedAttributes())
         gameworld.add_component(player_entity, mobiles.SpellBar(entityId=0))
         gameworld.add_component(player_entity, mobiles.Race(race='', size=''))
-        gameworld.add_component(player_entity, mobiles.ClothingImage())
+        gameworld.add_component(player_entity, mobiles.ClothingImage(head=0, back=21, front=22, feet=23, weapon=24, hands=0, shield=0, legs=0, chest=0, shoulders=0))
 
         return player_entity
 

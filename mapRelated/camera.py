@@ -1,3 +1,4 @@
+from loguru import logger
 
 class Camera:
     def __init__(self, width, height, margin=1):
@@ -27,6 +28,7 @@ class Camera:
         #     new_y = game_map.height - self.height + self.margin
 
         if new_x == self.topleft_x and new_y == self.topleft_y:
+            logger.info('starting point')
             return False  # camera didn't move
 
         self.topleft_x, self.topleft_y = new_x, new_y
