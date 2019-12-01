@@ -9,6 +9,7 @@ from loguru import logger
 from utilities.externalfileutilities import Externalfiles
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
+from mapRelated.camera import Camera
 
 
 class SceneManager:
@@ -104,6 +105,7 @@ class SceneManager:
                                     game_map.tiles[posx][posy].block_sight = False
                                     playerEntity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
                                     gameworld.add_component(playerEntity, mobiles.Position(x=posx, y=posy, hasMoved=True))
+                                    logger.info('Player set by scene at x/y {}/{}', posx, posy)
                                 posx += 1
                             posy += 1
                         logger.info('Scene uses external file called {}', mapAreaFile)
@@ -113,7 +115,8 @@ class SceneManager:
                         pass
 
         if currentscene == 1:
-            renderGameMapProcessor = RenderGameMap(game_map=game_map, gameworld=gameworld)
+            camera = Camera(width=20, height=20)
+            renderGameMapProcessor = RenderGameMap(game_map=game_map, gameworld=gameworld, camera=camera)
             move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
             update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
             gameworld.add_processor(renderGameMapProcessor)
@@ -223,20 +226,25 @@ class SceneManager:
                         game_map.tiles[xx][yy].image = WALL_TOP_RIGHT
                     # bottom left
                     if xx == 0 and yy == maxY - 1:
-                        game_map.tiles[xx][yy].image = WALL_BOTTOM_LEFT
+                        game_map.tiles[xx][yy + 1].image = WALL_BOTTOM_LEFT
                     # bottom right
                     if xx == maxX - 1 and yy == maxY - 1:
-                        game_map.tiles[xx][yy].image = WALL_BOTTOM_RIGHT
-                    # left wall
-                    if xx == 0 and yy > 0:
+                        game_map.tiles[xx][yy + 1].image = WALL_BOTTOM_RIGHT
+                        logger.info('wall bottom right')
+                    # left edge wall
+                    if xx == 0 and (yy > 0 and maxY - 2):
                         if game_map.tiles[xx + 1][yy].type_of_tile == tile_type_floor:
                             game_map.tiles[xx][yy].image = WALL_CENTRAL
-                    # central wall flanked by floor both sides
-                    if xx > 0 and yy > 0:
+                    # top edge wall
+                    if xx > 0 and yy == 0:
+                        game_map.tiles[xx][yy].image = WALL_TOP
+
+                    # vertical central wall flanked by floor both sides
+                    if xx > 0 and (0 < yy < maxY):
                         if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_floor and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_floor:
                             game_map.tiles[xx][yy].image = WALL_CENTRAL
                     # right wall
-                    if xx == maxX - 1 and yy > 0:
+                    if xx == maxX - 1 and (0 < yy < maxY):
                         game_map.tiles[xx][yy].image = WALL_CENTRAL
                     # inside top left
                     if xx > 0 and yy > 0:
@@ -278,8 +286,8 @@ class SceneManager:
                             if game_map.tiles[xx][yy + 1].type_of_tile == tile_type_wall:
                                 game_map.tiles[xx][yy].image = WALL_T_JUNCTION_TOP
 
-                    # T junction upwards
-                    if xx > 0 and xx <  maxX - 1:
+                    # _|_ junction
+                    if 0 < xx < maxX - 1:
                         if 0 < yy < maxY - 1:
                             if game_map.tiles[xx - 1][yy].type_of_tile == tile_type_wall and game_map.tiles[xx + 1][yy].type_of_tile == tile_type_wall:
                                 if game_map.tiles[xx][yy - 1].type_of_tile == tile_type_wall:

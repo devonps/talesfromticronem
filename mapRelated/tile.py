@@ -18,7 +18,7 @@ class Tile:
         self.posx = 0
         self.posy = 0
         self.glyph = ''
-        self.image = 11
+        self.image = 0
 
     def does_tile_block_sight(self):
         return self.block_sight

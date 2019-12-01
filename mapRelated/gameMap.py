@@ -1,10 +1,19 @@
 import random
+from enum import Enum, auto
 
 from mapRelated.tile import Tile
 from mapRelated.rectangle import Rect
 from components import mobiles
 from loguru import logger
 from utilities import configUtilities
+
+
+class RenderLayer(Enum):
+    MAP = auto()   # dungeon floors, walls, furniture, spell effects??
+    ENTITIES = auto()  # player, enemies, items, etc
+    HUD = auto()  # hp, mana, f1 bars, hotkeys, etc
+    SPELLBAR = auto()  # spell bar
+    STATUSEFFECTS = auto()  # effects player is suffering from
 
 
 class GameMap:

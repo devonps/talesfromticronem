@@ -4,6 +4,7 @@ from components import mobiles
 from mapRelated.gameMap import GameMap
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
+from loguru import logger
 
 
 class MoveEntities(esper.Processor):
@@ -29,7 +30,7 @@ class MoveEntities(esper.Processor):
                         svy = str(vel.dy)
 
                     # position_component.hasMoved = True
-                    MobileUtilities.set_mobile_has_moved(self.gameworld, ent)
+                    MobileUtilities.set_mobile_has_moved(self.gameworld, ent, True)
                     value = 'move:' + str(ent) + ':' + svx + ':' + svy
                     ReplayGame.update_game_replay_file(game_config, value)
 

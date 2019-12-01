@@ -16,6 +16,7 @@ class Describable:
         self.background = background
         self.personality_title = personality
         self.gender = gender
+        self.image = 11
 
 
 # This class holds the image id that correspond to what the mobile is wearing or wielding
