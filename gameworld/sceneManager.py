@@ -116,7 +116,7 @@ class SceneManager:
 
         if currentscene == 1:
             camera = Camera(width=20, height=20)
-            renderGameMapProcessor = RenderGameMap(game_map=game_map, gameworld=gameworld, camera=camera)
+            renderGameMapProcessor = RenderGameMap(game_map=game_map, gameworld=gameworld)
             move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
             update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
             gameworld.add_processor(renderGameMapProcessor)
