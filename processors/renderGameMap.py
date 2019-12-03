@@ -34,11 +34,11 @@ class RenderGameMap(esper.Processor):
         self.render_mobiles(game_config, self.gameworld)
 
         # GUI viewport
-        # self.render_viewport(game_config)
+        self.render_viewport(game_config)
         # self.render_message_box(self.con, game_config, self.gameworld)
+        self.render_player_status_effects(self, game_config)
         self.render_spell_bar(self)
-        # self.render_player_status_effects(self, game_config)
-        # self.render_player_vitals(self, self.con, game_config)
+        self.render_player_vitals(game_config)
 
         # blit the console
         terminal.refresh()
@@ -63,7 +63,7 @@ class RenderGameMap(esper.Processor):
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
 
         y_offset = 0
-        x_offset = 0
+        x_offset = 1
 
         x_min, x_max, y_min, y_max = RenderGameMap.get_viewport_boundary(gameworld=gameworld, game_map=game_map,
                                                                          game_config=game_config,
@@ -176,7 +176,47 @@ class RenderGameMap(esper.Processor):
 
     @staticmethod
     def render_viewport(game_config):
-        pass
+        viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                     parameter='VIEWPORT_WIDTH')
+        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_HEIGHT')
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Xscale')
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Yscale')
+
+        prev_layer = terminal.state(terminal.TK_LAYER)
+        terminal.layer(RenderLayer.HUD.value)
+
+        # top left
+        terminal.put(x=1 * image_x_scale, y=viewport_height * image_y_scale, c=0xE700 + 0)
+
+        # left edge
+        for d in range(1, 5):
+            terminal.put(x=1 * image_x_scale, y=(viewport_height + d) * image_y_scale, c=0xE700 + 4)
+
+        # bottom left
+        terminal.put(x=1 * image_x_scale, y=(viewport_height + 5) * image_y_scale, c=0xE700 + 2)
+
+        # top right
+        terminal.put(x=(viewport_width) * image_x_scale, y=viewport_height * image_y_scale, c=0xE700 + 1)
+
+        # bottom right
+        terminal.put(x=(viewport_width) * image_x_scale, y=(viewport_height + 5) * image_y_scale, c=0xE700 + 3)
+
+        # top edge
+        for a in range(1, viewport_width):
+            terminal.put(x=a * image_x_scale, y=viewport_height * image_y_scale, c=0xE700 + 6)
+
+        # right edge
+        for d in range(1, 5):
+            terminal.put(x=viewport_width * image_x_scale, y=(viewport_height + d) * image_y_scale, c=0xE700 + 5)
+
+        # bottom edge
+        for a in range(1, viewport_width):
+            terminal.put(x=a * image_x_scale, y=(viewport_height + 5) * image_y_scale, c=0xE700 + 7)
+
+        terminal.layer(prev_layer)
 
     @staticmethod
     def render_message_box(con, game_config, gameworld):
@@ -184,8 +224,28 @@ class RenderGameMap(esper.Processor):
 
     @staticmethod
     def render_player_status_effects(self, game_config):
-        pass
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Yscale')
 
+        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_HEIGHT')
+
+        ac = 2
+        sc = 2
+        y = viewport_height
+        cnt = 0
+
+        prev_layer = terminal.state(terminal.TK_LAYER)
+        terminal.layer(RenderLayer.STATUSEFFECTS.value)
+        terminal.composition(terminal.TK_OFF)
+
+        # boons first condis next controls last
+        for a in range(30):
+            terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE600 + cnt)
+            cnt += 1
+            if cnt == 10:
+                cnt = 0
+        terminal.layer(prev_layer)
     @staticmethod
     def render_boons(self, game_config):
         pass
@@ -207,8 +267,17 @@ class RenderGameMap(esper.Processor):
         pass
 
     @staticmethod
-    def render_player_vitals(self, game_config):
-        pass
+    def render_player_vitals(game_config):
+
+        prev_layer = terminal.state(terminal.TK_LAYER)
+        terminal.layer(RenderLayer.HUD.value)
+        terminal.composition(terminal.TK_ON)
+
+        terminal.printf(53, 53, "[color=red]Health:[/color]")
+        terminal.printf(53, 54, "[color=blue]Mana:[/color]")
+        terminal.printf(53, 55, "[color=green]Power:[/color]")
+
+        terminal.layer(prev_layer)
 
     @staticmethod
     def render_health_bar(self, player_derived_attributes_component, game_config):
@@ -234,22 +303,6 @@ class RenderGameMap(esper.Processor):
     def render_spell_bar(self):
 
         game_config = configUtilities.load_config()
-
-        spell_box_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='SPELL_BOX_WIDTH')
-        spell_bar_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                       parameter='SPELL_BOX_X')
-        spell_bar_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                     parameter='SPELL_BAR_Y')
-        spell_bar_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='SPELL_BAR_WIDTH')
-        spell_bar_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='SPELL_BOX_DEPTH')
-        spell_slots = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                  parameter='SPELL_SLOTS')
-
-        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='map_Xscale')
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='map_Yscale')
 
@@ -262,14 +315,13 @@ class RenderGameMap(esper.Processor):
         off_weapon = weapons_list[1]
         both_weapon = weapons_list[2]
         slot = ['NO SPEL'] * 10
-        ac = 4
-        sc = 3
-        y = viewport_height
+        ac = 1
+        sc = 5
+        y = viewport_height + 3
 
         prev_layer = terminal.state(terminal.TK_LAYER)
         terminal.layer(RenderLayer.SPELLBAR.value)
         terminal.composition(terminal.TK_ON)
-        terminal.color_from_name('blue')
 
         # spell bar slots are drawn first
         for a in range(10):
@@ -279,39 +331,3 @@ class RenderGameMap(esper.Processor):
             terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE400 + a)
 
         terminal.layer(prev_layer)
-
-        # if both_weapon > 0:
-        #     slot[0] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=1)
-        #     slot[1] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=2)
-        #     slot[2] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=3)
-        #     slot[3] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=4)
-        #     slot[4] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=5)
-        #
-        # else:
-        #     slot[0] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=1)
-        #     slot[1] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=2)
-        #     slot[2] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=3)
-        #     slot[3] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=off_weapon, slotid=4)
-        #     slot[4] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=off_weapon, slotid=5)
-        #
-        # ps = 1
-        # fg = colourUtilities.get('YELLOW1')
-        # bg = colourUtilities.get('GRAY')
-        # for spellSlot in range(spell_slots):
-        #     spell_slot_posx = spell_bar_across - 1
-        #
-        #     if spellSlot < 9:
-        #         sp = str(ps)
-        #     else:
-        #         sp = str(ps)[-1:]
-        #
-        #     display_coloured_box(title=sp,
-        #                          posx=spell_slot_posx, posy=spell_bar_down + 1,
-        #                          width=spell_box_width, height=spell_bar_depth,
-        #                          fg=fg, bg=bg)
-        #     string_to_print = '[color=' + fg + ']' + slot[spellSlot][:7]
-        #     terminal.print_(x=spell_slot_posx + 2, y=spell_bar_down + 3, width=spell_bar_width, height=spell_bar_depth, s=string_to_print)
-        #
-        #     spell_bar_across += spell_box_width
-        #     ps += 1
-        #
