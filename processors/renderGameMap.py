@@ -93,32 +93,16 @@ class RenderGameMap(esper.Processor):
         viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='VIEWPORT_HEIGHT')
 
+        logger.info('viewport width/height {}/{}', viewport_width, viewport_height)
+
         map_x, map_y = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=player_entity)
         logger.info('player map pos x/y {}/{}', map_x, map_y)
 
-        if map_x <= (viewport_width // 2):
-            viewport_x_min = 0
-            viewport_x_max = viewport_width
-        else:
-            viewport_x_min = map_x - (viewport_width // 2)
-            viewport_x_max = map_x + (viewport_width // 2)
+        viewport_x_min = 0
+        viewport_x_max = viewport_width
 
-        if map_y <= (viewport_height // 2):
-            viewport_y_min = 0
-            viewport_y_max = viewport_height
-        else:
-            viewport_y_min = map_y - (viewport_height // 2)
-            viewport_y_max = map_y + (viewport_height // 2)
-        if viewport_x_max >= game_map.width:
-            viewport_x_max = game_map.width
-
-        if viewport_y_max > game_map.height:
-            viewport_y_max = game_map.height
-
-        logger.info('viewport x min/max: {}/{}', viewport_x_min, viewport_x_max)
-        logger.info('viewport y min/max: {}/{}', viewport_y_min, viewport_y_max)
-        logger.info('viewport y max - min is {}', viewport_y_max - viewport_y_min)
-        logger.info('viewport width/height {}/{}', viewport_width, viewport_height)
+        viewport_y_min = 0
+        viewport_y_max = viewport_height
         return viewport_x_min, viewport_x_max, viewport_y_min, viewport_y_max
 
     @staticmethod
@@ -138,17 +122,19 @@ class RenderGameMap(esper.Processor):
 
         terminal.layer(RenderLayer.ENTITIES.value)
 
+        # pos.x represents the game map position and should be used to check for map obstructions only
+        # pos.vpx represents the viewport position of where the PC should be rendered
+
         for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
                                                                mobiles.Describable):
             if rend.isVisible:
-                if pos.x <= (viewport_width // 2):
-                    draw_pos_x = pos.x
-                else:
-                    draw_pos_x = term_pos_x
-                if pos.y <= (viewport_height // 2):
-                    draw_pos_y = pos.y
-                else:
-                    draw_pos_y = term_pos_y
+                if pos.vpx > viewport_width:
+                    pos.vpx = viewport_width
+
+                # logger.info('Mobile viewport x/y {}/{}', pos.vpx, pos.vpy)
+                # logger.info('Mobile map pos x/y {}/{}', pos.x, pos.y)
+                draw_pos_x = pos.vpx
+                draw_pos_y = pos.vpy
                 RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.image, image_x_scale, image_y_scale)
 
     @staticmethod
@@ -189,15 +175,17 @@ class RenderGameMap(esper.Processor):
         prev_layer = terminal.state(terminal.TK_LAYER)
         terminal.layer(RenderLayer.HUD.value)
 
+        left_x = 1
+
         # top left
-        terminal.put(x=1 * image_x_scale, y=viewport_height * image_y_scale, c=0xE700 + 0)
+        terminal.put(x=left_x * image_x_scale, y=viewport_height * image_y_scale, c=0xE700 + 0)
 
         # left edge
-        for d in range(1, 5):
-            terminal.put(x=1 * image_x_scale, y=(viewport_height + d) * image_y_scale, c=0xE700 + 4)
+        for d in range(left_x, 5):
+            terminal.put(x=left_x * image_x_scale, y=(viewport_height + d) * image_y_scale, c=0xE700 + 4)
 
         # bottom left
-        terminal.put(x=1 * image_x_scale, y=(viewport_height + 5) * image_y_scale, c=0xE700 + 2)
+        terminal.put(x=left_x * image_x_scale, y=(viewport_height + 5) * image_y_scale, c=0xE700 + 2)
 
         # top right
         terminal.put(x=(viewport_width) * image_x_scale, y=viewport_height * image_y_scale, c=0xE700 + 1)
@@ -206,7 +194,7 @@ class RenderGameMap(esper.Processor):
         terminal.put(x=(viewport_width) * image_x_scale, y=(viewport_height + 5) * image_y_scale, c=0xE700 + 3)
 
         # top edge
-        for a in range(1, viewport_width):
+        for a in range(left_x, viewport_width):
             terminal.put(x=a * image_x_scale, y=viewport_height * image_y_scale, c=0xE700 + 6)
 
         # right edge
@@ -214,7 +202,7 @@ class RenderGameMap(esper.Processor):
             terminal.put(x=viewport_width * image_x_scale, y=(viewport_height + d) * image_y_scale, c=0xE700 + 5)
 
         # bottom edge
-        for a in range(1, viewport_width):
+        for a in range(left_x, viewport_width):
             terminal.put(x=a * image_x_scale, y=(viewport_height + 5) * image_y_scale, c=0xE700 + 7)
 
         terminal.layer(prev_layer)

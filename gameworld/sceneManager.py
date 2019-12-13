@@ -90,6 +90,7 @@ class SceneManager:
                                     game_map.tiles[posx][posy].image = 10
                                     game_map.tiles[posx][posy].blocked = True
                                     game_map.tiles[posx][posy].block_sight = True
+                                    logger.debug('closed door x/y {}/{}', posx, posy)
                                 if cell == '#':
                                     # wall tile
                                     game_map.tiles[posx][posy].type_of_tile = tile_type_wall
@@ -104,7 +105,7 @@ class SceneManager:
                                     game_map.tiles[posx][posy].image = 11
                                     game_map.tiles[posx][posy].block_sight = False
                                     playerEntity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-                                    gameworld.add_component(playerEntity, mobiles.Position(x=posx, y=posy, hasMoved=True))
+                                    gameworld.add_component(playerEntity, mobiles.Position(x=posx, y=posy, hasMoved=True, vpx=posx + 1, vpy=posy))
                                     logger.info('Player set by scene at x/y {}/{}', posx, posy)
                                 posx += 1
                             posy += 1

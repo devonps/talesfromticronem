@@ -128,10 +128,12 @@ class Renderable:
 
 
 class Position:
-    def __init__(self, x=0, y=0, hasMoved=False):
+    def __init__(self, x=0, y=0, hasMoved=False, vpx=0, vpy=0):
         self.x = x
         self.y = y
         self.hasMoved = hasMoved
+        self.vpx = vpx
+        self.vpy = vpy
 
 
 class Velocity:
