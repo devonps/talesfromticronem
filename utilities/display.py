@@ -128,12 +128,13 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
     msg_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='newgame',
                                                         parameter='PRETTY_FRAME_MSG_Y')
 
-    fg = colourUtilities.get('YELLOW2')
+    # fg = colourUtilities.get('YELLOW2')
+    fg = colourUtilities.get('WHITE')
     bg = colourUtilities.get('BLACK')
 
     # draw basic frame
     #  top left corner
-    terminal.color(fg)
+    # terminal.color(fg)
     terminal.bkcolor(bg)
 
     # unicode frame tiles

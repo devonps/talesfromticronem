@@ -1,23 +1,19 @@
 import esper
-import tcod
 
 from bearlibterminal import terminal
 
 from components import mobiles, items
 from utilities import configUtilities, colourUtilities
-from utilities.display import draw_simple_frame
-from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
-from utilities.spellHelp import SpellUtilities
 from loguru import logger
 from mapRelated.gameMap import RenderLayer
+from utilities.commonutils import Commonutils
 
 
 class RenderGameMap(esper.Processor):
-    def __init__(self, game_map, gameworld, camera):
+    def __init__(self, game_map, gameworld):
         self.game_map = game_map
         self.gameworld = gameworld
-        self.camera = camera
 
     def process(self, game_config):
         """
@@ -33,17 +29,17 @@ class RenderGameMap(esper.Processor):
         """
         terminal.clear()
         # render the game map
-        self.render_map(self.gameworld, game_config, self.game_map, self.camera)
+        self.render_map(self.gameworld, game_config, self.game_map)
         # draw the entities
         # self.render_items(game_config, self.gameworld)
         self.render_mobiles(game_config, self.gameworld)
 
         # GUI viewport
-        # self.render_viewport(game_config)
+        self.render_viewport(game_config)
         # self.render_message_box(self.con, game_config, self.gameworld)
-        self.render_spell_bar(self)
-        # self.render_player_status_effects(self, game_config)
-        # self.render_player_vitals(self, self.con, game_config)
+        self.render_player_status_effects(game_config=game_config)
+        self.render_spell_bar(self, game_config=game_config)
+        self.render_player_vitals(gameworld=self.gameworld, game_config=game_config)
 
         # blit the console
         terminal.refresh()
@@ -58,18 +54,21 @@ class RenderGameMap(esper.Processor):
         terminal.layer(prev_layer)
 
     @staticmethod
-    def render_map(gameworld, game_config, game_map, camera):
-        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Xscale')
-        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
+    def render_map(gameworld, game_config, game_map):
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Xscale')
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Yscale')
 
         player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
 
         y_offset = 0
-        x_offset = 0
+        x_offset = 1
 
-        x_min, x_max, y_min, y_max = RenderGameMap.get_viewport_boundary(gameworld=gameworld, game_map=game_map, game_config=game_config, player_entity=player_entity)
-
+        x_min, x_max, y_min, y_max = RenderGameMap.get_viewport_boundary(gameworld=gameworld, game_map=game_map,
+                                                                         game_config=game_config,
+                                                                         player_entity=player_entity)
         if player_has_moved:
             RenderGameMap.clear_map_layer()
 
@@ -81,67 +80,69 @@ class RenderGameMap(esper.Processor):
                 image = game_map.tiles[x][y].image
                 tile = game_map.tiles[x][y].type_of_tile
                 if tile > 0:
-                    terminal.put(x=(scrx + x_offset) * image_x_scale, y=(scry + y_offset) * image_y_scale, c=0xE300 + image)
+                    terminal.put(x=(scrx + x_offset) * image_x_scale, y=(scry + y_offset) * image_y_scale,
+                                 c=0xE300 + image)
                 scrx += 1
             scry += 1
 
     @staticmethod
     def get_viewport_boundary(gameworld, player_entity, game_config, game_map):
 
-        viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_WIDTH')
-        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_HEIGHT')
-        x_centre, y_centre = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=player_entity)
+        viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                     parameter='VIEWPORT_WIDTH')
+        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_HEIGHT')
 
-        x_min = x_centre - viewport_width // 2
-        x_max = x_centre + viewport_width // 2
+        logger.info('viewport width/height {}/{}', viewport_width, viewport_height)
 
-        y_min = y_centre - viewport_height // 2
-        y_max = y_centre + viewport_height // 2
+        map_x, map_y = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=player_entity)
+        logger.info('player map pos x/y {}/{}', map_x, map_y)
 
-        if x_min < 0:
-            x_min = 0
-        if x_max > game_map.width:
-            x_max = game_map.width
-        if x_max < viewport_width:
-            x_max = viewport_width
+        viewport_x_min = 0
+        viewport_x_max = viewport_width
 
-        if y_min < 0:
-            y_min = 0
-        if y_max > game_map.height:
-            y_max = game_map.height
-        if y_max < viewport_height:
-            y_max = viewport_height
-
-        return x_min, x_max, y_min, y_max
-
+        viewport_y_min = 0
+        viewport_y_max = viewport_height
+        return viewport_x_min, viewport_x_max, viewport_y_min, viewport_y_max
 
     @staticmethod
     def render_mobiles(game_config, gameworld):
-        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Xscale')
-        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
-        viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_WIDTH')
-        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_HEIGHT')
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Xscale')
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Yscale')
+        term_pos_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                 parameter='TERMINAL_POS_X')
+        term_pos_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                 parameter='TERMINAL_POS_Y')
+        viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                     parameter='VIEWPORT_WIDTH')
+        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_HEIGHT')
 
         terminal.layer(RenderLayer.ENTITIES.value)
 
-        for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position, mobiles.Describable):
+        # pos.x represents the game map position and should be used to check for map obstructions only
+        # pos.vpx represents the viewport position of where the PC should be rendered
+
+        for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
+                                                               mobiles.Describable):
             if rend.isVisible:
+                if pos.vpx > viewport_width:
+                    pos.vpx = viewport_width
 
-                if pos.x < viewport_width // 2:
-                    draw_pos_x = pos.x
-                else:
-                    draw_pos_x = 10
-
-                if pos.y < viewport_height // 2:
-                    draw_pos_y = pos.y
-                else:
-                    draw_pos_y = 10
+                # logger.info('Mobile viewport x/y {}/{}', pos.vpx, pos.vpy)
+                # logger.info('Mobile map pos x/y {}/{}', pos.x, pos.y)
+                draw_pos_x = pos.vpx
+                draw_pos_y = pos.vpy
                 RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.image, image_x_scale, image_y_scale)
 
     @staticmethod
     def render_items(game_config, gameworld):
-        map_view_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_X')
-        map_view_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MAP_VIEW_DRAW_Y')
+        map_view_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='MAP_VIEW_DRAW_X')
+        map_view_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='MAP_VIEW_DRAW_Y')
 
         for ent, (rend, loc, desc) in gameworld.get_components(items.RenderItem, items.Location, items.Describable):
             if rend.isTrue:
@@ -162,214 +163,204 @@ class RenderGameMap(esper.Processor):
 
     @staticmethod
     def render_viewport(game_config):
-        # draw the outer bounds of the map viewport
-
-        viewport_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='VIEWPORT_START_X')
-        viewport_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='VIEWPORT_START_Y')
         viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                      parameter='VIEWPORT_WIDTH')
         viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='VIEWPORT_HEIGHT')
-        draw_simple_frame(startx=viewport_across, starty=viewport_down, width=viewport_width, height=viewport_height, title='', fg=colourUtilities.get('YELLOW1'), bg=None)
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Xscale')
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Yscale')
+
+        prev_layer = terminal.state(terminal.TK_LAYER)
+        terminal.layer(RenderLayer.HUD.value)
+
+        left_x = 1
+
+        # top left
+        terminal.put(x=left_x * image_x_scale, y=viewport_height * image_y_scale, c=0xE700 + 0)
+
+        # left edge
+        for d in range(left_x, 5):
+            terminal.put(x=left_x * image_x_scale, y=(viewport_height + d) * image_y_scale, c=0xE700 + 4)
+
+        # bottom left
+        terminal.put(x=left_x * image_x_scale, y=(viewport_height + 5) * image_y_scale, c=0xE700 + 2)
+
+        # top right
+        terminal.put(x=(viewport_width) * image_x_scale, y=viewport_height * image_y_scale, c=0xE700 + 1)
+
+        # bottom right
+        terminal.put(x=(viewport_width) * image_x_scale, y=(viewport_height + 5) * image_y_scale, c=0xE700 + 3)
+
+        # top edge
+        for a in range(left_x, viewport_width):
+            terminal.put(x=a * image_x_scale, y=viewport_height * image_y_scale, c=0xE700 + 6)
+
+        # right edge
+        for d in range(1, 5):
+            terminal.put(x=viewport_width * image_x_scale, y=(viewport_height + d) * image_y_scale, c=0xE700 + 5)
+
+        # bottom edge
+        for a in range(left_x, viewport_width):
+            terminal.put(x=a * image_x_scale, y=(viewport_height + 5) * image_y_scale, c=0xE700 + 7)
+
+        terminal.layer(prev_layer)
 
     @staticmethod
     def render_message_box(con, game_config, gameworld):
-        msg_start_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_START_X')
-        msg_start_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_START_Y')
-        msg_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_WIDTH')
-        msg_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MSG_PANEL_DEPTH')
-
-        # draw the message box area
-        con.draw_frame(
-            x=msg_start_across,
-            y=msg_start_down,
-            width=msg_width,
-            height=msg_depth,
-            title='',
-            clear=False,
-            fg=tcod.yellow,
-            bg_blend=tcod.BKGND_DEFAULT
-        )
+        pass
 
     @staticmethod
-    def render_player_status_effects(self, game_config):
-        # draw the boon, condition, and control bar borders (horizontal)
-        self.render_boons(self, game_config)
-        self.render_conditions(self, game_config)
-        self.render_controls(self, game_config)
+    def render_player_status_effects(game_config):
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Yscale')
+
+        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_HEIGHT')
+
+        prev_layer = terminal.state(terminal.TK_LAYER)
+        terminal.layer(RenderLayer.STATUSEFFECTS.value)
+        terminal.composition(terminal.TK_OFF)
+        RenderGameMap.render_boons(iy=image_y_scale, viewport=viewport_height)
+        RenderGameMap.render_conditions(iy=image_y_scale, viewport=viewport_height)
+        RenderGameMap.render_controls(iy=image_y_scale, viewport=viewport_height)
+        terminal.layer(prev_layer)
 
     @staticmethod
-    def render_boons(self, game_config):
-        self.render_h_bar(posy=0, border_colour=colourUtilities.get('GRAY'), game_config=game_config)
-        self.render_player_status_effects_content(self, 0, '*', colourUtilities.get('GREEN'), game_config)
+    def render_boons(iy, viewport):
+        ac = 2
+        sc = 2
+        for a in range(10):
+            terminal.put(x=(ac + a) * sc, y=viewport * iy, c=0xE600 + a)
 
     @staticmethod
-    def render_conditions(self, game_config):
-        self.render_h_bar(posy=3, border_colour=colourUtilities.get('GRAY'), game_config=game_config)
-        self.render_player_status_effects_content(self, 3, chr(9), colourUtilities.get('RED'), game_config)
+    def render_conditions(iy, viewport):
+
+        ac = 12
+        sc = 2
+        for a in range(10):
+            terminal.put(x=(ac + a) * sc, y=viewport * iy, c=0xE630 + a)
 
     @staticmethod
-    def render_controls(self, game_config):
-        self.render_h_bar(posy=6, border_colour=colourUtilities.get('GRAY'), game_config=game_config)
-        self.render_player_status_effects_content(self, 6, chr(10), colourUtilities.get('WHITE'), game_config)
+    def render_controls(iy, viewport):
+
+        ac = 22
+        sc = 2
+        for a in range(10):
+            terminal.put(x=(ac + a) * sc, y=viewport * iy, c=0xE630 + a)
 
     @staticmethod
     def render_player_status_effects_content(self, posy, glyph, foreground, game_config):
-        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_X')
-        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_Y') + posy
-
-        x = 0
-        bg = colourUtilities.get('BLACK')
-        fg1 = foreground
-        fg2 = colourUtilities.get('GRAY')
-        for a in range(10):
-            self.render_entity(1 + px + x, py + 1, glyph, fg1, bg)
-            if a < 9:
-                x += 1
-                self.render_entity(1 + px + x, py + 1, '*', fg2, bg)
-            x += 1
+        pass
 
     @staticmethod
-    def render_h_bar(posy, border_colour, game_config):
+    def render_player_vitals(gameworld, game_config):
 
-        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_X')
-        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='H_BAR_Y')
-        rs = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='BCC_BAR_RIGHT_SIDE')
-
-        draw_simple_frame(startx=px, starty=py + posy, width=rs, height=3, title='', fg=border_colour, bg=None)
-        # con.draw_frame(
-        #     x=px,
-        #     y=py + posy,
-        #     width=rs,
-        #     height=3,
-        #     title='',
-        #     fg=border_colour,
-        #     bg_blend=tcod.BKGND_DEFAULT
-        # )
+        prev_layer = terminal.state(terminal.TK_LAYER)
+        terminal.layer(RenderLayer.HUD.value)
+        terminal.composition(terminal.TK_ON)
+        RenderGameMap.render_health(gameworld=gameworld, game_config=game_config)
+        RenderGameMap.render_mana(gameworld=gameworld, game_config=game_config)
+        RenderGameMap.render_special_power(gameworld=gameworld, game_config=game_config)
+        terminal.layer(prev_layer)
 
     @staticmethod
-    def render_player_vitals(self, game_config):
-        player_entity = MobileUtilities.get_player_entity(self.gameworld, game_config)
-        player_derived_attributes_component = self.gameworld.component_for_entity(player_entity,
-                                                                                  mobiles.DerivedAttributes)
+    def render_health(gameworld, game_config):
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Yscale')
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Xscale')
 
-        self.render_health_bar(self, player_derived_attributes_component, game_config)
-        self.render_mana_bar(self, player_entity, game_config)
+        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_HEIGHT')
 
-        self.render_f1_bar(self, player_entity, game_config)
+        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        currentHealth = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=player_entity)
+        maximum_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=player_entity)
 
-    @staticmethod
-    def render_health_bar(self, player_derived_attributes_component, game_config):
+        strToPrint = "[color=red]Health[/color]"
 
-        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HEALTH_BAR_X')
-        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HEALTH_BAR_Y')
-        wd = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='HEALTH_BAR_W')
-        current_health = player_derived_attributes_component.currentHealth
-        maximum_health = player_derived_attributes_component.maximumHealth
-        current_health_percentage = MobileUtilities.get_number_as_a_percentage(current_health, maximum_health)
-
-        self.con.draw_frame(x=px, y=py, width=wd, height=3, title='', fg=colourUtilities.WHITE, bg_blend=tcod.BKGND_DEFAULT)
-
-        bar_count = int(MobileUtilities.get_bar_count(current_health_percentage, wd - 2))
-
-        hlth = px + 1
-
-        for x in range(bar_count):
-            self.con.print(x=hlth + x, y=py + 1, string=chr(219), fg=colourUtilities.WHITE, bg=colourUtilities.RED)
-
-        health = str(current_health) + ' / ' + str(maximum_health)
-        self.con.print(x=int(wd/2), y=py + 1, string=health, fg=colourUtilities.WHITE, bg_blend=tcod.BKGND_SET)
-
+        RenderGameMap.render_bar(printString=strToPrint, lowNumber=currentHealth, highNumber=maximum_health,
+                                 posy=viewport_height + 3, posx=6, spriteRef=0xE770,
+                                 xscale=image_x_scale, yscale=image_y_scale)
 
     @staticmethod
-    def render_mana_bar(self, player_entity, game_config):
+    def render_mana(gameworld, game_config):
 
-        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MANA_BAR_X')
-        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MANA_BAR_Y')
-        wd = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='MANA_BAR_W')
-        player_current_mana = MobileUtilities.calculate_current_mana(self.gameworld, gameconfig=game_config)
-        player_maximum_mana = MobileUtilities.get_derived_maximum_mana(self.gameworld, player_entity)
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Yscale')
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Xscale')
 
-        current_mana_percentage = MobileUtilities.get_number_as_a_percentage(player_current_mana, player_maximum_mana)
+        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_HEIGHT')
 
-        self.con.draw_frame(x=px, y=py, width=wd, height=3, title='', fg=colourUtilities.WHITE,
-                            bg_blend=tcod.BKGND_DEFAULT)
+        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        currentMana = MobileUtilities.get_derived_current_mana(gameworld=gameworld, entity=player_entity)
+        maxMana = MobileUtilities.get_derived_maximum_mana(gameworld=gameworld, entity=player_entity)
+        strToPrint = "[color=blue]Mana[/color]"
 
-        bar_count = int(MobileUtilities.get_bar_count(current_mana_percentage, wd - 2))
-
-        hlth = px + 1
-
-        for x in range(bar_count):
-            self.con.print(x=hlth + x, y=py + 1, string=chr(219), fg=colourUtilities.WHITE, bg=colourUtilities.BLUE)
-
-        mana = str(player_current_mana) + ' / ' + str(player_maximum_mana)
-        self.con.print(x=px + int(wd / 2), y=py + 1, string=mana, fg=colourUtilities.WHITE, bg_blend=tcod.BKGND_SET)
+        RenderGameMap.render_bar(printString=strToPrint, lowNumber=currentMana, highNumber=maxMana,
+                                 posy=viewport_height + 4, posx=6, spriteRef=0xE800,
+                                 xscale=image_x_scale, yscale=image_y_scale)
 
     @staticmethod
-    def render_f1_bar(self, player_entity, game_config):
-        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='F1_BAR_X')
-        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='F1_BAR_Y')
-        wd = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='F1_BAR_W')
-        psc = MobileUtilities.get_derived_special_bar_current_value(self.gameworld, gameconfig=game_config)
-        psm = MobileUtilities.get_derived_special_bar_max_value(self.gameworld, player_entity)
+    def render_special_power(gameworld, game_config):
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Yscale')
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Xscale')
 
-        current_special_percentage = MobileUtilities.get_number_as_a_percentage(psc, psm)
+        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_HEIGHT')
 
-        self.con.draw_frame(x=px, y=py, width=wd, height=3, title='', fg=colourUtilities.WHITE, bg_blend=tcod.BKGND_DEFAULT)
+        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        currentF1Power = MobileUtilities.get_derived_special_bar_current_value(gameworld=gameworld,
+                                                                               entity=player_entity)
+        maxF1Power = MobileUtilities.get_derived_special_bar_max_value(gameworld=gameworld, entity=player_entity)
 
-        bar_count = int(MobileUtilities.get_bar_count(current_special_percentage, wd - 2))
+        strToPrint = "[color=green]Power[/color]"
 
-        hlth = px + 1
-
-        for x in range(bar_count):
-            self.con.print(x=hlth + x, y=py + 1, string=chr(219), fg=colourUtilities.WHITE, bg=colourUtilities.GREEN)
-
-        mana = str(psc) + ' / ' + str(psm)
-        self.con.print(x=px + int(wd / 2), y=py + 1, string=mana, fg=colourUtilities.WHITE, bg_blend=tcod.BKGND_SET)
-
+        RenderGameMap.render_bar(printString=strToPrint, lowNumber=currentF1Power, highNumber=maxF1Power,
+                                 posy=viewport_height + 5, posx=6, spriteRef=0xE880,
+                                 xscale=image_x_scale, yscale=image_y_scale)
 
     @staticmethod
-    def render_v_bar(con, posx, posy, depth, border_colour):
-        con.draw_frame(
-            x=posx,
-            y=posy,
-            width=3,
-            height=depth,
-            title='',
-            fg=border_colour,
-            bg_blend=tcod.BKGND_DEFAULT
-        )
+    def render_bar(printString, lowNumber, highNumber, posy, posx, spriteRef, xscale, yscale):
+
+        displayPercentage = Commonutils.calculate_percentage(lowNumber, highNumber)
+        tens = int(displayPercentage / 10)
+        units = displayPercentage % 10
+        px = 0
+
+        terminal.printf(4, posy * yscale, printString)
+        for a in range(tens):
+            terminal.put(x=(a + posx) * xscale, y=posy * yscale, c=spriteRef + 0)
+            px += 1
+
+        if units > 0:
+            if units < 5:
+                terminal.put(x=(px + posx) * xscale, y=posy * yscale, c=spriteRef + 3)
+
+            if units == 5:
+                terminal.put(x=(px + posx) * xscale, y=posy * yscale, c=spriteRef + 2)
+
+            if units > 5:
+                terminal.put(x=(px + posx) * xscale, y=posy * yscale, c=spriteRef + 1)
 
     @staticmethod
     def render_player_vertical_bar_content(self, x, current_value, foreground, background, game_config):
-
-        px = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_X')
-        posx = 1 + px + x
-        py = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_Y')
-        bar_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='V_BAR_DEPTH')
-        posy = py + bar_depth
-
-        bar_count = int(MobileUtilities.get_bar_count(current_value, bar_depth))
-
-        for y in range(bar_count):
-            tcod.console_put_char_ex(self.con, posx, posy - y, chr(176), foreground, background)
+        pass
 
     @staticmethod
-    def render_spell_bar(self):
+    def render_spell_bar(self, game_config):
 
-        game_config = configUtilities.load_config()
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Yscale')
 
-        spell_box_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BOX_WIDTH')
-        spell_bar_across = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BOX_X')
-        spell_bar_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BAR_Y')
-        spell_bar_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BAR_WIDTH')
-        spell_bar_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_BOX_DEPTH')
-        spell_slots = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='SPELL_SLOTS')
-
-        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Xscale')
-        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
+        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_HEIGHT')
 
         player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
         weapons_list = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=player_entity)
@@ -377,46 +368,19 @@ class RenderGameMap(esper.Processor):
         off_weapon = weapons_list[1]
         both_weapon = weapons_list[2]
         slot = ['NO SPEL'] * 10
+        ac = 1
+        sc = 5
+        y = viewport_height + 1
 
-        ac = 4
+        prev_layer = terminal.state(terminal.TK_LAYER)
+        terminal.layer(RenderLayer.SPELLBAR.value)
+        terminal.composition(terminal.TK_ON)
+
+        # spell bar slots are drawn first
+        for a in range(10):
+            terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE500 + 0)
+        # then the spell images themselves
         for a in range(4):
+            terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE400 + a)
 
-            terminal.put(x=ac +a * image_x_scale, y=28 * image_y_scale, c=0xE400 + a)
-
-        terminal.put(x=40 * image_x_scale, y=28 * image_y_scale, c=0xE400 + 0)
-
-        # if both_weapon > 0:
-        #     slot[0] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=1)
-        #     slot[1] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=2)
-        #     slot[2] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=3)
-        #     slot[3] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=4)
-        #     slot[4] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=both_weapon, slotid=5)
-        #
-        # else:
-        #     slot[0] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=1)
-        #     slot[1] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=2)
-        #     slot[2] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=main_weapon, slotid=3)
-        #     slot[3] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=off_weapon, slotid=4)
-        #     slot[4] = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=self.gameworld, weapon_equipped=off_weapon, slotid=5)
-        #
-        # ps = 1
-        # fg = colourUtilities.get('YELLOW1')
-        # bg = colourUtilities.get('GRAY')
-        # for spellSlot in range(spell_slots):
-        #     spell_slot_posx = spell_bar_across - 1
-        #
-        #     if spellSlot < 9:
-        #         sp = str(ps)
-        #     else:
-        #         sp = str(ps)[-1:]
-        #
-        #     display_coloured_box(title=sp,
-        #                          posx=spell_slot_posx, posy=spell_bar_down + 1,
-        #                          width=spell_box_width, height=spell_bar_depth,
-        #                          fg=fg, bg=bg)
-        #     string_to_print = '[color=' + fg + ']' + slot[spellSlot][:7]
-        #     terminal.print_(x=spell_slot_posx + 2, y=spell_bar_down + 3, width=spell_bar_width, height=spell_bar_depth, s=string_to_print)
-        #
-        #     spell_bar_across += spell_box_width
-        #     ps += 1
-        #
+        terminal.layer(prev_layer)

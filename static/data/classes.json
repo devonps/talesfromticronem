@@ -192,101 +192,101 @@
     },
     "health": "20"
   },
-    {
-      "name": "elementalist",
-    "spellfile": "ele",
-    "flavour": "Elementalists channel elemental forces, making fire, air, earth, and water do their bidding, their powers of destruction are drawn from an affinity with the four elements",
-    "balanced": {
-      "neck": "garnet",
-      "ring1": "tigerseye",
-      "ring2": "turquoise",
-      "earring1": "pearl",
-      "earring2": "pearl",
-      "attributes": {
-        "benefitName": "ferocity",
-        "benefitValue": "15"
-      }
-      },
-    "defensive": {
-      "neck": "malachite",
-      "ring1": "turquoise",
-      "ring2": "turquoise",
-      "earring1": "pearl",
-      "earring2": "tigerseye",
-      "attributes": {
-        "benefitName": "healing",
-        "benefitValue": "15"
-      }
-    },
-    "offensive": {
-      "neck": "garnet",
-      "ring1": "garnet",
-      "ring2": "garnet",
-      "earring1": "turquoise",
-      "earring2": "turquoise",
-      "attributes": {
-        "benefitName": "expertise",
-        "benefitValue": "15"
-      }
-    },
-    "weapons": {
-      "sword": "true",
-      "wand": "false",
-      "scepter": "true",
-      "staff": "true",
-      "dagger": "true",
-      "rod": "false",
-      "focus": "true"
-    },
-    "health": "15"
-    },
-    {
-    "name": "chronomancer",
-    "spellfile": "chronomancer",
-    "flavour": "The path of the Chronomancer allows them to rend both space and time, allowing them to focus on past versus future and fast versus slow as key themes",
-    "balanced": {
-      "neck": "turquoise",
-      "ring1": "pearl",
-      "ring2": "malachite",
-      "earring1": "turquoise",
-      "earring2": "garnet",
-      "attributes": {
-        "benefitName": "expertise",
-        "benefitValue": "15"
-      }
-      },
-    "defensive": {
-      "neck": "turquoise",
-      "ring1": "malachite",
-      "ring2": "malachite",
-      "earring1": "garnet",
-      "earring2": "garnet",
-      "attributes": {
-        "benefitName": "expertise",
-        "benefitValue": "15"
-      }
-    },
-    "offensive": {
-      "neck": "tigerseye",
-      "ring1": "turquoise",
-      "ring2": "turquoise",
-      "earring1": "garnet",
-      "earring2": "garnet",
-      "attributes": {
-        "benefitName": "expertise",
-        "benefitValue": "15"
-      }
-    },
-    "weapons": {
-      "sword": "false",
-      "wand": "false",
-      "scepter": "true",
-      "staff": "true",
-      "dagger": "true",
-      "rod": "true",
-      "focus": "true"
-    },
-    "health": "15"
+  {
+    "name": "elementalist",
+  "spellfile": "ele",
+  "flavour": "Elementalists channel elemental forces, making fire, air, earth, and water do their bidding, their powers of destruction are drawn from an affinity with the four elements",
+  "balanced": {
+    "neck": "garnet",
+    "ring1": "tigerseye",
+    "ring2": "turquoise",
+    "earring1": "pearl",
+    "earring2": "pearl",
+    "attributes": {
+      "benefitName": "ferocity",
+      "benefitValue": "15"
     }
+    },
+  "defensive": {
+    "neck": "malachite",
+    "ring1": "turquoise",
+    "ring2": "turquoise",
+    "earring1": "pearl",
+    "earring2": "tigerseye",
+    "attributes": {
+      "benefitName": "healing",
+      "benefitValue": "15"
+    }
+  },
+  "offensive": {
+    "neck": "garnet",
+    "ring1": "garnet",
+    "ring2": "garnet",
+    "earring1": "turquoise",
+    "earring2": "turquoise",
+    "attributes": {
+      "benefitName": "expertise",
+      "benefitValue": "15"
+    }
+  },
+  "weapons": {
+    "sword": "true",
+    "wand": "false",
+    "scepter": "true",
+    "staff": "true",
+    "dagger": "true",
+    "rod": "false",
+    "focus": "true"
+  },
+  "health": "15"
+  },
+  {
+  "name": "chronomancer",
+  "spellfile": "chronomancer",
+  "flavour": "The path of the Chronomancer allows them to rend both space and time, allowing them to focus on past versus future and fast versus slow as key themes",
+  "balanced": {
+    "neck": "turquoise",
+    "ring1": "pearl",
+    "ring2": "malachite",
+    "earring1": "turquoise",
+    "earring2": "garnet",
+    "attributes": {
+      "benefitName": "expertise",
+      "benefitValue": "15"
+    }
+    },
+  "defensive": {
+    "neck": "turquoise",
+    "ring1": "malachite",
+    "ring2": "malachite",
+    "earring1": "garnet",
+    "earring2": "garnet",
+    "attributes": {
+      "benefitName": "expertise",
+      "benefitValue": "15"
+    }
+  },
+  "offensive": {
+    "neck": "tigerseye",
+    "ring1": "turquoise",
+    "ring2": "turquoise",
+    "earring1": "garnet",
+    "earring2": "garnet",
+    "attributes": {
+      "benefitName": "expertise",
+      "benefitValue": "15"
+    }
+  },
+  "weapons": {
+    "sword": "false",
+    "wand": "false",
+    "scepter": "true",
+    "staff": "true",
+    "dagger": "true",
+    "rod": "true",
+    "focus": "true"
+  },
+  "health": "15"
+  }
 ]
 }

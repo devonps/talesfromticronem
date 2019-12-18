@@ -672,7 +672,11 @@ class MobileUtilities(numbers.Real):
         MobileUtilities.calculate_critical_hit_chance(gameworld, gameconfig)
         MobileUtilities.calculate_max_health(gameworld, gameconfig)
         MobileUtilities.calculate_current_health(gameworld, gameconfig)
-        MobileUtilities.get_derived_special_bar_current_value(gameworld, gameconfig)
+        MobileUtilities.calculate_special_bar_current_value(gameworld, gameconfig)
+
+    @staticmethod
+    def calculate_special_bar_current_value(gameworld, gameconfig):
+        pass
 
     @staticmethod
     def calculate_armour_attribute(gameworld, gameconfig):
@@ -885,8 +889,7 @@ class MobileUtilities(numbers.Real):
         return gameworld.component_for_entity(entity, mobiles.ManaPool).maximum
 
     @staticmethod
-    def get_derived_special_bar_current_value(gameworld, gameconfig):
-        entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
+    def get_derived_special_bar_current_value(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.SpecialBar).currentvalue
 
     @staticmethod

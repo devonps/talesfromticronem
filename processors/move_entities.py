@@ -19,6 +19,8 @@ class MoveEntities(esper.Processor):
             if not am_i_blocked:
                 pos.x += vel.dx
                 pos.y += vel.dy
+                pos.vpx += vel.dx
+                pos.vpy += vel.dy
 
                 if vel.dx != 0 or vel.dy != 0:
                     svx = '0'
@@ -33,7 +35,8 @@ class MoveEntities(esper.Processor):
                     MobileUtilities.set_mobile_has_moved(self.gameworld, ent, True)
                     value = 'move:' + str(ent) + ':' + svx + ':' + svy
                     ReplayGame.update_game_replay_file(game_config, value)
-
+            else:
+                logger.debug(' cannot move to x/y {}/{}', pos.x + vel.dx, pos.y + vel.dy)
             # regardless of making the move - reduce the velocity to zero
             vel.dx = 0
             vel.dy = 0

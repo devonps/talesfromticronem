@@ -91,6 +91,9 @@ def game_loop(gameworld):
                     display_hero_panel(gameworld=gameworld)
                 if event_action == 'g':
                     MobileUtilities.mobile_pick_up_item(gameworld=gameworld, mobile=player)
+
+            if event_to_be_processed == 'mouseleftbutton':
+                logger.info('cell x/y {}/{}', event_action[0], event_action[1])
         #
         # get monsters intended action
         #
