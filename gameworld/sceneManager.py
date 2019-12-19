@@ -105,7 +105,7 @@ class SceneManager:
                                     game_map.tiles[posx][posy].image = 11
                                     game_map.tiles[posx][posy].block_sight = False
                                     playerEntity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-                                    gameworld.add_component(playerEntity, mobiles.Position(x=posx, y=posy, hasMoved=True, vpx=posx + 1, vpy=posy))
+                                    MobileUtilities.set_mobile_position(gameworld=gameworld, entity=playerEntity, posx=posx, posy=posy)
                                     logger.info('Player set by scene at x/y {}/{}', posx, posy)
                                 posx += 1
                             posy += 1

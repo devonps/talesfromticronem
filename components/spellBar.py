@@ -1,6 +1,3 @@
-from newGame import constants
-
-
 class SlotOne:
     def __init__(self, label='', oncooldown=False):
         self.sid = 1

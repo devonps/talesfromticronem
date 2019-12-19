@@ -94,10 +94,12 @@ class CharacterCreation:
     @staticmethod
     def create_new_character(gameworld):
 
-        gameconfig = configUtilities.load_config()
+        game_config = configUtilities.load_config()
 
         logger.debug('Creating the player character entity')
-        player_entity = MobileUtilities.generate_base_mobile(gameworld, gameconfig)
+        player_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
+        MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player_entity)
+        MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config, player_entity=player_entity)
         logger.info('Player character stored as entity {}', player_entity)
 
         CharacterCreation.choose_race(gameworld=gameworld, player=player_entity)
@@ -1859,6 +1861,7 @@ class CharacterCreation:
                         s=slot5_display)
 
         saved_build = False
+
         while not_ready_to_proceed:
             # blit changes to root console
             terminal.refresh()

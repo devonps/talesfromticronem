@@ -3,10 +3,7 @@ Implementation of the PCG random number generator, Python OO style.
 For the original docs, read
 `this <http://www.pcg-random.org/using-pcg-c-basic.html>`_.
 """
-import tcod
 
-from loguru import logger
-from newGame import constants
 
 def _uint32(n):
     return n & 0xffffffff

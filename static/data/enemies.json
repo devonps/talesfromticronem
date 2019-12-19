@@ -1,0 +1,36 @@
+{
+  "enemies": [
+    {
+      "name": "kobold",
+      "race": "kobold",
+      "class": "n/a",
+      "description": "a smelly kobold.",
+      "ai": "MONSTER",
+      "glyph": "k",
+      "fg": "blue",
+      "bg": "black",
+      "image": "25",
+      "clothing-present": "no",
+      "clothing-generate": "no",
+      "clothing-head": "",
+      "clothing-back": "",
+      "clothing-front": "",
+      "clothing-feet": "",
+      "clothing-legs": "",
+      "clothing-chest": "",
+      "clothing-shoulders": "",
+      "weapons-present": "no",
+      "weapons-generate": "no",
+      "weapons-main": "",
+      "weapons-off": "",
+      "weapons-both": "",
+      "jewellery-present": "no",
+      "jewellery-generate": "no",
+      "jewellery-neck": "",
+      "jewellery-ring1": "",
+      "jewellery-ring2": "",
+      "jewellery-earring1": "",
+      "jewellery-earring2": ""
+    }
+    ]
+}
