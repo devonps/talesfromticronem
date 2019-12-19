@@ -9,14 +9,14 @@ class Name:
 
 class Describable:
     def __init__(self, description='undefined', glyph='@', foreground=colourUtilities.get('ORANGE'), background=colourUtilities.get('BLACK'),
-                 personality='Unpredictable', gender='undefined'):
+                 personality='Unpredictable', gender='undefined', image=0):
         self.description = description
         self.glyph = glyph
         self.foreground = foreground
         self.background = background
         self.personality_title = personality
         self.gender = gender
-        self.image = 11
+        self.image = image
 
 
 # This class holds the image id that correspond to what the mobile is wearing or wielding

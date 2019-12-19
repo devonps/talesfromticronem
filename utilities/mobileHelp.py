@@ -1,7 +1,7 @@
 from components import mobiles, userInput, items, spellBar
 from loguru import logger
 from utilities.itemsHelp import ItemUtilities, display_inspect_panel
-from utilities import world
+from utilities import world, common
 from utilities import configUtilities, colourUtilities
 
 import numbers
@@ -75,6 +75,10 @@ class MobileUtilities(numbers.Real):
         position_component = gameworld.component_for_entity(entity, mobiles.Position)
 
         return position_component.hasMoved
+
+    @staticmethod
+    def set_mobile_position(gameworld, entity, posx, posy):
+        gameworld.add_component(entity, mobiles.Position(x=posx, y=posy, hasMoved=True, vpx=posx + 1, vpy=posy))
 
     @staticmethod
     def set_player_velocity(gameworld, player_entity, direction, speed):
@@ -223,36 +227,84 @@ class MobileUtilities(numbers.Real):
             gameworld.component_for_entity(entity, mobiles.Equipped).both_hands = 0
 
     @staticmethod
-    def generate_base_mobile(gameworld, game_config):
-        player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_PLAYER')
+    def get_next_entity_id(gameworld):
+        entity = world.get_next_entity_id(gameworld=gameworld)
 
-        player_entity = world.get_next_entity_id(gameworld=gameworld)
-        gameworld.add_component(player_entity, mobiles.Name(first='undefined', suffix=''))
-        gameworld.add_component(player_entity, mobiles.Describable(description='something', glyph='@', foreground=colourUtilities.get('ORANGE'), background=colourUtilities.get('BLACK'), personality='Unpredictable', gender='neutral'))
-        gameworld.add_component(player_entity, mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
+        return entity
+
+    @staticmethod
+    def create_base_mobile(gameworld, game_config, entity_id):
+        ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_NONE')
+
+        gameworld.add_component(entity_id, mobiles.Describable(description='', glyph='',
+                                                                   foreground=colourUtilities.get('WHITE'),
+                                                                   background=colourUtilities.get('BLACK'),
+                                                                   personality='', gender='', image=0))
+        gameworld.add_component(entity_id,
+                                mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
+        gameworld.add_component(entity_id, mobiles.AI(ailevel=ai))
+        gameworld.add_component(entity_id, mobiles.Inventory())
+        gameworld.add_component(entity_id, mobiles.Armour())
+        gameworld.add_component(entity_id, mobiles.Jewellery())
+        gameworld.add_component(entity_id, mobiles.Equipped())
+        gameworld.add_component(entity_id, mobiles.Velocity())
+        gameworld.add_component(entity_id, mobiles.ManaPool(current=500, maximum=1000))
+        gameworld.add_component(entity_id, mobiles.Renderable(is_visible=True))
+        gameworld.add_component(entity_id, mobiles.StatusEffects())
+        gameworld.add_component(entity_id, mobiles.PrimaryAttributes())
+        gameworld.add_component(entity_id, mobiles.SecondaryAttributes())
+        gameworld.add_component(entity_id, mobiles.DerivedAttributes())
+        gameworld.add_component(entity_id, mobiles.SpellBar(entityId=0))
+        gameworld.add_component(entity_id, mobiles.Race(race='', size=''))
+        gameworld.add_component(entity_id, mobiles.Position())
+
+    @staticmethod
+    def create_player_character(gameworld, game_config, player_entity):
+        player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
+                                                                parameter='AI_LEVEL_PLAYER')
+        gameworld.add_component(player_entity, mobiles.Describable(description='something', glyph='@',
+                                                                   foreground=colourUtilities.get('ORANGE'),
+                                                                   background=colourUtilities.get('BLACK'),
+                                                                   personality='Unpredictable', gender='neutral', image=11))
+        gameworld.add_component(player_entity,
+                                mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
+        gameworld.add_component(player_entity, mobiles.Name(first='', suffix=''))
         gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai))
-        gameworld.add_component(player_entity, mobiles.Inventory())
-        gameworld.add_component(player_entity, mobiles.Armour())
-        gameworld.add_component(player_entity, mobiles.Jewellery())
-        gameworld.add_component(player_entity, mobiles.Equipped())
-        gameworld.add_component(player_entity, mobiles.Velocity())
         gameworld.add_component(player_entity, mobiles.Personality())
-        gameworld.add_component(player_entity, mobiles.ManaPool(current=500, maximum=1000))
         gameworld.add_component(player_entity, mobiles.SpecialBar(valuecurrent=10, valuemaximum=100))
-        gameworld.add_component(player_entity, mobiles.Renderable(is_visible=True))
-        gameworld.add_component(player_entity, mobiles.StatusEffects())
-        gameworld.add_component(player_entity, mobiles.PrimaryAttributes())
-        gameworld.add_component(player_entity, mobiles.SecondaryAttributes())
-        gameworld.add_component(player_entity, mobiles.DerivedAttributes())
         gameworld.add_component(player_entity, mobiles.SpellBar(entityId=0))
-        gameworld.add_component(player_entity, mobiles.Race(race='', size=''))
-        gameworld.add_component(player_entity, mobiles.ClothingImage(head=0, back=21, front=22, feet=23, weapon=24, hands=0, shield=0, legs=0, chest=0, shoulders=0))
+        gameworld.add_component(player_entity,
+                                mobiles.ClothingImage(head=0, back=21, front=22, feet=23, weapon=24, hands=0, shield=0,
+                                                      legs=0, chest=0, shoulders=0))
 
-        return player_entity
+    @staticmethod
+    def set_mobile_description(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.Describable).description = value
+
+    @staticmethod
+    def set_mobile_glyph(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.Describable).glyph = value
+
+    @staticmethod
+    def set_mobile_fg_render_colour(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.Describable).foreground = colourUtilities.get(value)
+
+    @staticmethod
+    def set_mobile_bg_render_colour(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.Describable).background = colourUtilities.get(value)
+
+    @staticmethod
+    def set_mobile_render_image(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.Describable).image = value
+
+    @staticmethod
+    def set_entity_ai(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.AI).ailevel = value
+
 
     @staticmethod
     def create_spell_bar_as_entity(gameworld):
-        spell_bar = world.get_next_entity_id(gameworld=gameworld)
+        spell_bar = MobileUtilities.get_next_entity_id(gameworld=gameworld)
 
         gameworld.add_component(spell_bar, spellBar.SlotOne())
         gameworld.add_component(spell_bar, spellBar.SlotTwo())

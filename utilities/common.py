@@ -1,5 +1,5 @@
 
-class Commonutils:
+class CommonUtils:
 
     @staticmethod
     def calculate_percentage(lowNumber, maxNumber):

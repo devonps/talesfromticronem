@@ -7,7 +7,7 @@ from utilities import configUtilities, colourUtilities
 from utilities.mobileHelp import MobileUtilities
 from loguru import logger
 from mapRelated.gameMap import RenderLayer
-from utilities.commonutils import Commonutils
+from utilities.common import CommonUtils
 
 
 class RenderGameMap(esper.Processor):
@@ -152,11 +152,12 @@ class RenderGameMap(esper.Processor):
 
     @staticmethod
     def render_entity(posx, posy, glyph, image_x_scale, image_y_scale):
-        cloak = 21
-        robe = 22
-        shoes = 23
-        weapon = 24
-        characterbits = [cloak, glyph, robe, shoes, weapon]
+        # cloak = 21
+        # robe = 22
+        # shoes = 23
+        # weapon = 24
+        # characterbits = [cloak, glyph, robe, shoes, weapon]
+        characterbits = [glyph]
 
         for cell in characterbits:
             terminal.put(x=posx * image_x_scale, y=posy * image_y_scale, c=0xE300 + cell)
@@ -329,7 +330,7 @@ class RenderGameMap(esper.Processor):
     @staticmethod
     def render_bar(printString, lowNumber, highNumber, posy, posx, spriteRef, xscale, yscale):
 
-        displayPercentage = Commonutils.calculate_percentage(lowNumber, highNumber)
+        displayPercentage = CommonUtils.calculate_percentage(lowNumber, highNumber)
         tens = int(displayPercentage / 10)
         units = displayPercentage % 10
         px = 0

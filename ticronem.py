@@ -3,12 +3,9 @@ import tcod.event
 
 from bearlibterminal import terminal
 
-from components import items
-from newGame.ClassWeapons import WeaponClass
-from newGame.Items import ItemManager
+from newGame.Entities import Entity
 from ui.character_screen import display_hero_panel
 from newGame.initialiseNewGame import setup_gameworld
-from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
@@ -24,32 +21,16 @@ def game_loop(gameworld):
     game_config = configUtilities.load_config()
     player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
+    enemyObject = Entity(gameworld=gameworld)
+    enemy_id = enemyObject.create_new_entity()
+    enemyObject.create_new_enemy(entity_id=enemy_id)
+
+    logger.warning('NEW ENEMY CREATED WITH {} AS THE ENTITY ID', enemy_id)
+
     terminal.composition(terminal.TK_ON)
     terminal.clear()
 
     setup_gameworld(game_config)
-
-
-    # create some weapons and drop them on the ground
-    class_component = MobileUtilities.get_character_class(gameworld, player)
-
-    created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type='wand', game_config=game_config)
-    gameworld.add_component(created_weapon, items.Location(x=0, y=0))
-    ItemUtilities.set_item_location(gameworld=gameworld, item_entity=created_weapon, posx=5, posy=2)
-    logger.info('Loading the wand with the necessary spells')
-    WeaponClass.load_weapon_with_spells(gameworld, created_weapon, 'wand', class_component)
-
-    created_weapon2 = ItemManager.create_weapon(gameworld=gameworld, weapon_type='staff', game_config=game_config)
-    gameworld.add_component(created_weapon2, items.Location(x=0, y=0))
-    ItemUtilities.set_item_location(gameworld=gameworld, item_entity=created_weapon2, posx=14, posy=7)
-
-    created_weapon3 = ItemManager.create_weapon(gameworld=gameworld, weapon_type='dagger', game_config=game_config)
-    gameworld.add_component(created_weapon3, items.Location(x=0, y=0))
-    ItemUtilities.set_item_location(gameworld=gameworld, item_entity=created_weapon3, posx=17, posy=12)
-
-    created_weapon4 = ItemManager.create_weapon(gameworld=gameworld, weapon_type='rod', game_config=game_config)
-    gameworld.add_component(created_weapon4, items.Location(x=0, y=0))
-    ItemUtilities.set_item_location(gameworld=gameworld, item_entity=created_weapon4, posx=7, posy=6)
 
     playing_game = True
 

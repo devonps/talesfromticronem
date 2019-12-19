@@ -254,8 +254,9 @@ def display_build_library():
                                 draw_template_ui = True
                             if zone == len(build_zones) - 1:
                                 gameworld = world.create_game_world()
-                                player_entity = MobileUtilities.generate_base_mobile(gameworld=gameworld,
-                                                                                     game_config=game_config)
+                                player_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
+                                MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player_entity)
+                                MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config, player_entity=player_entity)
                                 # creating build entity to keep character creation process happy
                                 build_entity = BuildLibrary.create_build_entity(gameworld=gameworld)
                                 # name
