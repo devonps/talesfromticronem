@@ -16,6 +16,7 @@ from newGame.initialiseNewGame import setup_gameworld, generate_spells
 from newGame.Items import ItemManager
 from newGame.ClassWeapons import WeaponClass
 from components import mobiles
+from utilities.common import CommonUtils
 
 from ticronem import game_loop
 
@@ -1886,6 +1887,12 @@ class CharacterCreation:
                             selected_menu_option = 0
                     if event_action == 'enter':
                         if selected_menu_option == 0:  # accept character build and start game
+                            viewport_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
+                            CommonUtils.create_viewport_as_entity(gameworld=gameworld, vwp=viewport_entity)
+                            MobileUtilities.set_viewport_for_player(gameworld=gameworld, entity=player_entity,
+                                                                    viewportId=viewport_entity)
+                            logger.info('Viewport stored as entity {}', viewport_entity)
+
                             game_loop(gameworld=gameworld)
                         if selected_menu_option == 1:  # save current build
                             if not saved_build:

@@ -66,8 +66,7 @@ class RenderGameMap(esper.Processor):
         y_offset = 0
         x_offset = 1
 
-        x_min, x_max, y_min, y_max = RenderGameMap.get_viewport_boundary(gameworld=gameworld, game_map=game_map,
-                                                                         game_config=game_config,
+        x_min, x_max, y_min, y_max = RenderGameMap.get_viewport_boundary(gameworld=gameworld,
                                                                          player_entity=player_entity)
         if player_has_moved:
             RenderGameMap.clear_map_layer()
@@ -86,23 +85,24 @@ class RenderGameMap(esper.Processor):
             scry += 1
 
     @staticmethod
-    def get_viewport_boundary(gameworld, player_entity, game_config, game_map):
+    def get_viewport_boundary(gameworld, player_entity):
 
-        viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                     parameter='VIEWPORT_WIDTH')
-        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='VIEWPORT_HEIGHT')
+        viewport_id = MobileUtilities.get_viewport_id(gameworld=gameworld, entity=player_entity)
 
-        logger.info('viewport width/height {}/{}', viewport_width, viewport_height)
+        viewport_width = CommonUtils.get_viewport_width(gameworld=gameworld, viewport_id=viewport_id)
+        viewport_height = CommonUtils.get_viewport_height(gameworld=gameworld, viewport_id=viewport_id)
 
         map_x, map_y = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=player_entity)
         logger.info('player map pos x/y {}/{}', map_x, map_y)
 
-        viewport_x_min = 0
-        viewport_x_max = viewport_width
+        xinfo = CommonUtils.get_x_axis_info(gameworld=gameworld, viewport_id=viewport_id)
+        yinfo = CommonUtils.get_y_axis_info(gameworld=gameworld, viewport_id=viewport_id)
 
-        viewport_y_min = 0
-        viewport_y_max = viewport_height
+        viewport_x_min = xinfo[0]
+        viewport_x_max = xinfo[1]
+
+        viewport_y_min = yinfo[0]
+        viewport_y_max = yinfo[1]
         return viewport_x_min, viewport_x_max, viewport_y_min, viewport_y_max
 
     @staticmethod
@@ -115,26 +115,31 @@ class RenderGameMap(esper.Processor):
                                                                  parameter='TERMINAL_POS_X')
         term_pos_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                  parameter='TERMINAL_POS_Y')
-        viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                     parameter='VIEWPORT_WIDTH')
-        viewport_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='VIEWPORT_HEIGHT')
 
         terminal.layer(RenderLayer.ENTITIES.value)
 
         # pos.x represents the game map position and should be used to check for map obstructions only
         # pos.vpx represents the viewport position of where the PC should be rendered
 
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        viewport_id = MobileUtilities.get_viewport_id(gameworld=gameworld, entity=player_entity)
+        viewport_width = CommonUtils.get_viewport_width(gameworld=gameworld, viewport_id=viewport_id)
+        viewport_height = CommonUtils.get_viewport_height(gameworld=gameworld, viewport_id=viewport_id)
+
+        viewport_player_position = CommonUtils.get_player_position_info(gameworld=gameworld, viewport_id=viewport_id)
+
+        vpx = viewport_player_position[0]
+        vpy = viewport_player_position[1]
+
+        logger.info('viewport player position x/y {}/{}', vpx, vpy)
         for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
                                                                mobiles.Describable):
             if rend.isVisible:
-                if pos.vpx > viewport_width:
-                    pos.vpx = viewport_width
-
-                # logger.info('Mobile viewport x/y {}/{}', pos.vpx, pos.vpy)
-                # logger.info('Mobile map pos x/y {}/{}', pos.x, pos.y)
-                draw_pos_x = pos.vpx
-                draw_pos_y = pos.vpy
+                if ent == player_entity:
+                    if vpx > viewport_width:
+                        vpx = viewport_width
+                    draw_pos_x = vpx
+                    draw_pos_y = vpy
                 RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.image, image_x_scale, image_y_scale)
 
     @staticmethod
@@ -152,12 +157,12 @@ class RenderGameMap(esper.Processor):
 
     @staticmethod
     def render_entity(posx, posy, glyph, image_x_scale, image_y_scale):
-        # cloak = 21
-        # robe = 22
-        # shoes = 23
-        # weapon = 24
-        # characterbits = [cloak, glyph, robe, shoes, weapon]
-        characterbits = [glyph]
+        cloak = 21
+        robe = 22
+        shoes = 23
+        weapon = 24
+        characterbits = [cloak, glyph, robe, shoes, weapon]
+        # characterbits = [glyph]
 
         for cell in characterbits:
             terminal.put(x=posx * image_x_scale, y=posy * image_y_scale, c=0xE300 + cell)

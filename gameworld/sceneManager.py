@@ -6,6 +6,7 @@ from processors.updateEntities import UpdateEntitiesProcessor
 from utilities import configUtilities
 from loguru import logger
 
+from utilities.common import CommonUtils
 from utilities.externalfileutilities import Externalfiles
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
@@ -105,7 +106,18 @@ class SceneManager:
                                     game_map.tiles[posx][posy].image = 11
                                     game_map.tiles[posx][posy].block_sight = False
                                     playerEntity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+                                    viewport_entity = MobileUtilities.get_viewport_id(gameworld=gameworld,entity=playerEntity)
                                     MobileUtilities.set_mobile_position(gameworld=gameworld, entity=playerEntity, posx=posx, posy=posy)
+
+                                    vpx = MobileUtilities.get_mobile_x_position(gameworld=gameworld,entity=playerEntity)
+                                    vpy = MobileUtilities.get_mobile_y_position(gameworld=gameworld,entity=playerEntity)
+
+                                    CommonUtils.set_player_position_x(gameworld=gameworld, viewport_id=viewport_entity,
+                                                                      posx=vpx)
+                                    CommonUtils.set_player_position_y(gameworld=gameworld, viewport_id=viewport_entity,
+                                                                      posy=vpy)
+                                    
+                                    logger.warning('player viewport position is {}/{}', vpx, vpy)
                                     logger.info('Player set by scene at x/y {}/{}', posx, posy)
                                 posx += 1
                             posy += 1
