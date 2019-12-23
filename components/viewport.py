@@ -16,3 +16,11 @@ class PlayerViewportPosition:
     def __init__(self, viewport_x=0, viewport_y=0):
         self.viewport_x = viewport_x
         self.viewport_y = viewport_y
+
+
+class Information:
+    def __init__(self, boundaryRight=False, boundaryLeft=False, boundaryTop=False, boundaryBottom=False):
+        self.boundaryBottom = boundaryBottom
+        self.boundaryTop = boundaryTop
+        self.boundaryLeft = boundaryLeft
+        self.boundaryRight = boundaryRight

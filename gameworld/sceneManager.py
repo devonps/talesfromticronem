@@ -112,11 +112,11 @@ class SceneManager:
                                     vpx = MobileUtilities.get_mobile_x_position(gameworld=gameworld,entity=playerEntity)
                                     vpy = MobileUtilities.get_mobile_y_position(gameworld=gameworld,entity=playerEntity)
 
-                                    CommonUtils.set_player_position_x(gameworld=gameworld, viewport_id=viewport_entity,
-                                                                      posx=vpx)
-                                    CommonUtils.set_player_position_y(gameworld=gameworld, viewport_id=viewport_entity,
-                                                                      posy=vpy)
-                                    
+                                    CommonUtils.set_player_viewport_position_x(gameworld=gameworld, viewport_id=viewport_entity,
+                                                                               posx=vpx)
+                                    CommonUtils.set_player_viewport_position_y(gameworld=gameworld, viewport_id=viewport_entity,
+                                                                               posy=vpy)
+
                                     logger.warning('player viewport position is {}/{}', vpx, vpy)
                                     logger.info('Player set by scene at x/y {}/{}', posx, posy)
                                 posx += 1
