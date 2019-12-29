@@ -64,7 +64,7 @@ class RenderGameMap(esper.Processor):
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
 
         y_offset = 0
-        x_offset = 1
+        x_offset = 0
 
         x_min, x_max, y_min, y_max = RenderGameMap.get_viewport_boundary(gameworld=gameworld,
                                                                          player_entity=player_entity)
@@ -96,6 +96,9 @@ class RenderGameMap(esper.Processor):
 
         right_boundary_visited = CommonUtils.get_viewport_right_boundary(gameworld=gameworld, viewport_id=viewport_id)
         left_boundary_visited = CommonUtils.get_viewport_left_boundary(gameworld=gameworld, viewport_id=viewport_id)
+        viewport_player_position = CommonUtils.get_player_viewport_position_info(gameworld=gameworld, viewport_id=viewport_id)
+        vpx = viewport_player_position[0]
+        vpy = viewport_player_position[1]
 
         # current 'scrolling' method is to simply add +5 to both the min and max values of the viewport
 
@@ -107,11 +110,15 @@ class RenderGameMap(esper.Processor):
                 CommonUtils.set_viewport_x_axis_max_value(gameworld=gameworld, viewport_id=viewport_id, value=xmax + scroll_amount)
                 CommonUtils.set_viewport_right_boundary_visited_false(gameworld=gameworld, viewport_id=viewport_id)
 
+                CommonUtils.set_player_viewport_position_x(gameworld=gameworld, viewport_id=viewport_id, posx=vpx - scroll_amount)
+
         if left_boundary_visited:
-            if xmin - scroll_amount >= 0:
+            if xmin - scroll_amount == 0:
                 CommonUtils.set_viewport_x_axis_min_value(gameworld=gameworld, viewport_id=viewport_id, value=xmin - scroll_amount)
                 CommonUtils.set_viewport_x_axis_max_value(gameworld=gameworld, viewport_id=viewport_id, value=xmax - scroll_amount)
                 CommonUtils.set_viewport_left_boundary_visited_false(gameworld=gameworld, viewport_id=viewport_id)
+
+                CommonUtils.set_player_viewport_position_x(gameworld=gameworld, viewport_id=viewport_id, posx=vpx + scroll_amount)
 
         viewport_x_min = CommonUtils.get_viewport_x_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
         viewport_x_max = CommonUtils.get_viewport_x_axis_max_value(gameworld=gameworld, viewport_id=viewport_id)
@@ -136,13 +143,11 @@ class RenderGameMap(esper.Processor):
         viewport_id = MobileUtilities.get_viewport_id(gameworld=gameworld, entity=player_entity)
         viewport_width = CommonUtils.get_viewport_width(gameworld=gameworld, viewport_id=viewport_id)
         viewport_height = CommonUtils.get_viewport_height(gameworld=gameworld, viewport_id=viewport_id)
-
         viewport_player_position = CommonUtils.get_player_viewport_position_info(gameworld=gameworld, viewport_id=viewport_id)
 
         vpx = viewport_player_position[0]
         vpy = viewport_player_position[1]
 
-        # logger.info('viewport player position x/y {}/{}', vpx, vpy)
         for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
                                                                mobiles.Describable):
             if rend.isVisible:
