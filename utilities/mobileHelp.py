@@ -78,7 +78,20 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def set_mobile_position(gameworld, entity, posx, posy):
-        gameworld.add_component(entity, mobiles.Position(x=posx, y=posy, hasMoved=True, vpx=posx + 1, vpy=posy))
+        gameworld.add_component(entity, mobiles.Position(x=posx, y=posy, hasMoved=True))
+
+    @staticmethod
+    def get_mobile_x_position(gameworld, entity):
+        position_component = gameworld.component_for_entity(entity, mobiles.Position)
+
+        return position_component.x
+
+    @staticmethod
+    def get_mobile_y_position(gameworld, entity):
+        position_component = gameworld.component_for_entity(entity, mobiles.Position)
+
+        return position_component.y
+
 
     @staticmethod
     def set_player_velocity(gameworld, player_entity, direction, speed):
@@ -329,6 +342,17 @@ class MobileUtilities(numbers.Real):
         spellbar_component = gameworld.component_for_entity(entity, mobiles.SpellBar)
 
         return spellbar_component.entityId
+
+    @staticmethod
+    def set_viewport_for_player(gameworld, entity, viewportId):
+        gameworld.add_component(entity, mobiles.Viewport(entityId=viewportId))
+
+
+    @staticmethod
+    def get_viewport_id(gameworld, entity):
+        viewport_component = gameworld.component_for_entity(entity, mobiles.Viewport)
+
+        return viewport_component.entityId
 
 
     @staticmethod

@@ -2,6 +2,7 @@ import esper
 
 from components import mobiles
 from mapRelated.gameMap import GameMap
+from utilities.common import CommonUtils
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
@@ -14,21 +15,47 @@ class MoveEntities(esper.Processor):
         self.game_map = game_map
 
     def process(self, game_config):
+
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+        viewport_id = MobileUtilities.get_viewport_id(gameworld=self.gameworld, entity=player_entity)
+
+        viewport_width = CommonUtils.get_viewport_width(gameworld=self.gameworld, viewport_id=viewport_id)
+        viewport_height = CommonUtils.get_viewport_height(gameworld=self.gameworld, viewport_id=viewport_id)
+
+        viewport_player_position = CommonUtils.get_player_viewport_position_info(gameworld=self.gameworld,
+                                                                                 viewport_id=viewport_id)
+
+        vpx = viewport_player_position[0]
+        vpy = viewport_player_position[1]
+
         for ent, (vel, pos) in self.gameworld.get_components(mobiles.Velocity, mobiles.Position):
             am_i_blocked = self.check_for_blocked_movement(pos.x + vel.dx, pos.y + vel.dy)
             if not am_i_blocked:
                 pos.x += vel.dx
                 pos.y += vel.dy
-                pos.vpx += vel.dx
-                pos.vpy += vel.dy
+                vpx += vel.dx
+                vpy += vel.dy
+                CommonUtils.set_player_viewport_position_x(gameworld=self.gameworld, viewport_id=viewport_id, posx=vpx)
+                CommonUtils.set_player_viewport_position_y(gameworld=self.gameworld, viewport_id=viewport_id, posy=vpy)
+
+                logger.warning('player viewport position is {}/{}', vpx, vpy)
+                logger.warning('player map position is {}/{}', pos.x, pos.y)
+
+                if vpx >= (viewport_width - 8):
+                    logger.info('Hit imaginary right-edge boundary on the X axis')
+                    CommonUtils.set_viewport_right_boundary_visited_true(gameworld=self.gameworld, viewport_id=viewport_id)
+
+                if vpx - 8 <= 0:
+                    logger.info('Hit imaginary left-edge boundary on the X axis')
+                    CommonUtils.set_viewport_left_boundary_visited_true(gameworld=self.gameworld, viewport_id=viewport_id)
 
                 if vel.dx != 0 or vel.dy != 0:
                     svx = '0'
                     svy = '0'
 
-                    if vel.dx != '':
+                    if vel.dx != 0:
                         svx = str(vel.dx)
-                    if vel.dy != '':
+                    if vel.dy != 0:
                         svy = str(vel.dy)
 
                     # position_component.hasMoved = True

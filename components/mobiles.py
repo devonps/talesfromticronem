@@ -83,6 +83,11 @@ class SpellBar:
         self.entityId = entityId
 
 
+class Viewport:
+    def __init__(self, entityId=0):
+        self.entityId = entityId
+
+
 class Inventory:
     def __init__(self, exists=False):
         self.exists = exists
@@ -128,12 +133,10 @@ class Renderable:
 
 
 class Position:
-    def __init__(self, x=0, y=0, hasMoved=False, vpx=0, vpy=0):
+    def __init__(self, x=0, y=0, hasMoved=False):
         self.x = x
         self.y = y
         self.hasMoved = hasMoved
-        self.vpx = vpx
-        self.vpy = vpy
 
 
 class Velocity:
