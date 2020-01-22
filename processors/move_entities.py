@@ -38,8 +38,8 @@ class MoveEntities(esper.Processor):
                 CommonUtils.set_player_viewport_position_x(gameworld=self.gameworld, viewport_id=viewport_id, posx=vpx)
                 CommonUtils.set_player_viewport_position_y(gameworld=self.gameworld, viewport_id=viewport_id, posy=vpy)
 
-                logger.warning('player viewport position is {}/{}', vpx, vpy)
-                logger.warning('player map position is {}/{}', pos.x, pos.y)
+                # logger.warning('player viewport position is {}/{}', vpx, vpy)
+                # logger.warning('player map position is {}/{}', pos.x, pos.y)
 
                 if vpx >= (viewport_width - 8):
                     logger.info('Hit imaginary right-edge boundary on the X axis')
