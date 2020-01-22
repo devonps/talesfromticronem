@@ -299,6 +299,12 @@ class MobileUtilities(numbers.Real):
         gameworld.component_for_entity(entity, mobiles.Describable).glyph = value
 
     @staticmethod
+    def get_mobile_glyph(gameworld, entity):
+        describe_component = gameworld.component_for_entity(entity, mobiles.Describable)
+
+        return describe_component.glyph
+
+    @staticmethod
     def set_mobile_fg_render_colour(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.Describable).foreground = colourUtilities.get(value)
 
