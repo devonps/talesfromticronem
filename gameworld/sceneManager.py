@@ -145,6 +145,9 @@ class SceneManager:
     @staticmethod
     def prettify_the_map(game_map, maxX, maxY):
         game_config = configUtilities.load_config()
+        render_style = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                   parameter='render_style')
+
         tile_type_wall = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                      parameter='TILE_TYPE_WALL')
         tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',parameter='TILE_TYPE_FLOOR')
