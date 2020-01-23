@@ -42,11 +42,11 @@ class MoveEntities(esper.Processor):
                 # logger.warning('player map position is {}/{}', pos.x, pos.y)
 
                 if vpx >= (viewport_width - 8):
-                    logger.info('Hit imaginary right-edge boundary on the X axis')
+                    # logger.info('Hit imaginary right-edge boundary on the X axis')
                     CommonUtils.set_viewport_right_boundary_visited_true(gameworld=self.gameworld, viewport_id=viewport_id)
 
                 if vpx - 8 <= 0:
-                    logger.info('Hit imaginary left-edge boundary on the X axis')
+                    # logger.info('Hit imaginary left-edge boundary on the X axis')
                     CommonUtils.set_viewport_left_boundary_visited_true(gameworld=self.gameworld, viewport_id=viewport_id)
 
                 if vel.dx != 0 or vel.dy != 0:

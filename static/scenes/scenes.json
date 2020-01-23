@@ -4,8 +4,8 @@
     {
       "name": "academy",
       "loadMap": "startArea",
-      "mapx": "42",
-      "mapy": "41",
+      "mapx": "41",
+      "mapy": "27",
       "npcs": [
         {
           "displayName": "Joe",

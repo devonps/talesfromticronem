@@ -68,17 +68,20 @@ class RenderGameMap(esper.Processor):
             # display ascii
             player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
             player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+            viewport_id = MobileUtilities.get_viewport_id(gameworld=gameworld, entity=player_entity)
 
             player_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
             player_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
 
-            vp_width = 7
-            vp_height = 7
+            vp_width = CommonUtils.get_viewport_width(gameworld=gameworld, viewport_id=viewport_id)
+            vp_height = CommonUtils.get_viewport_height(gameworld=gameworld, viewport_id=viewport_id)
+            vpXmin = CommonUtils.get_viewport_x_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
+            vpYmin = CommonUtils.get_viewport_y_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
 
-            x_min = max(player_pos_x - vp_width, 0)
-            x_max = min(player_pos_x + vp_width, 41)
-            y_min = max(player_pos_y - vp_height, 0)
-            y_max = min(player_pos_y + vp_height, 41)
+            x_min = max(player_pos_x - vp_width, vpXmin)
+            x_max = min(player_pos_x + vp_width, game_map.width)
+            y_min = max(player_pos_y - vp_height, vpYmin)
+            y_max = min(player_pos_y + vp_height, game_map.height)
 
             if player_has_moved:
                 RenderGameMap.clear_map_layer()
