@@ -360,6 +360,15 @@ class MobileUtilities(numbers.Real):
 
         return viewport_component.entityId
 
+    @staticmethod
+    def set_MessageLog_for_player(gameworld, entity, logid):
+        gameworld.add_component(entity, mobiles.MessageLog(entityId=logid))
+
+    @staticmethod
+    def get_MessageLog_id(gameworld, entity):
+        messagelog_component = gameworld.component_for_entity(entity, mobiles.MessageLog)
+
+        return messagelog_component.entityId
 
     @staticmethod
     def describe_the_mobile(gameworld, entity):

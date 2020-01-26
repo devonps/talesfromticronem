@@ -1,7 +1,8 @@
-
 from bearlibterminal import terminal
 
 from loguru import logger
+
+from components.messages import Message
 from utilities import configUtilities, colourUtilities
 from utilities.externalfileutilities import Externalfiles
 from utilities.buildLibrary import BuildLibrary
@@ -100,7 +101,8 @@ class CharacterCreation:
         logger.debug('Creating the player character entity')
         player_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
         MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player_entity)
-        MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config, player_entity=player_entity)
+        MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config,
+                                                player_entity=player_entity)
         logger.info('Player character stored as entity {}', player_entity)
 
         CharacterCreation.choose_race(gameworld=gameworld, player=player_entity)
@@ -757,7 +759,8 @@ class CharacterCreation:
                             hand_choice = 1
                     if event_action == 'enter':
                         if main_hand_selected_weapon != 'nothing' and off_hand_selected_weapon != 'nothing':
-                            CharacterCreation.choose_armourset(gameworld=gameworld, main_hand=main_hand_selected_weapon, off_hand=off_hand_selected_weapon)
+                            CharacterCreation.choose_armourset(gameworld=gameworld, main_hand=main_hand_selected_weapon,
+                                                               off_hand=off_hand_selected_weapon)
 
                         if weapon_info[selected_menu_option][weapon_hands] == 'off' and hand_choice == 2:
                             if off_hand_weapon_id == main_hand_weapon_id:
@@ -1217,7 +1220,8 @@ class CharacterCreation:
 
             if selected_name != '':
                 terminal.clear_area(x=name_menu_x, y=30, width=35, height=1)
-                string_to_print = 'color=[' + colourUtilities.get('MEDIUMSLATEBLUE') + ']' + 'Selected Name: ' + selected_name
+                string_to_print = 'color=[' + colourUtilities.get(
+                    'MEDIUMSLATEBLUE') + ']' + 'Selected Name: ' + selected_name
                 terminal.print(x=name_menu_x, y=30, s=string_to_print)
 
             # blit changes to root console
@@ -1254,19 +1258,21 @@ class CharacterCreation:
                         if gender_choice == 1:
                             MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity, gender='male')
                         else:
-                            MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity,gender='female')
+                            MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity,
+                                                              gender='female')
 
                         if selected_menu_option == 1:
                             enter_name = True
                             if my_word != '':
-                                terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y,width=35, height=1)
+                                terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y, width=35, height=1)
 
                             if selected_name != '':
-                                terminal.clear_area(x=mx, y=(name_menu_y + 3) + max_menu_option, width=35,height=1)
+                                terminal.clear_area(x=mx, y=(name_menu_y + 3) + max_menu_option, width=35, height=1)
                                 # textinput_console.draw_rect(x=mx, y=(name_menu_y + 3) + max_menu_option, width=35,
                                 #                             height=1, ch=32, fg=tcod.white)
                             while enter_name:
-                                terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=txt_panel_cursor)
+                                terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y,
+                                             c=txt_panel_cursor)
                                 # textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y,
                                 #                            ch=txt_panel_cursor)
                                 # blit changes to root console
@@ -1275,7 +1281,8 @@ class CharacterCreation:
                                 if event_to_be_processed == 'textinput' and letter_count < max_letters:
                                     if (64 < ord(event_action) < 91) or (96 < ord(event_action) < 123):
                                         # textinput_console.default_fg = tcod.white
-                                        terminal.put(x=txt_panel_write_x + letter_count, y=txt_panel_write_y, c=ord(event_action))
+                                        terminal.put(x=txt_panel_write_x + letter_count, y=txt_panel_write_y,
+                                                     c=ord(event_action))
                                         # textinput_console.put_char(x=txt_panel_write_x + letter_count,
                                         #                            y=txt_panel_write_y, ch=ord(event_action))
                                         my_word += event_action
@@ -1285,14 +1292,17 @@ class CharacterCreation:
                                         enter_name = False
                                         my_word = ''
                                         letter_count = 0
-                                        terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y, width=35, height=1)
+                                        terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y, width=35,
+                                                            height=1)
                                         # textinput_console.draw_rect(x=txt_panel_write_x, y=txt_panel_write_y,
                                         #                             width=35, height=1, ch=32, fg=tcod.white)
                                     if event_action == 'delete':
                                         if letter_count > 0:
                                             # textinput_console.default_fg = tcod.white
-                                            terminal.put(x=(txt_panel_write_x + letter_count) - 1, y=txt_panel_write_y,c=32)
-                                            terminal.put(x=txt_panel_cursor_x + letter_count,y=txt_panel_cursor_y, c=32)
+                                            terminal.put(x=(txt_panel_write_x + letter_count) - 1, y=txt_panel_write_y,
+                                                         c=32)
+                                            terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y,
+                                                         c=32)
                                             # textinput_console.put_char(x=(txt_panel_write_x + letter_count) - 1,
                                             #                            y=txt_panel_write_y, ch=32)
                                             # textinput_console.put_char(x=txt_panel_cursor_x + letter_count,
@@ -1305,11 +1315,12 @@ class CharacterCreation:
                                         my_word = ''
                                         enter_name = False
                                         character_not_named = False
-                                        terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y,c=32)
+                                        terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=32)
                                         # textinput_console.put_char(x=txt_panel_cursor_x + letter_count,
                                         #                            y=txt_panel_cursor_y, ch=32)
                                         letter_count = 0
-                                        terminal.clear_area(x=txt_panel_letters_x, y=txt_panel_write_y, width=18, height=1)
+                                        terminal.clear_area(x=txt_panel_letters_x, y=txt_panel_write_y, width=18,
+                                                            height=1)
                                         # textinput_console.draw_rect(x=txt_panel_letters_x, y=txt_panel_write_y,
                                         #                             width=18, height=1, ch=32, fg=tcod.white)
                                         MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
@@ -1366,7 +1377,7 @@ class CharacterCreation:
 
                         if selected_menu_option == 3:
                             if selected_name != '':
-                                terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y,width=35, height=1)
+                                terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y, width=35, height=1)
                             selected_name = MobileUtilities.choose_random_name(gameworld=gameworld,
                                                                                game_config=game_config,
                                                                                entity=player_entity,
@@ -1891,7 +1902,19 @@ class CharacterCreation:
                             CommonUtils.create_viewport_as_entity(gameworld=gameworld, vwp=viewport_entity)
                             MobileUtilities.set_viewport_for_player(gameworld=gameworld, entity=player_entity,
                                                                     viewportId=viewport_entity)
+                            messagelog_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
+                            CommonUtils.create_message_log_as_entity(gameworld=gameworld, logid=messagelog_entity)
+                            MobileUtilities.set_MessageLog_for_player(gameworld=gameworld, entity=player_entity,
+                                                                      logid=messagelog_entity)
                             logger.info('Viewport stored as entity {}', viewport_entity)
+                            logger.info('Mesage log stored as entity {}', messagelog_entity)
+
+                            msg = Message(text="Hello World", msgclass="all",
+                                          fg=colourUtilities.get("DARKVIOLET"), bg=colourUtilities.get("WHITE"), fnt="dungeon")
+
+                            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
+                            msg = Message(text="There's a full moon tonight", msgclass="combat", fg="yellow", bg="", fnt="")
+                            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
 
                             game_loop(gameworld=gameworld)
                         if selected_menu_option == 1:  # save current build
