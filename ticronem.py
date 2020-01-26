@@ -6,12 +6,14 @@ from bearlibterminal import terminal
 from newGame.Entities import Entity
 from ui.character_screen import display_hero_panel
 from newGame.initialiseNewGame import setup_gameworld
+from utilities.common import CommonUtils
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
 from utilities import configUtilities
 from utilities.input_handlers import handle_game_keys
 from gameworld.sceneManager import SceneManager
+from utilities import colourUtilities
 
 from newGame import newGame
 
@@ -74,13 +76,24 @@ def game_loop(gameworld):
                     MobileUtilities.mobile_pick_up_item(gameworld=gameworld, mobile=player)
 
             if event_to_be_processed == 'mouseleftbutton':
-                logger.info('cell x/y {}/{}', event_action[0], event_action[1])
+                # logger.info('cell x/y {}/{}', event_action[0], event_action[1])
+                if event_action[0] == 69 and event_action[1] == 48:
+                    msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+                    CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="all")
+
+                if event_action[0] == 71 and event_action[1] == 48:
+                    msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+                    CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="combat")
+
+
         #
         # get monsters intended action
         #
 
         # run ALL game processors
         gameworld.process(game_config)
+        # blit the console
+        terminal.refresh()
 
 
 def game_replay(con, game_config):

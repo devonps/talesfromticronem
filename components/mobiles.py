@@ -88,6 +88,11 @@ class Viewport:
         self.entityId = entityId
 
 
+class MessageLog:
+    def __init__(self, entityId=0):
+        self.entityId = entityId
+
+
 class Inventory:
     def __init__(self, exists=False):
         self.exists = exists

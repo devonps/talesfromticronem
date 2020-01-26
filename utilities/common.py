@@ -1,5 +1,6 @@
+from components.messages import Message
 from utilities import configUtilities
-from components import viewport, mobiles
+from components import viewport, messages
 
 
 class CommonUtils:
@@ -7,6 +8,83 @@ class CommonUtils:
     @staticmethod
     def calculate_percentage(lowNumber, maxNumber):
         return int((lowNumber / maxNumber) * 100)
+
+    @staticmethod
+    def create_message_log_as_entity(gameworld, logid):
+        game_config = configUtilities.load_config()
+        message_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                          parameter='MSG_PANEL_WIDTH')
+        message_panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                           parameter='MSG_PANEL_START_Y')
+        message_panel_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                          parameter='MSG_PANEL_DEPTH')
+        # need to add data to the components next
+        gameworld.add_component(logid, messages.MessageLog(width=message_panel_width,
+                                                           height=message_panel_height, depth=message_panel_depth,
+                                                           display_from_message=0, display_to_message=10, visibleLog='all'))
+
+    @staticmethod
+    def add_message(gameworld, message, logid):
+        storedMsgs = CommonUtils.get_message_log_all_message(gameworld=gameworld, logid=logid)
+        storedMsgs.append(message)
+        messaage_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        messaage_component.storedMessages = storedMsgs
+
+    @staticmethod
+    def set_visible_log(gameworld, logid, logToDisplay):
+        messaageLog_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        messaageLog_component.visibleLog = logToDisplay
+
+    @staticmethod
+    def get_visible_log(gameworld, logid):
+
+        messaageLog_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        return messaageLog_component.visibleLog
+
+    @staticmethod
+    def build_message_to_be_displayed(gameworld, logid, message):
+        str_to_print = ""
+        if message.msgclass == CommonUtils.get_visible_log(gameworld=gameworld, logid=logid):
+            fg_color = "white" if message.fg == "" else message.fg
+            bg_color = "red" if message.bg == "" else message.bg
+            str_to_print += "[color=" + fg_color + "]"
+            str_to_print += "[bkcolor=" + bg_color + "]"
+            if message.fnt != "":
+                fnt = message.fnt
+                str_to_print += "[font=" + fnt + "]"
+            str_to_print += message.text
+
+        return str_to_print
+
+    @staticmethod
+    def get_message_log_width(gameworld, logid):
+        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        return log_component.width
+
+    @staticmethod
+    def get_message_log_height(gameworld, logid):
+        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        return log_component.height
+
+    @staticmethod
+    def get_message_log_depth(gameworld, logid):
+        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        return log_component.depth
+
+    @staticmethod
+    def get_message_log_all_message(gameworld, logid):
+        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        return log_component.storedMessages
+
+    @staticmethod
+    def get_message_log_first_dispay_message(gameworld, logid):
+        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        return log_component.display_from_message
+
+    @staticmethod
+    def get_message_log_last_display_message(gameworld, logid):
+        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        return log_component.display_to_message
 
     @staticmethod
     def create_viewport_as_entity(gameworld, vwp):

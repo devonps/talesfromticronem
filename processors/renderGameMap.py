@@ -36,13 +36,10 @@ class RenderGameMap(esper.Processor):
 
         # GUI viewport
         self.render_statusbox(game_config)
-        # self.render_message_box(self.con, game_config, self.gameworld)
         self.render_player_status_effects(game_config=game_config)
         self.render_spell_bar(self, game_config=game_config)
         self.render_player_vitals(gameworld=self.gameworld, game_config=game_config)
 
-        # blit the console
-        terminal.refresh()
 
     @staticmethod
     def clear_map_layer():
@@ -306,8 +303,56 @@ class RenderGameMap(esper.Processor):
         terminal.layer(prev_layer)
 
     @staticmethod
-    def render_message_box(con, game_config, gameworld):
-        pass
+    def render_message_panel(game_config):
+        message_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='MSG_PANEL_WIDTH')
+        message_panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                       parameter='MSG_PANEL_START_Y')
+
+        message_panel_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                       parameter='MSG_PANEL_START_X')
+        message_panel_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                       parameter='MSG_PANEL_DEPTH')
+
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Xscale')
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Yscale')
+
+        prev_layer = terminal.state(terminal.TK_LAYER)
+        terminal.layer(RenderLayer.HUD.value)
+
+        # top left
+        terminal.put(x=(message_panel_start_x * image_x_scale), y=message_panel_height * image_y_scale, c=0xE700 + 0)
+
+        # left edge
+        for d in range(message_panel_depth):
+            terminal.put(x=(message_panel_start_x * image_x_scale), y=(message_panel_height + d) * image_y_scale, c=0xE700 + 4)
+
+        # bottom left
+        terminal.put(x=(message_panel_start_x * image_x_scale), y=(message_panel_height + 5) * image_y_scale, c=0xE700 + 2)
+
+        # top right
+        terminal.put(x=(message_panel_start_x * image_x_scale) + message_panel_width, y=message_panel_height * image_y_scale, c=0xE700 + 1)
+
+        # bottom right
+        terminal.put(x=(message_panel_start_x * image_x_scale) + message_panel_width, y=(message_panel_height + 5) * image_y_scale, c=0xE700 + 3)
+
+        # top edge
+        for a in range(message_panel_width):
+            terminal.put(x=a + (message_panel_start_x * image_x_scale), y=message_panel_height * image_y_scale, c=0xE700 + 6)
+
+        # right edge
+        for d in range(message_panel_depth):
+            terminal.put(x=message_panel_start_x * image_x_scale + message_panel_width, y=(message_panel_height + d) * image_y_scale, c=0xE700 + 5)
+
+        # bottom edge
+        for a in range(message_panel_width):
+            terminal.put(x=a + (message_panel_start_x * image_x_scale), y=(message_panel_height + 5) * image_y_scale, c=0xE700 + 7)
+
+        # now show the messages
+
+        terminal.layer(prev_layer)
 
     @staticmethod
     def render_player_status_effects(game_config):

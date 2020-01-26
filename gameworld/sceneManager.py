@@ -3,6 +3,7 @@ from mapRelated.gameMap import GameMap
 from processors.move_entities import MoveEntities
 from processors.renderGameMap import RenderGameMap
 from processors.updateEntities import UpdateEntitiesProcessor
+from processors.renderMessageLog import RenderMessageLog
 from utilities import configUtilities
 from loguru import logger
 
@@ -133,8 +134,10 @@ class SceneManager:
             move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
             update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
             gameworld.add_processor(renderGameMapProcessor)
+            renderMessageLogProcessor = RenderMessageLog(gameworld=gameworld)
             gameworld.add_processor(move_entities_processor)
             gameworld.add_processor(update_entities_processor)
+            gameworld.add_processor(renderMessageLogProcessor)
 
         return game_map, mapAreaMaxX - 1, mapAreaMaxY - 1
 
