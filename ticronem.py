@@ -3,7 +3,6 @@ import tcod.event
 
 from bearlibterminal import terminal
 
-from newGame.Entities import Entity
 from ui.character_screen import display_hero_panel
 from newGame.initialiseNewGame import setup_gameworld
 from utilities.common import CommonUtils
@@ -13,8 +12,6 @@ from loguru import logger
 from utilities import configUtilities
 from utilities.input_handlers import handle_game_keys
 from gameworld.sceneManager import SceneManager
-from utilities import colourUtilities
-
 from newGame import newGame
 
 
@@ -23,13 +20,6 @@ def game_loop(gameworld):
     game_config = configUtilities.load_config()
     player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
-    # enemyObject = Entity(gameworld=gameworld)
-    # enemy_id = enemyObject.create_new_entity()
-    # enemyObject.create_new_enemy(entity_id=enemy_id)
-    #
-    # logger.warning('NEW ENEMY CREATED WITH {} AS THE ENTITY ID', enemy_id)
-
-    terminal.composition(terminal.TK_ON)
     terminal.clear()
 
     setup_gameworld(game_config)

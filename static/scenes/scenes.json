@@ -12,122 +12,18 @@
           "internalName": "academyMaster",
           "class": "player",
           "weapon": "staff",
-          "location": [
-            {
-              "prefab": "0",
-              "x": "30",
-              "y": "random"
-            }
-            ]
+          "identifier": "A"
         },
         {
           "displayName": "random",
           "internalName": "practiceMaster",
           "class": "random",
           "weapon": "random",
-          "location": [
-            {
-              "prefab": "1",
-              "x": "10",
-              "y": "15"
-            }
-            ]
+          "identifier": "B"
         }
         ],
       "theme": "dungeon",
       "sceneExits": "enemyCamp"
-    },
-        {
-      "name": "enemycamp",
-      "loadMap": "enemycamp",
-      "mapx": "40",
-      "mapy": "21",
-      "npcs": [
-        {
-          "displayName": "Joe",
-          "internalName": "academyMaster",
-          "class": "player",
-          "weapon": "staff",
-          "location": [
-            {
-              "prefab": "0",
-              "x": "55",
-              "y": "random"
-            }
-            ]
-        },
-        {
-          "displayName": "random",
-          "internalName": "practiceMaster",
-          "class": "random",
-          "weapon": "random",
-          "location": [
-            {
-              "prefab": "1",
-              "x": "10",
-              "y": "15"
-            }
-            ]
-        }
-        ],
-      "theme": "dungeon",
-      "sceneExits": "startArea"
-    },
-    {
-      "name": "dummy-never-used-shows-possibilities",
-      "loadMap": "startArea",
-      "mapx": "60",
-      "mapy": "32",
-      "prefabs": [
-        {
-          "id": "1",
-          "exits": "north, east, south, west",
-          "floor": "0",
-          "wall": "0"
-        }
-        ],
-      "npcs": [
-        {
-          "displayName": "Joe",
-          "internalName": "academyMaster",
-          "class": "player",
-          "weapon": "staff",
-          "location": [
-            {
-              "prefab": "0",
-              "x": "55",
-              "y": "random"
-            }
-            ]
-        },
-        {
-          "displayName": "random",
-          "internalName": "practiceMaster",
-          "class": "random",
-          "weapon": "random",
-          "location": [
-            {
-              "prefab": "1",
-              "x": "10",
-              "y": "15"
-            }
-            ]
-        }
-        ],
-      "architecture":
-        {
-          "walls": "245",
-          "floor": "45"
-        },
-      "playableArea":
-        {
-          "width": "90",
-          "height": "45"
-        },
-      "numberFloors": "1",
-      "theme": "dungeon",
-      "sceneExits": "enemyCamp"
-
     }
   ]
 }

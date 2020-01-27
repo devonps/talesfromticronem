@@ -16,7 +16,7 @@ from utilities.jsonUtilities import read_json_file
 class Entity:
     def __init__(self, gameworld):
         self.gameworld = gameworld
-        self.game_config = game_config = configUtilities.load_config()
+        self.game_config = configUtilities.load_config()
 
     def create_new_entity(self):
         entity_id = MobileUtilities.get_next_entity_id(self.gameworld)
@@ -87,13 +87,7 @@ class Entity:
             MobileUtilities.setup_class_attributes(gameworld=self.gameworld, player=entity_id, selected_class=enemy_class, health=100, spellfile='')
             MobileUtilities.set_mobile_description(gameworld=self.gameworld, entity=entity_id, value=enemy_desc)
             MobileUtilities.set_mobile_glyph(gameworld=self.gameworld, entity=entity_id, value=enemy_glyph)
-            MobileUtilities.set_mobile_fg_render_colour(gameworld=self.gameworld, entity=entity_id, value=enemy_fg)
-            MobileUtilities.set_mobile_bg_render_colour(gameworld=self.gameworld, entity=entity_id, value=enemy_bg)
+            MobileUtilities.set_mobile_fg_render_colour(gameworld=self.gameworld, entity=entity_id, value=enemy_fg.upper())
+            MobileUtilities.set_mobile_bg_render_colour(gameworld=self.gameworld, entity=entity_id, value=enemy_bg.upper())
             MobileUtilities.set_mobile_render_image(gameworld=self.gameworld, entity=entity_id, value=enemy_image)
-
-            player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
-
-            position_component = self.gameworld.component_for_entity(player_entity, mobiles.Position)
-
-
-            MobileUtilities.set_mobile_position(gameworld=self.gameworld, entity=entity_id, posx=position_component.x + 5, posy=position_component.y + 5)
+            MobileUtilities.set_mobile_visible(gameworld=self.gameworld, entity=entity_id)
