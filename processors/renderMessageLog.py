@@ -1,9 +1,7 @@
 import esper
 from bearlibterminal import terminal
-from components.messages import MessageLog, Message
-from utilities import configUtilities, colourUtilities
+from utilities import configUtilities
 from utilities.mobileHelp import MobileUtilities
-from loguru import logger
 from utilities.common import CommonUtils
 from mapRelated.gameMap import RenderLayer
 
@@ -13,7 +11,9 @@ class RenderMessageLog(esper.Processor):
         self.gameworld = gameworld
 
     def process(self, game_config):
+        terminal.composition(terminal.TK_ON)
         self.render_message_panel(self, game_config)
+        terminal.composition(terminal.TK_OFF)
 
     @staticmethod
     def render_message_panel(self, game_config):

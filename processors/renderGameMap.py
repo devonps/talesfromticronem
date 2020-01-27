@@ -3,9 +3,8 @@ import esper
 from bearlibterminal import terminal
 
 from components import mobiles, items
-from utilities import configUtilities, colourUtilities
+from utilities import configUtilities
 from utilities.mobileHelp import MobileUtilities
-from loguru import logger
 from mapRelated.gameMap import RenderLayer
 from utilities.common import CommonUtils
 
@@ -35,20 +34,21 @@ class RenderGameMap(esper.Processor):
         self.render_mobiles(game_config, self.gameworld)
 
         # GUI viewport
+        terminal.composition(terminal.TK_ON)
         self.render_statusbox(game_config)
         self.render_player_status_effects(game_config=game_config)
         self.render_spell_bar(self, game_config=game_config)
         self.render_player_vitals(gameworld=self.gameworld, game_config=game_config)
-
+        terminal.composition(terminal.TK_OFF)
 
     @staticmethod
     def clear_map_layer():
-        prev_layer = terminal.state(terminal.TK_LAYER)
-        terminal.layer(RenderLayer.MAP.value)
+        # prev_layer = terminal.state(terminal.TK_LAYER)
+        # terminal.layer(RenderLayer.MAP.value)
         terminal.bkcolor('black')
         terminal.clear_area(0, 0, terminal.state(terminal.TK_WIDTH), terminal.state(terminal.TK_HEIGHT))
 
-        terminal.layer(prev_layer)
+        # terminal.layer(prev_layer)
 
     @staticmethod
     def render_map(gameworld, game_config, game_map):
@@ -186,7 +186,7 @@ class RenderGameMap(esper.Processor):
         render_style = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                    parameter='render_style')
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        terminal.layer(RenderLayer.ENTITIES.value)
+        # terminal.layer(RenderLayer.ENTITIES.value)
         draw_pos_x = 0
         draw_pos_y = 0
 
@@ -194,10 +194,11 @@ class RenderGameMap(esper.Processor):
             for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
                                                                    mobiles.Describable):
                 if rend.isVisible:
-                    if ent == player_entity:
-                        draw_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
-                        draw_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
-                    RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, 0, 0, render_style)
+                    draw_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
+                    draw_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
+                    fg = desc.foreground
+                    bg = desc.background
+                    RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, 0, 0, render_style, fg, bg)
         else:
             image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                         parameter='map_Xscale')
@@ -240,10 +241,11 @@ class RenderGameMap(esper.Processor):
                 RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, desc.fg, desc.bg, render_style)
 
     @staticmethod
-    def render_entity(posx, posy, glyph, image_x_scale, image_y_scale, render_style):
+    def render_entity(posx, posy, glyph, image_x_scale, image_y_scale, render_style, fg, bg):
 
         if render_style == 1:
-            terminal.printf(x=posx, y=posy, s="[font=dungeon]" + glyph)
+            str_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph
+            terminal.printf(x=posx, y=posy, s=str_to_print)
         else:
             cloak = 21
             robe = 22
@@ -267,8 +269,8 @@ class RenderGameMap(esper.Processor):
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='map_Yscale')
 
-        prev_layer = terminal.state(terminal.TK_LAYER)
-        terminal.layer(RenderLayer.HUD.value)
+        # prev_layer = terminal.state(terminal.TK_LAYER)
+        # terminal.layer(RenderLayer.HUD.value)
 
         left_x = 1
 
@@ -300,7 +302,7 @@ class RenderGameMap(esper.Processor):
         for a in range(left_x, statusbox_width):
             terminal.put(x=a * image_x_scale, y=(statusbox_height + 5) * image_y_scale, c=0xE700 + 7)
 
-        terminal.layer(prev_layer)
+        # terminal.layer(prev_layer)
 
     @staticmethod
     def render_message_panel(game_config):
@@ -320,7 +322,7 @@ class RenderGameMap(esper.Processor):
                                                                     parameter='map_Yscale')
 
         prev_layer = terminal.state(terminal.TK_LAYER)
-        terminal.layer(RenderLayer.HUD.value)
+        # terminal.layer(RenderLayer.HUD.value)
 
         # top left
         terminal.put(x=(message_panel_start_x * image_x_scale), y=message_panel_height * image_y_scale, c=0xE700 + 0)
@@ -352,7 +354,7 @@ class RenderGameMap(esper.Processor):
 
         # now show the messages
 
-        terminal.layer(prev_layer)
+        # terminal.layer(prev_layer)
 
     @staticmethod
     def render_player_status_effects(game_config):
@@ -363,12 +365,11 @@ class RenderGameMap(esper.Processor):
                                                                       parameter='STATUSBOX_HEIGHT')
 
         prev_layer = terminal.state(terminal.TK_LAYER)
-        terminal.layer(RenderLayer.STATUSEFFECTS.value)
-        terminal.composition(terminal.TK_OFF)
+        # terminal.layer(RenderLayer.STATUSEFFECTS.value)
         RenderGameMap.render_boons(iy=image_y_scale, statusbox_y_position=statusbox_height)
         RenderGameMap.render_conditions(iy=image_y_scale, statusbox_y_position=statusbox_height)
         RenderGameMap.render_controls(iy=image_y_scale, statusbox_y_position=statusbox_height)
-        terminal.layer(prev_layer)
+        # terminal.layer(prev_layer)
 
     @staticmethod
     def render_boons(iy, statusbox_y_position):
@@ -401,12 +402,11 @@ class RenderGameMap(esper.Processor):
     def render_player_vitals(gameworld, game_config):
 
         prev_layer = terminal.state(terminal.TK_LAYER)
-        terminal.layer(RenderLayer.HUD.value)
-        terminal.composition(terminal.TK_ON)
+        # terminal.layer(RenderLayer.HUD.value)
         RenderGameMap.render_health(gameworld=gameworld, game_config=game_config)
         RenderGameMap.render_mana(gameworld=gameworld, game_config=game_config)
         RenderGameMap.render_special_power(gameworld=gameworld, game_config=game_config)
-        terminal.layer(prev_layer)
+        # terminal.layer(prev_layer)
 
     @staticmethod
     def render_health(gameworld, game_config):
@@ -516,8 +516,7 @@ class RenderGameMap(esper.Processor):
         y = statusbox_height + 1
 
         prev_layer = terminal.state(terminal.TK_LAYER)
-        terminal.layer(RenderLayer.SPELLBAR.value)
-        terminal.composition(terminal.TK_ON)
+        # terminal.layer(RenderLayer.SPELLBAR.value)
 
         # spell bar slots are drawn first
         for a in range(10):
@@ -526,4 +525,4 @@ class RenderGameMap(esper.Processor):
         for a in range(4):
             terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE400 + a)
 
-        terminal.layer(prev_layer)
+        # terminal.layer(prev_layer)

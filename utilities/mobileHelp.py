@@ -291,6 +291,19 @@ class MobileUtilities(numbers.Real):
                                                       legs=0, chest=0, shoulders=0))
 
     @staticmethod
+    def set_mobile_visible(gameworld, entity):
+        gameworld.add_component(entity, mobiles.Renderable(is_visible=True))
+
+    @staticmethod
+    def set_mobile_invisible(gameworld, entity):
+        gameworld.add_component(entity, mobiles.Renderable(is_visible=False))
+
+    @staticmethod
+    def get_mobile_renderstate(gameworld, entity):
+        render_component = gameworld.component_for_entity(entity, mobiles.Renderable)
+        return render_component.is_visible
+
+    @staticmethod
     def set_mobile_description(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.Describable).description = value
 

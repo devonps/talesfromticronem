@@ -1,5 +1,6 @@
 from components import mobiles
 from mapRelated.gameMap import GameMap
+from newGame.Entities import Entity
 from processors.move_entities import MoveEntities
 from processors.renderGameMap import RenderGameMap
 from processors.updateEntities import UpdateEntitiesProcessor
@@ -117,19 +118,27 @@ class SceneManager:
                                                                                posx=vpx)
                                     CommonUtils.set_player_viewport_position_y(gameworld=gameworld, viewport_id=viewport_entity,
                                                                                posy=vpy)
+                                if cell in 'ABCDEFG':
+                                    npcs = sceneKey['npcs']
+                                    npc_name = npcs[0]['displayName']
+                                    logger.debug('NPC Name {}', npc_name)
+                                    enemyObject = Entity(gameworld=gameworld)
+                                    enemy_id = enemyObject.create_new_entity()
+                                    enemyObject.create_new_enemy(entity_id=enemy_id)
 
-                                    logger.warning('player viewport position is {}/{}', vpx, vpy)
-                                    logger.info('Player set by scene at x/y {}/{}', posx, posy)
+                                    plx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=playerEntity)
+                                    ply = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=playerEntity)
+
+                                    MobileUtilities.set_mobile_position(gameworld=gameworld, entity=enemy_id, posx=plx + 5,
+                                                                        posy=ply + 5)
+
                                 posx += 1
                             posy += 1
-                        logger.info('Scene uses external file called {}', mapAreaFile)
-                        logger.info('The map dimensions are {} by {}', mapAreaMaxX, mapAreaMaxY)
                     else:
                         # generate random map
                         pass
 
         if currentscene == 1:
-            camera = Camera(width=20, height=20)
             renderGameMapProcessor = RenderGameMap(game_map=game_map, gameworld=gameworld)
             move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
             update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
