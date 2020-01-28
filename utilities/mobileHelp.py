@@ -1,7 +1,7 @@
 from components import mobiles, userInput, items, spellBar
 from loguru import logger
 from utilities.itemsHelp import ItemUtilities, display_inspect_panel
-from utilities import world, common
+from utilities import world
 from utilities import configUtilities, colourUtilities
 
 import numbers
@@ -15,8 +15,36 @@ class MobileUtilities(numbers.Real):
     #
 
     @staticmethod
-    def delete_entity(gameworld, entity):
-        world.delete_entity(gameworld=gameworld, entity=entity)
+    def create_armour_for_npc(gameworld, entity_id, armour_modifier, px_bonus):
+        if armour_modifier.lower() == 'healer':
+            current_healingpower = MobileUtilities.get_mobile_healing_power(gameworld=gameworld, entity=entity_id)
+            new_bonus = current_healingpower + px_bonus
+            MobileUtilities.set_mobile_healing_power(gameworld=gameworld, entity=entity_id, value=new_bonus)
+
+        if armour_modifier.lower() == 'malign':
+            current_condidamage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld, entity=entity_id)
+            new_bonus = current_condidamage + px_bonus
+            MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=entity_id, value=new_bonus)
+
+        if armour_modifier.lower() == 'mighty':
+            current_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=entity_id)
+            new_bonus = current_power + px_bonus
+            MobileUtilities.set_mobile_power(gameworld=gameworld, entity=entity_id, value=new_bonus)
+
+        if armour_modifier.lower() == 'precise':
+            current_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld, entity=entity_id)
+            new_bonus = current_precision + px_bonus
+            MobileUtilities.set_mobile_precision(gameworld=gameworld, entity=entity_id, value=new_bonus)
+
+        if armour_modifier.lower() == 'resilient':
+            current_toughness = MobileUtilities.get_mobile_toughness(gameworld=gameworld, entity=entity_id)
+            new_bonus = current_toughness + px_bonus
+            MobileUtilities.set_mobile_toughness(gameworld=gameworld, entity=entity_id, value=new_bonus)
+
+        if armour_modifier.lower() == 'vital':
+            current_vitality = MobileUtilities.get_mobile_vitality(gameworld=gameworld, entity=entity_id)
+            new_bonus = current_vitality + px_bonus
+            MobileUtilities.set_mobile_vitality(gameworld=gameworld, entity=entity_id, value=new_bonus)
 
     @staticmethod
     def set_player_gender(gameworld, entity, gender):

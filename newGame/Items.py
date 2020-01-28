@@ -75,6 +75,14 @@ class ItemManager:
                 return myweapon  # this is the entity id for the newly created weapon
 
     @staticmethod
+    def create_and_equip_armourset_for_npc(gameworld, as_display_name, armour_modifier, entity_id):
+        game_config = configUtilities.load_config()
+        this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=as_display_name,
+                                                            prefix=armour_modifier, game_config=game_config)
+
+        ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=entity_id, armourset=this_armourset)
+
+    @staticmethod
     def create_piece_of_armour(gameworld, bodylocation, setname, prefix, game_config):
 
         armour_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
@@ -204,6 +212,7 @@ class ItemManager:
 
         return full_armour_set
 
+    @staticmethod
     def create_bag(gameworld, game_config):
 
         bag_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',

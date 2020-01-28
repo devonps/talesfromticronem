@@ -3,7 +3,7 @@ import random
 from loguru import logger
 
 from components import items, mobiles
-from utilities import formulas
+from utilities import formulas, world
 from utilities.spellHelp import SpellUtilities
 
 
@@ -281,7 +281,7 @@ class ItemUtilities:
 
     @staticmethod
     def delete_item(gameworld, entity):
-        gameworld.delete_entity(entity=entity, immediate=True)
+        world.delete_entity(gameworld=gameworld, entity=entity)
 
     @staticmethod
     def remove_item_from_inventory(gameworld, mobile, entity):
