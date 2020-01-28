@@ -3,7 +3,7 @@ from bearlibterminal import terminal
 from loguru import logger
 
 from components.messages import Message
-from utilities import configUtilities, colourUtilities
+from utilities import configUtilities, colourUtilities, world
 from utilities.externalfileutilities import Externalfiles
 from utilities.buildLibrary import BuildLibrary
 from utilities.display import draw_colourful_frame, pointy_menu, coloured_list, display_coloured_box
@@ -1927,6 +1927,6 @@ class CharacterCreation:
                             MobileUtilities.unequip_all_weapons(gameworld=gameworld, entity=player_entity)
                             # remove jewellery
                             # delete player entity
-                            MobileUtilities.delete_entity(gameworld=gameworld, entity=player_entity)
+                            world.delete_entity(gameworld=gameworld, entity=player_entity)
                             terminal.clear()
                             CharacterCreation.create_new_character(gameworld=gameworld)
