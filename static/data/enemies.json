@@ -11,7 +11,7 @@
       "bg": "black",
       "image": "25",
       "armourset": "RANDOM",
-      "jeweleryset": "RANDOM",
+      "jeweleryset": "balanced",
       "weapons-main": "",
       "weapons-off": "",
       "weapons-both": "staff"

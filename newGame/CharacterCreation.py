@@ -245,7 +245,7 @@ class CharacterCreation:
         class_menu_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_MENU_Y')
         class_package_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_PACKAGE_X')
         class_package_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'CLASS_PACKAGE_Y')
-        class_packages = configUtilities.get_config_value_as_list(game_config, 'newgame', 'CLASS_PACKAGES')
+        jewellery_packages = configUtilities.get_config_value_as_list(game_config, 'newgame', 'JEWELLERY_PACKAGES')
         jewellery_locations = configUtilities.get_config_value_as_list(game_config, 'newgame', 'JEWELLERY_LOCATIONS')
 
         logger.info('Selecting character class')
@@ -335,27 +335,27 @@ class CharacterCreation:
             p3 = 39
             if package_selected == 1:
                 string_to_print = '[color=' + colourUtilities.get('BLUE') + ']' + pkg_pointer + '[/color]' + \
-                                  class_packages[0]
+                                  jewellery_packages[0]
                 terminal.print(x=class_package_x + p1, y=class_package_y, s=string_to_print)
-                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + class_packages[1]
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + jewellery_packages[1]
                 terminal.print(x=class_package_x + p2, y=class_package_y, s=string_to_print)
-                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + class_packages[2]
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + jewellery_packages[2]
                 terminal.print(x=class_package_x + p3, y=class_package_y, s=string_to_print)
             if package_selected == 2:
-                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + class_packages[0]
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + jewellery_packages[0]
                 terminal.print(x=class_package_x + p1, y=class_package_y, s=string_to_print)
                 string_to_print = '[color=' + colourUtilities.get('BLUE') + ']' + pkg_pointer + '[/color]' + \
-                                  class_packages[1]
+                                  jewellery_packages[1]
                 terminal.print(x=class_package_x + p2, y=class_package_y, s=string_to_print)
-                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + class_packages[2]
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + jewellery_packages[2]
                 terminal.print(x=class_package_x + p3, y=class_package_y, s=string_to_print)
             if package_selected == 3:
-                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + class_packages[0]
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + jewellery_packages[0]
                 terminal.print(x=class_package_x + p1, y=class_package_y, s=string_to_print)
-                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + class_packages[1]
+                string_to_print = '[color=' + colourUtilities.get('WHITE') + '][/color]' + pkg_empty + jewellery_packages[1]
                 terminal.print(x=class_package_x + p2, y=class_package_y, s=string_to_print)
                 string_to_print = '[color=' + colourUtilities.get('BLUE') + ']' + pkg_pointer + '[/color]' + \
-                                  class_packages[2]
+                                  jewellery_packages[2]
                 terminal.print(x=class_package_x + p3, y=class_package_y, s=string_to_print)
 
             counter = class_package_y + 2
