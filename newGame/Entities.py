@@ -2,6 +2,7 @@ import random
 
 from newGame.Items import ItemManager
 from utilities import configUtilities, colourUtilities
+from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from loguru import logger
 from utilities.jsonUtilities import read_json_file
@@ -49,15 +50,16 @@ class Entity:
             weapon_file_option_off = option['weapons-off']
             weapon_file_option_both = option['weapons-both']
 
+            # -------------------------------------
+            # --- CREATE ARMOURSET ----------------
+            # -------------------------------------
+
             armourset_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='default',
                                                                         parameter='ARMOURSETFILE')
             armour_file = read_json_file(armourset_file)
             as_display_name = ''
-            px_flavour = []
-            px_att_name = []
             px_att_bonus = []
             pxstring = 'prefix'
-            attnamestring = 'attributename'
             attvaluestring = 'attributebonus'
 
             for armourset in armour_file['armoursets']:
@@ -69,17 +71,13 @@ class Entity:
 
                     for px in range(1, prefix_count + 1):
                         prefix_string = pxstring + str(px)
-                        px_flavour.append(armourset[prefix_string]['flavour'])
 
                         if attribute_bonus_count > 1:
                             att_bonus_string = attvaluestring + str(px)
-                            att_name_string = attnamestring + str(px)
                         else:
                             att_bonus_string = attvaluestring + str(1)
-                            att_name_string = attnamestring + str(1)
 
                         px_att_bonus.append(armourset[prefix_string][att_bonus_string])
-                        px_att_name.append(armourset[prefix_string][att_name_string])
 
                         as_prefix_list = []
                         [as_prefix_list.append(i.lower()) if not i.islower() else as_prefix_list.append(i) for i in prefix_list]
@@ -96,6 +94,69 @@ class Entity:
             px_bonus = int(px_att_bonus[armour_mod_index])
             MobileUtilities.create_armour_for_npc(gameworld=self.gameworld, entity_id=entity_id, armour_modifier=armour_modifier, px_bonus=px_bonus)
             ItemManager.create_and_equip_armourset_for_npc(gameworld=self.gameworld, as_display_name=as_display_name, armour_modifier=armour_modifier, entity_id=entity_id)
+
+            # -------------------------------------
+            # --- CREATE JEWELLERYSET -------------
+            # -------------------------------------
+            jewellery_packages = configUtilities.get_config_value_as_list(configfile=self.game_config,
+                                                                        section='newgame', parameter='JEWELLERY_PACKAGES')
+
+            npc_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config,
+                                                                        section='default', parameter='CLASSESFILE')
+            if jewellery_file_option == 'RANDOM':
+                jewellery_set = random.choice(jewellery_packages.lower())
+            else:
+                jewellery_set = jewellery_file_option.lower()
+
+            logger.info('Jewellery package is {}',jewellery_set)
+            class_file = read_json_file(npc_class_file)
+            entity_class = MobileUtilities.get_character_class(gameworld=self.gameworld, entity=entity_id)
+
+            for entityClass in class_file['classes']:
+                if entityClass['name'] == entity_class:
+                    neck_gemstone = entityClass[jewellery_set]['neck']
+                    ring1_gemstone = entityClass[jewellery_set]['ring1']
+                    ring2_gemstone = entityClass[jewellery_set]['ring2']
+                    ear1_gemstone = entityClass[jewellery_set]['earring1']
+                    ear2_gemstone = entityClass[jewellery_set]['earring2']
+                    # create jewellery entity
+                    pendant = ItemManager.create_jewellery(gameworld=self.gameworld, bodylocation='neck',
+                                                           e_setting='copper', e_hook='copper', e_activator=neck_gemstone)
+                    left_ring = ItemManager.create_jewellery(gameworld=self.gameworld, bodylocation='ring',
+                                                             e_setting='copper', e_hook='copper', e_activator=ring1_gemstone)
+                    right_ring = ItemManager.create_jewellery(gameworld=self.gameworld, bodylocation='ring',
+                                                              e_setting='copper', e_hook='copper', e_activator=ring2_gemstone)
+                    left_ear = ItemManager.create_jewellery(gameworld=self.gameworld, bodylocation='ear',
+                                                            e_setting='copper', e_hook='copper', e_activator=ear1_gemstone)
+                    right_ear = ItemManager.create_jewellery(gameworld=self.gameworld, bodylocation='ear',
+                                                             e_setting='copper', e_hook='copper', e_activator=ear2_gemstone)
+                    # equip jewellery entity to player character
+                    ItemUtilities.equip_jewellery(gameworld=self.gameworld, mobile=entity_id, bodylocation='neck', trinket=pendant)
+                    ItemUtilities.equip_jewellery(gameworld=self.gameworld, mobile=entity_id, bodylocation='left hand', trinket=left_ring)
+                    ItemUtilities.equip_jewellery(gameworld=self.gameworld, mobile=entity_id, bodylocation='right hand', trinket=right_ring)
+                    ItemUtilities.equip_jewellery(gameworld=self.gameworld, mobile=entity_id, bodylocation='left ear', trinket=left_ear)
+                    ItemUtilities.equip_jewellery(gameworld=self.gameworld, mobile=entity_id, bodylocation='right ear', trinket=right_ear)
+
+                    # apply gemstone benefits
+                    jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=self.gameworld, entity=pendant)
+                    ItemUtilities.add_jewellery_benefit(gameworld=self.gameworld, entity=entity_id, statbonus=jewelleyStatBonus)
+
+                    jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=self.gameworld, entity=left_ring)
+                    ItemUtilities.add_jewellery_benefit(gameworld=self.gameworld, entity=entity_id, statbonus=jewelleyStatBonus)
+
+                    jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=self.gameworld,entity=right_ring)
+                    ItemUtilities.add_jewellery_benefit(gameworld=self.gameworld, entity=entity_id, statbonus=jewelleyStatBonus)
+
+                    jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=self.gameworld, entity=left_ear)
+                    ItemUtilities.add_jewellery_benefit(gameworld=self.gameworld, entity=entity_id, statbonus=jewelleyStatBonus)
+
+                    jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=self.gameworld, entity=right_ear)
+                    ItemUtilities.add_jewellery_benefit(gameworld=self.gameworld, entity=entity_id, statbonus=jewelleyStatBonus)
+
+            # -------------------------------------
+            # --- CREATE WEAPONS ------------------
+            # -------------------------------------
+
 
             # if option['weapons-present'] == 'no':
             #     if option['weapons-generate'] == 'yes':
