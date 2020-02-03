@@ -83,6 +83,65 @@ class ItemManager:
         ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=entity_id, armourset=this_armourset)
 
     @staticmethod
+    def create_and_equip_jewellery_for_npc(gameworld, entity_id, jewellery_set, npc_class_file):
+        class_file = jsonUtilities.read_json_file(npc_class_file)
+        entity_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
+
+        for entityClass in class_file['classes']:
+            if entityClass['name'] == entity_class:
+                neck_gemstone = entityClass[jewellery_set]['neck']
+                ring1_gemstone = entityClass[jewellery_set]['ring1']
+                ring2_gemstone = entityClass[jewellery_set]['ring2']
+                ear1_gemstone = entityClass[jewellery_set]['earring1']
+                ear2_gemstone = entityClass[jewellery_set]['earring2']
+                # create jewellery entity
+                pendant = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck',
+                                                       e_setting='copper', e_hook='copper', e_activator=neck_gemstone)
+                left_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring',
+                                                         e_setting='copper', e_hook='copper',
+                                                         e_activator=ring1_gemstone)
+                right_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring',
+                                                          e_setting='copper', e_hook='copper',
+                                                          e_activator=ring2_gemstone)
+                left_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear',
+                                                        e_setting='copper', e_hook='copper', e_activator=ear1_gemstone)
+                right_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear',
+                                                         e_setting='copper', e_hook='copper', e_activator=ear2_gemstone)
+                # equip jewellery entity to player character
+                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='neck',
+                                              trinket=pendant)
+                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left hand',
+                                              trinket=left_ring)
+                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right hand',
+                                              trinket=right_ring)
+                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left ear',
+                                              trinket=left_ear)
+                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right ear',
+                                              trinket=right_ear)
+
+                # apply gemstone benefits
+                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=pendant)
+                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                                                    statbonus=jewelleyStatBonus)
+
+                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ring)
+                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                                                    statbonus=jewelleyStatBonus)
+
+                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ring)
+                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                                                    statbonus=jewelleyStatBonus)
+
+                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ear)
+                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                                                    statbonus=jewelleyStatBonus)
+
+                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ear)
+                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                                                    statbonus=jewelleyStatBonus)
+
+
+    @staticmethod
     def create_piece_of_armour(gameworld, bodylocation, setname, prefix, game_config):
 
         armour_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
