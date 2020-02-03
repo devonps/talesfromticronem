@@ -1,6 +1,8 @@
 import random
 
+from newGame.ClassWeapons import WeaponClass
 from newGame.Items import ItemManager
+from newGame.initialiseNewGame import generate_spells
 from utilities import configUtilities, colourUtilities
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
@@ -109,74 +111,41 @@ class Entity:
                 jewellery_set = jewellery_file_option.lower()
 
             logger.info('Jewellery package is {}',jewellery_set)
-            class_file = read_json_file(npc_class_file)
-            entity_class = MobileUtilities.get_character_class(gameworld=self.gameworld, entity=entity_id)
-
-            for entityClass in class_file['classes']:
-                if entityClass['name'] == entity_class:
-                    neck_gemstone = entityClass[jewellery_set]['neck']
-                    ring1_gemstone = entityClass[jewellery_set]['ring1']
-                    ring2_gemstone = entityClass[jewellery_set]['ring2']
-                    ear1_gemstone = entityClass[jewellery_set]['earring1']
-                    ear2_gemstone = entityClass[jewellery_set]['earring2']
-                    # create jewellery entity
-                    pendant = ItemManager.create_jewellery(gameworld=self.gameworld, bodylocation='neck',
-                                                           e_setting='copper', e_hook='copper', e_activator=neck_gemstone)
-                    left_ring = ItemManager.create_jewellery(gameworld=self.gameworld, bodylocation='ring',
-                                                             e_setting='copper', e_hook='copper', e_activator=ring1_gemstone)
-                    right_ring = ItemManager.create_jewellery(gameworld=self.gameworld, bodylocation='ring',
-                                                              e_setting='copper', e_hook='copper', e_activator=ring2_gemstone)
-                    left_ear = ItemManager.create_jewellery(gameworld=self.gameworld, bodylocation='ear',
-                                                            e_setting='copper', e_hook='copper', e_activator=ear1_gemstone)
-                    right_ear = ItemManager.create_jewellery(gameworld=self.gameworld, bodylocation='ear',
-                                                             e_setting='copper', e_hook='copper', e_activator=ear2_gemstone)
-                    # equip jewellery entity to player character
-                    ItemUtilities.equip_jewellery(gameworld=self.gameworld, mobile=entity_id, bodylocation='neck', trinket=pendant)
-                    ItemUtilities.equip_jewellery(gameworld=self.gameworld, mobile=entity_id, bodylocation='left hand', trinket=left_ring)
-                    ItemUtilities.equip_jewellery(gameworld=self.gameworld, mobile=entity_id, bodylocation='right hand', trinket=right_ring)
-                    ItemUtilities.equip_jewellery(gameworld=self.gameworld, mobile=entity_id, bodylocation='left ear', trinket=left_ear)
-                    ItemUtilities.equip_jewellery(gameworld=self.gameworld, mobile=entity_id, bodylocation='right ear', trinket=right_ear)
-
-                    # apply gemstone benefits
-                    jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=self.gameworld, entity=pendant)
-                    ItemUtilities.add_jewellery_benefit(gameworld=self.gameworld, entity=entity_id, statbonus=jewelleyStatBonus)
-
-                    jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=self.gameworld, entity=left_ring)
-                    ItemUtilities.add_jewellery_benefit(gameworld=self.gameworld, entity=entity_id, statbonus=jewelleyStatBonus)
-
-                    jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=self.gameworld,entity=right_ring)
-                    ItemUtilities.add_jewellery_benefit(gameworld=self.gameworld, entity=entity_id, statbonus=jewelleyStatBonus)
-
-                    jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=self.gameworld, entity=left_ear)
-                    ItemUtilities.add_jewellery_benefit(gameworld=self.gameworld, entity=entity_id, statbonus=jewelleyStatBonus)
-
-                    jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=self.gameworld, entity=right_ear)
-                    ItemUtilities.add_jewellery_benefit(gameworld=self.gameworld, entity=entity_id, statbonus=jewelleyStatBonus)
+            ItemManager.create_and_equip_jewellery_for_npc(gameworld=self.gameworld, entity_id=entity_id, jewellery_set=jewellery_set, npc_class_file=npc_class_file)
 
             # -------------------------------------
-            # --- CREATE WEAPONS ------------------
+            # --- CREATE WEAPONSET ----------------
             # -------------------------------------
+            weapon_to_be_created = ''
+            if weapon_file_option_main != '':
+                if weapon_file_option_main == 'RANDOM':
+                    weapon_to_be_created = 'random shit'
+                    hand_to_wield = 'main'
+                else:
+                    weapon_to_be_created = weapon_file_option_main
+                    hand_to_wield = 'main'
+                    logger.info('Weapon in main hand will be a {}', weapon_file_option_main)
 
+            if weapon_file_option_off != '':
+                if weapon_file_option_off == 'RANDOM':
+                    weapon_to_be_created = 'random shit'
+                    hand_to_wield = 'off'
+                else:
+                    weapon_to_be_created = weapon_file_option_off
+                    hand_to_wield = 'off'
+                    logger.info('Weapon in off hand will be a {}', weapon_file_option_off)
 
-            # if option['weapons-present'] == 'no':
-            #     if option['weapons-generate'] == 'yes':
-            #         pass
-            #         # generate them procedurally
-            # else:
-            #     main_hand = option['weapons-main']
-            #     off_hand = option['weapons-off']
-            #     both_hands = option['weapons-both']
-            #
-            # if option['jewellery-present'] == 'no':
-            #     if option['jewellery-generate'] == 'yes':
-            #         pass
-            #         # generate them procedurally
-            # else:
-            #     jewell_neck = option['jewellery-neck']
-            #     jewell_ring1 = option['jewellery-ring1']
-            #     jewell_ring2 = option['jewellery-ring2']
-            #     jewell_earring1 = option['jewellery-earring1']
-            #     jewell_earring2 = option['jewellery-earring2']
+            if weapon_file_option_both != '':
+                if weapon_file_option_both == 'RANDOM':
+                    weapon_to_be_created = 'random shit'
+                    hand_to_wield = 'both'
+                else:
+                    weapon_to_be_created = weapon_file_option_both
+                    hand_to_wield = 'both'
+
+            logger.info('Weapon to be created is a {}', weapon_to_be_created)
+
+            self.create_weapon_and_wield_for_npc(weapon_to_be_created=weapon_to_be_created, enemy_class=enemy_class, entity_id=entity_id, hand_to_wield=hand_to_wield)
 
         # now apply the values to the base mobile object
 
@@ -189,3 +158,20 @@ class Entity:
             MobileUtilities.set_mobile_bg_render_colour(gameworld=self.gameworld, entity=entity_id, value=enemy_bg.upper())
             MobileUtilities.set_mobile_render_image(gameworld=self.gameworld, entity=entity_id, value=enemy_image)
             MobileUtilities.set_mobile_visible(gameworld=self.gameworld, entity=entity_id)
+
+    def create_weapon_and_wield_for_npc(self, weapon_to_be_created, enemy_class, entity_id, hand_to_wield):
+        created_weapon = ItemManager.create_weapon(gameworld=self.gameworld, weapon_type=weapon_to_be_created,
+                                                   game_config=self.game_config)
+        weapon_type = ItemUtilities.get_weapon_type(self.gameworld, created_weapon)
+
+        if enemy_class == '':
+            logger.warning('Spell file name not set')
+
+        generate_spells(gameworld=self.gameworld, game_config=self.game_config, spell_file=enemy_class,
+                        player_class=enemy_class)
+
+        WeaponClass.load_weapon_with_spells(self.gameworld, created_weapon, weapon_type, enemy_class)
+
+        # equip player with newly created starting weapon
+        MobileUtilities.equip_weapon(gameworld=self.gameworld, entity=entity_id, weapon=created_weapon,
+                                     hand=hand_to_wield)
