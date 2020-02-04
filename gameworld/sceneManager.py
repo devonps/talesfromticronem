@@ -40,11 +40,7 @@ class SceneManager:
                                                                       parameter='TILE_TYPE_FLOOR')
         tile_type_door = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                      parameter='TILE_TYPE_DOOR')
-        # if currentscene == 1:
-        #     map_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
-        #                                                             parameter='MAP_WIDTH')
-        #     map_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
-        #                                                              parameter='MAP_HEIGHT')
+
         for sceneID, sceneName in enumerate(sceneList, 1):
             if sceneID == currentscene:
                 logger.debug('Current scene set to {}', sceneName)
@@ -118,25 +114,48 @@ class SceneManager:
                                                                                posx=vpx)
                                     CommonUtils.set_player_viewport_position_y(gameworld=gameworld, viewport_id=viewport_entity,
                                                                                posy=vpy)
+                                # add named NPCs to scene
                                 if cell in 'ABCDEFG':
                                     npcs = sceneKey['npcs']
                                     npc_name = npcs[0]['displayName']
                                     logger.debug('NPC Name {}', npc_name)
                                     enemyObject = Entity(gameworld=gameworld)
-                                    enemy_id = enemyObject.create_new_entity()
-                                    enemyObject.create_new_enemy(entity_id=enemy_id)
+                                    xxenemy_id = enemyObject.create_new_entity()
+                                    enemyObject.create_new_enemy(entity_id=xxenemy_id, enemy_name='Joe')
+                                    logger.info('Freshly minted {}s entity id is {}', npc_name, xxenemy_id)
 
                                     plx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=playerEntity)
                                     ply = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=playerEntity)
 
-                                    MobileUtilities.set_mobile_position(gameworld=gameworld, entity=enemy_id, posx=plx + 5,
-                                                                        posy=ply + 5)
+                                    logger.info('player at {} / {}', plx, ply)
+                                    MobileUtilities.set_mobile_position(gameworld=gameworld, entity=xxenemy_id,
+                                                                        posx=plx, posy=ply + 5)
 
                                 posx += 1
                             posy += 1
+                        px = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=xxenemy_id)
+                        py = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=xxenemy_id)
+                        logger.info('{} at {} / {}', npc_name, px, py)
+
                     else:
                         # generate random map
                         pass
+
+                    # generate monsters for this scene
+                    # temporary code to generate a random dumb enemy - useful for testing purposes
+                    enemyObject = Entity(gameworld=gameworld)
+                    enemyID = enemyObject.create_new_entity()
+                    enemyObject.create_new_enemy(entity_id=enemyID, enemy_name='Kenny')
+                    plx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=playerEntity)
+                    ply = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=playerEntity)
+
+                    MobileUtilities.set_mobile_position(gameworld=gameworld, entity=enemyID, posx=20,
+                                                        posy=7)
+                    posx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=enemyID)
+                    posy = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=enemyID)
+
+                    logger.info('New enemy at {} / {}', posx, posy)
+
 
         if currentscene == 1:
             renderGameMapProcessor = RenderGameMap(game_map=game_map, gameworld=gameworld)

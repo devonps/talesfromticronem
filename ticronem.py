@@ -3,6 +3,8 @@ import tcod.event
 
 from bearlibterminal import terminal
 
+from components import mobiles
+from components.messages import Message
 from ui.character_screen import display_hero_panel
 from newGame.initialiseNewGame import setup_gameworld
 from utilities.common import CommonUtils
@@ -66,7 +68,9 @@ def game_loop(gameworld):
                     MobileUtilities.mobile_pick_up_item(gameworld=gameworld, mobile=player)
 
             if event_to_be_processed == 'mouseleftbutton':
-                # logger.info('cell x/y {}/{}', event_action[0], event_action[1])
+                logger.info('cell x/y {}/{}', event_action[0], event_action[1])
+
+                # check for message log being clicked
                 if event_action[0] == 69 and event_action[1] == 48:
                     msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
                     CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="all")
@@ -75,6 +79,12 @@ def game_loop(gameworld):
                     msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
                     CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="combat")
 
+                # check for thing at location
+                message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+                for ent, (pos, name) in gameworld.get_components(mobiles.Position, mobiles.Name):
+                    if pos.x == event_action[0] and pos.y == event_action[1]:
+                        msg = Message(text="Enemy called " + name.first + " targetted.", msgclass="all", fg="yellow", bg="", fnt="")
+                        CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
 
         #
         # get monsters intended action

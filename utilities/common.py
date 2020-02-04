@@ -1,4 +1,3 @@
-from components.messages import Message
 from utilities import configUtilities
 from components import viewport, messages
 
@@ -32,6 +31,7 @@ class CommonUtils:
 
     @staticmethod
     def set_visible_log(gameworld, logid, logToDisplay):
+
         messaageLog_component = gameworld.component_for_entity(logid, messages.MessageLog)
         messaageLog_component.visibleLog = logToDisplay
 
@@ -47,11 +47,10 @@ class CommonUtils:
         if message.msgclass == CommonUtils.get_visible_log(gameworld=gameworld, logid=logid):
             fg_color = "white" if message.fg == "" else message.fg
             bg_color = "red" if message.bg == "" else message.bg
+            fnt = "" if message.fnt == "" else message.fnt
             str_to_print += "[color=" + fg_color + "]"
             str_to_print += "[bkcolor=" + bg_color + "]"
-            if message.fnt != "":
-                fnt = message.fnt
-                str_to_print += "[font=" + fnt + "]"
+            str_to_print += "[font=" + fnt + "]"
             str_to_print += message.text
 
         return str_to_print
