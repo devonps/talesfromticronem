@@ -1,4 +1,4 @@
-from components import mobiles, userInput, items, spellBar
+from components import mobiles, items, spellBar
 from loguru import logger
 from utilities.itemsHelp import ItemUtilities, display_inspect_panel
 from utilities import world
@@ -89,12 +89,6 @@ class MobileUtilities(numbers.Real):
     @staticmethod
     def get_bar_count(lower_value, bar_depth):
         return (lower_value / 100) * bar_depth
-
-    @staticmethod
-    def create_player_input_entity(gameworld):
-        ent = gameworld.create_entity()
-        gameworld.add_component(ent, userInput.Keyboard())
-        gameworld.add_component(ent, userInput.Mouse())
 
     @staticmethod
     def has_player_moved(gameworld, game_config):
@@ -298,6 +292,7 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(entity_id, mobiles.SpellBar(entityId=0))
         gameworld.add_component(entity_id, mobiles.Race(race='', size=''))
         gameworld.add_component(entity_id, mobiles.Position())
+        gameworld.add_component(entity_id, mobiles.Name())
 
     @staticmethod
     def create_player_character(gameworld, game_config, player_entity):
