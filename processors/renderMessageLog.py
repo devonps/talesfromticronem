@@ -60,9 +60,14 @@ class RenderMessageLog(esper.Processor):
             terminal.put(x=a + (message_panel_start_x * image_x_scale), y=message_panel_height * image_y_scale,
                          c=0xE700 + 6)
 
+        # message log buttons
         terminal.put(x=(message_panel_start_x * image_x_scale) + 3, y=(message_panel_height * image_y_scale), c=0xE880)
 
         terminal.put(x=(message_panel_start_x * image_x_scale) + 5, y=(message_panel_height * image_y_scale), c=0xE800)
+
+        terminal.put(x=(message_panel_start_x * image_x_scale) + 7, y=(message_panel_height * image_y_scale), c=0xE770)
+
+        terminal.put(x=(message_panel_start_x * image_x_scale) + 9, y=(message_panel_height * image_y_scale), c=0xE800)
 
         # right edge
         for d in range(message_panel_depth):
