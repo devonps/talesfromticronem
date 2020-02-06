@@ -1,6 +1,3 @@
-import tcod.console
-import tcod.event
-
 from bearlibterminal import terminal
 
 from components import mobiles
@@ -12,9 +9,10 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
 from utilities import configUtilities
-from utilities.input_handlers import handle_game_keys
+from utilities.input_handlers import handle_game_keys, which_ui_hotspot_was_clicked
 from gameworld.sceneManager import SceneManager
 from newGame import newGame
+from utilities.spellHelp import SpellUtilities
 
 
 def game_loop(gameworld):
@@ -44,6 +42,7 @@ def game_loop(gameworld):
         #
         # get player action aka their intent to do something
         #
+        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
         event_to_be_processed, event_action = handle_game_keys()
         if event_to_be_processed != '':
             if event_to_be_processed == 'keypress':
@@ -69,18 +68,34 @@ def game_loop(gameworld):
 
             if event_to_be_processed == 'mouseleftbutton':
                 logger.info('cell x/y {}/{}', event_action[0], event_action[1])
+                hotspot_clicked = which_ui_hotspot_was_clicked(mx=event_action[0], my=event_action[1])
 
-                # check for message log being clicked
-                if event_action[0] == 69 and event_action[1] == 48:
+                if 0 <= hotspot_clicked <= 9:
+                    spellbarId = MobileUtilities.get_spellbar_id_for_entity(gameworld=gameworld, entity=player)
+                    spell_entity = SpellUtilities.get_spell_bar_slot_componet(gameworld=gameworld, spell_bar=spellbarId, slotid=hotspot_clicked + 1)
+                    spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity.id)
+                    msg = Message(text="Spell:" + spell_name + " activated.", msgclass="all", fg="red", bg="white",
+                                  fnt="")
+                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
+
+                if hotspot_clicked == 10:
                     msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
                     CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="all")
 
-                if event_action[0] == 71 and event_action[1] == 48:
+                if hotspot_clicked == 11:
                     msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
                     CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="combat")
 
-                # check for thing at location
-                message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+                if hotspot_clicked == 12:
+                    msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+                    CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="story")
+
+                if hotspot_clicked == 13:
+                    msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+                    CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="personal")
+
+                # check for entity at location
+
                 for ent, (pos, name) in gameworld.get_components(mobiles.Position, mobiles.Name):
                     if pos.x == event_action[0] and pos.y == event_action[1]:
                         msg = Message(text="Enemy called " + name.first + " targetted.", msgclass="all", fg="yellow", bg="", fnt="")
@@ -98,7 +113,6 @@ def game_loop(gameworld):
 
 def game_replay(con, game_config):
     ReplayGame.process(con, game_config)
-    tcod.console_clear(con)
 
 
 @logger.catch()

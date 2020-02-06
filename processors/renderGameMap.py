@@ -515,14 +515,14 @@ class RenderGameMap(esper.Processor):
         sc = 5
         y = statusbox_height + 1
 
-        prev_layer = terminal.state(terminal.TK_LAYER)
+        # prev_layer = terminal.state(terminal.TK_LAYER)
         # terminal.layer(RenderLayer.SPELLBAR.value)
 
         # spell bar slots are drawn first
         for a in range(10):
             terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE500 + 0)
         # then the spell images themselves
-        for a in range(4):
-            terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE400 + a)
+        for a in range(10):
+            terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE400)
 
         # terminal.layer(prev_layer)

@@ -1,6 +1,31 @@
 from bearlibterminal import terminal
 
 
+def which_ui_hotspot_was_clicked(mx, my):
+    hotspot_clicked = - 99
+
+    if mx == 69 and my == 48:
+        hotspot_clicked = 10  # message log 1
+
+    if mx == 71 and my == 48:
+        hotspot_clicked = 11  # message log 2
+
+    if mx == 73 and my == 48:
+        hotspot_clicked = 12  # message log 3
+
+    if mx == 75 and my == 48:
+        hotspot_clicked = 13  # message log 4
+
+    # check for spell bar being clicked 0 through 9
+    if 5 <= mx <= 50:
+        if my == 51:
+            hc, fluff = divmod(mx, 5)
+            if fluff == 0:
+                hotspot_clicked = hc - 1
+
+    return hotspot_clicked
+
+
 def handle_game_keys():
     action = ''
     myevent = ''

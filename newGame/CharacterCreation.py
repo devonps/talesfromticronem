@@ -1916,6 +1916,13 @@ class CharacterCreation:
                             msg = Message(text="There's a full moon tonight", msgclass="combat", fg="yellow", bg="", fnt="")
                             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
 
+                            msg = Message(text="This is a personal message", msgclass="personal", fg="blue", bg="", fnt="")
+                            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
+
+                            msg = Message(text="Shall I tell you a story", msgclass="story", fg="orange", bg="", fnt="")
+                            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
+
+
                             game_loop(gameworld=gameworld)
                         if selected_menu_option == 1:  # save current build
                             if not saved_build:
