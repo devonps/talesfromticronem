@@ -14,6 +14,7 @@ class RenderLayer(Enum):
     HUD = auto()  # hp, mana, f1 bars, hotkeys, etc
     SPELLBAR = auto()  # spell bar
     STATUSEFFECTS = auto()  # effects player is suffering from
+    VALIDTARGETS = auto()   # used to show valid targets for the spells
 
 
 class GameMap:

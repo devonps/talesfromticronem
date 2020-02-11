@@ -1,5 +1,9 @@
-
 class Name:
+    def __init__(self, text='undefined'):
+        self.label = text
+
+
+class SpellType:
     def __init__(self, text='undefined'):
         self.label = text
 
@@ -35,12 +39,13 @@ class CastTime:
 
 
 class CoolDown:
-    def __init__(self, number_of_turns=1):
+    def __init__(self, number_of_turns=0, isTrue=False):
         self.number_of_turns = number_of_turns
+        self.isTrue = isTrue
 
 
 class LivesFor:
-    def __init__(self, number_of_turns=1 ):
+    def __init__(self, number_of_turns=1):
         self.number_of_turns = number_of_turns
 
 
@@ -76,17 +81,17 @@ class DamageDuration:
 
 class DamageCoefficient:
     def __init__(self, value=0.0):
-        self.is_set_to=value
+        self.is_set_to = value
 
 
 class HealingDuration:
     def __init__(self, duration=0):
-        self.value=duration
+        self.value = duration
 
 
 class HealingCoef:
-    def __init__(self,coef=0.0):
-        self.value=coef
+    def __init__(self, coef=0.0):
+        self.value = coef
 
 
 class ItemType:

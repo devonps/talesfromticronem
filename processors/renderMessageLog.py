@@ -81,7 +81,7 @@ class RenderMessageLog(esper.Processor):
 
         # now show the messages
         #
-        storedMsgs = CommonUtils.get_message_log_all_message(gameworld=self.gameworld, logid=log_id)
+        storedMsgs = CommonUtils.get_message_log_all_messages(gameworld=self.gameworld, logid=log_id)
         y = 1
         for message in storedMsgs:
             str_to_print = ""

@@ -31,11 +31,13 @@ class RenderGameMap(esper.Processor):
         self.render_map(self.gameworld, game_config, self.game_map)
         # draw the entities
         # self.render_items(game_config, self.gameworld)
-        self.render_mobiles(game_config, self.gameworld)
+        self.render_mobiles(game_config, self.gameworld, self.game_map)
+        self.render_entity_display_panel(gameworld=self.gameworld, game_config=game_config, game_map = self.game_map)
 
         # GUI viewport
         terminal.composition(terminal.TK_ON)
         self.render_statusbox(game_config)
+
         self.render_player_status_effects(game_config=game_config)
         self.render_spell_bar(self, game_config=game_config)
         self.render_player_vitals(gameworld=self.gameworld, game_config=game_config)
@@ -49,6 +51,39 @@ class RenderGameMap(esper.Processor):
         terminal.clear_area(0, 0, terminal.state(terminal.TK_WIDTH), terminal.state(terminal.TK_HEIGHT))
 
         # terminal.layer(prev_layer)
+
+    @staticmethod
+    def render_entity_display_panel(gameworld, game_config, game_map):
+        render_style = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                   parameter='render_style')
+        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+
+        # right hand side divider
+        for dy in range(47):
+            terminal.printf(x=62, y=dy, s="[color=red][font=dungeon]▒")
+
+        if render_style == 1:
+
+            x_min, x_max, y_min, y_max = CommonUtils.create_display_area(gameworld=gameworld, player_entity=player_entity, game_map=game_map)
+
+            entity_tag = 3
+
+            str_to_print = "[color=white]" + "Visible Entities"
+            terminal.printf(x=64, y=1, s=str_to_print)
+
+            for ent, (rend, pos, desc, name) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
+                                                                         mobiles.Describable, mobiles.Name):
+                if rend.isVisible:
+                    if ent != player_entity:
+                        draw_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
+                        draw_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
+                        fg = desc.foreground
+                        bg = desc.background
+                        if x_min <= draw_pos_x <= x_max:
+                            if y_min <= draw_pos_y <= y_max:
+                                str_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + desc.glyph + ' ' + name.first
+                                terminal.printf(x=64, y=entity_tag, s=str_to_print)
+                                entity_tag += 1
 
     @staticmethod
     def render_map(gameworld, game_config, game_map):
@@ -181,7 +216,7 @@ class RenderGameMap(esper.Processor):
         return viewport_x_min, viewport_x_max, viewport_y_min, viewport_y_max
 
     @staticmethod
-    def render_mobiles(game_config, gameworld):
+    def render_mobiles(game_config, gameworld, game_map):
 
         render_style = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                    parameter='render_style')
@@ -191,6 +226,9 @@ class RenderGameMap(esper.Processor):
         draw_pos_y = 0
 
         if render_style == 1:
+            x_min, x_max, y_min, y_max = CommonUtils.create_display_area(gameworld=gameworld,
+                                                                         player_entity=player_entity, game_map=game_map)
+
             for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
                                                                    mobiles.Describable):
                 if rend.isVisible:
@@ -198,7 +236,9 @@ class RenderGameMap(esper.Processor):
                     draw_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
                     fg = desc.foreground
                     bg = desc.background
-                    RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, 0, 0, render_style, fg, bg)
+                    if x_min <= draw_pos_x <= x_max:
+                        if y_min <= draw_pos_y <= y_max:
+                            RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, 0, 0, render_style, fg, bg)
         else:
             image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                         parameter='map_Xscale')
@@ -261,9 +301,9 @@ class RenderGameMap(esper.Processor):
     def render_statusbox(game_config):
 
         statusbox_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                     parameter='STATUSBOX_WIDTH')
+                                                                      parameter='STATUSBOX_WIDTH')
         statusbox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='STATUSBOX_HEIGHT')
+                                                                       parameter='STATUSBOX_HEIGHT')
         image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='map_Xscale')
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
@@ -307,14 +347,14 @@ class RenderGameMap(esper.Processor):
     @staticmethod
     def render_message_panel(game_config):
         message_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='MSG_PANEL_WIDTH')
+                                                                          parameter='MSG_PANEL_WIDTH')
         message_panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                       parameter='MSG_PANEL_START_Y')
+                                                                           parameter='MSG_PANEL_START_Y')
 
         message_panel_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                       parameter='MSG_PANEL_START_X')
+                                                                            parameter='MSG_PANEL_START_X')
         message_panel_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                       parameter='MSG_PANEL_DEPTH')
+                                                                          parameter='MSG_PANEL_DEPTH')
 
         image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='map_Xscale')
@@ -329,28 +369,35 @@ class RenderGameMap(esper.Processor):
 
         # left edge
         for d in range(message_panel_depth):
-            terminal.put(x=(message_panel_start_x * image_x_scale), y=(message_panel_height + d) * image_y_scale, c=0xE700 + 4)
+            terminal.put(x=(message_panel_start_x * image_x_scale), y=(message_panel_height + d) * image_y_scale,
+                         c=0xE700 + 4)
 
         # bottom left
-        terminal.put(x=(message_panel_start_x * image_x_scale), y=(message_panel_height + 5) * image_y_scale, c=0xE700 + 2)
+        terminal.put(x=(message_panel_start_x * image_x_scale), y=(message_panel_height + 5) * image_y_scale,
+                     c=0xE700 + 2)
 
         # top right
-        terminal.put(x=(message_panel_start_x * image_x_scale) + message_panel_width, y=message_panel_height * image_y_scale, c=0xE700 + 1)
+        terminal.put(x=(message_panel_start_x * image_x_scale) + message_panel_width,
+                     y=message_panel_height * image_y_scale, c=0xE700 + 1)
 
         # bottom right
-        terminal.put(x=(message_panel_start_x * image_x_scale) + message_panel_width, y=(message_panel_height + 5) * image_y_scale, c=0xE700 + 3)
+        terminal.put(x=(message_panel_start_x * image_x_scale) + message_panel_width,
+                     y=(message_panel_height + 5) * image_y_scale, c=0xE700 + 3)
 
         # top edge
         for a in range(message_panel_width):
-            terminal.put(x=a + (message_panel_start_x * image_x_scale), y=message_panel_height * image_y_scale, c=0xE700 + 6)
+            terminal.put(x=a + (message_panel_start_x * image_x_scale), y=message_panel_height * image_y_scale,
+                         c=0xE700 + 6)
 
         # right edge
         for d in range(message_panel_depth):
-            terminal.put(x=message_panel_start_x * image_x_scale + message_panel_width, y=(message_panel_height + d) * image_y_scale, c=0xE700 + 5)
+            terminal.put(x=message_panel_start_x * image_x_scale + message_panel_width,
+                         y=(message_panel_height + d) * image_y_scale, c=0xE700 + 5)
 
         # bottom edge
         for a in range(message_panel_width):
-            terminal.put(x=a + (message_panel_start_x * image_x_scale), y=(message_panel_height + 5) * image_y_scale, c=0xE700 + 7)
+            terminal.put(x=a + (message_panel_start_x * image_x_scale), y=(message_panel_height + 5) * image_y_scale,
+                         c=0xE700 + 7)
 
         # now show the messages
 
@@ -362,7 +409,7 @@ class RenderGameMap(esper.Processor):
                                                                     parameter='map_Yscale')
 
         statusbox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='STATUSBOX_HEIGHT')
+                                                                       parameter='STATUSBOX_HEIGHT')
 
         prev_layer = terminal.state(terminal.TK_LAYER)
         # terminal.layer(RenderLayer.STATUSEFFECTS.value)
@@ -416,7 +463,7 @@ class RenderGameMap(esper.Processor):
                                                                     parameter='map_Xscale')
 
         statusbox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='STATUSBOX_HEIGHT')
+                                                                       parameter='STATUSBOX_HEIGHT')
 
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
         currentHealth = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=player_entity)
@@ -437,7 +484,7 @@ class RenderGameMap(esper.Processor):
                                                                     parameter='map_Xscale')
 
         statusbox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='STATUSBOX_HEIGHT')
+                                                                       parameter='STATUSBOX_HEIGHT')
 
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
         currentMana = MobileUtilities.get_derived_current_mana(gameworld=gameworld, entity=player_entity)
@@ -456,7 +503,7 @@ class RenderGameMap(esper.Processor):
                                                                     parameter='map_Xscale')
 
         statusbox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='STATUSBOX_HEIGHT')
+                                                                       parameter='STATUSBOX_HEIGHT')
 
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
         currentF1Power = MobileUtilities.get_derived_special_bar_current_value(gameworld=gameworld,
@@ -503,7 +550,7 @@ class RenderGameMap(esper.Processor):
                                                                     parameter='map_Yscale')
 
         statusbox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='STATUSBOX_HEIGHT')
+                                                                       parameter='STATUSBOX_HEIGHT')
 
         player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
         weapons_list = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=player_entity)

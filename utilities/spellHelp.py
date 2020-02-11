@@ -1,8 +1,115 @@
 from loguru import logger
-from components import spells, spellBar, items
+from components import spells, spellBar, items, mobiles
+from components.messages import Message
+from utilities import colourUtilities
+from utilities.common import CommonUtils
+from utilities.display import draw_colourful_frame, draw_simple_frame
+from utilities.input_handlers import handle_game_keys
+from utilities.mobileHelp import MobileUtilities
+from bearlibterminal import terminal
+from mapRelated.gameMap import RenderLayer
 
 
 class SpellUtilities:
+
+    @staticmethod
+    def get_spell_type(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.SpellType).label
+
+    @staticmethod
+    def cast_spell(slot, gameworld, message_log_id, player):
+
+        # get spell info
+        spellbarId = MobileUtilities.get_spellbar_id_for_entity(gameworld=gameworld, entity=player)
+        se = SpellUtilities.get_spell_bar_slot_componet(gameworld=gameworld, spell_bar=spellbarId,
+                                                        slotid=slot + 1)
+        spell_entity = se.id
+
+        # check if spell is on cool-down
+        isSpellOnCooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell_entity)
+
+        if not isSpellOnCooldown:
+            # spell isn't on cooldown
+            validTargets = SpellUtilities.get_valid_targets_for_spell(gameworld=gameworld,
+                                                                      player=player, spell_entity=spell_entity)
+
+            # display list of valid targets and wait for the player
+            # to select one of them
+            lft = 10
+            tp = 15
+            height = 5 + len(validTargets) + 1
+            width = 26
+
+            terminal.clear_area(lft, tp, width, height)
+            prev_layer = terminal.state(terminal.TK_LAYER)
+            terminal.layer(RenderLayer.VALIDTARGETS.value)
+
+            draw_simple_frame(startx=lft, starty=tp, width=width, height=height, title='| Valid Targets |',
+                              fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+
+            entity_tag = tp + 3
+            xx = 0
+            if len(validTargets) == 0:
+                str_to_print = "[color=white][font=dungeon]" + 'No valid targets'
+                terminal.printf(x=lft + 3, y=entity_tag, s=str_to_print)
+            else:
+                for x in validTargets:
+                    str_to_print = "[color=white]" + chr(97 + xx) + ") [color=" + x[3] + "][font=dungeon][bkcolor=" + x[4] + "]" + x[2] + ' ' + x[1]
+                    terminal.printf(x=lft + 2, y=entity_tag, s=str_to_print)
+                    entity_tag += 1
+                    xx += 1
+            str_to_print = "[color=white][font=dungeon]" + 'Press ESC to cancel'
+            terminal.printf(x=lft + 3, y=tp + height, s=str_to_print)
+
+            terminal.layer(prev_layer)
+
+            # blit the console
+            terminal.refresh()
+
+            # wait for user key press
+            gg = True
+            while gg:
+                event_to_be_processed, event_action = handle_game_keys()
+                if event_to_be_processed != '':
+                    if event_to_be_processed == 'keypress':
+                        if event_action == 'quit':
+                            gg = False
+
+        else:
+            msg = Message(text="Spell is on cooldown ", msgclass="all", fg="white", bg="black", fnt="")
+            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
+
+    @staticmethod
+    def get_valid_targets_for_spell(gameworld, player, spell_entity):
+
+        # get x/y position of player character
+        sx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player)
+        sy = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player)
+
+        spellRange = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
+
+        fx = sx - spellRange
+        tx = (sx + spellRange) + 1
+        fy = sy - spellRange
+        ty = (sy + spellRange) + 1
+        # get list of targets within the range of the spell - I scan a square around the player character
+        validTargets = []
+        for xx in range(fx, tx):
+            for yy in range(fy, ty):
+                if xx != sx and yy != sy:
+                    str_to_print = "[color=blue][font=dungeon][bkcolor=black]."
+                    terminal.printf(x=xx, y=yy, s=str_to_print)
+                for ent, (pos, name, desc) in gameworld.get_components(mobiles.Position, mobiles.Name,
+                                                                       mobiles.Describable):
+                    if pos.x == xx and pos.y == yy:
+                        # is this a valid target for the spell?
+                        if ent != player:
+                            validTargets.append((ent, name.first, desc.glyph, desc.foreground, desc.background))
+        return validTargets
+
+    @staticmethod
+    def get_spell_cooldown_status(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.CoolDown).isTrue
 
     @staticmethod
     def get_spell_name_in_weapon_slot(gameworld, weapon_equipped, slotid):
@@ -54,29 +161,49 @@ class SpellUtilities:
         both_hands_weapon = weapons_equipped[2]
 
         if both_hands_weapon > 0:
-            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,weapon_equipped=both_hands_weapon, slotid=1)
+            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                               weapon_equipped=both_hands_weapon,
+                                                                               slotid=1)
             gameworld.component_for_entity(spellbar, spellBar.SlotOne).id = this_spell_entity
-            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,weapon_equipped=both_hands_weapon, slotid=2)
+            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                               weapon_equipped=both_hands_weapon,
+                                                                               slotid=2)
             gameworld.component_for_entity(spellbar, spellBar.SlotTwo).id = this_spell_entity
-            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,weapon_equipped=both_hands_weapon, slotid=3)
+            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                               weapon_equipped=both_hands_weapon,
+                                                                               slotid=3)
             gameworld.component_for_entity(spellbar, spellBar.SlotThree).id = this_spell_entity
-            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,weapon_equipped=both_hands_weapon, slotid=4)
+            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                               weapon_equipped=both_hands_weapon,
+                                                                               slotid=4)
             gameworld.component_for_entity(spellbar, spellBar.SlotFour).id = this_spell_entity
-            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,weapon_equipped=both_hands_weapon, slotid=5)
+            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                               weapon_equipped=both_hands_weapon,
+                                                                               slotid=5)
             gameworld.component_for_entity(spellbar, spellBar.SlotFive).id = this_spell_entity
 
         if main_hand_weapon > 0:
-            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,weapon_equipped=main_hand_weapon, slotid=1)
+            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                               weapon_equipped=main_hand_weapon,
+                                                                               slotid=1)
             gameworld.component_for_entity(spellbar, spellBar.SlotOne).id = this_spell_entity
-            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,weapon_equipped=main_hand_weapon, slotid=2)
+            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                               weapon_equipped=main_hand_weapon,
+                                                                               slotid=2)
             gameworld.component_for_entity(spellbar, spellBar.SlotTwo).id = this_spell_entity
-            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,weapon_equipped=main_hand_weapon, slotid=3)
+            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                               weapon_equipped=main_hand_weapon,
+                                                                               slotid=3)
             gameworld.component_for_entity(spellbar, spellBar.SlotThree).id = this_spell_entity
 
         if off_hand_weapon > 0:
-            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,weapon_equipped=off_hand_weapon, slotid=4)
+            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                               weapon_equipped=off_hand_weapon,
+                                                                               slotid=4)
             gameworld.component_for_entity(spellbar, spellBar.SlotFour).id = this_spell_entity
-            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,weapon_equipped=off_hand_weapon, slotid=5)
+            this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                               weapon_equipped=off_hand_weapon,
+                                                                               slotid=5)
             gameworld.component_for_entity(spellbar, spellBar.SlotFive).id = this_spell_entity
 
     @staticmethod
