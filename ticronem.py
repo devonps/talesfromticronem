@@ -71,12 +71,7 @@ def game_loop(gameworld):
                 hotspot_clicked = which_ui_hotspot_was_clicked(mx=event_action[0], my=event_action[1])
 
                 if 0 <= hotspot_clicked <= 9:
-                    spellbarId = MobileUtilities.get_spellbar_id_for_entity(gameworld=gameworld, entity=player)
-                    spell_entity = SpellUtilities.get_spell_bar_slot_componet(gameworld=gameworld, spell_bar=spellbarId, slotid=hotspot_clicked + 1)
-                    spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity.id)
-                    msg = Message(text="Spell:" + spell_name + " activated.", msgclass="all", fg="red", bg="white",
-                                  fnt="")
-                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
+                    SpellUtilities.cast_spell(slot=hotspot_clicked, gameworld=gameworld, message_log_id=message_log_id, player=player)
 
                 if hotspot_clicked == 10:
                     msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)

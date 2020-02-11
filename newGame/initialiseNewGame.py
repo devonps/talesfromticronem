@@ -58,6 +58,7 @@ def generate_spells(gameworld, game_config, spell_file, player_class):
         gameworld.add_component(thisspell, spells.CastTime(spell['turns_to_cast']))
         gameworld.add_component(thisspell, spells.CoolDown(spell['cool_down']))
         gameworld.add_component(thisspell, spells.ClassName(player_class))
+        gameworld.add_component(thisspell, spells.SpellType(spell['type_of_spell']))
         if spell['type_of_spell'] == 'combat':
             gameworld.add_component(thisspell, spells.WeaponType(spell['weapon_type']))
             gameworld.add_component(thisspell, spells.WeaponSlot(spell['weapon_slot']))

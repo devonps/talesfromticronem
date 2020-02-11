@@ -3,8 +3,7 @@ import random
 from loguru import logger
 
 from components import items, mobiles
-from utilities import formulas, world
-from utilities.spellHelp import SpellUtilities
+from utilities import formulas, world, configUtilities
 
 
 def display_inspect_panel(gameworld, display_mode, item_entity, game_config):
@@ -161,9 +160,9 @@ def display_inspect_panel(gameworld, display_mode, item_entity, game_config):
 
         # display dynamic item properties
 
-        tcod.console_blit(inspect_panel, 0, 0, insp_panel_width, insp_panel_height, 0, insp_panel_start_x, insp_panel_start_y)
-
-        tcod.console_flush()
+        # tcod.console_blit(inspect_panel, 0, 0, insp_panel_width, insp_panel_height, 0, insp_panel_start_x, insp_panel_start_y)
+        #
+        # tcod.console_flush()
 
         event_to_be_processed, event_action = handle_game_keys()
         if event_action != '':
@@ -181,9 +180,9 @@ def display_inspect_panel(gameworld, display_mode, item_entity, game_config):
             if spell_display_index < 0:
                 spell_display_index = spell_display_index_max
 
-    tcod.console_blit(inspect_panel, 0, 0, insp_panel_width, insp_panel_height, 0, insp_panel_start_x, 10)
-
-    tcod.console_flush()
+    # tcod.console_blit(inspect_panel, 0, 0, insp_panel_width, insp_panel_height, 0, insp_panel_start_x, 10)
+    #
+    # tcod.console_flush()
 
 
 class ItemUtilities:
