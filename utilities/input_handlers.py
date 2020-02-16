@@ -91,4 +91,9 @@ def handle_game_keys():
         myevent = 'mouserightbutton'
         action = (terminal.state(terminal.TK_MOUSE_X), terminal.state(terminal.TK_MOUSE_Y))
 
+    index = terminal.state(terminal.TK_CHAR) - ord('a')
+    if index >= 0:
+        myevent = 'keypress'
+        action = index
+
     return myevent, action

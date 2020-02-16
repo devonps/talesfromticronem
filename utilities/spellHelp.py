@@ -49,6 +49,7 @@ class SpellUtilities:
 
             entity_tag = tp + 3
             xx = 0
+            targetLetters = []
             if len(validTargets) == 0:
                 str_to_print = "[color=white][font=dungeon]" + 'No valid targets'
                 terminal.printf(x=lft + 3, y=entity_tag, s=str_to_print)
@@ -57,6 +58,7 @@ class SpellUtilities:
                     str_to_print = "[color=white]" + chr(97 + xx) + ") [color=" + x[3] + "][font=dungeon][bkcolor=" + x[4] + "]" + x[2] + ' ' + x[1]
                     terminal.printf(x=lft + 2, y=entity_tag, s=str_to_print)
                     entity_tag += 1
+                    targetLetters.append(chr(97 + xx))
                     xx += 1
             str_to_print = "[color=white][font=dungeon]" + 'Press ESC to cancel'
             terminal.printf(x=lft + 3, y=tp + height, s=str_to_print)
@@ -67,14 +69,23 @@ class SpellUtilities:
             terminal.refresh()
 
             # wait for user key press
-            gg = True
-            while gg:
+            # validTargets[ent, name.first, desc.glyph, desc.foreground, desc.background]
+            player_not_pressed_a_key = True
+            while player_not_pressed_a_key:
                 event_to_be_processed, event_action = handle_game_keys()
                 if event_to_be_processed != '':
                     if event_to_be_processed == 'keypress':
-                        if event_action == 'quit':
-                            gg = False
 
+                        if event_action == 'quit':
+                            player_not_pressed_a_key = False
+                        if len(targetLetters) != 0:
+                            key_pressed = chr(97 + event_action)
+                            logger.info('Key pressed:{}', key_pressed)
+                            if key_pressed in targetLetters:
+                                target = targetLetters.index(key_pressed)
+                                msg = Message(text=validTargets[target][1] + " is the target.", msgclass="all", fg="white", bg="black", fnt="")
+                                CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
+                                player_not_pressed_a_key = False
         else:
             msg = Message(text="Spell is on cooldown ", msgclass="all", fg="white", bg="black", fnt="")
             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
