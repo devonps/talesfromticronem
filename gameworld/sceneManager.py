@@ -1,6 +1,7 @@
 from components import mobiles
 from mapRelated.gameMap import GameMap
 from newGame.Entities import Entity
+from processors.castSpells import CastSpells
 from processors.move_entities import MoveEntities
 from processors.renderGameMap import RenderGameMap
 from processors.updateEntities import UpdateEntitiesProcessor
@@ -169,11 +170,13 @@ class SceneManager:
             renderGameMapProcessor = RenderGameMap(game_map=game_map, gameworld=gameworld)
             move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
             update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
+            cast_spells_processor = CastSpells(gameworld=gameworld, game_map=game_map)
             gameworld.add_processor(renderGameMapProcessor)
             renderMessageLogProcessor = RenderMessageLog(gameworld=gameworld)
             gameworld.add_processor(move_entities_processor)
             gameworld.add_processor(update_entities_processor)
             gameworld.add_processor(renderMessageLogProcessor)
+            gameworld.add_processor(cast_spells_processor)
 
         return game_map, mapAreaMaxX - 1, mapAreaMaxY - 1
 

@@ -517,6 +517,6 @@ def display_build_library():
                                 #
                                 # calculate derived stats
                                 #
-                                MobileUtilities.calculate_derived_attributes(gameworld=gameworld,gameconfig=game_config)
+                                MobileUtilities.calculate_derived_attributes(gameworld=gameworld,entity=player_entity)
                                 terminal.clear()
                                 CharacterCreation.display_starting_character(gameworld=gameworld)

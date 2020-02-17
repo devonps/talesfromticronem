@@ -1145,7 +1145,7 @@ class CharacterCreation:
         # calculate derived stats
         #
 
-        MobileUtilities.calculate_derived_attributes(gameworld=gameworld, gameconfig=game_config)
+        MobileUtilities.calculate_derived_attributes(gameworld=gameworld, entity=player)
 
         racial_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
         player_race_component = racial_details[0]
@@ -1913,13 +1913,13 @@ class CharacterCreation:
                                           fg=colourUtilities.get("DARKVIOLET"), bg=colourUtilities.get("WHITE"), fnt="dungeon")
 
                             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
-                            msg = Message(text="There's a full moon tonight", msgclass="combat", fg="yellow", bg="", fnt="")
+                            msg = Message(text="Combat log", msgclass="combat", fg="yellow", bg="", fnt="")
                             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
 
-                            msg = Message(text="This is a personal message", msgclass="personal", fg="blue", bg="", fnt="")
+                            msg = Message(text="quest updates", msgclass="personal", fg="blue", bg="", fnt="")
                             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
 
-                            msg = Message(text="Shall I tell you a story", msgclass="story", fg="orange", bg="", fnt="")
+                            msg = Message(text="Story journal", msgclass="story", fg="orange", bg="", fnt="")
                             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
 
 
