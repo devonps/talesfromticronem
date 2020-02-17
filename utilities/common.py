@@ -1,3 +1,4 @@
+from components.messages import Message
 from utilities import configUtilities
 from components import viewport, messages
 from utilities.mobileHelp import MobileUtilities
@@ -26,6 +27,27 @@ class CommonUtils:
         y_max = min(player_pos_y + vp_height, game_map.height)
 
         return x_min, x_max, y_min, y_max
+
+    @staticmethod
+    def format_combat_log_message(gameworld, target, damage_done_to_target, spell_name, message_log_id):
+        turnNumber = 1
+        msgStart = str(turnNumber) + ': You hit '
+        target_name = target
+        tempMessage = msgStart + target_name + " for " + str(damage_done_to_target) + " using [" + spell_name + "]"
+
+        if len(tempMessage) <= 25:
+            msg = Message(text=msgStart + target_name + " for " + "[color=orange]" + str(
+                damage_done_to_target) + "[/color] using [[" + spell_name + "]]", msgclass="combat", fg="white",
+                          bg="black", fnt="")
+            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
+        else:
+            temp2Message = Message(
+                msgStart + target_name + " for " + "[color=orange]" + str(damage_done_to_target) + " pts",
+                msgclass="combat", fg="white", bg="black", fnt="")
+            temp3Message = Message("[/color] using [color=yellow][[" + spell_name + "]]", msgclass="combat",
+                                   fg="yellow", bg="black", fnt="")
+            CommonUtils.add_message(gameworld=gameworld, message=temp2Message, logid=message_log_id)
+            CommonUtils.add_message(gameworld=gameworld, message=temp3Message, logid=message_log_id)
 
     @staticmethod
     def create_message_log_as_entity(gameworld, logid):

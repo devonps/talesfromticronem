@@ -1,10 +1,11 @@
 from loguru import logger
 from components import spells, spellBar, items, mobiles
 from components.messages import Message
-from utilities import colourUtilities
+from utilities import colourUtilities, formulas
 from utilities.common import CommonUtils
 from utilities.display import draw_colourful_frame, draw_simple_frame
 from utilities.input_handlers import handle_game_keys
+from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from bearlibterminal import terminal
 from mapRelated.gameMap import RenderLayer
@@ -24,6 +25,12 @@ class SpellUtilities:
         se = SpellUtilities.get_spell_bar_slot_componet(gameworld=gameworld, spell_bar=spellbarId,
                                                         slotid=slot + 1)
         spell_entity = se.id
+
+        weapon_used = 0
+        if slot <= 2:
+            weapon_used = 1
+        else:
+            weapon_used = 2
 
         # check if spell is on cool-down
         isSpellOnCooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell_entity)
@@ -55,7 +62,8 @@ class SpellUtilities:
                 terminal.printf(x=lft + 3, y=entity_tag, s=str_to_print)
             else:
                 for x in validTargets:
-                    str_to_print = "[color=white]" + chr(97 + xx) + ") [color=" + x[3] + "][font=dungeon][bkcolor=" + x[4] + "]" + x[2] + ' ' + x[1]
+                    str_to_print = "[color=white]" + chr(97 + xx) + ") [color=" + x[3] + "][font=dungeon][bkcolor=" + x[
+                        4] + "]" + x[2] + ' ' + x[1]
                     terminal.printf(x=lft + 2, y=entity_tag, s=str_to_print)
                     entity_tag += 1
                     targetLetters.append(chr(97 + xx))
@@ -65,7 +73,7 @@ class SpellUtilities:
 
             terminal.layer(prev_layer)
 
-            # blit the console
+            # blit the terminal
             terminal.refresh()
 
             # wait for user key press
@@ -80,12 +88,15 @@ class SpellUtilities:
                             player_not_pressed_a_key = False
                         if len(targetLetters) != 0:
                             key_pressed = chr(97 + event_action)
-                            logger.info('Key pressed:{}', key_pressed)
                             if key_pressed in targetLetters:
                                 target = targetLetters.index(key_pressed)
-                                msg = Message(text=validTargets[target][1] + " is the target.", msgclass="all", fg="white", bg="black", fnt="")
-                                CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
                                 player_not_pressed_a_key = False
+
+                                # add component covering spell has been cast
+                                gameworld.add_component(player,
+                                                        mobiles.SpellCast(truefalse=True, spell_entity=spell_entity,
+                                                                          spell_target=validTargets[target][0], spell_bar_slot=1))
+
         else:
             msg = Message(text="Spell is on cooldown ", msgclass="all", fg="white", bg="black", fnt="")
             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
@@ -108,7 +119,7 @@ class SpellUtilities:
         for xx in range(fx, tx):
             for yy in range(fy, ty):
                 if xx != sx and yy != sy:
-                    str_to_print = "[color=blue][font=dungeon][bkcolor=black]."
+                    str_to_print = "[font=dungeon][color=blue].[/color]"
                     terminal.printf(x=xx, y=yy, s=str_to_print)
                 for ent, (pos, name, desc) in gameworld.get_components(mobiles.Position, mobiles.Name,
                                                                        mobiles.Describable):

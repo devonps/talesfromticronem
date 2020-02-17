@@ -155,6 +155,15 @@ class StatusEffects:
         self.boons = []
         self.conditions = []
         self.controls = []
+        self.inCombat = False
+
+
+class SpellCast:
+    def __init__(self, truefalse=False, spell_entity=0, spell_target=0, spell_bar_slot=-99):
+        self.truefalse = truefalse
+        self.spell_entity = spell_entity
+        self.spell_target = spell_target
+        self.spell_bar_slot = spell_bar_slot
 
 
 class PrimaryAttributes:

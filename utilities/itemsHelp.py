@@ -386,26 +386,13 @@ class ItemUtilities:
         return gameworld.component_for_entity(weapon, items.DamageRange).ranges
 
     @staticmethod
-    def get_weapon_outgoing_damage(gameworld, weapon, power, slot):
+    def calculate_weapon_strength(gameworld, weapon):
         weapon_level = ItemUtilities.get_weapon_experience_values(gameworld=gameworld, entity=weapon)
         current_weapon_level = weapon_level[0]
 
         weapon_strength = ItemUtilities.get_weapon_strength(gameworld=gameworld, weapon=weapon, weapon_level=current_weapon_level)
 
-        spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=weapon, slotid=slot)
-
-        spell_coeff = float(SpellUtilities.get_spell_DamageCoeff(gameworld=gameworld, spell_entity=spell_entity))
-
-        outgoing_base_damage = formulas.outgoing_base_damage(weapon_strength=weapon_strength, power=power, spell_coefficient=spell_coeff)
-
-        # outgoing_base_damage = weapon_strength * power * spell_coeff
-
-        # logger.debug('weapon strength {}', weapon_strength)
-        # logger.debug('spell entity {}', spell_entity)
-        # logger.debug('spell coeff {}', spell_coeff)
-        # logger.debug('base damage {}', int(outgoing_base_damage))
-
-        return outgoing_base_damage
+        return weapon_strength
 
     @staticmethod
     def get_weapon_strength(gameworld, weapon, weapon_level):

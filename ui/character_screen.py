@@ -28,7 +28,7 @@ def display_hero_panel(gameworld):
     # gather player entity
     player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
     # update player derived attributes - do that here to allow for mid-turn changes
-    MobileUtilities.calculate_derived_attributes(gameworld=gameworld, gameconfig=game_config)
+    MobileUtilities.calculate_derived_attributes(gameworld=gameworld, entity=player_entity)
 
     x_offset = 11
 
