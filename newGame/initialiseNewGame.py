@@ -2,13 +2,13 @@ import random
 
 from loguru import logger
 from components import spells
-from components.addStatusEffects import process_status_effect
 
 from utilities.jsonUtilities import read_json_file
 from utilities.randomNumberGenerator import PCG32Generator
 from utilities.externalfileutilities import Externalfiles
 from utilities import world
 from utilities import configUtilities
+from utilities.spellHelp import SpellUtilities
 
 
 def setup_gameworld(game_config):
@@ -48,6 +48,10 @@ def generate_spells(gameworld, game_config, spell_file, player_class):
                                                                  parameter=spellsfile)
     spell_file = read_json_file(spell_file_path)
 
+    condis = configUtilities.get_config_value_as_list(configfile=game_config, section='spells', parameter='condi_effects')
+    boons = configUtilities.get_config_value_as_list(configfile=game_config, section='spells', parameter='boon_effects')
+    resources = configUtilities.get_config_value_as_list(configfile=game_config, section='spells', parameter='class_resources')
+
     logger.debug('Creating spells as entities')
     for spell in spell_file['spells']:
         thisspell = world.get_next_entity_id(gameworld=gameworld)
@@ -59,6 +63,7 @@ def generate_spells(gameworld, game_config, spell_file, player_class):
         gameworld.add_component(thisspell, spells.CoolDown(spell['cool_down']))
         gameworld.add_component(thisspell, spells.ClassName(player_class))
         gameworld.add_component(thisspell, spells.SpellType(spell['type_of_spell']))
+        gameworld.add_component(thisspell, spells.StatusEffect(condis=[], boons=[], controls=[]))
         if spell['type_of_spell'] == 'combat':
             gameworld.add_component(thisspell, spells.WeaponType(spell['weapon_type']))
             gameworld.add_component(thisspell, spells.WeaponSlot(spell['weapon_slot']))
@@ -86,4 +91,34 @@ def generate_spells(gameworld, game_config, spell_file, player_class):
             gameworld.add_component(thisspell, spells.ItemType(spell['item_type']))
 
         effects = spell['effects']
-        process_status_effect(gameworld, thisspell, spell['name'], effects, game_config)
+
+        if len(effects) > 0:
+            for effect in spell['effects']:
+                spell_not_added = True
+                if effect['name'] in condis:
+                    SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=thisspell, status_effect=str(effect['name']))
+                    spell_not_added = False
+                if effect['name'] in boons:
+                    spell_not_added = False
+                    SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=thisspell, status_effect=str(effect['name']))
+                if effect['name'] in resources:
+                    spell_not_added = False
+                    SpellUtilities.add_resources_to_spell(gameworld=gameworld, spell_entity=thisspell, resource=str(effect['name']))
+
+            # condi_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld, spell_entity=thisspell)
+            # boon_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=thisspell)
+            # controls_list = SpellUtilities.get_all_controls_for_spell(gameworld=gameworld, spell_entity=thisspell)
+            # resource_list = SpellUtilities.get_all_resources_for_spell(gameworld=gameworld, spell_entity=thisspell)
+            #
+            # for condi in condi_list:
+            #     logger.info('List of condis attached to the spell:{}', condi)
+            #
+            # for boon in boon_list:
+            #     logger.info('List of boons attached to the spell:{}', boon)
+            #
+            # for ctrl in controls_list:
+            #     logger.info('List of controls for this spell:{}', ctrl)
+            #
+            # for rsc in resource_list:
+            #     logger.info('List of resources for this spell:{}', rsc)
+

@@ -1,7 +1,3 @@
-import textwrap
-
-from utilities import colourUtilities
-
 
 class Message:
     def __init__(self, text, msgclass='all', fg="black", bg="white", fnt=""):
@@ -25,12 +21,3 @@ class MessageLog:
         self.display_to_message = display_to_message
         self.visibleLog = visibleLog
 
-    # below might not be needed
-    # def add_message(self, message, msgclass):
-    #     new_msg_lines = textwrap.wrap(message.text, 20)
-    #
-    #     for line in new_msg_lines:
-    #         if len(self.storedMessages) == self.height:
-    #             del self.storedMessages[0]
-    #
-    #             self.storedMessages.append(Message(line, message.color, msgclass))

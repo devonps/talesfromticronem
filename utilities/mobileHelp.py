@@ -1047,3 +1047,16 @@ class MobileUtilities(numbers.Real):
     def set_combat_status_to_false(gameworld, entity):
         status_effects_component = gameworld.component_for_entity(entity, mobiles.StatusEffects)
         status_effects_component.inCombat = False
+
+    @staticmethod
+    def get_current_condis_applied_to_mobile(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.StatusEffects).conditions
+
+    @staticmethod
+    def get_current_boons_applied_to_mobile(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.StatusEffects).boons
+
+    @staticmethod
+    def get_current_controls_applied_to_mobile(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.StatusEffects).controls
+
