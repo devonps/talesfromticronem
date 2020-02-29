@@ -102,3 +102,20 @@ class ItemType:
 class ItemLocation:
     def __init__(self, label=''):
         self.label = label
+
+
+class StatusEffect:
+
+    def __init__(self, condis=None, boons=None, controls=None, resources=None):
+        if controls is None:
+            controls = []
+        if boons is None:
+            boons = []
+        if condis is None:
+            condis = []
+        if resources is None:
+            resources = []
+        self.condis = condis
+        self.boons = boons
+        self.controls = controls
+        self.resources = resources

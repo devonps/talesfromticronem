@@ -21,7 +21,7 @@
           "name": "gain_lifeforce",
           "value": "4"
         }
-        ]
+      ]
     },
     {
       "name": "mark of blood",
@@ -287,6 +287,10 @@
       "effects": [
         {
           "name": "gain_lifeforce",
+          "value": "2"
+        },
+        {
+          "name": "bleeding",
           "value": "2"
         }
       ]

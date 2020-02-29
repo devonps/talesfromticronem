@@ -1,11 +1,12 @@
 from loguru import logger
-from components import spells, spellBar, items, mobiles
+from components import spells, spellBar, items, mobiles, condis
 from components.messages import Message
-from utilities import colourUtilities, formulas
+from utilities import colourUtilities, formulas, configUtilities
 from utilities.common import CommonUtils
 from utilities.display import draw_colourful_frame, draw_simple_frame
 from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
+from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from bearlibterminal import terminal
 from mapRelated.gameMap import RenderLayer
@@ -283,3 +284,83 @@ class SpellUtilities:
     @staticmethod
     def get_spell_HealingCoeff(gameworld, spell_entity):
         return gameworld.component_for_entity(spell_entity, spells.HealingCoef).value
+
+    @staticmethod
+    def add_status_effect_condi(gameworld, spell_entity, status_effect):
+
+        current_condis = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld, spell_entity=spell_entity)
+        current_condis.append(status_effect)
+        status_effect_component = gameworld.component_for_entity(spell_entity, spells.StatusEffect)
+        status_effect_component.condis = current_condis
+
+    @staticmethod
+    def get_all_condis_for_spell(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.StatusEffect).condis
+
+    @staticmethod
+    def add_status_effect_boon(gameworld, spell_entity, status_effect):
+        current_boons = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=spell_entity)
+        current_boons.append(status_effect)
+        status_effect_component = gameworld.component_for_entity(spell_entity, spells.StatusEffect)
+        status_effect_component.boons = current_boons
+
+    @staticmethod
+    def get_all_boons_for_spell(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.StatusEffect).boons
+
+    @staticmethod
+    def add_status_effect_control(gameworld, spell_entity, status_effect):
+        current_controls = SpellUtilities.get_all_controls_for_spell(gameworld=gameworld, spell_entity=spell_entity)
+        current_controls.append(status_effect)
+        status_effect_component = gameworld.component_for_entity(spell_entity, spells.StatusEffect)
+        status_effect_component.controls = current_controls
+
+
+    @staticmethod
+    def get_all_controls_for_spell(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.StatusEffect).controls
+
+    @staticmethod
+    def add_resources_to_spell(gameworld, spell_entity, resource):
+        current_resources = SpellUtilities.get_all_resources_for_spell(gameworld=gameworld, spell_entity=spell_entity)
+        current_resources.append(resource)
+        status_effect_component = gameworld.component_for_entity(spell_entity, spells.StatusEffect)
+        status_effect_component.resources = current_resources
+
+    @staticmethod
+    def get_all_resources_for_spell(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.StatusEffect).resources
+
+    @staticmethod
+    def apply_condis_to_target(gameworld, target_entity, list_of_condis):
+
+        current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=target_entity)
+        target_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=target_entity)
+        target_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=target_entity)
+
+        # read the conditions.json file
+        game_config = configUtilities.load_config()
+        conditions_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                     parameter='CONDITIONSFILE')
+        conditions_file = read_json_file(conditions_file_path)
+
+        for condi in list_of_condis:
+
+            for condition in conditions_file['conditions']:
+                if condi == condition['condition_status_effect']:
+                    z = {'name': condi, 'duration': int(condition['default_exists_for_turns']),
+                         'baseDamage': int(condition['base_damage_per_stack']),
+                         'condDamageMod': float(condition['condition_damage_modifier']),
+                         'weaponLevelMod': float(condition['weapon_level_modifier']),
+                         'dialogue': condition['dialogue_options'][0][target_class]}
+
+                    current_condis.append(z)
+
+            status_effects_component = gameworld.component_for_entity(target_entity, mobiles.StatusEffects)
+            status_effects_component.conditions = current_condis
+
+        logger.debug('Condis applied to {} is {}', target_names[0], current_condis)
+
+    @staticmethod
+    def apply_boons_to_target(gameworld, target_entity, list_of_boons):
+        pass

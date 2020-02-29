@@ -19,10 +19,10 @@
       "dialogue_options": [{
         "default": "I'm bleeding",
         "necromancer": "That's my blood!",
-        "witchdoctor": "",
+        "witchdoctor": "I care not for my blood!",
         "illusionist": "Losing blood",
         "elementalist": "I'm hemorrhaging",
-        "druid": ""
+        "druid": "Arrgh, it hurts"
       }]
     },
        {
