@@ -167,16 +167,16 @@ class SceneManager:
                     logger.info('New enemy at {} / {}', posx, posy)
 
         if currentscene == 1:
-            renderGameMapProcessor = RenderGameMap(game_map=game_map, gameworld=gameworld)
-            move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
             update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
+            move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
             cast_spells_processor = CastSpells(gameworld=gameworld, game_map=game_map)
-            gameworld.add_processor(renderGameMapProcessor)
+            renderGameMapProcessor = RenderGameMap(game_map=game_map, gameworld=gameworld)
             renderMessageLogProcessor = RenderMessageLog(gameworld=gameworld)
             gameworld.add_processor(move_entities_processor)
-            gameworld.add_processor(update_entities_processor)
-            gameworld.add_processor(renderMessageLogProcessor)
             gameworld.add_processor(cast_spells_processor)
+            gameworld.add_processor(update_entities_processor)
+            gameworld.add_processor(renderGameMapProcessor)
+            gameworld.add_processor(renderMessageLogProcessor)
 
         return game_map, mapAreaMaxX - 1, mapAreaMaxY - 1
 

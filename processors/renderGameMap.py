@@ -43,6 +43,7 @@ class RenderGameMap(esper.Processor):
         self.render_player_vitals(gameworld=self.gameworld, game_config=game_config)
         terminal.composition(terminal.TK_OFF)
 
+
     @staticmethod
     def clear_map_layer():
         # prev_layer = terminal.state(terminal.TK_LAYER)
