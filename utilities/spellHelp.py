@@ -334,9 +334,13 @@ class SpellUtilities:
     @staticmethod
     def apply_condis_to_target(gameworld, target_entity, list_of_condis):
 
+        game_config = configUtilities.load_config()
+
         current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=target_entity)
         target_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=target_entity)
         target_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=target_entity)
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
 
         # read the conditions.json file
         game_config = configUtilities.load_config()
@@ -353,6 +357,10 @@ class SpellUtilities:
                          'condDamageMod': float(condition['condition_damage_modifier']),
                          'weaponLevelMod': float(condition['weapon_level_modifier']),
                          'dialogue': condition['dialogue_options'][0][target_class]}
+
+                    # add dialog for condition damage to message log
+                    msg = Message(text=target_names[0] + " screams: " + condition['dialogue_options'][0][target_class], msgclass="all", fg="white", bg="black", fnt="")
+                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
 
                     current_condis.append(z)
 

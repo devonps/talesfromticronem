@@ -27,8 +27,8 @@ def which_ui_hotspot_was_clicked(mx, my):
 
 
 def handle_game_keys():
-    action = ''
-    myevent = ''
+    action = None
+    myevent = None
 
     key = terminal.read()
 

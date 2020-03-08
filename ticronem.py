@@ -29,9 +29,9 @@ def game_loop(gameworld):
     currentScene = 1
     previousScene = 0
     SceneChange = True
+    currentTurn = 0
 
     while playing_game:
-
         #
         # scene manager
         #
@@ -43,67 +43,92 @@ def game_loop(gameworld):
         # get player action aka their intent to do something
         #
         message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
-        event_to_be_processed, event_action = handle_game_keys()
-        if event_to_be_processed != '':
-            if event_to_be_processed == 'keypress':
-                if event_action == 'quit':
-                    value = 'exit:true'
-                    ReplayGame.update_game_replay_file(game_config, value)
-                    playing_game = False
-                    raise SystemExit()
-                if event_action in ('left', 'right', 'up', 'down'):
-                    MobileUtilities.set_player_velocity(gameworld=gameworld, player_entity=player, direction=event_action, speed=1)
+        logger.debug('Starting turn {}', currentTurn)
+        if currentTurn > 0:
+            validEvent = False
+            advanceGameTurn = False
 
-            if event_to_be_processed == 'textinput':
-                if event_action == 'n':
-                    SceneChange = True
-                    previousScene = currentScene
-                    currentScene += 1
-                    if currentScene > 2:
-                        currentScene = 1
-                if event_action == 'h':
-                    display_hero_panel(gameworld=gameworld)
-                if event_action == 'g':
-                    MobileUtilities.mobile_pick_up_item(gameworld=gameworld, mobile=player)
+            logger.debug('Waiting for player to take an action')
+            while not validEvent:
+                event_to_be_processed, event_action = handle_game_keys()
+                if event_to_be_processed not in ('mousemove', None):
+                    validEvent = True
+            logger.debug('Event captured is {} and the value is {}', event_to_be_processed, event_action)
+            logger.debug('ValidEvent is set to {}', validEvent)
+            if validEvent:
+                if event_to_be_processed == 'keypress':
+                    if event_action == 'quit':
+                        value = 'exit:true'
+                        ReplayGame.update_game_replay_file(game_config, value)
+                        raise SystemExit()
+                    if event_action in ('left', 'right', 'up', 'down'):
+                        MobileUtilities.set_player_velocity(gameworld=gameworld, player_entity=player, direction=event_action, speed=1)
+                        advanceGameTurn = True
+                        logger.info('temp: moving on turn {}', currentTurn)
 
-            if event_to_be_processed == 'mouseleftbutton':
-                logger.info('cell x/y {}/{}', event_action[0], event_action[1])
-                hotspot_clicked = which_ui_hotspot_was_clicked(mx=event_action[0], my=event_action[1])
+                if event_to_be_processed == 'textinput':
+                    if event_action == 'n':
+                        SceneChange = True
+                        previousScene = currentScene
+                        currentScene += 1
+                        if currentScene > 2:
+                            currentScene = 1
+                    if event_action == 'h':
+                        display_hero_panel(gameworld=gameworld)
+                    if event_action == 'g':
+                        MobileUtilities.mobile_pick_up_item(gameworld=gameworld, mobile=player)
+                        advanceGameTurn = True
 
-                if 0 <= hotspot_clicked <= 9:
-                    SpellUtilities.cast_spell(slot=hotspot_clicked, gameworld=gameworld, message_log_id=message_log_id, player=player)
+                if event_to_be_processed == 'mouseleftbutton':
+                    logger.info('cell x/y {}/{}', event_action[0], event_action[1])
+                    hotspot_clicked = which_ui_hotspot_was_clicked(mx=event_action[0], my=event_action[1])
 
-                if hotspot_clicked == 10:
-                    msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
-                    CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="all")
+                    if 0 <= hotspot_clicked <= 9:
+                        SpellUtilities.cast_spell(slot=hotspot_clicked, gameworld=gameworld, message_log_id=message_log_id, player=player)
+                        advanceGameTurn = True
 
-                if hotspot_clicked == 11:
-                    msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
-                    CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="combat")
+                    if hotspot_clicked == 10:
+                        msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+                        CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="all")
 
-                if hotspot_clicked == 12:
-                    msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
-                    CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="story")
+                    if hotspot_clicked == 11:
+                        msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+                        CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="combat")
 
-                if hotspot_clicked == 13:
-                    msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
-                    CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="personal")
+                    if hotspot_clicked == 12:
+                        msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+                        CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="story")
 
-                # check for entity at location
+                    if hotspot_clicked == 13:
+                        msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+                        CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="personal")
 
-                for ent, (pos, name) in gameworld.get_components(mobiles.Position, mobiles.Name):
-                    if pos.x == event_action[0] and pos.y == event_action[1]:
-                        msg = Message(text="Enemy called " + name.first + " targetted.", msgclass="all", fg="yellow", bg="", fnt="")
-                        CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
+                    # check for entity at location
+                    for ent, (pos, name) in gameworld.get_components(mobiles.Position, mobiles.Name):
+                        if pos.x == event_action[0] and pos.y == event_action[1]:
+                            msg = Message(text="Enemy called " + name.first + " targeted.", msgclass="all", fg="yellow", bg="", fnt="")
+                            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
 
-        #
-        # get monsters intended action
-        #
+                if advanceGameTurn:
+                    #
+                    # get monsters intended action
+                    #
+                    logger.debug('Waiting for monsters to finish up')
 
-        # run ALL game processors
-        gameworld.process(game_config)
-        # blit the console
-        terminal.refresh()
+                    currentTurn += 1
+                    # process all intended actions
+                    gameworld.process(game_config)
+                    logger.info('All turn based processes completed')
+
+                    # blit the console
+                    terminal.refresh()
+        else:
+            # process all intended actions
+            gameworld.process(game_config)
+
+            # blit the console
+            terminal.refresh()
+            currentTurn += 1
 
 
 def game_replay(con, game_config):

@@ -1875,12 +1875,13 @@ class CharacterCreation:
         saved_build = False
 
         while not_ready_to_proceed:
-            # blit changes to root console
-            terminal.refresh()
             # menu options
             pointy_menu(header='',
                         menu_options=menu_options, menu_id_format=True, menu_start_x=display_char_menu_x,
                         menu_start_y=display_char_menu_y, blank_line=True, selected_option=selected_menu_option)
+
+            # blit changes to root console
+            terminal.refresh()
 
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '':

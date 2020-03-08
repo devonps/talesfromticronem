@@ -1,3 +1,5 @@
+from loguru import logger
+
 
 def outgoing_base_damage(weapon_strength, power, spell_coefficient):
     # weapon strength - random number representing potential damage for that weapon
@@ -19,6 +21,7 @@ def calculate_duration_per_condition(condition_duration):
 def base_condi_damage(condition_damage_modifier, condition_damage_stat, weapon_level_modifier, base_damage_per_stack, weapon_level):
 
     base_damage = (condition_damage_modifier * condition_damage_stat) + (weapon_level_modifier * weapon_level) + base_damage_per_stack
+    logger.debug('Condition damage of ' + str(base_damage) + ' is calculated as: (' + str(condition_damage_modifier) + ' * ' + str(condition_damage_stat) + ') + (' + str(weapon_level_modifier) + ' * ' + str(weapon_level) + ') + ' + str(base_damage_per_stack))
 
     return base_damage
 
