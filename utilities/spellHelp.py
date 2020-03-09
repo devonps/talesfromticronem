@@ -26,6 +26,7 @@ class SpellUtilities:
         se = SpellUtilities.get_spell_bar_slot_componet(gameworld=gameworld, spell_bar=spellbarId,
                                                         slotid=slot + 1)
         spell_entity = se.id
+        logger.info('Casting spell with entity id {}', spell_entity)
 
         weapon_used = 0
         if slot <= 2:
@@ -343,7 +344,6 @@ class SpellUtilities:
         message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
 
         # read the conditions.json file
-        game_config = configUtilities.load_config()
         conditions_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                      parameter='CONDITIONSFILE')
         conditions_file = read_json_file(conditions_file_path)
@@ -370,5 +370,44 @@ class SpellUtilities:
         logger.debug('Condis applied to {} is {}', target_names[0], current_condis)
 
     @staticmethod
-    def apply_boons_to_target(gameworld, target_entity, list_of_boons):
-        pass
+    def apply_boons_to_target(gameworld, target_entity, list_of_boons, spell_caster):
+
+        game_config = configUtilities.load_config()
+
+        current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=target_entity)
+        target_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=target_entity)
+        target_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=target_entity)
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
+
+        # read the boons.json file
+        boons_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                     parameter='BOONSFILE')
+        boons_file = read_json_file(boons_file_path)
+
+        for boon in list_of_boons:
+
+            for fileBoon in boons_file['boons']:
+                if boon == fileBoon['boon_status_effect']:
+                    b = {'name': boon, 'duration': int(fileBoon['default_exists_for_turns']),
+                         'dialogue': fileBoon['dialogue_options'][0][target_class]}
+                    if boon == 'fury':
+                        b['improvement'] = 'crit_chance_increased'
+                        b['increased_by'] = fileBoon['crit_chance_improved']
+                        target_entity = spell_caster
+                        current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld,
+                                                                                            entity=target_entity)
+                        # target_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld,
+                        #                                                        entity=target_entity)
+                        # logger.warning('-----> target entity for fury is {}', target_names[0])
+
+                    # add dialog for boon effect to message log
+                    msg = Message(text=target_names[0] + " " + fileBoon['dialogue_options'][0][target_class], msgclass="all", fg="white", bg="black", fnt="")
+                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
+
+                    # current_boons is a map
+                    current_boons.append(b)
+        if len(current_boons) != 0:
+            status_effects_component = gameworld.component_for_entity(target_entity, mobiles.StatusEffects)
+            status_effects_component.boons = current_boons
+            # logger.debug('Boons applied to {} is {}', target_names[0], current_boons)

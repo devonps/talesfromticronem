@@ -43,6 +43,8 @@ class CastSpells(esper.Processor):
                                                                               spell_entity=mob.spell_entity)
                 resources_to_apply = SpellUtilities.get_all_resources_for_spell(gameworld=self.gameworld,
                                                                                 spell_entity=mob.spell_entity)
+                logger.info('condis attached to spell {}', condis_to_apply)
+                logger.info('boons attached to spell {}', boons_to_apply)
 
                 if spell_type == 'combat':
                     # set inCombat to true for the target and the player --> stops health being recalculated
@@ -75,7 +77,7 @@ class CastSpells(esper.Processor):
                 # are there any boons to apply to the spell caster - regardless of damage caused
                 if len(boons_to_apply) != 0:
                     SpellUtilities.apply_boons_to_target(gameworld=self.gameworld, target_entity=mob.spell_target,
-                                                         list_of_boons=boons_to_apply)
+                                                         list_of_boons=boons_to_apply, spell_caster=ent)
 
     def cast_combat_spell(self, spell_caster, spell, spell_target, weapon_used, spell_name, message_log_id):
         equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=spell_caster)
