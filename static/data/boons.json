@@ -65,12 +65,12 @@
       "dialogue_options":
       [
         {
-          "default": "fury rising!",
-          "necromancer": "Kill 'em all",
-          "witchdoctor": "Urge to kill rising",
-          "illusionist": "Feel the fury",
-          "elementalist": "Rage at maximum",
-          "druid": "Anger is rising"
+          "default": "my fury rising!",
+          "necromancer": "screams, kill 'em all",
+          "witchdoctor": "curses, urge to kill rising",
+          "illusionist": "says, feel the fury",
+          "elementalist": "says, rage at maximum",
+          "druid": "whispers, my anger is rising"
         }
       ]
     },

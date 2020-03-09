@@ -86,6 +86,7 @@ def game_loop(gameworld):
                     if 0 <= hotspot_clicked <= 9:
                         SpellUtilities.cast_spell(slot=hotspot_clicked, gameworld=gameworld, message_log_id=message_log_id, player=player)
                         advanceGameTurn = True
+                        logger.info('temp: casting spell on turn {}', currentTurn)
 
                     if hotspot_clicked == 10:
                         msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
@@ -116,12 +117,12 @@ def game_loop(gameworld):
                     logger.debug('Waiting for monsters to finish up')
 
                     currentTurn += 1
-                    # process all intended actions
-                    gameworld.process(game_config)
-                    logger.info('All turn based processes completed')
+                # process all intended actions
+                gameworld.process(game_config)
+                logger.info('All turn based processes completed')
 
-                    # blit the console
-                    terminal.refresh()
+                # blit the console
+                terminal.refresh()
         else:
             # process all intended actions
             gameworld.process(game_config)
