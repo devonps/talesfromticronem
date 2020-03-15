@@ -1,11 +1,11 @@
 import esper
 
 from bearlibterminal import terminal
+from loguru import logger
 
 from components import mobiles, items
 from utilities import configUtilities
 from utilities.mobileHelp import MobileUtilities
-from mapRelated.gameMap import RenderLayer
 from utilities.common import CommonUtils
 
 
@@ -31,18 +31,19 @@ class RenderGameMap(esper.Processor):
         self.render_map(self.gameworld, game_config, self.game_map)
         # draw the entities
         # self.render_items(game_config, self.gameworld)
-        self.render_mobiles(game_config, self.gameworld, self.game_map)
-        self.render_entity_display_panel(gameworld=self.gameworld, game_config=game_config, game_map = self.game_map)
+        visibleEntities = self.render_mobiles(game_config, self.gameworld, self.game_map)
+        if len(visibleEntities) > 0:
+            self.render_entity_display_panel(gameworld=self.gameworld, game_config=game_config,
+                                             visibleEntities=visibleEntities)
 
         # GUI viewport
         terminal.composition(terminal.TK_ON)
         self.render_statusbox(game_config)
 
-        self.render_player_status_effects(game_config=game_config)
+        self.render_player_status_effects(gameworld=self.gameworld, game_config=game_config)
         self.render_spell_bar(self, game_config=game_config)
         self.render_player_vitals(gameworld=self.gameworld, game_config=game_config)
         terminal.composition(terminal.TK_OFF)
-
 
     @staticmethod
     def clear_map_layer():
@@ -54,37 +55,64 @@ class RenderGameMap(esper.Processor):
         # terminal.layer(prev_layer)
 
     @staticmethod
-    def render_entity_display_panel(gameworld, game_config, game_map):
+    def render_entity_display_panel(gameworld, game_config, visibleEntities):
         render_style = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                    parameter='render_style')
-        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
-
         # right hand side divider
         for dy in range(47):
             terminal.printf(x=62, y=dy, s="[color=red][font=dungeon]▒")
 
+        image_start_x_pos = 40
+        status_effect_image_y_pos = 4
+        entity_y_draw_pos = 4
+        entityCount = 1
+        prevEntity = False
+
         if render_style == 1:
-
-            x_min, x_max, y_min, y_max = CommonUtils.create_display_area(gameworld=gameworld, player_entity=player_entity, game_map=game_map)
-
-            entity_tag = 3
 
             str_to_print = "[color=white]" + "Visible Entities"
             terminal.printf(x=64, y=1, s=str_to_print)
 
-            for ent, (rend, pos, desc, name) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
-                                                                         mobiles.Describable, mobiles.Name):
-                if rend.isVisible:
-                    if ent != player_entity:
-                        draw_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
-                        draw_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
-                        fg = desc.foreground
-                        bg = desc.background
-                        if x_min <= draw_pos_x <= x_max:
-                            if y_min <= draw_pos_y <= y_max:
-                                str_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + desc.glyph + ' ' + name.first
-                                terminal.printf(x=64, y=entity_tag, s=str_to_print)
-                                entity_tag += 1
+            for entity in visibleEntities:
+                thisEntity = False
+                glyph = MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=entity)
+                fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=entity)
+                bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=entity)
+                entityNames = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity)
+                list_of_conditions = MobileUtilities.get_current_condis_applied_to_mobile(
+                    gameworld=gameworld, entity=entity)
+                list_of_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld,
+                                                                                    entity=entity)
+
+                str_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph + ' ' + entityNames[0]
+                terminal.printf(x=64, y=entity_y_draw_pos, s=str_to_print)
+                entity_y_draw_pos += 1
+
+                if entityCount > 1:
+                    status_effect_image_y_pos += 1
+
+                if len(list_of_boons) > 0 and len(list_of_conditions) > 0:
+                    RenderGameMap.render_boons(posx=image_start_x_pos, posy=status_effect_image_y_pos,
+                                               list_of_boons=list_of_boons)
+                    RenderGameMap.render_conditions(posx=image_start_x_pos + len(list_of_boons), posy=status_effect_image_y_pos,
+                                                    list_of_conditions=list_of_conditions)
+                    status_effect_image_y_pos += 2
+                    entity_y_draw_pos += 1
+                    thisEntity = True
+                elif (len(list_of_boons) > 0 and len(list_of_conditions) == 0) or (
+                        len(list_of_boons) == 0 and len(list_of_conditions) > 0):
+                    if len(list_of_boons) > 0:
+                        RenderGameMap.render_boons(posx=image_start_x_pos, posy=status_effect_image_y_pos,
+                                                   list_of_boons=list_of_boons)
+                    if len(list_of_conditions) > 0:
+                        RenderGameMap.render_conditions(posx=image_start_x_pos, posy=status_effect_image_y_pos,
+                                                        list_of_conditions=list_of_conditions)
+                    status_effect_image_y_pos += 2
+                    entity_y_draw_pos += 1
+                    thisEntity = True
+                entityCount += 1
+                if thisEntity:
+                    prevEntity = True
 
     @staticmethod
     def render_map(gameworld, game_config, game_map):
@@ -225,6 +253,7 @@ class RenderGameMap(esper.Processor):
         # terminal.layer(RenderLayer.ENTITIES.value)
         draw_pos_x = 0
         draw_pos_y = 0
+        visibleEntities = []
 
         if render_style == 1:
             x_min, x_max, y_min, y_max = CommonUtils.create_display_area(gameworld=gameworld,
@@ -240,6 +269,8 @@ class RenderGameMap(esper.Processor):
                     if x_min <= draw_pos_x <= x_max:
                         if y_min <= draw_pos_y <= y_max:
                             RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, 0, 0, render_style, fg, bg)
+                            if ent != player_entity:
+                                visibleEntities.append(ent)
         else:
             image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                         parameter='map_Xscale')
@@ -267,6 +298,8 @@ class RenderGameMap(esper.Processor):
                         draw_pos_y = vpy
                     RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.image, image_x_scale, image_y_scale,
                                                 render_style)
+
+        return visibleEntities
 
     @staticmethod
     def render_items(game_config, gameworld):
@@ -405,46 +438,46 @@ class RenderGameMap(esper.Processor):
         # terminal.layer(prev_layer)
 
     @staticmethod
-    def render_player_status_effects(game_config):
+    def render_player_status_effects(gameworld, game_config):
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='map_Yscale')
 
         statusbox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                        parameter='STATUSBOX_HEIGHT')
 
-        prev_layer = terminal.state(terminal.TK_LAYER)
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=player_entity)
+        player_conditions = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
+                                                                                 entity=player_entity)
+
+        # prev_layer = terminal.state(terminal.TK_LAYER)
         # terminal.layer(RenderLayer.STATUSEFFECTS.value)
-        RenderGameMap.render_boons(iy=image_y_scale, statusbox_y_position=statusbox_height)
-        RenderGameMap.render_conditions(iy=image_y_scale, statusbox_y_position=statusbox_height)
-        RenderGameMap.render_controls(iy=image_y_scale, statusbox_y_position=statusbox_height)
+        RenderGameMap.render_boons(posx=1, posy=statusbox_height * image_y_scale, list_of_boons=player_boons)
+        RenderGameMap.render_conditions(posx=11, posy=statusbox_height * image_y_scale,
+                                        list_of_conditions=player_conditions)
+        # RenderGameMap.render_controls(iy=image_y_scale, statusbox_y_position=statusbox_height)
         # terminal.layer(prev_layer)
 
     @staticmethod
-    def render_boons(iy, statusbox_y_position):
-        ac = 1
-        sc = 2
-        for a in range(10):
-            terminal.put(x=(ac + a) * sc, y=statusbox_y_position * iy, c=0xE600 + a)
+    def render_boons(posx, posy, list_of_boons):
+        image_count = 0
+        image_scale_factor = 2
+
+        for boon in list_of_boons:
+            boon_image_id = int(boon['image'])
+            terminal.put(x=(posx + image_count) * image_scale_factor, y=posy, c=0xE600 + boon_image_id)
+            image_count += 1
 
     @staticmethod
-    def render_conditions(iy, statusbox_y_position):
+    def render_conditions(posx, posy, list_of_conditions):
 
-        ac = 11
-        sc = 2
-        for a in range(10):
-            terminal.put(x=(ac + a) * sc, y=(statusbox_y_position * iy), c=0xE630 + a)
+        image_count = 0
+        image_scale_factor = 2
 
-    @staticmethod
-    def render_controls(iy, statusbox_y_position):
-
-        ac = 21
-        sc = 2
-        for a in range(10):
-            terminal.put(x=(ac + a) * sc, y=(statusbox_y_position * iy), c=0xE630 + a)
-
-    @staticmethod
-    def render_player_status_effects_content(self, posy, glyph, foreground, game_config):
-        pass
+        for condition in list_of_conditions:
+            condition_image_id = int(condition['image'])
+            terminal.put(x=(posx + image_count) * image_scale_factor, y=posy, c=0xE630 + condition_image_id)
+            image_count += 1
 
     @staticmethod
     def render_player_vitals(gameworld, game_config):
