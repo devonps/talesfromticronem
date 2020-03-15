@@ -91,6 +91,8 @@ class UpdateEntitiesProcessor(esper.Processor):
                 current_boons[ps]['duration'] = duration
                 dialogue = boon['dialogue']
 
+                msg_stat = '-nothing-'
+
                 if boon_name == 'fury':
                     msg_stat = boon['improvement']
 

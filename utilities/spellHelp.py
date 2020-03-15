@@ -355,7 +355,7 @@ class SpellUtilities:
                     z = {'name': condi, 'duration': int(condition['default_exists_for_turns']),
                          'baseDamage': int(condition['base_damage_per_stack']),
                          'condDamageMod': float(condition['condition_damage_modifier']),
-                         'weaponLevelMod': float(condition['weapon_level_modifier']),
+                         'weaponLevelMod': float(condition['weapon_level_modifier']), 'image': int(condition['image']),
                          'dialogue': condition['dialogue_options'][0][target_class]}
 
                     # add dialog for condition damage to message log
@@ -390,7 +390,7 @@ class SpellUtilities:
             for fileBoon in boons_file['boons']:
                 if boon == fileBoon['boon_status_effect']:
                     b = {'name': boon, 'duration': int(fileBoon['default_exists_for_turns']),
-                         'dialogue': fileBoon['dialogue_options'][0][target_class]}
+                         'dialogue': fileBoon['dialogue_options'][0][target_class], 'image': fileBoon['image']}
                     if boon == 'fury':
                         b['improvement'] = 'crit_chance_increased'
                         b['increased_by'] = fileBoon['crit_chance_improved']
@@ -410,4 +410,4 @@ class SpellUtilities:
         if len(current_boons) != 0:
             status_effects_component = gameworld.component_for_entity(target_entity, mobiles.StatusEffects)
             status_effects_component.boons = current_boons
-            # logger.debug('Boons applied to {} is {}', target_names[0], current_boons)
+            logger.debug('Boons applied to {} is {}', target_names[0], current_boons)

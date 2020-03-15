@@ -12,6 +12,7 @@
       "stacks_duration": "True",
       "next_attack_blocked": "True",
       "converted_to_condition": "burning",
+      "image": "9",
       "dialogue_options":
       [
         {
@@ -37,6 +38,7 @@
       "spell_recharge_increased": "True",
       "spell_recharge_improved": "20",
       "converted_to_condition": "chilled",
+      "image": "5",
       "dialogue_options":
       [
         {
@@ -62,6 +64,7 @@
       "crit_chance_increased": "True",
       "crit_chance_improved": "20",
       "converted_to_condition": "blinded",
+      "image": "2",
       "dialogue_options":
       [
         {
@@ -87,6 +90,7 @@
       "base_damage_per_stack": "5",
       "weapon_level_modifier": "0.3125",
       "converted_to_condition": "weakness",
+      "image": "1",
       "dialogue_options":
       [
         {
@@ -112,6 +116,7 @@
       "incoming_damage_reduced": "True",
       "incoming_damage_reduction": "33",
       "converted_to_condition": "vulnerability",
+      "image": "6",
       "dialogue_options":
       [
         {
@@ -138,6 +143,7 @@
       "base_heal_per_turn": "05",
       "heal_modifier": "0.125",
       "converted_to_condition": "poisoned",
+      "image": "0",
       "dialogue_options":
       [
         {
@@ -162,6 +168,7 @@
       "stacks_duration": "True",
       "conditions_are_disabled": "True",
       "converted_to_condition": "chilled",
+      "image": "4",
       "dialogue_options":
       [
         {
@@ -186,6 +193,7 @@
       "stacks_duration": "True",
       "reflect_taken_damage": "True",
       "converted_to_condition": "confusion",
+      "image": "8",
       "dialogue_options":
       [
         {
@@ -210,6 +218,7 @@
       "stacks_duration": "True",
       "cannot_be_controlled": "True",
       "converted_to_condition": "fear",
+      "image": "3",
       "dialogue_options":
       [
         {
@@ -235,6 +244,7 @@
       "movement_speed_increased": "True",
       "movement_speed_bonus": "50",
       "converted_to_condition": "crippled",
+      "image": "7",
       "dialogue_options":
       [
         {

@@ -16,6 +16,7 @@
       "condition_damage_modifier": "0.06",
       "weapon_level_modifier": "0.25",
       "converted_to_boon": "vigor",
+      "image": "11",
       "dialogue_options": [{
         "default": "I'm bleeding",
         "necromancer": "That's my blood!",
@@ -41,6 +42,7 @@
       "condition_damage_modifier": "0.155",
       "weapon_level_modifier": "1.55",
       "converted_to_boon": "aegis",
+      "image": "9",
       "dialogue_options": [{
         "default": "I'm burning",
         "necromancer": "That's my blood!",
@@ -66,6 +68,7 @@
       "condition_damage_modifier": "0.0975",
       "weapon_level_modifier": "0.575",
       "converted_to_boon": "retaliation",
+      "image": "7",
       "dialogue_options": [{
         "default": "Where am I?",
         "necromancer": "",
@@ -92,6 +95,7 @@
       "weapon_level_modifier": "0.375",
       "converted_to_boon": "regeneration",
       "heal_effectiveness_reduced": "33",
+      "image": "3",
       "dialogue_options": [{
         "default": "It's poison!",
         "necromancer": "The venom is too strong",
@@ -120,6 +124,7 @@
       "velocity_mod_cond_damage": "0.09",
       "velocity_mod_level_damage": "0.36",
       "converted_to_boon": "might",
+      "image": "1",
       "dialogue_options": [{
         "default": "What the...?",
         "necromancer": "",
@@ -143,6 +148,7 @@
       "stacks_duration": "True",
       "next_attack_miss": "True",
       "converted_to_boon": "fury",
+      "image": "10",
       "dialogue_options": [{
         "default": "I'm blind",
         "necromancer": "I can't see",
@@ -169,6 +175,7 @@
       "spell_recharge_increased": "True",
       "spell_recharge_penalty": "40",
       "converted_to_boon": "fury",
+      "image": "8",
       "dialogue_options": [{
         "default": "F-f-freezing",
         "necromancer": "Too cold",
@@ -193,6 +200,7 @@
       "movement_speed_reduced": "True",
       "movement_speed_penalty": "50",
       "converted_to_boon": "swiftness",
+      "image": "6",
       "dialogue_options": [{
         "default": "I can barely stand",
         "necromancer": "Can't walk properly",
@@ -217,6 +225,7 @@
       "run_away": "True",
       "no_actions": "True",
       "converted_to_boon": "stability",
+      "image": "5",
       "dialogue_options": [{
         "default": "Retreat",
         "necromancer": "",
@@ -240,6 +249,7 @@
       "stacks_duration": "True",
       "no_movement": "True",
       "converted_to_boon": "resistance",
+      "image": "4",
       "dialogue_options": [{
         "default": "I can't move",
         "necromancer": "",
@@ -264,6 +274,7 @@
       "spell_recharge_increased": "True",
       "spell_recharge_cost": "50",
       "converted_to_boon": "quickness",
+      "image": "2",
       "dialogue_options":
       [
 
@@ -292,6 +303,7 @@
       "incoming_damage_increased": "True",
       "incoming_damage_increase": "1",
       "converted_to_boon": "quickness",
+      "image": "0",
       "dialogue_options":
       [
         {

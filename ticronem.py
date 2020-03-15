@@ -91,18 +91,22 @@ def game_loop(gameworld):
                     if hotspot_clicked == 10:
                         msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
                         CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="all")
+                        advanceGameTurn = False
 
                     if hotspot_clicked == 11:
                         msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
                         CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="combat")
+                        advanceGameTurn = False
 
                     if hotspot_clicked == 12:
                         msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
                         CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="story")
+                        advanceGameTurn = False
 
                     if hotspot_clicked == 13:
                         msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
                         CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay="personal")
+                        advanceGameTurn = False
 
                     # check for entity at location
                     for ent, (pos, name) in gameworld.get_components(mobiles.Position, mobiles.Name):
@@ -116,10 +120,12 @@ def game_loop(gameworld):
                     #
                     logger.debug('Waiting for monsters to finish up')
 
+                    logger.info('All turn based processes completed')
+
                     currentTurn += 1
-                # process all intended actions
-                gameworld.process(game_config)
-                logger.info('All turn based processes completed')
+                if validEvent:
+                    # process all intended actions
+                    gameworld.process(game_config)
 
                 # blit the console
                 terminal.refresh()
