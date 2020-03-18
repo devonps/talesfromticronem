@@ -169,6 +169,66 @@ class SpellUtilities:
         return spell_entity
 
     @staticmethod
+    def populate_spell_bar_initially(gameworld, playerEntity):
+
+        spellbar = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
+        MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=playerEntity, spellbarEntity=spellbar)
+        weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=playerEntity)
+
+        if len(weapons_equipped) != 0:
+            main_hand_weapon = weapons_equipped[0]
+            off_hand_weapon = weapons_equipped[1]
+            both_hands_weapon = weapons_equipped[2]
+            if both_hands_weapon > 0:
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=both_hands_weapon,
+                                                                                   slotid=1)
+                gameworld.component_for_entity(spellbar, spellBar.SlotOne).id = this_spell_entity
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=both_hands_weapon,
+                                                                                   slotid=2)
+                gameworld.component_for_entity(spellbar, spellBar.SlotTwo).id = this_spell_entity
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=both_hands_weapon,
+                                                                                   slotid=3)
+                gameworld.component_for_entity(spellbar, spellBar.SlotThree).id = this_spell_entity
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=both_hands_weapon,
+                                                                                   slotid=4)
+                gameworld.component_for_entity(spellbar, spellBar.SlotFour).id = this_spell_entity
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=both_hands_weapon,
+                                                                                   slotid=5)
+                gameworld.component_for_entity(spellbar, spellBar.SlotFive).id = this_spell_entity
+
+            if main_hand_weapon > 0:
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=main_hand_weapon,
+                                                                                   slotid=1)
+                gameworld.component_for_entity(spellbar, spellBar.SlotOne).id = this_spell_entity
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=main_hand_weapon,
+                                                                                   slotid=2)
+                gameworld.component_for_entity(spellbar, spellBar.SlotTwo).id = this_spell_entity
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=main_hand_weapon,
+                                                                                   slotid=3)
+                gameworld.component_for_entity(spellbar, spellBar.SlotThree).id = this_spell_entity
+
+            if off_hand_weapon > 0:
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=off_hand_weapon,
+                                                                                   slotid=4)
+                gameworld.component_for_entity(spellbar, spellBar.SlotFour).id = this_spell_entity
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=off_hand_weapon,
+                                                                                   slotid=5)
+                gameworld.component_for_entity(spellbar, spellBar.SlotFive).id = this_spell_entity
+
+        # now get the heal skill
+
+
+    @staticmethod
     def populate_spell_bar_from_weapon(gameworld, player_entity, spellbar, wpns_equipped):
 
         # this method takes each of the spells 'loaded into the weapon' and 'loads them into the spellbar entity'
