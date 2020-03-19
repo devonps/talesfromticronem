@@ -64,6 +64,8 @@ def generate_spells(gameworld, game_config, spell_file, player_class):
         gameworld.add_component(thisspell, spells.ClassName(player_class))
         gameworld.add_component(thisspell, spells.SpellType(spell['type_of_spell']))
         gameworld.add_component(thisspell, spells.StatusEffect(condis=[], boons=[], controls=[]))
+        if player_class == 'necromancer':
+            gameworld.add_component(thisspell, spells.Image(spell['image']))
         if spell['type_of_spell'] == 'combat':
             gameworld.add_component(thisspell, spells.WeaponType(spell['weapon_type']))
             gameworld.add_component(thisspell, spells.WeaponSlot(spell['weapon_slot']))
@@ -105,20 +107,4 @@ def generate_spells(gameworld, game_config, spell_file, player_class):
                     spell_not_added = False
                     SpellUtilities.add_resources_to_spell(gameworld=gameworld, spell_entity=thisspell, resource=str(effect['name']))
 
-            # condi_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld, spell_entity=thisspell)
-            # boon_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=thisspell)
-            # controls_list = SpellUtilities.get_all_controls_for_spell(gameworld=gameworld, spell_entity=thisspell)
-            # resource_list = SpellUtilities.get_all_resources_for_spell(gameworld=gameworld, spell_entity=thisspell)
-            #
-            # for condi in condi_list:
-            #     logger.info('List of condis attached to the spell:{}', condi)
-            #
-            # for boon in boon_list:
-            #     logger.info('List of boons attached to the spell:{}', boon)
-            #
-            # for ctrl in controls_list:
-            #     logger.info('List of controls for this spell:{}', ctrl)
-            #
-            # for rsc in resource_list:
-            #     logger.info('List of resources for this spell:{}', rsc)
 

@@ -7,6 +7,7 @@ from components import mobiles, items
 from utilities import configUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.common import CommonUtils
+from utilities.spellHelp import SpellUtilities
 
 
 class RenderGameMap(esper.Processor):
@@ -580,30 +581,27 @@ class RenderGameMap(esper.Processor):
     @staticmethod
     def render_spell_bar(self, game_config):
 
-        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='map_Yscale')
-
-        statusbox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                       parameter='STATUSBOX_HEIGHT')
-
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='map_Yscale')
+        statusbox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='STATUSBOX_HEIGHT')
         player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
-        weapons_list = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=player_entity)
-        main_weapon = weapons_list[0]
-        off_weapon = weapons_list[1]
-        both_weapon = weapons_list[2]
-        slot = ['NO SPEL'] * 10
+
         ac = 1
         sc = 5
         y = statusbox_height + 1
 
-        # prev_layer = terminal.state(terminal.TK_LAYER)
-        # terminal.layer(RenderLayer.SPELLBAR.value)
-
         # spell bar slots are drawn first
         for a in range(10):
             terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE500 + 0)
-        # then the spell images themselves
-        for a in range(10):
-            terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE400)
 
-        # terminal.layer(prev_layer)
+        # now the spells based on the spell bar entities -- currently loads slots 1 - 6
+        slotid = 1
+        for spellSlot in range(6):
+
+            spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slotid, playerEntity=player_entity)
+            spellImage = SpellUtilities.get_spell_image(gameworld=self.gameworld, spellEntity=spell_entity)
+
+            terminal.put(x=(ac + spellSlot) * sc, y=y * image_y_scale, c=0xE400 + spellImage)
+            slotid += 1
+
+        # and finally the utility spells
+
