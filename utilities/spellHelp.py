@@ -400,7 +400,8 @@ class SpellUtilities:
                          'baseDamage': int(condition['base_damage_per_stack']),
                          'condDamageMod': float(condition['condition_damage_modifier']),
                          'weaponLevelMod': float(condition['weapon_level_modifier']), 'image': int(condition['image']),
-                         'dialogue': condition['dialogue_options'][0][target_class]}
+                         'dialogue': condition['dialogue_options'][0][target_class],
+                         'displayChar': condition['char']}
 
                     # add dialog for condition damage to message log
                     msg = Message(text=target_names[0] + " screams: " + condition['dialogue_options'][0][target_class],
@@ -435,7 +436,8 @@ class SpellUtilities:
             for fileBoon in boons_file['boons']:
                 if boon == fileBoon['boon_status_effect']:
                     b = {'name': boon, 'duration': int(fileBoon['default_exists_for_turns']),
-                         'dialogue': fileBoon['dialogue_options'][0][target_class], 'image': fileBoon['image']}
+                         'dialogue': fileBoon['dialogue_options'][0][target_class], 'image': fileBoon['image'],
+                         'displayChar': fileBoon['char']}
                     if boon == 'fury':
                         b['improvement'] = 'crit_chance_increased'
                         b['increased_by'] = fileBoon['crit_chance_improved']

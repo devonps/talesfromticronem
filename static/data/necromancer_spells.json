@@ -300,8 +300,12 @@
           "value": "2"
         },
         {
-          "name": "fury",
+          "name": "might",
           "value": "1"
+        },
+        {
+          "name": "bleeding",
+          "value": "2"
         }
       ]
     },

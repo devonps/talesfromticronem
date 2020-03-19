@@ -437,16 +437,6 @@ def display_build_library():
                                 # load spell bar with spells from weapon
                                 SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, playerEntity=player_entity)
 
-                                # spell_bar_entity = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
-                                # MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity,
-                                #                                         spellbarEntity=spell_bar_entity)
-                                # logger.info('Loading spell bar based on equipped weapons')
-                                # weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld,
-                                #                                                         entity=player_entity)
-                                # SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player_entity,
-                                #                                               spellbar=spell_bar_entity,
-                                #                                               wpns_equipped=weapons_equipped)
-
                                 # jewellery
                                 player_class = MobileUtilities.get_character_class(gameworld=gameworld,
                                                                                    entity=player_entity)
