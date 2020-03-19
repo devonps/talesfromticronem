@@ -84,7 +84,7 @@ def game_loop(gameworld):
                     hotspot_clicked = which_ui_hotspot_was_clicked(mx=event_action[0], my=event_action[1])
 
                     if 0 <= hotspot_clicked <= 9:
-                        SpellUtilities.cast_spell(slot=hotspot_clicked, gameworld=gameworld, message_log_id=message_log_id, player=player)
+                        SpellUtilities.cast_spell(slot=hotspot_clicked + 1, gameworld=gameworld, message_log_id=message_log_id, player=player)
                         advanceGameTurn = True
                         logger.info('temp: casting spell on turn {}', currentTurn)
 

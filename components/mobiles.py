@@ -81,6 +81,7 @@ class SpecialBar:
 class SpellBar:
     def __init__(self, entityId=0):
         self.entityId = entityId
+        self.slots = [0] * 10
 
 
 class Viewport:

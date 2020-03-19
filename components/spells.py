@@ -8,6 +8,11 @@ class SpellType:
         self.label = text
 
 
+class Image:
+    def __init__(self, image=0):
+        self.id = image
+
+
 class Description:
     def __init__(self, text='no description'):
         self.label = text
