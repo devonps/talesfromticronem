@@ -13,6 +13,7 @@
       "next_attack_blocked": "True",
       "converted_to_condition": "burning",
       "image": "9",
+      "char": "a",
       "dialogue_options":
       [
         {
@@ -39,6 +40,7 @@
       "spell_recharge_improved": "20",
       "converted_to_condition": "chilled",
       "image": "5",
+      "char": "l",
       "dialogue_options":
       [
         {
@@ -65,6 +67,7 @@
       "crit_chance_improved": "20",
       "converted_to_condition": "blinded",
       "image": "2",
+      "char": "f",
       "dialogue_options":
       [
         {
@@ -91,6 +94,7 @@
       "weapon_level_modifier": "0.3125",
       "converted_to_condition": "weakness",
       "image": "1",
+      "char": "m",
       "dialogue_options":
       [
         {
@@ -117,6 +121,7 @@
       "incoming_damage_reduction": "33",
       "converted_to_condition": "vulnerability",
       "image": "6",
+      "char": "p",
       "dialogue_options":
       [
         {
@@ -144,6 +149,7 @@
       "heal_modifier": "0.125",
       "converted_to_condition": "poisoned",
       "image": "0",
+      "char": "r",
       "dialogue_options":
       [
         {
@@ -169,6 +175,7 @@
       "conditions_are_disabled": "True",
       "converted_to_condition": "chilled",
       "image": "4",
+      "char": "e",
       "dialogue_options":
       [
         {
@@ -194,6 +201,7 @@
       "reflect_taken_damage": "True",
       "converted_to_condition": "confusion",
       "image": "8",
+      "char": "t",
       "dialogue_options":
       [
         {
@@ -219,6 +227,7 @@
       "cannot_be_controlled": "True",
       "converted_to_condition": "fear",
       "image": "3",
+      "char": "s",
       "dialogue_options":
       [
         {
@@ -245,6 +254,7 @@
       "movement_speed_bonus": "50",
       "converted_to_condition": "crippled",
       "image": "7",
+      "char": "w",
       "dialogue_options":
       [
         {

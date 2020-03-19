@@ -48,26 +48,26 @@ class RenderGameMap(esper.Processor):
 
     @staticmethod
     def clear_map_layer():
-        # prev_layer = terminal.state(terminal.TK_LAYER)
-        # terminal.layer(RenderLayer.MAP.value)
         terminal.bkcolor('black')
         terminal.clear_area(0, 0, terminal.state(terminal.TK_WIDTH), terminal.state(terminal.TK_HEIGHT))
 
-        # terminal.layer(prev_layer)
 
     @staticmethod
     def render_entity_display_panel(gameworld, game_config, visibleEntities):
         render_style = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                    parameter='render_style')
+
+        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Yscale')
+        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='map_Xscale')
+
         # right hand side divider
         for dy in range(47):
             terminal.printf(x=62, y=dy, s="[color=red][font=dungeon]▒")
 
-        image_start_x_pos = 40
-        status_effect_image_y_pos = 4
+        image_start_x_pos = 64
         entity_y_draw_pos = 4
-        entityCount = 1
-        prevEntity = False
 
         if render_style == 1:
 
@@ -75,45 +75,39 @@ class RenderGameMap(esper.Processor):
             terminal.printf(x=64, y=1, s=str_to_print)
 
             for entity in visibleEntities:
-                thisEntity = False
                 glyph = MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=entity)
                 fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=entity)
                 bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=entity)
-                entityNames = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity)
                 list_of_conditions = MobileUtilities.get_current_condis_applied_to_mobile(
                     gameworld=gameworld, entity=entity)
                 list_of_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld,
                                                                                     entity=entity)
+                currentHealth = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=entity)
+                maximum_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=entity)
 
-                str_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph + ' ' + entityNames[0]
-                terminal.printf(x=64, y=entity_y_draw_pos, s=str_to_print)
+                displayPercentage = CommonUtils.calculate_percentage(lowNumber=currentHealth, maxNumber=maximum_health)
+
+                strToPrint = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph + ' '
+                strColour = "red"
+                if displayPercentage > 89:
+                    strColour = "green"
+                elif 90 > displayPercentage > 30:
+                    strColour = "orange"
+                strToPrint += "[color=" + strColour + "]H:" + str(displayPercentage) + "% "
+                if len(list_of_boons) > 0:
+                    strToPrint += "[color=green]b:[/color]"
+                    for boon in list_of_boons:
+                        strToPrint += boon['displayChar']
+                    strToPrint += " [/color]"
+
+                if len(list_of_conditions) > 0:
+                    strToPrint += "[color=red]c:"
+                    for condition in list_of_conditions:
+                        strToPrint += condition['displayChar']
+                    strToPrint += "[/color]"
+
+                terminal.printf(x=image_start_x_pos, y=entity_y_draw_pos, s=strToPrint)
                 entity_y_draw_pos += 1
-
-                if entityCount > 1:
-                    status_effect_image_y_pos += 1
-
-                if len(list_of_boons) > 0 and len(list_of_conditions) > 0:
-                    RenderGameMap.render_boons(posx=image_start_x_pos, posy=status_effect_image_y_pos,
-                                               list_of_boons=list_of_boons)
-                    RenderGameMap.render_conditions(posx=image_start_x_pos + len(list_of_boons), posy=status_effect_image_y_pos,
-                                                    list_of_conditions=list_of_conditions)
-                    status_effect_image_y_pos += 2
-                    entity_y_draw_pos += 1
-                    thisEntity = True
-                elif (len(list_of_boons) > 0 and len(list_of_conditions) == 0) or (
-                        len(list_of_boons) == 0 and len(list_of_conditions) > 0):
-                    if len(list_of_boons) > 0:
-                        RenderGameMap.render_boons(posx=image_start_x_pos, posy=status_effect_image_y_pos,
-                                                   list_of_boons=list_of_boons)
-                    if len(list_of_conditions) > 0:
-                        RenderGameMap.render_conditions(posx=image_start_x_pos, posy=status_effect_image_y_pos,
-                                                        list_of_conditions=list_of_conditions)
-                    status_effect_image_y_pos += 2
-                    entity_y_draw_pos += 1
-                    thisEntity = True
-                entityCount += 1
-                if thisEntity:
-                    prevEntity = True
 
     @staticmethod
     def render_map(gameworld, game_config, game_map):
@@ -559,7 +553,9 @@ class RenderGameMap(esper.Processor):
         units = displayPercentage % 10
         px = 0
 
-        terminal.printf(4, posy * yscale, printString)
+        if printString != "":
+            terminal.printf(4, posy * yscale, printString)
+
         for a in range(tens):
             terminal.put(x=(a + posx) * xscale, y=posy * yscale, c=spriteRef + 0)
             px += 1
