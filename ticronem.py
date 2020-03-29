@@ -26,7 +26,7 @@ def game_loop(gameworld):
 
     playing_game = True
 
-    currentScene = 1
+    current_scene = 1
     previousScene = 0
     SceneChange = True
     currentTurn = 0
@@ -37,7 +37,7 @@ def game_loop(gameworld):
         #
         if SceneChange:
             # call scene manager
-            SceneManager.newScene(currentscene=currentScene, gameworld=gameworld)
+            SceneManager.newScene(currentscene=current_scene, gameworld=gameworld)
             SceneChange = False
         #
         # get player action aka their intent to do something
