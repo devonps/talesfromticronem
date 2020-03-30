@@ -27,7 +27,6 @@ def game_loop(gameworld):
     playing_game = True
 
     current_scene = 1
-    previousScene = 0
     SceneChange = True
     currentTurn = 0
 
