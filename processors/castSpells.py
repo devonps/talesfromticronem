@@ -6,7 +6,6 @@ from utilities import formulas
 from utilities.common import CommonUtils
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
-from utilities.replayGame import ReplayGame
 from loguru import logger
 
 from utilities.spellHelp import SpellUtilities
@@ -14,7 +13,6 @@ from utilities.spellHelp import SpellUtilities
 
 class CastSpells(esper.Processor):
     def __init__(self, gameworld, game_map):
-        super().__init__()
         self.gameworld = gameworld
         self.game_map = game_map
 

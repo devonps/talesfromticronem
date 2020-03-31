@@ -3,6 +3,7 @@ from loguru import logger
 from utilities.itemsHelp import ItemUtilities, display_inspect_panel
 from utilities import world
 from utilities import configUtilities, colourUtilities
+from utilities.common import CommonUtils
 
 import numbers
 import tcod
@@ -405,13 +406,30 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def set_MessageLog_for_player(gameworld, entity, logid):
-        gameworld.add_component(entity, mobiles.MessageLog(entityId=logid))
+        gameworld.add_component(entity, mobiles.MessageLog(entityId=logid, message_log_change=False))
 
     @staticmethod
     def get_MessageLog_id(gameworld, entity):
         messagelog_component = gameworld.component_for_entity(entity, mobiles.MessageLog)
 
         return messagelog_component.entityId
+
+    @staticmethod
+    def set_view_message_log(gameworld, entity, view_value):
+        messagelog_component = gameworld.component_for_entity(entity, mobiles.MessageLog)
+        messagelog_component.message_log_change = view_value
+
+    @staticmethod
+    def get_view_message_log_value(gameworld, entity):
+        messagelog_component = gameworld.component_for_entity(entity, mobiles.MessageLog)
+
+        return messagelog_component.message_log_change
+
+    @staticmethod
+    def view_message_log(gameworld, player, log_to_be_displayed):
+        msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+        CommonUtils.set_visible_log(gameworld=gameworld, logid=msglog, logToDisplay=log_to_be_displayed)
+        MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=True)
 
     @staticmethod
     def describe_the_mobile(gameworld, entity):

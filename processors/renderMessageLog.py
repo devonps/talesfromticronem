@@ -86,7 +86,6 @@ class RenderMessageLog(esper.Processor):
         storedMsgs = CommonUtils.get_message_log_all_messages(gameworld=self.gameworld, logid=log_id)
         y = 1
         for message in storedMsgs:
-            str_to_print = ""
             str_to_print = CommonUtils.build_message_to_be_displayed(gameworld=self.gameworld, logid=log_id, message=message)
             if str_to_print != "":
                 terminal.printf(x=(message_panel_start_x * image_x_scale), y=(message_panel_height * image_y_scale) + y, s=str_to_print)
