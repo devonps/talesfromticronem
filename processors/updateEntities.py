@@ -19,20 +19,23 @@ class UpdateEntitiesProcessor(esper.Processor):
     def process(self, game_config):
 
         player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
-        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
+        message_log_just_viewed = MobileUtilities.get_view_message_log_value(gameworld=self.gameworld, entity=player_entity)
+        if not message_log_just_viewed:
 
-        for ent, ai in self.gameworld.get_component(mobiles.AI):
-            inCombat = MobileUtilities.get_combat_status(self.gameworld, entity=ent)
-            entity_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
+            message_log_id = MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
 
-            # get list of condis applied to current entity
-            self.apply_conditions(entity_names=entity_names, player_entity=player_entity, message_log_id=message_log_id, target_entity=ent)
-            self.apply_boons(entity_names=entity_names, player_entity=player_entity, message_log_id=message_log_id, target_entity=ent)
-            # apply controls
-            # gain resources from spells
+            for ent, ai in self.gameworld.get_component(mobiles.AI):
+                inCombat = MobileUtilities.get_combat_status(self.gameworld, entity=ent)
+                entity_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
 
-            if not inCombat:
-                MobileUtilities.calculate_derived_attributes(self.gameworld, entity=ent)
+                # get list of condis applied to current entity
+                self.apply_conditions(entity_names=entity_names, player_entity=player_entity, message_log_id=message_log_id, target_entity=ent)
+                self.apply_boons(entity_names=entity_names, player_entity=player_entity, message_log_id=message_log_id, target_entity=ent)
+                # apply controls
+                # gain resources from spells
+
+                if not inCombat:
+                    MobileUtilities.calculate_derived_attributes(self.gameworld, entity=ent)
 
     def apply_conditions(self, entity_names, player_entity, message_log_id, target_entity):
         current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld, entity=target_entity)

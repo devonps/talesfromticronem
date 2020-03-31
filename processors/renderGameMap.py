@@ -5,6 +5,7 @@ from loguru import logger
 
 from components import mobiles, items
 from utilities import configUtilities
+from utilities.display import create_display_area
 from utilities.mobileHelp import MobileUtilities
 from utilities.common import CommonUtils
 from utilities.spellHelp import SpellUtilities
@@ -251,7 +252,7 @@ class RenderGameMap(esper.Processor):
         visibleEntities = []
 
         if render_style == 1:
-            x_min, x_max, y_min, y_max = CommonUtils.create_display_area(gameworld=gameworld,
+            x_min, x_max, y_min, y_max = create_display_area(gameworld=gameworld,
                                                                          player_entity=player_entity, game_map=game_map)
 
             for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,

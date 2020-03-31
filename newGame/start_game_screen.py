@@ -67,7 +67,6 @@ class StartGame:
             # blit changes to terminal
             terminal.refresh()
 
-            # key = terminal.read()
             event_to_be_processed, event_action = handle_game_keys()
 
             if event_to_be_processed != '':

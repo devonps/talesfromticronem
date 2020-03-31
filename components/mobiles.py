@@ -90,8 +90,9 @@ class Viewport:
 
 
 class MessageLog:
-    def __init__(self, entityId=0):
+    def __init__(self, entityId=0, message_log_change=False):
         self.entityId = entityId
+        self.message_log_change = message_log_change
 
 
 class Inventory:

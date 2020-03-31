@@ -97,7 +97,14 @@ class SpellUtilities:
                                                         mobiles.SpellCast(truefalse=True, spell_entity=spell_entity,
                                                                           spell_target=validTargets[target][0],
                                                                           spell_bar_slot=1))
-
+            # check for entity at location
+            player_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player)
+            player_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player)
+            for ent, (pos, name) in gameworld.get_components(mobiles.Position, mobiles.Name):
+                if pos.x == player_x and pos.y == player_y:
+                    msg = Message(text="Enemy called " + name.first + " targeted.", msgclass="all",
+                                  fg="yellow", bg="", fnt="")
+                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
         else:
             msg = Message(text="Spell is on cooldown ", msgclass="all", fg="white", bg="black", fnt="")
             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
