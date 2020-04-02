@@ -8,17 +8,14 @@ pipeline {
                 git url: 'https://bitbucket.org/Lewatw/ticronem.git'
             }
         }
-        stage('SonarQube') {
-            environment {
-            scannerHome = tool 'Sonar1'
-            }
+        stage('SonarQube Analysis') {
             steps {
-            echo 'Starting Sonar scan'
-            withSonarQubeEnv('sonarqube') {
-                bat "${scannerHome}\\bin\\sonar-scanner"
-            }
-
-
+                script {
+                    scannerHome = tool 'Sonar1'
+                }
+                withSonarQubeEnv('SonarCloud') {
+                    bat "${scannerHome}\\bin\\sonar-scanner"
+                }
             }
         }
         stage('Test') {
