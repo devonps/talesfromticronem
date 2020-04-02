@@ -5,6 +5,20 @@ pipeline {
         stage('SCM') {
             steps {
                 echo 'Checking out from SCM'
+                git url: 'https://bitbucket.org/Lewatw/ticronem.git'
+            }
+        }
+        stage('SonarQube') {
+            environment {
+            scannerHome = tool 'Sonar1'
+            }
+            steps {
+            echo 'Starting Sonar scan'
+            withSonarQubeEnv('sonarqube') {
+                bat "${scannerHome}/bin/sonar-scanner"
+            }
+
+
             }
         }
         stage('Test') {
