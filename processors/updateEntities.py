@@ -28,7 +28,6 @@ class UpdateEntitiesProcessor(esper.Processor):
                 inCombat = MobileUtilities.get_combat_status(self.gameworld, entity=ent)
                 entity_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
 
-                # get list of condis applied to current entity
                 self.apply_conditions(entity_names=entity_names, player_entity=player_entity, message_log_id=message_log_id, target_entity=ent)
                 self.apply_boons(entity_names=entity_names, player_entity=player_entity, message_log_id=message_log_id, target_entity=ent)
                 # apply controls
