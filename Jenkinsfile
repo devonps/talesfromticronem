@@ -11,8 +11,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing'
-                python3 -m venv venv
-                pip install -r requirements.txt
+                bat "pytest -v"
             }
         }
         stage('Deploy') {
