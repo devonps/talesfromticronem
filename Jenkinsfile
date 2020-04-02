@@ -11,6 +11,8 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing'
+                python3 -m venv venv
+                pip install -r requirements.txt
             }
         }
         stage('Deploy') {
