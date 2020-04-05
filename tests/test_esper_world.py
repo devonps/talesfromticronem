@@ -38,12 +38,14 @@ def test_clear_database(world):
     assert len(world._dead_entities) == 0
     assert world._next_entity_id == 0
 
+
 # helpers
 
 class ComponentA:
     def __init__(self):
         self.posx = 1
         self.posy = 1
+
 
 class ComponentB:
     def __init__(self):

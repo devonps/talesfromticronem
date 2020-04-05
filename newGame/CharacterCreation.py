@@ -1332,7 +1332,7 @@ class CharacterCreation:
                                     letters_remaining = max_letters - letter_count
                                     letters_left = ' ' + str(letters_remaining) + ' letters left '
                                     # textinput_console.default_alignment = tcod.RIGHT
-                                    string_to_print = '[color=' + colourUtilities.get('YELLOW1') + ']' + letters_left
+                                    string_to_print = '[color=' + colourUtilities.get('RAWSIENNA') + ']' + letters_left
                                     terminal.print(x=txt_panel_letters_x, y=txt_panel_write_y, s=string_to_print)
                                     # textinput_console.print(x=txt_panel_letters_x, y=txt_panel_write_y, fg=tcod.yellow,
                                     #                         string=letters_left)
