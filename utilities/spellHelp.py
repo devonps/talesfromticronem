@@ -282,30 +282,6 @@ class SpellUtilities:
                                                                                slotid=5)
             gameworld.component_for_entity(spellbar, spellBar.SlotFive).id = this_spell_entity
 
-    # @staticmethod
-    # def get_spell_bar_slot_componet(gameworld, spell_bar, slotid):
-    #     if slotid == 1:
-    #         return gameworld.component_for_entity(spell_bar, spellBar.SlotOne)
-    #     if slotid == 2:
-    #         return gameworld.component_for_entity(spell_bar, spellBar.SlotTwo)
-    #     if slotid == 3:
-    #         return gameworld.component_for_entity(spell_bar, spellBar.SlotThree)
-    #     if slotid == 4:
-    #         return gameworld.component_for_entity(spell_bar, spellBar.SlotFour)
-    #     if slotid == 5:
-    #         return gameworld.component_for_entity(spell_bar, spellBar.SlotFive)
-    #     if slotid == 6:
-    #         return gameworld.component_for_entity(spell_bar, spellBar.SlotSix)
-    #     if slotid == 7:
-    #         return gameworld.component_for_entity(spell_bar, spellBar.SlotSeven)
-    #     if slotid == 8:
-    #         return gameworld.component_for_entity(spell_bar, spellBar.SlotEight)
-    #     if slotid == 9:
-    #         return gameworld.component_for_entity(spell_bar, spellBar.SlotNine)
-    #     if slotid == 10:
-    #         return gameworld.component_for_entity(spell_bar, spellBar.SlotTen)
-    #     return -1
-
     @staticmethod
     def get_spell_name(gameworld, spell_entity):
         return gameworld.component_for_entity(spell_entity, spells.Name).label
