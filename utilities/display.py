@@ -135,8 +135,8 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
     # get config items
     game_config = configUtilities.load_config()
 
-    root_con_width = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_WIDTH')
-    root_con_height = configUtilities.get_config_value_as_integer(game_config, 'tcod', 'SCREEN_HEIGHT')
+    root_con_width = configUtilities.get_config_value_as_integer(game_config, 'gui', 'SCREEN_WIDTH')
+    root_con_height = configUtilities.get_config_value_as_integer(game_config, 'gui', 'SCREEN_HEIGHT')
     # check inbound values
     if (startx + width >= root_con_width) or (starty + height >= root_con_height):
         logger.warning('Frame for panel will not fit inside root console - frame aborted')
@@ -148,7 +148,6 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
     msg_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='newgame',
                                                         parameter='PRETTY_FRAME_MSG_Y')
 
-    # fg = colourUtilities.get('YELLOW2')
     fg = colourUtilities.get('WHITE')
     bg = colourUtilities.get('BLACK')
 
@@ -233,14 +232,6 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
     elif corner_studs != '':
         corner_stud_decorator = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                             parameter='frame_corner_studs_' + corner_studs)
-        # # top left
-        # console.print(x=startx + 1, y=starty + 1, string=chr(corner_stud_decorator), fg=corner_decorator_fg, bg=corner_decorator_bg)
-        # # top right
-        # console.print(x=width - 2, y=starty + 1, string=chr(corner_stud_decorator), fg=corner_decorator_fg, bg=corner_decorator_bg)
-        # # bottom left
-        # console.print(x=startx + 1, y=height - 2, string=chr(corner_stud_decorator), fg=corner_decorator_fg, bg=corner_decorator_bg)
-        # # bottom right
-        # console.print(x=width - 2, y=height - 2, string=chr(corner_stud_decorator), fg=corner_decorator_fg, bg=corner_decorator_bg)
 
 
 def draw_clear_text_box(posx, posy, width, height, text, fg, bg):

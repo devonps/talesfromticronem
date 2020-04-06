@@ -8,5 +8,4 @@ loguru==0.2.5
 numpy==1.15.4
 pycparser==2.19
 Pygments==2.3.0
-tcod==11.0.0
 pytest==4.3.0

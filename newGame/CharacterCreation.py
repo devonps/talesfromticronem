@@ -1266,23 +1266,16 @@ class CharacterCreation:
 
                             if selected_name != '':
                                 terminal.clear_area(x=mx, y=(name_menu_y + 3) + max_menu_option, width=35, height=1)
-                                # textinput_console.draw_rect(x=mx, y=(name_menu_y + 3) + max_menu_option, width=35,
-                                #                             height=1, ch=32, fg=tcod.white)
                             while enter_name:
                                 terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y,
                                              c=txt_panel_cursor)
-                                # textinput_console.put_char(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y,
-                                #                            ch=txt_panel_cursor)
-                                # blit changes to root console
                                 terminal.refresh()
                                 event_to_be_processed, event_action = handle_game_keys()
                                 if event_to_be_processed == 'textinput' and letter_count < max_letters:
                                     if (64 < ord(event_action) < 91) or (96 < ord(event_action) < 123):
-                                        # textinput_console.default_fg = tcod.white
+
                                         terminal.put(x=txt_panel_write_x + letter_count, y=txt_panel_write_y,
                                                      c=ord(event_action))
-                                        # textinput_console.put_char(x=txt_panel_write_x + letter_count,
-                                        #                            y=txt_panel_write_y, ch=ord(event_action))
                                         my_word += event_action
                                         letter_count += 1
                                 if event_to_be_processed == 'keypress':
@@ -1292,11 +1285,8 @@ class CharacterCreation:
                                         letter_count = 0
                                         terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y, width=35,
                                                             height=1)
-                                        # textinput_console.draw_rect(x=txt_panel_write_x, y=txt_panel_write_y,
-                                        #                             width=35, height=1, ch=32, fg=tcod.white)
                                     if event_action == 'delete':
                                         if letter_count > 0:
-                                            # textinput_console.default_fg = tcod.white
                                             terminal.put(x=(txt_panel_write_x + letter_count) - 1, y=txt_panel_write_y,
                                                          c=32)
                                             terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y,
@@ -1314,13 +1304,9 @@ class CharacterCreation:
                                         enter_name = False
                                         character_not_named = False
                                         terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=32)
-                                        # textinput_console.put_char(x=txt_panel_cursor_x + letter_count,
-                                        #                            y=txt_panel_cursor_y, ch=32)
                                         letter_count = 0
                                         terminal.clear_area(x=txt_panel_letters_x, y=txt_panel_write_y, width=18,
                                                             height=1)
-                                        # textinput_console.draw_rect(x=txt_panel_letters_x, y=txt_panel_write_y,
-                                        #                             width=18, height=1, ch=32, fg=tcod.white)
                                         MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
                                                                               name=selected_name)
 
@@ -1329,49 +1315,46 @@ class CharacterCreation:
                                 if enter_name:
                                     letters_remaining = max_letters - letter_count
                                     letters_left = ' ' + str(letters_remaining) + ' letters left '
-                                    # textinput_console.default_alignment = tcod.RIGHT
                                     string_to_print = '[color=' + colourUtilities.get('RAWSIENNA') + ']' + letters_left
                                     terminal.print(x=txt_panel_letters_x, y=txt_panel_write_y, s=string_to_print)
-                                    # textinput_console.print(x=txt_panel_letters_x, y=txt_panel_write_y, fg=tcod.yellow,
-                                    #                         string=letters_left)
 
-                        if selected_menu_option == 2:
-                            listOfNames = MobileUtilities.generate_list_of_random_names(gameworld=gameworld,
-                                                                                        game_config=game_config,
-                                                                                        entity=player_entity,
-                                                                                        gender=gender_choice,
-                                                                                        race=player_race_component)
-                            for idx in range(10):
-                                strToPrint = str(idx) + '. ' + listOfNames[idx]
-                                terminal.clear_area(x=name_list_x, y=name_list_y + idx, width=35, height=1)
-
-                                string_to_print = '[color=' + colourUtilities.get('WHITE') + ']' + strToPrint
-                                terminal.print(x=name_list_x, y=name_list_y + idx, s=string_to_print)
-
-                            # blit changes to root console
-                            terminal.refresh()
-                            name_not_chosen = True
-                            while name_not_chosen:
-                                event_to_be_processed, event_action = handle_game_keys()
-                                logger.info('special key pressed {}', event_action)
-                                if event_to_be_processed == 'keypress':
-                                    selName = int(event_action)
-                                    logger.info('Selected name index is {}', selName)
-                                    selected_name = listOfNames[int(selName)]
-                                    name_not_chosen = False
-                                    character_not_named = False
-                                    terminal.clear_area(x=name_list_x, y=name_list_y, width=35, height=11)
-
-                                    MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
-                                                                          name=selected_name)
-                                    terminal.clear()
-                                    CharacterCreation.display_starting_character(gameworld=gameworld)
-
-                                if event_to_be_processed == 'keypress':
-                                    if event_action == 'quit':
-                                        name_not_chosen = False
-                                        selected_name = ''
-                                terminal.clear_area(x=name_list_x, y=name_list_y, width=35, height=11)
+                        # if selected_menu_option == 2:
+                        #     listOfNames = MobileUtilities.generate_list_of_random_names(gameworld=gameworld,
+                        #                                                                 game_config=game_config,
+                        #                                                                 entity=player_entity,
+                        #                                                                 gender=gender_choice,
+                        #                                                                 race=player_race_component)
+                        #     for idx in range(10):
+                        #         strToPrint = str(idx) + '. ' + listOfNames[idx]
+                        #         terminal.clear_area(x=name_list_x, y=name_list_y + idx, width=35, height=1)
+                        #
+                        #         string_to_print = '[color=' + colourUtilities.get('WHITE') + ']' + strToPrint
+                        #         terminal.print(x=name_list_x, y=name_list_y + idx, s=string_to_print)
+                        #
+                        #     # blit changes to root console
+                        #     terminal.refresh()
+                        #     name_not_chosen = True
+                        #     while name_not_chosen:
+                        #         event_to_be_processed, event_action = handle_game_keys()
+                        #         logger.info('special key pressed {}', event_action)
+                        #         if event_to_be_processed == 'keypress':
+                        #             selName = int(event_action)
+                        #             logger.info('Selected name index is {}', selName)
+                        #             selected_name = listOfNames[int(selName)]
+                        #             name_not_chosen = False
+                        #             character_not_named = False
+                        #             terminal.clear_area(x=name_list_x, y=name_list_y, width=35, height=11)
+                        #
+                        #             MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
+                        #                                                   name=selected_name)
+                        #             terminal.clear()
+                        #             CharacterCreation.display_starting_character(gameworld=gameworld)
+                        #
+                        #         if event_to_be_processed == 'keypress':
+                        #             if event_action == 'quit':
+                        #                 name_not_chosen = False
+                        #                 selected_name = ''
+                        #         terminal.clear_area(x=name_list_x, y=name_list_y, width=35, height=11)
 
                         if selected_menu_option == 3:
                             if selected_name != '':

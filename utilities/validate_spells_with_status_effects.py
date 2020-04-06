@@ -1,5 +1,3 @@
-import tcod
-
 from loguru import logger
 from utilities import configUtilities
 from utilities.jsonUtilities import read_json_file

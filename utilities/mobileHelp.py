@@ -1,12 +1,11 @@
 from components import mobiles, items, spellBar
 from loguru import logger
-from utilities.itemsHelp import ItemUtilities, display_inspect_panel
+from utilities.itemsHelp import ItemUtilities
 from utilities import world
 from utilities import configUtilities, colourUtilities
 from utilities.common import CommonUtils
 
 import numbers
-import tcod
 
 
 class MobileUtilities(numbers.Real):
@@ -460,12 +459,6 @@ class MobileUtilities(numbers.Real):
     # Mobile actions
     #
 
-    # inspect an item
-    @staticmethod
-    def inspect_item(gameworld, item_entity, game_config):
-        display_inspect_panel(gameworld=gameworld, display_mode='inspect', item_entity=item_entity,
-                              game_config=game_config)
-
     # pick up item from dungeon floor
     @staticmethod
     def mobile_pick_up_item(gameworld, mobile):
@@ -683,18 +676,7 @@ class MobileUtilities(numbers.Real):
         race_file = race.upper() + base_file_name
         race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                     parameter=race_file)
-        tcod.namegen_parse(race_name_file)
-
         nameList = []
-
-        for randomName in range(10):
-            if gender == 1:
-                sn = tcod.namegen_generate('male')
-            else:
-                sn = tcod.namegen_generate('female')
-
-            nameList.append(sn.capitalize())
-        tcod.namegen_destroy()
         return nameList
 
     @staticmethod
@@ -703,15 +685,8 @@ class MobileUtilities(numbers.Real):
         race_file = race.upper() + base_file_name
         race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                     parameter=race_file)
-        tcod.namegen_parse(race_name_file)
 
-        if gender == 1:
-            sn = tcod.namegen_generate('male')
-        else:
-            sn = tcod.namegen_generate('female')
-
-        selected_name = sn.capitalize()
-        tcod.namegen_destroy()
+        selected_name = "SteveTest"
 
         return selected_name
 

@@ -1,77 +1,13 @@
-import tcod
+
 
 from utilities.externalfileutilities import Externalfiles
 from utilities import configUtilities
-# from newGame.initialiseNewGame import create_game_world, initialise_game_map, generate_items_and_place_them, generate_monsters_and_place_them, generate_spells
-# from newGame.newCharacter import NewCharacter
-from loguru import logger
-from components import mobiles
-from time import sleep
 
 
 class ReplayGame:
+    pass
+    # empty until I get back round to it
 
-    # @staticmethod
-    # def process(con, game_config):
-    #     game_actions = ReplayGame.get_game_replay_actions(game_config)
-    #     ReplayGame.cycle_through_game_actions(con, game_actions)
-    #
-    # @staticmethod
-    # def cycle_through_game_actions(con, game_actions):
-    #
-    #     # create gameworld
-    #     gameworld = create_game_world()
-    #     player = 0
-    #
-    #     for line in game_actions:
-    #         words = line.split(':')
-    #         my_list = [current_word for current_word in words]
-    #
-    #         for current_word in my_list:
-    #
-    #             # set world seed
-    #             if current_word == 'world_seed':
-    #
-    #                 world_seed = int(my_list[1])
-    #
-    #                 # constants.WORLD_SEED = int(my_list[1])
-    #
-    #                 logger.info('World seed is now {}', world_seed)
-    #                 # create spells, items, and monsters --> the things the character will interract with
-    #                 generate_spells(gameworld)
-    #                 generate_items_and_place_them(gameworld)
-    #                 generate_monsters_and_place_them(gameworld)
-    #
-    #                 # generate a new character
-    #                 player = NewCharacter.generate_player_character
-    #
-    #                 # create the spell bar
-    #                 spell_bar_entity = NewCharacter.generate_spell_bar
-    #
-    #                 # assign starting equipment
-    #                 NewCharacter.get_starting_equipment(player=player, spellbar=spell_bar_entity)
-    #
-    #                 # initialise and create a new game map
-    #                 initialise_game_map(con=con, gameworld=gameworld, player=player, spell_bar=spell_bar_entity)
-    #
-    #                 # clear current console and blit game map
-    #                 tcod.console_clear(con)
-    #             else:
-    #                 # carry out game actions
-    #                 if current_word == 'move':
-    #                     player_velocity_component = gameworld.component_for_entity(player, mobiles.Velocity)
-    #                     position_component = gameworld.component_for_entity(player, mobiles.Position)
-    #                     dx = int(my_list[2])
-    #                     dy = int(my_list[3])
-    #                     player_velocity_component.dx += dx
-    #                     player_velocity_component.dy += dy
-    #                     position_component.hasMoved = True
-    #
-    #                     sleep(0.5)
-    #                     # run ALL game processors
-    #                     gameworld.process()
-    #                     tcod.console_flush()
-    #
     @staticmethod
     def get_game_replay_actions(game_config):
         action_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',

@@ -1,6 +1,3 @@
-import tcod
-
-
 ####################################################
 #
 #   Components applicable to all types of items
@@ -9,6 +6,8 @@ import tcod
 
 # what type of item is this entity
 # this is primarily used in iterable statements as a filter
+
+
 class TypeOfItem:
     def __init__(self, label=''):
         self.label = label
@@ -62,6 +61,7 @@ class Quality:
     def __init__(self, level='basic'):
         self.level = level
 
+
 ####################################################
 #
 #   BAGS
@@ -110,7 +110,7 @@ class Wielded:
 
 # which spells are loaded into the weapon
 class Spells:
-    def __init__(self, slot_one=0, slot_two=0, slot_three=0, slot_four=0, slot_five=0 ):
+    def __init__(self, slot_one=0, slot_two=0, slot_three=0, slot_four=0, slot_five=0):
         self.slot_one = slot_one
         self.slot_two = slot_two
         self.slot_three = slot_three
@@ -127,7 +127,6 @@ class Spells:
 class DamageRange:
     def __init__(self, ranges=''):
         self.ranges = ranges
-
 
 
 ####################################################
@@ -181,6 +180,7 @@ class ArmourSet:
 class ArmourBeingWorn:
     def __init__(self, status=False):
         self.status = status
+
 
 ####################################################
 #
