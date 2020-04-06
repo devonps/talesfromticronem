@@ -43,23 +43,3 @@ jobs:
       run: |
         pip install pytest
         pytest
-  release:
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/release')
-    name: Publish release to github
-    runs-on: ubuntu-18.04
-    needs: [build-ubuntu]
-    steps:
-      - name: Download ubuntu18 artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: ticronem_ubuntu18
-      - name: Trimming tag
-        id: trimmer
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/release/}
-      - name: Create release
-        uses: ncipollo/release-action@v1
-        with:
-          name: ${{ steps.trimmer.outputs.tag }}
-          draft: false
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "ticronem_ubuntu18/ticronem_ubuntu18"
