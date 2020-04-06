@@ -92,6 +92,8 @@ def game_loop(gameworld):
                 if valid_event:
                     # process all intended actions
                     gameworld.process(game_config)
+                    current_turn += 1
+                    MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
 
                 # blit the console
                 terminal.refresh()
@@ -102,6 +104,7 @@ def game_loop(gameworld):
             # blit the console
             terminal.refresh()
             current_turn += 1
+            MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
 
 
 def game_replay(con, game_config):

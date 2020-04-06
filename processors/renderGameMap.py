@@ -1,7 +1,6 @@
 import esper
 
 from bearlibterminal import terminal
-from loguru import logger
 
 from components import mobiles, items
 from utilities import configUtilities
@@ -86,7 +85,7 @@ class RenderGameMap(esper.Processor):
                 currentHealth = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=entity)
                 maximum_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=entity)
 
-                displayPercentage = CommonUtils.calculate_percentage(lowNumber=currentHealth, maxNumber=maximum_health)
+                displayPercentage = CommonUtils.calculate_percentage(low_number=currentHealth, max_number=maximum_health)
 
                 strToPrint = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph + ' '
                 strColour = "red"

@@ -19,6 +19,9 @@ class CastSpells(esper.Processor):
     def process(self, game_config):
         player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
         message_log_id = MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
+        current_turn = MobileUtilities.get_current_turn(gameworld=self.gameworld, entity=player_entity)
+
+        msg_turn_number = str(current_turn) + ":"
 
         for ent, mob in self.gameworld.get_component(mobiles.SpellCast):
             if mob.truefalse:
@@ -27,7 +30,7 @@ class CastSpells(esper.Processor):
                                                                        entity=mob.spell_target)
                 logger.warning('Danger will robinson! spell being cast is:{}', spell_name)
                 logger.warning('against {}', target_names[0])
-                msg = Message(text=target_names[0] + " has been targeted.", msgclass="all", fg="white", bg="black",
+                msg = Message(text=msg_turn_number + target_names[0] + " has been targeted.", msgclass="all", fg="white", bg="black",
                               fnt="")
                 CommonUtils.add_message(gameworld=self.gameworld, message=msg, logid=message_log_id)
                 MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=player_entity)
@@ -61,21 +64,22 @@ class CastSpells(esper.Processor):
                                                                          damageToApply=damage_done_to_target)
 
                         # display message in combat log
+                        logger.warning('Spell cast current turn is {}', msg_turn_number)
                         CommonUtils.format_combat_log_message(gameworld=self.gameworld, target=target_names[0],
                                                               damage_done_to_target=damage_done_to_target,
-                                                              spell_name=spell_name, message_log_id=message_log_id)
+                                                              spell_name=spell_name, message_log_id=message_log_id, msg_turn_number=msg_turn_number)
                 if spell_type == 'heal':
                     self.cast_healing_spell()
 
                 # Are there any conditions to apply to the target - regardless of damage caused
                 if len(condis_to_apply) != 0:
                     SpellUtilities.apply_condis_to_target(gameworld=self.gameworld, target_entity=mob.spell_target,
-                                                          list_of_condis=condis_to_apply)
+                                                          list_of_condis=condis_to_apply, msg_turn_number=msg_turn_number)
 
                 # are there any boons to apply to the spell caster - regardless of damage caused
                 if len(boons_to_apply) != 0:
                     SpellUtilities.apply_boons_to_target(gameworld=self.gameworld, target_entity=mob.spell_target,
-                                                         list_of_boons=boons_to_apply, spell_caster=ent)
+                                                         list_of_boons=boons_to_apply, spell_caster=ent, msg_turn_number=msg_turn_number)
 
     def cast_combat_spell(self, spell_caster, spell, spell_target, weapon_used, spell_name, message_log_id):
         equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=spell_caster)

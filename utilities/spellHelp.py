@@ -1,11 +1,10 @@
 from loguru import logger
 from components import spells, spellBar, items, mobiles, condis
 from components.messages import Message
-from utilities import colourUtilities, formulas, configUtilities
+from utilities import colourUtilities, configUtilities
 from utilities.common import CommonUtils
-from utilities.display import draw_colourful_frame, draw_simple_frame
+from utilities.display import draw_simple_frame
 from utilities.input_handlers import handle_game_keys
-from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from bearlibterminal import terminal
@@ -23,6 +22,10 @@ class SpellUtilities:
 
         spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                           playerEntity=player)
+
+        current_turn = MobileUtilities.get_current_turn(gameworld=gameworld, entity=player)
+
+        msg_turn_number = str(current_turn) + ":"
 
         logger.info('Casting spell with entity id {} from slot {}', spell_entity, slot)
 
@@ -102,11 +105,11 @@ class SpellUtilities:
             player_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player)
             for ent, (pos, name) in gameworld.get_components(mobiles.Position, mobiles.Name):
                 if pos.x == player_x and pos.y == player_y:
-                    msg = Message(text="Enemy called " + name.first + " targeted.", msgclass="all",
+                    msg = Message(text=msg_turn_number + "Enemy called " + name.first + " targeted.", msgclass="all",
                                   fg="yellow", bg="", fnt="")
                     CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
         else:
-            msg = Message(text="Spell is on cooldown ", msgclass="all", fg="white", bg="black", fnt="")
+            msg = Message(text= msg_turn_number + "Spell is on cooldown ", msgclass="all", fg="white", bg="black", fnt="")
             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
 
     @staticmethod
@@ -360,7 +363,7 @@ class SpellUtilities:
         return gameworld.component_for_entity(spell_entity, spells.StatusEffect).resources
 
     @staticmethod
-    def apply_condis_to_target(gameworld, target_entity, list_of_condis):
+    def apply_condis_to_target(gameworld, target_entity, list_of_condis, msg_turn_number):
 
         game_config = configUtilities.load_config()
 
@@ -387,7 +390,7 @@ class SpellUtilities:
                          'displayChar': condition['char']}
 
                     # add dialog for condition damage to message log
-                    msg = Message(text=target_names[0] + " screams: " + condition['dialogue_options'][0][target_class],
+                    msg = Message(text=msg_turn_number + target_names[0] + " screams: " + condition['dialogue_options'][0][target_class],
                                   msgclass="all", fg="white", bg="black", fnt="")
                     CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
 
@@ -399,7 +402,7 @@ class SpellUtilities:
         logger.debug('Condis applied to {} is {}', target_names[0], current_condis)
 
     @staticmethod
-    def apply_boons_to_target(gameworld, target_entity, list_of_boons, spell_caster):
+    def apply_boons_to_target(gameworld, target_entity, list_of_boons, spell_caster, msg_turn_number):
 
         game_config = configUtilities.load_config()
 
@@ -427,12 +430,9 @@ class SpellUtilities:
                         target_entity = spell_caster
                         current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld,
                                                                                             entity=target_entity)
-                        # target_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld,
-                        #                                                        entity=target_entity)
-                        # logger.warning('-----> target entity for fury is {}', target_names[0])
 
                     # add dialog for boon effect to message log
-                    msg = Message(text=target_names[0] + " " + fileBoon['dialogue_options'][0][target_class],
+                    msg = Message(text=msg_turn_number + target_names[0] + " " + fileBoon['dialogue_options'][0][target_class],
                                   msgclass="all", fg="white", bg="black", fnt="")
                     CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
 

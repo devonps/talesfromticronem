@@ -5,7 +5,6 @@ from loguru import logger
 from utilities import configUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.common import CommonUtils
-from mapRelated.gameMap import RenderLayer
 
 
 class RenderMessageLog(esper.Processor):
@@ -13,9 +12,7 @@ class RenderMessageLog(esper.Processor):
         self.gameworld = gameworld
 
     def process(self, game_config):
-        # terminal.composition(terminal.TK_ON)
         self.render_message_panel(self, game_config)
-        # terminal.composition(terminal.TK_OFF)
 
     @staticmethod
     def render_message_panel(self, game_config):
@@ -33,9 +30,6 @@ class RenderMessageLog(esper.Processor):
                                                                     parameter='map_Xscale')
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='map_Yscale')
-
-        # prev_layer = terminal.state(terminal.TK_LAYER)
-        # terminal.layer(RenderLayer.HUD.value)
 
         # top left
         terminal.put(x=(message_panel_start_x * image_x_scale), y=message_panel_height * image_y_scale, c=0xE700 + 0)
@@ -61,16 +55,6 @@ class RenderMessageLog(esper.Processor):
         for a in range(message_panel_width):
             terminal.put(x=a + (message_panel_start_x * image_x_scale), y=message_panel_height * image_y_scale,
                          c=0xE700 + 6)
-
-        # # message log buttons
-        # terminal.put(x=(message_panel_start_x * image_x_scale) + 3, y=(message_panel_height * image_y_scale), c=0xE880)
-        #
-        # terminal.put(x=(message_panel_start_x * image_x_scale) + 5, y=(message_panel_height * image_y_scale), c=0xE800)
-        #
-        # terminal.put(x=(message_panel_start_x * image_x_scale) + 7, y=(message_panel_height * image_y_scale), c=0xE770)
-        #
-        # terminal.put(x=(message_panel_start_x * image_x_scale) + 9, y=(message_panel_height * image_y_scale), c=0xE800)
-
         # right edge
         for d in range(message_panel_depth):
             terminal.put(x=message_panel_start_x * image_x_scale + message_panel_width,

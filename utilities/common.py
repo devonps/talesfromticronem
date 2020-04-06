@@ -6,29 +6,29 @@ from components import viewport, messages
 class CommonUtils:
 
     @staticmethod
-    def calculate_percentage(lowNumber, maxNumber):
-        return int((lowNumber / maxNumber) * 100)
+    def calculate_percentage(low_number, max_number):
+        return int((low_number / max_number) * 100)
 
     @staticmethod
-    def format_combat_log_message(gameworld, target, damage_done_to_target, spell_name, message_log_id):
-        turnNumber = 1
-        msgStart = str(turnNumber) + ': You hit '
-        target_name = target
-        tempMessage = msgStart + target_name + " for " + str(damage_done_to_target) + " using [" + spell_name + "]"
+    def format_combat_log_message(gameworld, target, damage_done_to_target, spell_name, message_log_id, msg_turn_number):
 
-        if len(tempMessage) <= 25:
-            msg = Message(text=msgStart + target_name + " for " + "[color=orange]" + str(
+        msg_start = msg_turn_number + ' You hit '
+
+        temp_message = msg_start + target + " for " + str(damage_done_to_target) + " using [" + spell_name + "]"
+
+        if len(temp_message) <= 25:
+            msg = Message(text=msg_start + " for " + "[color=orange]" + str(
                 damage_done_to_target) + "[/color] using [[" + spell_name + "]]", msgclass="combat", fg="white",
                           bg="black", fnt="")
             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
         else:
-            temp2Message = Message(
-                msgStart + target_name + " for " + "[color=orange]" + str(damage_done_to_target) + " pts",
+            temp2_message = Message(
+                msg_start + " for " + "[color=orange]" + str(damage_done_to_target) + " pts",
                 msgclass="combat", fg="white", bg="black", fnt="")
-            temp3Message = Message("[/color] using [color=yellow][[" + spell_name + "]]", msgclass="combat",
+            temp3_message = Message("[/color] using [color=yellow][[" + spell_name + "]]", msgclass="combat",
                                    fg="yellow", bg="black", fnt="")
-            CommonUtils.add_message(gameworld=gameworld, message=temp2Message, logid=message_log_id)
-            CommonUtils.add_message(gameworld=gameworld, message=temp3Message, logid=message_log_id)
+            CommonUtils.add_message(gameworld=gameworld, message=temp2_message, logid=message_log_id)
+            CommonUtils.add_message(gameworld=gameworld, message=temp3_message, logid=message_log_id)
 
     @staticmethod
     def create_message_log_as_entity(gameworld, logid):
@@ -46,22 +46,22 @@ class CommonUtils:
 
     @staticmethod
     def add_message(gameworld, message, logid):
-        storedMsgs = CommonUtils.get_message_log_all_messages(gameworld=gameworld, logid=logid)
-        storedMsgs.append(message)
-        messaage_component = gameworld.component_for_entity(logid, messages.MessageLog)
-        messaage_component.storedMessages = storedMsgs
+        stored_msgs = CommonUtils.get_message_log_all_messages(gameworld=gameworld, logid=logid)
+        stored_msgs.append(message)
+        message_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        message_component.storedMessages = stored_msgs
 
     @staticmethod
-    def set_visible_log(gameworld, logid, logToDisplay):
+    def set_visible_log(gameworld, log_id, log_to_display):
 
-        messaageLog_component = gameworld.component_for_entity(logid, messages.MessageLog)
-        messaageLog_component.visibleLog = logToDisplay
+        messaage_log_component = gameworld.component_for_entity(log_id, messages.MessageLog)
+        messaage_log_component.visibleLog = log_to_display
 
     @staticmethod
     def get_visible_log(gameworld, logid):
 
-        messaageLog_component = gameworld.component_for_entity(logid, messages.MessageLog)
-        return messaageLog_component.visibleLog
+        messaage_log_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        return messaage_log_component.visibleLog
 
     @staticmethod
     def build_message_to_be_displayed(gameworld, logid, message):
