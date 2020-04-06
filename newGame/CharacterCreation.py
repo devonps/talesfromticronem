@@ -1080,9 +1080,7 @@ class CharacterCreation:
         spell_bar_entity = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
         MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player, spellbarEntity=spell_bar_entity)
         logger.info('Loading spell bar based on equipped weapons')
-        weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
-        SpellUtilities.populate_spell_bar_from_weapon(gameworld, player_entity=player, spellbar=spell_bar_entity,
-                                                      wpns_equipped=weapons_equipped)
+        SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, playerEntity=player)
 
         # create jewellery pieces and equip them
         jewellery_package = BuildLibrary.get_build_jewellery(gameworld=gameworld, entity=build_entity)
