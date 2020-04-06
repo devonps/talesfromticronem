@@ -11,9 +11,11 @@ class Message:
 # this is a generic container for ALL messages produced in the game
 class MessageLog:
     storedMessages = None
+    stored_log_messages = None
 
     def __init__(self, width, height, depth, display_from_message, display_to_message, visibleLog):
         self.storedMessages = []
+        self.stored_log_messages = []
         self.width = width
         self.height = height
         self.depth = depth

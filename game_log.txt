@@ -1,0 +1,14 @@
+13:Enemy called Gyrdin  targeted.
+13:Joe has been targeted.
+13: You hit Joe for 24 using [necrotic bite]
+13: You hit Joe for 24 using [necrotic bite]
+13:Joe screams: Arrgh, it hurts
+13:Joe 
+[combat]13:Joe takes 3.51 from [bleeding]
+[combat]13:Joe gains 555 from [might]
+[combat]15:Joe takes 3.51 from [bleeding]
+[combat]15:Joe gains 555 from [might]
+[combat]17:Joe takes 3.51 from [bleeding]
+[combat]17:Joe loses bleeding]
+[combat]17:Joe gains 555 from [might]
+[combat]17:Joe loses might]

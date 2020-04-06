@@ -1,6 +1,8 @@
 from bearlibterminal import terminal
 
 from newGame.initialiseNewGame import setup_gameworld
+from utilities.common import CommonUtils
+from utilities.externalfileutilities import Externalfiles
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
@@ -60,6 +62,7 @@ def game_loop(gameworld):
                     if event_action == 'quit':
                         value = 'exit:true'
                         ReplayGame.update_game_replay_file(game_config, value)
+                        Externalfiles.write_full_game_log(gameworld=gameworld, log_id=message_log_id)
                         raise SystemExit()
                     if event_action in ('left', 'right', 'up', 'down'):
                         MobileUtilities.set_player_velocity(gameworld=gameworld, player_entity=player, direction=event_action, speed=1)

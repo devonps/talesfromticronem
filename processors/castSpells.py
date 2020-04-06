@@ -32,7 +32,8 @@ class CastSpells(esper.Processor):
                 logger.warning('against {}', target_names[0])
                 msg = Message(text=msg_turn_number + target_names[0] + " has been targeted.", msgclass="all", fg="white", bg="black",
                               fnt="")
-                CommonUtils.add_message(gameworld=self.gameworld, message=msg, logid=message_log_id)
+                log_message = msg_turn_number + target_names[0] + " has been targeted."
+                CommonUtils.add_message(gameworld=self.gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
                 MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=player_entity)
                 spell_type = SpellUtilities.get_spell_type(gameworld=self.gameworld, spell_entity=mob.spell_entity)
                 slotUsed = mob.spell_bar_slot
@@ -122,3 +123,4 @@ class CastSpells(esper.Processor):
 
     def cast_healing_spell(self):
         pass
+        # not yet started

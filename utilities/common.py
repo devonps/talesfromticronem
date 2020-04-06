@@ -20,15 +20,18 @@ class CommonUtils:
             msg = Message(text=msg_start + " for " + "[color=orange]" + str(
                 damage_done_to_target) + "[/color] using [[" + spell_name + "]]", msgclass="combat", fg="white",
                           bg="black", fnt="")
-            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
+            log_message = temp_message
+            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
         else:
             temp2_message = Message(
                 msg_start + " for " + "[color=orange]" + str(damage_done_to_target) + " pts",
                 msgclass="combat", fg="white", bg="black", fnt="")
+            log_message2 = temp_message
             temp3_message = Message("[/color] using [color=yellow][[" + spell_name + "]]", msgclass="combat",
                                    fg="yellow", bg="black", fnt="")
-            CommonUtils.add_message(gameworld=gameworld, message=temp2_message, logid=message_log_id)
-            CommonUtils.add_message(gameworld=gameworld, message=temp3_message, logid=message_log_id)
+            log_message3 = temp_message
+            CommonUtils.add_message(gameworld=gameworld, message=temp2_message, logid=message_log_id, message_for_export=log_message2)
+            CommonUtils.add_message(gameworld=gameworld, message=temp3_message, logid=message_log_id, message_for_export=log_message3)
 
     @staticmethod
     def create_message_log_as_entity(gameworld, logid):
@@ -45,11 +48,17 @@ class CommonUtils:
                                                            display_from_message=0, display_to_message=10, visibleLog='all'))
 
     @staticmethod
-    def add_message(gameworld, message, logid):
+    def add_message(gameworld, message, logid, message_for_export):
         stored_msgs = CommonUtils.get_message_log_all_messages(gameworld=gameworld, logid=logid)
         stored_msgs.append(message)
         message_component = gameworld.component_for_entity(logid, messages.MessageLog)
         message_component.storedMessages = stored_msgs
+
+        # this next piece of code adds a plain/vanilla message ready to be exported
+        stored_export_messages = CommonUtils.get_all_log_messages_for_export(gameworld=gameworld, logid=logid)
+        stored_export_messages.append(message_for_export)
+        message_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        message_component.stored_log_messages = stored_export_messages
 
     @staticmethod
     def set_visible_log(gameworld, log_id, log_to_display):
@@ -96,6 +105,11 @@ class CommonUtils:
     def get_message_log_all_messages(gameworld, logid):
         log_component = gameworld.component_for_entity(logid, messages.MessageLog)
         return log_component.storedMessages
+
+    @staticmethod
+    def get_all_log_messages_for_export(gameworld, logid):
+        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        return log_component.stored_log_messages
 
     @staticmethod
     def get_message_log_first_dispay_message(gameworld, logid):

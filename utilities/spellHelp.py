@@ -107,10 +107,12 @@ class SpellUtilities:
                 if pos.x == player_x and pos.y == player_y:
                     msg = Message(text=msg_turn_number + "Enemy called " + name.first + " targeted.", msgclass="all",
                                   fg="yellow", bg="", fnt="")
-                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
+                    log_message = msg_turn_number + "Enemy called " + name.first + " targeted."
+                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
         else:
             msg = Message(text= msg_turn_number + "Spell is on cooldown ", msgclass="all", fg="white", bg="black", fnt="")
-            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
+            log_message = msg_turn_number + "Spell is on cooldown "
+            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 
     @staticmethod
     def get_valid_targets_for_spell(gameworld, player, spell_entity):
@@ -392,7 +394,8 @@ class SpellUtilities:
                     # add dialog for condition damage to message log
                     msg = Message(text=msg_turn_number + target_names[0] + " screams: " + condition['dialogue_options'][0][target_class],
                                   msgclass="all", fg="white", bg="black", fnt="")
-                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
+                    log_message = msg_turn_number + target_names[0] + " screams: " + condition['dialogue_options'][0][target_class]
+                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 
                     current_condis.append(z)
 
@@ -434,7 +437,8 @@ class SpellUtilities:
                     # add dialog for boon effect to message log
                     msg = Message(text=msg_turn_number + target_names[0] + " " + fileBoon['dialogue_options'][0][target_class],
                                   msgclass="all", fg="white", bg="black", fnt="")
-                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id)
+                    log_message = msg_turn_number + target_names[0] + " " + fileBoon['dialogue_options'][0][target_class]
+                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 
                     # current_boons is a map
                     current_boons.append(b)
