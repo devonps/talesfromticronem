@@ -2,15 +2,17 @@
 import os.path
 import csv
 
+from utilities.common import CommonUtils
+
 
 class Externalfiles:
 
     @staticmethod
     def read_prefab_from_csv(filename):
-        fileContent = Externalfiles.load_existing_file(filename=filename)
-        csvReader = csv.reader(fileContent)
+        file_content = Externalfiles.load_existing_file(filename=filename)
+        csv_reader = csv.reader(file_content)
 
-        return csvReader
+        return csv_reader
 
     @staticmethod
     def create_new_file(filename):
@@ -22,6 +24,16 @@ class Externalfiles:
         with open(filename, 'a') as file:
             file.write(value + '\n')
 
+    @staticmethod
+    def write_full_game_log(gameworld, log_id):
+
+        filename = "game_log.txt"
+        fileobject = Externalfiles.create_new_file(filename)
+        stored_msgs = CommonUtils.get_all_log_messages_for_export(gameworld=gameworld, logid=log_id)
+        for message in stored_msgs:
+            Externalfiles.write_to_existing_file(filename, value=message)
+
+        Externalfiles.close_existing_file(fileobject=fileobject)
 
     @staticmethod
     def close_existing_file(fileobject):

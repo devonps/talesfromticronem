@@ -1,7 +1,6 @@
 import esper
 
 from bearlibterminal import terminal
-from loguru import logger
 
 from components import mobiles, items
 from utilities import configUtilities
@@ -86,7 +85,7 @@ class RenderGameMap(esper.Processor):
                 currentHealth = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=entity)
                 maximum_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=entity)
 
-                displayPercentage = CommonUtils.calculate_percentage(lowNumber=currentHealth, maxNumber=maximum_health)
+                displayPercentage = CommonUtils.calculate_percentage(low_number=currentHealth, max_number=maximum_health)
 
                 strToPrint = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph + ' '
                 strColour = "red"
@@ -590,16 +589,14 @@ class RenderGameMap(esper.Processor):
         for a in range(10):
             terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE500 + 0)
 
-        currentSpells = SpellUtilities.get_current_spellbar_spells(gameworld=self.gameworld, playerEntity=player_entity)
-
         # now the spells based on the spell bar entities -- currently loads slots 1 - 6
         slotid = 1
-        for spellSlot in range(6):
+        for spell_slot in range(6):
 
-            spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slotid, playerEntity=player_entity)
-            spellImage = SpellUtilities.get_spell_image(gameworld=self.gameworld, spellEntity=spell_entity)
+            spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slotid, player_entity=player_entity)
+            spell_image = SpellUtilities.get_spell_image(gameworld=self.gameworld, spell_entity=spell_entity)
 
-            terminal.put(x=(ac + spellSlot) * sc, y=y * image_y_scale, c=0xE400 + spellImage)
+            terminal.put(x=(ac + spell_slot) * sc, y=y * image_y_scale, c=0xE400 + spell_image)
             slotid += 1
 
         # and finally the utility spells

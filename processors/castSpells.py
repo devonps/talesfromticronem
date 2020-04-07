@@ -1,7 +1,6 @@
 import esper
 
 from components import mobiles
-from components.messages import Message
 from utilities import formulas
 from utilities.common import CommonUtils
 from utilities.itemsHelp import ItemUtilities
@@ -19,6 +18,9 @@ class CastSpells(esper.Processor):
     def process(self, game_config):
         player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
         message_log_id = MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
+        current_turn = MobileUtilities.get_current_turn(gameworld=self.gameworld, entity=player_entity)
+
+        msg_turn_number = str(current_turn) + ":"
 
         for ent, mob in self.gameworld.get_component(mobiles.SpellCast):
             if mob.truefalse:
@@ -27,12 +29,9 @@ class CastSpells(esper.Processor):
                                                                        entity=mob.spell_target)
                 logger.warning('Danger will robinson! spell being cast is:{}', spell_name)
                 logger.warning('against {}', target_names[0])
-                msg = Message(text=target_names[0] + " has been targeted.", msgclass="all", fg="white", bg="black",
-                              fnt="")
-                CommonUtils.add_message(gameworld=self.gameworld, message=msg, logid=message_log_id)
                 MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=player_entity)
                 spell_type = SpellUtilities.get_spell_type(gameworld=self.gameworld, spell_entity=mob.spell_entity)
-                slotUsed = mob.spell_bar_slot
+                slot_used = mob.spell_bar_slot
                 condis_to_apply = SpellUtilities.get_all_condis_for_spell(gameworld=self.gameworld,
                                                                           spell_entity=mob.spell_entity)
                 boons_to_apply = SpellUtilities.get_all_boons_for_spell(gameworld=self.gameworld,
@@ -50,10 +49,8 @@ class CastSpells(esper.Processor):
                     MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=mob.spell_target)
                     MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=player_entity)
 
-                    damage_done_to_target = self.cast_combat_spell(spell_caster=player_entity, spell_name=spell_name,
-                                                                   spell=mob.spell_entity,
-                                                                   spell_target=mob.spell_target, weapon_used=slotUsed,
-                                                                   message_log_id=message_log_id)
+                    damage_done_to_target = self.cast_combat_spell(spell_caster=player_entity,spell=mob.spell_entity,
+                                                                   spell_target=mob.spell_target, weapon_used=slot_used)
                     if damage_done_to_target > 0:
                         # apply damage to target --> current health is used when in combat
                         MobileUtilities.set_current_health_during_combat(gameworld=self.gameworld,
@@ -61,26 +58,27 @@ class CastSpells(esper.Processor):
                                                                          damageToApply=damage_done_to_target)
 
                         # display message in combat log
+                        logger.warning('Spell cast current turn is {}', msg_turn_number)
                         CommonUtils.format_combat_log_message(gameworld=self.gameworld, target=target_names[0],
                                                               damage_done_to_target=damage_done_to_target,
-                                                              spell_name=spell_name, message_log_id=message_log_id)
+                                                              spell_name=spell_name, message_log_id=message_log_id, msg_turn_number=msg_turn_number)
                 if spell_type == 'heal':
                     self.cast_healing_spell()
 
                 # Are there any conditions to apply to the target - regardless of damage caused
                 if len(condis_to_apply) != 0:
                     SpellUtilities.apply_condis_to_target(gameworld=self.gameworld, target_entity=mob.spell_target,
-                                                          list_of_condis=condis_to_apply)
+                                                          list_of_condis=condis_to_apply, msg_turn_number=msg_turn_number)
 
                 # are there any boons to apply to the spell caster - regardless of damage caused
                 if len(boons_to_apply) != 0:
                     SpellUtilities.apply_boons_to_target(gameworld=self.gameworld, target_entity=mob.spell_target,
-                                                         list_of_boons=boons_to_apply, spell_caster=ent)
+                                                         list_of_boons=boons_to_apply, spell_caster=ent, msg_turn_number=msg_turn_number)
 
-    def cast_combat_spell(self, spell_caster, spell, spell_target, weapon_used, spell_name, message_log_id):
+    def cast_combat_spell(self, spell_caster, spell, spell_target, weapon_used):
         equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=spell_caster)
         caster_power = MobileUtilities.get_mobile_power(gameworld=self.gameworld, entity=spell_caster)
-        spell_coeff = float(SpellUtilities.get_spell_DamageCoeff(gameworld=self.gameworld, spell_entity=spell))
+        spell_coeff = float(SpellUtilities.get_spell_damage_coeff(gameworld=self.gameworld, spell_entity=spell))
 
         if equipped_weapons[2] != 0:
             weapon = equipped_weapons[2]
@@ -117,4 +115,5 @@ class CastSpells(esper.Processor):
         return damage_done
 
     def cast_healing_spell(self):
+        # not yet started
         pass

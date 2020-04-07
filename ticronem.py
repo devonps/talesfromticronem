@@ -1,6 +1,8 @@
 from bearlibterminal import terminal
 
 from newGame.initialiseNewGame import setup_gameworld
+from utilities.common import CommonUtils
+from utilities.externalfileutilities import Externalfiles
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
@@ -26,7 +28,7 @@ def game_loop(gameworld):
     scene_change = True
     current_turn = 0
 
-    spell_bar_keys=[1,2,3,4,5,6,7,8,9,0]
+    spell_bar_keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
 
     while playing_game:
         #
@@ -60,6 +62,7 @@ def game_loop(gameworld):
                     if event_action == 'quit':
                         value = 'exit:true'
                         ReplayGame.update_game_replay_file(game_config, value)
+                        Externalfiles.write_full_game_log(gameworld=gameworld, log_id=message_log_id)
                         raise SystemExit()
                     if event_action in ('left', 'right', 'up', 'down'):
                         MobileUtilities.set_player_velocity(gameworld=gameworld, player_entity=player, direction=event_action, speed=1)
@@ -87,11 +90,11 @@ def game_loop(gameworld):
                     logger.debug('Waiting for monsters to finish up')
 
                     logger.info('All turn based processes completed')
-
-                    current_turn += 1
                 if valid_event:
                     # process all intended actions
                     gameworld.process(game_config)
+                    current_turn += 1
+                    MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
 
                 # blit the console
                 terminal.refresh()
@@ -102,6 +105,7 @@ def game_loop(gameworld):
             # blit the console
             terminal.refresh()
             current_turn += 1
+            MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
 
 
 def game_replay(con, game_config):

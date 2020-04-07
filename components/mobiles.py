@@ -8,8 +8,8 @@ class Name:
 
 
 class Describable:
-    def __init__(self, description='undefined', glyph='@', foreground=colourUtilities.get('ORANGE'), background=colourUtilities.get('BLACK'),
-                 personality='Unpredictable', gender='undefined', image=0):
+    def __init__(self, description='undefined', glyph='@', foreground=colourUtilities.get('ORANGE'),
+                 background=colourUtilities.get('BLACK'), personality='Unpredictable', gender='undefined', image=0):
         self.description = description
         self.glyph = glyph
         self.foreground = foreground
@@ -87,6 +87,11 @@ class SpellBar:
 class Viewport:
     def __init__(self, entityId=0):
         self.entityId = entityId
+
+
+class CurrentTurn:
+    def __init__(self, current_turn=0):
+        self.current_turn = current_turn
 
 
 class MessageLog:

@@ -5,7 +5,6 @@ from loguru import logger
 from utilities import configUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.common import CommonUtils
-from mapRelated.gameMap import RenderLayer
 
 
 class RenderMessageLog(esper.Processor):
@@ -13,9 +12,7 @@ class RenderMessageLog(esper.Processor):
         self.gameworld = gameworld
 
     def process(self, game_config):
-        # terminal.composition(terminal.TK_ON)
         self.render_message_panel(self, game_config)
-        # terminal.composition(terminal.TK_OFF)
 
     @staticmethod
     def render_message_panel(self, game_config):
@@ -33,9 +30,6 @@ class RenderMessageLog(esper.Processor):
                                                                     parameter='map_Xscale')
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='map_Yscale')
-
-        # prev_layer = terminal.state(terminal.TK_LAYER)
-        # terminal.layer(RenderLayer.HUD.value)
 
         # top left
         terminal.put(x=(message_panel_start_x * image_x_scale), y=message_panel_height * image_y_scale, c=0xE700 + 0)
@@ -61,16 +55,6 @@ class RenderMessageLog(esper.Processor):
         for a in range(message_panel_width):
             terminal.put(x=a + (message_panel_start_x * image_x_scale), y=message_panel_height * image_y_scale,
                          c=0xE700 + 6)
-
-        # # message log buttons
-        # terminal.put(x=(message_panel_start_x * image_x_scale) + 3, y=(message_panel_height * image_y_scale), c=0xE880)
-        #
-        # terminal.put(x=(message_panel_start_x * image_x_scale) + 5, y=(message_panel_height * image_y_scale), c=0xE800)
-        #
-        # terminal.put(x=(message_panel_start_x * image_x_scale) + 7, y=(message_panel_height * image_y_scale), c=0xE770)
-        #
-        # terminal.put(x=(message_panel_start_x * image_x_scale) + 9, y=(message_panel_height * image_y_scale), c=0xE800)
-
         # right edge
         for d in range(message_panel_depth):
             terminal.put(x=message_panel_start_x * image_x_scale + message_panel_width,
@@ -80,13 +64,18 @@ class RenderMessageLog(esper.Processor):
         for a in range(message_panel_width):
             terminal.put(x=a + (message_panel_start_x * image_x_scale), y=(message_panel_height + 5) * image_y_scale,
                          c=0xE700 + 7)
-
+        # message tabs
+        terminal.printf(x=(message_panel_start_x * image_x_scale), y=(message_panel_height * image_y_scale) + 1,
+                        s="Combat")
         # now show the messages
         #
-        storedMsgs = CommonUtils.get_message_log_all_messages(gameworld=self.gameworld, logid=log_id)
-        y = 1
-        for message in storedMsgs:
-            str_to_print = CommonUtils.build_message_to_be_displayed(gameworld=self.gameworld, logid=log_id, message=message)
-            if str_to_print != "":
-                terminal.printf(x=(message_panel_start_x * image_x_scale), y=(message_panel_height * image_y_scale) + y, s=str_to_print)
-                y += 1
+        visible_messages, display_messages_from, display_messages_to, display_messages_count = CommonUtils.get_messages_for_visible_message_log(gameworld=self.gameworld, log_id=log_id)
+        display_line = 2
+        if display_messages_count > 0:
+            for msg in range(display_messages_from, display_messages_to):
+                message = visible_messages[msg]
+                str_to_print = CommonUtils.build_message_to_be_displayed(gameworld=self.gameworld, logid=log_id, message=message)
+                if str_to_print != "":
+                    terminal.printf(x=(message_panel_start_x * image_x_scale), y=(message_panel_height * image_y_scale) + display_line,
+                                    s=str_to_print)
+                    display_line += 1

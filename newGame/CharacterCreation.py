@@ -2,7 +2,6 @@ from bearlibterminal import terminal
 
 from loguru import logger
 
-from components.messages import Message
 from utilities import configUtilities, colourUtilities, world
 from utilities.externalfileutilities import Externalfiles
 from utilities.buildLibrary import BuildLibrary
@@ -1890,21 +1889,6 @@ class CharacterCreation:
                                                                       logid=messagelog_entity)
                             logger.info('Viewport stored as entity {}', viewport_entity)
                             logger.info('Mesage log stored as entity {}', messagelog_entity)
-
-                            msg = Message(text="Hello World", msgclass="all",
-                                          fg=colourUtilities.get("DARKVIOLET"), bg=colourUtilities.get("WHITE"), fnt="dungeon")
-
-                            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
-                            msg = Message(text="Combat log", msgclass="combat", fg="yellow", bg="", fnt="")
-                            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
-
-                            msg = Message(text="quest updates", msgclass="personal", fg="blue", bg="", fnt="")
-                            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
-
-                            msg = Message(text="Story journal", msgclass="story", fg="orange", bg="", fnt="")
-                            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=messagelog_entity)
-
-
                             game_loop(gameworld=gameworld)
                         if selected_menu_option == 1:  # save current build
                             if not saved_build:
