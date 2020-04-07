@@ -435,7 +435,7 @@ def display_build_library():
                                                                      weapon=created_weapon, hand='off')
 
                                 # load spell bar with spells from weapon
-                                SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, playerEntity=player_entity)
+                                SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=player_entity)
 
                                 # jewellery
                                 player_class = MobileUtilities.get_character_class(gameworld=gameworld,

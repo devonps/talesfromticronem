@@ -1,14 +1,13 @@
-13:Enemy called Gyrdin  targeted.
-13:Joe has been targeted.
-13: You hit Joe for 24 using [necrotic bite]
-13: You hit Joe for 24 using [necrotic bite]
-13:Joe screams: Arrgh, it hurts
-13:Joe 
-[combat]13:Joe takes 3.51 from [bleeding]
-[combat]13:Joe gains 555 from [might]
-[combat]15:Joe takes 3.51 from [bleeding]
-[combat]15:Joe gains 555 from [might]
-[combat]17:Joe takes 3.51 from [bleeding]
-[combat]17:Joe loses bleeding]
-[combat]17:Joe gains 555 from [might]
-[combat]17:Joe loses might]
+[all]19:Kenny has been targeted.
+[all]19:Kenny has been targeted.
+[combat]19:You hit Kenny for 24 using [necrotic bite]
+[combat]19:Kenny screams: I care not for my blood!
+[combat]19:Kenny I feel...strong
+[combat]19:Kenny takes 3.51 from [bleeding]
+[combat]19:Kenny gains 555 from [might]
+[combat]21:Kenny takes 3.51 from [bleeding]
+[combat]21:Kenny gains 555 from [might]
+[combat]23:Kenny takes 3.51 from [bleeding]
+[combat]23:Kenny loses bleeding]
+[combat]23:Kenny gains 555 from [might]
+[combat]23:Kenny loses might]

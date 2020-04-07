@@ -12,26 +12,11 @@ class CommonUtils:
     @staticmethod
     def format_combat_log_message(gameworld, target, damage_done_to_target, spell_name, message_log_id, msg_turn_number):
 
-        msg_start = msg_turn_number + ' You hit '
+        msg_start = msg_turn_number + "You hit " + target + " for "
+        msg = Message(text=msg_start + "[color=orange]" + str(damage_done_to_target) + "[/color] using [[" + spell_name + "]]", msgclass="combat", fg="white",bg="black", fnt="")
+        log_message = "[combat]" + msg_start + str(damage_done_to_target) + " using [" + spell_name + "]"
 
-        temp_message = msg_start + target + " for " + str(damage_done_to_target) + " using [" + spell_name + "]"
-
-        if len(temp_message) <= 25:
-            msg = Message(text=msg_start + " for " + "[color=orange]" + str(
-                damage_done_to_target) + "[/color] using [[" + spell_name + "]]", msgclass="combat", fg="white",
-                          bg="black", fnt="")
-            log_message = temp_message
-            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
-        else:
-            temp2_message = Message(
-                msg_start + " for " + "[color=orange]" + str(damage_done_to_target) + " pts",
-                msgclass="combat", fg="white", bg="black", fnt="")
-            log_message2 = temp_message
-            temp3_message = Message("[/color] using [color=yellow][[" + spell_name + "]]", msgclass="combat",
-                                   fg="yellow", bg="black", fnt="")
-            log_message3 = temp_message
-            CommonUtils.add_message(gameworld=gameworld, message=temp2_message, logid=message_log_id, message_for_export=log_message2)
-            CommonUtils.add_message(gameworld=gameworld, message=temp3_message, logid=message_log_id, message_for_export=log_message3)
+        CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 
     @staticmethod
     def create_message_log_as_entity(gameworld, logid):
