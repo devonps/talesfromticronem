@@ -1,5 +1,5 @@
 from loguru import logger
-from components import spells, spellBar, items, mobiles, condis
+from components import spells, items, mobiles
 from components.messages import Message
 from utilities import colourUtilities, configUtilities
 from utilities.common import CommonUtils
@@ -325,7 +325,7 @@ class SpellUtilities:
                         text=msg_turn_number + target_names[0] + " screams: " + condition['dialogue_options'][0][
                             target_class],
                         msgclass="all", fg="white", bg="black", fnt="")
-                    log_message = "[combat]" + msg_turn_number + target_names[0] + " screams: " + condition['dialogue_options'][0][
+                    log_message = msg_turn_number + "[combat]" + target_names[0] + " screams: " + condition['dialogue_options'][0][
                         target_class]
                     CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,
                                             message_for_export=log_message)
@@ -371,10 +371,8 @@ class SpellUtilities:
                     msg = Message(
                         text=msg_turn_number + target_names[0] + " " + file_boon['dialogue_options'][0][target_class],
                         msgclass="all", fg="white", bg="black", fnt="")
-                    log_message = "[combat]" + msg_turn_number + target_names[0] + " " + file_boon['dialogue_options'][0][
-                        target_class]
-                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,
-                                            message_for_export=log_message)
+                    log_message = msg_turn_number + "[combat]" + target_names[0] + " " + file_boon['dialogue_options'][0][target_class]
+                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 
                     # current_boons is a map
                     current_boons.append(b)

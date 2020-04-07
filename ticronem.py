@@ -28,7 +28,7 @@ def game_loop(gameworld):
     scene_change = True
     current_turn = 0
 
-    spell_bar_keys=[1,2,3,4,5,6,7,8,9,0]
+    spell_bar_keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
 
     while playing_game:
         #
@@ -90,8 +90,6 @@ def game_loop(gameworld):
                     logger.debug('Waiting for monsters to finish up')
 
                     logger.info('All turn based processes completed')
-
-                    current_turn += 1
                 if valid_event:
                     # process all intended actions
                     gameworld.process(game_config)

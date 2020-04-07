@@ -1,7 +1,6 @@
 import esper
 
 from components import mobiles
-from components.messages import Message
 from utilities import formulas
 from utilities.common import CommonUtils
 from utilities.itemsHelp import ItemUtilities
@@ -30,10 +29,6 @@ class CastSpells(esper.Processor):
                                                                        entity=mob.spell_target)
                 logger.warning('Danger will robinson! spell being cast is:{}', spell_name)
                 logger.warning('against {}', target_names[0])
-                msg = Message(text=msg_turn_number + target_names[0] + " has been targeted.", msgclass="all", fg="white", bg="black",
-                              fnt="")
-                log_message = "[all]" + msg_turn_number + target_names[0] + " has been targeted."
-                CommonUtils.add_message(gameworld=self.gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
                 MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=player_entity)
                 spell_type = SpellUtilities.get_spell_type(gameworld=self.gameworld, spell_entity=mob.spell_entity)
                 slot_used = mob.spell_bar_slot

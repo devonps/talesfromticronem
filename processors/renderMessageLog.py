@@ -64,13 +64,18 @@ class RenderMessageLog(esper.Processor):
         for a in range(message_panel_width):
             terminal.put(x=a + (message_panel_start_x * image_x_scale), y=(message_panel_height + 5) * image_y_scale,
                          c=0xE700 + 7)
-
+        # message tabs
+        terminal.printf(x=(message_panel_start_x * image_x_scale), y=(message_panel_height * image_y_scale) + 1,
+                        s="Combat")
         # now show the messages
         #
-        storedMsgs = CommonUtils.get_message_log_all_messages(gameworld=self.gameworld, logid=log_id)
-        y = 1
-        for message in storedMsgs:
-            str_to_print = CommonUtils.build_message_to_be_displayed(gameworld=self.gameworld, logid=log_id, message=message)
-            if str_to_print != "":
-                terminal.printf(x=(message_panel_start_x * image_x_scale), y=(message_panel_height * image_y_scale) + y, s=str_to_print)
-                y += 1
+        visible_messages, display_messages_from, display_messages_to, display_messages_count = CommonUtils.get_messages_for_visible_message_log(gameworld=self.gameworld, log_id=log_id)
+        display_line = 2
+        if display_messages_count > 0:
+            for msg in range(display_messages_from, display_messages_to):
+                message = visible_messages[msg]
+                str_to_print = CommonUtils.build_message_to_be_displayed(gameworld=self.gameworld, logid=log_id, message=message)
+                if str_to_print != "":
+                    terminal.printf(x=(message_panel_start_x * image_x_scale), y=(message_panel_height * image_y_scale) + display_line,
+                                    s=str_to_print)
+                    display_line += 1

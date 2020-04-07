@@ -44,6 +44,7 @@ class UpdateEntitiesProcessor(esper.Processor):
     def apply_conditions(self, entity_names, player_entity, message_log_id, target_entity, msg_turn_number):
         current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
                                                                               entity=target_entity)
+        msg_log_export_start = msg_turn_number + "[combat]"
         if len(current_condis) != 0:
             logger.warning('Current entity name being processed is {} who has {} applied', entity_names[0],
                            current_condis)
@@ -70,7 +71,7 @@ class UpdateEntitiesProcessor(esper.Processor):
                 msg = Message(text=msg_turn_number + entity_names[0] + " takes [color=MSGLOG_COMBAT_DAMAGE_OUTGOING]" + str(
                     damage_applied_this_turn) + " [/color]from [color=MSGLOG_COMBAT_DAMAGE_OUTGOING][[" + condi_name + "]][/color]", msgclass="combat", fg="white",
                               bg="black", fnt="")
-                log_message = "[combat]" + msg_turn_number + entity_names[0] + " takes " + str(damage_applied_this_turn) + " from [" + condi_name + "]"
+                log_message = msg_log_export_start + entity_names[0] + " takes " + str(damage_applied_this_turn) + " from [" + condi_name + "]"
                 CommonUtils.add_message(gameworld=self.gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 
                 if duration <= 0:
@@ -86,6 +87,7 @@ class UpdateEntitiesProcessor(esper.Processor):
 
         current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=self.gameworld,
                                                                             entity=target_entity)
+        msg_log_export_start = msg_turn_number + "[combat]"
         if len(current_boons) != 0:
             ps = 0
             for boon in current_boons:
@@ -101,7 +103,7 @@ class UpdateEntitiesProcessor(esper.Processor):
 
                 # add message to combat log showing effect
                 msg = Message(text=msg_turn_number + entity_names[0] + " gains [color=MSGLOG_GAME_APPLY_BOON]" + str(msg_stat) + " [/color]from [color=MSGLOG_GAME_APPLY_BOON][[" + boon_name + "]][/color]", msgclass="combat", fg="white", bg="black", fnt="")
-                log_message = "[combat]" + msg_turn_number + entity_names[0] + " gains " + str(msg_stat) + " from [" + boon_name + "]"
+                log_message = msg_log_export_start + entity_names[0] + " gains " + str(msg_stat) + " from [" + boon_name + "]"
                 CommonUtils.add_message(gameworld=self.gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 
                 if duration <= 0:
@@ -115,14 +117,17 @@ class UpdateEntitiesProcessor(esper.Processor):
 
     def remove_boon(self, entity_name, current_boons, message_log_id, ps, boon_name, msg_turn_number):
         del current_boons[ps]
+
+        msg_log_export_start = msg_turn_number + "[combat]"
         # add message to combat log showing loss of effect
         msg = Message(text=msg_turn_number + entity_name + " loses [color=MSGLOG_GAME_REMOVE_BOON][[" + boon_name + "]] [/color]", msgclass="combat", fg="white", bg="black", fnt="")
-        log_message = "[combat]" + msg_turn_number + entity_name + " loses " + boon_name + "]"
+        log_message = msg_log_export_start + entity_name + " loses " + boon_name + "]"
         CommonUtils.add_message(gameworld=self.gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 
     def remove_condition(self, entity_name, current_condis, message_log_id, ps, condi_name, msg_turn_number):
         del current_condis[ps]
+        msg_log_export_start = msg_turn_number + "[combat]"
         # add message to combat log showing loss of effect
         msg = Message(text=msg_turn_number + entity_name + " loses [color=MSGLOG_GAME_REMOVE_CONDITION][[" + condi_name + "]] [/color]", msgclass="combat", fg="white", bg="black", fnt="")
-        log_message = "[combat]" + msg_turn_number + entity_name + " loses " + condi_name + "]"
+        log_message = msg_log_export_start + entity_name + " loses " + condi_name + "]"
         CommonUtils.add_message(gameworld=self.gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
