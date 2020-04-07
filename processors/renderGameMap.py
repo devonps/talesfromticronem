@@ -32,10 +32,10 @@ class RenderGameMap(esper.Processor):
         self.render_map(self.gameworld, game_config, self.game_map)
         # draw the entities
         # self.render_items(game_config, self.gameworld)
-        visibleEntities = self.render_mobiles(game_config, self.gameworld, self.game_map)
-        if len(visibleEntities) > 0:
+        visible_entities = self.render_mobiles(game_config, self.gameworld, self.game_map)
+        if len(visible_entities) > 0:
             self.render_entity_display_panel(gameworld=self.gameworld, game_config=game_config,
-                                             visibleEntities=visibleEntities)
+                                             visible_entities=visible_entities)
 
         # GUI viewport
         terminal.composition(terminal.TK_ON)
@@ -53,14 +53,9 @@ class RenderGameMap(esper.Processor):
 
 
     @staticmethod
-    def render_entity_display_panel(gameworld, game_config, visibleEntities):
+    def render_entity_display_panel(gameworld, game_config, visible_entities):
         render_style = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                    parameter='render_style')
-
-        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='map_Yscale')
-        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='map_Xscale')
 
         # right hand side divider
         for dy in range(47):
@@ -68,13 +63,14 @@ class RenderGameMap(esper.Processor):
 
         image_start_x_pos = 64
         entity_y_draw_pos = 4
+        str_colour_msg = "[color="
 
         if render_style == 1:
 
             str_to_print = "[color=white]" + "Visible Entities"
             terminal.printf(x=64, y=1, s=str_to_print)
 
-            for entity in visibleEntities:
+            for entity in visible_entities:
                 glyph = MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=entity)
                 fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=entity)
                 bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=entity)
@@ -82,31 +78,31 @@ class RenderGameMap(esper.Processor):
                     gameworld=gameworld, entity=entity)
                 list_of_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld,
                                                                                     entity=entity)
-                currentHealth = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=entity)
+                current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=entity)
                 maximum_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=entity)
 
-                displayPercentage = CommonUtils.calculate_percentage(low_number=currentHealth, max_number=maximum_health)
+                display_percentage = CommonUtils.calculate_percentage(low_number=current_health, max_number=maximum_health)
 
-                strToPrint = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph + ' '
-                strColour = "red"
-                if displayPercentage > 89:
-                    strColour = "green"
-                elif 90 > displayPercentage > 30:
-                    strColour = "orange"
-                strToPrint += "[color=" + strColour + "]H:" + str(displayPercentage) + "% "
+                str_to_print = str_colour_msg + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph + ' '
+                str_colour = "red"
+                if display_percentage > 89:
+                    str_colour = "green"
+                elif 90 > display_percentage > 30:
+                    str_colour = "orange"
+                str_to_print += str_colour_msg + str_colour + "]H:" + str(display_percentage) + "% "
                 if len(list_of_boons) > 0:
-                    strToPrint += "[color=green]b:[/color]"
+                    str_to_print += "[color=green]b:[/color]"
                     for boon in list_of_boons:
-                        strToPrint += boon['displayChar']
-                    strToPrint += " [/color]"
+                        str_colour += boon['displayChar']
+                    str_to_print += " [/color]"
 
                 if len(list_of_conditions) > 0:
-                    strToPrint += "[color=red]c:"
+                    str_to_print += "[color=red]c:"
                     for condition in list_of_conditions:
-                        strToPrint += condition['displayChar']
-                    strToPrint += "[/color]"
+                        str_to_print += condition['displayChar']
+                    str_to_print += "[/color]"
 
-                terminal.printf(x=image_start_x_pos, y=entity_y_draw_pos, s=strToPrint)
+                terminal.printf(x=image_start_x_pos, y=entity_y_draw_pos, s=str_to_print)
                 entity_y_draw_pos += 1
 
     @staticmethod
@@ -116,8 +112,6 @@ class RenderGameMap(esper.Processor):
                                                                    parameter='render_style')
         tile_type_wall = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                      parameter='TILE_TYPE_WALL')
-        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
-                                                                      parameter='TILE_TYPE_FLOOR')
         tile_type_door = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                      parameter='TILE_TYPE_DOOR')
         player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
@@ -131,18 +125,13 @@ class RenderGameMap(esper.Processor):
 
             vp_width = CommonUtils.get_viewport_width(gameworld=gameworld, viewport_id=viewport_id)
             vp_height = CommonUtils.get_viewport_height(gameworld=gameworld, viewport_id=viewport_id)
-            vpXmin = CommonUtils.get_viewport_x_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
-            vpYmin = CommonUtils.get_viewport_y_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
+            vp_x_mmin = CommonUtils.get_viewport_x_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
+            vp_y_min = CommonUtils.get_viewport_y_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
 
-            x_min = max(player_pos_x - vp_width, vpXmin)
+            x_min = max(player_pos_x - vp_width, vp_x_mmin)
             x_max = min(player_pos_x + vp_width, game_map.width)
-            y_min = max(player_pos_y - vp_height, vpYmin)
+            y_min = max(player_pos_y - vp_height, vp_y_min)
             y_max = min(player_pos_y + vp_height, game_map.height)
-
-            # x_min = 0
-            # x_max = game_map.width
-            # y_min = 0
-            # y_max = game_map.height
 
             if player_has_moved:
                 RenderGameMap.clear_map_layer()
@@ -195,15 +184,12 @@ class RenderGameMap(esper.Processor):
 
         xmin = CommonUtils.get_viewport_x_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
         xmax = CommonUtils.get_viewport_x_axis_max_value(gameworld=gameworld, viewport_id=viewport_id)
-        ymin = CommonUtils.get_viewport_y_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
-        ymax = CommonUtils.get_viewport_y_axis_max_value(gameworld=gameworld, viewport_id=viewport_id)
 
         right_boundary_visited = CommonUtils.get_viewport_right_boundary(gameworld=gameworld, viewport_id=viewport_id)
         left_boundary_visited = CommonUtils.get_viewport_left_boundary(gameworld=gameworld, viewport_id=viewport_id)
         viewport_player_position = CommonUtils.get_player_viewport_position_info(gameworld=gameworld,
                                                                                  viewport_id=viewport_id)
         vpx = viewport_player_position[0]
-        vpy = viewport_player_position[1]
 
         # current 'scrolling' method is to simply add +5 to both the min and max values of the viewport
 
@@ -248,7 +234,7 @@ class RenderGameMap(esper.Processor):
         # terminal.layer(RenderLayer.ENTITIES.value)
         draw_pos_x = 0
         draw_pos_y = 0
-        visibleEntities = []
+        visible_entities = []
 
         if render_style == 1:
             x_min, x_max, y_min, y_max = create_display_area(gameworld=gameworld,
@@ -265,7 +251,7 @@ class RenderGameMap(esper.Processor):
                         if y_min <= draw_pos_y <= y_max:
                             RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.glyph, 0, 0, render_style, fg, bg)
                             if ent != player_entity:
-                                visibleEntities.append(ent)
+                                visible_entities.append(ent)
         else:
             image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                         parameter='map_Xscale')
@@ -276,7 +262,6 @@ class RenderGameMap(esper.Processor):
 
             viewport_id = MobileUtilities.get_viewport_id(gameworld=gameworld, entity=player_entity)
             viewport_width = CommonUtils.get_viewport_width(gameworld=gameworld, viewport_id=viewport_id)
-            viewport_height = CommonUtils.get_viewport_height(gameworld=gameworld, viewport_id=viewport_id)
             viewport_player_position = CommonUtils.get_player_viewport_position_info(gameworld=gameworld,
                                                                                      viewport_id=viewport_id)
 
@@ -294,7 +279,7 @@ class RenderGameMap(esper.Processor):
                     RenderGameMap.render_entity(draw_pos_x, draw_pos_y, desc.image, image_x_scale, image_y_scale,
                                                 render_style)
 
-        return visibleEntities
+        return visible_entities
 
     @staticmethod
     def render_items(game_config, gameworld):
@@ -321,7 +306,6 @@ class RenderGameMap(esper.Processor):
             shoes = 23
             weapon = 24
             characterbits = [cloak, glyph, robe, shoes, weapon]
-            # characterbits = [glyph]
 
             for cell in characterbits:
                 terminal.put(x=posx * image_x_scale, y=posy * image_y_scale, c=0xE300 + cell)
@@ -338,8 +322,7 @@ class RenderGameMap(esper.Processor):
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='map_Yscale')
 
-        # prev_layer = terminal.state(terminal.TK_LAYER)
-        # terminal.layer(RenderLayer.HUD.value)
+
 
         left_x = 1
 
@@ -389,9 +372,6 @@ class RenderGameMap(esper.Processor):
                                                                     parameter='map_Xscale')
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='map_Yscale')
-
-        prev_layer = terminal.state(terminal.TK_LAYER)
-        # terminal.layer(RenderLayer.HUD.value)
 
         # top left
         terminal.put(x=(message_panel_start_x * image_x_scale), y=message_panel_height * image_y_scale, c=0xE700 + 0)
@@ -445,13 +425,9 @@ class RenderGameMap(esper.Processor):
         player_conditions = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
                                                                                  entity=player_entity)
 
-        # prev_layer = terminal.state(terminal.TK_LAYER)
-        # terminal.layer(RenderLayer.STATUSEFFECTS.value)
         RenderGameMap.render_boons(posx=1, posy=statusbox_height * image_y_scale, list_of_boons=player_boons)
         RenderGameMap.render_conditions(posx=11, posy=statusbox_height * image_y_scale,
                                         list_of_conditions=player_conditions)
-        # RenderGameMap.render_controls(iy=image_y_scale, statusbox_y_position=statusbox_height)
-        # terminal.layer(prev_layer)
 
     @staticmethod
     def render_boons(posx, posy, list_of_boons):
@@ -477,12 +453,9 @@ class RenderGameMap(esper.Processor):
     @staticmethod
     def render_player_vitals(gameworld, game_config):
 
-        prev_layer = terminal.state(terminal.TK_LAYER)
-        # terminal.layer(RenderLayer.HUD.value)
         RenderGameMap.render_health(gameworld=gameworld, game_config=game_config)
         RenderGameMap.render_mana(gameworld=gameworld, game_config=game_config)
         RenderGameMap.render_special_power(gameworld=gameworld, game_config=game_config)
-        # terminal.layer(prev_layer)
 
     @staticmethod
     def render_health(gameworld, game_config):
@@ -495,13 +468,13 @@ class RenderGameMap(esper.Processor):
                                                                        parameter='STATUSBOX_HEIGHT')
 
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
-        currentHealth = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=player_entity)
+        current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=player_entity)
         maximum_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=player_entity)
 
-        strToPrint = "[color=red]Health[/color]"
+        str_to_print = "[color=red]Health[/color]"
 
-        RenderGameMap.render_bar(printString=strToPrint, lowNumber=currentHealth, highNumber=maximum_health,
-                                 posy=statusbox_height + 3, posx=6, spriteRef=0xE770,
+        RenderGameMap.render_bar(print_string=str_to_print, low_number=current_health, high_number=maximum_health,
+                                 posy=statusbox_height + 3, posx=6, sprite_ref=0xE770,
                                  xscale=image_x_scale, yscale=image_y_scale)
 
     @staticmethod
@@ -516,12 +489,12 @@ class RenderGameMap(esper.Processor):
                                                                        parameter='STATUSBOX_HEIGHT')
 
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
-        currentMana = MobileUtilities.get_derived_current_mana(gameworld=gameworld, entity=player_entity)
-        maxMana = MobileUtilities.get_derived_maximum_mana(gameworld=gameworld, entity=player_entity)
-        strToPrint = "[color=blue]Mana[/color]"
+        current_mana = MobileUtilities.get_derived_current_mana(gameworld=gameworld, entity=player_entity)
+        max_mana = MobileUtilities.get_derived_maximum_mana(gameworld=gameworld, entity=player_entity)
+        str_to_print = "[color=blue]Mana[/color]"
 
-        RenderGameMap.render_bar(printString=strToPrint, lowNumber=currentMana, highNumber=maxMana,
-                                 posy=statusbox_height + 4, posx=6, spriteRef=0xE800,
+        RenderGameMap.render_bar(print_string=str_to_print, low_number=current_mana, high_number=max_mana,
+                                 posy=statusbox_height + 4, posx=6, sprite_ref=0xE800,
                                  xscale=image_x_scale, yscale=image_y_scale)
 
     @staticmethod
@@ -535,44 +508,40 @@ class RenderGameMap(esper.Processor):
                                                                        parameter='STATUSBOX_HEIGHT')
 
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
-        currentF1Power = MobileUtilities.get_derived_special_bar_current_value(gameworld=gameworld,
+        current_f1_power = MobileUtilities.get_derived_special_bar_current_value(gameworld=gameworld,
                                                                                entity=player_entity)
-        maxF1Power = MobileUtilities.get_derived_special_bar_max_value(gameworld=gameworld, entity=player_entity)
+        max_f1_power = MobileUtilities.get_derived_special_bar_max_value(gameworld=gameworld, entity=player_entity)
 
-        strToPrint = "[color=green]Power[/color]"
+        str_to_print = "[color=green]Power[/color]"
 
-        RenderGameMap.render_bar(printString=strToPrint, lowNumber=currentF1Power, highNumber=maxF1Power,
-                                 posy=statusbox_height + 5, posx=6, spriteRef=0xE880,
+        RenderGameMap.render_bar(print_string=str_to_print, low_number=current_f1_power, high_number=max_f1_power,
+                                 posy=statusbox_height + 5, posx=6, sprite_ref=0xE880,
                                  xscale=image_x_scale, yscale=image_y_scale)
 
     @staticmethod
-    def render_bar(printString, lowNumber, highNumber, posy, posx, spriteRef, xscale, yscale):
+    def render_bar(print_string, low_number, high_number, posy, posx, sprite_ref, xscale, yscale):
 
-        displayPercentage = CommonUtils.calculate_percentage(lowNumber, highNumber)
-        tens = int(displayPercentage / 10)
-        units = displayPercentage % 10
+        display_percentage = CommonUtils.calculate_percentage(low_number, high_number)
+        tens = int(display_percentage / 10)
+        units = display_percentage % 10
         px = 0
 
-        if printString != "":
-            terminal.printf(4, posy * yscale, printString)
+        if print_string != "":
+            terminal.printf(4, posy * yscale, print_string)
 
         for a in range(tens):
-            terminal.put(x=(a + posx) * xscale, y=posy * yscale, c=spriteRef + 0)
+            terminal.put(x=(a + posx) * xscale, y=posy * yscale, c=sprite_ref + 0)
             px += 1
 
         if units > 0:
             if units < 5:
-                terminal.put(x=(px + posx) * xscale, y=posy * yscale, c=spriteRef + 3)
+                terminal.put(x=(px + posx) * xscale, y=posy * yscale, c=sprite_ref + 3)
 
             if units == 5:
-                terminal.put(x=(px + posx) * xscale, y=posy * yscale, c=spriteRef + 2)
+                terminal.put(x=(px + posx) * xscale, y=posy * yscale, c=sprite_ref + 2)
 
             if units > 5:
-                terminal.put(x=(px + posx) * xscale, y=posy * yscale, c=spriteRef + 1)
-
-    @staticmethod
-    def render_player_vertical_bar_content(self, x, current_value, foreground, background, game_config):
-        pass
+                terminal.put(x=(px + posx) * xscale, y=posy * yscale, c=sprite_ref + 1)
 
     @staticmethod
     def render_spell_bar(self, game_config):
