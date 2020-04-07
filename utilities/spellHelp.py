@@ -121,15 +121,19 @@ class SpellUtilities:
         valid_targets = []
         for xx in range(fx, tx):
             for yy in range(fy, ty):
-                if xx != sx and yy != sy:
-                    str_to_print = "[font=dungeon][color=blue].[/color]"
-                    terminal.printf(x=xx, y=yy, s=str_to_print)
+                SpellUtilities.highlight_spell_range(sx, sy, xx, yy)
                 for ent, (pos, name, desc) in gameworld.get_components(mobiles.Position, mobiles.Name,
                                                                        mobiles.Describable):
                     if (pos.x == xx and pos.y == yy) and ent != player:
                         # is this a valid target for the spell?
                         valid_targets.append((ent, name.first, desc.glyph, desc.foreground, desc.background))
         return valid_targets
+
+    @staticmethod
+    def highlight_spell_range(sx, sy, xx, yy):
+        if xx != sx and yy != sy:
+            str_to_print = "[font=dungeon][color=blue].[/color]"
+            terminal.printf(x=xx, y=yy, s=str_to_print)
 
     @staticmethod
     def get_spell_cooldown_status(gameworld, spell_entity):
