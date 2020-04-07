@@ -27,28 +27,3 @@ class ArmourClass:
             armour_entity = piece_of_armour_component.feet
 
         return armour_entity
-
-    def equip_full_set_of_armour(gameworld, entity, armourset):
-
-        if armourset[0] > 0:
-            gameworld.component_for_entity(entity, mobiles.Armour).chest = armourset[0]
-        if armourset[1] > 0:
-            gameworld.component_for_entity(entity, mobiles.Armour).head = armourset[1]
-        if armourset[2] > 0:
-            gameworld.component_for_entity(entity, mobiles.Armour).hands = armourset[2]
-        if armourset[3] > 0:
-            gameworld.component_for_entity(entity, mobiles.Armour).legs = armourset[3]
-        if armourset[4] > 0:
-            gameworld.component_for_entity(entity, mobiles.Armour).feet = armourset[4]
-
-    def Xunequip_piece_of_armour(gameworld, entity, bodylocation):
-        if bodylocation == 'head':
-            gameworld.component_for_entity(entity, mobiles.Armour).head = 0
-        if bodylocation == 'chest':
-            gameworld.component_for_entity(entity, mobiles.Armour).chest = 0
-        if bodylocation == 'hands':
-            gameworld.component_for_entity(entity, mobiles.Armour).hands = 0
-        if bodylocation == 'legs':
-            gameworld.component_for_entity(entity, mobiles.Armour).legs = 0
-        if bodylocation == 'feet':
-            gameworld.component_for_entity(entity, mobiles.Armour).feet = 0
