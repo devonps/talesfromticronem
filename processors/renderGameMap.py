@@ -132,6 +132,10 @@ class RenderGameMap(esper.Processor):
             x_max = min(player_pos_x + vp_width, game_map.width)
             y_min = max(player_pos_y - vp_height, vp_y_min)
             y_max = min(player_pos_y + vp_height, game_map.height)
+            config_prefix = 'ASCII_'
+            config_prefix_wall = config_prefix + 'WALL_'
+            config_prefix_floor = config_prefix + 'FLOOR_'
+            config_prefix_door = config_prefix + 'DOOR_'
 
             if player_has_moved:
                 RenderGameMap.clear_map_layer()
@@ -141,14 +145,15 @@ class RenderGameMap(esper.Processor):
                 scrx = player_pos_x
                 for x in range(x_min, x_max):
                     tile = game_map.tiles[x][y].type_of_tile
-                    char_to_display = '.'
+                    tile_assignment = game_map.tiles[x][y].assignment
+                    char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor, tile_assignment=0)
                     if tile == tile_type_wall:
-                        char_to_display = '#'
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_wall, tile_assignment=tile_assignment)
                     if tile == tile_type_door:
-                        char_to_display = '+'
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_door, tile_assignment=0)
 
                     if tile > 0:
-                        terminal.printf(x=x, y=y, s="[font=dungeon]" + char_to_display)
+                        terminal.put(x=x, y=y, c=char_to_display)
                     scrx += 1
                 scry += 1
         else:
