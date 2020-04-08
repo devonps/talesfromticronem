@@ -1,4 +1,4 @@
-from components import mobiles
+
 from mapRelated.gameMap import GameMap
 from newGame.Entities import Entity
 from processors.castSpells import CastSpells
@@ -13,7 +13,6 @@ from utilities.common import CommonUtils
 from utilities.externalfileutilities import Externalfiles
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
-from mapRelated.camera import Camera
 
 
 class SceneManager:
@@ -146,6 +145,8 @@ class SceneManager:
                         px = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=xxenemy_id)
                         py = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=xxenemy_id)
                         logger.info('{} at {} / {}', npc_name, px, py)
+
+                        GameMap.assign_tiles(game_map)
 
                     else:
                         # generate random map

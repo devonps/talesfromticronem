@@ -9,12 +9,12 @@ from utilities import configUtilities
 
 
 class RenderLayer(Enum):
-    MAP = auto()   # dungeon floors, walls, furniture, spell effects??
+    MAP = auto()  # dungeon floors, walls, furniture, spell effects??
     ENTITIES = auto()  # player, enemies, items, etc
     HUD = auto()  # hp, mana, f1 bars, hotkeys, etc
     SPELLBAR = auto()  # spell bar
     STATUSEFFECTS = auto()  # effects player is suffering from
-    VALIDTARGETS = auto()   # used to show valid targets for the spells
+    VALIDTARGETS = auto()  # used to show valid targets for the spells
 
 
 class GameMap:
@@ -34,6 +34,25 @@ class GameMap:
 
         return tiles
 
+    @staticmethod
+    def assign_tiles(game_map):
+        for x in range(game_map.width - 1):
+            for y in range(game_map.height - 1):
+                tile_is_wall = GameMap.is_blocked(game_map, x, y)
+                if tile_is_wall:
+                    tile_assigned = 0
+                    if GameMap.is_blocked(game_map, x, y - 1):
+                        tile_assigned += 1
+                    if GameMap.is_blocked(game_map, x+1, y):
+                        tile_assigned += 2
+                    if GameMap.is_blocked(game_map, x, y+1):
+                        tile_assigned += 4
+                    if GameMap.is_blocked(game_map, x-1, y):
+                        tile_assigned += 8
+
+                    game_map.tiles[x][y].assignment = tile_assigned
+
+
     def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, gameworld, player, game_config):
         """
         This function creates the entire dungeon floor, including the bits that cannot be seen by the player
@@ -41,7 +60,8 @@ class GameMap:
         """
         rooms = []
         num_rooms = 0
-        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='TILE_TYPE_FLOOR')
+        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='TILE_TYPE_FLOOR')
 
         # for r in range(max_rooms):
         #     w = self.dungeon_seed.get_next_number_in_range(room_min_size, room_max_size)
@@ -78,8 +98,8 @@ class GameMap:
                     (prev_x, prev_y) = rooms[num_rooms - 1].center()
                     # flip a coin (random number that is either 0 or 1)
                     # 2 is chosen so that I get either 0 or 1 returned
-                    #if self.dungeon_seed.get_next_number_in_range(0, 2) == 1:
-                    if random.randint(0,1) == 1:
+                    # if self.dungeon_seed.get_next_number_in_range(0, 2) == 1:
+                    if random.randint(0, 1) == 1:
                         # first move horizontally, then vertically
                         self.create_h_tunnel(prev_x, new_x, prev_y, tile_type_floor)
                         self.create_v_tunnel(prev_y, new_y, new_x, tile_type_floor)

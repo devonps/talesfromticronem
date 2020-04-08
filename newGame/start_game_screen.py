@@ -55,6 +55,17 @@ class StartGame:
             # place game version message
             string_to_print = '[color=light grey]' + game_version
             terminal.printf(x=version_x, y=version_y, s=string_to_print)
+            c = "0x2563"
+            d = int(c, 16)
+            terminal.put(x=version_x, y=version_y + 2, c=d)
+            terminal.put(x=version_x + 2, y=version_y + 2, c='\u2591')
+            # cnt = 1
+            #
+            # for x in range(201, 220):
+            #     # terminal.printf(x=version_x + cnt, y=version_y + 2, s=str + chr(x))
+            #     terminal.put(x=version_x + cnt, y=version_y + 2, c=0xEA00 + 20 + cnt)
+            #     cnt += 1
+
 
             # place game copyright message
             string_to_print = '[color=white]' + game_copyright + ' [color=yellow]' + game_author

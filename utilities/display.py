@@ -229,10 +229,6 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
         # # right corner corner
         terminal.put(x=width - 1, y=height - 1, c=arc_bottom_right)
 
-    elif corner_studs != '':
-        corner_stud_decorator = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                            parameter='frame_corner_studs_' + corner_studs)
-
 
 def draw_clear_text_box(posx, posy, width, height, text, fg, bg):
 
