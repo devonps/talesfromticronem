@@ -440,8 +440,6 @@ class ItemManager:
                 tile = GameMap.get_type_of_tile(game_map, ix, iy)
                 if tile == tile_type_floor:
                     ItemUtilities.set_item_location(gameworld=gameworld, item_entity=item_to_be_placed, posx=ix, posy=iy)
-                    # logger.info('...at location {} / {}', ix, iy)
-                    # logger.info('Player located at {}/{}', player_pos_x, player_pos_y)
                     attempts = 499
                     item_has_been_placed = True
                 attempts += 1

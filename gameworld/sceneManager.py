@@ -146,7 +146,7 @@ class SceneManager:
                         py = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=xxenemy_id)
                         logger.info('{} at {} / {}', npc_name, px, py)
 
-                        GameMap.assign_tiles(game_map)
+                        GameMap.assign_tiles(game_map=game_map)
 
                     else:
                         # generate random map

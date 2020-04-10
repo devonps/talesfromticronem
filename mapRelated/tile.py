@@ -21,14 +21,3 @@ class Tile:
         self.image = 0
         self.assignment = 0
 
-    def does_tile_block_sight(self):
-        return self.block_sight
-
-    def does_tile_block_path(self):
-        return self.blocked
-
-    def has_tile_been_explored(self):
-        return self.explored
-
-    def get_tile_image(self):
-        return self.image

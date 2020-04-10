@@ -1,196 +1,196 @@
-10:26:37.951 [info] OpenGL: maximum texture size is 16384x16384
-10:26:37.951 [info] OpenGL: GPU supports NPOTD textures
-10:26:37.954 [debug] Group "window":
-10:26:37.954 [debug] * "icon" = "default"
-10:26:37.955 [debug] * "size" = "80x25"
-10:26:37.955 [debug] Group "font":
-10:26:37.955 [debug] * "_" = "default"
-10:26:37.955 [info] New font 'main' -> index 0
-10:26:37.955 [debug] Requested resource "default" with possible prefix "tileset-"
-10:26:37.955 [debug] Resource "tileset-default" is built-in
-10:26:37.955 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:37.955 [debug] Requested resource "tileset-default" with possible prefix "codepage-"
-10:26:37.956 [debug] Resource "codepage-tileset-default" is built-in
-10:26:37.956 [debug] Custom codepage file encoding detected to be ASCII UTF-8
-10:26:37.958 [trace] Loaded PNG image, 256x320
-10:26:37.959 [debug] Tileset has 32x20 tiles
-10:26:37.960 [debug] Group "terminal":
-10:26:37.960 [debug] * "encoding" = "utf8"
-10:26:37.960 [debug] Group "input":
-10:26:37.960 [debug] * "filter" = "keyboard"
-10:26:37.961 [debug] SetOptions: new cell size is 8x16
-10:26:37.961 [debug] SetOptions: new window size is 80x25
-10:26:37.964 [info] Applying options from configuration file, if any
-10:26:37.964 [info] Trying to set "U+E300._='static/assets/tilesets/tiles.png';U+E300.align='center';U+E300.size='32x32';"
-10:26:37.964 [debug] Group "U+E300":
-10:26:37.965 [debug] * "_" = "static/assets/tilesets/tiles.png"
-10:26:37.965 [debug] * "align" = "center"
-10:26:37.965 [debug] * "size" = "32x32"
-10:26:37.965 [debug] Requested resource "static/assets/tilesets/tiles.png" with possible prefix "tileset-"
-10:26:37.965 [debug] Loaded resource from 'static/assets/tilesets/tiles.png' (28454 bytes)
-10:26:37.966 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:37.970 [trace] Loaded PNG image, 320x96
-10:26:37.971 [debug] Tileset has 10x3 tiles
-10:26:37.971 [info] Trying to set "U+E400._='static/assets/tilesets/necro_spells.png';U+E400.align='center';U+E400.size='32x32';U+E400.spacing='1x3';"
-10:26:37.971 [debug] Group "U+E400":
-10:26:37.972 [debug] * "_" = "static/assets/tilesets/necro_spells.png"
-10:26:37.972 [debug] * "align" = "center"
-10:26:37.972 [debug] * "size" = "32x32"
-10:26:37.972 [debug] * "spacing" = "1x3"
-10:26:37.972 [debug] Requested resource "static/assets/tilesets/necro_spells.png" with possible prefix "tileset-"
-10:26:37.972 [debug] Loaded resource from 'static/assets/tilesets/necro_spells.png' (68654 bytes)
-10:26:37.973 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:37.980 [trace] Loaded PNG image, 928x32
-10:26:37.980 [debug] Tileset has 29x1 tiles
-10:26:37.981 [info] Trying to set "U+E500._='static/assets/tilesets/spellbar.png';U+E500.align='center';U+E500.resize='64x64';U+E500.spacing='1x3';"
-10:26:37.981 [debug] Group "U+E500":
-10:26:37.981 [debug] * "_" = "static/assets/tilesets/spellbar.png"
-10:26:37.981 [debug] * "align" = "center"
-10:26:37.981 [debug] * "resize" = "64x64"
-10:26:37.982 [debug] * "spacing" = "1x3"
-10:26:37.982 [debug] Requested resource "static/assets/tilesets/spellbar.png" with possible prefix "tileset-"
-10:26:37.982 [debug] Loaded resource from 'static/assets/tilesets/spellbar.png' (14707 bytes)
-10:26:37.982 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:37.983 [trace] Loaded PNG image, 48x48
-10:26:37.983 [debug] BitmapTileset: changing tile size 48x48 -> 64x64
-10:26:37.983 [debug] Tileset has 1x1 tiles
-10:26:37.983 [info] Trying to set "U+E600._='static/assets/tilesets/boons.png';U+E600.size='24x24';"
-10:26:37.983 [debug] Group "U+E600":
-10:26:37.983 [debug] * "_" = "static/assets/tilesets/boons.png"
-10:26:37.984 [debug] * "size" = "24x24"
-10:26:37.984 [debug] Requested resource "static/assets/tilesets/boons.png" with possible prefix "tileset-"
-10:26:37.984 [debug] Loaded resource from 'static/assets/tilesets/boons.png' (10544 bytes)
-10:26:37.984 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:37.985 [trace] Loaded PNG image, 240x24
-10:26:37.986 [debug] Tileset has 10x1 tiles
-10:26:37.986 [info] Trying to set "U+E630._='static/assets/tilesets/conditions.png';U+E630.align='center';U+E630.size='24x24';"
-10:26:37.986 [debug] Group "U+E630":
-10:26:37.986 [debug] * "_" = "static/assets/tilesets/conditions.png"
-10:26:37.986 [debug] * "align" = "center"
-10:26:37.986 [debug] * "size" = "24x24"
-10:26:37.986 [debug] Requested resource "static/assets/tilesets/conditions.png" with possible prefix "tileset-"
-10:26:37.987 [debug] Loaded resource from 'static/assets/tilesets/conditions.png' (14126 bytes)
-10:26:37.987 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:37.988 [trace] Loaded PNG image, 288x24
-10:26:37.989 [debug] Tileset has 12x1 tiles
-10:26:37.989 [info] Trying to set "U+E700._='static/assets/tilesets/gui_frame.png';U+E700.size='32x32';"
-10:26:37.989 [debug] Group "U+E700":
-10:26:37.989 [debug] * "_" = "static/assets/tilesets/gui_frame.png"
-10:26:37.989 [debug] * "size" = "32x32"
-10:26:37.989 [debug] Requested resource "static/assets/tilesets/gui_frame.png" with possible prefix "tileset-"
-10:26:37.989 [debug] Loaded resource from 'static/assets/tilesets/gui_frame.png' (3774 bytes)
-10:26:37.990 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:37.990 [trace] Loaded PNG image, 256x32
-10:26:37.990 [debug] Tileset has 8x1 tiles
-10:26:37.991 [info] Trying to set "U+E770._='static/assets/tilesets/health_bar.png';U+E770.size='32x16';"
-10:26:37.991 [debug] Group "U+E770":
-10:26:37.991 [debug] * "_" = "static/assets/tilesets/health_bar.png"
-10:26:37.991 [debug] * "size" = "32x16"
-10:26:37.991 [debug] Requested resource "static/assets/tilesets/health_bar.png" with possible prefix "tileset-"
-10:26:37.991 [debug] Loaded resource from 'static/assets/tilesets/health_bar.png' (1958 bytes)
-10:26:37.992 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:37.992 [trace] Loaded PNG image, 128x16
-10:26:37.992 [debug] Tileset has 4x1 tiles
-10:26:37.992 [info] Trying to set "U+E800._='static/assets/tilesets/mana_bar.png';U+E800.size='32x16';"
-10:26:37.992 [debug] Group "U+E800":
-10:26:37.993 [debug] * "_" = "static/assets/tilesets/mana_bar.png"
-10:26:37.993 [debug] * "size" = "32x16"
-10:26:37.993 [debug] Requested resource "static/assets/tilesets/mana_bar.png" with possible prefix "tileset-"
-10:26:37.993 [debug] Loaded resource from 'static/assets/tilesets/mana_bar.png' (1939 bytes)
-10:26:37.993 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:37.993 [trace] Loaded PNG image, 128x16
-10:26:37.994 [debug] Tileset has 4x1 tiles
-10:26:37.994 [info] Trying to set "U+E880._='static/assets/tilesets/f1_bar.png';U+E880.size='32x16';"
-10:26:37.994 [debug] Group "U+E880":
-10:26:37.994 [debug] * "_" = "static/assets/tilesets/f1_bar.png"
-10:26:37.994 [debug] * "size" = "32x16"
-10:26:37.994 [debug] Requested resource "static/assets/tilesets/f1_bar.png" with possible prefix "tileset-"
-10:26:37.995 [debug] Loaded resource from 'static/assets/tilesets/f1_bar.png' (1938 bytes)
-10:26:37.995 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:37.995 [trace] Loaded PNG image, 128x16
-10:26:37.996 [debug] Tileset has 4x1 tiles
-10:26:37.996 [info] Trying to set "U+E900._='static/assets/tilesets/enemies.png';U+E900.size='32x32';"
-10:26:37.996 [debug] Group "U+E900":
-10:26:37.996 [debug] * "_" = "static/assets/tilesets/enemies.png"
-10:26:37.997 [debug] * "size" = "32x32"
-10:26:37.997 [debug] Requested resource "static/assets/tilesets/enemies.png" with possible prefix "tileset-"
-10:26:37.997 [debug] Loaded resource from 'static/assets/tilesets/enemies.png' (1272 bytes)
-10:26:37.997 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:37.997 [trace] Loaded PNG image, 32x32
-10:26:37.998 [debug] Tileset has 1x1 tiles
-10:26:37.998 [info] Trying to set "dungeon font._='static/assets/fonts/Zaratustra-16x16.png';dungeon font.codepage='437';dungeon font.size='16x16';"
-10:26:37.998 [debug] Group "dungeon font":
-10:26:37.998 [debug] * "_" = "static/assets/fonts/Zaratustra-16x16.png"
-10:26:37.998 [debug] * "codepage" = "437"
-10:26:37.998 [debug] * "size" = "16x16"
-10:26:37.999 [info] New font 'dungeon' -> index 1
-10:26:37.999 [debug] Requested resource "static/assets/fonts/Zaratustra-16x16.png" with possible prefix "tileset-"
-10:26:37.999 [debug] Loaded resource from 'static/assets/fonts/Zaratustra-16x16.png' (4034 bytes)
-10:26:37.999 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:37.999 [debug] Requested resource "437" with possible prefix "codepage-"
-10:26:37.999 [debug] Resource "codepage-437" is built-in
-10:26:37.999 [debug] Custom codepage file encoding detected to be ASCII UTF-8
-10:26:38.003 [trace] Loaded PNG image, 256x256
-10:26:38.003 [debug] Tileset has 16x16 tiles
-10:26:38.004 [info] Trying to set "font._='static/assets/fonts/Kaishaku-16x16.png';font.codepage='437';font.size='16x16';"
-10:26:38.004 [debug] Group "font":
-10:26:38.004 [debug] * "_" = "static/assets/fonts/Kaishaku-16x16.png"
-10:26:38.004 [debug] * "codepage" = "437"
-10:26:38.005 [debug] * "size" = "16x16"
-10:26:38.005 [debug] Requested resource "static/assets/fonts/Kaishaku-16x16.png" with possible prefix "tileset-"
-10:26:38.005 [debug] Loaded resource from 'static/assets/fonts/Kaishaku-16x16.png' (4078 bytes)
-10:26:38.005 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:38.005 [debug] Requested resource "437" with possible prefix "codepage-"
-10:26:38.005 [debug] Resource "codepage-437" is built-in
-10:26:38.005 [debug] Custom codepage file encoding detected to be ASCII UTF-8
-10:26:38.009 [trace] Loaded PNG image, 256x256
-10:26:38.009 [debug] Tileset has 16x16 tiles
-10:26:38.011 [debug] SetOptions: new cell size is 16x16
-10:26:38.014 [info] Trying to set "input.filter='keyboard+, mouse';input.precise-mouse='true';"
-10:26:38.014 [debug] Group "input":
-10:26:38.014 [debug] * "filter" = "keyboard+, mouse"
-10:26:38.014 [debug] * "precise-mouse" = "true"
-10:26:38.015 [info] Trying to set "log.file='bt.log';log.level='trace';"
-10:26:38.015 [debug] Group "log":
-10:26:38.015 [debug] * "file" = "bt.log"
-10:26:38.015 [debug] * "level" = "trace"
-10:26:38.015 [info] Trying to set "messageLog font._='static/assets/fonts/font-Herrbdog-12x12.png';messageLog font.codepage='437';messageLog font.size='12x12';"
-10:26:38.016 [debug] Group "messageLog font":
-10:26:38.016 [debug] * "_" = "static/assets/fonts/font-Herrbdog-12x12.png"
-10:26:38.016 [debug] * "codepage" = "437"
-10:26:38.016 [debug] * "size" = "12x12"
-10:26:38.016 [info] New font 'messageLog' -> index 2
-10:26:38.016 [debug] Requested resource "static/assets/fonts/font-Herrbdog-12x12.png" with possible prefix "tileset-"
-10:26:38.016 [debug] Loaded resource from 'static/assets/fonts/font-Herrbdog-12x12.png' (12615 bytes)
-10:26:38.016 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
-10:26:38.016 [debug] Requested resource "437" with possible prefix "codepage-"
-10:26:38.017 [debug] Resource "codepage-437" is built-in
-10:26:38.017 [debug] Custom codepage file encoding detected to be ASCII UTF-8
-10:26:38.019 [trace] Loaded PNG image, 192x192
-10:26:38.019 [debug] Tileset has 16x16 tiles
-10:26:38.020 [info] Trying to set "window.cellsize='auto';window.resizeable='false';window.size='100x60';window.title='Tales from Ticronem';"
-10:26:38.021 [debug] Group "window":
-10:26:38.021 [debug] * "cellsize" = "auto"
-10:26:38.021 [debug] * "resizeable" = "false"
-10:26:38.021 [debug] * "size" = "100x60"
-10:26:38.022 [debug] * "title" = "Tales from Ticronem"
-10:26:38.022 [debug] SetOptions: new window size is 100x60
-10:26:38.023 [info] Applying palette from configuration file
-10:26:38.024 [info] * 'MSGLOG_COMBAT_DAMAGE_INCOMING' = '139,0,0' (a=255, r=139, g=0, b=0)
-10:26:38.024 [info] * 'MSGLOG_COMBAT_DAMAGE_OUTGOING' = '199,97,20' (a=255, r=199, g=97, b=20)
-10:26:38.024 [info] * 'MSGLOG_COMBAT_HEALTH_INCOMING' = '124,252,0' (a=255, r=124, g=252, b=0)
-10:26:38.024 [info] * 'MSGLOG_COMBAT_HEALTH_OUTGOING' = '238,233,191' (a=255, r=238, g=233, b=191)
-10:26:38.024 [info] * 'MSGLOG_GAME_APPLY_BOON' = '0,255,127' (a=255, r=0, g=255, b=127)
-10:26:38.024 [info] * 'MSGLOG_GAME_APPLY_CONDITION' = '255,99,71' (a=255, r=255, g=99, b=71)
-10:26:38.025 [info] * 'MSGLOG_GAME_EQUIP_UNEQUIP' = '205,205,0' (a=255, r=205, g=205, b=0)
-10:26:38.025 [info] * 'MSGLOG_GAME_ITEM_PICKUP_DROP' = '255,255,0' (a=255, r=255, g=255, b=0)
-10:26:38.025 [info] * 'MSGLOG_GAME_REMOVE_BOON' = '0,139,69' (a=255, r=0, g=139, b=69)
-10:26:38.025 [info] * 'MSGLOG_GAME_REMOVE_CONDITION' = '255,99,71' (a=255, r=255, g=99, b=71)
-10:26:38.025 [info] * 'MSGLOG_GAME_SPELL_MANAGE' = '139,139,0' (a=255, r=139, g=139, b=0)
-10:26:38.025 [info] * 'MSGLOG_SYSTEM_ERROR' = '255,0,0' (a=255, r=255, g=0, b=0)
-10:26:38.025 [info] Terminal initialization complete
-10:26:38.026 [info] Trying to set "terminal.encoding-affects-put=false"
-10:26:38.026 [debug] Group "terminal":
-10:26:38.026 [debug] * "encoding-affects-put" = "false"
-10:26:38.042 [error] terminal_open: BearLibTerminal instance already initialized
-10:26:46.461 [trace] grow 256x256 -> 256x512
+16:49:03.015 [info] OpenGL: maximum texture size is 16384x16384
+16:49:03.015 [info] OpenGL: GPU supports NPOTD textures
+16:49:03.017 [debug] Group "window":
+16:49:03.018 [debug] * "icon" = "default"
+16:49:03.018 [debug] * "size" = "80x25"
+16:49:03.018 [debug] Group "font":
+16:49:03.018 [debug] * "_" = "default"
+16:49:03.018 [info] New font 'main' -> index 0
+16:49:03.018 [debug] Requested resource "default" with possible prefix "tileset-"
+16:49:03.018 [debug] Resource "tileset-default" is built-in
+16:49:03.018 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.018 [debug] Requested resource "tileset-default" with possible prefix "codepage-"
+16:49:03.018 [debug] Resource "codepage-tileset-default" is built-in
+16:49:03.018 [debug] Custom codepage file encoding detected to be ASCII UTF-8
+16:49:03.020 [trace] Loaded PNG image, 256x320
+16:49:03.020 [debug] Tileset has 32x20 tiles
+16:49:03.021 [debug] Group "terminal":
+16:49:03.022 [debug] * "encoding" = "utf8"
+16:49:03.022 [debug] Group "input":
+16:49:03.022 [debug] * "filter" = "keyboard"
+16:49:03.022 [debug] SetOptions: new cell size is 8x16
+16:49:03.022 [debug] SetOptions: new window size is 80x25
+16:49:03.023 [info] Applying options from configuration file, if any
+16:49:03.023 [info] Trying to set "U+E300._='static/assets/tilesets/tiles.png';U+E300.align='center';U+E300.size='32x32';"
+16:49:03.023 [debug] Group "U+E300":
+16:49:03.024 [debug] * "_" = "static/assets/tilesets/tiles.png"
+16:49:03.024 [debug] * "align" = "center"
+16:49:03.024 [debug] * "size" = "32x32"
+16:49:03.024 [debug] Requested resource "static/assets/tilesets/tiles.png" with possible prefix "tileset-"
+16:49:03.025 [debug] Loaded resource from 'static/assets/tilesets/tiles.png' (28454 bytes)
+16:49:03.026 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.029 [trace] Loaded PNG image, 320x96
+16:49:03.030 [debug] Tileset has 10x3 tiles
+16:49:03.030 [info] Trying to set "U+E400._='static/assets/tilesets/necro_spells.png';U+E400.align='center';U+E400.size='32x32';U+E400.spacing='1x3';"
+16:49:03.030 [debug] Group "U+E400":
+16:49:03.030 [debug] * "_" = "static/assets/tilesets/necro_spells.png"
+16:49:03.030 [debug] * "align" = "center"
+16:49:03.031 [debug] * "size" = "32x32"
+16:49:03.031 [debug] * "spacing" = "1x3"
+16:49:03.031 [debug] Requested resource "static/assets/tilesets/necro_spells.png" with possible prefix "tileset-"
+16:49:03.032 [debug] Loaded resource from 'static/assets/tilesets/necro_spells.png' (68654 bytes)
+16:49:03.032 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.038 [trace] Loaded PNG image, 928x32
+16:49:03.038 [debug] Tileset has 29x1 tiles
+16:49:03.038 [info] Trying to set "U+E500._='static/assets/tilesets/spellbar.png';U+E500.align='center';U+E500.resize='64x64';U+E500.spacing='1x3';"
+16:49:03.038 [debug] Group "U+E500":
+16:49:03.038 [debug] * "_" = "static/assets/tilesets/spellbar.png"
+16:49:03.038 [debug] * "align" = "center"
+16:49:03.038 [debug] * "resize" = "64x64"
+16:49:03.039 [debug] * "spacing" = "1x3"
+16:49:03.039 [debug] Requested resource "static/assets/tilesets/spellbar.png" with possible prefix "tileset-"
+16:49:03.040 [debug] Loaded resource from 'static/assets/tilesets/spellbar.png' (14707 bytes)
+16:49:03.040 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.041 [trace] Loaded PNG image, 48x48
+16:49:03.041 [debug] BitmapTileset: changing tile size 48x48 -> 64x64
+16:49:03.042 [debug] Tileset has 1x1 tiles
+16:49:03.042 [info] Trying to set "U+E600._='static/assets/tilesets/boons.png';U+E600.size='24x24';"
+16:49:03.042 [debug] Group "U+E600":
+16:49:03.042 [debug] * "_" = "static/assets/tilesets/boons.png"
+16:49:03.042 [debug] * "size" = "24x24"
+16:49:03.043 [debug] Requested resource "static/assets/tilesets/boons.png" with possible prefix "tileset-"
+16:49:03.043 [debug] Loaded resource from 'static/assets/tilesets/boons.png' (10544 bytes)
+16:49:03.043 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.044 [trace] Loaded PNG image, 240x24
+16:49:03.044 [debug] Tileset has 10x1 tiles
+16:49:03.044 [info] Trying to set "U+E630._='static/assets/tilesets/conditions.png';U+E630.align='center';U+E630.size='24x24';"
+16:49:03.045 [debug] Group "U+E630":
+16:49:03.045 [debug] * "_" = "static/assets/tilesets/conditions.png"
+16:49:03.045 [debug] * "align" = "center"
+16:49:03.045 [debug] * "size" = "24x24"
+16:49:03.045 [debug] Requested resource "static/assets/tilesets/conditions.png" with possible prefix "tileset-"
+16:49:03.046 [debug] Loaded resource from 'static/assets/tilesets/conditions.png' (14126 bytes)
+16:49:03.046 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.047 [trace] Loaded PNG image, 288x24
+16:49:03.047 [debug] Tileset has 12x1 tiles
+16:49:03.047 [info] Trying to set "U+E700._='static/assets/tilesets/gui_frame.png';U+E700.size='32x32';"
+16:49:03.047 [debug] Group "U+E700":
+16:49:03.047 [debug] * "_" = "static/assets/tilesets/gui_frame.png"
+16:49:03.047 [debug] * "size" = "32x32"
+16:49:03.047 [debug] Requested resource "static/assets/tilesets/gui_frame.png" with possible prefix "tileset-"
+16:49:03.048 [debug] Loaded resource from 'static/assets/tilesets/gui_frame.png' (3774 bytes)
+16:49:03.048 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.048 [trace] Loaded PNG image, 256x32
+16:49:03.049 [debug] Tileset has 8x1 tiles
+16:49:03.049 [info] Trying to set "U+E770._='static/assets/tilesets/health_bar.png';U+E770.size='32x16';"
+16:49:03.049 [debug] Group "U+E770":
+16:49:03.049 [debug] * "_" = "static/assets/tilesets/health_bar.png"
+16:49:03.049 [debug] * "size" = "32x16"
+16:49:03.049 [debug] Requested resource "static/assets/tilesets/health_bar.png" with possible prefix "tileset-"
+16:49:03.049 [debug] Loaded resource from 'static/assets/tilesets/health_bar.png' (1958 bytes)
+16:49:03.049 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.050 [trace] Loaded PNG image, 128x16
+16:49:03.050 [debug] Tileset has 4x1 tiles
+16:49:03.050 [info] Trying to set "U+E800._='static/assets/tilesets/mana_bar.png';U+E800.size='32x16';"
+16:49:03.050 [debug] Group "U+E800":
+16:49:03.050 [debug] * "_" = "static/assets/tilesets/mana_bar.png"
+16:49:03.050 [debug] * "size" = "32x16"
+16:49:03.050 [debug] Requested resource "static/assets/tilesets/mana_bar.png" with possible prefix "tileset-"
+16:49:03.051 [debug] Loaded resource from 'static/assets/tilesets/mana_bar.png' (1939 bytes)
+16:49:03.051 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.051 [trace] Loaded PNG image, 128x16
+16:49:03.051 [debug] Tileset has 4x1 tiles
+16:49:03.051 [info] Trying to set "U+E880._='static/assets/tilesets/f1_bar.png';U+E880.size='32x16';"
+16:49:03.051 [debug] Group "U+E880":
+16:49:03.051 [debug] * "_" = "static/assets/tilesets/f1_bar.png"
+16:49:03.051 [debug] * "size" = "32x16"
+16:49:03.052 [debug] Requested resource "static/assets/tilesets/f1_bar.png" with possible prefix "tileset-"
+16:49:03.052 [debug] Loaded resource from 'static/assets/tilesets/f1_bar.png' (1938 bytes)
+16:49:03.052 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.052 [trace] Loaded PNG image, 128x16
+16:49:03.052 [debug] Tileset has 4x1 tiles
+16:49:03.052 [info] Trying to set "U+E900._='static/assets/tilesets/enemies.png';U+E900.size='32x32';"
+16:49:03.052 [debug] Group "U+E900":
+16:49:03.053 [debug] * "_" = "static/assets/tilesets/enemies.png"
+16:49:03.053 [debug] * "size" = "32x32"
+16:49:03.053 [debug] Requested resource "static/assets/tilesets/enemies.png" with possible prefix "tileset-"
+16:49:03.053 [debug] Loaded resource from 'static/assets/tilesets/enemies.png' (1272 bytes)
+16:49:03.053 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.053 [trace] Loaded PNG image, 32x32
+16:49:03.053 [debug] Tileset has 1x1 tiles
+16:49:03.054 [info] Trying to set "dungeon font._='static/assets/fonts/Zaratustra-16x16.png';dungeon font.codepage='437';dungeon font.size='16x16';"
+16:49:03.054 [debug] Group "dungeon font":
+16:49:03.054 [debug] * "_" = "static/assets/fonts/Zaratustra-16x16.png"
+16:49:03.054 [debug] * "codepage" = "437"
+16:49:03.054 [debug] * "size" = "16x16"
+16:49:03.054 [info] New font 'dungeon' -> index 1
+16:49:03.054 [debug] Requested resource "static/assets/fonts/Zaratustra-16x16.png" with possible prefix "tileset-"
+16:49:03.054 [debug] Loaded resource from 'static/assets/fonts/Zaratustra-16x16.png' (4034 bytes)
+16:49:03.054 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.055 [debug] Requested resource "437" with possible prefix "codepage-"
+16:49:03.055 [debug] Resource "codepage-437" is built-in
+16:49:03.055 [debug] Custom codepage file encoding detected to be ASCII UTF-8
+16:49:03.057 [trace] Loaded PNG image, 256x256
+16:49:03.058 [debug] Tileset has 16x16 tiles
+16:49:03.059 [info] Trying to set "font._='static/assets/fonts/Kaishaku-16x16.png';font.codepage='437';font.size='16x16';"
+16:49:03.059 [debug] Group "font":
+16:49:03.059 [debug] * "_" = "static/assets/fonts/Kaishaku-16x16.png"
+16:49:03.059 [debug] * "codepage" = "437"
+16:49:03.059 [debug] * "size" = "16x16"
+16:49:03.059 [debug] Requested resource "static/assets/fonts/Kaishaku-16x16.png" with possible prefix "tileset-"
+16:49:03.060 [debug] Loaded resource from 'static/assets/fonts/Kaishaku-16x16.png' (4078 bytes)
+16:49:03.060 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.060 [debug] Requested resource "437" with possible prefix "codepage-"
+16:49:03.060 [debug] Resource "codepage-437" is built-in
+16:49:03.060 [debug] Custom codepage file encoding detected to be ASCII UTF-8
+16:49:03.062 [trace] Loaded PNG image, 256x256
+16:49:03.062 [debug] Tileset has 16x16 tiles
+16:49:03.063 [debug] SetOptions: new cell size is 16x16
+16:49:03.064 [info] Trying to set "input.filter='keyboard+, mouse';input.precise-mouse='true';"
+16:49:03.064 [debug] Group "input":
+16:49:03.064 [debug] * "filter" = "keyboard+, mouse"
+16:49:03.064 [debug] * "precise-mouse" = "true"
+16:49:03.064 [info] Trying to set "log.file='bt.log';log.level='trace';"
+16:49:03.064 [debug] Group "log":
+16:49:03.064 [debug] * "file" = "bt.log"
+16:49:03.064 [debug] * "level" = "trace"
+16:49:03.065 [info] Trying to set "messageLog font._='static/assets/fonts/font-Herrbdog-12x12.png';messageLog font.codepage='437';messageLog font.size='12x12';"
+16:49:03.065 [debug] Group "messageLog font":
+16:49:03.065 [debug] * "_" = "static/assets/fonts/font-Herrbdog-12x12.png"
+16:49:03.065 [debug] * "codepage" = "437"
+16:49:03.065 [debug] * "size" = "12x12"
+16:49:03.065 [info] New font 'messageLog' -> index 2
+16:49:03.065 [debug] Requested resource "static/assets/fonts/font-Herrbdog-12x12.png" with possible prefix "tileset-"
+16:49:03.066 [debug] Loaded resource from 'static/assets/fonts/font-Herrbdog-12x12.png' (12615 bytes)
+16:49:03.066 [debug] Bitmap tileset: failed to parse guessed tile size, not an error
+16:49:03.066 [debug] Requested resource "437" with possible prefix "codepage-"
+16:49:03.066 [debug] Resource "codepage-437" is built-in
+16:49:03.066 [debug] Custom codepage file encoding detected to be ASCII UTF-8
+16:49:03.067 [trace] Loaded PNG image, 192x192
+16:49:03.068 [debug] Tileset has 16x16 tiles
+16:49:03.068 [info] Trying to set "window.cellsize='auto';window.resizeable='false';window.size='100x60';window.title='Tales from Ticronem';"
+16:49:03.068 [debug] Group "window":
+16:49:03.068 [debug] * "cellsize" = "auto"
+16:49:03.068 [debug] * "resizeable" = "false"
+16:49:03.068 [debug] * "size" = "100x60"
+16:49:03.068 [debug] * "title" = "Tales from Ticronem"
+16:49:03.069 [debug] SetOptions: new window size is 100x60
+16:49:03.070 [info] Applying palette from configuration file
+16:49:03.070 [info] * 'MSGLOG_COMBAT_DAMAGE_INCOMING' = '139,0,0' (a=255, r=139, g=0, b=0)
+16:49:03.070 [info] * 'MSGLOG_COMBAT_DAMAGE_OUTGOING' = '199,97,20' (a=255, r=199, g=97, b=20)
+16:49:03.070 [info] * 'MSGLOG_COMBAT_HEALTH_INCOMING' = '124,252,0' (a=255, r=124, g=252, b=0)
+16:49:03.070 [info] * 'MSGLOG_COMBAT_HEALTH_OUTGOING' = '238,233,191' (a=255, r=238, g=233, b=191)
+16:49:03.070 [info] * 'MSGLOG_GAME_APPLY_BOON' = '0,255,127' (a=255, r=0, g=255, b=127)
+16:49:03.070 [info] * 'MSGLOG_GAME_APPLY_CONDITION' = '255,99,71' (a=255, r=255, g=99, b=71)
+16:49:03.070 [info] * 'MSGLOG_GAME_EQUIP_UNEQUIP' = '205,205,0' (a=255, r=205, g=205, b=0)
+16:49:03.071 [info] * 'MSGLOG_GAME_ITEM_PICKUP_DROP' = '255,255,0' (a=255, r=255, g=255, b=0)
+16:49:03.071 [info] * 'MSGLOG_GAME_REMOVE_BOON' = '0,139,69' (a=255, r=0, g=139, b=69)
+16:49:03.071 [info] * 'MSGLOG_GAME_REMOVE_CONDITION' = '255,99,71' (a=255, r=255, g=99, b=71)
+16:49:03.071 [info] * 'MSGLOG_GAME_SPELL_MANAGE' = '139,139,0' (a=255, r=139, g=139, b=0)
+16:49:03.071 [info] * 'MSGLOG_SYSTEM_ERROR' = '255,0,0' (a=255, r=255, g=0, b=0)
+16:49:03.071 [info] Terminal initialization complete
+16:49:03.071 [info] Trying to set "terminal.encoding-affects-put=false"
+16:49:03.071 [debug] Group "terminal":
+16:49:03.071 [debug] * "encoding-affects-put" = "false"
+16:49:03.080 [error] terminal_open: BearLibTerminal instance already initialized
+16:49:09.956 [trace] grow 256x256 -> 256x512
