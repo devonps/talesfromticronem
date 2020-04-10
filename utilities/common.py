@@ -10,8 +10,8 @@ class CommonUtils:
         tile_char = "0x" + configUtilities.get_config_value_as_string(configfile=game_config, section='dungeon',
                                                                       parameter=config_prefix + str(
                                                                           tile_assignment))
-        tile_int = int(tile_char, 16)
-        return tile_int
+        # tile_int = int(tile_char, 16)
+        return tile_char
 
     @staticmethod
     def calculate_percentage(low_number, max_number):

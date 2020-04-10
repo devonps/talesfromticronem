@@ -136,7 +136,8 @@ class RenderGameMap(esper.Processor):
             config_prefix_wall = config_prefix + 'WALL_'
             config_prefix_floor = config_prefix + 'FLOOR_'
             config_prefix_door = config_prefix + 'DOOR_'
-
+            blank_tile = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor, tile_assignment=0)
+            unicode_string_to_print = '[font=dungeon]['
             if player_has_moved:
                 RenderGameMap.clear_map_layer()
 
@@ -146,14 +147,15 @@ class RenderGameMap(esper.Processor):
                 for x in range(x_min, x_max):
                     tile = game_map.tiles[x][y].type_of_tile
                     tile_assignment = game_map.tiles[x][y].assignment
-                    char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor, tile_assignment=0)
+                    char_to_display = blank_tile
                     if tile == tile_type_wall:
                         char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_wall, tile_assignment=tile_assignment)
                     if tile == tile_type_door:
                         char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_door, tile_assignment=0)
 
                     if tile > 0:
-                        terminal.put(x=x, y=y, c=char_to_display)
+                        str = unicode_string_to_print + char_to_display + ']'
+                        terminal.printf(x=x, y=y, s=str)
                     scrx += 1
                 scry += 1
         else:
