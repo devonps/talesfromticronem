@@ -39,3 +39,4 @@ ENV/
 bt.log
 bt.log
 game_log.txt
+*.log
