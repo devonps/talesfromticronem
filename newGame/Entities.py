@@ -76,15 +76,13 @@ class Entity:
                         # -------------------------------------
                         # --- CREATE JEWELLERYSET -------------
                         # -------------------------------------
-                        if jewellery_file_option != '':
-                            self.choose_jewellery_package(jewellery_file_option=jewellery_file_option,
+                        self.choose_jewellery_package(jewellery_file_option=jewellery_file_option,
                                                           entity_id=entity_id)
 
                         # -------------------------------------
                         # --- CREATE WEAPONSET ----------------
                         # -------------------------------------
-                        if weapon_file_option_main != '' or weapon_file_option_off != '' or weapon_file_option_both != '':
-                            self.choose_weaponset(entity_id=entity_id, main_hand=weapon_file_option_main, off_hand=weapon_file_option_off, both_hands=weapon_file_option_both)
+                        self.choose_weaponset(entity_id=entity_id, main_hand=weapon_file_option_main, off_hand=weapon_file_option_off, both_hands=weapon_file_option_both)
 
                         # now apply the values to the base mobile object
 
@@ -245,24 +243,24 @@ class Entity:
         return armour_modifier
 
     def choose_jewellery_package(self, jewellery_file_option, entity_id):
-        jewellery_packages = configUtilities.get_config_value_as_list(configfile=self.game_config, section='newgame',
-                                                                      parameter='JEWELLERY_PACKAGES')
+        if jewellery_file_option != '':
+            jewellery_packages = configUtilities.get_config_value_as_list(configfile=self.game_config, section='newgame',
+                                                                          parameter='JEWELLERY_PACKAGES')
 
-        npc_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config,
-                                                                    section='default', parameter='CLASSESFILE')
-        if jewellery_file_option == 'RANDOM':
-            jewellery_set = random.choice(jewellery_packages)
-        else:
-            jewellery_set = jewellery_file_option.lower()
+            npc_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config,
+                                                                        section='default', parameter='CLASSESFILE')
+            if jewellery_file_option == 'RANDOM':
+                jewellery_set = random.choice(jewellery_packages)
+            else:
+                jewellery_set = jewellery_file_option.lower()
 
-        logger.info('Their jewellery package is {}', jewellery_set)
-        ItemManager.create_and_equip_jewellery_for_npc(gameworld=self.gameworld, entity_id=entity_id,
-                                                       jewellery_set=jewellery_set, npc_class_file=npc_class_file)
+            logger.info('Their jewellery package is {}', jewellery_set)
+            ItemManager.create_and_equip_jewellery_for_npc(gameworld=self.gameworld, entity_id=entity_id,
+                                                           jewellery_set=jewellery_set, npc_class_file=npc_class_file)
 
     def choose_weaponset(self, entity_id, main_hand, off_hand, both_hands):
 
         selected_class = MobileUtilities.get_character_class(self.gameworld, entity=entity_id)
-
         # gather list of available weapons for the player class
         available_weapons = self.build_available_weapons(selected_class=selected_class)
         if main_hand != '':
@@ -287,7 +285,7 @@ class Entity:
                     if wpn['wielded_hands'] == 'main' and wpn['name'] == weapon:
                         weapon_choices.append(weapon)
 
-            logger.info('weapons available for main hard are {}', weapon_choices)
+            logger.info('weapons available for main hand are {}', weapon_choices)
             selected_weapon_id = random.randint(0, len(weapon_choices) - 1)
             weapon_to_create = weapon_choices[selected_weapon_id]
         else:
@@ -310,7 +308,7 @@ class Entity:
                     if wpn['wielded_hands'] == 'off' and wpn['name'] == weapon:
                         weapon_choices.append(weapon)
 
-            logger.info('weapons available for main hard are {}', weapon_choices)
+            logger.info('weapons available for off hand are {}', weapon_choices)
             selected_weapon_id = random.randint(0, len(weapon_choices) - 1)
             weapon_to_create = weapon_choices[selected_weapon_id]
         else:
@@ -333,7 +331,7 @@ class Entity:
                     if wpn['wielded_hands'] == 'both' and wpn['name'] == weapon:
                         weapon_choices.append(weapon)
 
-            logger.info('weapons available for main hard are {}', weapon_choices)
+            logger.info('weapons available for both hands are {}', weapon_choices)
             selected_weapon_id = random.randint(0, len(weapon_choices) - 1)
             weapon_to_create = weapon_choices[selected_weapon_id]
         else:
@@ -352,7 +350,6 @@ class Entity:
         for option in class_file['classes']:
             if option['name'] == selected_class:
                 class_weapons = option['weapons']
-                class_spellfile = option['spellfile']
 
         if class_weapons['sword'] == 'true':
             available_weapons.append('sword')
