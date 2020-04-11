@@ -10,16 +10,17 @@
         {
           "displayName": "Joe",
           "internalName": "academyMaster",
-          "class": "player",
-          "weapon": "staff",
           "identifier": "A"
         },
         {
-          "displayName": "random",
-          "internalName": "practiceMaster",
-          "class": "random",
-          "weapon": "random",
+          "displayName": "Weapons",
+          "internalName": "",
           "identifier": "B"
+        },
+        {
+          "displayName": "Combat",
+          "internalName": "",
+          "identifier": "C"
         }
         ],
       "theme": "dungeon",

@@ -1,0 +1,52 @@
+{
+  "npc": [
+    {
+      "name": "Joe",
+      "race": "Dilga",
+      "class": "druid",
+      "description": "The academy master.",
+      "ai": "master",
+      "glyph": "@",
+      "fg": "yellow2",
+      "bg": "black",
+      "image": "25",
+      "armourset": "RANDOM",
+      "jeweleryset": "balanced",
+      "weapons-main": "",
+      "weapons-off": "",
+      "weapons-both": "staff"
+    },
+     {
+      "name": "Weapons",
+      "race": "RANDOM",
+      "class": "RANDOM",
+      "description": "Weapons trader",
+      "ai": "wizard",
+      "glyph": "w",
+      "fg": "burlywood",
+      "bg": "black",
+      "image": "25",
+      "armourset": "RANDOM",
+      "jeweleryset": "RANDOM",
+      "weapons-main": "RANDOM",
+      "weapons-off": "RANDOM",
+      "weapons-both": ""
+      },
+     {
+      "name": "Combat",
+      "race": "eskeri",
+      "class": "druid",
+      "description": "Lets fight",
+      "ai": "wizard",
+      "glyph": "c",
+      "fg": "brick",
+      "bg": "black",
+      "image": "25",
+      "armourset": "RANDOM",
+      "jeweleryset": "defensive",
+      "weapons-main": "",
+      "weapons-off": "",
+      "weapons-both": ""
+      }
+    ]
+}
