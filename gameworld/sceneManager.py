@@ -123,28 +123,14 @@ class SceneManager:
                                                                                posy=vpy)
                                 # add named NPCs to scene
                                 if cell in 'ABCDEFG':
-                                    npcs = sceneKey['npcs']
-                                    npc_name = npcs[0]['displayName']
-                                    logger.debug('NPC Name {}', npc_name)
-                                    enemyObject = Entity(gameworld=gameworld)
-                                    xxenemy_id = enemyObject.create_new_entity()
-                                    enemyObject.create_new_enemy(entity_id=xxenemy_id, enemy_name='Joe')
-                                    logger.info('Freshly minted {}s entity id is {}', npc_name, xxenemy_id)
-
-                                    plx = MobileUtilities.get_mobile_x_position(gameworld=gameworld,
-                                                                                entity=playerEntity)
-                                    ply = MobileUtilities.get_mobile_y_position(gameworld=gameworld,
-                                                                                entity=playerEntity)
-
-                                    logger.info('player at {} / {}', plx, ply)
-                                    MobileUtilities.set_mobile_position(gameworld=gameworld, entity=xxenemy_id,
-                                                                        posx=plx, posy=ply + 5)
-
+                                    enemy_object = Entity(gameworld=gameworld)
+                                    enemy_object.mobile_purpose(npcs_for_scene=sceneKey['npcs'], posx=posx, posy=posy, cellid=cell)
+                                    game_map.tiles[posx][posy].type_of_tile = tile_type_floor
+                                    game_map.tiles[posx][posy].image = 4
+                                    game_map.tiles[posx][posy].blocked = False
+                                    game_map.tiles[posx][posy].block_sight = False
                                 posx += 1
                             posy += 1
-                        px = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=xxenemy_id)
-                        py = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=xxenemy_id)
-                        logger.info('{} at {} / {}', npc_name, px, py)
 
                         GameMap.assign_tiles(game_map=game_map)
 
@@ -156,16 +142,16 @@ class SceneManager:
                     # temporary code to generate a random dumb enemy - useful for testing purposes
                     enemyObject = Entity(gameworld=gameworld)
                     enemyID = enemyObject.create_new_entity()
-                    enemyObject.create_new_enemy(entity_id=enemyID, enemy_name='Kenny')
-                    plx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=playerEntity)
-                    ply = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=playerEntity)
-
-                    MobileUtilities.set_mobile_position(gameworld=gameworld, entity=enemyID, posx=20,
-                                                        posy=7)
-                    posx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=enemyID)
-                    posy = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=enemyID)
-
-                    logger.info('New enemy at {} / {}', posx, posy)
+                    # enemyObject.create_new_enemy(entity_id=enemyID, enemy_name='Kenny')
+                    # plx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=playerEntity)
+                    # ply = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=playerEntity)
+                    #
+                    # MobileUtilities.set_mobile_position(gameworld=gameworld, entity=enemyID, posx=20,
+                    #                                     posy=7)
+                    # posx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=enemyID)
+                    # posy = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=enemyID)
+                    #
+                    # logger.info('New enemy at {} / {}', posx, posy)
 
         if currentscene == 1:
             update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
