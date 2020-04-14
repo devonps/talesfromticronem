@@ -565,6 +565,7 @@ class RenderGameMap(esper.Processor):
         for a in range(10):
             terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE500 + 0)
 
+
         # now the spells based on the spell bar entities -- currently loads slots 1 - 6
         slotid = 1
         for spell_slot in range(6):

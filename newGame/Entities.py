@@ -278,6 +278,7 @@ class Entity:
         weapon_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='default',
                                                                        parameter='WEAPONSFILE')
 
+        logger.info('weapons available {}', available_weapons)
         if main_hand == 'RANDOM':
             weapon_file = read_json_file(weapon_class_file)
             for weapon in available_weapons:
@@ -348,24 +349,21 @@ class Entity:
         available_weapons = []
 
         for option in class_file['classes']:
-            if option['name'] == selected_class:
-                class_weapons = option['weapons']
-
-        if class_weapons['sword'] == 'true':
-            available_weapons.append('sword')
-        if class_weapons['wand'] == 'true':
-            available_weapons.append('wand')
-        if class_weapons['scepter'] == 'true':
-            available_weapons.append('scepter')
-        if class_weapons['staff'] == 'true':
-            available_weapons.append('staff')
-        if class_weapons['dagger'] == 'true':
-            available_weapons.append('dagger')
-        if class_weapons['rod'] == 'true':
-            available_weapons.append('rod')
-        if class_weapons['focus'] == 'true':
-            available_weapons.append('focus')
-
+            if option['spellfile'] == selected_class:
+                if option["weapons"]["sword"] == 'true':
+                    available_weapons.append('sword')
+                if option["weapons"]["wand"] == 'true':
+                    available_weapons.append('wand')
+                if option["weapons"]["scepter"] == 'true':
+                    available_weapons.append('scepter')
+                if option["weapons"]["staff"] == 'true':
+                    available_weapons.append('staff')
+                if option["weapons"]["dagger"] == 'true':
+                    available_weapons.append('dagger')
+                if option["weapons"]["rod"] == 'true':
+                    available_weapons.append('rod')
+                if option["weapons"]["focus"] == 'true':
+                    available_weapons.append('focus')
         return available_weapons
 
     def create_weapon_and_wield_for_npc(self, weapon_to_be_created, enemy_class, entity_id, hand_to_wield):
