@@ -19,7 +19,7 @@
      {
       "name": "Weapons",
       "race": "RANDOM",
-      "class": "RANDOM",
+      "class": "witchdoctor",
       "description": "Weapons trader",
       "ai": "wizard",
       "glyph": "w",
