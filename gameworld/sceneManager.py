@@ -1,4 +1,3 @@
-
 from mapRelated.gameMap import GameMap
 from newGame.Entities import Entity
 from processors.castSpells import CastSpells
@@ -124,7 +123,8 @@ class SceneManager:
                                 # add named NPCs to scene
                                 if cell in 'ABCDEFG':
                                     enemy_object = Entity(gameworld=gameworld)
-                                    enemy_object.mobile_purpose(npcs_for_scene=sceneKey['npcs'], posx=posx, posy=posy, cellid=cell)
+                                    enemy_object.mobile_purpose(npcs_for_scene=sceneKey['npcs'], posx=posx, posy=posy,
+                                                                cellid=cell)
                                     game_map.tiles[posx][posy].type_of_tile = tile_type_floor
                                     game_map.tiles[posx][posy].image = 4
                                     game_map.tiles[posx][posy].blocked = False
