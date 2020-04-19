@@ -63,6 +63,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install wheel
           pip install pyinstaller
+          pip install bearlibterminal
           pip install -r requirements.txt
       - name: Test with pytest
         run: |
