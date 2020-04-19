@@ -4,7 +4,6 @@ reserve_gfx
 todo*
 build/
 dist/
-*.spec
 *.dll
 sdl2/
 .idea/*
@@ -37,6 +36,4 @@ ENV/
 /builds.txt
 *.log
 bt.log
-bt.log
 game_log.txt
-*.log

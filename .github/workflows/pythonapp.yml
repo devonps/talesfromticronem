@@ -67,3 +67,12 @@ jobs:
         run: |
           pip install pytest
           pytest
+      - name: package game
+        run: |
+          python -m PyInstaller --clean --onefile --windowed pyinstaller/mac-os.spec
+          ls -lR dist
+      - name: publish game
+        uses: actions/upload-artifact@master
+        with:
+          name: ticronem_macosx.app
+          path: dist/ticronem.app
