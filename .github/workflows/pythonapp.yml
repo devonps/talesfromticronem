@@ -69,7 +69,7 @@ jobs:
           pytest
       - name: package game
         run: |
-          python -m PyInstaller --clean --onefile --windowed pyinstaller/mac-os.spec
+          pyinstaller --clean --onefile --windowed pyinstaller/mac-os.spec
           ls -lR dist
       - name: publish game
         uses: actions/upload-artifact@master
