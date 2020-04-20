@@ -32,9 +32,9 @@ jobs:
         pip install pytest
         pytest
     - name: package binary
-        run: |
-          pyinstaller --clean pyinstaller/pyinstaller.spec
-          mv dist/ticronem dist/ticronem_ubuntu18
+      run: |
+        pyinstaller --clean pyinstaller/pyinstaller.spec
+        mv dist/ticronem dist/ticronem_ubuntu18
     - name: publish binary
       uses: actions/upload-artifact@master
       with:
