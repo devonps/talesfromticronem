@@ -76,3 +76,8 @@ jobs:
         with:
           name: ticronem_macosx.app
           path: dist/ticronem.app
+      - name: publish game2
+          uses: actions/upload-artifact@master
+        with:
+          name: ticronem
+          path: dist/ticronem
