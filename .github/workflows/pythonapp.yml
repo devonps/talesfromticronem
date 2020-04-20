@@ -72,12 +72,12 @@ jobs:
           pyinstaller --clean --onefile --windowed pyinstaller/mac-os.spec
           ls -lR dist
       - name: publish game
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v1
         with:
           name: ticronem_macosx.app
           path: dist/ticronem.app
       - name: publish game2
-          uses: actions/upload-artifact@master
+          uses: actions/upload-artifact@v1
         with:
           name: ticronem
           path: dist/ticronem
