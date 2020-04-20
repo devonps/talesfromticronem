@@ -31,6 +31,15 @@ jobs:
       run: |
         pip install pytest
         pytest
+    - name: package binary
+        run: |
+          pyinstaller --clean pyinstaller/pyinstaller.spec
+          mv dist/ticronem dist/ticronem_ubuntu18
+    - name: publish binary
+      uses: actions/upload-artifact@master
+      with:
+        name: ticronem_ubuntu18
+        path: dist/ticronem_ubuntu18
   build-windows:
     name: build for windows-2019
     runs-on: windows-2019
