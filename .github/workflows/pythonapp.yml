@@ -6,9 +6,6 @@ on:
   pull_request:
     branches:
       - master
-  push:
-    branches:
-      - master
 
 jobs:
           
@@ -89,10 +86,11 @@ jobs:
           pytest
       - name: package game
         run: |
-          pyinstaller --clean --onefile --windowed pyinstaller/mac-os.spec
-          ls -lR dist
+          pyinstaller --clean pyinstaller/mac-os.spec
+          chmod +x dist/ticronem
+          mv dist/ticronem dist/ticronem_macosx
       - name: publish binary
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@master
         with:
           name: ticronem_macosx
           path: dist/ticronem_macosx
