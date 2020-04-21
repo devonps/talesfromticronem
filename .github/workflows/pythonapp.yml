@@ -58,7 +58,7 @@ jobs:
       - name: publish binary
         uses: actions/upload-artifact@master
         with:
-          name: ticronem_w10
+          name: ticronem_windows
           path: dist/ticronem.exe
   build-osx:
     name: build for macos-10.15
