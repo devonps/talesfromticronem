@@ -1,11 +1,5 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more inforation see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
 name: Build and Package
-on:
-  pull_request:
-    branches:
-      - master
+on: push
 
 jobs:
           
@@ -84,7 +78,7 @@ jobs:
         run: |
           pip install pytest
           pytest
-      - name: package game
+      - name: package binary and rename
         run: |
           pyinstaller --clean pyinstaller/mac-os.spec
           chmod +x dist/ticronem
