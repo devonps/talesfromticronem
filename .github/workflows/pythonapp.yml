@@ -84,7 +84,7 @@ jobs:
           mv dist/ticronem dist/ticronem_macosx
       - name: Bash Command Lines for GitHub Actions
         action "Setup" {
-        uses = "jdickey/bash@master"
+        uses = jdickey/bash@v.1.1.1
         args = ["chmod +x dist/ticronem_macosx"]
         }
       - name: publish binary
