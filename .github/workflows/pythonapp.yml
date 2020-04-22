@@ -81,8 +81,10 @@ jobs:
       - name: package binary and rename
         run: |
           pyinstaller --clean pyinstaller/mac-os.spec
-          chmod +x dist/ticronem
           mv dist/ticronem dist/ticronem_macosx
+      - name: change folder permissions
+          uses: jdickey/bash@master
+          with: args = ["chmod +x dist/ticronem_macosx"
       - name: publish binary
         uses: actions/upload-artifact@master
         with:
