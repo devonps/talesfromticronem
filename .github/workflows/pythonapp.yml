@@ -82,9 +82,9 @@ jobs:
         run: |
           pyinstaller --clean pyinstaller/mac-os.spec
           mv dist/ticronem dist/ticronem_macosx
-      - name: change folder permissions
-          uses: actions/jdickey/bash@master
-          with: args = ["chmod +x dist/ticronem_macosx"
+      - name: Bash Command Lines for GitHub Actions
+        uses: jdickey/bash@v.1.1.1
+        args: ["chmod +x dist/ticronem_macosx"]
       - name: publish binary
         uses: actions/upload-artifact@master
         with:
