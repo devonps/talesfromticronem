@@ -83,7 +83,7 @@ jobs:
           pyinstaller --clean pyinstaller/mac-os.spec
           mv dist/ticronem dist/ticronem_macosx
       - name: Bash Command Lines for GitHub Actions
-        run: echo $PATH
+        run: chmod +x dist/ticronem_macosx
         shell: bash
       - name: publish binary
         uses: actions/upload-artifact@master
