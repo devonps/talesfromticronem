@@ -52,21 +52,8 @@ class SpellUtilities:
                               fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
             entity_tag = tp + 3
-            xx = 0
             target_letters = []
-            if len(valid_targets) == 0:
-                str_to_print = "[color=white][font=dungeon]" + 'No valid targets'
-                terminal.printf(x=lft + 3, y=entity_tag, s=str_to_print)
-            else:
-                for x in valid_targets:
-                    str_to_print = "[color=white]" + chr(97 + xx) + ") [color=" + x[3] + "][font=dungeon][bkcolor=" + x[
-                        4] + "]" + x[2] + ' ' + x[1]
-                    terminal.printf(x=lft + 2, y=entity_tag, s=str_to_print)
-                    entity_tag += 1
-                    target_letters.append(chr(97 + xx))
-                    xx += 1
-            str_to_print = "[color=white][font=dungeon]" + 'Press ESC to cancel'
-            terminal.printf(x=lft + 3, y=tp + height, s=str_to_print)
+            SpellUtilities.helper_print_valid_targets(valid_targets=valid_targets, lft=lft, entity_tag=entity_tag, target_letters=target_letters, tp=tp, height=height)
 
             terminal.layer(prev_layer)
 
@@ -78,31 +65,61 @@ class SpellUtilities:
             player_not_pressed_a_key = True
             while player_not_pressed_a_key:
                 event_to_be_processed, event_action = handle_game_keys()
-                if event_to_be_processed != '' and event_to_be_processed == 'keypress':
+                if event_to_be_processed == 'keypress':
                     if event_action == 'quit':
                         player_not_pressed_a_key = False
                     if len(target_letters) != 0:
                         key_pressed = chr(97 + event_action)
-                        if key_pressed in target_letters:
-                            target = target_letters.index(key_pressed)
-                            player_not_pressed_a_key = False
-
-                            # add component covering spell has been cast
-                            gameworld.add_component(player,
-                                                    mobiles.SpellCast(truefalse=True, spell_entity=spell_entity,
-                                                                      spell_target=valid_targets[target][0],
-                                                                      spell_bar_slot=1))
-                            str_to_print = msg_turn_number + valid_targets[target][1] + " has been targeted."
-                            msg = Message(text=str_to_print, msgclass="all", fg="yellow", bg="", fnt="")
-                            log_message = "[all]" + str_to_print
-                            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,
-                                                    message_for_export=log_message)
+                        player_not_pressed_a_key, target = SpellUtilities.has_valid_target_been_selected(gameworld=gameworld, player_entity=player, target_letters=target_letters, key_pressed=key_pressed, spell_entity=spell_entity, valid_targets=valid_targets)
+                        SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, msg_turn_number=msg_turn_number, valid_targets=valid_targets, target=target, message_log_id=message_log_id, player_not_pressed_a_key=player_not_pressed_a_key)
         else:
             msg = Message(text=msg_turn_number + "Spell is on cooldown ", msgclass="all", fg="white", bg="black",
                           fnt="")
             log_message = "[all]" + msg_turn_number + "Spell is on cooldown "
             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,
                                     message_for_export=log_message)
+
+    @staticmethod
+    def has_valid_target_been_selected(gameworld, player_entity, target_letters, key_pressed, spell_entity, valid_targets):
+        player_not_pressed_a_key = True
+        target = 0
+        if key_pressed in target_letters:
+            target = target_letters.index(key_pressed)
+            player_not_pressed_a_key = False
+
+            # add component covering spell has been cast
+            gameworld.add_component(player_entity,
+                                    mobiles.SpellCast(truefalse=True, spell_entity=spell_entity,
+                                                      spell_target=valid_targets[target][0], spell_bar_slot=1))
+
+        return player_not_pressed_a_key, target
+
+    @staticmethod
+    def helper_add_valid_target_to_message_log(gameworld, msg_turn_number, valid_targets, target, message_log_id, player_not_pressed_a_key):
+        if not player_not_pressed_a_key:
+            str_to_print = msg_turn_number + valid_targets[target][1] + " has been targeted."
+            msg = Message(text=str_to_print, msgclass="all", fg="yellow", bg="", fnt="")
+            log_message = "[all]" + str_to_print
+            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,
+                                    message_for_export=log_message)
+
+
+    @staticmethod
+    def helper_print_valid_targets(valid_targets, lft, entity_tag, target_letters, tp, height):
+        xx = 0
+        if len(valid_targets) == 0:
+            str_to_print = "[color=white][font=dungeon]" + 'No valid targets'
+            terminal.printf(x=lft + 3, y=entity_tag, s=str_to_print)
+        else:
+            for x in valid_targets:
+                str_to_print = "[color=white]" + chr(97 + xx) + ") [color=" + x[3] + "][font=dungeon][bkcolor=" + x[
+                    4] + "]" + x[2] + ' ' + x[1]
+                terminal.printf(x=lft + 2, y=entity_tag, s=str_to_print)
+                entity_tag += 1
+                target_letters.append(chr(97 + xx))
+                xx += 1
+        str_to_print = "[color=white][font=dungeon]" + 'Press ESC to cancel'
+        terminal.printf(x=lft + 3, y=tp + height, s=str_to_print)
 
     @staticmethod
     def get_valid_targets_for_spell(gameworld, player, spell_entity):
@@ -184,35 +201,9 @@ class SpellUtilities:
             main_hand_weapon = weapons_equipped[0]
             off_hand_weapon = weapons_equipped[1]
             both_hands_weapon = weapons_equipped[2]
-            if both_hands_weapon > 0:
-                slotid = 1
-                for _ in range(5):
-                    this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
-                                                                                       weapon_equipped=both_hands_weapon,
-                                                                                       slotid=slotid)
-                    SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
-                                                     spell_entity=this_spell_entity, slot=slotid)
-                    slotid += 1
-
-            if main_hand_weapon > 0:
-                slotid = 1
-                for _ in range(3):
-                    this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
-                                                                                       weapon_equipped=main_hand_weapon,
-                                                                                       slotid=slotid)
-                    SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
-                                                     spell_entity=this_spell_entity, slot=slotid)
-                    slotid += 1
-
-            if off_hand_weapon > 0:
-                slotid = 4
-                for _ in range(2):
-                    this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
-                                                                                       weapon_equipped=main_hand_weapon,
-                                                                                       slotid=slotid)
-                    SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
-                                                     spell_entity=this_spell_entity, slot=slotid)
-                    slotid += 1
+            SpellUtilities.helper_both_hands_weapon(gameworld=gameworld, player_entity=player_entity, both_hands_weapon=both_hands_weapon)
+            SpellUtilities.helper_main_hand_weapon(gameworld=gameworld, player_entity=player_entity, main_hand_weapon=main_hand_weapon)
+            SpellUtilities.helper_off_hand_weapon(gameworld=gameworld, player_entity=player_entity, off_hand_weapon=off_hand_weapon)
 
         # now get the heal skill
         player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
@@ -220,6 +211,43 @@ class SpellUtilities:
             if typ.label == 'heal' and cl.label == player_class:
                 SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
                                                  spell_entity=ent, slot=6)
+
+    @staticmethod
+    def helper_both_hands_weapon(gameworld, player_entity, both_hands_weapon):
+        if both_hands_weapon > 0:
+            slotid = 1
+            for _ in range(5):
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=both_hands_weapon,
+                                                                                   slotid=slotid)
+                SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
+                                                 spell_entity=this_spell_entity, slot=slotid)
+                slotid += 1
+
+    @staticmethod
+    def helper_main_hand_weapon(gameworld, player_entity, main_hand_weapon):
+        if main_hand_weapon > 0:
+            slotid = 1
+            for _ in range(3):
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=main_hand_weapon,
+                                                                                   slotid=slotid)
+                SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
+                                                 spell_entity=this_spell_entity, slot=slotid)
+                slotid += 1
+
+    @staticmethod
+    def helper_off_hand_weapon(gameworld, player_entity, off_hand_weapon):
+        if off_hand_weapon > 0:
+            slotid = 4
+            for _ in range(2):
+                this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
+                                                                                   weapon_equipped=off_hand_weapon,
+                                                                                   slotid=slotid)
+                SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
+                                                 spell_entity=this_spell_entity, slot=slotid)
+                slotid += 1
+
     @staticmethod
     def get_spell_name(gameworld, spell_entity):
         return gameworld.component_for_entity(spell_entity, spells.Name).label
