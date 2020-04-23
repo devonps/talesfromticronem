@@ -352,17 +352,17 @@ class Entity:
             if option['spellfile'] == selected_class:
                 if option["weapons"]["sword"] == 'true':
                     available_weapons.append('sword')
-                if option["weapons"]["wand"] == 'true':
+                elif option["weapons"]["wand"] == 'true':
                     available_weapons.append('wand')
-                if option["weapons"]["scepter"] == 'true':
+                elif option["weapons"]["scepter"] == 'true':
                     available_weapons.append('scepter')
-                if option["weapons"]["staff"] == 'true':
+                elif option["weapons"]["staff"] == 'true':
                     available_weapons.append('staff')
-                if option["weapons"]["dagger"] == 'true':
+                elif option["weapons"]["dagger"] == 'true':
                     available_weapons.append('dagger')
-                if option["weapons"]["rod"] == 'true':
+                elif option["weapons"]["rod"] == 'true':
                     available_weapons.append('rod')
-                if option["weapons"]["focus"] == 'true':
+                elif option["weapons"]["focus"] == 'true':
                     available_weapons.append('focus')
         return available_weapons
 

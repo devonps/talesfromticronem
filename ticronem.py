@@ -1,7 +1,6 @@
 from bearlibterminal import terminal
 
 from newGame.initialiseNewGame import setup_gameworld
-from utilities.common import CommonUtils
 from utilities.externalfileutilities import Externalfiles
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
@@ -36,7 +35,7 @@ def game_loop(gameworld):
         #
         if scene_change:
             # call scene manager
-            SceneManager.newScene(currentscene=current_scene, gameworld=gameworld)
+            SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)
             scene_change = False
         #
         # get player action aka their intent to do something
