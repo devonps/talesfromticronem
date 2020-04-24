@@ -26,7 +26,7 @@ class ItemManager:
         :type gameworld: esper.world
         :type weapon_type: the type of weapon to be created, e.g. sword
         """
-        weapon_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default', parameter='WEAPONSFILE')
+        weapon_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files', parameter='WEAPONSFILE')
         weapon_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game', parameter='ITEM_WEAPON_ACTIONS')
 
         weapon_file = jsonUtilities.read_json_file(weapon_file_path)
@@ -147,7 +147,7 @@ class ItemManager:
         armour_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
                                                                       parameter='ITEM_ARMOUR_ACTIONS')
 
-        armour_set_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        armour_set_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                      parameter='ARMOURSETFILE')
 
         armour_set_file = jsonUtilities.read_json_file(armour_set_path)
@@ -274,7 +274,7 @@ class ItemManager:
     @staticmethod
     def create_bag(gameworld, game_config):
 
-        bag_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        bag_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='BAGSFILE')
         bag_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
                                                                       parameter='ITEM_ARMOUR_ACTIONS')
@@ -323,7 +323,7 @@ class ItemManager:
         trinket_hook = e_hook.lower()
         trinket_activator = e_activator.lower()
 
-        gemstones_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        gemstones_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='GEMSTONESFILE')
         jewellery_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
                                                                       parameter='ITEM_JEWELLERY_ACTIONS')

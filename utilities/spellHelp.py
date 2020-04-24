@@ -337,7 +337,7 @@ class SpellUtilities:
         message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
 
         # read the conditions.json file
-        conditions_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        conditions_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                           parameter='CONDITIONSFILE')
         conditions_file = read_json_file(conditions_file_path)
 
@@ -381,7 +381,7 @@ class SpellUtilities:
         message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
 
         # read the boons.json file
-        boons_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        boons_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                      parameter='BOONSFILE')
         boons_file = read_json_file(boons_file_path)
 

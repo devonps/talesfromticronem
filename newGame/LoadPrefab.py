@@ -8,7 +8,7 @@ def loadPrefab():
     game_config = configUtilities.load_config()
     fileName = 'startArea.csv'
 
-    prefabFolder = configUtilities.get_config_value_as_string(game_config, 'default', 'PREFABFOLDER')
+    prefabFolder = configUtilities.get_config_value_as_string(game_config, 'files', 'PREFABFOLDER')
 
     filepath = prefabFolder + fileName
 

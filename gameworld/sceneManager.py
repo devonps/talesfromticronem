@@ -97,7 +97,7 @@ class SceneManager:
     def build_static_scene(gameworld, game_map, map_area_file, scene_key):
         # get config items
         game_config = configUtilities.load_config()
-        prefab_folder = configUtilities.get_config_value_as_string(game_config, 'default', 'PREFABFOLDER')
+        prefab_folder = configUtilities.get_config_value_as_string(game_config, 'files', 'PREFABFOLDER')
         tile_type_wall = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                      parameter='TILE_TYPE_WALL')
         tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',

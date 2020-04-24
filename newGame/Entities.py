@@ -28,7 +28,7 @@ class Entity:
                 npc_name = npc['displayName']
                 MobileUtilities.create_base_mobile(gameworld=self.gameworld, game_config=self.game_config,
                                                    entity_id=entity_id)
-                npc_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='default',
+                npc_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='files',
                                                                       parameter='NPCSFILE')
                 npcs_file = read_json_file(npc_file)
                 for npc in npcs_file['npc']:
@@ -111,7 +111,7 @@ class Entity:
     def choose_race_for_mobile(self, race_choice, entity_id):
         if race_choice == 'RANDOM':
             player_race_file = configUtilities.get_config_value_as_string(configfile=self.game_config,
-                                                                          section='default', parameter='RACESFILE')
+                                                                          section='files', parameter='RACESFILE')
             race_file = read_json_file(player_race_file)
 
             race_name = []
@@ -151,7 +151,7 @@ class Entity:
 
         if class_choice == 'RANDOM':
             player_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config,
-                                                                           section='default',
+                                                                           section='files',
                                                                            parameter='CLASSESFILE')
             class_file = read_json_file(player_class_file)
             class_name = []
@@ -181,7 +181,7 @@ class Entity:
 
     def choose_armourset_for_mobile(self, armour_file_option, entity_id):
         if armour_file_option != '':
-            armourset_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='default',
+            armourset_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='files',
                                                                         parameter='ARMOURSETFILE')
             armour_file = read_json_file(armourset_file)
             as_display_name = ''
@@ -248,7 +248,7 @@ class Entity:
                                                                           parameter='JEWELLERY_PACKAGES')
 
             npc_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config,
-                                                                        section='default', parameter='CLASSESFILE')
+                                                                        section='files', parameter='CLASSESFILE')
             if jewellery_file_option == 'RANDOM':
                 jewellery_set = random.choice(jewellery_packages)
             else:
@@ -275,7 +275,7 @@ class Entity:
     def select_main_hand_weapon(self, main_hand, available_weapons, selected_class, entity_id):
         weapon_choices = []
         weapon_to_create = ''
-        weapon_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='default',
+        weapon_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='files',
                                                                        parameter='WEAPONSFILE')
 
         logger.info('weapons available {}', available_weapons)
@@ -299,7 +299,7 @@ class Entity:
     def select_off_hand_weapon(self, off_hand, available_weapons, selected_class, entity_id):
         weapon_choices = []
         weapon_to_create = ''
-        weapon_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='default',
+        weapon_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='files',
                                                                        parameter='WEAPONSFILE')
 
         if off_hand == 'RANDOM':
@@ -322,7 +322,7 @@ class Entity:
     def select_both_hands_weapon(self, both_hands, available_weapons, selected_class, entity_id):
         weapon_choices = []
         weapon_to_create = ''
-        weapon_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='default',
+        weapon_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='files',
                                                                        parameter='WEAPONSFILE')
 
         if both_hands == 'RANDOM':
@@ -343,7 +343,7 @@ class Entity:
         logger.info('Their both hands weapon is {}', weapon_to_create)
 
     def build_available_weapons(self, selected_class):
-        player_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='default',
+        player_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='files',
                                                                        parameter='CLASSESFILE')
         class_file = read_json_file(player_class_file)
         available_weapons = []

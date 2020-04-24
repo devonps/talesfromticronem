@@ -69,10 +69,10 @@ def display_build_library():
     saved_build_code_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_CODE_Y')
     saved_build_play_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_PLAY_X')
     saved_build_play_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_PLAY_Y')
-    fileName = configUtilities.get_config_value_as_string(game_config, 'default', 'BUILDLIBRARYFILE')
-    player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+    fileName = configUtilities.get_config_value_as_string(game_config, 'files', 'BUILDLIBRARYFILE')
+    player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                    parameter='CLASSESFILE')
-    armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+    armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                 parameter='ARMOURSETFILE')
 
     playable_classes = []

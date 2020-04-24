@@ -18,7 +18,7 @@ def new_game():
     logger.info('* Initialising game *')
     logger.info('*********************')
 
-    fileName = configUtilities.get_config_value_as_string(game_config, 'default', 'BUILDLIBRARYFILE')
+    fileName = configUtilities.get_config_value_as_string(game_config, 'files', 'BUILDLIBRARYFILE')
 
     # does file exist
     fileExists = Externalfiles.does_file_exist(fileName)

@@ -9,9 +9,9 @@ def validate_spells(game_config):
 
     for playerclass in classes:
         spellsfile = playerclass.upper() + '_SPELLSFILE'
-        spell_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        spell_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter=spellsfile)
-        status_effects_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        status_effects_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='STATUSEFFECTSFILE')
         spell_file = read_json_file(spell_class_file)
         statuseffect_file = read_json_file(status_effects_file)

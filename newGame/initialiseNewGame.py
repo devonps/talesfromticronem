@@ -32,7 +32,7 @@ def generate_world_seed(game_config):
 
 
 def store_world_seed(game_config, world_seed):
-    action_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+    action_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                              parameter='GAME_ACTIONS_FILE')
     fileobject = Externalfiles.start_new_game_replay_file(action_file)
 
@@ -44,8 +44,7 @@ def store_world_seed(game_config, world_seed):
 def generate_spells(gameworld, game_config, spell_file, player_class):
     spellsfile = spell_file.upper() + '_SPELLSFILE'
 
-    spell_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
-                                                                 parameter=spellsfile)
+    spell_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files', parameter=spellsfile)
     spell_file = read_json_file(spell_file_path)
 
     condis = configUtilities.get_config_value_as_list(configfile=game_config, section='spells', parameter='condi_effects')

@@ -110,7 +110,7 @@ class CharacterCreation:
     def choose_race(gameworld, player):
         game_config = configUtilities.load_config()
 
-        player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='RACESFILE')
         start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
@@ -226,7 +226,7 @@ class CharacterCreation:
     def choose_class(gameworld):
         game_config = configUtilities.load_config()
 
-        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='CLASSESFILE')
         build_entity = BuildLibrary.get_build_entity(gameworld=gameworld)
 
@@ -437,7 +437,7 @@ class CharacterCreation:
         # get config items
         game_config = configUtilities.load_config()
 
-        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='CLASSESFILE')
         start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
@@ -477,7 +477,7 @@ class CharacterCreation:
         logger.info('Available weapons for a {} are {}', selected_class, available_weapons)
 
         # for each available weapon, gather: weapon info & spells associated to it
-        weapon_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        weapon_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='WEAPONSFILE')
 
         spellsfile = class_spellfile.upper() + '_SPELLSFILE'
@@ -786,7 +786,7 @@ class CharacterCreation:
         # get config items
         game_config = configUtilities.load_config()
 
-        armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                     parameter='ARMOURSETFILE')
         start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
@@ -969,7 +969,7 @@ class CharacterCreation:
         # get config items
         game_config = configUtilities.load_config()
 
-        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='CLASSESFILE')
         # get config items
         game_config = configUtilities.load_config()
@@ -1377,7 +1377,7 @@ class CharacterCreation:
     def display_starting_character(gameworld):
         logger.info('Displaying character starting stats')
         game_config = configUtilities.load_config()
-        fileName = configUtilities.get_config_value_as_string(game_config, 'default', 'BUILDLIBRARYFILE')
+        fileName = configUtilities.get_config_value_as_string(game_config, 'files', 'BUILDLIBRARYFILE')
         start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
         start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
         start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
