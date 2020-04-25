@@ -2,12 +2,12 @@
 
 block_cipher = None
 
-added_files = [('../static', 'static')]
+added_files = [('../static', 'static'), ('../libBearLibTerminal.dylib'), '.']
 
 a = Analysis(['../ticronem.py'],
              binaries=[],
              datas = added_files,
-             hiddenimports=['libBearLibTerminal.dylib'],
+             hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],

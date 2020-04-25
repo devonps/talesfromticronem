@@ -974,6 +974,57 @@ class CharacterCreation:
 
         build_entity = BuildLibrary.get_build_entity(gameworld=gameworld)
 
+        # get race details for character
+        racial_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
+        player_race = racial_details[0]
+
+        # create racial bonuses
+        if player_race.lower() == 'dilga':
+            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='A')
+            cur_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld, entity=player)
+            cur_condi_damage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld, entity=player)
+            cur_ferocity = MobileUtilities.get_mobile_ferocity(gameworld=gameworld, entity=player)
+
+            cur_precision += 1
+            MobileUtilities.set_mobile_precision(gameworld=gameworld, entity=player, value=cur_precision)
+            cur_condi_damage += 1
+            MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=player, value=cur_condi_damage)
+            cur_ferocity += 1
+            MobileUtilities.set_mobile_ferocity(gameworld=gameworld, entity=player, value=cur_ferocity)
+
+        if player_race.lower() == 'eskeri':
+            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='B')
+            cur_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=player)
+            cur_concentration = MobileUtilities.get_mobile_concentration(gameworld=gameworld, entity=player)
+
+            cur_power += 1
+            MobileUtilities.set_mobile_power(gameworld=gameworld, entity=player, value=cur_power)
+            cur_concentration += 1
+            MobileUtilities.set_mobile_concentration(gameworld=gameworld, entity=player, value=cur_concentration)
+
+        if player_race.lower() == 'jogah':
+            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='C')
+            cur_vitality = MobileUtilities.get_mobile_vitality(gameworld=gameworld, entity=player)
+            cur_concentration = MobileUtilities.get_mobile_concentration(gameworld=gameworld, entity=player)
+            cur_ferocity = MobileUtilities.get_mobile_ferocity(gameworld=gameworld, entity=player)
+
+            cur_vitality += 1
+            MobileUtilities.set_mobile_vitality(gameworld=gameworld, entity=player, value=cur_vitality)
+            cur_concentration += 1
+            MobileUtilities.set_mobile_concentration(gameworld=gameworld, entity=player, value=cur_concentration)
+            cur_ferocity += 1
+            MobileUtilities.set_mobile_ferocity(gameworld=gameworld, entity=player, value=cur_ferocity)
+
+        if player_race.lower() == 'oshun':
+            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='D')
+            cur_toughness = MobileUtilities.get_mobile_toughness(gameworld=gameworld, entity=player)
+            cur_condi_damage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld, entity=player)
+
+            cur_toughness += 1
+            MobileUtilities.set_mobile_toughness(gameworld=gameworld, entity=player, value=cur_toughness)
+            cur_condi_damage += 1
+            MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=player, value=cur_condi_damage)
+
         # create starting armour from armourset and prefix
         this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=armourset,
                                                             prefix=armour_prefix, game_config=game_config)
@@ -1088,13 +1139,13 @@ class CharacterCreation:
         if jewellery_package == 'C':
             jewellery_set = 'offensive'
 
-        for playerClass in class_file['classes']:
-            if playerClass['name'] == player_class:
-                neck_gemstone = playerClass[jewellery_set]['neck']
-                ring1_gemstone = playerClass[jewellery_set]['ring1']
-                ring2_gemstone = playerClass[jewellery_set]['ring2']
-                ear1_gemstone = playerClass[jewellery_set]['earring1']
-                ear2_gemstone = playerClass[jewellery_set]['earring2']
+        for p_class in class_file['classes']:
+            if p_class['name'] == player_class:
+                neck_gemstone = p_class[jewellery_set]['neck']
+                ring1_gemstone = p_class[jewellery_set]['ring1']
+                ring2_gemstone = p_class[jewellery_set]['ring2']
+                ear1_gemstone = p_class[jewellery_set]['earring1']
+                ear2_gemstone = p_class[jewellery_set]['earring2']
 
         # create jewellery entity
         pendant = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper',
@@ -1520,30 +1571,30 @@ class CharacterCreation:
         #
         racial_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player_entity)
         player_race = racial_details[0]
-
-        if player_race.lower() == 'dilga':
-            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='A')
-            cur_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld, entity=player_entity)
-            cur_precision += 1
-            MobileUtilities.set_mobile_precision(gameworld=gameworld, entity=player_entity, value=cur_precision)
-
-        if player_race.lower() == 'eskeri':
-            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='B')
-            cur_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=player_entity)
-            cur_power += 1
-            MobileUtilities.set_mobile_power(gameworld=gameworld, entity=player_entity, value=cur_power)
-
-        if player_race.lower() == 'jogah':
-            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='C')
-            cur_vitality = MobileUtilities.get_mobile_vitality(gameworld=gameworld, entity=player_entity)
-            cur_vitality += 1
-            MobileUtilities.set_mobile_vitality(gameworld=gameworld, entity=player_entity, value=cur_vitality)
-
-        if player_race.lower() == 'oshun':
-            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='D')
-            cur_toughness = MobileUtilities.get_mobile_toughness(gameworld=gameworld, entity=player_entity)
-            cur_toughness += 1
-            MobileUtilities.set_mobile_toughness(gameworld=gameworld, entity=player_entity, value=cur_toughness)
+        #
+        # if player_race.lower() == 'dilga':
+        #     BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='A')
+        #     cur_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld, entity=player_entity)
+        #     cur_precision += 1
+        #     MobileUtilities.set_mobile_precision(gameworld=gameworld, entity=player_entity, value=cur_precision)
+        #
+        # if player_race.lower() == 'eskeri':
+        #     BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='B')
+        #     cur_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=player_entity)
+        #     cur_power += 1
+        #     MobileUtilities.set_mobile_power(gameworld=gameworld, entity=player_entity, value=cur_power)
+        #
+        # if player_race.lower() == 'jogah':
+        #     BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='C')
+        #     cur_vitality = MobileUtilities.get_mobile_vitality(gameworld=gameworld, entity=player_entity)
+        #     cur_vitality += 1
+        #     MobileUtilities.set_mobile_vitality(gameworld=gameworld, entity=player_entity, value=cur_vitality)
+        #
+        # if player_race.lower() == 'oshun':
+        #     BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='D')
+        #     cur_toughness = MobileUtilities.get_mobile_toughness(gameworld=gameworld, entity=player_entity)
+        #     cur_toughness += 1
+        #     MobileUtilities.set_mobile_toughness(gameworld=gameworld, entity=player_entity, value=cur_toughness)
         #
         # class
         #

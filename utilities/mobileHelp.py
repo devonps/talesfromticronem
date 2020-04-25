@@ -743,6 +743,10 @@ class MobileUtilities(numbers.Real):
         return secondary_components.concentration
 
     @staticmethod
+    def set_mobile_concentration(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).concentration = value
+
+    @staticmethod
     def get_mobile_condition_damage(gameworld, entity):
         secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         return secondary_components.conditionDamage
@@ -760,6 +764,10 @@ class MobileUtilities(numbers.Real):
     def get_mobile_ferocity(gameworld, entity):
         secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         return secondary_components.ferocity
+
+    @staticmethod
+    def set_mobile_ferocity(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).ferocity = value
 
     @staticmethod
     def get_mobile_healing_power(gameworld, entity):
