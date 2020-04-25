@@ -81,15 +81,15 @@ jobs:
       - name: package binary and rename
         run: |
           pyinstaller --clean pyinstaller/mac-os.spec
-          mv dist/ticronem dist/ticronem_macosx
+          mv dist/ticronem dist/macos/ticronem_macosx
       - name: Bash Command Lines for GitHub Actions
-        run: chmod +x dist/ticronem_macosx
+        run: chmod +x dist/macos/ticronem_macosx
         shell: bash
       - name: publish binary
         uses: actions/upload-artifact@master
         with:
           name: ticronem_macosx
-          path: dist/ticronem_macosx
+          path: dist/macos/ticronem_macosx
   release:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/release')
     name: Publish release to github
@@ -117,4 +117,4 @@ jobs:
           name: ${{ steps.trimmer.outputs.tag }}
           draft: false
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "ticronem_windows/ticronem.exe,ticronem_ubuntu18/ticronem_ubuntu18, ticronem_macosx/ticronem_macosx"
+          artifacts: "ticronem_windows/ticronem.exe,ticronem_ubuntu18/ticronem_ubuntu18, macos/ticronem_macosx"

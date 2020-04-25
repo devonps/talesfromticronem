@@ -38,8 +38,6 @@ class StartGame:
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_X')
         menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_Y')
 
-        terminal.open()
-
         show_game_start_screen = True
         selected_menu_option = 0
 

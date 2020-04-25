@@ -24,8 +24,9 @@ def new_game():
     fileExists = Externalfiles.does_file_exist(fileName)
 
     if not fileExists:
-        Externalfiles.create_new_file(fileName)
+        new_file_object = Externalfiles.create_new_file(fileName)
         logger.info('Creating blank build file')
+        Externalfiles.close_existing_file(new_file_object)
 
     StartGame.start_game_screen()
 
