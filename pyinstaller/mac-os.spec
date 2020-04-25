@@ -2,7 +2,7 @@
 
 block_cipher = None
 
-added_files = [('../static', 'static'), ('../libBearLibTerminal.dylib'), '.']
+added_files = [('../static', 'static'), ('../libBearLibTerminal.dylib', '.')]
 
 a = Analysis(['../ticronem.py'],
              binaries=[],

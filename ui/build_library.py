@@ -268,10 +268,72 @@ def display_build_library():
                                                                       Build.BUILDGENDER])
                                 # race
                                 race_size = 'normal'
+                                player_race = decoded_build[selected_build][Build.BUILDRACE]
                                 MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=player_entity,
-                                                                        selected_race=decoded_build[selected_build][
-                                                                            Build.BUILDRACE], race_size=race_size,
+                                                                        selected_race=player_race, race_size=race_size,
                                                                         bg=colourUtilities.get('BLACK'))
+
+                                # create racial bonuses
+                                if player_race.lower() == 'dilga':
+                                    cur_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld,
+                                                                                         entity=player_entity)
+                                    cur_condi_damage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld,
+                                                                                                   entity=player_entity)
+                                    cur_ferocity = MobileUtilities.get_mobile_ferocity(gameworld=gameworld,
+                                                                                       entity=player_entity)
+
+                                    cur_precision += 1
+                                    MobileUtilities.set_mobile_precision(gameworld=gameworld, entity=player_entity,
+                                                                         value=cur_precision)
+                                    cur_condi_damage += 1
+                                    MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=player_entity,
+                                                                                value=cur_condi_damage)
+                                    cur_ferocity += 1
+                                    MobileUtilities.set_mobile_ferocity(gameworld=gameworld, entity=player_entity,
+                                                                        value=cur_ferocity)
+
+                                if player_race.lower() == 'eskeri':
+                                    cur_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=player_entity)
+                                    cur_concentration = MobileUtilities.get_mobile_concentration(gameworld=gameworld,
+                                                                                                 entity=player_entity)
+
+                                    cur_power += 1
+                                    MobileUtilities.set_mobile_power(gameworld=gameworld, entity=player_entity,
+                                                                     value=cur_power)
+                                    cur_concentration += 1
+                                    MobileUtilities.set_mobile_concentration(gameworld=gameworld, entity=player_entity,
+                                                                             value=cur_concentration)
+
+                                if player_race.lower() == 'jogah':
+                                    cur_vitality = MobileUtilities.get_mobile_vitality(gameworld=gameworld,
+                                                                                       entity=player_entity)
+                                    cur_concentration = MobileUtilities.get_mobile_concentration(gameworld=gameworld,
+                                                                                                 entity=player_entity)
+                                    cur_ferocity = MobileUtilities.get_mobile_ferocity(gameworld=gameworld,
+                                                                                       entity=player_entity)
+
+                                    cur_vitality += 1
+                                    MobileUtilities.set_mobile_vitality(gameworld=gameworld, entity=player_entity,
+                                                                        value=cur_vitality)
+                                    cur_concentration += 1
+                                    MobileUtilities.set_mobile_concentration(gameworld=gameworld, entity=player_entity,
+                                                                             value=cur_concentration)
+                                    cur_ferocity += 1
+                                    MobileUtilities.set_mobile_ferocity(gameworld=gameworld, entity=player_entity,
+                                                                        value=cur_ferocity)
+
+                                if player_race.lower() == 'oshun':
+                                    cur_toughness = MobileUtilities.get_mobile_toughness(gameworld=gameworld,
+                                                                                         entity=player_entity)
+                                    cur_condi_damage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld,
+                                                                                                   entity=player_entity)
+
+                                    cur_toughness += 1
+                                    MobileUtilities.set_mobile_toughness(gameworld=gameworld, entity=player_entity,
+                                                                         value=cur_toughness)
+                                    cur_condi_damage += 1
+                                    MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=player_entity,
+                                                                                value=cur_condi_damage)
                                 # class
                                 health = 0
                                 spell_file = ''
