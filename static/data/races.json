@@ -6,10 +6,14 @@
       "prefix": "dilga",
       "bg_colour": "black",
       "size": "normal",
-      "attributes": {
-        "benefitName": "precision",
-        "benefitValue": "1"
-      }
+      "playable": true,
+      "attribute_count": 3,
+      "attribute_1_name": "precision",
+      "attribute_1_value": 1,
+      "attribute_2_name": "condition_damage",
+      "attribute_2_value": 1,
+      "attribute_3_name": "ferocity",
+      "attribute_3_value": 1
     },
     {
       "name": "Eskeri",
@@ -17,10 +21,12 @@
       "prefix": "eskeri",
       "bg_colour": "blue",
       "size": "normal",
-      "attributes": {
-        "benefitName": "power",
-        "benefitValue": "1"
-      }
+      "playable": true,
+      "attribute_count": 2,
+      "attribute_1_name": "power",
+      "attribute_1_value": 1,
+      "attribute_2_name": "concentration",
+      "attribute_2_value": 1
     },
     {
       "name": "Jogah",
@@ -28,10 +34,14 @@
       "prefix": "jogah",
       "bg_colour": "red",
       "size": "normal",
-      "attributes": {
-        "benefitName": "vitality",
-        "benefitValue": "1"
-      }
+      "playable": true,
+      "attribute_count": 3,
+      "attribute_1_name": "vitality",
+      "attribute_1_value": 1,
+      "attribute_2_name": "concentration",
+      "attribute_2_value": 1,
+      "attribute_3_name": "ferocity",
+      "attribute_3_value": 1
     },
     {
       "name": "Oshun",
@@ -39,10 +49,133 @@
       "prefix": "oshun",
       "bg_colour": "white",
       "size": "normal",
-      "attributes": {
-        "benefitName": "toughness",
-        "benefitValue": "1"
-      }
+      "playable": true,
+      "attribute_count": 2,
+      "attribute_1_name": "toughness",
+      "attribute_1_value": 1,
+      "attribute_2_name": "condition_damage",
+      "attribute_2_value": 1
+    },
+    {
+      "name": "Dwarf",
+      "flavour": "Dwarves are tough.",
+      "prefix": "dwarf",
+      "bg_colour": "black",
+      "size": "normal",
+      "playable": false,
+      "attribute_count": 2,
+      "attribute_1_name": "toughness",
+      "attribute_1_value": 1,
+      "attribute_2_name": "vitality",
+      "attribute_2_value": 1
+    },
+    {
+      "name": "Elf",
+      "flavour": "Elves exist.",
+      "prefix": "elf",
+      "bg_colour": "black",
+      "size": "normal",
+      "playable": false,
+      "attribute_count": 3,
+      "attribute_1_name": "precision",
+      "attribute_1_value": 1,
+      "attribute_2_name": "concentration",
+      "attribute_2_value": 1,
+      "attribute_3_name": "healing_power",
+      "attribute_3_value": 1
+    },
+    {
+      "name": "Knoll",
+      "flavour": "Knolls are tiny vicious creatures",
+      "prefix": "knoll",
+      "bg_colour": "black",
+      "size": "small",
+      "playable": false,
+      "attribute_count": 2,
+      "attribute_1_name": "ferocity",
+      "attribute_1_value": 1,
+      "attribute_2_name": "healing_power",
+      "attribute_2_value": 1
+    },
+    {
+      "name": "Halfling",
+      "flavour": "Well, they're just halflings.",
+      "prefix": "halfling",
+      "bg_colour": "black",
+      "size": "normal",
+      "playable": false,
+      "attribute_count": 2,
+      "attribute_1_name": "vitality",
+      "attribute_1_value": 1,
+      "attribute_2_name": "concentration",
+      "attribute_2_value": 1
+    },
+    {
+      "name": "Orc",
+      "flavour": "I hate orcs!",
+      "prefix": "orc",
+      "bg_colour": "white",
+      "size": "normal",
+      "playable": false,
+      "attribute_count": 2,
+      "attribute_1_name": "toughness",
+      "attribute_1_value": 1,
+      "attribute_2_name": "expertise",
+      "attribute_2_value": 1
+    },
+    {
+      "name": "Kobold",
+      "flavour": "Kobolds are not cute or cuddly",
+      "prefix": "kobold",
+      "bg_colour": "white",
+      "size": "normal",
+      "playable": false,
+      "attribute_count": 2,
+      "attribute_1_name": "concentration",
+      "attribute_1_value": 1,
+      "attribute_2_name": "healing_power",
+      "attribute_2_value": 1
+    },
+    {
+      "name": "Ogre",
+      "flavour": "Ogres are big and mean",
+      "prefix": "ogre",
+      "bg_colour": "white",
+      "size": "normal",
+      "playable": false,
+      "attribute_count": 2,
+      "attribute_1_name": "power",
+      "attribute_1_value": 1,
+      "attribute_2_name": "vitality",
+      "attribute_2_value": 1
+    },
+    {
+      "name": "Tengu",
+      "flavour": "The Tengu are proud.",
+      "prefix": "tengu",
+      "bg_colour": "black",
+      "size": "normal",
+      "playable": false,
+      "attribute_count": 3,
+      "attribute_1_name": "precision",
+      "attribute_1_value": 1,
+      "attribute_2_name": "condition_damage",
+      "attribute_2_value": 1,
+      "attribute_3_name": "expertise",
+      "attribute_3_value": 1
+    },
+    {
+      "name": "Troll",
+      "flavour": "Trolls hate everyone.",
+      "prefix": "troll",
+      "bg_colour": "black",
+      "size": "normal",
+      "playable": false,
+      "attribute_count": 2,
+      "attribute_1_name": "power",
+      "attribute_1_value": 1,
+      "attribute_2_name": "toughness",
+      "attribute_2_value": 1
     }
   ]
 }

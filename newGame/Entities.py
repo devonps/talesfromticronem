@@ -119,16 +119,24 @@ class Entity:
             race_prefix = []
             race_bg_colour = []
             race_size = []
-            race_attributes = []
+            race_benefits = []
+            race_count = 0
 
             for option in race_file['races']:
                 race_name.append(option['name'])
                 race_flavour.append(option['flavour'])
                 race_prefix.append(option['prefix'])
-                # race_bg_colour.append(option['bg_colour']) // TODO use colorutils to set the background colour
                 race_bg_colour.append(colourUtilities.get('BLACK'))
                 race_size.append(option['size'])
-                race_attributes.append(option['attributes'])
+                racial_bonus_count = option['attribute_count']
+                race_count += 1
+                for attribute_bonus in range(racial_bonus_count):
+                    race_attr_name = 'attribute_' + str(attribute_bonus + 1) + '_name'
+                    race_attr_value = 'attribute_' + str(attribute_bonus + 1) + '_value'
+                    attribute_benefit_and_amount = (option[race_attr_name], option[race_attr_value])
+                    rb = [race_count]
+                    rb.extend(list(attribute_benefit_and_amount))
+                    race_benefits.append(rb)
 
             selected_race_id = random.randint(0, len(race_name) - 1)
 

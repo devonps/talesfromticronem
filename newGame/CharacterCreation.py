@@ -112,8 +112,7 @@ class CharacterCreation:
 
         player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='RACESFILE')
-        start_panel_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_WIDTH')
-        start_panel_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_HEIGHT')
+
         start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
         start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
         start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
@@ -122,33 +121,40 @@ class CharacterCreation:
                                                                                'START_PANEL_FRAME_HEIGHT')
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_X')
         menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_Y')
-        primary_attributes = configUtilities.get_config_value_as_list(game_config, 'newgame', 'PRIMARY_ATTRIBUTES')
         race_flavour_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'RACE_CONSOLE_FLAVOR_X')
         race_flavour_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'RACE_CONSOLE_FLAVOR_Y')
         race_benefits_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'RACE_CONSOLE_BENEFITS_X')
         race_benefits_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'RACE_CONSOLE_BENEFITS_Y')
 
+        race_file = read_json_file(player_race_file)
+
         # get build entity
         build_entity = BuildLibrary.create_build_entity(gameworld=gameworld)
-
-        logger.info('Select Race options')
-        race_file = read_json_file(player_race_file)
 
         race_name = []
         race_flavour = []
         race_prefix = []
         race_bg_colour = []
         race_size = []
-        race_attributes = []
+        race_benefits = []
+        race_count = 0
 
         for option in race_file['races']:
-            race_name.append(option['name'])
-            race_flavour.append(option['flavour'])
-            race_prefix.append(option['prefix'])
-            # race_bg_colour.append(option['bg_colour']) // TODO use colorutils to set the background colour
-            race_bg_colour.append(colourUtilities.get('BLACK'))
-            race_size.append(option['size'])
-            race_attributes.append(option['attributes'])
+            if option['playable']:
+                race_name.append(option['name'])
+                race_flavour.append(option['flavour'])
+                race_prefix.append(option['prefix'])
+                race_bg_colour.append(colourUtilities.get('BLACK'))
+                race_size.append(option['size'])
+                racial_bonus_count = option['attribute_count']
+                race_count += 1
+                for attribute_bonus in range(racial_bonus_count):
+                    race_attr_name = 'attribute_' + str(attribute_bonus + 1) + '_name'
+                    race_attr_value = 'attribute_' + str(attribute_bonus + 1) + '_value'
+                    attribute_benefit_and_amount = (option[race_attr_name], option[race_attr_value])
+                    rb = [race_count]
+                    rb.extend(list(attribute_benefit_and_amount))
+                    race_benefits.append(rb)
 
         show_race_options = True
         selected_menu_option = 0
@@ -179,23 +185,12 @@ class CharacterCreation:
             string_to_print = '[color=' + colourUtilities.get('GREEN') + '[/color]Benefit'
             terminal.print_(x=race_benefits_x, y=race_benefits_y, s=string_to_print)
 
-            race_benefit = race_attributes[selected_menu_option]
-            benefit_value = race_benefit['benefitValue']
-            benefit_name = race_benefit['benefitName']
-
-            coloured_list(list_options=primary_attributes,
-                          list_x=race_benefits_x + 3, list_y=race_benefits_y + 2,
-                          selected_option=benefit_name, blank_line=False, fg=colourUtilities.get('WHITE'))
-
             posy = 0
-            for benefit in primary_attributes:
-                if benefit_name.lower() == benefit.lower():
-                    string_to_print = '[color=' + colourUtilities.get('YELLOW1') + '[/color]' + '+' + benefit_value
-                    terminal.print(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
-                else:
-                    string_to_print = '[color=' + colourUtilities.get('BLACK') + '   [/color]'
-                    terminal.print(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
-                posy += 1
+            for benefit in race_benefits:
+                if benefit[0] == selected_menu_option + 1:
+                    string_to_print = '[color=' + colourUtilities.get('YELLOW1') + '[/color]' + benefit[1]
+                    terminal.printf(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
+                    posy += 1
 
             # blit changes to root console
             terminal.refresh()
@@ -482,7 +477,7 @@ class CharacterCreation:
 
         spellsfile = class_spellfile.upper() + '_SPELLSFILE'
 
-        spell_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        spell_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter=spellsfile)
 
         weapon_file = read_json_file(weapon_class_file)
@@ -507,7 +502,7 @@ class CharacterCreation:
                     weapon_info[weapon_counter][weapon_name] = wpn['display_name']
                     weapon_info[weapon_counter][weapon_hands] = wpn['wielded_hands']
                     weapon_info[weapon_counter][weapon_quality] = wpn['quality_level']
-                    spellCounter = 0
+                    spell_counter = 0
 
                     for spell in spell_file['spells']:
                         if spell['type_of_spell'] == 'combat':
@@ -529,7 +524,7 @@ class CharacterCreation:
                                     logger.warning('Spell Range is set to zero! file:{} spell name:{}', spellsfile,
                                                    spell['name'])
                                 spell_range[weapon_counter][slot_id] = 'Range:' + str(spellRange)
-                        spellCounter += 1
+                        spell_counter += 1
                     weapon_counter += 1
 
         menu_options = available_weapons
@@ -1034,8 +1029,6 @@ class CharacterCreation:
 
         if main_hand != '' and main_hand != off_hand:
             logger.info('creating a 1-handed weapon (main hand) for the player')
-
-            # created_weapon, hands_to_hold = NewCharacter.create_starting_weapon(gameworld, player, game_config)
             created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand,
                                                        game_config=game_config)
             weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
@@ -1079,7 +1072,7 @@ class CharacterCreation:
         spell_bar_entity = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
         MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player, spellbarEntity=spell_bar_entity)
         logger.info('Loading spell bar based on equipped weapons')
-        SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, playerEntity=player)
+        SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=player)
 
         # create jewellery pieces and equip them
         jewellery_package = BuildLibrary.get_build_jewellery(gameworld=gameworld, entity=build_entity)

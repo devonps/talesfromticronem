@@ -675,7 +675,7 @@ class MobileUtilities(numbers.Real):
 
         base_file_name = 'NAMESFILE'
         race_file = race.upper() + base_file_name
-        race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                     parameter=race_file)
         nameList = []
         return nameList
@@ -684,7 +684,7 @@ class MobileUtilities(numbers.Real):
     def choose_random_name(gameworld, game_config, entity, gender, race):
         base_file_name = 'NAMESFILE'
         race_file = race.upper() + base_file_name
-        race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+        race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                     parameter=race_file)
 
         selected_name = "SteveTest"
