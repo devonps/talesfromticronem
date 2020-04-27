@@ -120,18 +120,17 @@ class SceneManager:
                                                     tile_type=tile_type_door)
                 SceneManager.place_wall_tile_yes_no(cell=cell, game_map=game_map, posx=posx, posy=posy,
                                                     tile_type=tile_type_wall)
-                SceneManager.place_player_tile_yes_no(cell=cell, game_map=game_map, posx=posx, posy=posy,
+                player_placed = SceneManager.place_player_tile_yes_no(cell=cell, game_map=game_map, posx=posx, posy=posy,
                                                       tile_type=tile_type_floor, gameworld=gameworld)
+
+                if player_placed:
+                    SceneManager.setup_viewport(gameworld=gameworld, posx=posx, posy=posy)
 
                 # add named NPCs to scene
                 if cell in 'ABCDEFG':
                     enemy_object = Entity(gameworld=gameworld)
-                    enemy_object.mobile_purpose(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy,
-                                                cellid=cell)
-                    game_map.tiles[posx][posy].type_of_tile = tile_type_floor
-                    game_map.tiles[posx][posy].image = 4
-                    game_map.tiles[posx][posy].blocked = False
-                    game_map.tiles[posx][posy].block_sight = False
+                    enemy_object.mobile_purpose(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell)
+                    SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor, game_map=game_map)
                 posx += 1
             posy += 1
 
@@ -161,19 +160,26 @@ class SceneManager:
 
     @staticmethod
     def place_player_tile_yes_no(cell, game_map, posx, posy, tile_type, gameworld):
+        player_placed = False
         if cell == '@':
-            game_config = configUtilities.load_config()
+
             game_map.tiles[posx][posy].type_of_tile = tile_type
             game_map.tiles[posx][posy].blocked = False
             game_map.tiles[posx][posy].image = 11
             game_map.tiles[posx][posy].block_sight = False
+            player_placed = True
 
-            player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-            viewport_entity = MobileUtilities.get_viewport_id(gameworld=gameworld, entity=player_entity)
-            MobileUtilities.set_mobile_position(gameworld=gameworld, entity=player_entity, posx=posx, posy=posy)
+        return player_placed
 
-            vpx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
-            vpy = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
+    @staticmethod
+    def setup_viewport(gameworld, posx, posy):
+        game_config = configUtilities.load_config()
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        viewport_entity = MobileUtilities.get_viewport_id(gameworld=gameworld, entity=player_entity)
+        MobileUtilities.set_mobile_position(gameworld=gameworld, entity=player_entity, posx=posx, posy=posy)
 
-            CommonUtils.set_player_viewport_position_x(gameworld=gameworld, viewport_id=viewport_entity, posx=vpx)
-            CommonUtils.set_player_viewport_position_y(gameworld=gameworld, viewport_id=viewport_entity, posy=vpy)
+        vpx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        vpy = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
+
+        CommonUtils.set_player_viewport_position_x(gameworld=gameworld, viewport_id=viewport_entity, posx=vpx)
+        CommonUtils.set_player_viewport_position_y(gameworld=gameworld, viewport_id=viewport_entity, posy=vpy)

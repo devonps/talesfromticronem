@@ -427,8 +427,9 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def view_message_log(gameworld, player, log_to_be_displayed):
+        logs = log_to_be_displayed.split('_')
         msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
-        CommonUtils.set_visible_log(gameworld=gameworld, log_id=msglog, log_to_display=log_to_be_displayed)
+        CommonUtils.set_visible_log(gameworld=gameworld, log_id=msglog, log_to_display=logs[2])
         MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=True)
 
     @staticmethod
