@@ -129,8 +129,10 @@ class SceneManager:
                 # add named NPCs to scene
                 if cell in 'ABCDEFG':
                     enemy_object = Entity(gameworld=gameworld)
-                    enemy_object.mobile_purpose(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell)
+                    enemy_object.create_named_mobile(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell)
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor, game_map=game_map)
+                    enemy = Entity(gameworld=gameworld)
+                    enemy.create_role_bomber(posx=posx, posy=posy + 3)
                 posx += 1
             posy += 1
 

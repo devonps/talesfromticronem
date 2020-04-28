@@ -19,7 +19,7 @@ class Entity:
         entity_id = MobileUtilities.get_next_entity_id(self.gameworld)
         return entity_id
 
-    def mobile_purpose(self, npcs_for_scene, posx, posy, cellid):
+    def create_named_mobile(self, npcs_for_scene, posx, posy, cellid):
         entity_id = self.create_new_entity()
 
         for npc in npcs_for_scene:
@@ -52,16 +52,14 @@ class Entity:
                                                                                parameter='AI_LEVEL_' + npc_ai)
                         logger.warning('--- CREATING NEW MOBILE ---')
                         # -------------------------------------
-                        # --- CHOOSE NAME ---------------------
-                        # -------------------------------------
-                        first_name = self.choose_name_for_mobile(name_choice=npc_name)
-                        MobileUtilities.set_mobile_first_name(gameworld=self.gameworld, entity=entity_id,
-                                                              name=first_name)
-                        logger.info('Their name is {}', first_name)
-                        # -------------------------------------
                         # --- CHOOSE RACE ---------------------
                         # -------------------------------------
-                        self.choose_race_for_mobile(race_choice=npc_race, entity_id=entity_id)
+                        selected_race = self.choose_race_for_mobile(race_choice=npc_race, entity_id=entity_id)
+
+                        # -------------------------------------
+                        # --- CHOOSE NAME ---------------------
+                        # -------------------------------------
+                        self.choose_name_for_mobile(name_choice=npc_name, selected_race=selected_race, entity_id=entity_id)
 
                         # -------------------------------------
                         # --- CHOOSE CLASS --------------------
@@ -102,11 +100,84 @@ class Entity:
 
                         logger.warning('--- NEW MOBILE CREATED ---')
 
-    def choose_name_for_mobile(self, name_choice):
-        selected_name = name_choice
+    def create_role_bomber(self, posx, posy):
+        entity_id = self.create_new_entity()
+        MobileUtilities.create_base_mobile(gameworld=self.gameworld, game_config=self.game_config, entity_id=entity_id)
+
+        npc_name = 'RANDOM'
+        npc_glyph = 'b'
+        npc_fg = 'white'
+        npc_bg = 'black'
+
+        # temporary code to load in the bomber role
+        role_file = read_json_file('static/data/roles.json')
+        for role in role_file['roles']:
+            if role['id'] == 'bomber':
+                npc_race = role['race']
+                npc_class = role['class']
+                armour_file_option = role['armourset']
+                jewellery_file_option = role['jewellery']
+                weapon_main_hand = role['main-hand-weapon']
+                weapon_off_hand = role['off-hand-weapon']
+                weapon_both_hands = role['both-hands-weapon']
+
+                logger.warning('--- CREATING BOMBER ---')
+
+                # -------------------------------------
+                # --- CHOOSE RACE ---------------------
+                # -------------------------------------
+                selected_race = self.choose_race_for_mobile(race_choice=npc_race, entity_id=entity_id)
+
+                # -------------------------------------
+                # --- CHOOSE NAME ---------------------
+                # -------------------------------------
+                self.choose_name_for_mobile(name_choice=npc_name, selected_race=selected_race, entity_id=entity_id)
+
+                # -------------------------------------
+                # --- CHOOSE CLASS --------------------
+                # -------------------------------------
+                self.choose_class_for_mobile(class_choice=npc_class, entity_id=entity_id)
+
+                # -------------------------------------
+                # --- CREATE ARMOURSET ----------------
+                # -------------------------------------
+                self.choose_armourset_for_mobile(armour_file_option=armour_file_option, entity_id=entity_id)
+
+                # -------------------------------------
+                # --- CREATE JEWELLERYSET -------------
+                # -------------------------------------
+                self.choose_jewellery_package(jewellery_file_option=jewellery_file_option, entity_id=entity_id)
+
+                # -------------------------------------
+                # --- CREATE WEAPONSET ----------------
+                # -------------------------------------
+                self.choose_weaponset(entity_id=entity_id, main_hand=weapon_main_hand, off_hand=weapon_off_hand,
+                                      both_hands=weapon_both_hands)
+
+                entity_ai = configUtilities.get_config_value_as_string(configfile=self.game_config, section='game',
+                                                                       parameter='AI_LEVEL_MONSTER')
+                # now apply the values to the base mobile object
+
+                MobileUtilities.set_entity_ai(gameworld=self.gameworld, entity=entity_id, value=entity_ai)
+                MobileUtilities.set_mobile_description(gameworld=self.gameworld, entity=entity_id, value='nothing to say')
+                MobileUtilities.set_mobile_glyph(gameworld=self.gameworld, entity=entity_id, value=npc_glyph)
+                MobileUtilities.set_mobile_fg_render_colour(gameworld=self.gameworld, entity=entity_id,  value=npc_fg.upper())
+                MobileUtilities.set_mobile_bg_render_colour(gameworld=self.gameworld, entity=entity_id, value=npc_bg.upper())
+                MobileUtilities.set_mobile_render_image(gameworld=self.gameworld, entity=entity_id, value=11)
+                MobileUtilities.set_mobile_visible(gameworld=self.gameworld, entity=entity_id)
+
+                MobileUtilities.set_mobile_position(gameworld=self.gameworld, entity=entity_id, posx=posx, posy=posy)
+
+    def choose_name_for_mobile(self, name_choice, selected_race, entity_id):
+        first_name = name_choice
+        MobileUtilities.set_player_gender(gameworld=self.gameworld, entity=entity_id, gender='male')
         if name_choice == 'RANDOM':
-            selected_name = 'something'
-        return selected_name
+            # need to create random name generator here
+
+            first_name = 'not-tcod'
+
+        logger.info('Their name is {}', first_name)
+        MobileUtilities.set_mobile_first_name(gameworld=self.gameworld, entity=entity_id, name=first_name)
 
     def choose_race_for_mobile(self, race_choice, entity_id):
         if race_choice == 'RANDOM':
@@ -155,6 +226,8 @@ class Entity:
                                                 bg=selected_bg_colour)
         logger.info('Their race is {}', selected_race)
 
+        return selected_race
+
     def choose_class_for_mobile(self, class_choice, entity_id):
 
         if class_choice == 'RANDOM':
@@ -188,7 +261,7 @@ class Entity:
         logger.info('Their class is {}', selected_class_name)
 
     def choose_armourset_for_mobile(self, armour_file_option, entity_id):
-        if armour_file_option != '':
+        if armour_file_option != 'none':
             armourset_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='files',
                                                                         parameter='ARMOURSETFILE')
             armour_file = read_json_file(armourset_file)
@@ -218,6 +291,8 @@ class Entity:
                                                   armour_modifier=armour_modifier, px_bonus=px_bonus)
             ItemManager.create_and_equip_armourset_for_npc(gameworld=self.gameworld, as_display_name=as_display_name,
                                                            armour_modifier=armour_modifier, entity_id=entity_id)
+        else:
+            logger.info('They are wearing no armour')
 
     def build_armourset_prefix_list(self, prefix_count, attribute_bonus_count, as_prefix_list, prefix_list, armourset):
         attvaluestring = 'attributebonus'
@@ -251,7 +326,7 @@ class Entity:
         return armour_modifier
 
     def choose_jewellery_package(self, jewellery_file_option, entity_id):
-        if jewellery_file_option != '':
+        if jewellery_file_option != 'none':
             jewellery_packages = configUtilities.get_config_value_as_list(configfile=self.game_config, section='newgame',
                                                                           parameter='JEWELLERY_PACKAGES')
 
@@ -265,29 +340,32 @@ class Entity:
             logger.info('Their jewellery package is {}', jewellery_set)
             ItemManager.create_and_equip_jewellery_for_npc(gameworld=self.gameworld, entity_id=entity_id,
                                                            jewellery_set=jewellery_set, npc_class_file=npc_class_file)
+        else:
+            logger.info('They are wearing no jewellery')
 
     def choose_weaponset(self, entity_id, main_hand, off_hand, both_hands):
 
         selected_class = MobileUtilities.get_character_class(self.gameworld, entity=entity_id)
         # gather list of available weapons for the player class
-        available_weapons = self.build_available_weapons(selected_class=selected_class)
+
         if main_hand != '':
-            self.select_main_hand_weapon(main_hand=main_hand, available_weapons=available_weapons, selected_class=selected_class, entity_id=entity_id)
+            self.select_main_hand_weapon(main_hand=main_hand, selected_class=selected_class, entity_id=entity_id)
 
         if off_hand != '':
-            self.select_off_hand_weapon(off_hand=off_hand, available_weapons=available_weapons, selected_class=selected_class, entity_id=entity_id)
+            self.select_off_hand_weapon(off_hand=off_hand, selected_class=selected_class, entity_id=entity_id)
 
         if both_hands != '':
-            self.select_both_hands_weapon(both_hands=both_hands, available_weapons=available_weapons, selected_class=selected_class, entity_id=entity_id)
+            self.select_both_hands_weapon(both_hands=both_hands, selected_class=selected_class, entity_id=entity_id)
 
-    def select_main_hand_weapon(self, main_hand, available_weapons, selected_class, entity_id):
+    def select_main_hand_weapon(self, main_hand, selected_class, entity_id):
         weapon_choices = []
         weapon_to_create = ''
         weapon_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='files',
                                                                        parameter='WEAPONSFILE')
 
-        logger.info('weapons available {}', available_weapons)
         if main_hand == 'RANDOM':
+            available_weapons = self.build_available_weapons(selected_class=selected_class)
+            logger.info('weapons available {}', available_weapons)
             weapon_file = read_json_file(weapon_class_file)
             for weapon in available_weapons:
                 for wpn in weapon_file['weapons']:
@@ -304,13 +382,14 @@ class Entity:
                                              entity_id=entity_id, hand_to_wield='main')
         logger.info('Their main hand weapon is {}', weapon_to_create)
 
-    def select_off_hand_weapon(self, off_hand, available_weapons, selected_class, entity_id):
+    def select_off_hand_weapon(self, off_hand, selected_class, entity_id):
         weapon_choices = []
         weapon_to_create = ''
         weapon_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='files',
                                                                        parameter='WEAPONSFILE')
 
         if off_hand == 'RANDOM':
+            available_weapons = self.build_available_weapons(selected_class=selected_class)
             weapon_file = read_json_file(weapon_class_file)
             for weapon in available_weapons:
                 for wpn in weapon_file['weapons']:
@@ -327,13 +406,14 @@ class Entity:
                                              entity_id=entity_id, hand_to_wield='main')
         logger.info('Their off hand weapon is {}', weapon_to_create)
 
-    def select_both_hands_weapon(self, both_hands, available_weapons, selected_class, entity_id):
+    def select_both_hands_weapon(self, both_hands, selected_class, entity_id):
         weapon_choices = []
         weapon_to_create = ''
         weapon_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='files',
                                                                        parameter='WEAPONSFILE')
 
         if both_hands == 'RANDOM':
+            available_weapons = self.build_available_weapons(selected_class=selected_class)
             weapon_file = read_json_file(weapon_class_file)
             for weapon in available_weapons:
                 for wpn in weapon_file['weapons']:
@@ -358,20 +438,17 @@ class Entity:
 
         for option in class_file['classes']:
             if option['spellfile'] == selected_class:
-                if option["weapons"]["sword"] == 'true':
-                    available_weapons.append('sword')
-                elif option["weapons"]["wand"] == 'true':
-                    available_weapons.append('wand')
-                elif option["weapons"]["scepter"] == 'true':
-                    available_weapons.append('scepter')
-                elif option["weapons"]["staff"] == 'true':
-                    available_weapons.append('staff')
-                elif option["weapons"]["dagger"] == 'true':
-                    available_weapons.append('dagger')
-                elif option["weapons"]["rod"] == 'true':
-                    available_weapons.append('rod')
-                elif option["weapons"]["focus"] == 'true':
-                    available_weapons.append('focus')
+                wpns = option["weapons"]
+
+                # If you use this approach along
+                # with a small trick, then you can process the keys and values of any dictionary.
+                # The trick consists of using the indexing operator[] with the dictionary and its keys to
+                # get access to the values:
+
+                for key in wpns:
+                    if wpns[key] == 'true':
+                        available_weapons.append(key)
+                        logger.info('weapon added {}', key)
         return available_weapons
 
     def create_weapon_and_wield_for_npc(self, weapon_to_be_created, enemy_class, entity_id, hand_to_wield):

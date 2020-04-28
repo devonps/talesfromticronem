@@ -2,12 +2,14 @@
   "roles": [
     {
       "id": "bomber",
-      "race": "random",
-      "class": "random",
-      "armour": "none",
+      "race": "RANDOM",
+      "class": "necromancer",
+      "armourset": "none",
+      "armour-modifier": "none",
       "jewellery": "none",
-      "preferred-weapons": "both",
-      "base-class": "any",
+      "main-hand-weapon": "",
+      "off-hand-weapon": "",
+      "both-hands-weapon": "RANDOM",
       "min-range": "medium",
       "max-range": "long",
       "aoe": true

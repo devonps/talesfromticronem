@@ -385,8 +385,8 @@ class MobileUtilities(numbers.Real):
         return spell_bar
 
     @staticmethod
-    def set_spellbar_for_entity(gameworld, entity, spellbarEntity):
-        gameworld.add_component(entity, mobiles.SpellBar(entityId=spellbarEntity))
+    def set_spellbar_for_entity(gameworld, entity, spellbar_entity):
+        gameworld.add_component(entity, mobiles.SpellBar(entityId=spellbar_entity))
 
     @staticmethod
     def get_spellbar_id_for_entity(gameworld, entity):
@@ -395,8 +395,8 @@ class MobileUtilities(numbers.Real):
         return spellbar_component.entityId
 
     @staticmethod
-    def set_viewport_for_player(gameworld, entity, viewportId):
-        gameworld.add_component(entity, mobiles.Viewport(entityId=viewportId))
+    def set_viewport_for_player(gameworld, entity, viewport_id):
+        gameworld.add_component(entity, mobiles.Viewport(entityId=viewport_id))
 
     @staticmethod
     def get_viewport_id(gameworld, entity):
@@ -678,8 +678,8 @@ class MobileUtilities(numbers.Real):
         race_file = race.upper() + base_file_name
         race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                     parameter=race_file)
-        nameList = []
-        return nameList
+        name_list = []
+        return name_list
 
     @staticmethod
     def choose_random_name(gameworld, game_config, entity, gender, race):
@@ -820,6 +820,8 @@ class MobileUtilities(numbers.Real):
     @staticmethod
     def calculate_special_bar_current_value(gameworld, entity):
         pass
+        # do nothing yet
+
 
     @staticmethod
     def calculate_armour_attribute(gameworld, entity):
@@ -883,7 +885,6 @@ class MobileUtilities(numbers.Real):
     @staticmethod
     def calculate_boon_duration(gameworld, entity):
 
-        # entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
         entity_secondary_component = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
 
         concentration_value = entity_secondary_component.concentration
@@ -894,8 +895,6 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def calculate_critical_hit_chance(gameworld, entity):
-
-        # entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
         base_value = 5  # every hit has a 5% chance of causing a critical hit
 
         status_effects_component = gameworld.component_for_entity(entity, mobiles.StatusEffects)
@@ -917,8 +916,6 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def calculate_critical_damage(gameworld, entity):
-
-        # entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
         base_value = 150
         entity_secondary_component = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
 
@@ -932,8 +929,6 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def calculate_condition_duration(gameworld, entity):
-
-        # entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
         entity_secondary_component = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         expertise_value = entity_secondary_component.expertise
 
@@ -961,7 +956,6 @@ class MobileUtilities(numbers.Real):
     @staticmethod
     def calculate_current_health(gameworld, entity):
 
-        current_health = 0
         maximum_health = gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth
         # check boons --> increase health
         # check conditions --> reduce health
@@ -1044,9 +1038,9 @@ class MobileUtilities(numbers.Real):
     # Set derived attributes
     #
     @staticmethod
-    def set_current_health_during_combat(gameworld, entity, damageToApply):
+    def set_current_health_during_combat(gameworld, entity, damage_to_apply):
         target_current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=entity)
-        target_new_health = target_current_health - damageToApply
+        target_new_health = target_current_health - damage_to_apply
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth = target_new_health
 
     @staticmethod
