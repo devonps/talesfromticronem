@@ -7,7 +7,7 @@
       "armour": "none",
       "jewellery": "none",
       "preferred-weapons": "both",
-      "base-class": "necromancer",
+      "base-class": "any",
       "min-range": "medium",
       "max-range": "long",
       "aoe": true
