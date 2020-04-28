@@ -194,7 +194,7 @@ class SpellUtilities:
 
         spellbar = MobileUtilities.get_next_entity_id(gameworld=gameworld)
 
-        MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbarEntity=spellbar)
+        MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spellbar)
         weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
 
         if len(weapons_equipped) != 0:

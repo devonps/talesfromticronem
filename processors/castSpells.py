@@ -55,7 +55,7 @@ class CastSpells(esper.Processor):
                         # apply damage to target --> current health is used when in combat
                         MobileUtilities.set_current_health_during_combat(gameworld=self.gameworld,
                                                                          entity=mob.spell_target,
-                                                                         damageToApply=damage_done_to_target)
+                                                                         damage_to_apply=damage_done_to_target)
 
                         # display message in combat log
                         logger.warning('Spell cast current turn is {}', msg_turn_number)

@@ -1926,7 +1926,7 @@ class CharacterCreation:
                             viewport_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
                             CommonUtils.create_viewport_as_entity(gameworld=gameworld, vwp=viewport_entity)
                             MobileUtilities.set_viewport_for_player(gameworld=gameworld, entity=player_entity,
-                                                                    viewportId=viewport_entity)
+                                                                    viewport_id=viewport_entity)
                             messagelog_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
                             CommonUtils.create_message_log_as_entity(gameworld=gameworld, logid=messagelog_entity)
                             MobileUtilities.set_MessageLog_for_player(gameworld=gameworld, entity=player_entity,
