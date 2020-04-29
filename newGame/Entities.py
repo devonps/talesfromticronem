@@ -8,6 +8,7 @@ from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from loguru import logger
 from utilities.jsonUtilities import read_json_file
+from utilities.spellHelp import SpellUtilities
 
 
 class Entity:
@@ -151,8 +152,13 @@ class Entity:
                 # -------------------------------------
                 # --- CREATE WEAPONSET ----------------
                 # -------------------------------------
-                self.choose_weaponset(entity_id=entity_id, main_hand=weapon_main_hand, off_hand=weapon_off_hand,
+                created_weapon_entity = self.choose_weaponset(entity_id=entity_id, main_hand=weapon_main_hand, off_hand=weapon_off_hand,
                                       both_hands=weapon_both_hands)
+
+                # -------------------------------------
+                # --- CHOOSE SPELLS AND LOAD TO WEAPON -
+                # -------------------------------------
+                self.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity, entity_id=entity_id)
 
                 entity_ai = configUtilities.get_config_value_as_string(configfile=self.game_config, section='game',
                                                                        parameter='AI_LEVEL_MONSTER')
@@ -343,19 +349,46 @@ class Entity:
         else:
             logger.info('They are wearing no jewellery')
 
+    def generate_sample_spells_to_be_loaded(self, created_weapon_entity, entity_id):
+
+        enemy_class = MobileUtilities.get_character_class(gameworld=self.gameworld, entity=entity_id)
+        weapon_type = ItemUtilities.get_weapon_type(self.gameworld, created_weapon_entity)
+
+        generate_spells(gameworld=self.gameworld, game_config=self.game_config, spell_file=enemy_class,
+                        player_class=enemy_class)
+        spell_list = SpellUtilities.get_list_of_spells_for_enemy(gameworld=self.gameworld, weapon_type=weapon_type, mobile_class=enemy_class)
+        sample_spells = ItemUtilities.load_enemy_weapon_with_spells(gameworld=self.gameworld, enemy_id=entity_id, spell_list=spell_list, weapon_entity_id=created_weapon_entity, weapon_type=weapon_type)
+
+        logger.debug('=================')
+        for k in sample_spells:
+            name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=k)
+            logger.info('Sample spell {}', name)
+        logger.debug('=================')
+
     def choose_weaponset(self, entity_id, main_hand, off_hand, both_hands):
+
+        weapon_to_create = ''
+        which_hand = ''
+        created_weapon_entity = 0
 
         selected_class = MobileUtilities.get_character_class(self.gameworld, entity=entity_id)
         # gather list of available weapons for the player class
 
         if main_hand != '':
-            self.select_main_hand_weapon(main_hand=main_hand, selected_class=selected_class, entity_id=entity_id)
+            weapon_to_create, which_hand = self.select_main_hand_weapon(main_hand=main_hand, selected_class=selected_class, entity_id=entity_id)
 
         if off_hand != '':
-            self.select_off_hand_weapon(off_hand=off_hand, selected_class=selected_class, entity_id=entity_id)
+            weapon_to_create, which_hand = self.select_off_hand_weapon(off_hand=off_hand, selected_class=selected_class, entity_id=entity_id)
 
         if both_hands != '':
-            self.select_both_hands_weapon(both_hands=both_hands, selected_class=selected_class, entity_id=entity_id)
+            weapon_to_create, which_hand = self.select_both_hands_weapon(both_hands=both_hands, selected_class=selected_class, entity_id=entity_id)
+
+        if weapon_to_create != '':
+            logger.info('The {} will be wielded in {} hand(s)', weapon_to_create, which_hand)
+            created_weapon_entity = self.create_weapon_and_equip_npc(weapon_to_be_created=weapon_to_create, enemy_class=selected_class,
+                                             entity_id=entity_id, hand_to_wield=which_hand)
+
+        return created_weapon_entity
 
     def select_main_hand_weapon(self, main_hand, selected_class, entity_id):
         weapon_choices = []
@@ -378,9 +411,7 @@ class Entity:
         else:
             weapon_to_create = main_hand
 
-        self.create_weapon_and_wield_for_npc(weapon_to_be_created=weapon_to_create, enemy_class=selected_class,
-                                             entity_id=entity_id, hand_to_wield='main')
-        logger.info('Their main hand weapon is {}', weapon_to_create)
+        return weapon_to_create, 'main'
 
     def select_off_hand_weapon(self, off_hand, selected_class, entity_id):
         weapon_choices = []
@@ -402,9 +433,7 @@ class Entity:
         else:
             weapon_to_create = off_hand
 
-        self.create_weapon_and_wield_for_npc(weapon_to_be_created=weapon_to_create, enemy_class=selected_class,
-                                             entity_id=entity_id, hand_to_wield='main')
-        logger.info('Their off hand weapon is {}', weapon_to_create)
+        return weapon_to_create, 'off'
 
     def select_both_hands_weapon(self, both_hands, selected_class, entity_id):
         weapon_choices = []
@@ -426,9 +455,7 @@ class Entity:
         else:
             weapon_to_create = both_hands
 
-        self.create_weapon_and_wield_for_npc(weapon_to_be_created=weapon_to_create, enemy_class=selected_class,
-                                             entity_id=entity_id, hand_to_wield='main')
-        logger.info('Their both hands weapon is {}', weapon_to_create)
+        return weapon_to_create, 'both'
 
     def build_available_weapons(self, selected_class):
         player_class_file = configUtilities.get_config_value_as_string(configfile=self.game_config, section='files',
@@ -451,19 +478,20 @@ class Entity:
                         logger.info('weapon added {}', key)
         return available_weapons
 
-    def create_weapon_and_wield_for_npc(self, weapon_to_be_created, enemy_class, entity_id, hand_to_wield):
-        created_weapon = ItemManager.create_weapon(gameworld=self.gameworld, weapon_type=weapon_to_be_created,
+    def create_weapon_and_equip_npc(self, weapon_to_be_created, enemy_class, entity_id, hand_to_wield):
+        created_weapon_entity = ItemManager.create_weapon(gameworld=self.gameworld, weapon_type=weapon_to_be_created,
                                                    game_config=self.game_config)
-        weapon_type = ItemUtilities.get_weapon_type(self.gameworld, created_weapon)
+        # weapon_type = ItemUtilities.get_weapon_type(self.gameworld, created_weapon)
 
         if enemy_class == '':
             logger.warning('Spell file name not set')
 
-        generate_spells(gameworld=self.gameworld, game_config=self.game_config, spell_file=enemy_class,
-                        player_class=enemy_class)
-
-        WeaponClass.load_weapon_with_spells(self.gameworld, created_weapon, weapon_type, enemy_class)
+        # generate_spells(gameworld=self.gameworld, game_config=self.game_config, spell_file=enemy_class,
+        #                 player_class=enemy_class)
+        #
+        # WeaponClass.load_weapon_with_spells(self.gameworld, created_weapon, weapon_type, enemy_class)
 
         # equip player with newly created starting weapon
-        MobileUtilities.equip_weapon(gameworld=self.gameworld, entity=entity_id, weapon=created_weapon,
+        MobileUtilities.equip_weapon(gameworld=self.gameworld, entity=entity_id, weapon=created_weapon_entity,
                                      hand=hand_to_wield)
+        return created_weapon_entity

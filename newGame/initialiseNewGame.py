@@ -51,11 +51,10 @@ def generate_spells(gameworld, game_config, spell_file, player_class):
     boons = configUtilities.get_config_value_as_list(configfile=game_config, section='spells', parameter='boon_effects')
     resources = configUtilities.get_config_value_as_list(configfile=game_config, section='spells', parameter='class_resources')
 
-    logger.debug('Creating spells as entities')
+    logger.debug('Creating spells as entities for {}', player_class)
     for spell in spell_file['spells']:
         thisspell = world.get_next_entity_id(gameworld=gameworld)
         gameworld.add_component(thisspell, spells.Name(spell['name']))
-        logger.info('Spell name {}', spell['name'])
         gameworld.add_component(thisspell, spells.Description(spell['description']))
         gameworld.add_component(thisspell, spells.ShortDescription(spell['short_description']))
         gameworld.add_component(thisspell, spells.CastTime(spell['turns_to_cast']))

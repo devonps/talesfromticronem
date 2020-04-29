@@ -3,7 +3,7 @@ import random
 from loguru import logger
 
 from components import items, mobiles
-from utilities import world, configUtilities
+from utilities import world
 
 
 class ItemUtilities:
@@ -238,9 +238,45 @@ class ItemUtilities:
         else:
             return random.randrange(wpn_dmg_min, wpn_dmg_max)
 
+    @staticmethod
+    def load_enemy_weapon_with_spells(gameworld, enemy_id, spell_list, weapon_entity_id, weapon_type):
+        sample_spells = []
+        if weapon_type in ['sword', 'staff', 'dagger']:
+            sample_spells = random.sample(spell_list, 5)
+            weapon_slot_component = gameworld.component_for_entity(weapon_entity_id, items.Spells)
+            weapon_slot_component.slot_one = sample_spells[0]
+            weapon_slot_component = gameworld.component_for_entity(weapon_entity_id, items.Spells)
+            weapon_slot_component.slot_two = sample_spells[1]
+            weapon_slot_component = gameworld.component_for_entity(weapon_entity_id, items.Spells)
+            weapon_slot_component.slot_three = sample_spells[2]
+            weapon_slot_component = gameworld.component_for_entity(weapon_entity_id, items.Spells)
+            weapon_slot_component.slot_four = sample_spells[3]
+            weapon_slot_component = gameworld.component_for_entity(weapon_entity_id, items.Spells)
+            weapon_slot_component.slot_five = sample_spells[4]
 
+            logger.debug('5 Random spells loaded into {} are {}', weapon_type, sample_spells)
 
+        if weapon_type in ['wand', 'scepter']:
+            sample_spells = random.sample(spell_list, 3)
+            weapon_slot_component = gameworld.component_for_entity(weapon_entity_id, items.Spells)
+            weapon_slot_component.slot_one = sample_spells[0]
+            weapon_slot_component = gameworld.component_for_entity(weapon_entity_id, items.Spells)
+            weapon_slot_component.slot_two = sample_spells[1]
+            weapon_slot_component = gameworld.component_for_entity(weapon_entity_id, items.Spells)
+            weapon_slot_component.slot_three = sample_spells[2]
 
+            logger.debug('3 Random spells loaded into {} are {}', weapon_type, sample_spells)
+
+        if weapon_type in ['rod', 'focus']:
+            sample_spells = random.sample(spell_list, 2)
+            weapon_slot_component = gameworld.component_for_entity(weapon_entity_id, items.Spells)
+            weapon_slot_component.slot_four = sample_spells[0]
+            weapon_slot_component = gameworld.component_for_entity(weapon_entity_id, items.Spells)
+            weapon_slot_component.slot_five = sample_spells[1]
+
+            logger.debug('2 Random spells loaded into {} are {}', weapon_type, sample_spells)
+
+        return sample_spells
 
 
 ####################################################

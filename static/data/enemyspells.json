@@ -1,4 +1,7 @@
-[{
+{
+	"spells":
+	[
+	{
 		"spellname": "necrotic grasp",
 		"class": "necromancer",
 		"weapon": "staff",
@@ -406,4 +409,5 @@
 		"blastradius": 240,
 		"directdamage": "over time"
 	}
-]
+	]
+}
