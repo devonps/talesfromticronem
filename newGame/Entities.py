@@ -164,7 +164,7 @@ class Entity:
                                                                        parameter='AI_LEVEL_MONSTER')
                 # now apply the values to the base mobile object
 
-                MobileUtilities.set_entity_ai(gameworld=self.gameworld, entity=entity_id, value=entity_ai)
+                MobileUtilities.set_entity_ai(gameworld=self.gameworld, entity=entity_id, value=int(entity_ai))
                 MobileUtilities.set_mobile_description(gameworld=self.gameworld, entity=entity_id, value='nothing to say')
                 MobileUtilities.set_mobile_glyph(gameworld=self.gameworld, entity=entity_id, value=npc_glyph)
                 MobileUtilities.set_mobile_fg_render_colour(gameworld=self.gameworld, entity=entity_id,  value=npc_fg.upper())

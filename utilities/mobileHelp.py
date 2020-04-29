@@ -84,6 +84,10 @@ class MobileUtilities(numbers.Real):
         return player
 
     @staticmethod
+    def get_mobile_ai_level(gameworld, entity_id):
+        return gameworld.component_for_entity(entity_id, mobiles.AI).ailevel
+
+    @staticmethod
     def get_number_as_a_percentage(lower_value, maximum_value):
         return int((lower_value / maximum_value) * 100)
 
@@ -116,8 +120,8 @@ class MobileUtilities(numbers.Real):
         return position_component.y
 
     @staticmethod
-    def set_player_velocity(gameworld, player_entity, direction, speed):
-        player_velocity_component = gameworld.component_for_entity(player_entity, mobiles.Velocity)
+    def set_mobile_velocity(gameworld, entity, direction, speed):
+        player_velocity_component = gameworld.component_for_entity(entity, mobiles.Velocity)
         dx = 0
         dy = 0
         if direction == 'left':
@@ -136,8 +140,8 @@ class MobileUtilities(numbers.Real):
         player_velocity_component.dy = dy
 
     @staticmethod
-    def get_player_velocity(gameworld, player_entity):
-        player_velocity_component = gameworld.component_for_entity(player_entity, mobiles.Velocity)
+    def get_mobile_velocity(gameworld, entity):
+        player_velocity_component = gameworld.component_for_entity(entity, mobiles.Velocity)
         return player_velocity_component.dx, player_velocity_component.dy
 
     @staticmethod

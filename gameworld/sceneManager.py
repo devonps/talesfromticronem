@@ -131,8 +131,6 @@ class SceneManager:
                     enemy_object = Entity(gameworld=gameworld)
                     enemy_object.create_named_mobile(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell)
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor, game_map=game_map)
-                    enemy = Entity(gameworld=gameworld)
-                    enemy.create_role_bomber(posx=posx, posy=posy + 3)
                 posx += 1
             posy += 1
 
@@ -170,6 +168,9 @@ class SceneManager:
             game_map.tiles[posx][posy].image = 11
             game_map.tiles[posx][posy].block_sight = False
             player_placed = True
+
+            enemy = Entity(gameworld=gameworld)
+            enemy.create_role_bomber(posx=posx, posy=posy + 3)
 
         return player_placed
 

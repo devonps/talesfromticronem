@@ -1,5 +1,6 @@
 from bearlibterminal import terminal
 
+from enemyRelated.statelessAI import StatelessAI
 from newGame.initialiseNewGame import setup_gameworld
 from utilities.externalfileutilities import Externalfiles
 from utilities.mobileHelp import MobileUtilities
@@ -70,7 +71,7 @@ def game_loop(gameworld):
                 Externalfiles.write_full_game_log(gameworld=gameworld, log_id=message_log_id)
                 raise SystemExit()
             if event_action in ('left', 'right', 'up', 'down'):
-                MobileUtilities.set_player_velocity(gameworld=gameworld, player_entity=player, direction=event_action, speed=1)
+                MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=player, direction=event_action, speed=1)
                 advance_game_turn = True
             if event_action in spell_bar_keys:
                 SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, message_log_id=message_log_id, player=player)
@@ -83,6 +84,7 @@ def game_loop(gameworld):
             #
             # get monsters intended action
             #
+            StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player)
             logger.debug('Waiting for monsters to finish up')
             current_turn += 1
             MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
