@@ -48,7 +48,7 @@ class SpellUtilities:
         if weapon_type in ['wand', 'scepter']:
             spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_one_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
             spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld, weapon_entity=weapons_equippe[0]))
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
         if weapon_type in ['rod', 'focus']:
             spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[1]))
             spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_five_entity(gameworld=gameworld, weapon_entity=weapons_equipped[1]))
