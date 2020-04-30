@@ -151,7 +151,7 @@ class SpellUtilities:
 
             # add component covering spell has been cast
             gameworld.add_component(player_entity,
-                                    mobiles.SpellCast(truefalse=True, spell_entity=spell_entity,
+                                    mobiles.SpellCast(truefalse=True, spell_entity=spell_entity, spell_caster=player_entity,
                                                       spell_target=valid_targets[target][0], spell_bar_slot=1))
 
         return player_not_pressed_a_key, target
