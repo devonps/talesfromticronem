@@ -120,6 +120,47 @@ class MobileUtilities(numbers.Real):
         return position_component.y
 
     @staticmethod
+    def set_direction_velocity_towards_player(gameworld, game_config, enemy_entity):
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+
+        current_player_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        current_player_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
+
+        current_enemy_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=enemy_entity)
+        current_enemy_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=enemy_entity)
+
+        if current_player_ypos < current_enemy_ypos:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='up', speed=1)
+        if current_player_ypos > current_enemy_ypos:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='down', speed=1)
+
+        if current_player_xpos < current_enemy_xpos:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='left', speed=1)
+        if current_player_xpos > current_enemy_xpos:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='right', speed=1)
+
+    @staticmethod
+    def set_direction_velocity_away_from_player(gameworld, game_config, enemy_entity):
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+
+        current_player_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        current_player_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
+
+        current_enemy_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=enemy_entity)
+        current_enemy_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=enemy_entity)
+
+        if current_player_ypos < current_enemy_ypos:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='down', speed=1)
+        if current_player_ypos > current_enemy_ypos:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='up', speed=1)
+
+        if current_player_xpos < current_enemy_xpos:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='right', speed=1)
+        if current_player_xpos > current_enemy_xpos:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='left', speed=1)
+
+
+    @staticmethod
     def set_mobile_velocity(gameworld, entity, direction, speed):
         player_velocity_component = gameworld.component_for_entity(entity, mobiles.Velocity)
         dx = 0
@@ -825,7 +866,6 @@ class MobileUtilities(numbers.Real):
     def calculate_special_bar_current_value(gameworld, entity):
         pass
         # do nothing yet
-
 
     @staticmethod
     def calculate_armour_attribute(gameworld, entity):

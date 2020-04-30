@@ -64,13 +64,13 @@ class StatelessAI:
             current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=ent)
             current_morale = 25
             can_i_run_from_the_target = False
-            can_i_move_towards_the_target = False
-            should_i_charge_the_target = False
             can_i_cast_a_spell = False
             am_i_within_spell_range = False
-            am_i_too_close_to_the_target = True
-            am_i_too_far_from_the_target_to_cast_a_spell = False
-            can_i_move_away_from_the_target = False
+            am_i_too_far_from_the_target_to_cast_a_spell = True
+            can_i_move_towards_the_target = True
+            should_i_charge_the_target = False
+            am_i_too_close_to_the_target = False
+            can_i_move_away_from_the_target = True
             should_i_retreat_from_the_target = False
 
             if entity_ai == mobile_ai_level:
@@ -78,7 +78,7 @@ class StatelessAI:
                     if can_i_run_from_the_target:
                         # run away from target (stupid for now)
                         logger.info('on turn {}: {} decided to move away', current_turn, entity_names[0])
-                        MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=ent, direction='down', speed=1)
+                        MobileUtilities.set_direction_velocity_away_from_player(gameworld=gameworld, game_config=game_config, enemy_entity=ent)
                     elif can_i_cast_a_spell and am_i_within_spell_range:
                         # cast a spell
                         logger.info('on turn {}: {} decided to cast a random spell', current_turn, entity_names[0])
@@ -90,21 +90,28 @@ class StatelessAI:
                         if should_i_charge_the_target:
                             # charge the player
                             logger.info('on turn {}: {} decided to charge the player', current_turn, entity_names[0])
+                            MobileUtilities.set_direction_velocity_towards_player(gameworld=gameworld, game_config=game_config, enemy_entity=ent)
                         else:
                             # move towards the player
                             logger.info('on turn {}: {} decided to move towards the player', current_turn, entity_names[0])
+                            MobileUtilities.set_direction_velocity_towards_player(gameworld=gameworld, game_config=game_config, enemy_entity=ent)
                 elif am_i_too_close_to_the_target:
                     if can_i_move_away_from_the_target:
                         if should_i_retreat_from_the_target:
                             # retreat from the player
                             logger.info('on turn {}: {} decided to retreat from the player', current_turn, entity_names[0])
+                            MobileUtilities.set_direction_velocity_away_from_player(gameworld=gameworld, game_config=game_config, enemy_entity=ent)
                         else:
                             # cast a spell
                             logger.info('on turn {}: {} chose not to retreat but to cast a spell', current_turn, entity_names[0])
+                    else:
+                        # stand still
+                        logger.info('on turn {}: {} stood still and took the punishment', current_turn, entity_names[0])
                 elif can_i_cast_a_spell:
-                    # cast a spell
+                    # cast a spell as I'm in the sweet spot
                     logger.info('on turn {}: {} decided to cast a spell', current_turn, entity_names[0])
                 else:
                     # stand still
                     logger.info('on turn {}: {} really didnt know what to do', current_turn, entity_names[0])
+
 
