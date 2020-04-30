@@ -104,12 +104,6 @@ class StatelessAI:
                 elif can_i_cast_a_spell:
                     # cast a spell
                     logger.info('on turn {}: {} decided to cast a spell', current_turn, entity_names[0])
-                elif am_i_too_far_from_the_target_to_cast_a_spell:
-                    # move towards the player
-                    logger.info('on turn {}: {} decided to skip towards the player', current_turn, entity_names[0])
-                elif am_i_too_close_to_the_target:
-                    # move from the player
-                    logger.info('on turn {}: {} decided to move from the player', current_turn, entity_names[0])
                 else:
                     # stand still
                     logger.info('on turn {}: {} really didnt know what to do', current_turn, entity_names[0])

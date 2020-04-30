@@ -20,8 +20,8 @@ class CellFlowMap:
         self.cells = self.initialize_cells()
         self.gridCells = []
 
-    def initialize_cells(self):
-        cells = [[Cell() for y in range(self.height)] for x in range(self.width)]
+    def initialize_cells(self, cell=None):
+        cells = [[cell() for _ in range(self.height)] for _ in range(self.width)]
 
         return cells
 
@@ -32,7 +32,6 @@ class CellFlowMap:
         for cell_loop in range(max_no_cells):
             cell_id = cell_loop + 1
             cell_max_size = 3 + random.randint(0, 3)
-            # cell_max_size = 3
             fx = 0
             fy = 0
             print("--- This is cell group " + str(cell_loop))
@@ -49,7 +48,6 @@ class CellFlowMap:
                 # add flow to current cell position
                 self.cells[x][y].flow_x = fx
                 self.cells[x][y].flow_y = fy
-
 
                 # assign new cell point to current cell 'group'
                 x = x + fx
@@ -198,10 +196,6 @@ class CellFlowMap:
             px = msx + cell_offset
             py = msy + cell_offset
 
-            # print('temp_mark_flow_from_centre: cell/region ' + str(a) + '/' + str(this_cell[2]))
-            # print('temp_mark_flow_from_centre: px/py set to ' + str(px) + '/' + str(py))
-            # print('temp_mark_flow_from_centre: fx/fy set to ' + str(px) + '/' + str(py))
-
             if fx == -1:
                 level_map[px][py].glyph = '<'
             elif fx == 1:
@@ -247,16 +241,12 @@ class CellFlowMap:
             for a in range(mapSizeMod):
 
                 if fx == -1:
-                    # level_map[ax][ay].glyph = '<'
                     ax -= 1
                 elif fx == 1:
-                    # level_map[ax][ay].glyph = '>'
                     ax += 1
                 elif fy == -1:
-                    # level_map[ax][ay].glyph = '^'
                     ay -= 1
                 elif fy == 1:
-                    # level_map[ax][ay].glyph = 'o'
                     ay += 1
 
                 if level_map[ax][ay].glyph == wallcell:
@@ -306,7 +296,6 @@ class CellFlowMap:
 
                 if gridCell > 0:
                     level_map[x][y].glyph = blankCell
-                    # level_map[x][y].glyph = floorCell
                     level_map[x][y].region = gridCell
                 else:
                     level_map[x][y].glyph = blankCell
