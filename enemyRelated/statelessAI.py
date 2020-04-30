@@ -66,10 +66,12 @@ class StatelessAI:
             can_i_run_from_the_target = False
             can_i_cast_a_spell = False
             am_i_within_spell_range = False
+
             am_i_too_far_from_the_target_to_cast_a_spell = True
             can_i_move_towards_the_target = True
             should_i_charge_the_target = False
-            am_i_too_close_to_the_target = False
+
+            am_i_too_close_to_the_target_to_cast_a_spell = False
             can_i_move_away_from_the_target = True
             should_i_retreat_from_the_target = False
 
@@ -95,7 +97,7 @@ class StatelessAI:
                             # move towards the player
                             logger.info('on turn {}: {} decided to move towards the player', current_turn, entity_names[0])
                             MobileUtilities.set_direction_velocity_towards_player(gameworld=gameworld, game_config=game_config, enemy_entity=ent)
-                elif am_i_too_close_to_the_target:
+                elif am_i_too_close_to_the_target_to_cast_a_spell:
                     if can_i_move_away_from_the_target:
                         if should_i_retreat_from_the_target:
                             # retreat from the player
