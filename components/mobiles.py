@@ -166,11 +166,12 @@ class StatusEffects:
 
 
 class SpellCast:
-    def __init__(self, truefalse=False, spell_entity=0, spell_target=0, spell_bar_slot=-99):
+    def __init__(self, truefalse=False, spell_entity=0, spell_target=0, spell_bar_slot=-99, spell_caster=0):
         self.truefalse = truefalse
         self.spell_entity = spell_entity
         self.spell_target = spell_target
         self.spell_bar_slot = spell_bar_slot
+        self.spell_caster = spell_caster
 
 
 class PrimaryAttributes:

@@ -27,7 +27,8 @@ class CastSpells(esper.Processor):
                 spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=mob.spell_entity)
                 target_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld,
                                                                        entity=mob.spell_target)
-                logger.warning('Danger will robinson! spell being cast is:{}', spell_name)
+                caster_name = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=mob.spell_caster)
+                logger.warning('Danger will robinson! spell being cast is:{} by entity {}', spell_name, ent)
                 logger.warning('against {}', target_names[0])
                 MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=player_entity)
                 spell_type = SpellUtilities.get_spell_type(gameworld=self.gameworld, spell_entity=mob.spell_entity)
@@ -59,7 +60,8 @@ class CastSpells(esper.Processor):
 
                         # display message in combat log
                         logger.warning('Spell cast current turn is {}', msg_turn_number)
-                        CommonUtils.format_combat_log_message(gameworld=self.gameworld, target=target_names[0],
+
+                        CommonUtils.format_combat_log_message(gameworld=self.gameworld, caster_name=caster_name[0], target_name=target_names[0],
                                                               damage_done_to_target=damage_done_to_target,
                                                               spell_name=spell_name, message_log_id=message_log_id, msg_turn_number=msg_turn_number)
                 if spell_type == 'heal':

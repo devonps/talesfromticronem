@@ -17,9 +17,9 @@ class CommonUtils:
         return int((low_number / max_number) * 100)
 
     @staticmethod
-    def format_combat_log_message(gameworld, target, damage_done_to_target, spell_name, message_log_id, msg_turn_number):
+    def format_combat_log_message(gameworld, caster_name, target_name, damage_done_to_target, spell_name, message_log_id, msg_turn_number):
 
-        msg_start = msg_turn_number + "You hit " + target + " for "
+        msg_start = msg_turn_number + caster_name + " hits " + target_name + " for "
         msg = Message(text=msg_start + "[color=orange]" + str(damage_done_to_target) + "[/color] using [[" + spell_name + "]]", msgclass="combat", fg="white",bg="black", fnt="")
         log_message = "[combat]" + msg_start + str(damage_done_to_target) + " using [" + spell_name + "]"
 

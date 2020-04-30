@@ -1,3 +1,5 @@
+import random
+
 from loguru import logger
 from components import spells, items, mobiles
 from components.messages import Message
@@ -5,6 +7,7 @@ from utilities import colourUtilities, configUtilities
 from utilities.common import CommonUtils
 from utilities.display import draw_simple_frame
 from utilities.input_handlers import handle_game_keys
+from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from bearlibterminal import terminal
@@ -13,6 +16,9 @@ from mapRelated.gameMap import RenderLayer
 
 class SpellUtilities:
 
+    # -------------------------------------------
+    #  Methods used by enemies of the player
+    # -------------------------------------------
     @staticmethod
     def get_list_of_spells_for_enemy(gameworld, weapon_type, mobile_class):
         # get list of spells for that weapon and mobile class
@@ -22,65 +28,57 @@ class SpellUtilities:
             if (wpn.label == weapon_type) and (cl.label == mobile_class):
                 spell_list.append(ent)
 
-
-        # condis = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
-        #                                                   parameter='condi_effects')
-        # boons = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
-        #                                                  parameter='boon_effects')
-        # resources = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
-        #                                                      parameter='class_resources')
-        #
-        # spellsfile = 'ENEMYSPELLSFILE'
-        # spell_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-        #                                                              parameter=spellsfile)
-        #
-        # spell_file = read_json_file(spell_file_path)
-        # for spell in spell_file['spells']:
-        #     if spell['weapon'] == weapon_type:
-        #         thisspell = gameworld.get_next_entity_id(gameworld=gameworld)
-        #         gameworld.add_component(thisspell, spells.Name(spell['spellname']))
-        #         gameworld.add_component(thisspell, spells.Description(spell['description']))
-        #         gameworld.add_component(thisspell, spells.ShortDescription(spell['short_description']))
-        #         gameworld.add_component(thisspell, spells.CastTime(spell['turns_to_cast']))
-        #         gameworld.add_component(thisspell, spells.CoolDown(spell['cool_down']))
-        #         gameworld.add_component(thisspell, spells.ClassName(mobile_class))
-        #         gameworld.add_component(thisspell, spells.SpellType(spell['type_of_spell']))
-        #         gameworld.add_component(thisspell, spells.StatusEffect(condis=[], boons=[], controls=[]))
-        #         gameworld.add_component(thisspell, spells.WeaponType(spell['weapon_type']))
-        #         gameworld.add_component(thisspell, spells.WeaponSlot(spell['weapon_slot']))
-        #         gameworld.add_component(thisspell, spells.MaxTargets(spell['max_targets']))
-        #         spell_range_in_file = spell['spell_range']
-        #         spell_range = configUtilities.get_config_value_as_integer(configfile=game_config, section='spells',
-        #                                                                   parameter=spell_range_in_file.upper())
-        #         gameworld.add_component(thisspell, spells.MaxRange(spell_range))
-        #         gameworld.add_component(thisspell, spells.DamageDuration(spell['damage_duration']))
-        #         gameworld.add_component(thisspell, spells.DamageCoefficient(spell['damage_coef']))
-        #         gameworld.add_component(thisspell, spells.GroundTargeted(spell['ground_targeted']))
-        #         if spell['aoe'] == 'True':
-        #             gameworld.add_component(thisspell, spells.AreaOfEffect(spell['aoe']))
-        #             gameworld.add_component(thisspell, spells.AreaOfEffectSize(spell['aoe_size']))
-        #     effects = spell['effects']
-        #
-        #     if len(effects) > 0:
-        #         for effect in spell['effects']:
-        #             if effect['name'] in condis:
-        #                 SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=thisspell,
-        #                                                        status_effect=str(effect['name']))
-        #             if effect['name'] in boons:
-        #                 SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=thisspell,
-        #                                                       status_effect=str(effect['name']))
-        #             if effect['name'] in resources:
-        #                 SpellUtilities.add_resources_to_spell(gameworld=gameworld, spell_entity=thisspell,
-        #                                                       resource=str(effect['name']))
-
         return spell_list
+
+    @staticmethod
+    def can_mobile_cast_a_spell(gameworld, entity_id):
+        spell_chosen = False
+        spell_to_cast = 0
+        weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=entity_id)
+        weapon_type = ItemUtilities.get_equipped_weapon_for_enemy(gameworld=gameworld, weapons_equipped=weapons_equipped)
+
+        # get list of spells to choose from
+        spells_to_choose_from = []
+        if weapon_type in ['sword', 'staff', 'dagger']:
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_one_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_five_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
+        if weapon_type in ['wand', 'scepter']:
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_one_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld, weapon_entity=weapons_equippe[0]))
+        if weapon_type in ['rod', 'focus']:
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[1]))
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_five_entity(gameworld=gameworld, weapon_entity=weapons_equipped[1]))
+
+        while not spell_chosen and len(spells_to_choose_from) > 0:
+            # choose random spell from available list
+            spell_to_cast = random.choice(spells_to_choose_from)
+            if weapon_type in ['sword', 'staff', 'dagger', 'wand', 'scepter']:
+                spell_bar_slot_id = spells_to_choose_from.index(spell_to_cast)
+            else:
+                spell_bar_slot_id = 3 + spells_to_choose_from.index(spell_to_cast)
+
+        # check if spell is on cool-down
+            is_spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell_to_cast)
+            if not is_spell_on_cooldown:
+                spell_chosen = True
+            else:
+                spells_to_choose_from.remove(spell_to_cast)
+        logger.debug('Spell chosen id is {}', spell_to_cast)
+        return spell_chosen, spell_to_cast, spell_bar_slot_id
+
 
     @staticmethod
     def get_spell_type(gameworld, spell_entity):
         return gameworld.component_for_entity(spell_entity, spells.SpellType).label
 
     @staticmethod
-    def cast_spell(slot, gameworld, message_log_id, player):
+    def cast_spell(slot, gameworld, player):
+
+        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
 
         spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                           player_entity=player)
@@ -97,7 +95,7 @@ class SpellUtilities:
         if not is_spell_on_cooldown:
             # spell isn't on cooldown
             valid_targets = SpellUtilities.get_valid_targets_for_spell(gameworld=gameworld,
-                                                                       player=player, spell_entity=spell_entity)
+                                                                       casting_entity=player, spell_entity=spell_entity)
 
             # display list of valid targets and wait for the player
             # to select one of them
@@ -133,7 +131,9 @@ class SpellUtilities:
                     if len(target_letters) != 0:
                         key_pressed = chr(97 + event_action)
                         player_not_pressed_a_key, target = SpellUtilities.has_valid_target_been_selected(gameworld=gameworld, player_entity=player, target_letters=target_letters, key_pressed=key_pressed, spell_entity=spell_entity, valid_targets=valid_targets)
-                        SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, msg_turn_number=msg_turn_number, valid_targets=valid_targets, target=target, message_log_id=message_log_id, player_not_pressed_a_key=player_not_pressed_a_key)
+                        target_name = valid_targets[target][1]
+                        logger.warning('Player casting: message log id is {}', message_log_id)
+                        SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, msg_turn_number=msg_turn_number, target_name=target_name, message_log_id=message_log_id, player_not_pressed_a_key=player_not_pressed_a_key)
         else:
             msg = Message(text=msg_turn_number + "Spell is on cooldown ", msgclass="all", fg="white", bg="black",
                           fnt="")
@@ -157,9 +157,9 @@ class SpellUtilities:
         return player_not_pressed_a_key, target
 
     @staticmethod
-    def helper_add_valid_target_to_message_log(gameworld, msg_turn_number, valid_targets, target, message_log_id, player_not_pressed_a_key):
+    def helper_add_valid_target_to_message_log(gameworld, msg_turn_number, target_name, message_log_id, player_not_pressed_a_key):
         if not player_not_pressed_a_key:
-            str_to_print = msg_turn_number + valid_targets[target][1] + " has been targeted."
+            str_to_print = msg_turn_number + target_name + " has been targeted."
             msg = Message(text=str_to_print, msgclass="all", fg="yellow", bg="", fnt="")
             log_message = "[all]" + str_to_print
             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,
@@ -184,11 +184,11 @@ class SpellUtilities:
         terminal.printf(x=lft + 3, y=tp + height, s=str_to_print)
 
     @staticmethod
-    def get_valid_targets_for_spell(gameworld, player, spell_entity):
+    def get_valid_targets_for_spell(gameworld, casting_entity, spell_entity):
 
         # get x/y position of player character
-        sx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player)
-        sy = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player)
+        sx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=casting_entity)
+        sy = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=casting_entity)
 
         spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
 
@@ -203,7 +203,7 @@ class SpellUtilities:
                 SpellUtilities.highlight_spell_range(sx, sy, xx, yy)
                 for ent, (pos, name, desc) in gameworld.get_components(mobiles.Position, mobiles.Name,
                                                                        mobiles.Describable):
-                    if (pos.x == xx and pos.y == yy) and ent != player:
+                    if (pos.x == xx and pos.y == yy) and ent != casting_entity:
                         # is this a valid target for the spell?
                         valid_targets.append((ent, name.first, desc.glyph, desc.foreground, desc.background))
         return valid_targets

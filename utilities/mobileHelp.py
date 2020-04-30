@@ -314,8 +314,7 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def create_base_mobile(gameworld, game_config, entity_id):
-        ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
-                                                         parameter='AI_LEVEL_NONE')
+        ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_NONE')
 
         gameworld.add_component(entity_id, mobiles.Describable(description='', glyph='',
                                                                foreground=colourUtilities.get('WHITE'),

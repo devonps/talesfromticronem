@@ -74,7 +74,7 @@ def game_loop(gameworld):
                 MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=player, direction=event_action, speed=1)
                 advance_game_turn = True
             if event_action in spell_bar_keys:
-                SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, message_log_id=message_log_id, player=player)
+                SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player)
                 advance_game_turn = True
             if event_action in message_logs:
                 MobileUtilities.view_message_log(gameworld=gameworld, player=player, log_to_be_displayed=event_action)
@@ -85,7 +85,6 @@ def game_loop(gameworld):
             # get monsters intended action
             #
             StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player)
-            logger.debug('Waiting for monsters to finish up')
             current_turn += 1
             MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
         # process all intended actions

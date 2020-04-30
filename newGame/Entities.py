@@ -123,6 +123,7 @@ class Entity:
                 weapon_both_hands = role['both-hands-weapon']
 
                 logger.warning('--- CREATING BOMBER ---')
+                logger.info('With entity id {}', entity_id)
 
                 # -------------------------------------
                 # --- CHOOSE RACE ---------------------
@@ -481,16 +482,8 @@ class Entity:
     def create_weapon_and_equip_npc(self, weapon_to_be_created, enemy_class, entity_id, hand_to_wield):
         created_weapon_entity = ItemManager.create_weapon(gameworld=self.gameworld, weapon_type=weapon_to_be_created,
                                                    game_config=self.game_config)
-        # weapon_type = ItemUtilities.get_weapon_type(self.gameworld, created_weapon)
-
         if enemy_class == '':
             logger.warning('Spell file name not set')
-
-        # generate_spells(gameworld=self.gameworld, game_config=self.game_config, spell_file=enemy_class,
-        #                 player_class=enemy_class)
-        #
-        # WeaponClass.load_weapon_with_spells(self.gameworld, created_weapon, weapon_type, enemy_class)
-
         # equip player with newly created starting weapon
         MobileUtilities.equip_weapon(gameworld=self.gameworld, entity=entity_id, weapon=created_weapon_entity,
                                      hand=hand_to_wield)
