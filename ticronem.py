@@ -11,6 +11,7 @@ from utilities.input_handlers import handle_game_keys
 from gameworld.sceneManager import SceneManager
 from newGame import newGame
 from utilities.spellHelp import SpellUtilities
+from utilities.common import CommonUtils
 
 
 def game_loop(gameworld):
@@ -77,14 +78,14 @@ def game_loop(gameworld):
                 SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player)
                 advance_game_turn = True
             if event_action in message_logs:
-                MobileUtilities.view_message_log(gameworld=gameworld, player=player, log_to_be_displayed=event_action)
+                CommonUtils.view_message_log(gameworld=gameworld, player=player, log_to_be_displayed=event_action)
                 advance_game_turn = False
 
         if advance_game_turn:
             #
             # get monsters intended action
             #
-            StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player)
+            # StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player)
             current_turn += 1
             MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
         # process all intended actions

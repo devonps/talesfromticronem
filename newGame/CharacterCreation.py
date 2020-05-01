@@ -1121,7 +1121,7 @@ class CharacterCreation:
 
         # load spell bar with spells from weapon
         spell_bar_entity = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
-        MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player, spellbarEntity=spell_bar_entity)
+        MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player, spellbar_entity=spell_bar_entity)
         logger.info('Loading spell bar based on equipped weapons')
         SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=player)
 

@@ -9,45 +9,17 @@ from utilities.spellHelp import SpellUtilities
 class StatelessAI:
     """
     The AI I'm looking to build out here in pseudo code is:
-    If damage > morale
-        if can-run-away-from-player
-          run-away-from-player
-        else if can-attack-player
-          attack-player --> shout 'arrrgh I'll never yield'
-        else stand-still --> shout for help!
-    else if too-far-from-player
-        AND can-attack-player
-        AND can-move-toward-player
-        if  random < charge-probability
-         move-toward-player
-        else attack-player
-    else if too-close-to-character
-         AND can-attack-player
-         AND can-move-away-from-player
-         if random < retreat-probability
-            move-away-from-player
-         else attack-player
-    else if can-attack-player
-         attack-player
-    else if too-far-from-player
-         AND can-move-toward-player
-         move-toward-player
-    else if too-close-to-player
-         AND can-move-away-from-player
-         move-away-from-player
-    else stand-still
-
         Intrnsic pointers (things the enemy knows about itself)
-        damage taken
-        morale
+        damage taken --> do I need to refine this further?
+        morale --> what is this?
 
-        can-run-away-from-player --> am I under the effects of a spell
-        can-attack-player --> am I able to cast a spell AND within spell casting range
-        too-far-from-player --> how far away from the target am I
-        can-move-toward-player --> am I able to walk towards the player
+        can-run-away-from-player --> am I under the effects of immobilize or cripple
+        can-attack-player --> am I able to cast a spell
+        too-far-from-player --> Am I further away from the player than my max spell range
+        can-move-toward-player --> am I under the effects of immobilize or cripple or fear
         charge-probability --> should I keep walking or attack the player
         too-close-to-character --> am I too close to the player
-        can-move-away-from-player --> can I move away from the player
+        can-move-away-from-player --> am I under the effects of immobilize or cripple
         retreat-probability --> should I walk or flee from the player
         stand-still --> what should I do here?
     """
@@ -135,11 +107,7 @@ class StatelessAI:
                                             mobiles.SpellCast(truefalse=True, spell_entity=spell_to_cast,
                                                               spell_target=player_entity, spell_bar_slot=spell_bar_slot_id, spell_caster=ent))
                     logger.warning('enemy casting: message log id is {}', message_log_id)
-                    SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld,
-                                                                          msg_turn_number=str(current_turn),
-                                                                          target_name='player',
-                                                                          message_log_id=message_log_id,
-                                                                          player_not_pressed_a_key=False)
+                    SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, target_name='player', player_not_pressed_a_key=False)
                 else:
                     # stand still
                     logger.info('on turn {}: {} really didnt know what to do', current_turn, entity_names[0])

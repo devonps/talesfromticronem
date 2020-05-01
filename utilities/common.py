@@ -1,6 +1,7 @@
 from components.messages import Message
 from utilities import configUtilities
 from components import viewport, messages
+from utilities.mobileHelp import MobileUtilities
 
 
 class CommonUtils:
@@ -17,11 +18,18 @@ class CommonUtils:
         return int((low_number / max_number) * 100)
 
     @staticmethod
-    def format_combat_log_message(gameworld, caster_name, target_name, damage_done_to_target, spell_name, message_log_id, msg_turn_number):
+    def format_combat_log_message(gameworld, caster_name, target_name, damage_done_to_target, spell_name):
 
-        msg_start = msg_turn_number + caster_name + " hits " + target_name + " for "
-        msg = Message(text=msg_start + "[color=orange]" + str(damage_done_to_target) + "[/color] using [[" + spell_name + "]]", msgclass="combat", fg="white",bg="black", fnt="")
-        log_message = "[combat]" + msg_start + str(damage_done_to_target) + " using [" + spell_name + "]"
+        game_config = configUtilities.load_config()
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
+        current_turn = MobileUtilities.get_current_turn(gameworld=gameworld, entity=player_entity)
+        formatted_turn_number = CommonUtils.format_game_turn_as_string(current_turn=current_turn)
+
+        msg_start = formatted_turn_number + ":" + caster_name + " hits " + target_name + " for "
+        message_text = msg_start + "[color=orange]" + str(damage_done_to_target) + " damage[/color] using [[" + spell_name + "]]"
+        msg = Message(text=message_text , msgclass="combat", fg="white",bg="black", fnt="")
+        log_message = msg_start + str(damage_done_to_target) + " damage using [" + spell_name + "]"
 
         CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 
@@ -38,6 +46,17 @@ class CommonUtils:
         gameworld.add_component(logid, messages.MessageLog(width=message_panel_width,
                                                            height=message_panel_height, depth=message_panel_depth,
                                                            display_from_message=0, display_to_message=10, visible_log='all'))
+
+    @staticmethod
+    def format_game_turn_as_string(current_turn):
+        base_turn_string = '00000'
+        current_turn_as_string = str(current_turn)
+        left_string = len(current_turn_as_string)
+
+        turn_as_string = base_turn_string[left_string:] + current_turn_as_string
+
+        return turn_as_string
+
 
     @staticmethod
     def add_message(gameworld, message, logid, message_for_export):
@@ -246,3 +265,10 @@ class CommonUtils:
     def get_viewport_left_boundary(gameworld, viewport_id):
         viewport_component = gameworld.component_for_entity(viewport_id, viewport.Information)
         return viewport_component.boundaryLeft
+
+    @staticmethod
+    def view_message_log(gameworld, player, log_to_be_displayed):
+        logs = log_to_be_displayed.split('_')
+        msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+        CommonUtils.set_visible_log(gameworld=gameworld, log_id=msglog, log_to_display=logs[2])
+        MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=True)
