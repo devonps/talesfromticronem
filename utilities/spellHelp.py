@@ -19,6 +19,39 @@ class SpellUtilities:
     # -------------------------------------------
     #  Methods used by enemies of the player
     # -------------------------------------------
+
+    @staticmethod
+    def get_spell_list_for_enemy(gameworld, weapons_equipped, weapon_type):
+        spells_to_choose_from = []
+
+        if weapon_type in ['sword', 'staff', 'dagger']:
+            spells_to_choose_from.append(
+                ItemUtilities.get_weapon_spell_slot_one_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
+            spells_to_choose_from.append(
+                ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld,
+                                                                                          weapon_entity=
+                                                                                          weapons_equipped[2]))
+            spells_to_choose_from.append(
+                ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
+            spells_to_choose_from.append(
+                ItemUtilities.get_weapon_spell_slot_five_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
+        if weapon_type in ['wand', 'scepter']:
+            spells_to_choose_from.append(
+                ItemUtilities.get_weapon_spell_slot_one_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
+            spells_to_choose_from.append(
+                ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
+            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld,
+                                                                                          weapon_entity=
+                                                                                          weapons_equipped[0]))
+        if weapon_type in ['rod', 'focus']:
+            spells_to_choose_from.append(
+                ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[1]))
+            spells_to_choose_from.append(
+                ItemUtilities.get_weapon_spell_slot_five_entity(gameworld=gameworld, weapon_entity=weapons_equipped[1]))
+
+        return spells_to_choose_from
+
     @staticmethod
     def get_list_of_spells_for_enemy(gameworld, weapon_type, mobile_class):
         # get list of spells for that weapon and mobile class
@@ -39,20 +72,7 @@ class SpellUtilities:
         weapon_type = ItemUtilities.get_equipped_weapon_for_enemy(gameworld=gameworld, weapons_equipped=weapons_equipped)
 
         # get list of spells to choose from
-        spells_to_choose_from = []
-        if weapon_type in ['sword', 'staff', 'dagger']:
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_one_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_five_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
-        if weapon_type in ['wand', 'scepter']:
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_one_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
-        if weapon_type in ['rod', 'focus']:
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[1]))
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_five_entity(gameworld=gameworld, weapon_entity=weapons_equipped[1]))
+        spells_to_choose_from = SpellUtilities.get_spell_list_for_enemy(gameworld=gameworld, weapon_type=weapon_type, weapons_equipped=weapons_equipped)
 
         while not spell_chosen and len(spells_to_choose_from) > 0:
             # choose random spell from available list

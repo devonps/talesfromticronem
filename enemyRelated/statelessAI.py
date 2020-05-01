@@ -39,21 +39,18 @@ class StatelessAI:
                 entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=ent)
                 current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=ent)
                 current_morale = 25
-                can_i_run_from_the_target = False
-                can_i_cast_a_spell, spell_to_cast, spell_bar_slot_id = SpellUtilities.can_mobile_cast_a_spell(gameworld=gameworld,
-                                                                                           entity_id=ent)
-                am_i_within_spell_range = True
+                can_i_move_away_from_the_target = MobileUtilities.can_i_move_away_from_the_target(gameworld=gameworld, source_entity=player_entity)
+                can_i_cast_a_spell, spell_to_cast, spell_bar_slot_id = SpellUtilities.can_mobile_cast_a_spell(gameworld=gameworld, entity_id=ent)
 
                 am_i_too_far_from_the_target_to_cast_a_spell = False
                 can_i_move_towards_the_target = True
                 should_i_charge_the_target = False
 
                 am_i_too_close_to_the_target_to_cast_a_spell = False
-                can_i_move_away_from_the_target = True
                 should_i_retreat_from_the_target = False
 
                 if current_health < current_morale:
-                    if can_i_run_from_the_target:
+                    if can_i_move_away_from_the_target:
                         # run away from target (stupid for now)
                         logger.info('on turn {}: {} decided to move away', current_turn, entity_names[0])
                         MobileUtilities.set_direction_velocity_away_from_player(gameworld=gameworld,
