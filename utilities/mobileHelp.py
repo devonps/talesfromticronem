@@ -6,26 +6,10 @@ from utilities import configUtilities, colourUtilities
 
 import numbers
 
-
 class MobileUtilities(numbers.Real):
-
     #
     # general methods
     #
-
-    @staticmethod
-    def can_i_move_away_from_the_target(gameworld, source_entity):
-        run_away = True
-
-        list_of_conditions = MobileUtilities.get_current_condis_applied_to_mobile(
-            gameworld=gameworld, entity=source_entity)
-
-        if ['crippled', 'immobilize'] in list_of_conditions:
-            run_away = False
-
-        return run_away
-
-
 
     @staticmethod
     def create_armour_for_npc(gameworld, entity_id, armour_modifier, px_bonus):
