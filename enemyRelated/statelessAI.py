@@ -2,6 +2,8 @@ from loguru import logger
 
 from components import mobiles
 from utilities import configUtilities
+from utilities.common import CommonUtils
+from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 
@@ -31,7 +33,6 @@ class StatelessAI:
                                                                       parameter='AI_LEVEL_MONSTER')
 
         current_turn = MobileUtilities.get_current_turn(gameworld=gameworld, entity=player_entity)
-        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
 
         for ent, ai in gameworld.get_component(mobiles.AI):
             entity_ai = MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=ent)
@@ -39,29 +40,69 @@ class StatelessAI:
                 entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=ent)
                 current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=ent)
                 current_morale = 25
-                can_i_cast_a_spell, spell_to_cast, spell_bar_slot_id = SpellUtilities.can_mobile_cast_a_spell(gameworld=gameworld, entity_id=ent)
-                # am_i_too_far_from_the_target_to_cast_a_spell = StatelessAI.am_i_too_far_away_to_attack_enemy(gameworld=gameworld, weapons_equipped=1, weapon_type=1)
-                am_i_too_far_from_the_target_to_cast_a_spell = False
-                am_i_too_close_to_the_target_to_cast_a_spell = False
+                i_can_cast_a_spell, spell_to_cast, spell_bar_slot_id = SpellUtilities.can_mobile_cast_a_spell(gameworld=gameworld, entity_id=ent)
+                am_i_too_far_from_the_target = StatelessAI.am_i_too_far_away_from_the_enemy(gameworld=gameworld, from_entity=ent, to_entity=player_entity)
+                am_i_too_close_to_the_target = StatelessAI.am_i_too_close_to_the_target(gameworld=gameworld, from_entity=ent, to_entity=player_entity)
+                i_can_move = StatelessAI.can_i_move(gameworld=gameworld, source_entity=player_entity)
+
+                logger.info('----------------------------------------')
+                logger.info('Entity name:{}', entity_names[0])
+                logger.info('Entity current health:{}', current_health)
+                logger.info('Can entity cast a spell:{}', i_can_cast_a_spell)
+                logger.info('Is it too far from the target:{}', am_i_too_far_from_the_target)
+                logger.info('Is it too close to the target:{}', am_i_too_close_to_the_target)
+                logger.info('Can the entity move:{}', i_can_move)
+                logger.info('----------------------------------------')
 
                 if current_health < current_morale:
-                    StatelessAI.act_defensively(gameworld=gameworld, game_config=game_config, ent=ent, current_turn=current_turn, entity_name=entity_names[0], player_entity=player_entity)
+                    if i_can_move:
+                        # run away from target (stupid for now)
+                        logger.info('on turn {}: {} decided to move away', current_turn, entity_names[0])
+                        MobileUtilities.set_direction_velocity_away_from_player(gameworld=gameworld,
+                                                                                game_config=game_config, enemy_entity=ent)
+                    elif i_can_cast_a_spell:
+                        # cast a spell
+                        logger.info('on turn {}: {} decided to cast spell entity {}', current_turn, entity_names[0],
+                                    spell_to_cast)
+                    else:
+                        # stand still
+                        logger.info('on turn {}: {} was too scared to run away or cast a spell', current_turn, entity_names[0])
 
-                elif am_i_too_far_from_the_target_to_cast_a_spell:
-                    StatelessAI.move_towards_or_attack_target(gameworld=gameworld, game_config=game_config, ent=ent, current_turn=current_turn, entity_name=entity_names[0])
+                elif am_i_too_far_from_the_target:
+                    if i_can_move:
+                        logger.info('on turn {}: {} decided to move towards the player', current_turn, entity_names[0])
+                        MobileUtilities.set_direction_velocity_towards_player(gameworld=gameworld, game_config=game_config,
+                                                                              enemy_entity=ent)
+                    else:
+                        # cast a spell as I'm in the sweet spot
+                        logger.info('on turn {}: {} stood firm and cast spell entity {}', current_turn, entity_names[0],
+                                    spell_to_cast)
 
-                elif am_i_too_close_to_the_target_to_cast_a_spell:
-                    StatelessAI.move_away_or_attack_the_target(gameworld=gameworld, game_config=game_config, ent=ent, current_turn=current_turn, entity_name=entity_names[0], player_entity=player_entity)
-                elif can_i_cast_a_spell:
+                elif am_i_too_close_to_the_target:
+                    if i_can_move:
+                        # retreat from the player
+                        logger.info('on turn {}: {} decided to retreat from the player', current_turn, entity_names[0])
+                        MobileUtilities.set_direction_velocity_away_from_player(gameworld=gameworld, game_config=game_config,
+                                                                                enemy_entity=ent)
+                    elif i_can_cast_a_spell:
+                        # cast a spell
+                        logger.info('on turn {}: {} chose not to retreat but to cast a spell', current_turn, entity_names[0])
+                    else:
+                        # stand still
+                        logger.info('on turn {}: {} stood still and took the punishment', current_turn, entity_names[0])
+                elif i_can_cast_a_spell:
+                    message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
                     # cast a spell as I'm in the sweet spot
                     logger.info('on turn {}: {} decided to cast spell entity {}', current_turn, entity_names[0],
                                 spell_to_cast)
+                    logger.info('Message log id is {}', message_log_id)
                     # add component covering spell has been cast
                     gameworld.add_component(player_entity,
                                             mobiles.SpellCast(truefalse=True, spell_entity=spell_to_cast,
-                                                              spell_target=player_entity, spell_bar_slot=spell_bar_slot_id, spell_caster=ent))
-                    logger.warning('enemy casting: message log id is {}', message_log_id)
-                    SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, target_name='player', player_not_pressed_a_key=False)
+                                                              spell_target=player_entity, spell_bar_slot=spell_bar_slot_id,
+                                                              spell_caster=ent))
+                    SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, target_name='player',
+                                                                          player_not_pressed_a_key=False)
                 else:
                     # stand still
                     logger.info('on turn {}: {} really didnt know what to do', current_turn, entity_names[0])
@@ -70,81 +111,36 @@ class StatelessAI:
                 pass
 
     @staticmethod
-    def act_defensively(gameworld, game_config, ent, current_turn, entity_name, player_entity):
-        can_i_cast_a_spell, spell_to_cast, spell_bar_slot_id = SpellUtilities.can_mobile_cast_a_spell( gameworld=gameworld, entity_id=ent)
-        can_i_move_away_from_the_target = StatelessAI.can_i_move_away_from_the_target(gameworld=gameworld, source_entity=player_entity)
-        if can_i_move_away_from_the_target:
-            # run away from target (stupid for now)
-            logger.info('on turn {}: {} decided to move away', current_turn, entity_name)
-            MobileUtilities.set_direction_velocity_away_from_player(gameworld=gameworld, game_config=game_config,
-                                                                    enemy_entity=ent)
-        elif can_i_cast_a_spell:
-            # cast a spell
-            logger.info('on turn {}: {} decided to cast spell entity {}', current_turn, entity_name,
-                        spell_to_cast)
-        else:
-            # stand still
-            logger.info('on turn {}: {} was too scared to run away or cast a spell', current_turn, entity_name)
+    def am_i_too_far_away_from_the_enemy(gameworld, from_entity, to_entity):
+
+        the_truth = False
+
+        distance = CommonUtils.calculate_distance_to_target(gameworld=gameworld, from_entity=from_entity, to_entity=to_entity)
+        max_pref_distance = MobileUtilities.get_enemy_preferred_max_range(gameworld=gameworld, entity=from_entity)
+
+        if distance > max_pref_distance:
+            the_truth = True
+        return the_truth
 
     @staticmethod
-    def move_towards_or_attack_target(gameworld, game_config, ent, current_turn, entity_name):
-        can_i_move_towards_the_target = True
-        should_i_charge_the_target = False
+    def am_i_too_close_to_the_target(gameworld, from_entity, to_entity):
+        the_truth = False
 
-        if can_i_move_towards_the_target:
-            if should_i_charge_the_target:
-                # charge the player
-                logger.info('on turn {}: {} decided to charge the player', current_turn, entity_name)
-                MobileUtilities.set_direction_velocity_towards_player(gameworld=gameworld, game_config=game_config,
-                                                                      enemy_entity=ent)
-            else:
-                # move towards the player
-                logger.info('on turn {}: {} decided to move towards the player', current_turn, entity_name)
-                MobileUtilities.set_direction_velocity_towards_player(gameworld=gameworld, game_config=game_config,
-                                                                      enemy_entity=ent)
+        distance = CommonUtils.calculate_distance_to_target(gameworld=gameworld, from_entity=from_entity, to_entity=to_entity)
+        min_pref_distance = MobileUtilities.get_enemy_preferred_max_range(gameworld=gameworld, entity=from_entity)
+
+        if distance < min_pref_distance:
+            the_truth = True
+        return the_truth
 
     @staticmethod
-    def move_away_or_attack_the_target(gameworld, game_config, ent, current_turn, entity_name, player_entity):
-
-        should_i_retreat_from_the_target = False
-        can_i_move_away_from_the_target = MobileUtilities.can_i_move_away_from_the_target(gameworld=gameworld,
-                                                                                          source_entity=player_entity)
-        if can_i_move_away_from_the_target:
-            if should_i_retreat_from_the_target:
-                # retreat from the player
-                logger.info('on turn {}: {} decided to retreat from the player', current_turn, entity_name)
-                MobileUtilities.set_direction_velocity_away_from_player(gameworld=gameworld, game_config=game_config,
-                                                                        enemy_entity=ent)
-            else:
-                # cast a spell
-                logger.info('on turn {}: {} chose not to retreat but to cast a spell', current_turn, entity_name)
-        else:
-            # stand still
-            logger.info('on turn {}: {} stood still and took the punishment', current_turn, entity_name)
-
-
-
-    @staticmethod
-    def am_i_too_far_away_to_attack_enemy(gameworld, weapons_equipped, weapon_type):
-        # I want maximum range for all spells
-        current_spell_list = SpellUtilities.get_spell_list_for_enemy(gameworld=gameworld, weapons_equipped=weapons_equipped, weapon_type=weapon_type)
-        # I want preferred ranges for enemy role
-        current_role = 'bomber'
-
-        # get maximum range of all spells
-        # compare that against enemy distance from plyaer (target)
-        # return true or false
-
-        return False
-
-
-    @staticmethod
-    def can_i_move_away_from_the_target(gameworld, source_entity):
-        run_away = True
+    def can_i_move(gameworld, source_entity):
+        movement = True
 
         list_of_conditions = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=source_entity)
 
         if ['crippled', 'immobilize'] in list_of_conditions:
-            run_away = False
+            movement = False
 
-        return run_away
+        return movement
+

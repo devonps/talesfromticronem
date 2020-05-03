@@ -1,3 +1,5 @@
+import math
+
 from components.messages import Message
 from utilities import configUtilities
 from components import viewport, messages
@@ -5,6 +7,17 @@ from utilities.mobileHelp import MobileUtilities
 
 
 class CommonUtils:
+
+    @staticmethod
+    def calculate_distance_to_target(gameworld, from_entity, to_entity):
+        from_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=from_entity)
+        from_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=from_entity)
+        to_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=to_entity)
+        to_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=to_entity)
+
+        dx = to_x - from_x
+        dy = to_y - from_y
+        return math.sqrt(dx ** 2 + dy ** 2)
 
     @staticmethod
     def get_unicode_ascii_char(game_config, config_prefix, tile_assignment):

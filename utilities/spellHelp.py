@@ -65,30 +65,45 @@ class SpellUtilities:
 
     @staticmethod
     def can_mobile_cast_a_spell(gameworld, entity_id):
+        """
+        What to check for...
+        Do we have any spells in the spell bar
+        Are all our spells on cooldown
+        Are there any status effects that stop us from casting
+
+        :param gameworld:
+        :param entity_id:
+        :return:
+        """
         spell_chosen = False
         spell_to_cast = 0
         spell_bar_slot_id = 0
         weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=entity_id)
-        weapon_type = ItemUtilities.get_equipped_weapon_for_enemy(gameworld=gameworld, weapons_equipped=weapons_equipped)
+        if len(weapons_equipped) != 0:
+            weapon_type = ItemUtilities.get_equipped_weapon_for_enemy(gameworld=gameworld, weapons_equipped=weapons_equipped)
 
-        # get list of spells to choose from
-        spells_to_choose_from = SpellUtilities.get_spell_list_for_enemy(gameworld=gameworld, weapon_type=weapon_type, weapons_equipped=weapons_equipped)
+            # get list of spells to choose from
+            spells_to_choose_from = SpellUtilities.get_spell_list_for_enemy(gameworld=gameworld, weapon_type=weapon_type, weapons_equipped=weapons_equipped)
 
-        while not spell_chosen and len(spells_to_choose_from) > 0:
-            # choose random spell from available list
-            spell_to_cast = random.choice(spells_to_choose_from)
-            if weapon_type in ['sword', 'staff', 'dagger', 'wand', 'scepter']:
-                spell_bar_slot_id = spells_to_choose_from.index(spell_to_cast)
+            spell_cooldown_count = 0
+            for spell in spells_to_choose_from:
+                is_spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell)
+                if is_spell_on_cooldown:
+                    spell_cooldown_count += 1
+            if spell_cooldown_count != len(spells_to_choose_from):
+                while not spell_chosen:
+                    # choose random spell from available list
+                    spell_to_cast = random.choice(spells_to_choose_from)
+                    if weapon_type in ['sword', 'staff', 'dagger', 'wand', 'scepter']:
+                        spell_bar_slot_id = spells_to_choose_from.index(spell_to_cast)
+                        spell_chosen = True
+                    else:
+                        spell_bar_slot_id = 3 + spells_to_choose_from.index(spell_to_cast)
+                        spell_chosen = True
+                logger.debug('Spell chosen id is {}', spell_to_cast)
             else:
-                spell_bar_slot_id = 3 + spells_to_choose_from.index(spell_to_cast)
+                logger.info('ALL spells on cooldown!!')
 
-        # check if spell is on cool-down
-            is_spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell_to_cast)
-            if not is_spell_on_cooldown:
-                spell_chosen = True
-            else:
-                spells_to_choose_from.remove(spell_to_cast)
-        logger.debug('Spell chosen id is {}', spell_to_cast)
         return spell_chosen, spell_to_cast, spell_bar_slot_id
 
 

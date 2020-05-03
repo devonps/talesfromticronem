@@ -6,6 +6,7 @@ from utilities import configUtilities, colourUtilities
 
 import numbers
 
+
 class MobileUtilities(numbers.Real):
     #
     # general methods
@@ -337,6 +338,10 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(entity_id, mobiles.Name())
 
     @staticmethod
+    def add_enemy_components(gameworld, entity_id):
+        gameworld.add_component(entity_id, mobiles.EnemyAttributes())
+
+    @staticmethod
     def create_player_character(gameworld, game_config, player_entity):
         player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
                                                                 parameter='AI_LEVEL_PLAYER')
@@ -356,6 +361,24 @@ class MobileUtilities(numbers.Real):
         gameworld.add_component(player_entity,
                                 mobiles.ClothingImage(head=0, back=21, front=22, feet=23, weapon=24, hands=0, shield=0,
                                                       legs=0, chest=0, shoulders=0))
+
+    @staticmethod
+    def set_enemy_preferred_min_distance_from_target(gameworld, entity, value):
+        gameworld.add_component(entity, mobiles.EnemyAttributes(min_range=value))
+
+    @staticmethod
+    def get_enemy_preferred_min_range(gameworld, entity):
+        enemy_attributes_component = gameworld.component_for_entity(entity, mobiles.EnemyAttributes)
+        return enemy_attributes_component.min_range
+
+    @staticmethod
+    def set_enemy_preferred_max_distance_from_target(gameworld, entity, value):
+        gameworld.add_component(entity, mobiles.EnemyAttributes(max_range=value))
+
+    @staticmethod
+    def get_enemy_preferred_max_range(gameworld, entity):
+        enemy_attributes_component = gameworld.component_for_entity(entity, mobiles.EnemyAttributes)
+        return enemy_attributes_component.max_range
 
     @staticmethod
     def set_mobile_visible(gameworld, entity):
