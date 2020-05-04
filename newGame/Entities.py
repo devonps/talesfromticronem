@@ -179,16 +179,26 @@ class Entity:
                 MobileUtilities.set_mobile_position(gameworld=self.gameworld, entity=entity_id, posx=posx, posy=posy)
                 self.set_min_max_preferred_ranges(entity_id=entity_id, min_range=min_range, max_range=max_range)
 
+
     def set_min_max_preferred_ranges(self, entity_id, min_range, max_range):
 
         min_text = 'SPELL_DIST_' + min_range
-        max_text= 'SPELL_DIST_' + max_range
+        max_text = 'SPELL_DIST_' + max_range
         minimum_range = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spells', parameter=min_text)
         maximum_range = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spells', parameter=max_text)
 
-        MobileUtilities.set_enemy_preferred_min_distance_from_target(gameworld=self.gameworld, entity=entity_id, value=minimum_range)
-        MobileUtilities.set_enemy_preferred_max_distance_from_target(gameworld=self.gameworld, entity=entity_id, value=maximum_range)
+        if minimum_range == 0:
+            logger.warning('ENTITY PREFERRED MIN RANGE SET TO ZERO')
+        else:
+            logger.debug('ENTITY PREFERRED MIN RANGE SET TO {}', minimum_range)
 
+        if maximum_range == 0:
+            logger.warning('ENTITY PREFERRED MAX RANGE SET TO ZERO')
+        else:
+            logger.debug('ENTITY PREFERRED MAX RANGE SET TO {}', maximum_range)
+
+        MobileUtilities.set_enemy_preferred_max_distance_from_target(gameworld=self.gameworld, entity=entity_id, value=maximum_range)
+        MobileUtilities.set_enemy_preferred_min_distance_from_target(gameworld=self.gameworld, entity=entity_id, value=minimum_range)
 
     def choose_name_for_mobile(self, name_choice, selected_race, entity_id):
         first_name = name_choice

@@ -1,3 +1,5 @@
+from abc import ABC
+
 from components import mobiles, items, spellBar
 from loguru import logger
 
@@ -8,7 +10,7 @@ from utilities import configUtilities, colourUtilities
 import numbers
 
 
-class MobileUtilities(numbers.Real):
+class MobileUtilities(numbers.Real, ABC):
     #
     # general methods
     #
@@ -128,15 +130,15 @@ class MobileUtilities(numbers.Real):
         current_enemy_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=enemy_entity)
         current_enemy_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=enemy_entity)
 
-        if current_player_ypos < current_enemy_ypos:
-            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='up', speed=1)
-        if current_player_ypos > current_enemy_ypos:
+        if current_enemy_ypos < current_player_ypos:
             MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='down', speed=1)
+        if current_enemy_ypos > current_player_ypos:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='up', speed=1)
 
-        if current_player_xpos < current_enemy_xpos:
-            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='left', speed=1)
-        if current_player_xpos > current_enemy_xpos:
+        if current_enemy_xpos < current_player_xpos:
             MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='right', speed=1)
+        if current_enemy_xpos > current_player_xpos:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='left', speed=1)
 
     @staticmethod
     def set_direction_velocity_away_from_player(gameworld, game_config, enemy_entity):
@@ -148,15 +150,15 @@ class MobileUtilities(numbers.Real):
         current_enemy_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=enemy_entity)
         current_enemy_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=enemy_entity)
 
-        if current_player_ypos < current_enemy_ypos:
-            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='down', speed=1)
-        if current_player_ypos > current_enemy_ypos:
+        if current_enemy_ypos < current_player_ypos:
             MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='up', speed=1)
+        if current_enemy_ypos > current_player_ypos:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='down', speed=1)
 
-        if current_player_xpos < current_enemy_xpos:
-            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='right', speed=1)
-        if current_player_xpos > current_enemy_xpos:
+        if current_enemy_xpos < current_player_xpos:
             MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='left', speed=1)
+        if current_enemy_xpos > current_player_xpos:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='right', speed=1)
 
 
     @staticmethod
@@ -340,7 +342,8 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def add_enemy_components(gameworld, entity_id):
-        gameworld.add_component(entity_id, mobiles.EnemyAttributes())
+        gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMinRange(value=0))
+        gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMaxRange(value=0))
 
     @staticmethod
     def create_player_character(gameworld, game_config, player_entity):
@@ -365,21 +368,21 @@ class MobileUtilities(numbers.Real):
 
     @staticmethod
     def set_enemy_preferred_min_distance_from_target(gameworld, entity, value):
-        gameworld.add_component(entity, mobiles.EnemyAttributes(min_range=value))
+        gameworld.add_component(entity, mobiles.EnemyPreferredAttackMinRange(value=value))
 
     @staticmethod
     def get_enemy_preferred_min_range(gameworld, entity):
-        enemy_attributes_component = gameworld.component_for_entity(entity, mobiles.EnemyAttributes)
-        return enemy_attributes_component.min_range
+        enemy_attributes_component = gameworld.component_for_entity(entity, mobiles.EnemyPreferredAttackMinRange)
+        return enemy_attributes_component.value
 
     @staticmethod
     def set_enemy_preferred_max_distance_from_target(gameworld, entity, value):
-        gameworld.add_component(entity, mobiles.EnemyAttributes(max_range=value))
+        gameworld.add_component(entity, mobiles.EnemyPreferredAttackMaxRange(value=value))
 
     @staticmethod
     def get_enemy_preferred_max_range(gameworld, entity):
-        enemy_attributes_component = gameworld.component_for_entity(entity, mobiles.EnemyAttributes)
-        return enemy_attributes_component.max_range
+        enemy_attributes_component = gameworld.component_for_entity(entity, mobiles.EnemyPreferredAttackMaxRange)
+        return enemy_attributes_component.value
 
     @staticmethod
     def set_mobile_visible(gameworld, entity):

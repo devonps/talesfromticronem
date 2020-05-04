@@ -1,10 +1,15 @@
 from utilities import colourUtilities
 
 
-class EnemyAttributes:
-    def __init__(self, min_range=0, max_range=0):
-        self.min_range = min_range
-        self.max_range = max_range
+class EnemyPreferredAttackMinRange:
+    def __init__(self, value=0):
+        self.value = value
+
+
+class EnemyPreferredAttackMaxRange:
+    def __init__(self, value=0):
+        self.value = value
+
 
 class Name:
     def __init__(self, first='undefined', suffix='undefined'):
