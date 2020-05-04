@@ -2,9 +2,7 @@ from loguru import logger
 
 from components import mobiles
 from utilities import configUtilities, formulas
-from utilities.common import CommonUtils
 from utilities.gamemap import GameMapUtilities
-from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 
@@ -177,8 +175,6 @@ class StatelessAI:
 
         if i_can_move:
             movement = True
-            walkable_tile_types = configUtilities.get_config_value_as_list(configfile=config_file, section='dungeon',
-                                                                           parameter='WALKABLE_TILE_TYPES')
             # retreat
             entity_current_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=source_entity)
             entity_current_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=source_entity)
@@ -191,7 +187,7 @@ class StatelessAI:
             if entity_current_ypos == target_current_ypos:
                 # if on same row: check we're not at the left edge of the world
                 if entity_current_xpos - 1 > 1:
-                    tile_is_blocked = StatelessAI.can_i_move_backwards_horizontally(game_map=game_map, entity_current_xpos=entity_current_xpos, entity_current_ypos=entity_current_ypos, walkable_tile_types=walkable_tile_types)
+                    tile_is_blocked = StatelessAI.can_i_move_backwards_horizontally(game_map=game_map, entity_current_xpos=entity_current_xpos, entity_current_ypos=entity_current_ypos)
 
                 # if can't move back (regardless of the reason):
                 if tile_is_blocked:
@@ -201,7 +197,7 @@ class StatelessAI:
             elif entity_current_xpos == target_current_xpos:
                 # if on same column: can the source entity move back 1 tile
                 if entity_current_ypos - 1 < 100:
-                    tile_is_blocked = StatelessAI.can_i_move_backwards_vertically(game_map=game_map, entity_current_xpos=entity_current_xpos, entity_current_ypos=entity_current_ypos, walkable_tile_types=walkable_tile_types)
+                    tile_is_blocked = StatelessAI.can_i_move_backwards_vertically(game_map=game_map, entity_current_xpos=entity_current_xpos, entity_current_ypos=entity_current_ypos)
                 # if can't move back (regardless of the reason):
                 if tile_is_blocked:
                     movement = False
@@ -209,52 +205,75 @@ class StatelessAI:
         return movement
 
     @staticmethod
-    def can_i_move_backwards_horizontally(game_map, entity_current_xpos, entity_current_ypos, walkable_tile_types):
+    def can_i_move_backwards_horizontally(game_map, entity_current_xpos, entity_current_ypos):
         tile_is_blocked = False
         # if on same row: can the source entity move back 1 tile
         tile_is_blocked = GameMapUtilities.is_tile_blocked(game_map=game_map, x=entity_current_xpos - 1,
                                                            y=entity_current_ypos)
-
-        if not tile_is_blocked:
-            # tile isn't blocked so check if it's actually walkable
-            tile_type = GameMapUtilities.get_type_of_tile(game_map=game_map, x=entity_current_xpos - 1,
-                                                          y=entity_current_ypos)
-            if str(tile_type) not in walkable_tile_types:
-                tile_is_blocked = True
         return tile_is_blocked
 
     @staticmethod
-    def can_i_move_backwards_vertically(game_map, entity_current_xpos, entity_current_ypos, walkable_tile_types):
+    def can_i_move_backwards_vertically(game_map, entity_current_xpos, entity_current_ypos):
         tile_is_blocked = False
         # if on same row: can the source entity move back 1 tile
         tile_is_blocked = GameMapUtilities.is_tile_blocked(game_map=game_map, x=entity_current_xpos,
                                                            y=entity_current_ypos - 1)
-
-        if not tile_is_blocked:
-            # tile isn't blocked so check if it's actually walkable
-            tile_type = GameMapUtilities.get_type_of_tile(game_map=game_map, x=entity_current_xpos,
-                                                          y=entity_current_ypos - 1)
-            if str(tile_type) not in walkable_tile_types:
-                tile_is_blocked = True
         return tile_is_blocked
 
     @staticmethod
     def can_i_move_towards_target(gameworld, source_entity, target_entity, game_map):
-        movement = True
+        movement = False
         i_can_move = StatelessAI.can_i_move(gameworld=gameworld, source_entity=source_entity)
 
         if i_can_move:
-            # retreat
-            current_target_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
-            current_target_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
+            movement = True
+            # advance
+            target_current_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
+            target_current_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
 
-            current_enemy_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=source_entity)
-            current_enemy_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=source_entity)
+            entity_current_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=source_entity)
+            entity_current_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=source_entity)
+            tile_is_blocked = True
 
-        else:
-            movement = False
+            # check: are source and target entities on the same row (x coordinate)
+            if entity_current_ypos == target_current_ypos:
+                # if on same row: check we're not at the left edge of the world
+                if entity_current_xpos - 1 > 1:
+                    tile_is_blocked = StatelessAI.can_i_move_forwards_horizontally(game_map=game_map, entity_current_xpos=entity_current_xpos, entity_current_ypos=entity_current_ypos)
+
+                # if can't move back (regardless of the reason):
+                if tile_is_blocked:
+                    movement = False
+                    logger.info('movement status via horizontal set to {}', movement)
+            # check: are source and target entities on the same column (y coordinate)
+            elif entity_current_xpos == target_current_xpos:
+                # if on same column: can the source entity move back 1 tile
+                if entity_current_ypos - 1 < 100:
+                    tile_is_blocked = StatelessAI.can_i_move_forwards_vertically(game_map=game_map, entity_current_xpos=entity_current_xpos, entity_current_ypos=entity_current_ypos)
+                # if can't move back (regardless of the reason):
+                if tile_is_blocked:
+                    movement = False
+                    logger.info('movement status via vertical set to {}', movement)
 
         return movement
+
+    @staticmethod
+    def can_i_move_forwards_horizontally(game_map, entity_current_xpos, entity_current_ypos):
+        tile_is_blocked = False
+        # if on same row: can the source entity move back 1 tile
+        tile_is_blocked = GameMapUtilities.is_tile_blocked(game_map=game_map, x=entity_current_xpos + 1,
+                                                           y=entity_current_ypos)
+
+        return tile_is_blocked
+
+    @staticmethod
+    def can_i_move_forwards_vertically(game_map, entity_current_xpos, entity_current_ypos):
+        tile_is_blocked = False
+        # if on same row: can the source entity move back 1 tile
+        tile_is_blocked = GameMapUtilities.is_tile_blocked(game_map=game_map, x=entity_current_xpos,
+                                                           y=entity_current_ypos + 1)
+
+        return tile_is_blocked
 
     @staticmethod
     def can_i_move(gameworld, source_entity):
