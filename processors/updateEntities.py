@@ -73,7 +73,7 @@ class UpdateEntitiesProcessor(esper.Processor):
                     damage_applied_this_turn) + " damage [/color]from [color=MSGLOG_COMBAT_DAMAGE_OUTGOING][[" + condi_name + "]][/color]"
 
                 msg = Message(text=message_text, msgclass="combat", fg="white", bg="black", fnt="")
-                log_message = formatted_turn_number + ":" + entity_names[0] + " takes " + str(damage_applied_this_turn) + " from [" + condi_name + "]"
+                log_message = formatted_turn_number + ":" + entity_names[0] + " takes " + str(damage_applied_this_turn) + " damage from [" + condi_name + "]"
                 CommonUtils.add_message(gameworld=self.gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 
                 if duration <= 0:

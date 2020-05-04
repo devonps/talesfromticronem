@@ -3,7 +3,7 @@ import random
 from loguru import logger
 from components import spells, items, mobiles
 from components.messages import Message
-from utilities import colourUtilities, configUtilities
+from utilities import colourUtilities, configUtilities, formulas
 from utilities.common import CommonUtils
 from utilities.display import draw_simple_frame
 from utilities.input_handlers import handle_game_keys
@@ -64,7 +64,7 @@ class SpellUtilities:
         return spell_list
 
     @staticmethod
-    def can_mobile_cast_a_spell(gameworld, entity_id):
+    def can_mobile_cast_a_spell(gameworld, entity_id, target_entity):
         """
         What to check for...
         Do we have any spells in the spell bar
@@ -78,6 +78,11 @@ class SpellUtilities:
         spell_chosen = False
         spell_to_cast = 0
         spell_bar_slot_id = 0
+        spell_range_failed_count = 0
+        spell_cooldown_count = 0
+        distance_to_target = formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=entity_id,
+                                                         to_entity=target_entity)
+
         weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=entity_id)
         if len(weapons_equipped) != 0:
             weapon_type = ItemUtilities.get_equipped_weapon_for_enemy(gameworld=gameworld, weapons_equipped=weapons_equipped)
@@ -85,12 +90,15 @@ class SpellUtilities:
             # get list of spells to choose from
             spells_to_choose_from = SpellUtilities.get_spell_list_for_enemy(gameworld=gameworld, weapon_type=weapon_type, weapons_equipped=weapons_equipped)
 
-            spell_cooldown_count = 0
+            # check for spells on cooldown and check spell range
             for spell in spells_to_choose_from:
                 is_spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell)
-                if is_spell_on_cooldown:
-                    spell_cooldown_count += 1
-            if spell_cooldown_count != len(spells_to_choose_from):
+                spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell)
+                if is_spell_on_cooldown or distance_to_target > spell_range:
+                    idx = spells_to_choose_from.index(spell)
+                    spells_to_choose_from.pop(idx)
+
+            if len(spells_to_choose_from) > 0:
                 while not spell_chosen:
                     # choose random spell from available list
                     spell_to_cast = random.choice(spells_to_choose_from)
@@ -102,7 +110,7 @@ class SpellUtilities:
                         spell_chosen = True
                 logger.debug('Spell chosen id is {}', spell_to_cast)
             else:
-                logger.info('ALL spells on cooldown!!')
+                logger.info('No spells available for casting')
 
         return spell_chosen, spell_to_cast, spell_bar_slot_id
 
@@ -260,6 +268,11 @@ class SpellUtilities:
         return gameworld.component_for_entity(spell_entity, spells.CoolDown).isTrue
 
     @staticmethod
+    def set_spell_cooldown_status(gameworld, spell_entity):
+        spell_cooldown_component = gameworld.component_for_entity(spell_entity, spells.CoolDown)
+        spell_cooldown_component.isTrue = True
+
+    @staticmethod
     def get_spell_name_in_weapon_slot(gameworld, weapon_equipped, slotid):
         """
         Returns the spell name from weapon slot
@@ -362,6 +375,11 @@ class SpellUtilities:
     @staticmethod
     def get_spell_cooldown_time(gameworld, spell_entity):
         return gameworld.component_for_entity(spell_entity, spells.CoolDown).number_of_turns
+
+    @staticmethod
+    def set_spell_cooldown_time(gameworld, spell_entity, value):
+        spell_cooldown_component = gameworld.component_for_entity(spell_entity, spells.CoolDown)
+        spell_cooldown_component.number_of_turns = value
 
     @staticmethod
     def get_spell_description(gameworld, spell_entity):

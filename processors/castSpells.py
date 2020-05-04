@@ -16,8 +16,6 @@ class CastSpells(esper.Processor):
         self.game_map = game_map
 
     def process(self, game_config):
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
-        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
 
         for ent, mob in self.gameworld.get_component(mobiles.SpellCast):
             if mob.truefalse:
@@ -27,17 +25,14 @@ class CastSpells(esper.Processor):
                 caster_name = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=mob.spell_caster)
                 logger.warning('Danger will robinson! spell being cast is:{} by entity {}', spell_name, ent)
                 logger.warning('against {}', target_names[0])
-                MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=player_entity)
+                MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=ent)
                 spell_type = SpellUtilities.get_spell_type(gameworld=self.gameworld, spell_entity=mob.spell_entity)
                 slot_used = mob.spell_bar_slot
                 condis_to_apply = SpellUtilities.get_all_condis_for_spell(gameworld=self.gameworld,
                                                                           spell_entity=mob.spell_entity)
                 boons_to_apply = SpellUtilities.get_all_boons_for_spell(gameworld=self.gameworld,
                                                                         spell_entity=mob.spell_entity)
-                controls_to_apply = SpellUtilities.get_all_controls_for_spell(gameworld=self.gameworld,
-                                                                              spell_entity=mob.spell_entity)
-                resources_to_apply = SpellUtilities.get_all_resources_for_spell(gameworld=self.gameworld,
-                                                                                spell_entity=mob.spell_entity)
+
                 logger.info('condis attached to spell {}', condis_to_apply)
                 logger.info('boons attached to spell {}', boons_to_apply)
 
@@ -45,14 +40,14 @@ class CastSpells(esper.Processor):
                     # set inCombat to true for the target and the player --> stops health being recalculated
                     # automatically, amongst other things
                     MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=mob.spell_target)
-                    MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=player_entity)
+                    MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=ent)
+                    SpellUtilities.set_spell_cooldown_status(gameworld=self.gameworld, spell_entity=mob.spell_entity)
 
-                    damage_done_to_target = self.cast_combat_spell(spell_caster=player_entity,spell=mob.spell_entity,
+                    damage_done_to_target = self.cast_combat_spell(spell_caster=ent,spell=mob.spell_entity,
                                                                    spell_target=mob.spell_target, weapon_used=slot_used)
                     if damage_done_to_target > 0:
                         # apply damage to target --> current health is used when in combat
-                        MobileUtilities.set_current_health_during_combat(gameworld=self.gameworld,
-                                                                         entity=mob.spell_target,
+                        MobileUtilities.set_current_health_during_combat(gameworld=self.gameworld, entity=mob.spell_target,
                                                                          damage_to_apply=damage_done_to_target)
 
                         CommonUtils.format_combat_log_message(gameworld=self.gameworld, caster_name=caster_name[0], target_name=target_names[0],
