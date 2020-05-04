@@ -78,10 +78,6 @@ class SpellUtilities:
         spell_chosen = False
         spell_to_cast = 0
         spell_bar_slot_id = 0
-        spell_range_failed_count = 0
-        spell_cooldown_count = 0
-        distance_to_target = formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=entity_id,
-                                                         to_entity=target_entity)
 
         weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=entity_id)
         if len(weapons_equipped) != 0:
@@ -91,12 +87,7 @@ class SpellUtilities:
             spells_to_choose_from = SpellUtilities.get_spell_list_for_enemy(gameworld=gameworld, weapon_type=weapon_type, weapons_equipped=weapons_equipped)
 
             # check for spells on cooldown and check spell range
-            for spell in spells_to_choose_from:
-                is_spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell)
-                spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell)
-                if is_spell_on_cooldown or distance_to_target > spell_range:
-                    idx = spells_to_choose_from.index(spell)
-                    spells_to_choose_from.pop(idx)
+            spells_to_choose_from = SpellUtilities.check_spells_cooldown_and_range(gameworld=gameworld, spells_to_choose_from=spells_to_choose_from, entity_id=entity_id, target_entity=target_entity)
 
             if len(spells_to_choose_from) > 0:
                 while not spell_chosen:
@@ -114,6 +105,18 @@ class SpellUtilities:
 
         return spell_chosen, spell_to_cast, spell_bar_slot_id
 
+    @staticmethod
+    def check_spells_cooldown_and_range(gameworld, spells_to_choose_from, entity_id, target_entity):
+
+        distance_to_target = formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=entity_id,
+                                                         to_entity=target_entity)
+        for spell in spells_to_choose_from:
+            is_spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell)
+            spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell)
+            if is_spell_on_cooldown or distance_to_target > spell_range:
+                idx = spells_to_choose_from.index(spell)
+                spells_to_choose_from.pop(idx)
+        return spells_to_choose_from
 
     @staticmethod
     def get_spell_type(gameworld, spell_entity):
