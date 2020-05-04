@@ -36,6 +36,8 @@ class SceneManager:
         gm, mx, my = SceneManager.load_scene_card(currentscene=currentscene, gameworld=gameworld)
         SceneManager.generate_game_map()
 
+        return gm
+
     @staticmethod
     def load_scene_card(currentscene, gameworld):
         # load scene list into memory

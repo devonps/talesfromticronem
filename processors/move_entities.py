@@ -3,6 +3,7 @@ import esper
 from components import mobiles
 from mapRelated.gameMap import GameMap
 from utilities.common import CommonUtils
+from utilities.gamemap import GameMapUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
@@ -23,7 +24,6 @@ class MoveEntities(esper.Processor):
             viewport_id = MobileUtilities.get_viewport_id(gameworld=self.gameworld, entity=player_entity)
 
             viewport_width = CommonUtils.get_viewport_width(gameworld=self.gameworld, viewport_id=viewport_id)
-            viewport_height = CommonUtils.get_viewport_height(gameworld=self.gameworld, viewport_id=viewport_id)
 
             viewport_player_position = CommonUtils.get_player_viewport_position_info(gameworld=self.gameworld,
                                                                                      viewport_id=viewport_id)
@@ -40,9 +40,6 @@ class MoveEntities(esper.Processor):
                     vpy += vel.dy
                     CommonUtils.set_player_viewport_position_x(gameworld=self.gameworld, viewport_id=viewport_id, posx=vpx)
                     CommonUtils.set_player_viewport_position_y(gameworld=self.gameworld, viewport_id=viewport_id, posy=vpy)
-
-                    # logger.warning('player viewport position is {}/{}', vpx, vpy)
-                    # logger.warning('player map position is {}/{}', pos.x, pos.y)
 
                     if vpx >= (viewport_width - 8):
                         # logger.info('Hit imaginary right-edge boundary on the X axis')
@@ -61,7 +58,6 @@ class MoveEntities(esper.Processor):
                         if vel.dy != 0:
                             svy = str(vel.dy)
 
-                        # position_component.hasMoved = True
                         MobileUtilities.set_mobile_has_moved(self.gameworld, ent, True)
                         value = 'move:' + str(ent) + ':' + svx + ':' + svy
                         ReplayGame.update_game_replay_file(game_config, value)
@@ -73,4 +69,4 @@ class MoveEntities(esper.Processor):
 
     # check if new position would cause a collision with a blockable tile
     def check_for_blocked_movement(self, newx, newy):
-        return GameMap.is_blocked(self.game_map, newx, newy)
+        return GameMapUtilities.is_tile_blocked(self.game_map, newx, newy)

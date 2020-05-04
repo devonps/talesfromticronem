@@ -9,26 +9,11 @@ from utilities.mobileHelp import MobileUtilities
 class CommonUtils:
 
     @staticmethod
-    def calculate_distance_to_target(gameworld, from_entity, to_entity):
-        from_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=from_entity)
-        from_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=from_entity)
-        to_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=to_entity)
-        to_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=to_entity)
-
-        dx = to_x - from_x
-        dy = to_y - from_y
-        return math.sqrt(dx ** 2 + dy ** 2)
-
-    @staticmethod
     def get_unicode_ascii_char(game_config, config_prefix, tile_assignment):
         tile_char = "0x" + configUtilities.get_config_value_as_string(configfile=game_config, section='dungeon',
                                                                       parameter=config_prefix + str(
                                                                           tile_assignment))
         return tile_char
-
-    @staticmethod
-    def calculate_percentage(low_number, max_number):
-        return int((low_number / max_number) * 100)
 
     @staticmethod
     def format_combat_log_message(gameworld, caster_name, target_name, damage_done_to_target, spell_name):

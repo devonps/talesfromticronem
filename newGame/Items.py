@@ -1,6 +1,7 @@
 
 from components import items
 from utilities import world, jsonUtilities
+from utilities.gamemap import GameMapUtilities
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities import configUtilities, colourUtilities
@@ -437,7 +438,7 @@ class ItemManager:
             while not item_has_been_placed and attempts < max_attempts:
                 ix = random.randrange(1, map_width)
                 iy = random.randrange(1, map_height)
-                tile = GameMap.get_type_of_tile(game_map, ix, iy)
+                tile = GameMapUtilities.get_type_of_tile(game_map, ix, iy)
                 if tile == tile_type_floor:
                     ItemUtilities.set_item_location(gameworld=gameworld, item_entity=item_to_be_placed, posx=ix, posy=iy)
                     attempts = 499

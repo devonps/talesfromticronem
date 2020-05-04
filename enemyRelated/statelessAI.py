@@ -1,8 +1,9 @@
 from loguru import logger
 
 from components import mobiles
-from utilities import configUtilities
+from utilities import configUtilities, formulas
 from utilities.common import CommonUtils
+from utilities.gamemap import GameMapUtilities
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
@@ -27,7 +28,7 @@ class StatelessAI:
     """
 
     @staticmethod
-    def do_something(gameworld, game_config, player_entity):
+    def do_something(gameworld, game_config, player_entity, game_map):
 
         mobile_ai_level = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
                                                                       parameter='AI_LEVEL_MONSTER')
@@ -43,7 +44,8 @@ class StatelessAI:
                 i_can_cast_a_spell, spell_to_cast, spell_bar_slot_id = SpellUtilities.can_mobile_cast_a_spell(gameworld=gameworld, entity_id=ent)
                 am_i_too_far_from_the_target = StatelessAI.am_i_too_far_away_from_the_enemy(gameworld=gameworld, from_entity=ent, to_entity=player_entity)
                 am_i_too_close_to_the_target = StatelessAI.am_i_too_close_to_the_target(gameworld=gameworld, from_entity=ent, to_entity=player_entity)
-                i_can_move = StatelessAI.can_i_move(gameworld=gameworld, source_entity=player_entity)
+                i_can_retreat = StatelessAI.can_i_move_away_from_target(gameworld=gameworld, source_entity=ent, target_entity=player_entity, game_map=game_map, config_file=game_config)
+                i_can_advance = StatelessAI.can_i_move_towards_target(gameworld=gameworld, source_entity=ent, target_entity= player_entity, game_map=game_map)
 
                 logger.info('----------------------------------------')
                 logger.info('Entity name:{}', entity_names[0])
@@ -51,42 +53,77 @@ class StatelessAI:
                 logger.info('Can entity cast a spell:{}', i_can_cast_a_spell)
                 logger.info('Is it too far from the target:{}', am_i_too_far_from_the_target)
                 logger.info('Is it too close to the target:{}', am_i_too_close_to_the_target)
-                logger.info('Can the entity move:{}', i_can_move)
+                logger.info('Can the entity retreat:{}', i_can_retreat)
+                logger.info('Can the entity advance:{}', i_can_advance)
                 logger.info('----------------------------------------')
 
                 if current_health < current_morale:
-                    if i_can_move:
+                    if i_can_retreat:
                         # run away from target (stupid for now)
                         logger.info('on turn {}: {} decided to move away', current_turn, entity_names[0])
                         MobileUtilities.set_direction_velocity_away_from_player(gameworld=gameworld,
                                                                                 game_config=game_config, enemy_entity=ent)
                     elif i_can_cast_a_spell:
-                        # cast a spell
-                        logger.info('on turn {}: {} decided to cast spell entity {}', current_turn, entity_names[0],
+                        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
+                        # cast a spell as I'm in the sweet spot
+                        logger.info('on turn {}: {} couldnt retreat so cast spell entity {}', current_turn, entity_names[0],
                                     spell_to_cast)
+                        logger.info('Message log id {}', message_log_id)
+                        # add component covering spell has been cast
+                        gameworld.add_component(player_entity,
+                                                mobiles.SpellCast(truefalse=True, spell_entity=spell_to_cast,
+                                                                  spell_target=player_entity,
+                                                                  spell_bar_slot=spell_bar_slot_id,
+                                                                  spell_caster=ent))
+                        SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, target_name='player',
+                                                                              player_not_pressed_a_key=False)
                     else:
                         # stand still
                         logger.info('on turn {}: {} was too scared to run away or cast a spell', current_turn, entity_names[0])
 
                 elif am_i_too_far_from_the_target:
-                    if i_can_move:
+                    if i_can_advance:
                         logger.info('on turn {}: {} decided to move towards the player', current_turn, entity_names[0])
                         MobileUtilities.set_direction_velocity_towards_player(gameworld=gameworld, game_config=game_config,
                                                                               enemy_entity=ent)
-                    else:
+                    elif i_can_cast_a_spell:
+                        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
                         # cast a spell as I'm in the sweet spot
                         logger.info('on turn {}: {} stood firm and cast spell entity {}', current_turn, entity_names[0],
                                     spell_to_cast)
+                        logger.info('Message log is {}', message_log_id)
+                        # add component covering spell has been cast
+                        gameworld.add_component(player_entity,
+                                                mobiles.SpellCast(truefalse=True, spell_entity=spell_to_cast,
+                                                                  spell_target=player_entity,
+                                                                  spell_bar_slot=spell_bar_slot_id,
+                                                                  spell_caster=ent))
+                        SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, target_name='player',
+                                                                              player_not_pressed_a_key=False)
+                    else:
+                        # stand still
+                        logger.info('on turn {}: {} has no other option but to stand still', current_turn, entity_names[0])
 
                 elif am_i_too_close_to_the_target:
-                    if i_can_move:
+                    if i_can_retreat:
                         # retreat from the player
                         logger.info('on turn {}: {} decided to retreat from the player', current_turn, entity_names[0])
                         MobileUtilities.set_direction_velocity_away_from_player(gameworld=gameworld, game_config=game_config,
                                                                                 enemy_entity=ent)
                     elif i_can_cast_a_spell:
-                        # cast a spell
-                        logger.info('on turn {}: {} chose not to retreat but to cast a spell', current_turn, entity_names[0])
+                        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
+                        # cast a spell as I'm in the sweet spot
+                        logger.info('on turn {}: {} is casting spell entity {}', current_turn, entity_names[0],
+                                    spell_to_cast)
+                        logger.info('Message log id is {}', message_log_id)
+                        # add component covering spell has been cast
+                        gameworld.add_component(player_entity,
+                                                mobiles.SpellCast(truefalse=True, spell_entity=spell_to_cast,
+                                                                  spell_target=player_entity,
+                                                                  spell_bar_slot=spell_bar_slot_id,
+                                                                  spell_caster=ent))
+                        SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, target_name='player',
+                                                                              player_not_pressed_a_key=False)
                     else:
                         # stand still
                         logger.info('on turn {}: {} stood still and took the punishment', current_turn, entity_names[0])
@@ -115,7 +152,7 @@ class StatelessAI:
 
         the_truth = False
 
-        distance = CommonUtils.calculate_distance_to_target(gameworld=gameworld, from_entity=from_entity, to_entity=to_entity)
+        distance = formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=from_entity, to_entity=to_entity)
         max_pref_distance = MobileUtilities.get_enemy_preferred_max_range(gameworld=gameworld, entity=from_entity)
 
         if distance > max_pref_distance:
@@ -126,7 +163,7 @@ class StatelessAI:
     def am_i_too_close_to_the_target(gameworld, from_entity, to_entity):
         the_truth = False
 
-        distance = CommonUtils.calculate_distance_to_target(gameworld=gameworld, from_entity=from_entity, to_entity=to_entity)
+        distance = formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=from_entity, to_entity=to_entity)
         min_pref_distance = MobileUtilities.get_enemy_preferred_max_range(gameworld=gameworld, entity=from_entity)
 
         if distance < min_pref_distance:
@@ -134,11 +171,70 @@ class StatelessAI:
         return the_truth
 
     @staticmethod
-    def can_i_move(gameworld, source_entity):
+    def can_i_move_away_from_target(gameworld, source_entity, target_entity, game_map, config_file):
         movement = True
+        i_can_move = StatelessAI.can_i_move(gameworld=gameworld, source_entity=source_entity)
 
+        if i_can_move:
+            walkable_tile_types = configUtilities.get_config_value_as_list(configfile=config_file, section='dungeon',
+                                                                           parameter='WALKABLE_TILE_TYPES')
+            # retreat
+            entity_current_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=source_entity)
+            entity_current_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=source_entity)
+
+            target_current_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
+            target_current_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
+            tile_is_blocked = False
+
+            # check: are source and target entities on the same row (x coordinate)
+            if entity_current_ypos == target_current_ypos:
+                # if on same row: check we're not at the left edge of the world
+                if entity_current_xpos - 1 > 1:
+                    # if on same row: can the source entity move back 1 tile
+                    tile_is_blocked = GameMapUtilities.is_tile_blocked(game_map=game_map, x=entity_current_xpos - 1, y=entity_current_ypos)
+                else:
+                    tile_is_blocked = True
+
+                if not tile_is_blocked:
+                    # tile isn't blocked so check if it's actually walkable
+                    tile_type = GameMapUtilities.get_type_of_tile(game_map=game_map, x=entity_current_xpos - 1, y=entity_current_ypos)
+                    if str(tile_type) not in walkable_tile_types:
+                        tile_is_blocked = True
+
+                # if can't move back (regardless of the reason):
+                if tile_is_blocked:
+                    movement = False
+            # check: are source and target entities on the same column (y coordinate)
+            # if on same column: can the source entity move back 1 tile
+
+        else:
+            movement = False
+
+        return movement
+
+    @staticmethod
+    def can_i_move_towards_target(gameworld, source_entity, target_entity, game_map):
+        movement = True
+        i_can_move = StatelessAI.can_i_move(gameworld=gameworld, source_entity=source_entity)
+
+        if i_can_move:
+            # retreat
+            current_target_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
+            current_target_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
+
+            current_enemy_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=source_entity)
+            current_enemy_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=source_entity)
+
+        else:
+            movement = False
+
+        return movement
+
+    @staticmethod
+    def can_i_move(gameworld, source_entity):
+
+        movement = True
         list_of_conditions = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=source_entity)
-
         if ['crippled', 'immobilize'] in list_of_conditions:
             movement = False
 

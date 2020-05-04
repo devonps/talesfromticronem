@@ -1,5 +1,23 @@
+import math
+
 from loguru import logger
 
+from utilities.mobileHelp import MobileUtilities
+
+
+def calculate_percentage(low_number, max_number):
+    return int((low_number / max_number) * 100)
+
+
+def calculate_distance_to_target(gameworld, from_entity, to_entity):
+    from_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=from_entity)
+    from_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=from_entity)
+    to_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=to_entity)
+    to_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=to_entity)
+
+    dx = to_x - from_x
+    dy = to_y - from_y
+    return math.sqrt(dx ** 2 + dy ** 2)
 
 def outgoing_base_damage(weapon_strength, power, spell_coefficient):
     # weapon strength - random number representing potential damage for that weapon

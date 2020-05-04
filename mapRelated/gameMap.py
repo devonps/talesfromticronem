@@ -1,11 +1,10 @@
-import random
+
 from enum import Enum, auto
 
 from mapRelated.tile import Tile
-from mapRelated.rectangle import Rect
-from components import mobiles
 from loguru import logger
-from utilities import configUtilities
+
+from utilities.gamemap import GameMapUtilities
 
 
 class RenderLayer(Enum):
@@ -23,10 +22,6 @@ class GameMap:
         self.height = mapheight
         self.tiles = self.initialize_tiles()
 
-        # MAP PROPERTIES #
-        self.list_rooms = []
-        self.list_regions = []
-
     def initialize_tiles(self):
         tiles = [[Tile(True) for _ in range(self.height)] for _ in range(self.width)]
 
@@ -38,7 +33,7 @@ class GameMap:
     def assign_tiles(game_map):
         for x in range(game_map.width):
             for y in range(game_map.height):
-                tile_is_wall = GameMap.is_blocked(game_map, x, y)
+                tile_is_wall = GameMapUtilities.is_tile_blocked(game_map, x, y)
                 if tile_is_wall:
                     tile_assigned = 0
                     tile_assigned += GameMap.check_if_north_tile_is_blocked(game_map=game_map, posx=x, posy=y)
@@ -52,7 +47,7 @@ class GameMap:
         bit_value = 0
         blocked_north = False
         if posy > 0:
-            blocked_north = GameMap.is_blocked(game_map, posx, posy - 1)
+            blocked_north = GameMapUtilities.is_tile_blocked(game_map, posx, posy - 1)
 
         if blocked_north:
             bit_value = 1
@@ -64,7 +59,7 @@ class GameMap:
         bit_value = 0
         blocked_south = False
         if posx < game_map.width - 1:
-            blocked_south = GameMap.is_blocked(game_map, posx + 1, posy)
+            blocked_south = GameMapUtilities.is_tile_blocked(game_map, posx + 1, posy)
 
         if blocked_south:
             bit_value = 2
@@ -76,7 +71,7 @@ class GameMap:
         bit_value = 0
         blocked_south = False
         if posy < game_map.height - 1:
-            blocked_south = GameMap.is_blocked(game_map, posx, posy + 1)
+            blocked_south = GameMapUtilities.is_tile_blocked(game_map, posx, posy + 1)
 
         if blocked_south:
             bit_value = 4
@@ -89,18 +84,11 @@ class GameMap:
         bit_value = 0
         blocked_west = False
         if posx > 0:
-            blocked_west = GameMap.is_blocked(game_map, posx - 1, posy)
+            blocked_west = GameMapUtilities.is_tile_blocked(game_map, posx - 1, posy)
 
         if blocked_west:
             bit_value = 8
 
         return bit_value
 
-    def get_type_of_tile(self, x, y):
-        return self.tiles[x][y].type_of_tile
-
-    def is_blocked(self, x, y):
-        if self.tiles[x][y].blocked:
-            return True
-        return False
 

@@ -3,7 +3,7 @@ import esper
 from bearlibterminal import terminal
 
 from components import mobiles, items
-from utilities import configUtilities
+from utilities import configUtilities, formulas
 from utilities.display import create_display_area
 from utilities.mobileHelp import MobileUtilities
 from utilities.common import CommonUtils
@@ -77,7 +77,7 @@ class RenderGameMap(esper.Processor):
             current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=entity)
             maximum_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=entity)
 
-            display_percentage = CommonUtils.calculate_percentage(low_number=current_health, max_number=maximum_health)
+            display_percentage = formulas.calculate_percentage(low_number=current_health, max_number=maximum_health)
 
             str_to_print = str_colour_msg + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph + ' '
             str_colour = "red"
@@ -429,7 +429,7 @@ class RenderGameMap(esper.Processor):
         image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='map_Xscale')
 
-        display_percentage = CommonUtils.calculate_percentage(low_number, high_number)
+        display_percentage = formulas.calculate_percentage(low_number, high_number)
         tens = int(display_percentage / 10)
         units = display_percentage % 10
         px = 0

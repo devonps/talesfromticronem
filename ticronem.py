@@ -32,7 +32,7 @@ def game_loop(gameworld):
     MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=False)
 
     # call scene manager
-    SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)
+    game_map = SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)
     scene_change = False
     # process all intended actions
     gameworld.process(game_config)
@@ -85,7 +85,7 @@ def game_loop(gameworld):
             #
             # get monsters intended action
             #
-            StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player)
+            StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player, game_map=game_map)
             current_turn += 1
             MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
         # process all intended actions
