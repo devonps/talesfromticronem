@@ -21,7 +21,6 @@ class UpdateEntitiesProcessor(esper.Processor):
         player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
         message_log_just_viewed = MobileUtilities.get_view_message_log_value(gameworld=self.gameworld,
                                                                              entity=player_entity)
-        current_turn = MobileUtilities.get_current_turn(gameworld=self.gameworld, entity=player_entity)
 
         if not message_log_just_viewed:
             message_log_id = MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
