@@ -41,7 +41,7 @@ class CastSpells(esper.Processor):
                     # automatically, amongst other things
                     MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=mob.spell_target)
                     MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=ent)
-                    SpellUtilities.set_spell_cooldown_status(gameworld=self.gameworld, spell_entity=mob.spell_entity)
+                    SpellUtilities.set_spell_cooldown_true(gameworld=self.gameworld, spell_entity=mob.spell_entity)
 
                     damage_done_to_target = self.cast_combat_spell(spell_caster=ent,spell=mob.spell_entity,
                                                                    spell_target=mob.spell_target, weapon_used=slot_used)

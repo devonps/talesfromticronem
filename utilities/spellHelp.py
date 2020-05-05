@@ -21,7 +21,7 @@ class SpellUtilities:
     # -------------------------------------------
 
     @staticmethod
-    def get_spell_list_for_enemy(gameworld, weapons_equipped, weapon_type):
+    def get_spell_list_for_enemy_by_weapon_type(gameworld, weapons_equipped, weapon_type):
         spells_to_choose_from = []
 
         if weapon_type in ['sword', 'staff', 'dagger']:
@@ -30,8 +30,7 @@ class SpellUtilities:
             spells_to_choose_from.append(
                 ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
             spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld,
-                                                                                          weapon_entity=
-                                                                                          weapons_equipped[2]))
+                                                                                          weapon_entity= weapons_equipped[2]))
             spells_to_choose_from.append(
                 ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
             spells_to_choose_from.append(
@@ -42,8 +41,7 @@ class SpellUtilities:
             spells_to_choose_from.append(
                 ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
             spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld,
-                                                                                          weapon_entity=
-                                                                                          weapons_equipped[0]))
+                                                                                          weapon_entity= weapons_equipped[0]))
         if weapon_type in ['rod', 'focus']:
             spells_to_choose_from.append(
                 ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[1]))
@@ -75,48 +73,89 @@ class SpellUtilities:
         :param entity_id:
         :return:
         """
-        spell_chosen = False
-        spell_to_cast = 0
-        spell_bar_slot_id = 0
+        can_cast_a_spell = False
+        remaining_spells = None
+        weapon_type = ''
 
         weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=entity_id)
         if len(weapons_equipped) != 0:
             weapon_type = ItemUtilities.get_equipped_weapon_for_enemy(gameworld=gameworld, weapons_equipped=weapons_equipped)
 
             # get list of spells to choose from
-            spells_to_choose_from = SpellUtilities.get_spell_list_for_enemy(gameworld=gameworld, weapon_type=weapon_type, weapons_equipped=weapons_equipped)
+            spells_to_choose_from = SpellUtilities.get_spell_list_for_enemy_by_weapon_type(gameworld=gameworld, weapon_type=weapon_type, weapons_equipped=weapons_equipped)
 
+            logger.info('Spells enemy can choose from {}', spells_to_choose_from)
             # check for spells on cooldown and check spell range
-            spells_to_choose_from = SpellUtilities.check_spells_cooldown_and_range(gameworld=gameworld, spells_to_choose_from=spells_to_choose_from, entity_id=entity_id, target_entity=target_entity)
+            available_spells = SpellUtilities.check_for_spells_on_cooldown(gameworld=gameworld, spells_to_choose_from=spells_to_choose_from)
+            remaining_spells = SpellUtilities.check_spells_for_range_to_target(gameworld=gameworld, spells_to_choose_from=available_spells, entity_id=entity_id, target_entity=target_entity)
 
-            if len(spells_to_choose_from) > 0:
-                while not spell_chosen:
-                    # choose random spell from available list
-                    spell_to_cast = random.choice(spells_to_choose_from)
-                    if weapon_type in ['sword', 'staff', 'dagger', 'wand', 'scepter']:
-                        spell_bar_slot_id = spells_to_choose_from.index(spell_to_cast)
-                        spell_chosen = True
-                    else:
-                        spell_bar_slot_id = 3 + spells_to_choose_from.index(spell_to_cast)
-                        spell_chosen = True
-                logger.debug('Spell chosen id is {}', spell_to_cast)
-            else:
-                logger.info('No spells available for casting')
+            if len(remaining_spells) > 0:
+                can_cast_a_spell = True
+        else:
+            logger.info('No weapons equipped.')
 
-        return spell_chosen, spell_to_cast, spell_bar_slot_id
+        return can_cast_a_spell, remaining_spells, weapon_type
 
     @staticmethod
-    def check_spells_cooldown_and_range(gameworld, spells_to_choose_from, entity_id, target_entity):
-
-        distance_to_target = formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=entity_id,
-                                                         to_entity=target_entity)
+    def check_for_spells_on_cooldown(gameworld, spells_to_choose_from):
+        logger.info('spells being checked {}', spells_to_choose_from)
         for spell in spells_to_choose_from:
             is_spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell)
-            spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell)
-            if is_spell_on_cooldown or distance_to_target > spell_range:
+            logger.debug('spell {} cooldown status {}', spell, is_spell_on_cooldown)
+            if is_spell_on_cooldown:
                 idx = spells_to_choose_from.index(spell)
-                spells_to_choose_from.pop(idx)
+                spells_to_choose_from[idx] = 0
+                logger.debug('spell {} popped from list', spell)
+        logger.info('remaining spells {}', spells_to_choose_from)
+
+        spells_to_choose_from = SpellUtilities.remove_not_needed_spells_from_list(spells_to_choose_from)
+
         return spells_to_choose_from
+
+    @staticmethod
+    def remove_not_needed_spells_from_list(spells_to_choose_from):
+        myspells = []
+        for i, item in enumerate(spells_to_choose_from):
+            if item != 0:
+                myspells.append(item)
+
+        return myspells
+
+    @staticmethod
+    def enemy_choose_random_spell_to_cast(spells_to_choose_from, weapon_type):
+        spell_chosen = False
+        spell_to_cast = 0
+        spell_bar_slot_id = None
+        while not spell_chosen:
+            # choose random spell from available list
+            spell_to_cast = random.choice(spells_to_choose_from)
+            if weapon_type in ['sword', 'staff', 'dagger', 'wand', 'scepter']:
+                spell_bar_slot_id = spells_to_choose_from.index(spell_to_cast)
+                spell_chosen = True
+            else:
+                spell_bar_slot_id = 3 + spells_to_choose_from.index(spell_to_cast)
+                spell_chosen = True
+        logger.debug('Random spell for casting id is {}', spell_to_cast)
+
+        return spell_to_cast, spell_bar_slot_id
+
+    @staticmethod
+    def check_spells_for_range_to_target(gameworld, spells_to_choose_from, entity_id, target_entity):
+        distance_to_target = formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=entity_id,
+                                                         to_entity=target_entity)
+        logger.info('available spells {}', spells_to_choose_from)
+        for spell in spells_to_choose_from:
+            spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell)
+            if distance_to_target > spell_range:
+                logger.debug('spell popped off due to range {}', spell)
+                idx = spells_to_choose_from.index(spell)
+                spells_to_choose_from[idx] = 0
+        logger.info('spells left to cast {}', spells_to_choose_from)
+
+        spells_to_choose_from = SpellUtilities.remove_not_needed_spells_from_list(spells_to_choose_from)
+
+        return spells_to_choose_from
+
 
     @staticmethod
     def get_spell_type(gameworld, spell_entity):
@@ -271,9 +310,14 @@ class SpellUtilities:
         return gameworld.component_for_entity(spell_entity, spells.CoolDown).isTrue
 
     @staticmethod
-    def set_spell_cooldown_status(gameworld, spell_entity):
+    def set_spell_cooldown_true(gameworld, spell_entity):
         spell_cooldown_component = gameworld.component_for_entity(spell_entity, spells.CoolDown)
         spell_cooldown_component.isTrue = True
+
+    @staticmethod
+    def set_spell_cooldown_false(gameworld, spell_entity):
+        spell_cooldown_component = gameworld.component_for_entity(spell_entity, spells.CoolDown)
+        spell_cooldown_component.isTrue = False
 
     @staticmethod
     def get_spell_name_in_weapon_slot(gameworld, weapon_equipped, slotid):
