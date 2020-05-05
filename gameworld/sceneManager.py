@@ -174,6 +174,9 @@ class SceneManager:
             enemy = Entity(gameworld=gameworld)
             enemy.create_role_bomber(posx=posx, posy=posy + 3)
 
+            enemy2 = Entity(gameworld=gameworld)
+            enemy2.create_role_bomber(posx=posx + 5, posy=posy + 8)
+
         return player_placed
 
     @staticmethod

@@ -107,7 +107,7 @@ class StatelessAI:
                     # stand still #TODO
                     logger.info('on turn {}: {} really didnt know what to do', current_turn, entity_names[0])
             else:
-                # not the right entity #TODO 
+                # not the right entity #TODO
                 pass
 
     @staticmethod

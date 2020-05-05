@@ -179,7 +179,6 @@ class Entity:
                 MobileUtilities.set_mobile_position(gameworld=self.gameworld, entity=entity_id, posx=posx, posy=posy)
                 self.set_min_max_preferred_ranges(entity_id=entity_id, min_range=min_range, max_range=max_range)
 
-
     def set_min_max_preferred_ranges(self, entity_id, min_range, max_range):
 
         min_text = 'SPELL_DIST_' + min_range
@@ -205,8 +204,9 @@ class Entity:
         MobileUtilities.set_player_gender(gameworld=self.gameworld, entity=entity_id, gender='male')
         if name_choice == 'RANDOM':
             # need to create random name generator here
+            random_suffix = str(random.randint(3, 100))
 
-            first_name = 'not-tcod'
+            first_name = 'not-tcod-' + random_suffix
 
         logger.info('Their name is {}', first_name)
         MobileUtilities.set_mobile_first_name(gameworld=self.gameworld, entity=entity_id, name=first_name)
