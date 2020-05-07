@@ -194,7 +194,7 @@
   },
   {
     "name": "elementalist",
-  "spellfile": "ele",
+  "spellfile": "elementalist",
   "flavour": "Elementalists channel elemental forces, making fire, air, earth, and water do their bidding, their powers of destruction are drawn from an affinity with the four elements",
   "balanced": {
     "neck": "garnet",
@@ -230,9 +230,9 @@
     }
   },
   "weapons": {
-    "sword": "true",
+    "sword": "false",
     "wand": "false",
-    "scepter": "true",
+    "scepter": "false",
     "staff": "true",
     "dagger": "true",
     "rod": "false",

@@ -1,0 +1,534 @@
+{
+  "spells": [
+    {
+      "name": "Fireball",
+      "description": "Cast a fireball that explodes on impact and hits multiple foes.",
+      "short_description": "Cast a fireball that explodes on impact",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "fire",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "1",
+      "max_targets": "3",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_normal",
+      "damage_duration": "instant",
+      "damage_coef": "1.0",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Lava Font",
+      "description": "Make lava erupt from the target area.",
+      "short_description": "Make lava erupt from the target area.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "fire",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "2",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_normal",
+      "damage_duration": "instant",
+      "damage_coef": "0.525",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Flame Burst",
+      "description": "Burn foes at the target location.",
+      "short_description": "Burn foes at the target location.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "fire",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "3",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.1",
+      "effects": [
+        {
+          "name": "burning",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Burning Retreat",
+      "description": "Quickly roll backward, leaving behind a line of fire that burns.",
+      "short_description": "Quickly roll backward, leaving a line of fire.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "fire",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "combat",
+      "weapon_slot": "4",
+      "max_targets": "99",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.2",
+      "effects": [
+        {
+          "name": "burning",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Meteor Shower",
+      "description": "Call down a meteor shower onto the target area.",
+      "short_description": "Call down a meteor shower onto the target area.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "fire",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "5",
+      "max_targets": "3",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "1.6",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Stoning",
+      "description": "Hurl a rock and weaken your foe.",
+      "short_description": "Hurl a rock and weaken your foe.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "earth",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "1",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "weakness",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Eruption",
+      "description": "Shake the ground until it erupts and damages foes.",
+      "short_description": "Shake the ground until it erupts and damages foes.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "earth",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "2",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_large",
+      "damage_duration": "instant",
+      "damage_coef": "1.5",
+      "effects": [
+        {
+          "name": "bleeding",
+          "value": "1"
+        },
+        {
+          "name": "crippled",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Magnetic Aura",
+      "description": "Reflect projectiles with magnetic energy.",
+      "short_description": "Reflect projectiles with magnetic energy.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "earth",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_zero",
+      "weapon_type": "combat",
+      "weapon_slot": "3",
+      "max_targets": "0",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "protection",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Unsteady Ground",
+      "description": "Create unsteady ground that foes cannot cross.",
+      "short_description": "Create unsteady ground that foes cannot cross.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "earth",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "4",
+      "max_targets": "10",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_large",
+      "damage_duration": "instant",
+      "damage_coef": "0",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Shock Wave",
+      "description": "Create a shockwave that bleeds and immobilizes your target.",
+      "short_description": "Create a shockwave that bleeds and immobilizes your target.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "earth",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "5",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "bleeding",
+          "value": "1"
+        },
+        {
+          "name": "immobilized",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Chain Lightning",
+      "description": "Hit multiple foes with arcs of chain lightning.",
+      "short_description": "Hit multiple foes with arcs of chain lightning.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "air",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "1",
+      "max_targets": "3",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.66",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Lightning Surge",
+      "description": "Charge a lightning surge that damages and blinds foes near your target when it discharges.",
+      "short_description": "Charge a lightning surge that damages and blinds foes.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "air",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "2",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_normal",
+      "damage_duration": "instant",
+      "damage_coef": "1.44",
+      "effects": [
+        {
+          "name": "blinded",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Gust",
+      "description": "Push foes backward with a burst of air.",
+      "short_description": "Push foes backward with a burst of air.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "air",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "3",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Windborne Speed",
+      "description": "You and nearby allies gain swiftness, while curing crippled, immobilized, and chilled.",
+      "short_description": "You and nearby allies gain swiftness, while curing crippled, immobilized, and chilled.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "air",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_up_close",
+      "weapon_type": "combat",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "swiftness",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Static Field",
+      "description": "Create an electrical field that stuns foes crossing it.",
+      "short_description": "Create an electrical field that stuns foes crossing it.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "air",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "5",
+      "max_targets": "10",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_normal",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Water Blast",
+      "description": "Spray a jet of water at your foe that splashes to heal nearby allies.",
+      "short_description": "Spray a jet of water at your foe that splashes to heal nearby allies.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "water",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "1",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.3",
+      "heal_duration": "instant",
+      "heal_coef": "0.25",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Ice Spike",
+      "description": "Drop a giant ice spike on foes to make them vulnerable.",
+      "short_description": "Drop a giant ice spike on foes to make them vulnerable.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "water",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "2",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "1.5",
+      "effects": [
+        {
+          "name": "vulnerability",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Geyser",
+      "description": "Create a geyser to heal nearby allies.",
+      "short_description": "Create a geyser to heal nearby allies.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "water",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "3",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "heal_duration": "instant",
+      "heal_coef": "2.0",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Frozen Ground",
+      "description": "Coat the target area in ice, chilling foes that enter it.",
+      "short_description": "Coat the target area in ice, chilling foes that enter it.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "water",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_large",
+      "damage_duration": "instant",
+      "damage_coef": "0",
+      "effects": [
+        {
+          "name": "chilled",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Healing Rain",
+      "description": "Call down a healing rain on the target area, granting regeneration to allies and curing conditions once every three seconds.",
+      "short_description": "Call down a healing rain on the target area, granting regeneration to allies and curing conditions once every three seconds.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "water",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "5",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_extreme",
+      "damage_duration": "instant",
+      "damage_coef": "0",
+      "effects": [
+        {
+          "name": "regeneration",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "",
+      "description": "",
+      "short_description": "",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "water",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "weapon_type": "combat",
+      "weapon_slot": "",
+      "max_targets": "",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    }
+    ]
+}

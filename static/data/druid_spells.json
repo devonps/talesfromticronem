@@ -1,7 +1,7 @@
 {
   "spells": [
     {
-      "name": "richoet",
+      "name": "ricochet",
       "description": "Bounce a beam of light between multiple foes, gaining might for each foe hit.",
       "short_description": "Send a beam of light to your foes, gaining might.",
       "type_of_spell": "combat",
