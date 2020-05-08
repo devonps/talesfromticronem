@@ -506,18 +506,66 @@
         ]
     },
     {
-      "name": "",
-      "description": "",
-      "short_description": "",
+      "name": "Dragon's Claw",
+      "description": "Fling fire in a claw-shaped spread at your foe.",
+      "short_description": "Fling fire in a claw-shaped spread at your foe.",
       "type_of_spell": "combat",
       "class": "elementalist",
-      "attunement": "water",
+      "attunement": "fire",
       "turns_to_cast": "0",
       "cool_down": "0",
-      "spell_range": "spell_dist_far",
-      "weapon_type": "combat",
-      "weapon_slot": "",
-      "max_targets": "",
+      "spell_range": "spell_dist_earshot",
+      "weapon_type": "dagger",
+      "weapon_slot": "1",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.375",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Drake's Breath",
+      "description": "Spray a cone of fire at foes while on the move.",
+      "short_description": "Spray a cone of fire at foes while on the move.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "fire",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_earshot",
+      "weapon_type": "dagger",
+      "weapon_slot": "2",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "3.2",
+      "effects": [
+        {
+          "name": "burning",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Burning Speed",
+      "description": "Slide forward and blast the area, leaving behind a line of fire that burns foes.",
+      "short_description": "Slide forward and blast the area, leaving behind a line of fire that burns foes.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "fire",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "dagger",
+      "weapon_slot": "3",
+      "max_targets": "2.0",
       "ground_targeted": "False",
       "aoe": "True",
       "aoe_size": "aoe_medium",
@@ -525,8 +573,433 @@
       "damage_coef": "",
       "effects": [
         {
+          "name": "burning",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Impale",
+      "description": "Spear your foes on a giant stone spike.",
+      "short_description": "Spear your foes on a giant stone spike.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "earth",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_up_close",
+      "weapon_type": "dagger",
+      "weapon_slot": "1",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.77",
+      "effects": [
+        {
+          "name": "bleeding",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Ring of Earth",
+      "description": "Bleed foes with a ring of rocky spikes.",
+      "short_description": "Bleed foes with a ring of rocky spikes.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "earth",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_up_close",
+      "weapon_type": "dagger",
+      "weapon_slot": "2",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "1.2",
+      "effects": [
+        {
+          "name": "bleeding",
+          "value": "1"
+        },
+        {
+          "name": "crippled",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Magnetic Grasp",
+      "description": "Immobilize your foe, making them vulnerable to a Magnetic Leap attack.",
+      "short_description": "Immobilize your foe, making them vulnerable to a Magnetic Leap attack.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "earth",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_in_the_area",
+      "weapon_type": "dagger",
+      "weapon_slot": "3",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.1",
+      "effects": [
+        {
+          "name": "immobilized",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Lightning Whip",
+      "description": "Lash your foe with lightning.",
+      "short_description": "Lash your foe with lightning.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "air",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_up_close",
+      "weapon_type": "dagger",
+      "weapon_slot": "1",
+      "max_targets": "3",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.26",
+      "effects": [
+        {
           "name": "",
           "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Lightning Touch",
+      "description": "Shock a foe and inflict weakness. Gain fury for each foe hit.",
+      "short_description": "Shock a foe and inflict weakness. Gain fury for each foe hit.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "air",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_up_close",
+      "weapon_type": "dagger",
+      "weapon_slot": "2",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "1.5",
+      "effects": [
+        {
+          "name": "weakness",
+          "value": "1"
+        },
+        {
+          "name": "fury",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Shocking Aura",
+      "description": "Envelop yourself with electrical energy that stuns nearby foes if they attack you.",
+      "short_description": "Envelop yourself with electrical energy that stuns nearby foes if they attack you.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "air",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_up_close",
+      "weapon_type": "dagger",
+      "weapon_slot": "3",
+      "max_targets": "3",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.1",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Vapor Blade",
+      "description": "Cast a vapor blade that inflicts vulnerability and returns to you.",
+      "short_description": "Cast a vapor blade that inflicts vulnerability and returns to you.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "water",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_nearby",
+      "weapon_type": "dagger",
+      "weapon_slot": "1",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.33",
+      "effects": [
+        {
+          "name": "vulnerability",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Cone of Cold",
+      "description": "Spray an icy blast in a cone that damages foes and heals allies.",
+      "short_description": "Spray an icy blast in a cone that damages foes and heals allies.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "water",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_earshot",
+      "weapon_type": "dagger",
+      "weapon_slot": "2",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "2.4",
+      "heal_duration": "instant",
+      "heal_coef": "0.6",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Frozen Burst",
+      "description": "Detonate a burst of ice that chills nearby foes.",
+      "short_description": "Detonate a burst of ice that chills nearby foes.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "water",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_up_close",
+      "weapon_type": "dagger",
+      "weapon_slot": "3",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.4",
+      "effects": [
+        {
+          "name": "chilled",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Flamewall",
+      "description": "Create a wall of flame at the target area that burns foes.",
+      "short_description": "Create a wall of flame at the target area that burns foes.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "fire",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_in_the_area",
+      "weapon_type": "focus",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.1",
+      "effects": [
+        {
+          "name": "burning",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Fire Shield",
+      "description": "Envelop yourself in a fiery shield that burns foes and grants might.",
+      "short_description": "Envelop yourself in a fiery shield that burns foes and grants might.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "fire",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_point_blank",
+      "weapon_type": "focus",
+      "weapon_slot": "5",
+      "max_targets": "99",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "burning",
+          "value": "1"
+        },
+        {
+          "name": "might",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Magnetic Wave",
+      "description": "Damage foes, cure three of your conditions, and reflect projectiles with a magnetic surge.",
+      "short_description": "Damage foes, cure three of your conditions, and reflect projectiles with a magnetic surge.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "earth",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_up_close",
+      "weapon_type": "focus",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.0",
+      "effects": [
+        {
+          "name": "cripple",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Obsidian Flesh",
+      "description": "Envelop yourself in stony armor, making yourself invulnerable.",
+      "short_description": "Envelop yourself in stony armor, making yourself invulnerable.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "earth",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_earshot",
+      "weapon_type": "focus",
+      "weapon_slot": "5",
+      "max_targets": "0",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "protection",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Swirling Winds",
+      "description": "Create a swirling wind that destroys projectiles.",
+      "short_description": "Create a swirling wind that destroys projectiles.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "air",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_earshot",
+      "weapon_type": "focus",
+      "weapon_slot": "4",
+      "max_targets": "0",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "protection",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Gale",
+      "description": "Knock down your foe with a charged wind blast.",
+      "short_description": "Knock down your foe with a charged wind blast.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "air",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_in_the_area",
+      "weapon_type": "focus",
+      "weapon_slot": "5",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "knockdown",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Comet",
+      "description": "Drop a comet of ice on target foe, damaging and dazing foes in the area.",
+      "short_description": "Drop a comet of ice on target foe, damaging and dazing foes in the area.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "water",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_in_the_area",
+      "weapon_type": "focus",
+      "weapon_slot": "4",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_normal",
+      "damage_duration": "instant",
+      "damage_coef": "0.75",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Freezing Gust",
+      "description": "Chill your foe for a brief time.",
+      "short_description": "Chill your foe for a brief time.",
+      "type_of_spell": "combat",
+      "class": "elementalist",
+      "attunement": "water",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_in_the_area",
+      "weapon_type": "focus",
+      "weapon_slot": "5",
+      "max_targets": "99",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.25",
+      "effects": [
+        {
+          "name": "chilled",
+          "value": "1"
         }
         ]
     }
