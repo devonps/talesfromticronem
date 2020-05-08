@@ -13,6 +13,48 @@
       "min-range": "medium",
       "max-range": "long",
       "aoe": true
+    },
+    {
+      "id": "squealer",
+      "race": "RANDOM",
+      "class": "RANDOM",
+      "armourset": "partial",
+      "armour-modifier": "RANDOM",
+      "jewellery": "partial",
+      "main-hand-weapon": "",
+      "off-hand-weapon": "RANDOM",
+      "both-hands-weapon": "",
+      "min-range": "nearby",
+      "max-range": "in_the_area",
+      "aoe": false
+    },
+    {
+      "id": "bully",
+      "race": "RANDOM",
+      "class": "RANDOM",
+      "armourset": "full",
+      "armour-modifier": "RANDOM",
+      "jewellery": "partial",
+      "main-hand-weapon": "RANDOM",
+      "off-hand-weapon": "RANDOM",
+      "both-hands-weapon": "",
+      "min-range": "up_close",
+      "max-range": "medium",
+      "aoe": false
+    },
+    {
+      "id": "sniper",
+      "race": "RANDOM",
+      "class": "RANDOM",
+      "armourset": "partial",
+      "armour-modifier": "RANDOM",
+      "jewellery": "full",
+      "main-hand-weapon": "RANDOM",
+      "off-hand-weapon": "",
+      "both-hands-weapon": "",
+      "min-range": "long",
+      "max-range": "extreme",
+      "aoe": false
     }
   ]
 }

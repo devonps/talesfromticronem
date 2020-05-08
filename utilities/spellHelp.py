@@ -367,6 +367,8 @@ class SpellUtilities:
             SpellUtilities.helper_both_hands_weapon(gameworld=gameworld, player_entity=player_entity, both_hands_weapon=both_hands_weapon)
             SpellUtilities.helper_main_hand_weapon(gameworld=gameworld, player_entity=player_entity, main_hand_weapon=main_hand_weapon)
             SpellUtilities.helper_off_hand_weapon(gameworld=gameworld, player_entity=player_entity, off_hand_weapon=off_hand_weapon)
+        else:
+            logger.warning('no weapons equipped')
 
         # now get the heal skill
         player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)

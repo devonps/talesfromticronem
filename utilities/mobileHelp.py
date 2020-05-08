@@ -339,6 +339,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.Race(race='', size=''))
         gameworld.add_component(entity_id, mobiles.Position())
         gameworld.add_component(entity_id, mobiles.Name())
+        gameworld.add_component(entity_id, mobiles.ClassSpecific())
 
     @staticmethod
     def add_enemy_components(gameworld, entity_id):

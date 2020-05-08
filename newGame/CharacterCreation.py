@@ -1106,6 +1106,7 @@ class CharacterCreation:
             # equip player with newly created starting weapon
             MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='off')
 
+
         # load spell bar with spells from weapon
         spell_bar_entity = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
         MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player, spellbar_entity=spell_bar_entity)

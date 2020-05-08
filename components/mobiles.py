@@ -17,6 +17,12 @@ class Name:
         self.suffix = suffix
 
 
+class ClassSpecific:
+    def __init__(self, attunement='fire'):
+        self.fire = attunement
+
+
+
 class Describable:
     def __init__(self, description='undefined', glyph='@', foreground=colourUtilities.get('ORANGE'),
                  background=colourUtilities.get('BLACK'), personality='Unpredictable', gender='undefined', image=0):
