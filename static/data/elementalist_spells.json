@@ -1095,6 +1095,358 @@
           "value": ""
         }
       ]
+    },
+    {
+      "name": "Cleansing Fire",
+      "description": "Cure five conditions and burn foes.",
+      "short_description": "Cure five conditions and burn foes.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "fire",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_up_close",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "burning",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Signet of Fire",
+      "description": "Signet Passive: Improves critical chance. Signet Active: Burn your target and nearby foes.",
+      "short_description": "Signet Passive: Improves critical chance. Signet Active: Burn your target and nearby foes.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "fire",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "burning",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Arcane Blast",
+      "description": "Blast your foe with energy for critical damage.",
+      "short_description": "Blast your foe with energy for critical damage.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "any",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_remote",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.4",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Arcane Power",
+      "description": "You and nearby allies do critical damage with your next few attacks. Each stack of Arcane Power grants bonus ferocity.",
+      "short_description": "You and nearby allies do critical damage with your next few attacks. Each stack of Arcane Power grants bonus ferocity.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "any",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_up_close",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "fury",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Glyph of Elemental Power",
+      "description": "Inflict conditions on your next few strikes based on your attunement. Each strike deals increased damage.",
+      "short_description": "Inflict conditions on your next few strikes based on your attunement. Each strike deals increased damage.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "any",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_up_close",
+      "max_targets": "99",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "1.5",
+      "effects": [
+        {
+          "name": "bleeding",
+          "value": "1"
+        },
+        {
+          "name": "burning",
+          "value": "1"
+        },
+        {
+          "name": "chilled",
+          "value": "1"
+        },
+        {
+          "name": "vulnerability",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Glyph of Lesser Elementals",
+      "description": "Summon a lesser elemental based on your attunement.",
+      "short_description": "Summon a lesser elemental based on your attunement.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "any",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_touch",
+      "max_targets": "99",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Glyph of Storms",
+      "description": "Create a storm based on your attunement.",
+      "short_description": "Create a storm based on your attunement.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "any",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_in_the_area",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Armor of Earth",
+      "description": "Protect yourself with earth armour and gain protection and stability.",
+      "short_description": "Protect yourself with earth armour and gain protection and stability.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "earth",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_zero",
+      "max_targets": "0",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "might",
+          "value": "1"
+        },
+        {
+          "name": "protection",
+          "value": "1"
+        },
+        {
+          "name": "stability",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Signet of Earth",
+      "description": "Signet Passive: Improves toughness. Signet Active: Immobilize and bleed your foe.",
+      "short_description": "Signet Passive: Improves toughness. Signet Active: Immobilize and bleed your foe.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "earth",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "max_targets": "1",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "bleeding",
+          "value": "1"
+        },
+        {
+          "name": "immobilzed",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Lightning Flash",
+      "description": "Teleport to target area.",
+      "short_description": "Teleport to target area.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "air",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_in_the_area",
+      "max_targets": "0",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_normal",
+      "damage_duration": "instant",
+      "damage_coef": "1.5",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+        ]
+    },
+    {
+      "name": "Signet of Air",
+      "description": "Signet Passive: Grants a 25% increase in movement speed. Signet Active: Blind your target and nearby foes.",
+      "short_description": "Signet Passive: Grants a 25% increase in movement speed. Signet Active: Blind your target and nearby foes.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "air",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "blinded",
+          "value": "1"
+        },
+                {
+          "name": "vulnerability",
+          "value": "1"
+        },
+                {
+          "name": "swiftness",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Mist Form",
+      "description": "Morph into an invulnerable, vaporous mist for a brief time.",
+      "short_description": "Morph into an invulnerable, vaporous mist for a brief time.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "water",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_zero",
+      "max_targets": "0",
+      "ground_targeted": "False",
+      "aoe": "False",
+      "damage_duration": "instant",
+      "damage_coef": "0.0",
+      "effects": [
+        {
+          "name": "swiftness",
+          "value": "1"
+        }
+        ]
+    },
+    {
+      "name": "Signet of Water",
+      "description": "Signet Passive: Reduces incoming condition duration. Signet Active: Damage and chill foes while healing and reviving allies in an area.",
+      "short_description": "Signet Passive: Reduces incoming condition duration. Signet Active: Damage and chill foes while healing and reviving allies in an area.",
+      "type_of_spell": "utility",
+      "class": "elementalist",
+      "attunement": "water",
+      "location": "",
+      "item_type": "",
+      "turns_to_cast": "0",
+      "cool_down": "0",
+      "spell_range": "spell_dist_far",
+      "max_targets": "5",
+      "ground_targeted": "False",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "heal_duration": "instant",
+      "heal_coef": "0.7",
+      "effects": [
+        {
+          "name": "chilled",
+          "value": "1"
+        }
+        ]
     }
     ]
 }
