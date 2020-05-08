@@ -1002,6 +1002,99 @@
           "value": "1"
         }
         ]
+    },
+    {
+      "name": "Arcane Brilliance",
+      "description": "Blast the area, hitting foes with critical damage and healing yourself. Healing effectiveness is increased per target hit.",
+      "short_description": "Blast the area, hitting foes with critical damage and healing yourself. Healing effectiveness is increased per target hit.",
+      "type_of_spell": "heal",
+      "class": "elementalist",
+      "attunement": "fire",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "max_targets": "5",
+      "spell_range": "spell_dist_zero",
+      "aoe": "False",
+      "aoe_size": "aoe_extreme",
+      "heal_duration": "instant",
+      "heal_coef": "0.3",
+      "damage_duration": "instant",
+      "damage_coef": "0.5",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "name": "Ether Renewal",
+      "description": "Heal yourself and cure a condition with every pulse.",
+      "short_description": "Heal yourself and cure a condition with every pulse.",
+      "type_of_spell": "heal",
+      "class": "elementalist",
+      "attunement": "air",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_zero",
+      "heal_duration": "instant",
+      "heal_coef": "1.2",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "name": "Glyph of Elemental Harmony",
+      "description": "Heal yourself and gain boons",
+      "short_description": "Heal yourself and gain boons",
+      "type_of_spell": "heal",
+      "class": "elementalist",
+      "attunement": "earth",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_zero",
+      "heal_duration": "instant",
+      "heal_coef": "1.2",
+      "effects": [
+        {
+          "name": "might",
+          "value": "1"
+        },
+        {
+          "name": "protection",
+          "value": "1"
+        },
+        {
+          "name": "regeneration",
+          "value": "1"
+        },
+        {
+          "name": "swiftness",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "name": "Signet of Restoration",
+      "description": "Signet Passive: Grants health every time you cast a spell. Signet Active: Heal yourself.",
+      "short_description": "Signet Passive: Grants health every time you cast a spell. Signet Active: Heal yourself.",
+      "type_of_spell": "heal",
+      "class": "elementalist",
+      "attunement": "water",
+      "turns_to_cast": "0",
+      "cool_down": "10",
+      "spell_range": "spell_dist_zero",
+      "heal_duration": "instant",
+      "heal_coef": "0.5",
+      "effects": [
+        {
+          "name": "",
+          "value": ""
+        }
+      ]
     }
     ]
 }
