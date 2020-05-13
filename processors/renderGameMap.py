@@ -465,14 +465,11 @@ class RenderGameMap(esper.Processor):
         # spell bar slots are drawn first
         for a in range(10):
             terminal.put(x=(ac + a) * sc, y=y * image_y_scale, c=0xE500 + 0)
-
-
         # now the spells based on the spell bar entities -- currently loads slots 1 - 6
         slotid = 1
         for spell_slot in range(6):
 
-            spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slotid, player_entity=player_entity)
-            # spell_image = SpellUtilities.get_spell_image(gameworld=self.gameworld, spell_entity=spell_entity)
+            SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slotid, player_entity=player_entity)
             spell_image = 0
 
             terminal.put(x=(ac + spell_slot) * sc, y=y * image_y_scale, c=0xE400 + spell_image)
