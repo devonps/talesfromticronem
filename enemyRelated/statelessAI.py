@@ -41,6 +41,7 @@ class StatelessAI:
                 entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=ent)
                 current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=ent)
                 current_morale = 25
+                i_can_see_the_player = MobileUtilities.can_i_see_the_other_entity(gameworld=gameworld, from_entity=ent, to_entity=player_entity, game_map=game_map)
                 i_can_cast_a_spell, remaining_spells, weapon_type = SpellUtilities.can_mobile_cast_a_spell(gameworld=gameworld, entity_id=ent, target_entity=player_entity)
                 am_i_too_far_from_the_target = StatelessAI.am_i_too_far_away_from_the_enemy(gameworld=gameworld, from_entity=ent, to_entity=player_entity)
                 am_i_too_close_to_the_target = StatelessAI.am_i_too_close_to_the_target(gameworld=gameworld, from_entity=ent, to_entity=player_entity)
@@ -50,6 +51,7 @@ class StatelessAI:
                 logger.info('----------------------------------------')
                 logger.info('Entity name:{}', entity_names[0])
                 logger.info('Entity current health:{}', current_health)
+                logger.info('Can entity see the player:{}', i_can_see_the_player)
                 logger.info('Can entity cast a spell:{}', i_can_cast_a_spell)
                 logger.info('Is it too far from the target:{}', am_i_too_far_from_the_target)
                 logger.info('Is it too close to the target:{}', am_i_too_close_to_the_target)
@@ -64,11 +66,16 @@ class StatelessAI:
                         MobileUtilities.set_direction_velocity_away_from_player(gameworld=gameworld,
                                                                                 game_config=game_config, enemy_entity=ent)
                     elif i_can_cast_a_spell:
-                        spell_to_cast, spell_bar_slot_id = SpellUtilities.enemy_choose_random_spell_to_cast(spells_to_choose_from=remaining_spells, weapon_type=weapon_type)
-                        logger.info('on turn {}: {} couldnt retreat so attempted to cast spell entity {}', current_turn,
-                                    entity_names[0], spell_to_cast)
+                        if i_can_see_the_player:
+                            spell_to_cast, spell_bar_slot_id = SpellUtilities.enemy_choose_random_spell_to_cast(spells_to_choose_from=remaining_spells, weapon_type=weapon_type)
+                            logger.info('on turn {}: {} couldnt retreat so attempted to cast spell entity {}', current_turn,
+                                        entity_names[0], spell_to_cast)
 
-                        StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent, current_turn=current_turn)
+                            StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent, current_turn=current_turn)
+                        else:
+                            # stand still #TODO
+                            logger.info('on turn {}: {} felt threatened but didnt really know why', current_turn,
+                                        entity_names[0])
                     else:
                         # stand still #TODO
                         logger.info('on turn {}: {} was too scared to run away or cast a spell', current_turn, entity_names[0])
@@ -79,9 +86,14 @@ class StatelessAI:
                         MobileUtilities.set_direction_velocity_towards_player(gameworld=gameworld, game_config=game_config,
                                                                               enemy_entity=ent)
                     elif i_can_cast_a_spell:
-                        spell_to_cast, spell_bar_slot_id = SpellUtilities.enemy_choose_random_spell_to_cast(spells_to_choose_from=remaining_spells, weapon_type=weapon_type)
-                        logger.info('on turn {}: {} stood firm and cast spell entity {}', current_turn, entity_names[0], spell_to_cast)
-                        StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent, current_turn=current_turn)
+                        if i_can_see_the_player:
+                            spell_to_cast, spell_bar_slot_id = SpellUtilities.enemy_choose_random_spell_to_cast(spells_to_choose_from=remaining_spells, weapon_type=weapon_type)
+                            logger.info('on turn {}: {} stood firm and cast spell entity {}', current_turn, entity_names[0], spell_to_cast)
+                            StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent, current_turn=current_turn)
+                        else:
+                            # stand still #TODO
+                            logger.info('on turn {}: {} was out of luck, they couldnt see the player', current_turn,
+                                        entity_names[0])
                     else:
                         # stand still #TODO
                         logger.info('on turn {}: {} has no other option but to stand still', current_turn, entity_names[0])
@@ -93,13 +105,17 @@ class StatelessAI:
                         MobileUtilities.set_direction_velocity_away_from_player(gameworld=gameworld, game_config=game_config,
                                                                                 enemy_entity=ent)
                     elif i_can_cast_a_spell:
-                        spell_to_cast, spell_bar_slot_id = SpellUtilities.enemy_choose_random_spell_to_cast(spells_to_choose_from=remaining_spells, weapon_type=weapon_type)
-                        logger.info('on turn {}: {} is casting spell entity {}', current_turn, entity_names[0], spell_to_cast)
-                        StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent, current_turn=current_turn)
+                        if i_can_see_the_player:
+                            spell_to_cast, spell_bar_slot_id = SpellUtilities.enemy_choose_random_spell_to_cast(spells_to_choose_from=remaining_spells, weapon_type=weapon_type)
+                            logger.info('on turn {}: {} is casting spell entity {}', current_turn, entity_names[0], spell_to_cast)
+                            StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent, current_turn=current_turn)
+                        else:
+                            logger.info('on turn {}: {} was really perplexed', current_turn,
+                                        entity_names[0])
                     else:
                         # stand still #TODO
                         logger.info('on turn {}: {} stood still and took the punishment', current_turn, entity_names[0])
-                elif i_can_cast_a_spell:
+                elif i_can_cast_a_spell and i_can_see_the_player:
                     spell_to_cast, spell_bar_slot_id = SpellUtilities.enemy_choose_random_spell_to_cast(spells_to_choose_from=remaining_spells, weapon_type=weapon_type)
                     logger.info('on turn {}: {} decided to cast spell entity {}', current_turn, entity_names[0], spell_to_cast)
                     StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent, current_turn=current_turn)

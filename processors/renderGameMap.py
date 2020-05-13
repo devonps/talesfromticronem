@@ -30,6 +30,8 @@ class RenderGameMap(esper.Processor):
 
         """
         terminal.clear()
+
+
         start_time = time.perf_counter()
         # render the game map
         fov_map = self.render_map(self.gameworld, game_config, self.game_map)

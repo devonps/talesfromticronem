@@ -3,6 +3,7 @@ from abc import ABC
 from components import mobiles, items, spellBar
 from loguru import logger
 
+from mapRelated.fov import FieldOfView
 from utilities.itemsHelp import ItemUtilities
 from utilities import world
 from utilities import configUtilities, colourUtilities
@@ -14,6 +15,23 @@ class MobileUtilities(numbers.Real, ABC):
     #
     # general methods
     #
+
+    @staticmethod
+    def can_i_see_the_other_entity(gameworld, game_map, from_entity, to_entity):
+        can_i_see_the_entity = True
+        from_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=from_entity)
+        from_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=from_entity)
+
+        to_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=to_entity)
+        to_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=to_entity)
+
+        cells_in_line = FieldOfView.get_line((from_x, from_y), (to_x, to_y))
+
+        for cell in cells_in_line:
+            if game_map.tiles[cell[0]][cell[1]].blocked:
+                can_i_see_the_entity = False
+
+        return can_i_see_the_entity
 
     @staticmethod
     def create_armour_for_npc(gameworld, entity_id, armour_modifier, px_bonus):

@@ -16,8 +16,8 @@ class Entity:
     def create_random_enemies(gameworld, game_map, game_config):
         mx = game_map.width
         my = game_map.height
-        # enemy_roles = ['bomber', 'squealer', 'bully', 'sniper']
-        enemy_roles = ['bomber']
+        enemy_roles = ['bomber', 'squealer', 'bully', 'sniper']
+        # enemy_roles = ['bomber']
 
         for enemy_role in enemy_roles:
             placed = False
