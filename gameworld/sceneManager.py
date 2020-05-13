@@ -71,6 +71,8 @@ class SceneManager:
                         pass
 
                     # generate monsters for this scene
+                    game_config = configUtilities.load_config()
+                    Entity.create_random_enemies(gameworld=gameworld, game_config=game_config, game_map=game_map)
 
         SceneManager.create_ecs_systems_yes_no(gameworld=gameworld, currentscene=currentscene, game_map=game_map)
 
@@ -130,8 +132,7 @@ class SceneManager:
 
                 # add named NPCs to scene
                 if cell in 'ABCDEFG':
-                    enemy_object = Entity(gameworld=gameworld)
-                    enemy_object.create_named_mobile(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell)
+                    Entity.create_named_mobile(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell, gameworld=gameworld, game_config=game_config)
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor, game_map=game_map)
                 posx += 1
             posy += 1
@@ -170,13 +171,6 @@ class SceneManager:
             game_map.tiles[posx][posy].image = 11
             game_map.tiles[posx][posy].block_sight = False
             player_placed = True
-
-            enemy = Entity(gameworld=gameworld)
-            enemy.create_role_bomber(posx=posx, posy=posy + 3)
-
-            enemy2 = Entity(gameworld=gameworld)
-            enemy2.create_role_bomber(posx=posx + 5, posy=posy + 8)
-
         return player_placed
 
     @staticmethod
