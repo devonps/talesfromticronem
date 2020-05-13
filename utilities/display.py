@@ -1,28 +1,6 @@
-
 from utilities import configUtilities, colourUtilities
 from loguru import logger
-
 from bearlibterminal import terminal
-
-from utilities.common import CommonUtils
-from utilities.mobileHelp import MobileUtilities
-
-
-def create_display_area(gameworld, player_entity, game_map):
-    viewport_id = MobileUtilities.get_viewport_id(gameworld=gameworld, entity=player_entity)
-    vp_width = CommonUtils.get_viewport_width(gameworld=gameworld, viewport_id=viewport_id)
-    vp_height = CommonUtils.get_viewport_height(gameworld=gameworld, viewport_id=viewport_id)
-    vpXmin = CommonUtils.get_viewport_x_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
-    vpYmin = CommonUtils.get_viewport_y_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
-    player_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
-    player_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
-
-    x_min = max(player_pos_x - vp_width, vpXmin)
-    x_max = min(player_pos_x + vp_width, game_map.width) - 1
-    y_min = max(player_pos_y - vp_height, vpYmin)
-    y_max = min(player_pos_y + vp_height, game_map.height)
-
-    return x_min, x_max, y_min, y_max
 
 
 # the selected option is the choice from list_options that will be highlighted
@@ -77,7 +55,6 @@ def pointy_menu(header, menu_options, menu_id_format, menu_start_x, menu_start_y
 
 
 def display_coloured_box(title, posx, posy, width, height, fg, bg):
-
     draw_simple_frame(startx=posx, starty=posy, width=width, height=height, title=title, fg=fg, bg=bg)
 
     draw_coloured_rectangle(startx=posx, starty=posy, width=width, height=height, ch=u'\u0020', fg=fg, bg=bg)
@@ -213,7 +190,6 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
 
     # You can only draw corner decorators or studs
     if corner_decorator != '':
-
         # unicode frame tiles
         arc_top_left = u'\u25DC'
         arc_top_right = u'\u256E'
@@ -231,8 +207,7 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
 
 
 def draw_clear_text_box(posx, posy, width, height, text, fg, bg):
-
     terminal.clear_area(x=posx, y=posy, width=width, height=height)
 
     string_to_print = '[color=' + fg + '][/color][bkcolor=' + bg + '][/bkcolor]' + text
-    terminal.print_(x=posx, y=posy - 2, width=60, height=5, align=terminal.TK_ALIGN_LEFT, s=string_to_print )
+    terminal.print_(x=posx, y=posy - 2, width=60, height=5, align=terminal.TK_ALIGN_LEFT, s=string_to_print)

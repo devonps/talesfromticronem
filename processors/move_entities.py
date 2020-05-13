@@ -1,8 +1,7 @@
 import esper
 
 from components import mobiles
-from mapRelated.gameMap import GameMap
-from utilities.common import CommonUtils
+from utilities import configUtilities
 from utilities.gamemap import GameMapUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
@@ -21,15 +20,11 @@ class MoveEntities(esper.Processor):
         message_log_just_viewed = MobileUtilities.get_view_message_log_value(gameworld=self.gameworld, entity=player_entity)
         if not message_log_just_viewed:
 
-            viewport_id = MobileUtilities.get_viewport_id(gameworld=self.gameworld, entity=player_entity)
+            viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_WIDTH')
 
-            viewport_width = CommonUtils.get_viewport_width(gameworld=self.gameworld, viewport_id=viewport_id)
-
-            viewport_player_position = CommonUtils.get_player_viewport_position_info(gameworld=self.gameworld,
-                                                                                     viewport_id=viewport_id)
-
-            vpx = viewport_player_position[0]
-            vpy = viewport_player_position[1]
+            vpx = MobileUtilities.get_player_viewport_x(gameworld=self.gameworld, entity=player_entity)
+            vpy = MobileUtilities.get_player_viewport_y(gameworld=self.gameworld, entity=player_entity)
 
             for ent, (vel, pos) in self.gameworld.get_components(mobiles.Velocity, mobiles.Position):
                 am_i_blocked = self.check_for_blocked_movement(pos.x + vel.dx, pos.y + vel.dy)
@@ -38,16 +33,18 @@ class MoveEntities(esper.Processor):
                     pos.y += vel.dy
                     vpx += vel.dx
                     vpy += vel.dy
-                    CommonUtils.set_player_viewport_position_x(gameworld=self.gameworld, viewport_id=viewport_id, posx=vpx)
-                    CommonUtils.set_player_viewport_position_y(gameworld=self.gameworld, viewport_id=viewport_id, posy=vpy)
+
+                    if ent == player_entity:
+                        MobileUtilities.set_player_viewport_x(gameworld=self.gameworld, entity=player_entity, value=vpx)
+                        MobileUtilities.set_player_viewport_y(gameworld=self.gameworld, entity=player_entity, value=vpy)
 
                     if vpx >= (viewport_width - 8):
-                        # logger.info('Hit imaginary right-edge boundary on the X axis')
-                        CommonUtils.set_viewport_right_boundary_visited_true(gameworld=self.gameworld, viewport_id=viewport_id)
+                        configUtilities.write_config_value(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_RIGHT_VISITED', value='True')
 
                     if vpx - 8 <= 0:
-                        # logger.info('Hit imaginary left-edge boundary on the X axis')
-                        CommonUtils.set_viewport_left_boundary_visited_true(gameworld=self.gameworld, viewport_id=viewport_id)
+                        configUtilities.write_config_value(configfile=game_config, section='gui',
+                                                           parameter='VIEWPORT_LEFT_VISITED', value='True')
 
                     if vel.dx != 0 or vel.dy != 0:
                         svx = '0'

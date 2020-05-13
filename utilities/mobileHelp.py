@@ -178,7 +178,6 @@ class MobileUtilities(numbers.Real, ABC):
         if current_enemy_xpos > current_player_xpos:
             MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=enemy_entity, direction='right', speed=1)
 
-
     @staticmethod
     def set_mobile_velocity(gameworld, entity, direction, speed):
         player_velocity_component = gameworld.component_for_entity(entity, mobiles.Velocity)
@@ -384,6 +383,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(player_entity,
                                 mobiles.ClothingImage(head=0, back=21, front=22, feet=23, weapon=24, hands=0, shield=0,
                                                       legs=0, chest=0, shoulders=0))
+        gameworld.add_component(player_entity, mobiles.Viewport())
 
     @staticmethod
     def set_enemy_preferred_min_distance_from_target(gameworld, entity, value):
@@ -482,14 +482,24 @@ class MobileUtilities(numbers.Real, ABC):
         return spellbar_component.entityId
 
     @staticmethod
-    def set_viewport_for_player(gameworld, entity, viewport_id):
-        gameworld.add_component(entity, mobiles.Viewport(entityId=viewport_id))
+    def set_player_viewport_x(gameworld, entity, value):
+        viewport_component = gameworld.component_for_entity(entity, mobiles.Viewport)
+        viewport_component.posx = value
 
     @staticmethod
-    def get_viewport_id(gameworld, entity):
+    def set_player_viewport_y(gameworld, entity, value):
         viewport_component = gameworld.component_for_entity(entity, mobiles.Viewport)
+        viewport_component.posy = value
 
-        return viewport_component.entityId
+    @staticmethod
+    def get_player_viewport_x(gameworld, entity):
+        viewport_component = gameworld.component_for_entity(entity, mobiles.Viewport)
+        return viewport_component.posx
+
+    @staticmethod
+    def get_player_viewport_y(gameworld, entity):
+        viewport_component = gameworld.component_for_entity(entity, mobiles.Viewport)
+        return viewport_component.posy
 
     @staticmethod
     def set_MessageLog_for_player(gameworld, entity, logid):

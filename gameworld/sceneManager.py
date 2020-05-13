@@ -7,8 +7,6 @@ from processors.updateEntities import UpdateEntitiesProcessor
 from processors.renderMessageLog import RenderMessageLog
 from utilities import configUtilities
 from loguru import logger
-
-from utilities.common import CommonUtils
 from utilities.externalfileutilities import Externalfiles
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
@@ -177,11 +175,10 @@ class SceneManager:
     def setup_viewport(gameworld, posx, posy):
         game_config = configUtilities.load_config()
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        viewport_entity = MobileUtilities.get_viewport_id(gameworld=gameworld, entity=player_entity)
         MobileUtilities.set_mobile_position(gameworld=gameworld, entity=player_entity, posx=posx, posy=posy)
 
         vpx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         vpy = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
 
-        CommonUtils.set_player_viewport_position_x(gameworld=gameworld, viewport_id=viewport_entity, posx=vpx)
-        CommonUtils.set_player_viewport_position_y(gameworld=gameworld, viewport_id=viewport_entity, posy=vpy)
+        configUtilities.write_config_value(configfile=game_config, section='gui', parameter='VIEWPORT_START_X', value=str(vpx))
+        configUtilities.write_config_value(configfile=game_config, section='gui', parameter='VIEWPORT_START_Y', value=str(vpy))

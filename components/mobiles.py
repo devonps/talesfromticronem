@@ -101,8 +101,9 @@ class SpellBar:
 
 
 class Viewport:
-    def __init__(self, entityId=0):
-        self.entityId = entityId
+    def __init__(self, posx=0, posy=0):
+        self.posx = posx
+        self.posy = posy
 
 
 class CurrentTurn:

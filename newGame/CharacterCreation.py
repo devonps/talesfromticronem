@@ -1823,15 +1823,10 @@ class CharacterCreation:
                             selected_menu_option = 0
                     if event_action == 'enter':
                         if selected_menu_option == 0:  # accept character build and start game
-                            viewport_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
-                            CommonUtils.create_viewport_as_entity(gameworld=gameworld, vwp=viewport_entity)
-                            MobileUtilities.set_viewport_for_player(gameworld=gameworld, entity=player_entity,
-                                                                    viewport_id=viewport_entity)
                             messagelog_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
                             CommonUtils.create_message_log_as_entity(gameworld=gameworld, logid=messagelog_entity)
                             MobileUtilities.set_MessageLog_for_player(gameworld=gameworld, entity=player_entity,
                                                                       logid=messagelog_entity)
-                            logger.info('Viewport stored as entity {}', viewport_entity)
                             logger.info('Mesage log stored as entity {}', messagelog_entity)
                             game_loop(gameworld=gameworld)
                         if selected_menu_option == 1:  # save current build

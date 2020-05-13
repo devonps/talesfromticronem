@@ -30,8 +30,6 @@ class RenderGameMap(esper.Processor):
 
         """
         terminal.clear()
-
-
         start_time = time.perf_counter()
         # render the game map
         fov_map = self.render_map(self.gameworld, game_config, self.game_map)
@@ -118,16 +116,19 @@ class RenderGameMap(esper.Processor):
                                                                       parameter='TILE_TYPE_FLOOR')
         player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
-        viewport_id = MobileUtilities.get_viewport_id(gameworld=gameworld, entity=player_entity)
         player_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         player_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
 
-        vp_width = CommonUtils.get_viewport_width(gameworld=gameworld, viewport_id=viewport_id)
-        vp_height = CommonUtils.get_viewport_height(gameworld=gameworld, viewport_id=viewport_id)
-        vp_x_mmin = CommonUtils.get_viewport_x_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
-        vp_y_min = CommonUtils.get_viewport_y_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
+        vp_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_WIDTH')
+        vp_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_HEIGHT')
+        vp_x_min = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_START_X')
+        vp_y_min = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_START_Y')
 
-        x_min = max(player_pos_x - vp_width, vp_x_mmin)
+        x_min = max(player_pos_x - vp_width, vp_x_min)
         x_max = min(player_pos_x + vp_width, game_map.width)
         y_min = max(player_pos_y - vp_height, vp_y_min)
         y_max = min(player_pos_y + vp_height, game_map.height)
@@ -145,6 +146,7 @@ class RenderGameMap(esper.Processor):
         if player_has_moved:
             RenderGameMap.clear_map_layer()
 
+        # this is the 'camera viewport' on the entire game world
         for y in range(y_min, y_max):
             for x in range(x_min, x_max):
                 print_char = False
@@ -176,52 +178,6 @@ class RenderGameMap(esper.Processor):
                         str = colour_code + unicode_string_to_print + char_to_display + ']'
                         terminal.printf(x=x, y=y, s=str)
         return player_fov
-
-
-    @staticmethod
-    def get_viewport_boundary(gameworld, player_entity):
-
-        viewport_id = MobileUtilities.get_viewport_id(gameworld=gameworld, entity=player_entity)
-
-        xmin = CommonUtils.get_viewport_x_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
-        xmax = CommonUtils.get_viewport_x_axis_max_value(gameworld=gameworld, viewport_id=viewport_id)
-
-        right_boundary_visited = CommonUtils.get_viewport_right_boundary(gameworld=gameworld, viewport_id=viewport_id)
-        left_boundary_visited = CommonUtils.get_viewport_left_boundary(gameworld=gameworld, viewport_id=viewport_id)
-        viewport_player_position = CommonUtils.get_player_viewport_position_info(gameworld=gameworld,
-                                                                                 viewport_id=viewport_id)
-        vpx = viewport_player_position[0]
-
-        # current 'scrolling' method is to simply add +5 to both the min and max values of the viewport
-        scroll_amount = 5
-
-        if right_boundary_visited and (xmax + scroll_amount < 42):
-            CommonUtils.set_viewport_x_axis_min_value(gameworld=gameworld, viewport_id=viewport_id,
-                                                      value=xmin + scroll_amount)
-            CommonUtils.set_viewport_x_axis_max_value(gameworld=gameworld, viewport_id=viewport_id,
-                                                      value=xmax + scroll_amount)
-            CommonUtils.set_viewport_right_boundary_visited_false(gameworld=gameworld, viewport_id=viewport_id)
-
-            CommonUtils.set_player_viewport_position_x(gameworld=gameworld, viewport_id=viewport_id,
-                                                       posx=vpx - scroll_amount)
-
-        if left_boundary_visited and (xmin - scroll_amount == 0):
-            CommonUtils.set_viewport_x_axis_min_value(gameworld=gameworld, viewport_id=viewport_id,
-                                                      value=xmin - scroll_amount)
-            CommonUtils.set_viewport_x_axis_max_value(gameworld=gameworld, viewport_id=viewport_id,
-                                                      value=xmax - scroll_amount)
-            CommonUtils.set_viewport_left_boundary_visited_false(gameworld=gameworld, viewport_id=viewport_id)
-
-            CommonUtils.set_player_viewport_position_x(gameworld=gameworld, viewport_id=viewport_id,
-                                                       posx=vpx + scroll_amount)
-
-        viewport_x_min = CommonUtils.get_viewport_x_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
-        viewport_x_max = CommonUtils.get_viewport_x_axis_max_value(gameworld=gameworld, viewport_id=viewport_id)
-
-        viewport_y_min = CommonUtils.get_viewport_y_axis_min_value(gameworld=gameworld, viewport_id=viewport_id)
-        viewport_y_max = CommonUtils.get_viewport_y_axis_max_value(gameworld=gameworld, viewport_id=viewport_id)
-
-        return viewport_x_min, viewport_x_max, viewport_y_min, viewport_y_max
 
     @staticmethod
     def render_mobiles(game_config, gameworld, fov_map):
