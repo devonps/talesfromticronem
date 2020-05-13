@@ -86,10 +86,10 @@ def game_loop(gameworld):
             # get monsters intended action
             #
             StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player, game_map=game_map)
-            current_turn += 1
-            MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
         # process all intended actions
         gameworld.process(game_config)
+        current_turn += 1
+        MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
 
         # blit the console
         terminal.refresh()

@@ -278,13 +278,13 @@
     }
   },
   "weapons": {
-    "sword": "false",
+    "sword": "true",
     "wand": "false",
     "scepter": "true",
     "staff": "true",
-    "dagger": "true",
+    "dagger": "false",
     "rod": "true",
-    "focus": "true"
+    "focus": "false"
   },
   "health": "15"
   }

@@ -411,7 +411,7 @@
       "quality_level": "normal",
       "description": "a dagger",
       "can_be_rendered": "True",
-      "wielded_hands": "both",
+      "wielded_hands": "main",
         "damage_ranges": [
     {
       "id": "1",

@@ -134,7 +134,7 @@ class UpdateEntitiesProcessor(esper.Processor):
         formatted_turn_number = CommonUtils.format_game_turn_as_string(current_turn=current_turn)
 
         # add message to combat log showing loss of effect
-        message_text = formatted_turn_number + ":" + entity_name + " loses [color=MSGLOG_GAME_REMOVE_CONDITION][[" + condi_name + "]][/color]"
+        message_text = formatted_turn_number + ":" + entity_name + " is no longer [color=MSGLOG_GAME_REMOVE_CONDITION]" + condi_name + "[/color]"
         msg = Message(text=message_text, msgclass="combat", fg="white", bg="black", fnt="")
-        log_message = formatted_turn_number + ":" + entity_name + " loses [" + condi_name + "]"
+        log_message = formatted_turn_number + ":" + entity_name + " is no longer " + condi_name
         CommonUtils.add_message(gameworld=self.gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
