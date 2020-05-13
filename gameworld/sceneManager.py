@@ -48,7 +48,7 @@ class SceneManager:
 
         if scene_found:
             map_area_file = ''
-            scene_file = 'scenes.json'
+            scene_file = 'new_scenes.json'
             scene_file = read_json_file('static/scenes/' + scene_file)
             for scene_key in scene_file['scenes']:
                 if scene_key['name'] == this_scene:

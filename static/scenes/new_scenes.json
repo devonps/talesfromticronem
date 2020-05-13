@@ -1,10 +1,27 @@
 {
   "scenes": [
     {
-      "name": "new academy",
+      "name": "academy",
       "loadMap": "startArea",
       "mapx": "41",
       "mapy": "47",
+      "npcs": [
+        {
+          "displayName": "Joe",
+          "internalName": "academyMaster",
+          "identifier": "A"
+        },
+        {
+          "displayName": "Weapons",
+          "internalName": "",
+          "identifier": "B"
+        },
+        {
+          "displayName": "Combat",
+          "internalName": "",
+          "identifier": "C"
+        }
+        ],
       "wizard": [
         {
           "class": "necromancer",
@@ -19,14 +36,15 @@
           "weapon": "staff",
           "races": [
             {
-              "dwarf": false,
-              "elf": false,
-              "knoll": true,
-              "halfling": false,
-              "orc": true,
-              "kobold": false,
-              "troll": false,
-              "tengu": true,
+              "Handeg": false,
+              "Ulro": false,
+              "Launturo": true,
+              "Dugonc": false,
+              "Durinde": true,
+              "Kana": false,
+              "Caron": false,
+              "Koror": true,
+              "Turiard": true,
               "dilga": false,
               "eskeri": false,
               "jogah": false,
