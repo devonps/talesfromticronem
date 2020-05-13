@@ -25,8 +25,6 @@ class GameMap:
     def initialize_tiles(self):
         tiles = [[Tile(True) for _ in range(self.height)] for _ in range(self.width)]
 
-        logger.info('Tiles width {} height {}', self.width, self.height)
-
         return tiles
 
     @staticmethod

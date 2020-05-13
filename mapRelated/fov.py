@@ -28,7 +28,10 @@ class FieldOfView:
 
         RAYS = 360  # number of degrees in a circle
         STEP = 3  # The step per cycle. More = faster but large steps may cause artefacts
-        fov_map = [[False for i in range(self.height)] for i in range(self.width)]
+        fov_map = [[False for _ in range(self.height)] for _ in range(self.width)]
+
+        # player's position is always within the FoV
+        fov_map[startx][starty] = True
 
         # Tables of precalculated values of sin(x / (180 / pi)) and cos(x / (180 / pi))
 
@@ -157,7 +160,7 @@ class FieldOfView:
             x = startx  # Player's x
             y = starty  # Player's y
 
-            for z in range(self.fov_radius):  # Cast the ray
+            for _ in range(self.fov_radius):  # Cast the ray
                 x += ax
                 y += ay
 
@@ -166,7 +169,7 @@ class FieldOfView:
 
                 fov_map[int(round(x))][int(round(y))] = True  # Make tile visible
 
-                tile = self.game_map.grid[int(round(x))][int(round(y))]
+                tile = self.game_map.tiles[int(round(x))][int(round(y))].type_of_tile
 
                 if tile == tile_type_door or tile == tile_type_wall:  # Stop ray if it hits
                     break  # a wall or a door.

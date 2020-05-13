@@ -1,15 +1,13 @@
 
 class Tile:
 
-    def __init__(self, blocked, block_sight=None, explored=False):
-
-        # type_of_tile=constants.TILE_TYPE_WALL - some hackery magic going on below
+    def __init__(self, blocked, block_sight=None):
         self.type_of_tile = 5
         self.blocked = blocked
         if block_sight is None:
                 block_sight = blocked
         self.block_sight = block_sight
-        self.explored = explored
+        self.explored = False
         self.status_effects = []
         self.placed_spells = []
         self.region = 0

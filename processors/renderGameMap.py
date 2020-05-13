@@ -1,10 +1,12 @@
 import esper
+import time
 
 from bearlibterminal import terminal
+from loguru import logger
 
 from components import mobiles, items
+from mapRelated.fov import FieldOfView
 from utilities import configUtilities, formulas
-from utilities.display import create_display_area
 from utilities.mobileHelp import MobileUtilities
 from utilities.common import CommonUtils
 from utilities.spellHelp import SpellUtilities
@@ -28,11 +30,12 @@ class RenderGameMap(esper.Processor):
 
         """
         terminal.clear()
+        start_time = time.perf_counter()
         # render the game map
-        self.render_map(self.gameworld, game_config, self.game_map)
+        fov_map = self.render_map(self.gameworld, game_config, self.game_map)
         # draw the entities
         # self.render_items(game_config, self.gameworld)
-        visible_entities = self.render_mobiles(game_config, self.gameworld, self.game_map)
+        visible_entities = self.render_mobiles(gameworld=self.gameworld, game_config=game_config, fov_map=fov_map)
         if len(visible_entities) > 0:
             self.render_entity_display_panel(gameworld=self.gameworld, game_config=game_config,
                                              visible_entities=visible_entities)
@@ -45,6 +48,8 @@ class RenderGameMap(esper.Processor):
         self.render_spell_bar(self, game_config=game_config)
         self.render_player_vitals(gameworld=self.gameworld, game_config=game_config)
         terminal.composition(terminal.TK_OFF)
+        end_time = time.perf_counter()
+        logger.info('Time taken to render game display {}', (end_time - start_time))
 
     @staticmethod
     def clear_map_layer():
@@ -107,6 +112,8 @@ class RenderGameMap(esper.Processor):
                                                                      parameter='TILE_TYPE_WALL')
         tile_type_door = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                      parameter='TILE_TYPE_DOOR')
+        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='TILE_TYPE_FLOOR')
         player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
         viewport_id = MobileUtilities.get_viewport_id(gameworld=gameworld, entity=player_entity)
@@ -126,24 +133,48 @@ class RenderGameMap(esper.Processor):
         config_prefix_wall = config_prefix + 'WALL_'
         config_prefix_floor = config_prefix + 'FLOOR_'
         config_prefix_door = config_prefix + 'DOOR_'
-        blank_tile = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor, tile_assignment=0)
+        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor, tile_assignment=0)
         unicode_string_to_print = '[font=dungeon]['
+        colour_code = "[color=black]"
+        fov_map = FieldOfView(game_map=game_map)
+        player_fov = FieldOfView.create_fov_map_via_raycasting(fov_map, startx=player_pos_x, starty=player_pos_y,
+                                                               game_config=game_config)
+
         if player_has_moved:
             RenderGameMap.clear_map_layer()
 
         for y in range(y_min, y_max):
             for x in range(x_min, x_max):
+                print_char = False
                 tile = game_map.tiles[x][y].type_of_tile
                 tile_assignment = game_map.tiles[x][y].assignment
-                char_to_display = blank_tile
-                if tile == tile_type_wall:
-                    char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_wall, tile_assignment=tile_assignment)
-                if tile == tile_type_door:
-                    char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_door, tile_assignment=0)
+                visible = FieldOfView.get_fov_map_point(player_fov, x, y)
+                if visible:
+                    game_map.tiles[x][y].explored = True
+                    colour_code = "[color=white]"
+                    print_char = True
+                    if tile == tile_type_floor:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor, tile_assignment=0)
+                    if tile == tile_type_wall:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_wall, tile_assignment=tile_assignment)
+                    if tile == tile_type_door:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_door, tile_assignment=0)
 
-                if tile > 0:
-                    str = unicode_string_to_print + char_to_display + ']'
-                    terminal.printf(x=x, y=y, s=str)
+                elif game_map.tiles[x][y].explored:
+                    colour_code = "[color=grey]"
+                    print_char = True
+                    if tile == tile_type_floor:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor, tile_assignment=0)
+                    if tile == tile_type_wall:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_wall, tile_assignment=tile_assignment)
+                    if tile == tile_type_door:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_door, tile_assignment=0)
+
+                if print_char and tile > 0:
+                        str = colour_code + unicode_string_to_print + char_to_display + ']'
+                        terminal.printf(x=x, y=y, s=str)
+        return player_fov
+
 
     @staticmethod
     def get_viewport_boundary(gameworld, player_entity):
@@ -191,11 +222,9 @@ class RenderGameMap(esper.Processor):
         return viewport_x_min, viewport_x_max, viewport_y_min, viewport_y_max
 
     @staticmethod
-    def render_mobiles(game_config, gameworld, game_map):
+    def render_mobiles(game_config, gameworld, fov_map):
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         visible_entities = []
-        x_min, x_max, y_min, y_max = create_display_area(gameworld=gameworld,
-                                                                     player_entity=player_entity, game_map=game_map)
 
         for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
                                                                mobiles.Describable):
@@ -204,7 +233,7 @@ class RenderGameMap(esper.Processor):
                 draw_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
                 fg = desc.foreground
                 bg = desc.background
-                if (x_min <= draw_pos_x <= x_max) and (y_min <= draw_pos_y <= y_max):
+                if FieldOfView.get_fov_map_point(fov_map, draw_pos_x, draw_pos_y):
                     RenderGameMap.render_entity(posx=draw_pos_x, posy=draw_pos_y, glyph=desc.glyph, fg=fg, bg=bg)
                     if ent != player_entity:
                         visible_entities.append(ent)
