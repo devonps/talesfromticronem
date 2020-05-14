@@ -1,10 +1,22 @@
 from components.messages import Message
 from utilities import configUtilities
-from components import messages
+from components import messages, mobiles
 from utilities.mobileHelp import MobileUtilities
 
 
 class CommonUtils:
+
+    @staticmethod
+    def get_entity_at_location(gameworld, coords):
+        posx = coords[0]
+        posy = coords[1]
+        entity_id = 0
+        for ent, pos in gameworld.get_components(mobiles.Position):
+            entity_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
+            entity_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
+            if entity_pos_x == posx and entity_pos_y == posy:
+                entity_id = ent
+        return entity_id
 
     @staticmethod
     def get_unicode_ascii_char(game_config, config_prefix, tile_assignment):

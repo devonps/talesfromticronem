@@ -1,5 +1,6 @@
 from bearlibterminal import terminal
 
+
 from enemyRelated.statelessAI import StatelessAI
 from newGame.initialiseNewGame import setup_gameworld
 from utilities.externalfileutilities import Externalfiles
@@ -12,6 +13,7 @@ from gameworld.sceneManager import SceneManager
 from newGame import newGame
 from utilities.spellHelp import SpellUtilities
 from utilities.common import CommonUtils
+from utilities.display import entity_spy
 
 
 def game_loop(gameworld):
@@ -80,6 +82,8 @@ def game_loop(gameworld):
             if event_action in message_logs:
                 CommonUtils.view_message_log(gameworld=gameworld, player=player, log_to_be_displayed=event_action)
                 advance_game_turn = False
+        if event_to_be_processed == 'mouseleftbutton':
+            entity_spy(gameworld=gameworld, game_config=game_config, coords=event_action)
 
         if advance_game_turn:
             #
@@ -102,7 +106,6 @@ def game_replay(con, game_config):
 @logger.catch()
 def main():
 
-    # LoadPrefab.loadPrefab()
     terminal.open()
     newGame.new_game()
 

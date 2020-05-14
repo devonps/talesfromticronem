@@ -1,6 +1,51 @@
+from components import mobiles
+from mapRelated.gameMap import RenderLayer
 from utilities import configUtilities, colourUtilities
 from loguru import logger
 from bearlibterminal import terminal
+
+
+# Entity spy
+from utilities.common import CommonUtils
+from utilities.input_handlers import handle_game_keys
+from utilities.mobileHelp import MobileUtilities
+
+
+def entity_spy(gameworld, game_config, coords):
+    # get entity id at position coords
+    entity_id = CommonUtils.get_entity_at_location(gameworld=gameworld, coords=coords)
+
+    if entity_id == 0:
+        logger.debug('Entity not found at location')
+        return
+    else:
+        # display entity information
+        lft = 10
+        tp = 15
+        height = 5
+        width = 26
+
+        terminal.clear_area(lft, tp, width, height)
+        prev_layer = terminal.state(terminal.TK_LAYER)
+        terminal.layer(RenderLayer.VALIDTARGETS.value)
+
+        draw_simple_frame(startx=lft, starty=tp, width=width, height=height, title='| Entity Spy |',
+                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+
+        terminal.layer(prev_layer)
+
+        # blit the terminal
+        terminal.refresh()
+
+        # wait for user key press
+        # validTargets[ent, name.first, desc.glyph, desc.foreground, desc.background]
+        player_not_pressed_a_key = True
+        while player_not_pressed_a_key:
+            event_to_be_processed, event_action = handle_game_keys()
+            if event_to_be_processed == 'keypress':
+                if event_action == 'quit':
+                    player_not_pressed_a_key = False
+
 
 
 # the selected option is the choice from list_options that will be highlighted
