@@ -124,13 +124,8 @@ def display_build_library():
     terminal.clear()
 
     # build library frame around console
-    draw_colourful_frame(startx=build_library_frame_x, starty=build_library_frame_y,
-                         width=build_library_frame_width,
-                         height=build_library_frame_height,
-                         title=' Character Build Library ', title_loc='centre',
-                         title_decorator=True,
-                         corner_decorator='', corner_studs='square',
-                         msg='ESC/ to go back, mouse to select.')
+    draw_colourful_frame(title=' Character Build Library ', title_decorator=True, title_loc='centre',
+                         corner_decorator='', corner_studs='square', msg='ESC/ to go back, mouse to select.')
 
     while build_library_is_displayed:
         if draw_template_ui:

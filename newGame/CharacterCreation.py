@@ -41,10 +41,8 @@ class CharacterCreation:
 
         while show_character_options:
 
-            draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
-                                 width=start_panel_frame_width, height=start_panel_frame_height,
-                                 title=' Character Creation Options ', title_loc='centre',
-                                 title_decorator=False, corner_decorator='', corner_studs='square',
+            draw_colourful_frame(title=' Character Creation Options ', title_decorator=False, title_loc='centre',
+                                 corner_decorator='', corner_studs='square',
                                  msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
 
             # place game menu options
@@ -159,11 +157,7 @@ class CharacterCreation:
 
         while show_race_options:
 
-            draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
-                                 width=start_panel_frame_width,
-                                 height=start_panel_frame_height,
-                                 title=' Character Creation - Select Race ', title_loc='centre',
-                                 title_decorator=False,
+            draw_colourful_frame(title=' Character Creation - Select Race ', title_decorator=False, title_loc='centre',
                                  corner_decorator='', corner_studs='square',
                                  msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
 
@@ -289,11 +283,7 @@ class CharacterCreation:
 
         while class_not_selected:
 
-            draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
-                                 width=start_panel_frame_width,
-                                 height=start_panel_frame_height,
-                                 title='Character Creation - Select Class', title_loc='centre',
-                                 title_decorator=False,
+            draw_colourful_frame(title='Character Creation - Select Class', title_decorator=False, title_loc='centre',
                                  corner_decorator='', corner_studs='square',
                                  msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
 
@@ -540,11 +530,7 @@ class CharacterCreation:
         main_hand_weapon_id = 0
 
         while show_weapons_options:
-            draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
-                                 width=start_panel_frame_width,
-                                 height=start_panel_frame_height,
-                                 title='Character Creation - Select Weapon', title_loc='centre',
-                                 title_decorator=False,
+            draw_colourful_frame(title='Character Creation - Select Weapon', title_decorator=False, title_loc='centre',
                                  corner_decorator='', corner_studs='square',
                                  msg='ESC/ to go back, up & down, left & right arrows to select, Enter to accept')
 
@@ -834,12 +820,8 @@ class CharacterCreation:
 
         while show_armour_options:
 
-            draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
-                                 width=start_panel_frame_width,
-                                 height=start_panel_frame_height,
-                                 title=' Character Creation - Choose Armourset ', title_loc='centre',
-                                 title_decorator=False,
-                                 corner_decorator='', corner_studs='square',
+            draw_colourful_frame(title=' Character Creation - Choose Armourset ', title_decorator=False,
+                                 title_loc='centre', corner_decorator='', corner_studs='square',
                                  msg='ESC/ to go back, up & down arrows to select, Enter to accept')
 
             armour_description = 'You will be wearing ' + as_display_name + ' armour, ' + 'which is made from ' + \
@@ -1226,12 +1208,8 @@ class CharacterCreation:
         terminal.print_(x=mx, y=gy, s='Male')
         terminal.print_(x=fx, y=gy, s='Female')
 
-        draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
-                             width=start_panel_frame_width,
-                             height=start_panel_frame_height,
-                             title=' Character Creation - Name Your Character ', title_loc='centre',
-                             title_decorator=False,
-                             corner_decorator='', corner_studs='square',
+        draw_colourful_frame(title=' Character Creation - Name Your Character ', title_decorator=False,
+                             title_loc='centre', corner_decorator='', corner_studs='square',
                              msg='ESC/ to go back. Enter to choose.')
         while character_not_named:
 
@@ -1462,11 +1440,7 @@ class CharacterCreation:
 
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
-        draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
-                             width=start_panel_frame_width,
-                             height=start_panel_frame_height,
-                             title=' Character Creation - Finished ', title_loc='centre',
-                             title_decorator=False,
+        draw_colourful_frame(title=' Character Creation - Finished ', title_decorator=False, title_loc='centre',
                              corner_decorator='', corner_studs='square', msg='')
 
         menu_options = ['Accept', 'Save Build', 'New Character']

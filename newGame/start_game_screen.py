@@ -43,11 +43,8 @@ class StartGame:
 
         while show_game_start_screen:
 
-            draw_colourful_frame(startx=start_panel_frame_x, starty=start_panel_frame_y,
-                                 width=start_panel_frame_width, height=start_panel_frame_height,
-                                 title=game_title, title_loc='centre',
-                                 title_decorator=True,
-                                 corner_decorator='', corner_studs='',
+            draw_colourful_frame(title=game_title, title_decorator=True, title_loc='centre', corner_decorator='',
+                                 corner_studs='',
                                  msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
 
             # place game version message

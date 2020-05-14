@@ -4,7 +4,6 @@ from utilities import configUtilities, colourUtilities
 from loguru import logger
 from bearlibterminal import terminal
 
-
 # Entity spy
 from utilities.common import CommonUtils
 from utilities.input_handlers import handle_game_keys
@@ -17,19 +16,18 @@ def entity_spy(gameworld, game_config, coords):
 
     if entity_id == 0:
         logger.debug('Entity not found at location')
-        return
     else:
         # display entity information
         lft = 10
         tp = 15
-        height = 5
-        width = 26
+        start_panel_frame_height = 5
+        start_panel_frame_width = 26
 
-        terminal.clear_area(lft, tp, width, height)
+        terminal.clear_area(lft, tp, start_panel_frame_width, start_panel_frame_height)
         prev_layer = terminal.state(terminal.TK_LAYER)
         terminal.layer(RenderLayer.VALIDTARGETS.value)
 
-        draw_simple_frame(startx=lft, starty=tp, width=width, height=height, title='| Entity Spy |',
+        draw_simple_frame(start_panel_frame_x=lft, start_panel_frame_y=tp, start_panel_frame_width=start_panel_frame_width, start_panel_frame_height=start_panel_frame_height, title='| Entity Spy |',
                           fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
         terminal.layer(prev_layer)
@@ -47,24 +45,22 @@ def entity_spy(gameworld, game_config, coords):
                     player_not_pressed_a_key = False
 
 
-
 # the selected option is the choice from list_options that will be highlighted
 # so if list_options were  [apple, orange, grape] and selected_option were 'grape' then grape would be highlighted
 def coloured_list(list_options, list_x, list_y, selected_option, blank_line, fg):
-    lst = 0
     list_count = 0
-    bg_color = colourUtilities.get('BLACK')
-
+    start_print_string = '[color='
+    end_print_string = ']'
+    
     for option in list_options:
         if selected_option.lower() == option.lower():
             fg_color = colourUtilities.get('YELLOW1')
         else:
             fg_color = fg
-        string_to_print = '[color=' + fg_color + ']' + option
-        terminal.print(x=list_x, y=list_y + list_count, s=string_to_print)
+        string_to_print = start_print_string + fg_color + end_print_string + option
+        terminal.printf(x=list_x, y=list_y + list_count, s=string_to_print)
 
         list_count += 1
-        lst += 1
         if blank_line:
             list_count += 1
 
@@ -80,8 +76,9 @@ def pointy_menu(header, menu_options, menu_id_format, menu_start_x, menu_start_y
     # print the menu options
     menu_count = 0
     mnu = 0
+    start_print_string = '[color='
+    end_print_string = ']'
 
-    letter_index = ord('a')
     for option_text in menu_options:
         if selected_option == mnu:
             fg_color = colourUtilities.get('YELLOW1')
@@ -89,30 +86,29 @@ def pointy_menu(header, menu_options, menu_id_format, menu_start_x, menu_start_y
         else:
             fg_color = colourUtilities.get('WHITE')
             mnu_pointer = ' '
-        men_text = '[color=' + fg_color + ']' + mnu_pointer + ' ' + option_text
+        men_text = start_print_string + fg_color + end_print_string + mnu_pointer + ' ' + option_text
 
         terminal.print_(x=menu_start_x, y=menu_start_y + menu_count, s=men_text)
         menu_count += 1
         mnu += 1
         if blank_line:
             menu_count += 1
-        letter_index += 1
 
 
 def display_coloured_box(title, posx, posy, width, height, fg, bg):
-    draw_simple_frame(startx=posx, starty=posy, width=width, height=height, title=title, fg=fg, bg=bg)
+    draw_simple_frame(start_panel_frame_x=posx, start_panel_frame_y=posy, start_panel_frame_width=width, start_panel_frame_height=height, title=title, fg=fg, bg=bg)
 
-    draw_coloured_rectangle(startx=posx, starty=posy, width=width, height=height, ch=u'\u0020', fg=fg, bg=bg)
+    draw_coloured_rectangle(start_panel_frame_x=posx, start_panel_frame_y=posy, start_panel_frame_width=width, start_panel_frame_height=height, ch=u'\u0020', fg=fg, bg=bg)
 
 
-def draw_coloured_rectangle(startx, starty, width, height, ch, fg, bg):
+def draw_coloured_rectangle(start_panel_frame_x, start_panel_frame_y, start_panel_frame_width, start_panel_frame_height, ch, fg, bg):
     string_to_print = '[color=' + fg + '][/color][bkcolor=' + bg + '][/bkcolor]' + ch
-    for posx in range(width):
-        for posy in range(height):
-            terminal.print_(x=(startx + 1) + posx, y=(starty + 1) + posy, s=string_to_print)
+    for posx in range(start_panel_frame_width):
+        for posy in range(start_panel_frame_height):
+            terminal.print_(x=(start_panel_frame_x + 1) + posx, y=(start_panel_frame_y + 1) + posy, s=string_to_print)
 
 
-def draw_simple_frame(startx, starty, width, height, title, fg, bg):
+def draw_simple_frame(start_panel_frame_x, start_panel_frame_y, start_panel_frame_width, start_panel_frame_height, title, fg, bg):
     # unicode frame tiles
     top_left = u'\u250c'
     top_right = u'\u2510'
@@ -122,45 +118,51 @@ def draw_simple_frame(startx, starty, width, height, title, fg, bg):
     down_pipe = u'\u2502'
 
     # top left
-    terminal.put(x=startx, y=starty, c=top_left)
+    terminal.put(x=start_panel_frame_x, y=start_panel_frame_y, c=top_left)
     # top left --> top right
-    pipe_across = width
+    pipe_across = start_panel_frame_width
     for posx in range(pipe_across):
-        terminal.put(x=(startx + 1) + posx, y=starty, c=across_pipe)
+        terminal.put(x=(start_panel_frame_x + 1) + posx, y=start_panel_frame_y, c=across_pipe)
     # top right
-    terminal.put(x=(startx + 1) + pipe_across, y=starty, c=top_right)
+    terminal.put(x=(start_panel_frame_x + 1) + pipe_across, y=start_panel_frame_y, c=top_right)
     # right side down
-    pipe_down = height
+    pipe_down = start_panel_frame_height
     for posy in range(pipe_down):
-        terminal.put(x=(startx + 1) + pipe_across, y=(starty + 1) + posy, c=down_pipe)
+        terminal.put(x=(start_panel_frame_x + 1) + pipe_across, y=(start_panel_frame_y + 1) + posy, c=down_pipe)
     # right corner
-    terminal.put(x=(startx + 1) + pipe_across, y=(starty + 1) + height, c=bottom_right)
+    terminal.put(x=(start_panel_frame_x + 1) + pipe_across, y=(start_panel_frame_y + 1) + start_panel_frame_height, c=bottom_right)
     # bottom left --> bottom right
     for posx in range(pipe_across):
-        terminal.put(x=(startx + 1) + posx, y=(starty + 1) + height, c=across_pipe)
+        terminal.put(x=(start_panel_frame_x + 1) + posx, y=(start_panel_frame_y + 1) + start_panel_frame_height, c=across_pipe)
     # bottom left
-    terminal.put(x=startx, y=(starty + 1) + height, c=bottom_left)
+    terminal.put(x=start_panel_frame_x, y=(start_panel_frame_y + 1) + start_panel_frame_height, c=bottom_left)
     # left side down
     for posy in range(pipe_down):
-        terminal.put(x=startx, y=(starty + 1) + posy, c=down_pipe)
+        terminal.put(x=start_panel_frame_x, y=(start_panel_frame_y + 1) + posy, c=down_pipe)
 
     if title != '':
         titlestring = '[color=' + fg + ']' + title
         titlelen = len(title)
-        titleminuspanel = width - titlelen
+        titleminuspanel = start_panel_frame_width - titlelen
         pwx = int(titleminuspanel / 2)
-        terminal.print_(x=startx + pwx, y=starty, s=titlestring)
+        terminal.print_(x=start_panel_frame_x + pwx, y=start_panel_frame_y, s=titlestring)
 
 
-def draw_colourful_frame(startx, starty, width, height, title, title_decorator, title_loc, corner_decorator,
-                         corner_studs, msg):
+def draw_colourful_frame(title, title_decorator, title_loc, corner_decorator, corner_studs, msg):
     # get config items
     game_config = configUtilities.load_config()
+
+    start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
+    start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
+    start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                          'START_PANEL_FRAME_WIDTH')
+    start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
+                                                                           'START_PANEL_FRAME_HEIGHT')
 
     root_con_width = configUtilities.get_config_value_as_integer(game_config, 'gui', 'SCREEN_WIDTH')
     root_con_height = configUtilities.get_config_value_as_integer(game_config, 'gui', 'SCREEN_HEIGHT')
     # check inbound values
-    if (startx + width >= root_con_width) or (starty + height >= root_con_height):
+    if (start_panel_frame_x + start_panel_frame_width >= root_con_width) or (start_panel_frame_y + start_panel_frame_height >= root_con_height):
         logger.warning('Frame for panel will not fit inside root console - frame aborted')
         return
 
@@ -170,7 +172,6 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
     msg_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='newgame',
                                                         parameter='PRETTY_FRAME_MSG_Y')
 
-    fg = colourUtilities.get('WHITE')
     bg = colourUtilities.get('BLACK')
 
     # draw basic frame
@@ -187,27 +188,27 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
     down_pipe = u'\u2502'
 
     # top left
-    terminal.put(x=startx, y=starty, c=top_left)
+    terminal.put(x=start_panel_frame_x, y=start_panel_frame_y, c=top_left)
     # top left --> top right
-    pipe_across = (startx + 1) + width
+    pipe_across = (start_panel_frame_x + 1) + start_panel_frame_width
     for posx in range(pipe_across):
-        terminal.put(x=(startx + 1) + posx, y=starty, c=across_pipe)
+        terminal.put(x=(start_panel_frame_x + 1) + posx, y=start_panel_frame_y, c=across_pipe)
     # top right
-    terminal.put(x=(startx + 1) + pipe_across, y=starty, c=top_right)
+    terminal.put(x=(start_panel_frame_x + 1) + pipe_across, y=start_panel_frame_y, c=top_right)
     # right side down
-    pipe_down = height - starty - 2
+    pipe_down = start_panel_frame_height - start_panel_frame_y - 2
     for posy in range(pipe_down):
-        terminal.put(x=(startx + 1) + pipe_across, y=(starty + 1) + posy, c=down_pipe)
+        terminal.put(x=(start_panel_frame_x + 1) + pipe_across, y=(start_panel_frame_y + 1) + posy, c=down_pipe)
     # right corner
-    terminal.put(x=(startx + 1) + pipe_across, y=height - 1, c=bottom_right)
+    terminal.put(x=(start_panel_frame_x + 1) + pipe_across, y=start_panel_frame_height - 1, c=bottom_right)
     # bottom left --> bottom right
     for posx in range(pipe_across):
-        terminal.put(x=(startx + 1) + posx, y=height - 1, c=across_pipe)
+        terminal.put(x=(start_panel_frame_x + 1) + posx, y=start_panel_frame_height - 1, c=across_pipe)
     # bottom left
-    terminal.put(x=startx, y=height - 1, c=bottom_left)
+    terminal.put(x=start_panel_frame_x, y=start_panel_frame_height - 1, c=bottom_left)
     # left side down
     for posy in range(pipe_down):
-        terminal.put(x=startx, y=(starty + 1) + posy, c=down_pipe)
+        terminal.put(x=start_panel_frame_x, y=(start_panel_frame_y + 1) + posy, c=down_pipe)
     title_edging = ''
     # draw string title + decorator if needed
     if title != '':
@@ -218,15 +219,15 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
         titlelen = len(titlestring)
 
         if title_loc == 'left':
-            pwx = startx + 3
+            pwx = start_panel_frame_x + 3
         if title_loc == 'centre':
-            titleminuspanel = width - titlelen
+            titleminuspanel = start_panel_frame_width - titlelen
             pwx = int(titleminuspanel / 2)
 
         if title_loc == 'right':
-            pwx = (width - titlelen) - 4
+            pwx = (start_panel_frame_width - titlelen) - 4
 
-        terminal.print_(x=pwx, y=starty, s=titlestring)
+        terminal.print_(x=pwx, y=start_panel_frame_y, s=titlestring)
 
     if msg != '':
         ss = msg.split('/')
@@ -242,17 +243,17 @@ def draw_colourful_frame(startx, starty, width, height, title, title_decorator, 
         arc_bottom_right = u'\u256F'
 
         # top left corner
-        terminal.put(x=startx, y=starty, c=arc_top_left)
+        terminal.put(x=start_panel_frame_x, y=start_panel_frame_y, c=arc_top_left)
         # # top right corner
-        terminal.put(x=width - 1, y=starty, c=arc_top_right)
+        terminal.put(x=start_panel_frame_width - 1, y=start_panel_frame_y, c=arc_top_right)
         # # bottom left corner
-        terminal.put(x=startx, y=height - 1, c=arc_bottom_left)
+        terminal.put(x=start_panel_frame_x, y=start_panel_frame_height - 1, c=arc_bottom_left)
         # # right corner corner
-        terminal.put(x=width - 1, y=height - 1, c=arc_bottom_right)
+        terminal.put(x=start_panel_frame_width - 1, y=start_panel_frame_height - 1, c=arc_bottom_right)
 
 
-def draw_clear_text_box(posx, posy, width, height, text, fg, bg):
-    terminal.clear_area(x=posx, y=posy, width=width, height=height)
+def draw_clear_text_box(posx, posy, start_panel_frame_width, start_panel_frame_height, text, fg, bg):
+    terminal.clear_area(x=posx, y=posy, start_panel_frame_width=start_panel_frame_width, start_panel_frame_height=start_panel_frame_height)
 
     string_to_print = '[color=' + fg + '][/color][bkcolor=' + bg + '][/bkcolor]' + text
-    terminal.print_(x=posx, y=posy - 2, width=60, height=5, align=terminal.TK_ALIGN_LEFT, s=string_to_print)
+    terminal.print_(x=posx, y=posy - 2, start_panel_frame_width=60, start_panel_frame_height=5, align=terminal.TK_ALIGN_LEFT, s=string_to_print)
