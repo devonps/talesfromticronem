@@ -193,7 +193,7 @@ class SpellUtilities:
             prev_layer = terminal.state(terminal.TK_LAYER)
             terminal.layer(RenderLayer.VALIDTARGETS.value)
 
-            draw_simple_frame(startx=lft, starty=tp, width=width, height=height, title='| Valid Targets |',
+            draw_simple_frame(start_panel_frame_x=lft, start_panel_frame_y=tp, start_panel_frame_width=width, start_panel_frame_height=height, title='| Valid Targets |',
                               fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
             entity_tag = tp + 3

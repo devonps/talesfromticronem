@@ -39,7 +39,7 @@ class StatelessAI:
             entity_ai = MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=ent)
             if entity_ai == mobile_ai_level:
                 entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=ent)
-                current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=ent)
+                current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=ent)
                 current_morale = 25
                 i_can_see_the_player = MobileUtilities.can_i_see_the_other_entity(gameworld=gameworld, from_entity=ent, to_entity=player_entity, game_map=game_map)
                 i_can_cast_a_spell, remaining_spells, weapon_type = SpellUtilities.can_mobile_cast_a_spell(gameworld=gameworld, entity_id=ent, target_entity=player_entity)

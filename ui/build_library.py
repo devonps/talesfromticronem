@@ -270,65 +270,65 @@ def display_build_library():
 
                                 # create racial bonuses
                                 if player_race.lower() == 'dilga':
-                                    cur_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld,
-                                                                                         entity=player_entity)
-                                    cur_condi_damage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld,
-                                                                                                   entity=player_entity)
-                                    cur_ferocity = MobileUtilities.get_mobile_ferocity(gameworld=gameworld,
-                                                                                       entity=player_entity)
+                                    cur_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld,
+                                                                                                 entity=player_entity)
+                                    cur_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld,
+                                                                                                             entity=player_entity)
+                                    cur_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld,
+                                                                                                 entity=player_entity)
 
                                     cur_precision += 1
-                                    MobileUtilities.set_mobile_precision(gameworld=gameworld, entity=player_entity,
-                                                                         value=cur_precision)
+                                    MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=player_entity,
+                                                                                 value=cur_precision)
                                     cur_condi_damage += 1
-                                    MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=player_entity,
-                                                                                value=cur_condi_damage)
+                                    MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player_entity,
+                                                                                          value=cur_condi_damage)
                                     cur_ferocity += 1
-                                    MobileUtilities.set_mobile_ferocity(gameworld=gameworld, entity=player_entity,
-                                                                        value=cur_ferocity)
+                                    MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player_entity,
+                                                                                  value=cur_ferocity)
 
                                 if player_race.lower() == 'eskeri':
-                                    cur_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=player_entity)
-                                    cur_concentration = MobileUtilities.get_mobile_concentration(gameworld=gameworld,
-                                                                                                 entity=player_entity)
+                                    cur_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=player_entity)
+                                    cur_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld,
+                                                                                                           entity=player_entity)
 
                                     cur_power += 1
-                                    MobileUtilities.set_mobile_power(gameworld=gameworld, entity=player_entity,
-                                                                     value=cur_power)
+                                    MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=player_entity,
+                                                                             value=cur_power)
                                     cur_concentration += 1
-                                    MobileUtilities.set_mobile_concentration(gameworld=gameworld, entity=player_entity,
-                                                                             value=cur_concentration)
+                                    MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player_entity,
+                                                                                       value=cur_concentration)
 
                                 if player_race.lower() == 'jogah':
-                                    cur_vitality = MobileUtilities.get_mobile_vitality(gameworld=gameworld,
-                                                                                       entity=player_entity)
-                                    cur_concentration = MobileUtilities.get_mobile_concentration(gameworld=gameworld,
+                                    cur_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld,
+                                                                                               entity=player_entity)
+                                    cur_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld,
+                                                                                                           entity=player_entity)
+                                    cur_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld,
                                                                                                  entity=player_entity)
-                                    cur_ferocity = MobileUtilities.get_mobile_ferocity(gameworld=gameworld,
-                                                                                       entity=player_entity)
 
                                     cur_vitality += 1
-                                    MobileUtilities.set_mobile_vitality(gameworld=gameworld, entity=player_entity,
-                                                                        value=cur_vitality)
+                                    MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=player_entity,
+                                                                                value=cur_vitality)
                                     cur_concentration += 1
-                                    MobileUtilities.set_mobile_concentration(gameworld=gameworld, entity=player_entity,
-                                                                             value=cur_concentration)
+                                    MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player_entity,
+                                                                                       value=cur_concentration)
                                     cur_ferocity += 1
-                                    MobileUtilities.set_mobile_ferocity(gameworld=gameworld, entity=player_entity,
-                                                                        value=cur_ferocity)
+                                    MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player_entity,
+                                                                                  value=cur_ferocity)
 
                                 if player_race.lower() == 'oshun':
-                                    cur_toughness = MobileUtilities.get_mobile_toughness(gameworld=gameworld,
-                                                                                         entity=player_entity)
-                                    cur_condi_damage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld,
-                                                                                                   entity=player_entity)
+                                    cur_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld,
+                                                                                                 entity=player_entity)
+                                    cur_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld,
+                                                                                                             entity=player_entity)
 
                                     cur_toughness += 1
-                                    MobileUtilities.set_mobile_toughness(gameworld=gameworld, entity=player_entity,
-                                                                         value=cur_toughness)
+                                    MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=player_entity,
+                                                                                 value=cur_toughness)
                                     cur_condi_damage += 1
-                                    MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=player_entity,
-                                                                                value=cur_condi_damage)
+                                    MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player_entity,
+                                                                                          value=cur_condi_damage)
                                 # class
                                 health = 0
                                 spell_file = ''
@@ -343,7 +343,7 @@ def display_build_library():
                                                                        health=health, spellfile=spell_file)
 
                                 # personality
-                                MobileUtilities.calculate_mobile_personality(gameworld, game_config)
+                                MobileUtilities.set_mobile_derived_personality(gameworld, game_config)
 
                                 # armour
                                 armour_file = read_json_file(armourset_file)
@@ -377,52 +377,52 @@ def display_build_library():
 
                                 # assign armour prefix benefit
                                 if decoded_build[selected_build][Build.BUILDARMOUR] == 'healer':
-                                    current_healingpower = MobileUtilities.get_mobile_healing_power(gameworld=gameworld,
-                                                                                                    entity=player_entity)
+                                    current_healingpower = MobileUtilities.get_mobile_secondary_healing_power(gameworld=gameworld,
+                                                                                                              entity=player_entity)
                                     px_bonus = int(px_att_bonus[1])
                                     new_bonus = current_healingpower + px_bonus
-                                    MobileUtilities.set_mobile_healing_power(gameworld=gameworld, entity=player_entity,
-                                                                             value=new_bonus)
+                                    MobileUtilities.set_mobile_secondary_healing_power(gameworld=gameworld, entity=player_entity,
+                                                                                       value=new_bonus)
 
                                 if decoded_build[selected_build][Build.BUILDARMOUR] == 'malign':
-                                    current_condidamage = MobileUtilities.get_mobile_condition_damage(
+                                    current_condidamage = MobileUtilities.get_mobile_secondary_condition_damage(
                                         gameworld=gameworld, entity=player_entity)
                                     px_bonus = int(px_att_bonus[2])
                                     new_bonus = current_condidamage + px_bonus
-                                    MobileUtilities.set_mobile_condition_damage(gameworld=gameworld,
-                                                                                entity=player_entity, value=new_bonus)
+                                    MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld,
+                                                                                          entity=player_entity, value=new_bonus)
 
                                 if decoded_build[selected_build][Build.BUILDARMOUR] == 'mighty':
-                                    current_power = MobileUtilities.get_mobile_power(gameworld=gameworld,
-                                                                                     entity=player_entity)
+                                    current_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld,
+                                                                                             entity=player_entity)
                                     px_bonus = int(px_att_bonus[3])
                                     new_bonus = current_power + px_bonus
-                                    MobileUtilities.set_mobile_power(gameworld=gameworld, entity=player_entity,
-                                                                     value=new_bonus)
+                                    MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=player_entity,
+                                                                             value=new_bonus)
 
                                 if decoded_build[selected_build][Build.BUILDARMOUR] == 'precise':
-                                    current_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld,
-                                                                                             entity=player_entity)
+                                    current_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld,
+                                                                                                     entity=player_entity)
                                     px_bonus = int(px_att_bonus[4])
                                     new_bonus = current_precision + px_bonus
-                                    MobileUtilities.set_mobile_precision(gameworld=gameworld, entity=player_entity,
-                                                                         value=new_bonus)
+                                    MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=player_entity,
+                                                                                 value=new_bonus)
 
                                 if decoded_build[selected_build][Build.BUILDARMOUR] == 'resilient':
-                                    current_toughness = MobileUtilities.get_mobile_toughness(gameworld=gameworld,
-                                                                                             entity=player_entity)
+                                    current_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld,
+                                                                                                     entity=player_entity)
                                     px_bonus = int(px_att_bonus[0])
                                     new_bonus = current_toughness + px_bonus
-                                    MobileUtilities.set_mobile_toughness(gameworld=gameworld, entity=player_entity,
-                                                                         value=new_bonus)
+                                    MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=player_entity,
+                                                                                 value=new_bonus)
 
                                 if decoded_build[selected_build][Build.BUILDARMOUR] == 'vital':
-                                    current_vitality = MobileUtilities.get_mobile_vitality(gameworld=gameworld,
-                                                                                           entity=player_entity)
+                                    current_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld,
+                                                                                                   entity=player_entity)
                                     px_bonus = int(px_att_bonus[5])
                                     new_bonus = current_vitality + px_bonus
-                                    MobileUtilities.set_mobile_vitality(gameworld=gameworld, entity=player_entity,
-                                                                        value=new_bonus)
+                                    MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=player_entity,
+                                                                                value=new_bonus)
 
                                 # create starting armour from armourset and prefix
                                 this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld,
@@ -566,6 +566,6 @@ def display_build_library():
                                 #
                                 # calculate derived stats
                                 #
-                                MobileUtilities.calculate_derived_attributes(gameworld=gameworld,entity=player_entity)
+                                MobileUtilities.set_mobile_derived_derived_attributes(gameworld=gameworld, entity=player_entity)
                                 terminal.clear()
                                 CharacterCreation.display_starting_character(gameworld=gameworld)

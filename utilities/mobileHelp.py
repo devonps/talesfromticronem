@@ -36,34 +36,34 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def create_armour_for_npc(gameworld, entity_id, armour_modifier, px_bonus):
         if armour_modifier.lower() == 'healer':
-            current_healingpower = MobileUtilities.get_mobile_healing_power(gameworld=gameworld, entity=entity_id)
+            current_healingpower = MobileUtilities.get_mobile_secondary_healing_power(gameworld=gameworld, entity=entity_id)
             new_bonus = current_healingpower + px_bonus
-            MobileUtilities.set_mobile_healing_power(gameworld=gameworld, entity=entity_id, value=new_bonus)
+            MobileUtilities.set_mobile_secondary_healing_power(gameworld=gameworld, entity=entity_id, value=new_bonus)
 
         if armour_modifier.lower() == 'malign':
-            current_condidamage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld, entity=entity_id)
+            current_condidamage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=entity_id)
             new_bonus = current_condidamage + px_bonus
-            MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=entity_id, value=new_bonus)
+            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=entity_id, value=new_bonus)
 
         if armour_modifier.lower() == 'mighty':
-            current_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=entity_id)
+            current_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=entity_id)
             new_bonus = current_power + px_bonus
-            MobileUtilities.set_mobile_power(gameworld=gameworld, entity=entity_id, value=new_bonus)
+            MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=entity_id, value=new_bonus)
 
         if armour_modifier.lower() == 'precise':
-            current_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld, entity=entity_id)
+            current_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld, entity=entity_id)
             new_bonus = current_precision + px_bonus
-            MobileUtilities.set_mobile_precision(gameworld=gameworld, entity=entity_id, value=new_bonus)
+            MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=entity_id, value=new_bonus)
 
         if armour_modifier.lower() == 'resilient':
-            current_toughness = MobileUtilities.get_mobile_toughness(gameworld=gameworld, entity=entity_id)
+            current_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld, entity=entity_id)
             new_bonus = current_toughness + px_bonus
-            MobileUtilities.set_mobile_toughness(gameworld=gameworld, entity=entity_id, value=new_bonus)
+            MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=entity_id, value=new_bonus)
 
         if armour_modifier.lower() == 'vital':
-            current_vitality = MobileUtilities.get_mobile_vitality(gameworld=gameworld, entity=entity_id)
+            current_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld, entity=entity_id)
             new_bonus = current_vitality + px_bonus
-            MobileUtilities.set_mobile_vitality(gameworld=gameworld, entity=entity_id, value=new_bonus)
+            MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=entity_id, value=new_bonus)
 
     @staticmethod
     def set_player_gender(gameworld, entity, gender):
@@ -241,7 +241,7 @@ class MobileUtilities(numbers.Real, ABC):
         return describeable_component.personality_title
 
     @staticmethod
-    def calculate_mobile_personality(gameworld, game_config):
+    def set_mobile_derived_personality(gameworld, game_config):
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
 
         player_current_personality_component = gameworld.component_for_entity(player_entity, mobiles.Personality)
@@ -790,83 +790,87 @@ class MobileUtilities(numbers.Real, ABC):
     # Get primary attributes
     #
     @staticmethod
-    def get_mobile_power(gameworld, entity):
+    def get_mobile_primary_power(gameworld, entity):
         primary_components = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
         return primary_components.power
 
     @staticmethod
-    def set_mobile_power(gameworld, entity, value):
+    def set_mobile_primary_power(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power = value
 
     @staticmethod
-    def get_mobile_precision(gameworld, entity):
+    def get_mobile_primary_precision(gameworld, entity):
         primary_components = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
         return primary_components.precision
 
     @staticmethod
-    def set_mobile_precision(gameworld, entity, value):
+    def set_mobile_primary_precision(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision = value
 
     @staticmethod
-    def get_mobile_toughness(gameworld, entity):
+    def get_mobile_primary_toughness(gameworld, entity):
         primary_components = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
         return primary_components.toughness
 
     @staticmethod
-    def set_mobile_toughness(gameworld, entity, value):
+    def set_mobile_primary_toughness(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness = value
 
     @staticmethod
-    def get_mobile_vitality(gameworld, entity):
+    def get_mobile_primary_vitality(gameworld, entity):
         primary_components = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
         return primary_components.vitality
 
     @staticmethod
-    def set_mobile_vitality(gameworld, entity, value):
+    def set_mobile_primary_vitality(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality = value
 
     #
     # Get secondary attributes
     #
     @staticmethod
-    def get_mobile_concentration(gameworld, entity):
+    def get_mobile_secondary_concentration(gameworld, entity):
         secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         return secondary_components.concentration
 
     @staticmethod
-    def set_mobile_concentration(gameworld, entity, value):
+    def set_mobile_secondary_concentration(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).concentration = value
 
     @staticmethod
-    def get_mobile_condition_damage(gameworld, entity):
+    def get_mobile_secondary_condition_damage(gameworld, entity):
         secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         return secondary_components.conditionDamage
 
     @staticmethod
-    def set_mobile_condition_damage(gameworld, entity, value):
+    def set_mobile_secondary_condition_damage(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).conditionDamage = value
 
     @staticmethod
-    def get_mobile_expertise(gameworld, entity):
+    def get_mobile_secondary_expertise(gameworld, entity):
         secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         return secondary_components.expertise
 
     @staticmethod
-    def get_mobile_ferocity(gameworld, entity):
+    def set_mobile_secondary_expertise(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).expertise = value
+
+    @staticmethod
+    def get_mobile_secondary_ferocity(gameworld, entity):
         secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         return secondary_components.ferocity
 
     @staticmethod
-    def set_mobile_ferocity(gameworld, entity, value):
+    def set_mobile_secondary_ferocity(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).ferocity = value
 
     @staticmethod
-    def get_mobile_healing_power(gameworld, entity):
+    def get_mobile_secondary_healing_power(gameworld, entity):
         secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         return secondary_components.healingPower
 
     @staticmethod
-    def set_mobile_healing_power(gameworld, entity, value):
+    def set_mobile_secondary_healing_power(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healingPower = value
 
     @staticmethod
@@ -897,23 +901,23 @@ class MobileUtilities(numbers.Real, ABC):
     # Calculate derived attributes
     #
     @staticmethod
-    def calculate_derived_attributes(gameworld, entity):
-        MobileUtilities.calculate_armour_attribute(gameworld, entity)
-        MobileUtilities.calculate_boon_duration(gameworld, entity)
-        MobileUtilities.calculate_condition_duration(gameworld, entity)
-        MobileUtilities.calculate_critical_damage(gameworld, entity)
-        MobileUtilities.calculate_critical_hit_chance(gameworld, entity)
-        MobileUtilities.calculate_max_health(gameworld, entity)
-        MobileUtilities.calculate_current_health(gameworld, entity)
-        MobileUtilities.calculate_special_bar_current_value(gameworld, entity)
+    def set_mobile_derived_derived_attributes(gameworld, entity):
+        MobileUtilities.set_mobile_derived_armour_attribute(gameworld, entity)
+        MobileUtilities.set_mobile_derived_boon_duration(gameworld, entity)
+        MobileUtilities.set_mobile_derived_condition_duration(gameworld, entity)
+        MobileUtilities.set_mobile_derived_critical_damage(gameworld, entity)
+        MobileUtilities.set_mobile_derived_critical_hit_chance(gameworld, entity)
+        MobileUtilities.set_mobile_derived_max_health(gameworld, entity)
+        MobileUtilities.set_mobile_derived_current_health(gameworld, entity)
+        MobileUtilities.set_mobile_derived_special_bar_current_value(gameworld, entity)
 
     @staticmethod
-    def calculate_special_bar_current_value(gameworld, entity):
+    def set_mobile_derived_special_bar_current_value(gameworld, entity):
         pass
         # do nothing yet
 
     @staticmethod
-    def calculate_armour_attribute(gameworld, entity):
+    def set_mobile_derived_armour_attribute(gameworld, entity):
         """
         Need to calculate the 'defense' value first
         Then get the toughness attribute value
@@ -972,7 +976,7 @@ class MobileUtilities(numbers.Real, ABC):
         return defense_value
 
     @staticmethod
-    def calculate_boon_duration(gameworld, entity):
+    def set_mobile_derived_boon_duration(gameworld, entity):
 
         entity_secondary_component = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
 
@@ -983,7 +987,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).boonDuration = boon_duration_value
 
     @staticmethod
-    def calculate_critical_hit_chance(gameworld, entity):
+    def set_mobile_derived_critical_hit_chance(gameworld, entity):
         base_value = 5  # every hit has a 5% chance of causing a critical hit
 
         status_effects_component = gameworld.component_for_entity(entity, mobiles.StatusEffects)
@@ -1004,7 +1008,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalChance = critical_chance_value
 
     @staticmethod
-    def calculate_critical_damage(gameworld, entity):
+    def set_mobile_derived_critical_damage(gameworld, entity):
         base_value = 150
         entity_secondary_component = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
 
@@ -1017,7 +1021,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalDamage = critical_damage_value
 
     @staticmethod
-    def calculate_condition_duration(gameworld, entity):
+    def set_mobile_derived_condition_duration(gameworld, entity):
         entity_secondary_component = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
         expertise_value = entity_secondary_component.expertise
 
@@ -1027,7 +1031,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).conditionDuration = cond_duration_bonus
 
     @staticmethod
-    def calculate_max_health(gameworld, entity):
+    def set_mobile_derived_max_health(gameworld, entity):
 
         # get primary attributes component
         primary_attribute_component = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
@@ -1043,7 +1047,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth = health_value
 
     @staticmethod
-    def calculate_current_health(gameworld, entity):
+    def set_mobile_derived_current_health(gameworld, entity):
 
         maximum_health = gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth
         # check boons --> increase health
@@ -1057,11 +1061,11 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth = maximum_health
 
     @staticmethod
-    def calculate_current_mana(gameworld, gameconfig):
+    def set_mobile_derived_current_mana(gameworld, gameconfig):
 
         entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
 
-        current_mana = MobileUtilities.get_derived_current_mana(gameworld=gameworld, entity=entity)
+        current_mana = MobileUtilities.get_mobile_derived_current_mana(gameworld=gameworld, entity=entity)
         # check boons
         # check conditions
         # check controls
@@ -1075,47 +1079,47 @@ class MobileUtilities(numbers.Real, ABC):
     #
 
     @staticmethod
-    def get_derived_armour_value(gameworld, entity):
+    def get_mobile_derived_armour_value(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).armour
 
     @staticmethod
-    def get_derived_boon_duration(gameworld, entity):
+    def get_mobile_derived_boon_duration(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).boonDuration
 
     @staticmethod
-    def get_derived_critical_hit_chance(gameworld, entity):
+    def get_mobile_derived_critical_hit_chance(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalChance
 
     @staticmethod
-    def get_derived_critical_damage(gameworld, entity):
+    def get_mobile_derived_critical_damage(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalDamage
 
     @staticmethod
-    def get_derived_condition_duration(gameworld, entity):
+    def get_mobile_derived_condition_duration(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).conditionDuration
 
     @staticmethod
-    def get_derived_maximum_health(gameworld, entity):
+    def get_mobile_derived_maximum_health(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth
 
     @staticmethod
-    def get_derived_current_health(gameworld, entity):
+    def get_mobile_derived_current_health(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth
 
     @staticmethod
-    def get_derived_current_mana(gameworld, entity):
+    def get_mobile_derived_current_mana(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.ManaPool).current
 
     @staticmethod
-    def get_derived_maximum_mana(gameworld, entity):
+    def get_mobile_derived_maximum_mana(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.ManaPool).maximum
 
     @staticmethod
-    def get_derived_special_bar_current_value(gameworld, entity):
+    def get_mobile_derived_special_bar_current_value(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.SpecialBar).currentvalue
 
     @staticmethod
-    def get_derived_special_bar_max_value(gameworld, entity):
+    def get_mobile_derived_special_bar_max_value(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.SpecialBar).maximumvalue
 
     @staticmethod
@@ -1128,7 +1132,7 @@ class MobileUtilities(numbers.Real, ABC):
     #
     @staticmethod
     def set_current_health_during_combat(gameworld, entity, damage_to_apply):
-        target_current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=entity)
+        target_current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=entity)
         target_new_health = target_current_health - damage_to_apply
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth = target_new_health
 

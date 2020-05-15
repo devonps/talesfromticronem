@@ -252,8 +252,8 @@ def draw_colourful_frame(title, title_decorator, title_loc, corner_decorator, co
         terminal.put(x=start_panel_frame_width - 1, y=start_panel_frame_height - 1, c=arc_bottom_right)
 
 
-def draw_clear_text_box(posx, posy, start_panel_frame_width, start_panel_frame_height, text, fg, bg):
-    terminal.clear_area(x=posx, y=posy, start_panel_frame_width=start_panel_frame_width, start_panel_frame_height=start_panel_frame_height)
+def draw_clear_text_box(posx, posy, width, height, text, fg, bg):
+    terminal.clear_area(x=posx, y=posy, width=width, height=height)
 
     string_to_print = '[color=' + fg + '][/color][bkcolor=' + bg + '][/bkcolor]' + text
-    terminal.print_(x=posx, y=posy - 2, start_panel_frame_width=60, start_panel_frame_height=5, align=terminal.TK_ALIGN_LEFT, s=string_to_print)
+    terminal.print_(x=posx, y=posy - 2, width=60, height=5, align=terminal.TK_ALIGN_LEFT, s=string_to_print)

@@ -406,7 +406,7 @@ class CharacterCreation:
         # The personality-oriented question affects the conversational options that NPCs provide.
         # there will be 3 options: charm, dignity, ferocity
 
-        MobileUtilities.calculate_mobile_personality(gameworld, game_config)
+        MobileUtilities.set_mobile_derived_personality(gameworld, game_config)
 
         personality_component = gameworld.component_for_entity(player, mobiles.Describable)
 
@@ -882,44 +882,44 @@ class CharacterCreation:
                         player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
                         if menu_options[selected_menu_option].lower() == 'healer':
-                            current_healingpower = MobileUtilities.get_mobile_healing_power(gameworld=gameworld,
-                                                                                            entity=player)
+                            current_healingpower = MobileUtilities.get_mobile_secondary_healing_power(gameworld=gameworld,
+                                                                                                      entity=player)
                             px_bonus = int(px_att_bonus[selected_menu_option])
                             new_bonus = current_healingpower + px_bonus
-                            MobileUtilities.set_mobile_healing_power(gameworld=gameworld, entity=player,
-                                                                     value=new_bonus)
+                            MobileUtilities.set_mobile_secondary_healing_power(gameworld=gameworld, entity=player,
+                                                                               value=new_bonus)
 
                         if menu_options[selected_menu_option].lower() == 'malign':
-                            current_condidamage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld,
-                                                                                              entity=player)
+                            current_condidamage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld,
+                                                                                                        entity=player)
                             px_bonus = int(px_att_bonus[selected_menu_option])
                             new_bonus = current_condidamage + px_bonus
-                            MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=player,
-                                                                        value=new_bonus)
+                            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player,
+                                                                                  value=new_bonus)
 
                         if menu_options[selected_menu_option].lower() == 'mighty':
-                            current_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=player)
+                            current_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=player)
                             px_bonus = int(px_att_bonus[selected_menu_option])
                             new_bonus = current_power + px_bonus
-                            MobileUtilities.set_mobile_power(gameworld=gameworld, entity=player, value=new_bonus)
+                            MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=player, value=new_bonus)
 
                         if menu_options[selected_menu_option].lower() == 'precise':
-                            current_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld, entity=player)
+                            current_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld, entity=player)
                             px_bonus = int(px_att_bonus[selected_menu_option])
                             new_bonus = current_precision + px_bonus
-                            MobileUtilities.set_mobile_precision(gameworld=gameworld, entity=player, value=new_bonus)
+                            MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=player, value=new_bonus)
 
                         if menu_options[selected_menu_option].lower() == 'resilient':
-                            current_toughness = MobileUtilities.get_mobile_toughness(gameworld=gameworld, entity=player)
+                            current_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld, entity=player)
                             px_bonus = int(px_att_bonus[selected_menu_option])
                             new_bonus = current_toughness + px_bonus
-                            MobileUtilities.set_mobile_toughness(gameworld=gameworld, entity=player, value=new_bonus)
+                            MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=player, value=new_bonus)
 
                         if menu_options[selected_menu_option].lower() == 'vital':
-                            current_vitality = MobileUtilities.get_mobile_vitality(gameworld=gameworld, entity=player)
+                            current_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld, entity=player)
                             px_bonus = int(px_att_bonus[selected_menu_option])
                             new_bonus = current_vitality + px_bonus
-                            MobileUtilities.set_mobile_vitality(gameworld=gameworld, entity=player, value=new_bonus)
+                            MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=player, value=new_bonus)
                         #
                         # now generate the player character - part 1
                         #
@@ -950,49 +950,49 @@ class CharacterCreation:
         # create racial bonuses
         if player_race.lower() == 'dilga':
             BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='A')
-            cur_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld, entity=player)
-            cur_condi_damage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld, entity=player)
-            cur_ferocity = MobileUtilities.get_mobile_ferocity(gameworld=gameworld, entity=player)
+            cur_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld, entity=player)
+            cur_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=player)
+            cur_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld, entity=player)
 
             cur_precision += 1
-            MobileUtilities.set_mobile_precision(gameworld=gameworld, entity=player, value=cur_precision)
+            MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=player, value=cur_precision)
             cur_condi_damage += 1
-            MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=player, value=cur_condi_damage)
+            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player, value=cur_condi_damage)
             cur_ferocity += 1
-            MobileUtilities.set_mobile_ferocity(gameworld=gameworld, entity=player, value=cur_ferocity)
+            MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player, value=cur_ferocity)
 
         if player_race.lower() == 'eskeri':
             BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='B')
-            cur_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=player)
-            cur_concentration = MobileUtilities.get_mobile_concentration(gameworld=gameworld, entity=player)
+            cur_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=player)
+            cur_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld, entity=player)
 
             cur_power += 1
-            MobileUtilities.set_mobile_power(gameworld=gameworld, entity=player, value=cur_power)
+            MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=player, value=cur_power)
             cur_concentration += 1
-            MobileUtilities.set_mobile_concentration(gameworld=gameworld, entity=player, value=cur_concentration)
+            MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player, value=cur_concentration)
 
         if player_race.lower() == 'jogah':
             BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='C')
-            cur_vitality = MobileUtilities.get_mobile_vitality(gameworld=gameworld, entity=player)
-            cur_concentration = MobileUtilities.get_mobile_concentration(gameworld=gameworld, entity=player)
-            cur_ferocity = MobileUtilities.get_mobile_ferocity(gameworld=gameworld, entity=player)
+            cur_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld, entity=player)
+            cur_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld, entity=player)
+            cur_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld, entity=player)
 
             cur_vitality += 1
-            MobileUtilities.set_mobile_vitality(gameworld=gameworld, entity=player, value=cur_vitality)
+            MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=player, value=cur_vitality)
             cur_concentration += 1
-            MobileUtilities.set_mobile_concentration(gameworld=gameworld, entity=player, value=cur_concentration)
+            MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player, value=cur_concentration)
             cur_ferocity += 1
-            MobileUtilities.set_mobile_ferocity(gameworld=gameworld, entity=player, value=cur_ferocity)
+            MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player, value=cur_ferocity)
 
         if player_race.lower() == 'oshun':
             BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='D')
-            cur_toughness = MobileUtilities.get_mobile_toughness(gameworld=gameworld, entity=player)
-            cur_condi_damage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld, entity=player)
+            cur_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld, entity=player)
+            cur_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=player)
 
             cur_toughness += 1
-            MobileUtilities.set_mobile_toughness(gameworld=gameworld, entity=player, value=cur_toughness)
+            MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=player, value=cur_toughness)
             cur_condi_damage += 1
-            MobileUtilities.set_mobile_condition_damage(gameworld=gameworld, entity=player, value=cur_condi_damage)
+            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player, value=cur_condi_damage)
 
         # create starting armour from armourset and prefix
         this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=armourset,
@@ -1156,7 +1156,7 @@ class CharacterCreation:
         # calculate derived stats
         #
 
-        MobileUtilities.calculate_derived_attributes(gameworld=gameworld, entity=player)
+        MobileUtilities.set_mobile_derived_derived_attributes(gameworld=gameworld, entity=player)
 
         racial_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
         player_race_component = racial_details[0]
@@ -1569,26 +1569,26 @@ class CharacterCreation:
                              width=display_char_attributes_w, height=display_char_attributes_h,
                              fg=display_char_attributes_fg, bg=display_char_attributes_bg)
 
-        player_power = MobileUtilities.get_mobile_power(gameworld=gameworld, entity=player_entity)
-        player_precision = MobileUtilities.get_mobile_precision(gameworld=gameworld, entity=player_entity)
-        player_toughness = MobileUtilities.get_mobile_toughness(gameworld=gameworld, entity=player_entity)
-        player_vitality = MobileUtilities.get_mobile_vitality(gameworld=gameworld, entity=player_entity)
-        player_concentration = MobileUtilities.get_mobile_concentration(gameworld=gameworld, entity=player_entity)
-        player_condi_damage = MobileUtilities.get_mobile_condition_damage(gameworld=gameworld, entity=player_entity)
-        player_expertise = MobileUtilities.get_mobile_expertise(gameworld=gameworld, entity=player_entity)
-        player_ferocity = MobileUtilities.get_mobile_ferocity(gameworld=gameworld, entity=player_entity)
-        player_healing_power = MobileUtilities.get_mobile_healing_power(gameworld=gameworld, entity=player_entity)
-        player_armour = MobileUtilities.get_derived_armour_value(gameworld=gameworld, entity=player_entity)
-        player_boon_duration = MobileUtilities.get_derived_boon_duration(gameworld=gameworld, entity=player_entity)
+        player_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=player_entity)
+        player_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld, entity=player_entity)
+        player_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld, entity=player_entity)
+        player_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld, entity=player_entity)
+        player_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld, entity=player_entity)
+        player_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=player_entity)
+        player_expertise = MobileUtilities.get_mobile_secondary_expertise(gameworld=gameworld, entity=player_entity)
+        player_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld, entity=player_entity)
+        player_healing_power = MobileUtilities.get_mobile_secondary_healing_power(gameworld=gameworld, entity=player_entity)
+        player_armour = MobileUtilities.get_mobile_derived_armour_value(gameworld=gameworld, entity=player_entity)
+        player_boon_duration = MobileUtilities.get_mobile_derived_boon_duration(gameworld=gameworld, entity=player_entity)
 
-        player_critical_chance = MobileUtilities.get_derived_critical_hit_chance(gameworld=gameworld,
-                                                                                 entity=player_entity)
-        player_critical_damage = MobileUtilities.get_derived_critical_damage(gameworld=gameworld, entity=player_entity)
-        player_condi_duration = MobileUtilities.get_derived_condition_duration(gameworld=gameworld,
-                                                                               entity=player_entity)
-        player_max_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=player_entity)
-        player_cur_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=player_entity)
-        player_maximum_mana = MobileUtilities.get_derived_maximum_mana(gameworld=gameworld, entity=player_entity)
+        player_critical_chance = MobileUtilities.get_mobile_derived_critical_hit_chance(gameworld=gameworld,
+                                                                                        entity=player_entity)
+        player_critical_damage = MobileUtilities.get_mobile_derived_critical_damage(gameworld=gameworld, entity=player_entity)
+        player_condi_duration = MobileUtilities.get_mobile_derived_condition_duration(gameworld=gameworld,
+                                                                                      entity=player_entity)
+        player_max_health = MobileUtilities.get_mobile_derived_maximum_health(gameworld=gameworld, entity=player_entity)
+        player_cur_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=player_entity)
+        player_maximum_mana = MobileUtilities.get_mobile_derived_maximum_mana(gameworld=gameworld, entity=player_entity)
         #
         # # primary / secondary / derived / bonuses highlighted
         display_coloured_box(title="Primary",

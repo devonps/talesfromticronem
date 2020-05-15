@@ -79,8 +79,8 @@ class RenderGameMap(esper.Processor):
                 gameworld=gameworld, entity=entity)
             list_of_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld,
                                                                                 entity=entity)
-            current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=entity)
-            maximum_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=entity)
+            current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=entity)
+            maximum_health = MobileUtilities.get_mobile_derived_maximum_health(gameworld=gameworld, entity=entity)
 
             display_percentage = formulas.calculate_percentage(low_number=current_health, max_number=maximum_health)
 
@@ -370,8 +370,8 @@ class RenderGameMap(esper.Processor):
                                                                        parameter='STATUSBOX_HEIGHT')
 
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
-        current_health = MobileUtilities.get_derived_current_health(gameworld=gameworld, entity=player_entity)
-        maximum_health = MobileUtilities.get_derived_maximum_health(gameworld=gameworld, entity=player_entity)
+        current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=player_entity)
+        maximum_health = MobileUtilities.get_mobile_derived_maximum_health(gameworld=gameworld, entity=player_entity)
 
         str_to_print = "[color=red]Health[/color]"
 
@@ -385,8 +385,8 @@ class RenderGameMap(esper.Processor):
                                                                        parameter='STATUSBOX_HEIGHT')
 
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
-        current_mana = MobileUtilities.get_derived_current_mana(gameworld=gameworld, entity=player_entity)
-        max_mana = MobileUtilities.get_derived_maximum_mana(gameworld=gameworld, entity=player_entity)
+        current_mana = MobileUtilities.get_mobile_derived_current_mana(gameworld=gameworld, entity=player_entity)
+        max_mana = MobileUtilities.get_mobile_derived_maximum_mana(gameworld=gameworld, entity=player_entity)
         str_to_print = "[color=blue]Mana[/color]"
 
         RenderGameMap.render_bar(print_string=str_to_print, low_number=current_mana, high_number=max_mana,
@@ -399,9 +399,9 @@ class RenderGameMap(esper.Processor):
                                                                        parameter='STATUSBOX_HEIGHT')
 
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
-        current_f1_power = MobileUtilities.get_derived_special_bar_current_value(gameworld=gameworld,
-                                                                               entity=player_entity)
-        max_f1_power = MobileUtilities.get_derived_special_bar_max_value(gameworld=gameworld, entity=player_entity)
+        current_f1_power = MobileUtilities.get_mobile_derived_special_bar_current_value(gameworld=gameworld,
+                                                                                        entity=player_entity)
+        max_f1_power = MobileUtilities.get_mobile_derived_special_bar_max_value(gameworld=gameworld, entity=player_entity)
 
         str_to_print = "[color=green]Power[/color]"
 

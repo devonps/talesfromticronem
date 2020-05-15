@@ -68,7 +68,7 @@ class CastSpells(esper.Processor):
 
     def cast_combat_spell(self, spell_caster, spell, spell_target, weapon_used):
         equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=spell_caster)
-        caster_power = MobileUtilities.get_mobile_power(gameworld=self.gameworld, entity=spell_caster)
+        caster_power = MobileUtilities.get_mobile_primary_power(gameworld=self.gameworld, entity=spell_caster)
         spell_coeff = float(SpellUtilities.get_spell_damage_coeff(gameworld=self.gameworld, spell_entity=spell))
 
         if equipped_weapons[2] != 0:
@@ -87,7 +87,7 @@ class CastSpells(esper.Processor):
         logger.debug('spell coeff {}', spell_coeff)
         logger.debug('base damage {}', outgoing_base_damage)
 
-        target_defense = MobileUtilities.get_derived_armour_value(gameworld=self.gameworld, entity=spell_target)
+        target_defense = MobileUtilities.get_mobile_derived_armour_value(gameworld=self.gameworld, entity=spell_target)
         critical_hit = -99
         weakness = -99
         vulnerability = -99

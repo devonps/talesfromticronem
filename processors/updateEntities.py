@@ -37,7 +37,7 @@ class UpdateEntitiesProcessor(esper.Processor):
                 # gain resources from spells
 
                 if not in_combat:
-                    MobileUtilities.calculate_derived_attributes(self.gameworld, entity=ent)
+                    MobileUtilities.set_mobile_derived_derived_attributes(self.gameworld, entity=ent)
 
     def apply_conditions(self, entity_names, player_entity, message_log_id, target_entity):
 
@@ -49,8 +49,8 @@ class UpdateEntitiesProcessor(esper.Processor):
             logger.warning('Current entity name being processed is {} who has {} applied', entity_names[0],
                            current_condis)
 
-            condition_damage_stat_value = MobileUtilities.get_mobile_condition_damage(gameworld=self.gameworld,
-                                                                                      entity=player_entity)
+            condition_damage_stat_value = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=self.gameworld,
+                                                                                                entity=player_entity)
             ps = 0
             for condi in current_condis:
                 condi_name = condi['name']
