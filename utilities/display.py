@@ -1,4 +1,3 @@
-from components import mobiles
 from mapRelated.gameMap import RenderLayer
 from utilities import configUtilities, colourUtilities
 from loguru import logger
@@ -7,7 +6,6 @@ from bearlibterminal import terminal
 # Entity spy
 from utilities.common import CommonUtils
 from utilities.input_handlers import handle_game_keys
-from utilities.mobileHelp import MobileUtilities
 
 
 def entity_spy(gameworld, game_config, coords):
@@ -40,9 +38,8 @@ def entity_spy(gameworld, game_config, coords):
         player_not_pressed_a_key = True
         while player_not_pressed_a_key:
             event_to_be_processed, event_action = handle_game_keys()
-            if event_to_be_processed == 'keypress':
-                if event_action == 'quit':
-                    player_not_pressed_a_key = False
+            if event_to_be_processed == 'keypress' and event_action == 'quit':
+                player_not_pressed_a_key = False
 
 
 # the selected option is the choice from list_options that will be highlighted
@@ -250,6 +247,13 @@ def draw_colourful_frame(title, title_decorator, title_loc, corner_decorator, co
         terminal.put(x=start_panel_frame_x, y=start_panel_frame_height - 1, c=arc_bottom_left)
         # # right corner corner
         terminal.put(x=start_panel_frame_width - 1, y=start_panel_frame_height - 1, c=arc_bottom_right)
+
+
+def draw_pipes_across(start_panel_frame_x, start_panel_frame_width, start_panel_frame_y, across_pipe):
+
+    pipe_across = (start_panel_frame_x + 1) + start_panel_frame_width
+    for posx in range(pipe_across):
+        terminal.put(x=(start_panel_frame_x + 1) + posx, y=start_panel_frame_y, c=across_pipe)
 
 
 def draw_clear_text_box(posx, posy, width, height, text, fg, bg):

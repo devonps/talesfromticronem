@@ -29,12 +29,6 @@ class StartGame:
         version_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'VERSION_X')
         copyright_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'COPYRIGHT_X')
         copyright_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'COPYRIGHT_Y')
-        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
-                                                                              'START_PANEL_FRAME_WIDTH')
-        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
-                                                                               'START_PANEL_FRAME_HEIGHT')
-        start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
-        start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_X')
         menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'MENU_START_Y')
 

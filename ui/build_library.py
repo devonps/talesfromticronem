@@ -28,17 +28,16 @@ class Build:
     BUILDGENDER = 6
 
 
+def check_build_zones(build_zones, zone, build_zone_one, check_point, build_zone_two):
+
+    check_point_in_range = False
+    if build_zones[zone][build_zone_one] <= check_point <= build_zones[zone][build_zone_two]:
+        check_point_in_range = True
+    return check_point_in_range
+
+
 def display_build_library():
     game_config = configUtilities.load_config()
-
-    build_library_width = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_WIDTH')
-    build_library_height = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_HEIGHT')
-    build_library_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_FRAME_X')
-    build_library_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_FRAME_Y')
-    build_library_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
-                                                                            'BUILD_LIBRARY_FRAME_WIDTH')
-    build_library_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
-                                                                             'BUILD_LIBRARY_FRAME_HEIGHT')
     saved_build_template_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
                                                                              'BUILD_LIBRARY_TEMPLATE_WIDTH')
     saved_build_template_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
@@ -57,8 +56,6 @@ def display_build_library():
                                                                              'BUILD_LIBRARY_CLASS_FILTER_Y')
     saved_build_page_min_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
                                                                          'BUILD_LIBRARY_PAGE_MIN_X')
-    saved_build_page_max_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
-                                                                         'BUILD_LIBRARY_PAGE_MAX_X')
     saved_build_template_info_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
                                                                               'BUILD_LIBRARY_TEMPLATE_INFO_X')
     saved_build_template_info_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
@@ -69,7 +66,7 @@ def display_build_library():
     saved_build_code_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_CODE_Y')
     saved_build_play_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_PLAY_X')
     saved_build_play_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'BUILD_LIBRARY_PLAY_Y')
-    fileName = configUtilities.get_config_value_as_string(game_config, 'files', 'BUILDLIBRARYFILE')
+    file_name = configUtilities.get_config_value_as_string(game_config, 'files', 'BUILDLIBRARYFILE')
     player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                    parameter='CLASSESFILE')
     armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
@@ -86,29 +83,29 @@ def display_build_library():
     build_dates = []
     build_times = []
     decoded_build = []
-    buildCount = 0
+    build_count = 0
     template_view_current_min = 1
-    buildZoneLeft = 0
-    buildZoneRight = 1
-    buildZoneTop = 2
-    buildZoneBottom = 3
+    build_zone_left = 0
+    build_zone_right = 1
+    build_zone_top = 2
+    build_zone_bottom = 3
 
     # load saved builds
-    buildContent = Externalfiles.load_existing_file(filename=fileName)
-    for row in buildContent:
+    build_content = Externalfiles.load_existing_file(filename=file_name)
+    for row in build_content:
         elements = row.split(':')
         build_codes.append(elements[0])
         build_names.append(elements[1])
         build_dates.append(elements[2])
         build_times.append(elements[3])
-        decoded_build.append(BuildLibrary.decode_saved_build(build_codes[buildCount]))
-        buildCount += 1
+        decoded_build.append(BuildLibrary.decode_saved_build(build_codes[build_count]))
+        build_count += 1
 
-    if buildCount < 10:
-        template_view_current_max = buildCount
+    if build_count < 10:
+        template_view_current_max = build_count
     else:
         template_view_current_max = 10
-    template_view_template_max = buildCount
+    template_view_template_max = build_count
 
     # load playable classes
     class_file = read_json_file(player_class_file)
@@ -126,6 +123,10 @@ def display_build_library():
     # build library frame around console
     draw_colourful_frame(title=' Character Build Library ', title_decorator=True, title_loc='centre',
                          corner_decorator='', corner_studs='square', msg='ESC/ to go back, mouse to select.')
+    colour_string = '[color='
+    foreground_colour_blue_print = colour_string + colourUtilities.get('BLUE') + ']'
+    foreground_colour_yellow_print = colour_string + colourUtilities.get('YELLOW1') + ']'
+    foreground_colour_red_print = colour_string + colourUtilities.get('RED') + ']'
 
     while build_library_is_displayed:
         if draw_template_ui:
@@ -157,7 +158,7 @@ def display_build_library():
                     fg = colourUtilities.get('YELLOW1')
                 else:
                     fg = colourUtilities.get('GREEN')
-
+                foreground_colour_print = '[color=' + fg + ']'
                 display_coloured_box(title='', posx=template_box_posx, posy=saved_build_template_y,
                                      width=saved_build_template_width, height=saved_build_template_height,
                                      fg=fg, bg=bg)
@@ -165,8 +166,8 @@ def display_build_library():
                 build_zones.append((template_box_posx, template_box_posx + 8,
                                     saved_build_template_y, saved_build_template_y + 8))
                 # draw build template info/avatar here
-                if template_id < buildCount + 1:
-                    string_to_print = '[color=' + fg + ']' + build_names[template_id - 1]
+                if template_id < build_count + 1:
+                    string_to_print = foreground_colour_print + build_names[template_id - 1]
                     terminal.print_(x=saved_cur_avatar_x, y=saved_build_avatar_y, s=string_to_print)
 
                 template_position_x += saved_build_template_width + 2
@@ -184,24 +185,20 @@ def display_build_library():
                           str(template_view_current_min) + '-' + \
                           str(template_view_current_max) + ' of ' + \
                           str(template_view_template_max)
-            fg = colourUtilities.get('YELLOW1')
-            string_to_print = '[color=' + fg + ']' + page_string
+            string_to_print = foreground_colour_yellow_print + page_string
             terminal.print_(x=saved_build_pagination_x, y=saved_build_pagination_y, s=string_to_print)
 
             if template_view_current_min > 1:
-                fg = colourUtilities.get('BLUE')
-                string_to_print = '[color=' + fg + ']PREV PAGE'
+                string_to_print = foreground_colour_blue_print + 'PREV PAGE'
                 terminal.print_(x=saved_build_page_min_x, y=saved_build_pagination_y, s=string_to_print)
 
             if template_view_template_max > template_view_current_max:
-                fg = colourUtilities.get('YELLOW')
-                string_to_print = '[color=' + fg + ']NEXT PAGE'
+                string_to_print = foreground_colour_yellow_print + 'NEXT PAGE'
                 terminal.print_(x=saved_build_page_min_x, y=saved_build_pagination_y, s=string_to_print)
 
             # display class filter options
             for clfilter in range(len(playable_classes)):
-                fg = colourUtilities.get('BLUE')
-                string_to_print = '[color=' + fg + ']' + playable_classes[clfilter]
+                string_to_print = foreground_colour_blue_print + playable_classes[clfilter]
                 terminal.print_(x=saved_build_class_filter_x, y=saved_build_class_filter_y + clfilter,
                                 s=string_to_print)
 
@@ -212,7 +209,7 @@ def display_build_library():
                                 fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
             # display build code
-            string_to_print = '[color=' + colourUtilities.get('YELLOW') + ']' + 'BUILD CODE: ' + build_codes[
+            string_to_print = foreground_colour_yellow_print + 'BUILD CODE: ' + build_codes[
                 selected_build]
             terminal.print_(x=saved_build_code_x, y=saved_build_code_y, s=string_to_print)
 
@@ -220,7 +217,7 @@ def display_build_library():
             build_zones.append((saved_build_play_x, saved_build_play_x + len('START GAME') - 1, saved_build_play_y,
                                 saved_build_play_y + 1))
 
-            string_to_print = '[color=' + colourUtilities.get('RED') + ']' + 'START GAME'
+            string_to_print = foreground_colour_red_print + 'START GAME'
             terminal.print_(x=saved_build_code_x, y=saved_build_play_y, s=string_to_print)
 
         # blit the terminal
@@ -229,343 +226,346 @@ def display_build_library():
         # handle player events
         event_to_be_processed, event_action = handle_game_keys()
         if event_to_be_processed != '':
-            if event_to_be_processed == 'keypress':
-                if event_action == 'quit':
-                    build_library_is_displayed = False
+            if event_to_be_processed == 'keypress' and event_action == 'quit':
+                build_library_is_displayed = False
 
             if event_to_be_processed == 'mouseleftbutton':
                 mx = event_action[0]
                 my = event_action[1]
                 for zone in range(len(build_zones)):
-                    if build_zones[zone][buildZoneLeft] <= mx <= build_zones[zone][buildZoneRight]:
-                        if build_zones[zone][buildZoneTop] <= my <= build_zones[zone][buildZoneBottom]:
-                            if zone < len(build_zones) - 1:
-                                if zone == 0:
-                                    build_grid_selected = 1
-                                    selected_build = 0
-                                else:
-                                    build_grid_selected = zone + 1
-                                    selected_build = zone
-                                draw_template_ui = True
-                            if zone == len(build_zones) - 1:
-                                gameworld = world.create_game_world()
-                                player_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
-                                MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player_entity)
-                                MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config, player_entity=player_entity)
-                                # creating build entity to keep character creation process happy
-                                build_entity = BuildLibrary.create_build_entity(gameworld=gameworld)
-                                # name
-                                MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
-                                                                      name=build_names[selected_build])
-                                # gender
-                                MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity,
-                                                                  gender=decoded_build[selected_build][
-                                                                      Build.BUILDGENDER])
-                                # race
-                                race_size = 'normal'
-                                player_race = decoded_build[selected_build][Build.BUILDRACE]
-                                MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=player_entity,
-                                                                        selected_race=player_race, race_size=race_size,
-                                                                        bg=colourUtilities.get('BLACK'))
+                    mx_in_range = check_build_zones(build_zones=build_zones, zone=zone, build_zone_one=build_zone_left, check_point=mx, build_zone_two=build_zone_right)
+                    my_in_range = check_build_zones(build_zones=build_zones, zone=zone, build_zone_one=build_zone_top, check_point=my, build_zone_two=build_zone_bottom)
+                    if mx_in_range and my_in_range:
+                        if zone < len(build_zones) - 1:
+                            if zone == 0:
+                                build_grid_selected = 1
+                                selected_build = 0
+                            else:
+                                build_grid_selected = zone + 1
+                                selected_build = zone
+                            draw_template_ui = True
+                        if zone == len(build_zones) - 1:
+                            gameworld = world.create_game_world()
+                            player_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
+                            MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player_entity)
+                            MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config, player_entity=player_entity)
+                            # creating build entity to keep character creation process happy
+                            _ = BuildLibrary.create_build_entity(gameworld=gameworld)
+                            # name
+                            MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
+                                                                  name=build_names[selected_build])
+                            # gender
+                            MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity,
+                                                              gender=decoded_build[selected_build][
+                                                                  Build.BUILDGENDER])
+                            # race
+                            race_size = 'normal'
+                            player_race = decoded_build[selected_build][Build.BUILDRACE]
+                            MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=player_entity,
+                                                                    selected_race=player_race, race_size=race_size,
+                                                                    bg=colourUtilities.get('BLACK'))
 
-                                # create racial bonuses
-                                if player_race.lower() == 'dilga':
-                                    cur_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld,
-                                                                                                 entity=player_entity)
-                                    cur_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld,
-                                                                                                             entity=player_entity)
-                                    cur_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld,
-                                                                                                 entity=player_entity)
-
-                                    cur_precision += 1
-                                    MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=player_entity,
-                                                                                 value=cur_precision)
-                                    cur_condi_damage += 1
-                                    MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player_entity,
-                                                                                          value=cur_condi_damage)
-                                    cur_ferocity += 1
-                                    MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player_entity,
-                                                                                  value=cur_ferocity)
-
-                                if player_race.lower() == 'eskeri':
-                                    cur_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=player_entity)
-                                    cur_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld,
-                                                                                                           entity=player_entity)
-
-                                    cur_power += 1
-                                    MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=player_entity,
-                                                                             value=cur_power)
-                                    cur_concentration += 1
-                                    MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player_entity,
-                                                                                       value=cur_concentration)
-
-                                if player_race.lower() == 'jogah':
-                                    cur_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld,
-                                                                                               entity=player_entity)
-                                    cur_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld,
-                                                                                                           entity=player_entity)
-                                    cur_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld,
-                                                                                                 entity=player_entity)
-
-                                    cur_vitality += 1
-                                    MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=player_entity,
-                                                                                value=cur_vitality)
-                                    cur_concentration += 1
-                                    MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player_entity,
-                                                                                       value=cur_concentration)
-                                    cur_ferocity += 1
-                                    MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player_entity,
-                                                                                  value=cur_ferocity)
-
-                                if player_race.lower() == 'oshun':
-                                    cur_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld,
-                                                                                                 entity=player_entity)
-                                    cur_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld,
-                                                                                                             entity=player_entity)
-
-                                    cur_toughness += 1
-                                    MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=player_entity,
-                                                                                 value=cur_toughness)
-                                    cur_condi_damage += 1
-                                    MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player_entity,
-                                                                                          value=cur_condi_damage)
-                                # class
-                                health = 0
-                                spell_file = ''
-                                for option in range(len(playable_classes)):
-                                    if playable_classes[option] == decoded_build[selected_build][Build.BUILDCLASS]:
-                                        health = int(class_health[option - 2])
-                                        spell_file = class_spell_file[option - 2]
-
-                                MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player_entity,
-                                                                       selected_class=decoded_build[selected_build][
-                                                                           Build.BUILDCLASS],
-                                                                       health=health, spellfile=spell_file)
-
-                                # personality
-                                MobileUtilities.set_mobile_derived_personality(gameworld, game_config)
-
-                                # armour
-                                armour_file = read_json_file(armourset_file)
-                                as_internal_name = []
-                                px_flavour = []
-                                px_att_name = []
-                                px_att_bonus = []
-                                pxstring = 'prefix'
-                                attnamestring = 'attributename'
-                                attvaluestring = 'attributebonus'
-
-                                for armourset in armour_file['armoursets']:
-                                    if armourset['startset'] == 'true':
-                                        as_internal_name.append(armourset['internalsetname'])
-                                        prefix_count = armourset['prefixcount']
-                                        attribute_bonus_count = armourset['attributebonuscount']
-
-                                        for px in range(1, prefix_count + 1):
-                                            prefix_string = pxstring + str(px)
-                                            px_flavour.append(armourset[prefix_string]['flavour'])
-
-                                            if attribute_bonus_count > 1:
-                                                att_bonus_string = attvaluestring + str(px)
-                                                att_name_string = attnamestring + str(px)
-                                            else:
-                                                att_bonus_string = attvaluestring + str(1)
-                                                att_name_string = attnamestring + str(1)
-
-                                            px_att_bonus.append(armourset[prefix_string][att_bonus_string])
-                                            px_att_name.append(armourset[prefix_string][att_name_string])
-
-                                # assign armour prefix benefit
-                                if decoded_build[selected_build][Build.BUILDARMOUR] == 'healer':
-                                    current_healingpower = MobileUtilities.get_mobile_secondary_healing_power(gameworld=gameworld,
-                                                                                                              entity=player_entity)
-                                    px_bonus = int(px_att_bonus[1])
-                                    new_bonus = current_healingpower + px_bonus
-                                    MobileUtilities.set_mobile_secondary_healing_power(gameworld=gameworld, entity=player_entity,
-                                                                                       value=new_bonus)
-
-                                if decoded_build[selected_build][Build.BUILDARMOUR] == 'malign':
-                                    current_condidamage = MobileUtilities.get_mobile_secondary_condition_damage(
-                                        gameworld=gameworld, entity=player_entity)
-                                    px_bonus = int(px_att_bonus[2])
-                                    new_bonus = current_condidamage + px_bonus
-                                    MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld,
-                                                                                          entity=player_entity, value=new_bonus)
-
-                                if decoded_build[selected_build][Build.BUILDARMOUR] == 'mighty':
-                                    current_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld,
+                            # create racial bonuses
+                            if player_race.lower() == 'dilga':
+                                cur_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld,
                                                                                              entity=player_entity)
-                                    px_bonus = int(px_att_bonus[3])
-                                    new_bonus = current_power + px_bonus
-                                    MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=player_entity,
+                                cur_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld,
+                                                                                                         entity=player_entity)
+                                cur_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld,
+                                                                                             entity=player_entity)
+
+                                cur_precision += 1
+                                MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=player_entity,
+                                                                             value=cur_precision)
+                                cur_condi_damage += 1
+                                MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player_entity,
+                                                                                      value=cur_condi_damage)
+                                cur_ferocity += 1
+                                MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player_entity,
+                                                                              value=cur_ferocity)
+
+                            if player_race.lower() == 'eskeri':
+                                cur_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=player_entity)
+                                cur_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld,
+                                                                                                       entity=player_entity)
+
+                                cur_power += 1
+                                MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=player_entity,
+                                                                         value=cur_power)
+                                cur_concentration += 1
+                                MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player_entity,
+                                                                                   value=cur_concentration)
+
+                            if player_race.lower() == 'jogah':
+                                cur_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld,
+                                                                                           entity=player_entity)
+                                cur_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld,
+                                                                                                       entity=player_entity)
+                                cur_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld,
+                                                                                             entity=player_entity)
+
+                                cur_vitality += 1
+                                MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=player_entity,
+                                                                            value=cur_vitality)
+                                cur_concentration += 1
+                                MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player_entity,
+                                                                                   value=cur_concentration)
+                                cur_ferocity += 1
+                                MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player_entity,
+                                                                              value=cur_ferocity)
+
+                            if player_race.lower() == 'oshun':
+                                cur_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld,
+                                                                                             entity=player_entity)
+                                cur_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld,
+                                                                                                         entity=player_entity)
+
+                                cur_toughness += 1
+                                MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=player_entity,
+                                                                             value=cur_toughness)
+                                cur_condi_damage += 1
+                                MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player_entity,
+                                                                                      value=cur_condi_damage)
+                            # class
+                            health = 0
+                            spell_file = ''
+                            for option in range(len(playable_classes)):
+                                if playable_classes[option] == decoded_build[selected_build][Build.BUILDCLASS]:
+                                    health = int(class_health[option - 2])
+                                    spell_file = class_spell_file[option - 2]
+
+                            MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player_entity,
+                                                                   selected_class=decoded_build[selected_build][
+                                                                       Build.BUILDCLASS],
+                                                                   health=health, spellfile=spell_file)
+
+                            # personality
+                            MobileUtilities.set_mobile_derived_personality(gameworld, game_config)
+
+                            # armour
+                            armour_file = read_json_file(armourset_file)
+                            as_internal_name = []
+                            px_flavour = []
+                            px_att_name = []
+                            px_att_bonus = []
+                            pxstring = 'prefix'
+                            attnamestring = 'attributename'
+                            attvaluestring = 'attributebonus'
+
+                            for armourset in armour_file['armoursets']:
+                                if armourset['startset'] == 'true':
+                                    as_internal_name.append(armourset['internalsetname'])
+                                    prefix_count = armourset['prefixcount']
+                                    attribute_bonus_count = armourset['attributebonuscount']
+
+                                    for px in range(1, prefix_count + 1):
+                                        prefix_string = pxstring + str(px)
+                                        px_flavour.append(armourset[prefix_string]['flavour'])
+
+                                        if attribute_bonus_count > 1:
+                                            att_bonus_string = attvaluestring + str(px)
+                                            att_name_string = attnamestring + str(px)
+                                        else:
+                                            att_bonus_string = attvaluestring + str(1)
+                                            att_name_string = attnamestring + str(1)
+
+                                        px_att_bonus.append(armourset[prefix_string][att_bonus_string])
+                                        px_att_name.append(armourset[prefix_string][att_name_string])
+
+                            # assign armour prefix benefit
+                            if decoded_build[selected_build][Build.BUILDARMOUR] == 'healer':
+                                current_healingpower = MobileUtilities.get_mobile_secondary_healing_power(gameworld=gameworld,
+                                                                                                          entity=player_entity)
+                                px_bonus = int(px_att_bonus[1])
+                                new_bonus = current_healingpower + px_bonus
+                                MobileUtilities.set_mobile_secondary_healing_power(gameworld=gameworld, entity=player_entity,
+                                                                                   value=new_bonus)
+
+                            if decoded_build[selected_build][Build.BUILDARMOUR] == 'malign':
+                                current_condidamage = MobileUtilities.get_mobile_secondary_condition_damage(
+                                    gameworld=gameworld, entity=player_entity)
+                                px_bonus = int(px_att_bonus[2])
+                                new_bonus = current_condidamage + px_bonus
+                                MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld,
+                                                                                      entity=player_entity, value=new_bonus)
+
+                            if decoded_build[selected_build][Build.BUILDARMOUR] == 'mighty':
+                                current_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld,
+                                                                                         entity=player_entity)
+                                px_bonus = int(px_att_bonus[3])
+                                new_bonus = current_power + px_bonus
+                                MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=player_entity,
+                                                                         value=new_bonus)
+
+                            if decoded_build[selected_build][Build.BUILDARMOUR] == 'precise':
+                                current_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld,
+                                                                                                 entity=player_entity)
+                                px_bonus = int(px_att_bonus[4])
+                                new_bonus = current_precision + px_bonus
+                                MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=player_entity,
                                                                              value=new_bonus)
 
-                                if decoded_build[selected_build][Build.BUILDARMOUR] == 'precise':
-                                    current_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld,
-                                                                                                     entity=player_entity)
-                                    px_bonus = int(px_att_bonus[4])
-                                    new_bonus = current_precision + px_bonus
-                                    MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=player_entity,
-                                                                                 value=new_bonus)
+                            if decoded_build[selected_build][Build.BUILDARMOUR] == 'resilient':
+                                current_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld,
+                                                                                                 entity=player_entity)
+                                px_bonus = int(px_att_bonus[0])
+                                new_bonus = current_toughness + px_bonus
+                                MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=player_entity,
+                                                                             value=new_bonus)
 
-                                if decoded_build[selected_build][Build.BUILDARMOUR] == 'resilient':
-                                    current_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld,
-                                                                                                     entity=player_entity)
-                                    px_bonus = int(px_att_bonus[0])
-                                    new_bonus = current_toughness + px_bonus
-                                    MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=player_entity,
-                                                                                 value=new_bonus)
+                            if decoded_build[selected_build][Build.BUILDARMOUR] == 'vital':
+                                current_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld,
+                                                                                               entity=player_entity)
+                                px_bonus = int(px_att_bonus[5])
+                                new_bonus = current_vitality + px_bonus
+                                MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=player_entity,
+                                                                            value=new_bonus)
 
-                                if decoded_build[selected_build][Build.BUILDARMOUR] == 'vital':
-                                    current_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld,
-                                                                                                   entity=player_entity)
-                                    px_bonus = int(px_att_bonus[5])
-                                    new_bonus = current_vitality + px_bonus
-                                    MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=player_entity,
-                                                                                value=new_bonus)
+                            # create starting armour from armourset and prefix
+                            this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld,
+                                                                                armourset='Embroided', prefix=
+                                                                                decoded_build[selected_build][
+                                                                                    Build.BUILDARMOUR].lower(),
+                                                                                game_config=game_config)
 
-                                # create starting armour from armourset and prefix
-                                this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld,
-                                                                                    armourset='Embroided', prefix=
-                                                                                    decoded_build[selected_build][
-                                                                                        Build.BUILDARMOUR].lower(),
-                                                                                    game_config=game_config)
+                            ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player_entity,
+                                                                   armourset=this_armourset)
 
-                                ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player_entity,
-                                                                       armourset=this_armourset)
+                            # spells for the player character
+                            spellfile = MobileUtilities.get_character_class_spellfilename(gameworld, player_entity)
 
-                                # spells for the player character
-                                spellfile = MobileUtilities.get_character_class_spellfilename(gameworld, player_entity)
+                            class_component = MobileUtilities.get_character_class(gameworld, player_entity)
+                            generate_spells(gameworld=gameworld, game_config=game_config, spell_file=spellfile,
+                                            player_class=class_component)
 
-                                class_component = MobileUtilities.get_character_class(gameworld, player_entity)
-                                generate_spells(gameworld=gameworld, game_config=game_config, spell_file=spellfile,
-                                                player_class=class_component)
+                            # weapons
+                            if decoded_build[selected_build][Build.BUILDMAINHAND] == decoded_build[selected_build][
+                                Build.BUILDOFFHAND]:
+                                created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=
+                                decoded_build[selected_build][Build.BUILDMAINHAND],
+                                                                           game_config=game_config)
+                                weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
+                                WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type,
+                                                                    class_component)
 
-                                # weapons
-                                if decoded_build[selected_build][Build.BUILDMAINHAND] == decoded_build[selected_build][
-                                    Build.BUILDOFFHAND]:
-                                    created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=
-                                    decoded_build[selected_build][Build.BUILDMAINHAND],
+                                # equip player with newly created starting weapon
+                                MobileUtilities.equip_weapon(gameworld=gameworld, entity=player_entity,
+                                                             weapon=created_weapon, hand='both')
+                            else:
+                                main_hand = decoded_build[selected_build][Build.BUILDMAINHAND]
+                                off_hand = decoded_build[selected_build][Build.BUILDOFFHAND]
+
+                                if main_hand != '' and main_hand != off_hand:
+                                    logger.info('creating a 1-handed weapon (main hand) for the player')
+
+                                    created_weapon = ItemManager.create_weapon(gameworld=gameworld,
+                                                                               weapon_type=main_hand,
                                                                                game_config=game_config)
                                     weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
+
+                                    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+                                    logger.info('Loading that weapon with the necessary spells')
                                     WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type,
                                                                         class_component)
 
                                     # equip player with newly created starting weapon
                                     MobileUtilities.equip_weapon(gameworld=gameworld, entity=player_entity,
-                                                                 weapon=created_weapon, hand='both')
-                                else:
-                                    main_hand = decoded_build[selected_build][Build.BUILDMAINHAND]
-                                    off_hand = decoded_build[selected_build][Build.BUILDOFFHAND]
+                                                                 weapon=created_weapon, hand='main')
 
-                                    if main_hand != '' and main_hand != off_hand:
-                                        logger.info('creating a 1-handed weapon (main hand) for the player')
+                                if off_hand != '' and off_hand != main_hand:
+                                    created_weapon = ItemManager.create_weapon(gameworld=gameworld,
+                                                                               weapon_type=off_hand,
+                                                                               game_config=game_config)
+                                    weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
 
-                                        # created_weapon, hands_to_hold = NewCharacter.create_starting_weapon(gameworld, player, game_config)
-                                        created_weapon = ItemManager.create_weapon(gameworld=gameworld,
-                                                                                   weapon_type=main_hand,
-                                                                                   game_config=game_config)
-                                        weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
+                                    # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+                                    logger.info('Loading that weapon with the necessary spells')
+                                    WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type,
+                                                                        class_component)
 
-                                        # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-                                        logger.info('Loading that weapon with the necessary spells')
-                                        WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type,
-                                                                            class_component)
+                                    # equip player with newly created starting weapon
+                                    MobileUtilities.equip_weapon(gameworld=gameworld, entity=player_entity,
+                                                                 weapon=created_weapon, hand='off')
 
-                                        # equip player with newly created starting weapon
-                                        MobileUtilities.equip_weapon(gameworld=gameworld, entity=player_entity,
-                                                                     weapon=created_weapon, hand='main')
+                            # load spell bar with spells from weapon
+                            SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=player_entity)
 
-                                    if off_hand != '' and off_hand != main_hand:
-                                        created_weapon = ItemManager.create_weapon(gameworld=gameworld,
-                                                                                   weapon_type=off_hand,
-                                                                                   game_config=game_config)
-                                        weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
+                            # jewellery
+                            player_current_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
+                            class_file = read_json_file(player_class_file)
+                            jewellery_set = decoded_build[selected_build][Build.BUILDJEWELLERY]
+                            neck_gemstone = 0
+                            ring1_gemstone = 0
+                            ring2_gemstone = 0
+                            ear1_gemstone = 0
+                            ear2_gemstone = 0
 
-                                        # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-                                        logger.info('Loading that weapon with the necessary spells')
-                                        WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type,
-                                                                            class_component)
+                            for player_class in class_file['classes']:
+                                if player_class['name'] == player_current_class:
+                                    neck_gemstone = player_class[jewellery_set]['neck']
+                                    ring1_gemstone = player_class[jewellery_set]['ring1']
+                                    ring2_gemstone = player_class[jewellery_set]['ring2']
+                                    ear1_gemstone = player_class[jewellery_set]['earring1']
+                                    ear2_gemstone = player_class[jewellery_set]['earring2']
 
-                                        # equip player with newly created starting weapon
-                                        MobileUtilities.equip_weapon(gameworld=gameworld, entity=player_entity,
-                                                                     weapon=created_weapon, hand='off')
+                            # create jewellery entity
+                            pendant = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck',
+                                                                   e_setting='copper', e_hook='copper',
+                                                                   e_activator=neck_gemstone)
+                            left_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring',
+                                                                     e_setting='copper', e_hook='copper',
+                                                                     e_activator=ring1_gemstone)
+                            right_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring',
+                                                                      e_setting='copper', e_hook='copper',
+                                                                      e_activator=ring2_gemstone)
+                            left_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear',
+                                                                    e_setting='copper', e_hook='copper',
+                                                                    e_activator=ear1_gemstone)
+                            right_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear',
+                                                                     e_setting='copper', e_hook='copper',
+                                                                     e_activator=ear2_gemstone)
 
-                                # load spell bar with spells from weapon
-                                SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=player_entity)
+                            # equip jewellery entity to player character
+                            ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player_entity,
+                                                          bodylocation='neck', trinket=pendant)
+                            ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player_entity,
+                                                          bodylocation='left hand', trinket=left_ring)
+                            ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player_entity,
+                                                          bodylocation='right hand', trinket=right_ring)
+                            ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player_entity,
+                                                          bodylocation='left ear', trinket=left_ear)
+                            ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player_entity,
+                                                          bodylocation='right ear', trinket=right_ear)
 
-                                # jewellery
-                                player_class = MobileUtilities.get_character_class(gameworld=gameworld,
-                                                                                   entity=player_entity)
-                                class_file = read_json_file(player_class_file)
-                                jewellery_set = decoded_build[selected_build][Build.BUILDJEWELLERY]
+                            # apply gemstone benefits
+                            jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
+                                                                                       entity=pendant)
+                            ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player_entity,
+                                                                statbonus=jewelley_stat_bonus)
 
-                                for playerClass in class_file['classes']:
-                                    if playerClass['name'] == player_class:
-                                        neck_gemstone = playerClass[jewellery_set]['neck']
-                                        ring1_gemstone = playerClass[jewellery_set]['ring1']
-                                        ring2_gemstone = playerClass[jewellery_set]['ring2']
-                                        ear1_gemstone = playerClass[jewellery_set]['earring1']
-                                        ear2_gemstone = playerClass[jewellery_set]['earring2']
+                            jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
+                                                                                       entity=left_ring)
+                            ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player_entity,
+                                                                statbonus=jewelley_stat_bonus)
 
-                                # create jewellery entity
-                                pendant = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck',
-                                                                       e_setting='copper', e_hook='copper',
-                                                                       e_activator=neck_gemstone)
-                                left_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring',
-                                                                         e_setting='copper', e_hook='copper',
-                                                                         e_activator=ring1_gemstone)
-                                right_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring',
-                                                                          e_setting='copper', e_hook='copper',
-                                                                          e_activator=ring2_gemstone)
-                                left_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear',
-                                                                        e_setting='copper', e_hook='copper',
-                                                                        e_activator=ear1_gemstone)
-                                right_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear',
-                                                                         e_setting='copper', e_hook='copper',
-                                                                         e_activator=ear2_gemstone)
+                            jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
+                                                                                       entity=right_ring)
+                            ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player_entity,
+                                                                statbonus=jewelley_stat_bonus)
 
-                                # equip jewellery entity to player character
-                                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player_entity,
-                                                              bodylocation='neck', trinket=pendant)
-                                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player_entity,
-                                                              bodylocation='left hand', trinket=left_ring)
-                                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player_entity,
-                                                              bodylocation='right hand', trinket=right_ring)
-                                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player_entity,
-                                                              bodylocation='left ear', trinket=left_ear)
-                                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player_entity,
-                                                              bodylocation='right ear', trinket=right_ear)
+                            jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
+                                                                                       entity=left_ear)
+                            ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player_entity,
+                                                                statbonus=jewelley_stat_bonus)
 
-                                # apply gemstone benefits
-                                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
-                                                                                           entity=pendant)
-                                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player_entity,
-                                                                    statbonus=jewelleyStatBonus)
+                            jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
+                                                                                       entity=right_ear)
+                            ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player_entity,
+                                                                statbonus=jewelley_stat_bonus)
 
-                                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
-                                                                                           entity=left_ring)
-                                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player_entity,
-                                                                    statbonus=jewelleyStatBonus)
-
-                                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
-                                                                                           entity=right_ring)
-                                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player_entity,
-                                                                    statbonus=jewelleyStatBonus)
-
-                                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
-                                                                                           entity=left_ear)
-                                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player_entity,
-                                                                    statbonus=jewelleyStatBonus)
-
-                                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
-                                                                                           entity=right_ear)
-                                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player_entity,
-                                                                    statbonus=jewelleyStatBonus)
-
-                                #
-                                # calculate derived stats
-                                #
-                                MobileUtilities.set_mobile_derived_derived_attributes(gameworld=gameworld, entity=player_entity)
-                                terminal.clear()
-                                CharacterCreation.display_starting_character(gameworld=gameworld)
+                            #
+                            # calculate derived stats
+                            #
+                            MobileUtilities.set_mobile_derived_derived_attributes(gameworld=gameworld, entity=player_entity)
+                            terminal.clear()
+                            CharacterCreation.display_starting_character(gameworld=gameworld)
