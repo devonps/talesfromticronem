@@ -273,41 +273,6 @@ class ItemManager:
         return full_armour_set
 
     @staticmethod
-    def create_bag(gameworld, game_config):
-
-        bag_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                      parameter='BAGSFILE')
-        bag_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
-                                                                      parameter='ITEM_ARMOUR_ACTIONS')
-
-        bags_file = jsonUtilities.read_json_file(bag_file_path)
-        bag_count = 0
-        for this_bag in bags_file['bags']:
-            new_bag = world.get_next_entity_id(gameworld=gameworld)
-            bag_count += 1
-
-            # generate common item components
-            gameworld.add_component(new_bag, items.TypeOfItem(label='bag'))
-            gameworld.add_component(new_bag, items.Actionlist(action_list=bag_action_list))
-            gameworld.add_component(new_bag, items.Describable(
-                description=this_bag['description'],
-                name=this_bag['description'],
-                glyph=this_bag['glyph'],
-                fg=colourUtilities.get('WHITE'), bg=colourUtilities.get('BLACK')))
-            # gameworld.add_component(new_bag, items.Location(x=0, y=0))
-            gameworld.add_component(new_bag, items.Material(texture=this_bag['material']))
-            gameworld.add_component(new_bag, items.RenderItem)
-            gameworld.add_component(new_bag, items.Quality(level=this_bag['quality']))
-
-            # generate bag specific components
-            gameworld.add_component(new_bag, items.SlotSize(maxsize=this_bag['slots'], populated=0))
-            # gameworld.add_component(new_bag, items.Owner(entity))
-            # gameworld.add_component(new_bag, items.BagBeingUsed)
-            logger.info('New bag created as entity {} and a description of {}', new_bag, this_bag['description'])
-
-            return new_bag
-
-    @staticmethod
     def create_jewellery(gameworld, bodylocation, e_setting, e_hook, e_activator):
         """
         Will create a piece of jewellery the e_setting informs the tier, e.g. copper is only used in Tier 1 jewellery
@@ -352,6 +317,7 @@ class ItemManager:
                 gameworld.add_component(piece_of_jewellery, items.JewelleryEquipped(istrue=False))
                 desc = 'a ' + trinket_setting
                 nm = ''
+                gameworld.add_component(piece_of_jewellery, items.JewelleryComponents(setting=trinket_setting, hook=trinket_hook, activator=trinket_activator))
 
                 if 'ear' in bodylocation:
                     # create an earring

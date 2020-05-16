@@ -12,7 +12,7 @@
       "title": "names",
       "heading": "Names",
       "lines": 5,
-      "width": 31,
+      "width": 33,
       "posx": 27,
       "posy": 5
     },
@@ -28,14 +28,14 @@
       "title": "jewellery",
       "heading": "Jewellery Worn",
       "lines": 7,
-      "width": 23,
-      "posx": 29,
+      "width": 28,
+      "posx": 39,
       "posy": 12
     },
     {
       "title": "spellbarcombat",
       "heading": "Spellbar Weapons",
-      "lines": 5,
+      "lines": 7,
       "width": 30,
       "posx": 7,
       "posy": 22
@@ -43,16 +43,16 @@
     {
       "title": "spellbarutils",
       "heading": "Spellbar Utilities",
-      "lines": 4,
+      "lines": 6,
       "width": 30,
       "posx": 39,
       "posy": 22
     },
     {
       "title": "energy",
-      "heading": "Energy Bars",
-      "lines": 3,
-      "width": 20,
+      "heading": "Energy",
+      "lines": 5,
+      "width": 25,
       "posx": 7,
       "posy": 33
     },

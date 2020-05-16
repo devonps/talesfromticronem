@@ -890,8 +890,6 @@ class CharacterCreation:
 
         player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='CLASSESFILE')
-        # get config items
-        game_config = configUtilities.load_config()
 
         # get player entity
         player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)

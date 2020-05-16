@@ -210,3 +210,10 @@ class JewelleryBodyLocation:
 class JewelleryEquipped:
     def __init__(self, istrue=False):
         self.istrue = istrue
+
+
+class JewelleryComponents:
+    def __init__(self, setting='', hook='', activator=''):
+        self.setting = setting
+        self.hook = hook
+        self.activator = activator

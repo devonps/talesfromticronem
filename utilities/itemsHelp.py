@@ -115,21 +115,6 @@ class ItemUtilities:
 
 ####################################################
 #
-#   BAGS
-#
-####################################################
-    @staticmethod
-    def get_bag_size(gameworld, entity):
-        bag_size_component = gameworld.component_for_entity(entity, items.SlotSize)
-        return bag_size_component.maxsize
-
-    @staticmethod
-    def get_bag_is_populated(gameworld, entity):
-        bag_populated_component = gameworld.component_for_entity(entity, items.SlotSize)
-        return bag_populated_component.populated
-
-####################################################
-#
 #   WEAPONS
 #
 ####################################################
@@ -240,7 +225,6 @@ class ItemUtilities:
         wpn_dmg_max = 0
         range_chosen = False
         weapon_damage_range = ItemUtilities.get_weapon_damage_ranges(gameworld=gameworld, weapon=weapon)
-        weapon_type = ItemUtilities.get_weapon_type(gameworld=gameworld, weapon_entity=weapon)
 
         for lvl in weapon_damage_range:
             wid = lvl['id']
@@ -424,6 +408,21 @@ class ItemUtilities:
 #   JEWELLERY
 #
 ####################################################
+
+    @staticmethod
+    def get_jewellery_setting(gameworld, entity):
+        jewellery_materials_componet = gameworld.component_for_entity(entity, items.JewelleryComponents)
+        return jewellery_materials_componet.setting
+
+    @staticmethod
+    def get_jewellery_hook(gameworld, entity):
+        jewellery_materials_componet = gameworld.component_for_entity(entity, items.JewelleryComponents)
+        return jewellery_materials_componet.hook
+
+    @staticmethod
+    def get_jewellery_activator(gameworld, entity):
+        jewellery_materials_componet = gameworld.component_for_entity(entity, items.JewelleryComponents)
+        return jewellery_materials_componet.activator
 
     @staticmethod
     def get_jewellery_stat_bonus(gameworld, entity):
