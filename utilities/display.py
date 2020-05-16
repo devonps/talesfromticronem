@@ -1,54 +1,15 @@
-from mapRelated.gameMap import RenderLayer
 from utilities import configUtilities, colourUtilities
 from loguru import logger
 from bearlibterminal import terminal
-
-# Entity spy
-from utilities.common import CommonUtils
-from utilities.input_handlers import handle_game_keys
-
-
-def entity_spy(gameworld, game_config, coords):
-    # get entity id at position coords
-    entity_id = CommonUtils.get_entity_at_location(gameworld=gameworld, coords=coords)
-
-    if entity_id == 0:
-        logger.debug('Entity not found at location')
-    else:
-        # display entity information
-        lft = 10
-        tp = 15
-        start_panel_frame_height = 5
-        start_panel_frame_width = 26
-
-        terminal.clear_area(lft, tp, start_panel_frame_width, start_panel_frame_height)
-        prev_layer = terminal.state(terminal.TK_LAYER)
-        terminal.layer(RenderLayer.VALIDTARGETS.value)
-
-        draw_simple_frame(start_panel_frame_x=lft, start_panel_frame_y=tp, start_panel_frame_width=start_panel_frame_width, start_panel_frame_height=start_panel_frame_height, title='| Entity Spy |',
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
-
-        terminal.layer(prev_layer)
-
-        # blit the terminal
-        terminal.refresh()
-
-        # wait for user key press
-        # validTargets[ent, name.first, desc.glyph, desc.foreground, desc.background]
-        player_not_pressed_a_key = True
-        while player_not_pressed_a_key:
-            event_to_be_processed, event_action = handle_game_keys()
-            if event_to_be_processed == 'keypress' and event_action == 'quit':
-                player_not_pressed_a_key = False
 
 
 # the selected option is the choice from list_options that will be highlighted
 # so if list_options were  [apple, orange, grape] and selected_option were 'grape' then grape would be highlighted
 def coloured_list(list_options, list_x, list_y, selected_option, blank_line, fg):
     list_count = 0
-    start_print_string = '[color='
+    start_print_string = "[color="
     end_print_string = ']'
-    
+
     for option in list_options:
         if selected_option.lower() == option.lower():
             fg_color = colourUtilities.get('YELLOW1')
@@ -73,7 +34,7 @@ def pointy_menu(header, menu_options, menu_id_format, menu_start_x, menu_start_y
     # print the menu options
     menu_count = 0
     mnu = 0
-    start_print_string = '[color='
+    start_print_string = "[color="
     end_print_string = ']'
 
     for option_text in menu_options:
@@ -93,19 +54,23 @@ def pointy_menu(header, menu_options, menu_id_format, menu_start_x, menu_start_y
 
 
 def display_coloured_box(title, posx, posy, width, height, fg, bg):
-    draw_simple_frame(start_panel_frame_x=posx, start_panel_frame_y=posy, start_panel_frame_width=width, start_panel_frame_height=height, title=title, fg=fg, bg=bg)
+    draw_simple_frame(start_panel_frame_x=posx, start_panel_frame_y=posy, start_panel_frame_width=width,
+                      start_panel_frame_height=height, title=title, fg=fg, bg=bg)
 
-    draw_coloured_rectangle(start_panel_frame_x=posx, start_panel_frame_y=posy, start_panel_frame_width=width, start_panel_frame_height=height, ch=u'\u0020', fg=fg, bg=bg)
+    draw_coloured_rectangle(start_panel_frame_x=posx, start_panel_frame_y=posy, start_panel_frame_width=width,
+                            start_panel_frame_height=height, ch=u'\u0020', fg=fg, bg=bg)
 
 
-def draw_coloured_rectangle(start_panel_frame_x, start_panel_frame_y, start_panel_frame_width, start_panel_frame_height, ch, fg, bg):
-    string_to_print = '[color=' + fg + '][/color][bkcolor=' + bg + '][/bkcolor]' + ch
+def draw_coloured_rectangle(start_panel_frame_x, start_panel_frame_y, start_panel_frame_width, start_panel_frame_height,
+                            ch, fg, bg):
+    string_to_print = "[color=" + fg + '][/color][bkcolor=' + bg + '][/bkcolor]' + ch
     for posx in range(start_panel_frame_width):
         for posy in range(start_panel_frame_height):
             terminal.print_(x=(start_panel_frame_x + 1) + posx, y=(start_panel_frame_y + 1) + posy, s=string_to_print)
 
 
-def draw_simple_frame(start_panel_frame_x, start_panel_frame_y, start_panel_frame_width, start_panel_frame_height, title, fg, bg):
+def draw_simple_frame(start_panel_frame_x, start_panel_frame_y, start_panel_frame_width, start_panel_frame_height,
+                      title, fg, bg):
     # unicode frame tiles
     top_left = u'\u250c'
     top_right = u'\u2510'
@@ -127,10 +92,12 @@ def draw_simple_frame(start_panel_frame_x, start_panel_frame_y, start_panel_fram
     for posy in range(pipe_down):
         terminal.put(x=(start_panel_frame_x + 1) + pipe_across, y=(start_panel_frame_y + 1) + posy, c=down_pipe)
     # right corner
-    terminal.put(x=(start_panel_frame_x + 1) + pipe_across, y=(start_panel_frame_y + 1) + start_panel_frame_height, c=bottom_right)
+    terminal.put(x=(start_panel_frame_x + 1) + pipe_across, y=(start_panel_frame_y + 1) + start_panel_frame_height,
+                 c=bottom_right)
     # bottom left --> bottom right
     for posx in range(pipe_across):
-        terminal.put(x=(start_panel_frame_x + 1) + posx, y=(start_panel_frame_y + 1) + start_panel_frame_height, c=across_pipe)
+        terminal.put(x=(start_panel_frame_x + 1) + posx, y=(start_panel_frame_y + 1) + start_panel_frame_height,
+                     c=across_pipe)
     # bottom left
     terminal.put(x=start_panel_frame_x, y=(start_panel_frame_y + 1) + start_panel_frame_height, c=bottom_left)
     # left side down
@@ -149,6 +116,14 @@ def draw_colourful_frame(title, title_decorator, title_loc, corner_decorator, co
     # get config items
     game_config = configUtilities.load_config()
 
+    stored_messages = ['ESC to go back, up & down Enter to accept',
+                       'ESC to go back, up & down, left & right arrows to select, Enter to accept',
+                       'ESC to go back, Enter to accept',
+                       'ESC to go back, mouse to select',
+                       'ESC to return to the game']
+
+    msg = stored_messages[msg]
+
     start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_X')
     start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'START_PANEL_FRAME_Y')
     start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
@@ -158,8 +133,10 @@ def draw_colourful_frame(title, title_decorator, title_loc, corner_decorator, co
 
     root_con_width = configUtilities.get_config_value_as_integer(game_config, 'gui', 'SCREEN_WIDTH')
     root_con_height = configUtilities.get_config_value_as_integer(game_config, 'gui', 'SCREEN_HEIGHT')
+
     # check inbound values
-    if (start_panel_frame_x + start_panel_frame_width >= root_con_width) or (start_panel_frame_y + start_panel_frame_height >= root_con_height):
+    if (start_panel_frame_x + start_panel_frame_width >= root_con_width) or (
+            start_panel_frame_y + start_panel_frame_height >= root_con_height):
         logger.warning('Frame for panel will not fit inside root console - frame aborted')
         return
 
@@ -227,9 +204,7 @@ def draw_colourful_frame(title, title_decorator, title_loc, corner_decorator, co
         terminal.print_(x=pwx, y=start_panel_frame_y, s=titlestring)
 
     if msg != '':
-        ss = msg.split('/')
-        terminal.print_(x=msg_x, y=msg_y, s=ss[0])
-        terminal.print_(x=msg_x + len(ss[0]), y=msg_y, s=ss[1])
+        terminal.print_(x=msg_x, y=msg_y, s=msg)
 
     # You can only draw corner decorators or studs
     if corner_decorator != '':
@@ -250,7 +225,6 @@ def draw_colourful_frame(title, title_decorator, title_loc, corner_decorator, co
 
 
 def draw_pipes_across(start_panel_frame_x, start_panel_frame_width, start_panel_frame_y, across_pipe):
-
     pipe_across = (start_panel_frame_x + 1) + start_panel_frame_width
     for posx in range(pipe_across):
         terminal.put(x=(start_panel_frame_x + 1) + posx, y=start_panel_frame_y, c=across_pipe)

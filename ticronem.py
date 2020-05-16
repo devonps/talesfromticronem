@@ -13,7 +13,7 @@ from gameworld.sceneManager import SceneManager
 from newGame import newGame
 from utilities.spellHelp import SpellUtilities
 from utilities.common import CommonUtils
-from utilities.display import entity_spy
+from ui.debug import Debug
 
 
 def game_loop(gameworld):
@@ -83,17 +83,18 @@ def game_loop(gameworld):
                 CommonUtils.view_message_log(gameworld=gameworld, player=player, log_to_be_displayed=event_action)
                 advance_game_turn = False
         if event_to_be_processed == 'mouseleftbutton':
-            entity_spy(gameworld=gameworld, game_config=game_config, coords=event_action)
+            Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords=event_action)
+            advance_game_turn = False
 
         if advance_game_turn:
             #
             # get monsters intended action
             #
             StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player, game_map=game_map)
+            current_turn += 1
+            MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
         # process all intended actions
         gameworld.process(game_config)
-        current_turn += 1
-        MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
 
         # blit the console
         terminal.refresh()

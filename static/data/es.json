@@ -1,0 +1,108 @@
+{
+  "es": [
+    {
+      "title": "racial",
+      "heading": "Personal",
+      "lines": 5,
+      "width": 18,
+      "posx": 7,
+      "posy": 5
+    },
+    {
+      "title": "names",
+      "heading": "Names",
+      "lines": 5,
+      "width": 31,
+      "posx": 27,
+      "posy": 5
+    },
+    {
+      "title": "weapons",
+      "heading": "Weapons Equipped",
+      "lines": 5,
+      "width": 19,
+      "posx": 7,
+      "posy": 12
+    },
+    {
+      "title": "jewellery",
+      "heading": "Jewellery Worn",
+      "lines": 7,
+      "width": 23,
+      "posx": 29,
+      "posy": 12
+    },
+    {
+      "title": "spellbarcombat",
+      "heading": "Spellbar Weapons",
+      "lines": 5,
+      "width": 30,
+      "posx": 7,
+      "posy": 22
+    },
+    {
+      "title": "spellbarutils",
+      "heading": "Spellbar Utilities",
+      "lines": 4,
+      "width": 30,
+      "posx": 39,
+      "posy": 22
+    },
+    {
+      "title": "energy",
+      "heading": "Energy Bars",
+      "lines": 3,
+      "width": 20,
+      "posx": 7,
+      "posy": 33
+    },
+    {
+      "title": "monster",
+      "heading": "Monster Only",
+      "lines": 3,
+      "width": 20,
+      "posx": 29,
+      "posy": 33
+    },
+    {
+      "title": "armour",
+      "heading": "Armour Worn",
+      "lines": 7,
+      "width": 25,
+      "posx": 51,
+      "posy": 33
+    },
+    {
+      "title": "primary",
+      "heading": "Primary Attributes",
+      "lines": 6,
+      "width": 20,
+      "posx": 57,
+      "posy": 5
+    },
+    {
+      "title": "secondary",
+      "heading": "Secondary Attributes",
+      "lines": 6,
+      "width": 25,
+      "posx": 70,
+      "posy": 5
+    },
+    {
+      "title": "derived",
+      "heading": "Derived Attributes",
+      "lines": 5,
+      "width": 20,
+      "posx": 90,
+      "posy": 5
+    },
+    {
+      "title": "statuseffects",
+      "heading": "Status Effects",
+      "lines": 3,
+      "width": 20,
+      "posx": 50,
+      "posy": 15
+    }
+    ]
+}

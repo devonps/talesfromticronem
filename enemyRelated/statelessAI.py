@@ -13,18 +13,21 @@ class StatelessAI:
     """
     The AI I'm looking to build out here in pseudo code is:
         Intrnsic pointers (things the enemy knows about itself)
-        damage taken --> do I need to refine this further?
-        morale --> what is this?
+            damage taken --> do I need to refine this further?
+            morale --> hardcoded so they won't naturally retreat
+        Questions it needs to answer:
+            can-run-away-from-player --> am I under the effects of immobilize or cripple
+            can-attack-player --> am I able to cast a spell
+            too-far-from-player --> Am I further away from the player than my max spell range
+            can-move-toward-player --> am I under the effects of immobilize or cripple or fear
+            too-close-to-character --> am I too close to the player
+            can-move-away-from-player --> am I under the effects of immobilize or cripple
+            can-i-cast-a-spell --> is there one available to me
+        Actions to consider:
+            stand-still --> what should I do here?
+            cast-spell-against-target --> pick a random one
 
-        can-run-away-from-player --> am I under the effects of immobilize or cripple
-        can-attack-player --> am I able to cast a spell
-        too-far-from-player --> Am I further away from the player than my max spell range
-        can-move-toward-player --> am I under the effects of immobilize or cripple or fear
-        charge-probability --> should I keep walking or attack the player
-        too-close-to-character --> am I too close to the player
-        can-move-away-from-player --> am I under the effects of immobilize or cripple
-        retreat-probability --> should I walk or flee from the player
-        stand-still --> what should I do here?
+
     """
 
     @staticmethod

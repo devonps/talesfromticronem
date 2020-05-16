@@ -39,7 +39,7 @@ class StartGame:
 
             draw_colourful_frame(title=game_title, title_decorator=True, title_loc='centre', corner_decorator='',
                                  corner_studs='',
-                                 msg='ESC/ to go back, up & down arrows to select, enter to accept choice')
+                                 msg=0)
 
             # place game version message
             string_to_print = '[color=light grey]' + game_version

@@ -7,6 +7,9 @@ def handle_game_keys():
 
     key = terminal.read()
 
+    if key == terminal.TK_TAB:
+        myevent = 'keypress'
+        action = 'tab'
     if key == terminal.TK_1:
         if terminal.check(terminal.TK_CONTROL):
             myevent = 'keypress'
