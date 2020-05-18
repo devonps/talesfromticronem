@@ -67,17 +67,17 @@
     {
       "title": "armour",
       "heading": "Armour Worn",
-      "lines": 7,
-      "width": 25,
-      "posx": 51,
-      "posy": 33
+      "lines": 9,
+      "width": 53,
+      "posx": 20,
+      "posy": 25
     },
     {
       "title": "primary",
       "heading": "Primary Attributes",
       "lines": 6,
       "width": 20,
-      "posx": 57,
+      "posx": 7,
       "posy": 5
     },
     {
@@ -85,7 +85,7 @@
       "heading": "Secondary Attributes",
       "lines": 6,
       "width": 25,
-      "posx": 70,
+      "posx": 30,
       "posy": 5
     },
     {
@@ -93,16 +93,56 @@
       "heading": "Derived Attributes",
       "lines": 5,
       "width": 20,
-      "posx": 90,
+      "posx": 60,
       "posy": 5
     },
     {
       "title": "statuseffects",
       "heading": "Status Effects",
       "lines": 3,
-      "width": 20,
-      "posx": 50,
+      "width": 50,
+      "posx": 20,
       "posy": 15
+    },
+    {
+      "title": "head",
+      "heading": "Head",
+      "lines": 7,
+      "width": 50,
+      "posx": 7,
+      "posy": 28
+    },
+    {
+      "title": "chest",
+      "heading": "Chest",
+      "lines": 7,
+      "width": 50,
+      "posx": 7,
+      "posy": 37
+    },
+    {
+      "title": "hands",
+      "heading": "Hands",
+      "lines": 7,
+      "width": 50,
+      "posx": 20,
+      "posy": 44
+    },
+    {
+      "title": "legs",
+      "heading": "Legs",
+      "lines": 7,
+      "width": 50,
+      "posx": 20,
+      "posy": 51
+    },
+    {
+      "title": "feet",
+      "heading": "Feet",
+      "lines": 7,
+      "width": 50,
+      "posx": 20,
+      "posy": 60
     }
     ]
 }
