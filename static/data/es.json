@@ -28,8 +28,8 @@
       "title": "jewellery",
       "heading": "Jewellery Worn",
       "lines": 7,
-      "width": 28,
-      "posx": 39,
+      "width": 25,
+      "posx": 28,
       "posy": 12
     },
     {
@@ -53,8 +53,8 @@
       "heading": "Energy",
       "lines": 5,
       "width": 25,
-      "posx": 7,
-      "posy": 33
+      "posx": 55,
+      "posy": 12
     },
     {
       "title": "monster",
@@ -68,8 +68,8 @@
       "title": "armour",
       "heading": "Armour Worn",
       "lines": 9,
-      "width": 53,
-      "posx": 20,
+      "width": 34,
+      "posx": 7,
       "posy": 25
     },
     {
@@ -92,8 +92,8 @@
       "title": "derived",
       "heading": "Derived Attributes",
       "lines": 5,
-      "width": 20,
-      "posx": 60,
+      "width": 22,
+      "posx": 57,
       "posy": 5
     },
     {
@@ -101,48 +101,8 @@
       "heading": "Status Effects",
       "lines": 3,
       "width": 50,
-      "posx": 20,
+      "posx": 7,
       "posy": 15
-    },
-    {
-      "title": "head",
-      "heading": "Head",
-      "lines": 7,
-      "width": 50,
-      "posx": 7,
-      "posy": 28
-    },
-    {
-      "title": "chest",
-      "heading": "Chest",
-      "lines": 7,
-      "width": 50,
-      "posx": 7,
-      "posy": 37
-    },
-    {
-      "title": "hands",
-      "heading": "Hands",
-      "lines": 7,
-      "width": 50,
-      "posx": 20,
-      "posy": 44
-    },
-    {
-      "title": "legs",
-      "heading": "Legs",
-      "lines": 7,
-      "width": 50,
-      "posx": 20,
-      "posy": 51
-    },
-    {
-      "title": "feet",
-      "heading": "Feet",
-      "lines": 7,
-      "width": 50,
-      "posx": 20,
-      "posy": 60
     }
     ]
 }
