@@ -22,7 +22,6 @@ class Debug:
         section_posx = []
         section_posy = []
 
-
         for section in entity_spy_file['es']:
             section_title.append(section['title'])
             section_heading.append(section['heading'])
@@ -94,7 +93,9 @@ class Debug:
                         player_not_pressed_quit = False
                     if event_action == 'tab':
                         Debug.clear_terminal_area_es(game_config=game_config)
-                        page_to_display = Debug.display_entity_spy_page(gameworld=gameworld, entity_id=entity_id, game_config=game_config, page_to_display=page_to_display)
+                        page_to_display = Debug.display_entity_spy_page(gameworld=gameworld, entity_id=entity_id,
+                                                                        game_config=game_config,
+                                                                        page_to_display=page_to_display)
 
                         # display instructions
                         Debug.display_es_instructions(page=page_to_display)
@@ -107,9 +108,79 @@ class Debug:
 
     @staticmethod
     def process_zone_action(zone_clicked, line_item):
-        if zone_clicked != -99:
 
-            logger.info('Zone {} line {} clicked', zone_clicked, line_item)
+        # if an invalid zone_clicked is passed then my Switch statement will come here
+        def default(line):
+            logger.info('No componet zone found.')
+
+        switcher = {0: Debug.es_amendment_racial,
+                    1: Debug.es_amendment_names,
+                    2: Debug.es_amendment_weapons,
+                    3: Debug.es_amendment_jewellery,
+                    4: Debug.es_amendment_spellbarcombat,
+                    5: Debug.es_amendment_spellbarutils,
+                    6: Debug.es_amendment_energy,
+                    7: Debug.es_amendment_monster,
+                    8: Debug.es_amendment_armour,
+                    9: Debug.es_amendment_primary,
+                    10: Debug.es_amendment_secondary,
+                    11: Debug.es_amendment_derived,
+                    12: Debug.es_amendment_statuseffects
+                    }
+
+        switcher.get(zone_clicked, default)(line=line_item)
+
+    @staticmethod
+    def es_amendment_racial(line):
+        logger.info('Racial zone activated and line {}', line)
+
+    @staticmethod
+    def es_amendment_names(line):
+        logger.info('Names zone activated and line {}', line)
+
+    @staticmethod
+    def es_amendment_weapons(line):
+        logger.info('Weapons zone activated and line {}', line)
+
+    @staticmethod
+    def es_amendment_jewellery(line):
+        logger.info('Jewellery zone activated and line {}', line)
+
+    @staticmethod
+    def es_amendment_spellbarcombat(line):
+        logger.info('Combat spells zone activated and line {}', line)
+
+    @staticmethod
+    def es_amendment_spellbarutils(line):
+        logger.info('Utility spells zone activated and line {}', line)
+
+    @staticmethod
+    def es_amendment_energy(line):
+        logger.info('energy zone activated and line {}', line)
+
+    @staticmethod
+    def es_amendment_monster(line):
+        logger.info('Monster zone activated and line {}', line)
+
+    @staticmethod
+    def es_amendment_armour(line):
+        logger.info('armour zone activated and line {}', line)
+
+    @staticmethod
+    def es_amendment_primary(line):
+        logger.info('primary stats zone activated and line {}', line)
+
+    @staticmethod
+    def es_amendment_secondary(line):
+        logger.info('secondary stats zone activated and line {}', line)
+
+    @staticmethod
+    def es_amendment_derived(line):
+        logger.info('derived zone activated and line {}', line)
+
+    @staticmethod
+    def es_amendment_statuseffects(line):
+        logger.info('status effects zone activated and line {}', line)
 
     @staticmethod
     def display_entity_spy_page(gameworld, page_to_display, entity_id, game_config):
@@ -145,8 +216,13 @@ class Debug:
 
         for zone in range(zone_min, zone_max):
 
-            mx_in_range = Debug.check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_left], check_point=mx, click_zone_two=click_zones[zone][click_zone_left] + click_zones[zone][click_zone_width])
-            my_in_range = Debug.check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_top], check_point=my, click_zone_two=click_zones[zone][click_zone_top] + click_zones[zone][click_zone_depth])
+            mx_in_range = Debug.check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_left],
+                                            check_point=mx,
+                                            click_zone_two=click_zones[zone][click_zone_left] + click_zones[zone][
+                                                click_zone_width])
+            my_in_range = Debug.check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_top], check_point=my,
+                                            click_zone_two=click_zones[zone][click_zone_top] + click_zones[zone][
+                                                click_zone_depth])
 
             if mx_in_range and my_in_range:
                 zone_clicked = zone
@@ -159,7 +235,6 @@ class Debug:
         if click_zone_one <= check_point <= click_zone_two:
             check_point_in_range = True
         return check_point_in_range
-
 
     @staticmethod
     def display_es_instructions(page):
@@ -191,13 +266,15 @@ class Debug:
                           start_panel_frame_width=section_width[section],
                           start_panel_frame_height=section_lines[section], title=section_heading[section],
                           fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
-        race_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=entity_id)
 
+        race_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=entity_id)
         string_to_print = start_string + "Race:" + end_string + race_details[0]
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=string_to_print)
+
         class_print = start_string + "Class:" + end_string + MobileUtilities.get_character_class(
             gameworld=gameworld, entity=entity_id)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=class_print)
+
         glyph_print = start_string + "Glyph:" + end_string + MobileUtilities.get_mobile_glyph(
             gameworld=gameworld, entity=entity_id)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=glyph_print)
@@ -207,27 +284,30 @@ class Debug:
                           start_panel_frame_width=section_width[section],
                           start_panel_frame_height=section_lines[section], title=section_heading[section],
                           fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+
         entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_id)
         first_name_string = start_string + "First Name:" + end_string + entity_names[0]
         gender_string = start_string + "Gender:" + end_string + MobileUtilities.get_player_gender(
             gameworld=gameworld, entity=entity_id)
+
         personality_string = start_string + "Personality:" + end_string + MobileUtilities.get_mobile_personality_title(
             gameworld=gameworld, entity=entity_id)
+
         ai_level = int(MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=entity_id))
         ai_description = MobileUtilities.get_mobile_ai_description(gameworld=gameworld, entity_id=entity_id)
 
         ai_level_string = start_string + "AI level:" + end_string + ai_description
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=first_name_string)
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=personality_string)
-        terminal.print_(x=section_posx[section] + len("First Name:" + entity_names[0]) + 2, y=section_posy[section] + 2,
-                        s=gender_string)
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=ai_level_string)
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=gender_string)
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=ai_level_string)
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=personality_string)
 
         section = 2
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
                           start_panel_frame_height=section_lines[section], title=section_heading[section],
                           fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+
         weapons_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=entity_id)
         main_weapon = weapons_list[0]
         off_weapon = weapons_list[1]
@@ -322,7 +402,9 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=f1_string)
 
         section = 7
-        Debug.draw_monster_specific_components(ai_level=ai_level, sx=section_posx[section], sy=section_posy[section], sw=section_width[section], sl=section_lines[section], sh=section_heading[section])
+        Debug.draw_monster_specific_components(ai_level=ai_level, sx=section_posx[section], sy=section_posy[section],
+                                               sw=section_width[section], sl=section_lines[section],
+                                               sh=section_heading[section])
 
     @staticmethod
     def display_page_two_entity_spy(gameworld, entity_id, game_config):
@@ -344,7 +426,8 @@ class Debug:
 
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
-                          start_panel_frame_height=section_lines[section], title=section_heading[section] + " (" + str(total_armour) + ")",
+                          start_panel_frame_height=section_lines[section],
+                          title=section_heading[section] + " (" + str(total_armour) + ")",
                           fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
         str_to_print = "[color=blue]Location Material Display Defense[/color]"
@@ -378,11 +461,14 @@ class Debug:
         entity_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld, entity=entity_id)
         entity_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld, entity=entity_id)
 
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s="[color=ENTITY_SPY_COMPONENT]Power:[/color]" + str(entity_power))
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s="[color=ENTITY_SPY_COMPONENT]Precision:[/color]" + str(entity_precision))
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s="[color=ENTITY_SPY_COMPONENT]Toughness:[/color]" + str(entity_toughness))
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s="[color=ENTITY_SPY_COMPONENT]Vitality:[/color]" + str(entity_vitality))
-
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2,
+                        s="[color=ENTITY_SPY_COMPONENT]Power:[/color]" + str(entity_power))
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3,
+                        s="[color=ENTITY_SPY_COMPONENT]Precision:[/color]" + str(entity_precision))
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4,
+                        s="[color=ENTITY_SPY_COMPONENT]Toughness:[/color]" + str(entity_toughness))
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5,
+                        s="[color=ENTITY_SPY_COMPONENT]Vitality:[/color]" + str(entity_vitality))
 
         # display secondary attributes
         section = 10
@@ -392,7 +478,8 @@ class Debug:
                           fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
         entity_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld, entity=entity_id)
-        entity_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=entity_id)
+        entity_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld,
+                                                                                    entity=entity_id)
         entity_expertise = MobileUtilities.get_mobile_secondary_expertise(gameworld=gameworld, entity=entity_id)
         entity_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld, entity=entity_id)
         entity_healing_power = MobileUtilities.get_mobile_secondary_healing_power(gameworld=gameworld, entity=entity_id)
@@ -419,7 +506,8 @@ class Debug:
 
         entity_critical_chance = MobileUtilities.get_mobile_derived_critical_hit_chance(gameworld=gameworld,
                                                                                         entity=entity_id)
-        entity_critical_damage = MobileUtilities.get_mobile_derived_critical_damage(gameworld=gameworld, entity=entity_id)
+        entity_critical_damage = MobileUtilities.get_mobile_derived_critical_damage(gameworld=gameworld,
+                                                                                    entity=entity_id)
         entity_condi_duration = MobileUtilities.get_mobile_derived_condition_duration(gameworld=gameworld,
                                                                                       entity=entity_id)
 
@@ -431,7 +519,6 @@ class Debug:
                         s="[color=ENTITY_SPY_COMPONENT]Critical Damage:[/color]" + str(entity_critical_damage) + "%")
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5,
                         s="[color=ENTITY_SPY_COMPONENT]Condition Duration:[/color]+" + str(entity_condi_duration))
-
 
         # display applied status effects
         section = 12
@@ -454,22 +541,21 @@ class Debug:
     @staticmethod
     def set_boons_to_print(applied_boons):
         boons_to_print = "[color=ENTITY_SPY_NO_COMPONENT]none[/color]"
-        if len(applied_boons) >0:
+        if len(applied_boons) > 0:
             boons_to_print = ''.join(applied_boons)
         return boons_to_print
 
     @staticmethod
     def set_condis_to_print(applied_condis):
         condis_to_print = '[color=ENTITY_SPY_NO_COMPONENT]none[/color]'
-        if len(applied_condis) >0:
+        if len(applied_condis) > 0:
             condis_to_print = "".join(applied_condis)
         return condis_to_print
 
-
     @staticmethod
-    def draw_monster_specific_components(ai_level,sx, sy, sw, sl, sh):
+    def draw_monster_specific_components(ai_level, sx, sy, sw, sl, sh):
         if ai_level > 1:
-            draw_simple_frame(start_panel_frame_x=sx , start_panel_frame_y=sy,
+            draw_simple_frame(start_panel_frame_x=sx, start_panel_frame_y=sy,
                               start_panel_frame_width=sw,
                               start_panel_frame_height=sl, title=sh,
                               fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
@@ -481,7 +567,8 @@ class Debug:
                                                                                    player_entity=entity_id)
         if slot_one_spell_entity > 0:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_one_spell_entity)
-            spell_cooldown_status = str(SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_one_spell_entity))
+            spell_cooldown_status = str(
+                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_one_spell_entity))
             slot_one_string = "[color=ENTITY_SPY_COMPONENT]Slot 1:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
 
         return slot_one_string
@@ -493,7 +580,8 @@ class Debug:
                                                                                    player_entity=entity_id)
         if slot_two_spell_entity > 0:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_two_spell_entity)
-            spell_cooldown_status = str(SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_two_spell_entity))
+            spell_cooldown_status = str(
+                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_two_spell_entity))
             slot_two_string = "[color=ENTITY_SPY_COMPONENT]Slot 2:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
 
         return slot_two_string
@@ -505,7 +593,8 @@ class Debug:
                                                                                      player_entity=entity_id)
         if slot_three_spell_entity > 0:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_three_spell_entity)
-            spell_cooldown_status = str(SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_three_spell_entity))
+            spell_cooldown_status = str(
+                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_three_spell_entity))
             slot_three_string = "[color=ENTITY_SPY_COMPONENT]Slot 3:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
 
         return slot_three_string
@@ -514,10 +603,11 @@ class Debug:
     def set_spellbar_slot_four_string(gameworld, entity_id):
         slot_four_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 4:None[/color]"
         slot_four_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=4,
-                                                                                   player_entity=entity_id)
+                                                                                    player_entity=entity_id)
         if slot_four_spell_entity > 0:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_four_spell_entity)
-            spell_cooldown_status = str(SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_four_spell_entity))
+            spell_cooldown_status = str(
+                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_four_spell_entity))
             slot_four_string = "[color=ENTITY_SPY_COMPONENT]Slot 4:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
 
         return slot_four_string
@@ -526,10 +616,11 @@ class Debug:
     def set_spellbar_slot_five_string(gameworld, entity_id):
         slot_five_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 5:None[/color]"
         slot_five_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=5,
-                                                                                   player_entity=entity_id)
+                                                                                    player_entity=entity_id)
         if slot_five_spell_entity > 0:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_five_spell_entity)
-            spell_cooldown_status = str(SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_five_spell_entity))
+            spell_cooldown_status = str(
+                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_five_spell_entity))
             slot_five_string = "[color=ENTITY_SPY_COMPONENT]Slot 5:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
 
         return slot_five_string
@@ -541,7 +632,8 @@ class Debug:
                                                                                    player_entity=entity_id)
         if slot_six_spell_entity > 0:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_six_spell_entity)
-            spell_cooldown_status = str(SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_six_spell_entity))
+            spell_cooldown_status = str(
+                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_six_spell_entity))
             slot_six_string = "[color=ENTITY_SPY_COMPONENT]Slot 6:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
 
         return slot_six_string
@@ -550,10 +642,11 @@ class Debug:
     def set_spellbar_slot_seven_string(gameworld, entity_id):
         slot_seven_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 7:None[/color]"
         slot_seven_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=7,
-                                                                                   player_entity=entity_id)
+                                                                                     player_entity=entity_id)
         if slot_seven_spell_entity > 0:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_seven_spell_entity)
-            spell_cooldown_status = str(SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_seven_spell_entity))
+            spell_cooldown_status = str(
+                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_seven_spell_entity))
             slot_seven_string = "[color=ENTITY_SPY_COMPONENT]Slot 7:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
 
         return slot_seven_string
@@ -562,10 +655,11 @@ class Debug:
     def set_spellbar_slot_eight_string(gameworld, entity_id):
         slot_eight_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 8:None[/color]"
         slot_eight_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=8,
-                                                                                   player_entity=entity_id)
+                                                                                     player_entity=entity_id)
         if slot_eight_spell_entity > 0:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_eight_spell_entity)
-            spell_cooldown_status = str(SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_eight_spell_entity))
+            spell_cooldown_status = str(
+                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_eight_spell_entity))
             slot_eight_string = "[color=ENTITY_SPY_COMPONENT]Slot 8:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
 
         return slot_eight_string
@@ -574,14 +668,14 @@ class Debug:
     def set_spellbar_slot_nine_string(gameworld, entity_id):
         slot_nine_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 9:None[/color]"
         slot_nine_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=9,
-                                                                                   player_entity=entity_id)
+                                                                                    player_entity=entity_id)
         if slot_nine_spell_entity > 0:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_nine_spell_entity)
-            spell_cooldown_status = str(SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_nine_spell_entity))
+            spell_cooldown_status = str(
+                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_nine_spell_entity))
             slot_nine_string = "[color=ENTITY_SPY_COMPONENT]Slot 9:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
 
         return slot_nine_string
-
 
     @staticmethod
     def set_jewellery_left_ear_string(gameworld, left_ear):
