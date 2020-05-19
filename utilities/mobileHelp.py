@@ -107,6 +107,10 @@ class MobileUtilities(numbers.Real, ABC):
         return gameworld.component_for_entity(entity_id, mobiles.AI).ailevel
 
     @staticmethod
+    def get_mobile_ai_description(gameworld, entity_id):
+        return gameworld.component_for_entity(entity_id, mobiles.AI).description
+
+    @staticmethod
     def get_number_as_a_percentage(lower_value, maximum_value):
         return int((lower_value / maximum_value) * 100)
 
@@ -340,7 +344,7 @@ class MobileUtilities(numbers.Real, ABC):
                                                                personality='', gender='', image=0))
         gameworld.add_component(entity_id,
                                 mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
-        gameworld.add_component(entity_id, mobiles.AI(ailevel=ai))
+        gameworld.add_component(entity_id, mobiles.AI(ailevel=ai, description='none'))
         gameworld.add_component(entity_id, mobiles.Inventory())
         gameworld.add_component(entity_id, mobiles.Armour())
         gameworld.add_component(entity_id, mobiles.Jewellery())
@@ -376,7 +380,7 @@ class MobileUtilities(numbers.Real, ABC):
                                 mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
         gameworld.add_component(player_entity, mobiles.CurrentTurn(current_turn=0))
         gameworld.add_component(player_entity, mobiles.Name(first='', suffix=''))
-        gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai))
+        gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai, description='player'))
         gameworld.add_component(player_entity, mobiles.Personality())
         gameworld.add_component(player_entity, mobiles.SpecialBar(valuecurrent=10, valuemaximum=100))
         gameworld.add_component(player_entity, mobiles.SpellBar(entityId=0))

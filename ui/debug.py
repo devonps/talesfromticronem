@@ -21,7 +21,7 @@ class Debug:
         section_width = []
         section_posx = []
         section_posy = []
-        click_zones = []
+
 
         for section in entity_spy_file['es']:
             section_title.append(section['title'])
@@ -30,9 +30,15 @@ class Debug:
             section_width.append(section['width'])
             section_posx.append(section['posx'])
             section_posy.append(section['posy'])
-            click_zones.append((section['posx'], section['posy'], section['width'], section['lines']))
 
-        return section_title, section_heading, section_lines, section_width, section_posx, section_posy, click_zones
+        return section_title, section_heading, section_lines, section_width, section_posx, section_posy
+
+    @staticmethod
+    def generate_es_click_zones(entity_spy_file):
+        click_zones = []
+        for section in entity_spy_file['es']:
+            click_zones.append((section['posx'], section['posy'], section['width'], section['lines']))
+        return click_zones
 
     @staticmethod
     def clear_terminal_area_es(game_config):
@@ -55,14 +61,6 @@ class Debug:
         logger.debug('Entity id at this location {}', entity_id)
 
         if entity_id > 0:
-            # read Json file for on-screen placement
-            es_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                 parameter='ENTITYSPYFILE')
-            entity_spy_file = read_json_file(es_file)
-
-            section_title, section_heading, section_lines, section_width, section_posx, section_posy, click_zones = Debug.populate_es_lists(
-                entity_spy_file)
-
             # clear the underlying terminal
             Debug.clear_terminal_area_es(game_config=game_config)
 
@@ -73,6 +71,12 @@ class Debug:
 
             # display page one of entity components
             Debug.display_page_one_entity_spy(gameworld=gameworld, entity_id=entity_id, game_config=game_config)
+
+            # generate entity spy click zones
+            es_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                 parameter='ENTITYSPYFILE')
+            entity_spy_file = read_json_file(es_file)
+            click_zones = Debug.generate_es_click_zones(entity_spy_file=entity_spy_file)
 
             # display instructions
             page_to_display = 1
@@ -95,9 +99,8 @@ class Debug:
                         # display instructions
                         Debug.display_es_instructions(page=page_to_display)
                 if event_to_be_processed == 'mouseleftbutton':
-                    zone_clicked = Debug.get_zone_clicked(event_action, click_zones, page_to_display)
-                    item = event_action[1] - section_posy[zone_clicked]
-                    Debug.process_zone_action(zone_clicked=zone_clicked, line_item=item)
+                    zone_clicked, item_selected = Debug.get_zone_clicked(event_action, click_zones, page_to_display)
+                    Debug.process_zone_action(zone_clicked=zone_clicked, line_item=item_selected)
 
                 # blit the terminal
                 terminal.refresh()
@@ -131,6 +134,7 @@ class Debug:
         click_zone_depth = 3
 
         zone_clicked = -99
+        item_selected = -99
 
         if page_to_display == 1:
             zone_min = 0
@@ -146,7 +150,8 @@ class Debug:
 
             if mx_in_range and my_in_range:
                 zone_clicked = zone
-        return zone_clicked
+                item_selected = my - click_zones[zone][click_zone_top]
+        return zone_clicked, item_selected
 
     @staticmethod
     def check_zones(zone, click_zone_one, check_point, click_zone_two):
@@ -172,7 +177,7 @@ class Debug:
                                                              parameter='ENTITYSPYFILE')
         entity_spy_file = read_json_file(es_file)
 
-        section_title, section_heading, section_lines, section_width, section_posx, section_posy, click_zones = Debug.populate_es_lists(
+        section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.populate_es_lists(
             entity_spy_file)
 
         section = 0
@@ -209,13 +214,9 @@ class Debug:
         personality_string = start_string + "Personality:" + end_string + MobileUtilities.get_mobile_personality_title(
             gameworld=gameworld, entity=entity_id)
         ai_level = int(MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=entity_id))
+        ai_description = MobileUtilities.get_mobile_ai_description(gameworld=gameworld, entity_id=entity_id)
 
-        if ai_level == 1:
-            ai_string = "Player"
-        else:
-            ai_string = "Monster"
-
-        ai_level_string = start_string + "AI level:" + end_string + ai_string
+        ai_level_string = start_string + "AI level:" + end_string + ai_description
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=first_name_string)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=personality_string)
         terminal.print_(x=section_posx[section] + len("First Name:" + entity_names[0]) + 2, y=section_posy[section] + 2,
@@ -331,7 +332,7 @@ class Debug:
                                                              parameter='ENTITYSPYFILE')
         entity_spy_file = read_json_file(es_file)
 
-        section_title, section_heading, section_lines, section_width, section_posx, section_posy, click_zones = Debug.populate_es_lists(
+        section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.populate_es_lists(
             entity_spy_file)
 
         # display armour

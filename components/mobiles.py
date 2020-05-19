@@ -75,9 +75,9 @@ class CharacterClass:
 
 
 class AI:
-    def __init__(self, ailevel=0, behaviour='none'):
+    def __init__(self, ailevel=0, description='none'):
         self.ailevel = ailevel
-        self.behaviour = behaviour
+        self.description = description
 
 
 class ManaPool:
