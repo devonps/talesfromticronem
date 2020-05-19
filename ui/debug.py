@@ -21,6 +21,7 @@ class Debug:
         section_width = []
         section_posx = []
         section_posy = []
+        click_zones = []
 
         for section in entity_spy_file['es']:
             section_title.append(section['title'])
@@ -29,8 +30,9 @@ class Debug:
             section_width.append(section['width'])
             section_posx.append(section['posx'])
             section_posy.append(section['posy'])
+            click_zones.append((section['posx'], section['posy'], section['width'], section['lines']))
 
-        return section_title, section_heading, section_lines, section_width, section_posx, section_posy
+        return section_title, section_heading, section_lines, section_width, section_posx, section_posy, click_zones
 
     @staticmethod
     def clear_terminal_area_es(game_config):
@@ -58,7 +60,7 @@ class Debug:
                                                                  parameter='ENTITYSPYFILE')
             entity_spy_file = read_json_file(es_file)
 
-            section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.populate_es_lists(
+            section_title, section_heading, section_lines, section_width, section_posx, section_posy, click_zones = Debug.populate_es_lists(
                 entity_spy_file)
 
             # clear the underlying terminal
@@ -70,9 +72,7 @@ class Debug:
                                  msg=4)
 
             # display page one of entity components
-            Debug.display_page_one_entity_spy(gameworld=gameworld, entity_id=entity_id, section_posx=section_posx,
-                                              section_posy=section_posy, section_width=section_width,
-                                              section_lines=section_lines, section_heading=section_heading)
+            Debug.display_page_one_entity_spy(gameworld=gameworld, entity_id=entity_id, game_config=game_config)
 
             # display instructions
             page_to_display = 1
@@ -85,32 +85,76 @@ class Debug:
             player_not_pressed_quit = True
             while player_not_pressed_quit:
                 event_to_be_processed, event_action = handle_game_keys()
-                # if event_to_be_processed == 'keypress':
-                if event_action == 'quit':
-                    player_not_pressed_quit = False
-                if event_action == 'tab':
-                    Debug.clear_terminal_area_es(game_config=game_config)
-                    page_to_display += 1
-                    if page_to_display > 2:
-                        page_to_display = 1
-                    if page_to_display == 1:
-                        Debug.display_page_one_entity_spy(gameworld=gameworld, entity_id=entity_id,
-                                                          section_posx=section_posx,
-                                                          section_posy=section_posy, section_width=section_width,
-                                                          section_lines=section_lines,
-                                                          section_heading=section_heading)
-                    else:
+                if event_to_be_processed == 'keypress':
+                    if event_action == 'quit':
+                        player_not_pressed_quit = False
+                    if event_action == 'tab':
+                        Debug.clear_terminal_area_es(game_config=game_config)
+                        page_to_display = Debug.display_entity_spy_page(gameworld=gameworld, entity_id=entity_id, game_config=game_config, page_to_display=page_to_display)
 
-                        Debug.display_page_two_entity_spy(gameworld=gameworld, entity_id=entity_id,
-                                                          section_posx=section_posx,
-                                                          section_posy=section_posy, section_width=section_width,
-                                                          section_lines=section_lines,
-                                                          section_heading=section_heading)
-                    # display instructions
-                    Debug.display_es_instructions(page=page_to_display)
+                        # display instructions
+                        Debug.display_es_instructions(page=page_to_display)
+                if event_to_be_processed == 'mouseleftbutton':
+                    zone_clicked = Debug.get_zone_clicked(event_action, click_zones, page_to_display)
+                    item = event_action[1] - section_posy[zone_clicked]
+                    Debug.process_zone_action(zone_clicked=zone_clicked, line_item=item)
 
-                    # blit the terminal
-                    terminal.refresh()
+                # blit the terminal
+                terminal.refresh()
+
+    @staticmethod
+    def process_zone_action(zone_clicked, line_item):
+        if zone_clicked != -99:
+
+            logger.info('Zone {} line {} clicked', zone_clicked, line_item)
+
+    @staticmethod
+    def display_entity_spy_page(gameworld, page_to_display, entity_id, game_config):
+        page_to_display += 1
+        if page_to_display > 2:
+            page_to_display = 1
+        if page_to_display == 1:
+            Debug.display_page_one_entity_spy(gameworld=gameworld, entity_id=entity_id, game_config=game_config)
+        else:
+            Debug.display_page_two_entity_spy(gameworld=gameworld, entity_id=entity_id, game_config=game_config)
+
+        return page_to_display
+
+    @staticmethod
+    def get_zone_clicked(event_action, click_zones, page_to_display):
+        mx = event_action[0]
+        my = event_action[1]
+
+        click_zone_left = 0
+        click_zone_top = 1
+        click_zone_width = 2
+        click_zone_depth = 3
+
+        zone_clicked = -99
+
+        if page_to_display == 1:
+            zone_min = 0
+            zone_max = 7
+        else:
+            zone_min = 7
+            zone_max = 13
+
+        for zone in range(zone_min, zone_max):
+
+            mx_in_range = Debug.check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_left], check_point=mx, click_zone_two=click_zones[zone][click_zone_left] + click_zones[zone][click_zone_width])
+            my_in_range = Debug.check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_top], check_point=my, click_zone_two=click_zones[zone][click_zone_top] + click_zones[zone][click_zone_depth])
+
+            if mx_in_range and my_in_range:
+                zone_clicked = zone
+        return zone_clicked
+
+    @staticmethod
+    def check_zones(zone, click_zone_one, check_point, click_zone_two):
+        check_point_in_range = False
+        if click_zone_one <= check_point <= click_zone_two:
+            check_point_in_range = True
+        return check_point_in_range
+
 
     @staticmethod
     def display_es_instructions(page):
@@ -122,8 +166,15 @@ class Debug:
         terminal.print_(x=70, y=3, s=string_to_print)
 
     @staticmethod
-    def display_page_one_entity_spy(section_posx, section_posy, section_width, section_lines, section_heading,
-                                    gameworld, entity_id):
+    def display_page_one_entity_spy(gameworld, game_config, entity_id):
+        # read Json file for on-screen placement
+        es_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                             parameter='ENTITYSPYFILE')
+        entity_spy_file = read_json_file(es_file)
+
+        section_title, section_heading, section_lines, section_width, section_posx, section_posy, click_zones = Debug.populate_es_lists(
+            entity_spy_file)
+
         section = 0
         start_string = "[color=ENTITY_SPY_COMPONENT]"
         end_string = "[/color]"
@@ -136,6 +187,7 @@ class Debug:
                           start_panel_frame_height=section_lines[section], title=section_heading[section],
                           fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
         race_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=entity_id)
+
         string_to_print = start_string + "Race:" + end_string + race_details[0]
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=string_to_print)
         class_print = start_string + "Class:" + end_string + MobileUtilities.get_character_class(
@@ -272,8 +324,15 @@ class Debug:
         Debug.draw_monster_specific_components(ai_level=ai_level, sx=section_posx[section], sy=section_posy[section], sw=section_width[section], sl=section_lines[section], sh=section_heading[section])
 
     @staticmethod
-    def display_page_two_entity_spy(section_posx, section_posy, section_width, section_lines, section_heading,
-                                    gameworld, entity_id):
+    def display_page_two_entity_spy(gameworld, entity_id, game_config):
+
+        # read Json file for on-screen placement
+        es_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                             parameter='ENTITYSPYFILE')
+        entity_spy_file = read_json_file(es_file)
+
+        section_title, section_heading, section_lines, section_width, section_posx, section_posy, click_zones = Debug.populate_es_lists(
+            entity_spy_file)
 
         # display armour
         section = 8
