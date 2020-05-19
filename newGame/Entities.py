@@ -43,6 +43,7 @@ class Entity:
                 npc_name = npc['displayName']
                 MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config,
                                                    entity_id=entity_id)
+                MobileUtilities.add_enemy_components(gameworld=gameworld, entity_id=entity_id)
                 npc_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='NPCSFILE')
                 npcs_file = read_json_file(npc_file)
@@ -55,16 +56,12 @@ class Entity:
                         npc_fg = npc['fg']
                         npc_bg = npc['bg']
                         npc_image = int(npc['image'])
-                        npc_ai = npc['ai']
                         armour_file_option = npc['armourset']
                         jewellery_file_option = npc['jeweleryset']
                         weapon_file_option_main = npc['weapons-main']
                         weapon_file_option_off = npc['weapons-off']
                         weapon_file_option_both = npc['weapons-both']
 
-                        entity_ai = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                               section='game',
-                                                                               parameter='AI_LEVEL_' + npc_ai)
                         logger.warning('--- CREATING NEW MOBILE ---')
                         # -------------------------------------
                         # --- CHOOSE RACE ---------------------
@@ -95,10 +92,33 @@ class Entity:
                         # -------------------------------------
                         # --- CREATE WEAPONSET ----------------
                         # -------------------------------------
-                        Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_file_option_main,
+                        created_weapon_entity = Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_file_option_main,
                                               off_hand=weapon_file_option_off, both_hands=weapon_file_option_both, gameworld=gameworld, game_config=game_config)
 
+                        # --------------------------------------
+                        # --- CHOOSE SPELLS AND LOAD TO WEAPON -
+                        # --------------------------------------
+                        Entity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
+                                                                   entity_id=entity_id, gameworld=gameworld,
+                                                                   game_config=game_config)
+                        # --------------------------------------
+                        # --- SET COMBAT ROLE -
+                        # --------------------------------------
+                        MobileUtilities.set_enemy_combat_role(entity=entity_id, gameworld=gameworld, value='none')
+
+                        # --------------------------------------
+                        # --- CREATE SPELL BAR WITH SPELLS     -
+                        # --------------------------------------
+                        logger.info('Loading spell bar based on equipped weapons')
+                        SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=entity_id)
+
+                        entity_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
+                                                                               parameter='AI_LEVEL_NPC')
+
                         # now apply the values to the base mobile object
+                        Entity.set_min_max_preferred_ranges(entity_id=entity_id, min_range='TOUCH',
+                                                            max_range='EARSHOT', gameworld=gameworld,
+                                                            game_config=game_config)
 
                         MobileUtilities.set_entity_ai(gameworld=gameworld, entity=entity_id, value=entity_ai)
                         MobileUtilities.set_mobile_description(gameworld=gameworld, entity=entity_id,
@@ -190,12 +210,8 @@ class Entity:
                 # --------------------------------------
                 # --- CREATE SPELL BAR WITH SPELLS     -
                 # --------------------------------------
-                # spell_bar_entity = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
-                # MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=entity_id,
-                #                                         spellbar_entity=spell_bar_entity)
                 logger.info('Loading spell bar based on equipped weapons')
                 SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=entity_id)
-
 
                 entity_ai = configUtilities.get_config_value_as_string(configfile=game_config, section='game',
                                                                        parameter='AI_LEVEL_MONSTER')

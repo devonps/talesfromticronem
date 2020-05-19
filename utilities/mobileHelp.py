@@ -351,6 +351,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.Equipped())
         gameworld.add_component(entity_id, mobiles.Velocity())
         gameworld.add_component(entity_id, mobiles.ManaPool(current=500, maximum=1000))
+        gameworld.add_component(entity_id, mobiles.SpecialBar(valuecurrent=10, valuemaximum=100))
         gameworld.add_component(entity_id, mobiles.Renderable(is_visible=True))
         gameworld.add_component(entity_id, mobiles.StatusEffects())
         gameworld.add_component(entity_id, mobiles.PrimaryAttributes())
@@ -367,7 +368,6 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMinRange(value=0))
         gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMaxRange(value=0))
         gameworld.add_component(entity_id, mobiles.EnemyCombatRole(value='none'))
-        gameworld.add_component(entity_id, mobiles.SpecialBar(valuecurrent=10, valuemaximum=100))
 
     @staticmethod
     def create_player_character(gameworld, game_config, player_entity):
@@ -384,7 +384,6 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(player_entity, mobiles.Name(first='', suffix=''))
         gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai, description='player'))
         gameworld.add_component(player_entity, mobiles.Personality())
-        gameworld.add_component(player_entity, mobiles.SpecialBar(valuecurrent=10, valuemaximum=100))
         gameworld.add_component(player_entity, mobiles.SpellBar(entityId=0))
         gameworld.add_component(player_entity,
                                 mobiles.ClothingImage(head=0, back=21, front=22, feet=23, weapon=24, hands=0, shield=0,

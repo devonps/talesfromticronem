@@ -28,7 +28,7 @@
       "title": "jewellery",
       "heading": "Jewellery Worn",
       "lines": 6,
-      "width": 25,
+      "width": 27,
       "posx": 28,
       "posy": 13
     },
@@ -36,7 +36,7 @@
       "title": "spellbarcombat",
       "heading": "Spellbar Weapons",
       "lines": 6,
-      "width": 30,
+      "width": 32,
       "posx": 7,
       "posy": 22
     },
@@ -44,16 +44,16 @@
       "title": "spellbarutils",
       "heading": "Spellbar Utilities",
       "lines": 6,
-      "width": 30,
-      "posx": 39,
+      "width": 31,
+      "posx": 41,
       "posy": 22
     },
     {
       "title": "energy",
       "heading": "Energy",
       "lines": 4,
-      "width": 25,
-      "posx": 55,
+      "width": 20,
+      "posx": 57,
       "posy": 13
     },
     {
