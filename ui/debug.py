@@ -347,11 +347,11 @@ class Debug:
                           start_panel_frame_height=section_lines[section], title=section_heading[section],
                           fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
-        slot_one = Debug.set_spellbar_slot_one_string(gameworld=gameworld, entity_id=entity_id)
-        slot_two = Debug.set_spellbar_slot_two_string(gameworld=gameworld, entity_id=entity_id)
-        slot_three = Debug.set_spellbar_slot_three_string(gameworld=gameworld, entity_id=entity_id)
-        slot_four = Debug.set_spellbar_slot_four_string(gameworld=gameworld, entity_id=entity_id)
-        slot_five = Debug.set_spellbar_slot_five_string(gameworld=gameworld, entity_id=entity_id)
+        slot_one = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=1)
+        slot_two = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=2)
+        slot_three = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=3)
+        slot_four = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=4)
+        slot_five = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=5)
 
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=slot_one)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=slot_two)
@@ -366,10 +366,10 @@ class Debug:
                           start_panel_frame_height=section_lines[section], title=section_heading[section],
                           fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
-        slot_six = Debug.set_spellbar_slot_six_string(gameworld=gameworld, entity_id=entity_id)
-        slot_seven = Debug.set_spellbar_slot_seven_string(gameworld=gameworld, entity_id=entity_id)
-        slot_eight = Debug.set_spellbar_slot_eight_string(gameworld=gameworld, entity_id=entity_id)
-        slot_nine = Debug.set_spellbar_slot_nine_string(gameworld=gameworld, entity_id=entity_id)
+        slot_six = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=6)
+        slot_seven = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=7)
+        slot_eight = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=8)
+        slot_nine = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=9)
 
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=slot_six)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=slot_seven)
@@ -561,121 +561,17 @@ class Debug:
                               fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
     @staticmethod
-    def set_spellbar_slot_one_string(gameworld, entity_id):
-        slot_one_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 1:None[/color]"
-        slot_one_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=1,
+    def set_spellbar_slot_string(gameworld, entity_id, slotid):
+        slot_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot " + str(slotid) + ":None[/color]"
+        slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slotid,
                                                                                    player_entity=entity_id)
-        if slot_one_spell_entity > 0:
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_one_spell_entity)
+        if slot_spell_entity > 0:
+            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_spell_entity)
             spell_cooldown_status = str(
-                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_one_spell_entity))
-            slot_one_string = "[color=ENTITY_SPY_COMPONENT]Slot 1:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
+                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_spell_entity))
+            slot_string = "[color=ENTITY_SPY_COMPONENT]Slot " + str(slotid) + ":[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
 
-        return slot_one_string
-
-    @staticmethod
-    def set_spellbar_slot_two_string(gameworld, entity_id):
-        slot_two_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 2:None[/color]"
-        slot_two_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=2,
-                                                                                   player_entity=entity_id)
-        if slot_two_spell_entity > 0:
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_two_spell_entity)
-            spell_cooldown_status = str(
-                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_two_spell_entity))
-            slot_two_string = "[color=ENTITY_SPY_COMPONENT]Slot 2:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
-
-        return slot_two_string
-
-    @staticmethod
-    def set_spellbar_slot_three_string(gameworld, entity_id):
-        slot_three_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 3:None[/color]"
-        slot_three_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=3,
-                                                                                     player_entity=entity_id)
-        if slot_three_spell_entity > 0:
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_three_spell_entity)
-            spell_cooldown_status = str(
-                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_three_spell_entity))
-            slot_three_string = "[color=ENTITY_SPY_COMPONENT]Slot 3:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
-
-        return slot_three_string
-
-    @staticmethod
-    def set_spellbar_slot_four_string(gameworld, entity_id):
-        slot_four_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 4:None[/color]"
-        slot_four_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=4,
-                                                                                    player_entity=entity_id)
-        if slot_four_spell_entity > 0:
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_four_spell_entity)
-            spell_cooldown_status = str(
-                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_four_spell_entity))
-            slot_four_string = "[color=ENTITY_SPY_COMPONENT]Slot 4:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
-
-        return slot_four_string
-
-    @staticmethod
-    def set_spellbar_slot_five_string(gameworld, entity_id):
-        slot_five_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 5:None[/color]"
-        slot_five_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=5,
-                                                                                    player_entity=entity_id)
-        if slot_five_spell_entity > 0:
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_five_spell_entity)
-            spell_cooldown_status = str(
-                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_five_spell_entity))
-            slot_five_string = "[color=ENTITY_SPY_COMPONENT]Slot 5:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
-
-        return slot_five_string
-
-    @staticmethod
-    def set_spellbar_slot_six_string(gameworld, entity_id):
-        slot_six_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 6:None[/color]"
-        slot_six_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=6,
-                                                                                   player_entity=entity_id)
-        if slot_six_spell_entity > 0:
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_six_spell_entity)
-            spell_cooldown_status = str(
-                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_six_spell_entity))
-            slot_six_string = "[color=ENTITY_SPY_COMPONENT]Slot 6:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
-
-        return slot_six_string
-
-    @staticmethod
-    def set_spellbar_slot_seven_string(gameworld, entity_id):
-        slot_seven_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 7:None[/color]"
-        slot_seven_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=7,
-                                                                                     player_entity=entity_id)
-        if slot_seven_spell_entity > 0:
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_seven_spell_entity)
-            spell_cooldown_status = str(
-                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_seven_spell_entity))
-            slot_seven_string = "[color=ENTITY_SPY_COMPONENT]Slot 7:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
-
-        return slot_seven_string
-
-    @staticmethod
-    def set_spellbar_slot_eight_string(gameworld, entity_id):
-        slot_eight_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 8:None[/color]"
-        slot_eight_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=8,
-                                                                                     player_entity=entity_id)
-        if slot_eight_spell_entity > 0:
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_eight_spell_entity)
-            spell_cooldown_status = str(
-                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_eight_spell_entity))
-            slot_eight_string = "[color=ENTITY_SPY_COMPONENT]Slot 8:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
-
-        return slot_eight_string
-
-    @staticmethod
-    def set_spellbar_slot_nine_string(gameworld, entity_id):
-        slot_nine_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot 9:None[/color]"
-        slot_nine_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=9,
-                                                                                    player_entity=entity_id)
-        if slot_nine_spell_entity > 0:
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_nine_spell_entity)
-            spell_cooldown_status = str(
-                SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_nine_spell_entity))
-            slot_nine_string = "[color=ENTITY_SPY_COMPONENT]Slot 9:[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
-
-        return slot_nine_string
+        return slot_string
 
     @staticmethod
     def set_jewellery_left_ear_string(gameworld, left_ear):
