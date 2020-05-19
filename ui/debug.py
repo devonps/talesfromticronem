@@ -402,7 +402,7 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=f1_string)
 
         section = 7
-        Debug.draw_monster_specific_components(ai_level=ai_level, sx=section_posx[section], sy=section_posy[section],
+        Debug.draw_monster_specific_components(gameworld=gameworld, entity_id=entity_id, sx=section_posx[section], sy=section_posy[section],
                                                sw=section_width[section], sl=section_lines[section],
                                                sh=section_heading[section])
 
@@ -553,12 +553,29 @@ class Debug:
         return condis_to_print
 
     @staticmethod
-    def draw_monster_specific_components(ai_level, sx, sy, sw, sl, sh):
+    def draw_monster_specific_components(gameworld, entity_id, sx, sy, sw, sl, sh):
+        ai_level = int(MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=entity_id))
+        start_string = "[color=ENTITY_SPY_COMPONENT]"
+        end_string = "[/color]"
+
         if ai_level > 1:
             draw_simple_frame(start_panel_frame_x=sx, start_panel_frame_y=sy,
                               start_panel_frame_width=sw,
                               start_panel_frame_height=sl, title=sh,
                               fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+
+            pref_min_attack_range = MobileUtilities.get_enemy_preferred_min_range(gameworld=gameworld, entity=entity_id)
+            pre_max_attack_range = MobileUtilities.get_enemy_preferred_max_range(gameworld=gameworld, entity=entity_id)
+            combat_role = MobileUtilities.get_enemy_combat_role(gameworld=gameworld, entity=entity_id)
+
+            min_range_string = start_string + "Pref min attack range:" + end_string + str(pref_min_attack_range)
+            max_range_string = start_string + "Pref max attack range:" + end_string + str(pre_max_attack_range)
+            combat_role_string = start_string + "Combat Role:" + end_string + str(combat_role)
+
+            terminal.print_(x=sx + 1, y=sy + 2, s=min_range_string)
+            terminal.print_(x=sx + 1, y=sy + 3, s=str(max_range_string))
+            terminal.print_(x=sx + 1, y=sy + 4, s=str(combat_role_string))
+
 
     @staticmethod
     def set_spellbar_slot_string(gameworld, entity_id, slotid):

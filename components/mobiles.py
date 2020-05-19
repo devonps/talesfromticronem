@@ -11,6 +11,10 @@ class EnemyPreferredAttackMaxRange:
         self.value = value
 
 
+class EnemyCombatRole:
+    def __init__(self, value='none'):
+        self.value = value
+
 class Name:
     def __init__(self, first='undefined', suffix='undefined'):
         self.first = first

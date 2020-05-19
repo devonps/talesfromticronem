@@ -43,7 +43,7 @@
     {
       "title": "spellbarutils",
       "heading": "Spellbar Utilities",
-      "lines": 5,
+      "lines": 6,
       "width": 30,
       "posx": 39,
       "posy": 22
@@ -59,8 +59,8 @@
     {
       "title": "monster",
       "heading": "Monster Only",
-      "lines": 3,
-      "width": 20,
+      "lines": 4,
+      "width": 25,
       "posx": 29,
       "posy": 33
     },

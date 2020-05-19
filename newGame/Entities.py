@@ -22,8 +22,8 @@ class Entity:
         for enemy_role in enemy_roles:
             placed = False
             while not placed:
-                x = random.randint(0, mx)
-                y = random.randint(0, my)
+                x = random.randint(0, mx - 1)
+                y = random.randint(0, my - 1)
                 if not game_map.tiles[x][y].blocked:
                     placed = True
                 Entity.create_enemy_role(posx=x, posy=y, gameworld=gameworld, game_config=game_config, enemy_role=enemy_role)
@@ -177,11 +177,25 @@ class Entity:
                                                                 off_hand=weapon_off_hand,
                                                                 both_hands=weapon_both_hands, gameworld=gameworld, game_config=game_config)
 
-                # -------------------------------------
+                # --------------------------------------
                 # --- CHOOSE SPELLS AND LOAD TO WEAPON -
-                # -------------------------------------
+                # --------------------------------------
                 Entity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
                                                            entity_id=entity_id, gameworld=gameworld, game_config=game_config)
+                # --------------------------------------
+                # --- SET COMBAT ROLE -
+                # --------------------------------------
+                MobileUtilities.set_enemy_combat_role(entity=entity_id, gameworld=gameworld, value=enemy_role)
+
+                # --------------------------------------
+                # --- CREATE SPELL BAR WITH SPELLS     -
+                # --------------------------------------
+                # spell_bar_entity = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
+                # MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=entity_id,
+                #                                         spellbar_entity=spell_bar_entity)
+                logger.info('Loading spell bar based on equipped weapons')
+                SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=entity_id)
+
 
                 entity_ai = configUtilities.get_config_value_as_string(configfile=game_config, section='game',
                                                                        parameter='AI_LEVEL_MONSTER')

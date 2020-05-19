@@ -366,6 +366,8 @@ class MobileUtilities(numbers.Real, ABC):
     def add_enemy_components(gameworld, entity_id):
         gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMinRange(value=0))
         gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMaxRange(value=0))
+        gameworld.add_component(entity_id, mobiles.EnemyCombatRole(value='none'))
+        gameworld.add_component(entity_id, mobiles.SpecialBar(valuecurrent=10, valuemaximum=100))
 
     @staticmethod
     def create_player_character(gameworld, game_config, player_entity):
@@ -406,6 +408,15 @@ class MobileUtilities(numbers.Real, ABC):
     def get_enemy_preferred_max_range(gameworld, entity):
         enemy_attributes_component = gameworld.component_for_entity(entity, mobiles.EnemyPreferredAttackMaxRange)
         return enemy_attributes_component.value
+
+    @staticmethod
+    def get_enemy_combat_role(gameworld, entity):
+        enemy_attributes_component = gameworld.component_for_entity(entity, mobiles.EnemyCombatRole)
+        return enemy_attributes_component.value
+
+    @staticmethod
+    def set_enemy_combat_role(gameworld, entity, value):
+        gameworld.add_component(entity, mobiles.EnemyCombatRole(value=value))
 
     @staticmethod
     def set_mobile_visible(gameworld, entity):
