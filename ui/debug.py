@@ -113,74 +113,64 @@ class Debug:
         def default(line):
             logger.info('No componet zone found.')
 
-        switcher = {0: Debug.es_amendment_racial,
-                    1: Debug.es_amendment_names,
-                    2: Debug.es_amendment_weapons,
-                    3: Debug.es_amendment_jewellery,
-                    4: Debug.es_amendment_spellbarcombat,
-                    5: Debug.es_amendment_spellbarutils,
-                    6: Debug.es_amendment_energy,
-                    7: Debug.es_amendment_monster,
-                    8: Debug.es_amendment_armour,
-                    9: Debug.es_amendment_primary,
-                    10: Debug.es_amendment_secondary,
-                    11: Debug.es_amendment_derived,
-                    12: Debug.es_amendment_statuseffects
+        def es_amendment_racial(line):
+            logger.info('Racial zone activated and line {}', line)
+
+            manual_input = terminal.read_str(x=10, y=10, max=10, s=5)
+            logger.info('What was typed: {}', manual_input)
+
+        def es_amendment_names(line):
+            logger.info('Names zone activated and line {}', line)
+
+        def es_amendment_weapons(line):
+            logger.info('Weapons zone activated and line {}', line)
+
+        def es_amendment_jewellery(line):
+            logger.info('Jewellery zone activated and line {}', line)
+
+        def es_amendment_spellbarcombat(line):
+            logger.info('Combat spells zone activated and line {}', line)
+
+        def es_amendment_spellbarutils(line):
+            logger.info('Utility spells zone activated and line {}', line)
+
+        def es_amendment_energy(line):
+            logger.info('energy zone activated and line {}', line)
+
+        def es_amendment_monster(line):
+            logger.info('Monster zone activated and line {}', line)
+
+        def es_amendment_armour(line):
+            logger.info('armour zone activated and line {}', line)
+
+        def es_amendment_primary(line):
+            logger.info('primary stats zone activated and line {}', line)
+
+        def es_amendment_secondary(line):
+            logger.info('secondary stats zone activated and line {}', line)
+
+        def es_amendment_derived(line):
+            logger.info('derived zone activated and line {}', line)
+
+        def es_amendment_statuseffects(line):
+            logger.info('status effects zone activated and line {}', line)
+
+        switcher = {0: es_amendment_racial,
+                    1: es_amendment_names,
+                    2: es_amendment_weapons,
+                    3: es_amendment_jewellery,
+                    4: es_amendment_spellbarcombat,
+                    5: es_amendment_spellbarutils,
+                    6: es_amendment_energy,
+                    7: es_amendment_monster,
+                    8: es_amendment_armour,
+                    9: es_amendment_primary,
+                    10: es_amendment_secondary,
+                    11: es_amendment_derived,
+                    12: es_amendment_statuseffects
                     }
 
         switcher.get(zone_clicked, default)(line=line_item)
-
-    @staticmethod
-    def es_amendment_racial(line):
-        logger.info('Racial zone activated and line {}', line)
-
-    @staticmethod
-    def es_amendment_names(line):
-        logger.info('Names zone activated and line {}', line)
-
-    @staticmethod
-    def es_amendment_weapons(line):
-        logger.info('Weapons zone activated and line {}', line)
-
-    @staticmethod
-    def es_amendment_jewellery(line):
-        logger.info('Jewellery zone activated and line {}', line)
-
-    @staticmethod
-    def es_amendment_spellbarcombat(line):
-        logger.info('Combat spells zone activated and line {}', line)
-
-    @staticmethod
-    def es_amendment_spellbarutils(line):
-        logger.info('Utility spells zone activated and line {}', line)
-
-    @staticmethod
-    def es_amendment_energy(line):
-        logger.info('energy zone activated and line {}', line)
-
-    @staticmethod
-    def es_amendment_monster(line):
-        logger.info('Monster zone activated and line {}', line)
-
-    @staticmethod
-    def es_amendment_armour(line):
-        logger.info('armour zone activated and line {}', line)
-
-    @staticmethod
-    def es_amendment_primary(line):
-        logger.info('primary stats zone activated and line {}', line)
-
-    @staticmethod
-    def es_amendment_secondary(line):
-        logger.info('secondary stats zone activated and line {}', line)
-
-    @staticmethod
-    def es_amendment_derived(line):
-        logger.info('derived zone activated and line {}', line)
-
-    @staticmethod
-    def es_amendment_statuseffects(line):
-        logger.info('status effects zone activated and line {}', line)
 
     @staticmethod
     def display_entity_spy_page(gameworld, page_to_display, entity_id, game_config):
