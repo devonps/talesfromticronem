@@ -3,7 +3,7 @@
     {
       "id": "bomber",
       "race": "RANDOM",
-      "class": "necromancer",
+      "class": "RANDOM",
       "glyph": "b",
       "armourset": "none",
       "armour-modifier": "none",

@@ -283,7 +283,6 @@ class Debug:
         personality_string = start_string + "Personality:" + end_string + MobileUtilities.get_mobile_personality_title(
             gameworld=gameworld, entity=entity_id)
 
-        ai_level = int(MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=entity_id))
         ai_description = MobileUtilities.get_mobile_ai_description(gameworld=gameworld, entity_id=entity_id)
 
         ai_level_string = start_string + "AI level:" + end_string + ai_description

@@ -49,7 +49,7 @@
     "health": "28"
   },
   {
-    "name": "witch doctor",
+    "name": "witchdoctor",
     "spellfile": "witchdoctor",
     "flavour": "An inexorable force on the battlefield, the witch doctor empowers itself enough to wield a cleaving greatsword to harvest its foes.",
     "balanced": {

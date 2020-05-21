@@ -16,8 +16,7 @@ class Entity:
     def create_random_enemies(gameworld, game_map, game_config):
         mx = game_map.width
         my = game_map.height
-        # enemy_roles = ['bomber', 'squealer', 'bully', 'sniper']
-        enemy_roles = ['bomber']
+        enemy_roles = ['bomber', 'squealer', 'bully', 'sniper']
 
         for enemy_role in enemy_roles:
             placed = False
@@ -36,6 +35,8 @@ class Entity:
     @staticmethod
     def create_named_mobile(npcs_for_scene, posx, posy, cellid, gameworld, game_config):
         entity_id = Entity.create_new_entity(gameworld=gameworld)
+
+        equipped_weapons = False
 
         for npc in npcs_for_scene:
             identifer = npc['identifier']
@@ -61,6 +62,9 @@ class Entity:
                         weapon_file_option_main = npc['weapons-main']
                         weapon_file_option_off = npc['weapons-off']
                         weapon_file_option_both = npc['weapons-both']
+
+                        if weapon_file_option_both != '' or weapon_file_option_main != '' or weapon_file_option_off != '':
+                            equipped_weapons = True
 
                         logger.warning('--- CREATING NEW MOBILE ---')
                         # -------------------------------------
@@ -89,28 +93,22 @@ class Entity:
                         Entity.choose_jewellery_package(jewellery_file_option=jewellery_file_option,
                                                       entity_id=entity_id, game_config=game_config, gameworld=gameworld)
 
-                        # -------------------------------------
-                        # --- CREATE WEAPONSET ----------------
-                        # -------------------------------------
-                        created_weapon_entity = Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_file_option_main,
-                                              off_hand=weapon_file_option_off, both_hands=weapon_file_option_both, gameworld=gameworld, game_config=game_config)
+                        if equipped_weapons:
+                            # --------------------------------------
+                            # --- CREATE WEAPONSET AND -------------
+                            # --- CHOOSE SPELLS AND LOAD TO WEAPON -
+                            # --------------------------------------
+                            Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_file_option_main, off_hand=weapon_file_option_off, both_hands=weapon_file_option_both, gameworld=gameworld, game_config=game_config)
+                            # --------------------------------------
+                            # --- CREATE SPELL BAR WITH SPELLS     -
+                            # --------------------------------------
+                            logger.info('Loading spell bar based on equipped weapons')
+                            SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=entity_id)
 
-                        # --------------------------------------
-                        # --- CHOOSE SPELLS AND LOAD TO WEAPON -
-                        # --------------------------------------
-                        Entity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
-                                                                   entity_id=entity_id, gameworld=gameworld,
-                                                                   game_config=game_config)
                         # --------------------------------------
                         # --- SET COMBAT ROLE -
                         # --------------------------------------
                         MobileUtilities.set_enemy_combat_role(entity=entity_id, gameworld=gameworld, value='none')
-
-                        # --------------------------------------
-                        # --- CREATE SPELL BAR WITH SPELLS     -
-                        # --------------------------------------
-                        logger.info('Loading spell bar based on equipped weapons')
-                        SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=entity_id)
 
                         entity_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
                                                                                parameter='AI_LEVEL_NPC')
@@ -143,6 +141,7 @@ class Entity:
         MobileUtilities.add_enemy_components(gameworld=gameworld, entity_id=entity_id)
 
         npc_name = 'RANDOM'
+        equipped_weapons = False
 
         npc_fg = 'white'
         npc_bg = 'black'
@@ -161,6 +160,9 @@ class Entity:
                 weapon_both_hands = role['both-hands-weapon']
                 min_range = role['min-range']
                 max_range = role['max-range']
+
+                if weapon_both_hands != '' or weapon_main_hand !='' or weapon_off_hand !='':
+                    equipped_weapons = True
 
                 logger.warning('--- CREATING ENEMY ROLE {} ---', enemy_role)
                 logger.info('With entity id {}', entity_id)
@@ -190,29 +192,28 @@ class Entity:
                 # -------------------------------------
                 Entity.choose_jewellery_package(jewellery_file_option=jewellery_file_option, entity_id=entity_id, game_config=game_config, gameworld=gameworld)
 
-                # -------------------------------------
-                # --- CREATE WEAPONSET ----------------
-                # -------------------------------------
-                created_weapon_entity = Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_main_hand,
-                                                                off_hand=weapon_off_hand,
-                                                                both_hands=weapon_both_hands, gameworld=gameworld, game_config=game_config)
+                if equipped_weapons:
+                    # -------------------------------------
+                    # --- CREATE WEAPONSET ----------------
+                    # -------------------------------------
+                    Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_main_hand,
+                                                                    off_hand=weapon_off_hand,
+                                                                    both_hands=weapon_both_hands, gameworld=gameworld, game_config=game_config)
 
-                # --------------------------------------
-                # --- CHOOSE SPELLS AND LOAD TO WEAPON -
-                # --------------------------------------
-                Entity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
-                                                           entity_id=entity_id, gameworld=gameworld, game_config=game_config)
+                    # --------------------------------------
+                    # --- CREATE SPELL BAR WITH SPELLS     -
+                    # --------------------------------------
+                    logger.info('Loading spell bar based on equipped weapons')
+                    SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=entity_id)
+
                 # --------------------------------------
                 # --- SET COMBAT ROLE -
                 # --------------------------------------
                 MobileUtilities.set_enemy_combat_role(entity=entity_id, gameworld=gameworld, value=enemy_role)
 
                 # --------------------------------------
-                # --- CREATE SPELL BAR WITH SPELLS     -
+                # --- GET AI LEVEL                     -
                 # --------------------------------------
-                logger.info('Loading spell bar based on equipped weapons')
-                SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=entity_id)
-
                 entity_ai = configUtilities.get_config_value_as_string(configfile=game_config, section='game',
                                                                        parameter='AI_LEVEL_MONSTER')
 
@@ -467,20 +468,35 @@ class Entity:
 
         if main_hand != '':
             weapon_to_create, which_hand = Entity.select_main_hand_weapon(main_hand=main_hand, selected_class=selected_class, game_config=game_config)
+            created_weapon_entity = Entity.create_weapon_and_equip_npc(weapon_to_be_created=weapon_to_create,
+                                                                       enemy_class=selected_class, entity_id=entity_id,
+                                                                       hand_to_wield=which_hand, gameworld=gameworld, game_config=game_config)
 
+            Entity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
+                                                       entity_id=entity_id, gameworld=gameworld, game_config=game_config)
         if off_hand != '':
             weapon_to_create, which_hand = Entity.select_off_hand_weapon(off_hand=off_hand,
                                                                          selected_class=selected_class, game_config=game_config)
+            created_weapon_entity = Entity.create_weapon_and_equip_npc(weapon_to_be_created=weapon_to_create,
+                                                                       enemy_class=selected_class, entity_id=entity_id,
+                                                                       hand_to_wield=which_hand, gameworld=gameworld,
+                                                                       game_config=game_config)
+
+            Entity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
+                                                       entity_id=entity_id, gameworld=gameworld,
+                                                       game_config=game_config)
 
         if both_hands != '':
             weapon_to_create, which_hand = Entity.select_both_hands_weapon(both_hands=both_hands,
                                                                            selected_class=selected_class, game_config=game_config)
-
-        if weapon_to_create != '':
-            logger.info('The {} will be wielded in {} hand(s)', weapon_to_create, which_hand)
             created_weapon_entity = Entity.create_weapon_and_equip_npc(weapon_to_be_created=weapon_to_create,
                                                                        enemy_class=selected_class, entity_id=entity_id,
-                                                                       hand_to_wield=which_hand, gameworld=gameworld, game_config=game_config)
+                                                                       hand_to_wield=which_hand, gameworld=gameworld,
+                                                                       game_config=game_config)
+
+            Entity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
+                                                       entity_id=entity_id, gameworld=gameworld,
+                                                       game_config=game_config)
 
         return created_weapon_entity
 

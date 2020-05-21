@@ -244,7 +244,7 @@ class ItemUtilities:
     @staticmethod
     def load_enemy_weapon_with_spells(gameworld, enemy_id, spell_list, weapon_entity_id, weapon_type):
         sample_spells = []
-        if weapon_type in ['sword', 'staff', 'dagger']:
+        if weapon_type in ['sword', 'staff']:
             sample_spells = random.sample(spell_list, 5)
             weapon_slot_component = gameworld.component_for_entity(weapon_entity_id, items.Spells)
             weapon_slot_component.slot_one = sample_spells[0]
@@ -259,7 +259,7 @@ class ItemUtilities:
 
             logger.debug('5 Random spells loaded into {} are {}', weapon_type, sample_spells)
 
-        if weapon_type in ['wand', 'scepter']:
+        if weapon_type in ['wand', 'scepter', 'dagger']:
             sample_spells = random.sample(spell_list, 3)
             weapon_slot_component = gameworld.component_for_entity(weapon_entity_id, items.Spells)
             weapon_slot_component.slot_one = sample_spells[0]
@@ -489,31 +489,31 @@ class ItemUtilities:
         benefit = statbonus[1]
 
         if stat.lower() == 'condition damage':
-            currentStatBonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).conditionDamage
-            newStatBonus = currentStatBonus + benefit
-            gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).conditionDamage=newStatBonus
+            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).conditionDamage
+            new_stat_bonus = current_stat_bonus + benefit
+            gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).conditionDamage=new_stat_bonus
 
         if stat.lower() == 'power':
-            currentStatBonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power
-            newStatBonus = currentStatBonus + benefit
-            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power=newStatBonus
+            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power
+            new_stat_bonus = current_stat_bonus + benefit
+            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power=new_stat_bonus
 
         if stat.lower() == 'vitality':
-            currentStatBonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality
-            newStatBonus = currentStatBonus + benefit
-            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality=newStatBonus
+            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality
+            new_stat_bonus = current_stat_bonus + benefit
+            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality=new_stat_bonus
 
         if stat.lower() == 'toughness':
-            currentStatBonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness
-            newStatBonus = currentStatBonus + benefit
-            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness=newStatBonus
+            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness
+            new_stat_bonus = current_stat_bonus + benefit
+            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness=new_stat_bonus
 
         if stat.lower() == 'healing power':
-            currentStatBonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healingPower
-            newStatBonus = currentStatBonus + benefit
-            gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healingPower=newStatBonus
+            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healingPower
+            new_stat_bonus = current_stat_bonus + benefit
+            gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healingPower=new_stat_bonus
 
         if stat.lower() == 'precision':
-            currentStatBonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision
-            newStatBonus = currentStatBonus + benefit
-            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision=newStatBonus
+            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision
+            new_stat_bonus = current_stat_bonus + benefit
+            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision=new_stat_bonus
