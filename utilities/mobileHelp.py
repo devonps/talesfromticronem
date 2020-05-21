@@ -245,8 +245,9 @@ class MobileUtilities(numbers.Real, ABC):
         return describeable_component.personality_title
 
     @staticmethod
-    def set_mobile_derived_personality(gameworld, game_config):
-        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+    def set_mobile_derived_personality(gameworld, game_config, entity):
+        # player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        player_entity = entity
 
         player_current_personality_component = gameworld.component_for_entity(player_entity, mobiles.Personality)
         player_describable_personality_component = gameworld.component_for_entity(player_entity, mobiles.Describable)
@@ -362,6 +363,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.Position())
         gameworld.add_component(entity_id, mobiles.Name())
         gameworld.add_component(entity_id, mobiles.ClassSpecific())
+        gameworld.add_component(entity_id, mobiles.Personality())
 
     @staticmethod
     def add_enemy_components(gameworld, entity_id):
@@ -383,7 +385,6 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(player_entity, mobiles.CurrentTurn(current_turn=0))
         gameworld.add_component(player_entity, mobiles.Name(first='', suffix=''))
         gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai, description='player'))
-        gameworld.add_component(player_entity, mobiles.Personality())
         gameworld.add_component(player_entity, mobiles.SpellBar(entityId=0))
         gameworld.add_component(player_entity,
                                 mobiles.ClothingImage(head=0, back=21, front=22, feet=23, weapon=24, hands=0, shield=0,
@@ -465,8 +466,12 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.component_for_entity(entity, mobiles.Describable).image = value
 
     @staticmethod
-    def set_entity_ai(gameworld, entity, value):
+    def set_mobile_ai_level(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.AI).ailevel = value
+
+    @staticmethod
+    def set_mobile_ai_description(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.AI).description = value
 
     @staticmethod
     def create_spell_bar_as_entity(gameworld):

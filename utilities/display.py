@@ -23,6 +23,9 @@ def coloured_list(list_options, list_x, list_y, selected_option, blank_line, fg)
             list_count += 1
 
 
+#
+# this is like a single select menu
+#
 def pointy_menu(header, menu_options, menu_id_format, menu_start_x, menu_start_y, blank_line, selected_option):
     if len(menu_options) > 26:
         raise ValueError('Cannot have a menu with more than 26 options.')

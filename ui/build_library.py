@@ -340,7 +340,7 @@ def display_build_library():
                                                                    health=health, spellfile=spell_file)
 
                             # personality
-                            MobileUtilities.set_mobile_derived_personality(gameworld, game_config)
+                            MobileUtilities.set_mobile_derived_personality(gameworld, game_config, entity=player_entity)
 
                             # armour
                             armour_file = read_json_file(armourset_file)

@@ -110,15 +110,20 @@ class Entity:
                         # --------------------------------------
                         MobileUtilities.set_enemy_combat_role(entity=entity_id, gameworld=gameworld, value='none')
 
-                        entity_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
+                        # --------------------------------------
+                        # --- SET AI LEVEL                     -
+                        # --------------------------------------
+                        entity_ai = configUtilities.get_config_value_as_string(configfile=game_config, section='game',
                                                                                parameter='AI_LEVEL_NPC')
+                        MobileUtilities.set_mobile_ai_level(gameworld=gameworld, entity=entity_id, value=entity_ai)
+                        MobileUtilities.set_mobile_ai_description(gameworld=gameworld, entity=entity_id,
+                                                                  value='NPC')
 
                         # now apply the values to the base mobile object
                         Entity.set_min_max_preferred_ranges(entity_id=entity_id, min_range='TOUCH',
                                                             max_range='EARSHOT', gameworld=gameworld,
                                                             game_config=game_config)
 
-                        MobileUtilities.set_entity_ai(gameworld=gameworld, entity=entity_id, value=entity_ai)
                         MobileUtilities.set_mobile_description(gameworld=gameworld, entity=entity_id,
                                                                value=npc_desc)
                         MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity_id, value=npc_glyph)
@@ -131,6 +136,8 @@ class Entity:
                         MobileUtilities.set_mobile_visible(gameworld=gameworld, entity=entity_id)
                         MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx,
                                                             posy=posy)
+                        MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, game_config=game_config,
+                                                                       entity=entity_id)
 
                         logger.warning('--- NEW MOBILE CREATED ---')
 
@@ -212,14 +219,15 @@ class Entity:
                 MobileUtilities.set_enemy_combat_role(entity=entity_id, gameworld=gameworld, value=enemy_role)
 
                 # --------------------------------------
-                # --- GET AI LEVEL                     -
+                # --- SET AI LEVEL                     -
                 # --------------------------------------
                 entity_ai = configUtilities.get_config_value_as_string(configfile=game_config, section='game',
                                                                        parameter='AI_LEVEL_MONSTER')
+                MobileUtilities.set_mobile_ai_level(gameworld=gameworld, entity=entity_id, value=int(entity_ai))
+                MobileUtilities.set_mobile_ai_description(gameworld=gameworld, entity=entity_id, value='monster')
 
                 # now apply the values to the base mobile object
 
-                MobileUtilities.set_entity_ai(gameworld=gameworld, entity=entity_id, value=int(entity_ai))
                 MobileUtilities.set_mobile_description(gameworld=gameworld, entity=entity_id, value='nothing to say')
                 MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity_id, value=npc_glyph)
                 MobileUtilities.set_mobile_fg_render_colour(gameworld=gameworld, entity=entity_id, value=npc_fg.upper())
@@ -229,6 +237,8 @@ class Entity:
 
                 MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx, posy=posy)
                 Entity.set_min_max_preferred_ranges(entity_id=entity_id, min_range=min_range, max_range=max_range, gameworld=gameworld, game_config=game_config)
+                MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, game_config=game_config,
+                                                               entity=entity_id)
 
     @staticmethod
     def set_min_max_preferred_ranges(entity_id, min_range, max_range, game_config, gameworld):

@@ -384,7 +384,7 @@ class CharacterCreation:
         # The personality-oriented question affects the conversational options that NPCs provide.
         # there will be 3 options: charm, dignity, ferocity
 
-        MobileUtilities.set_mobile_derived_personality(gameworld, game_config)
+        MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, game_config=game_config, entity=player)
 
         personality_component = gameworld.component_for_entity(player, mobiles.Describable)
 
