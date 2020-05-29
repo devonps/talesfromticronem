@@ -26,6 +26,12 @@ class CommonUtils:
         return tile_char
 
     @staticmethod
+    def get_ascii_to_unicode(game_config, parameter):
+        tile_char = "0x" + configUtilities.get_config_value_as_string(configfile=game_config, section='gui',
+                                                                      parameter=parameter)
+        return tile_char
+
+    @staticmethod
     def format_combat_log_message(gameworld, caster_name, target_name, damage_done_to_target, spell_name):
 
         game_config = configUtilities.load_config()
@@ -40,20 +46,6 @@ class CommonUtils:
         log_message = msg_start + str(damage_done_to_target) + " damage using [" + spell_name + "]"
 
         CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
-
-    @staticmethod
-    def create_message_log_as_entity(gameworld, logid):
-        game_config = configUtilities.load_config()
-        message_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                          parameter='MSG_PANEL_WIDTH')
-        message_panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                           parameter='MSG_PANEL_START_Y')
-        message_panel_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                          parameter='MSG_PANEL_DEPTH')
-        # need to add data to the components next
-        gameworld.add_component(logid, messages.MessageLog(width=message_panel_width,
-                                                           height=message_panel_height, depth=message_panel_depth,
-                                                           display_from_message=0, display_to_message=10, visible_log='all'))
 
     @staticmethod
     def format_game_turn_as_string(current_turn):

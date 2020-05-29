@@ -91,7 +91,7 @@ class SceneManager:
             gameworld.add_processor(update_entities_processor, priority=90)
             gameworld.add_processor(render_ui_processor, priority=70)
             gameworld.add_processor(render_message_log_processor, priority=60)
-            gameworld.add_processor(spell_info_processor, priority=50)
+            # gameworld.add_processor(spell_info_processor, priority=50)
 
     @staticmethod
     # haven't created the proc-gen routines for this

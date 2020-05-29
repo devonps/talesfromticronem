@@ -131,7 +131,8 @@ class RenderUI(esper.Processor):
                 print_char = False
                 tile = game_map.tiles[x][y].type_of_tile
                 tile_assignment = game_map.tiles[x][y].assignment
-                visible = FieldOfView.get_fov_map_point(player_fov, x, y)
+                # visible = FieldOfView.get_fov_map_point(player_fov, x, y)
+                visible = True
                 if visible:
                     game_map.tiles[x][y].explored = True
                     colour_code = "[color=white]"

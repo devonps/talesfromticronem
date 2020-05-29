@@ -2,6 +2,7 @@ import esper
 from bearlibterminal import terminal
 
 from utilities import configUtilities, formulas
+from utilities.common import CommonUtils
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 
@@ -11,10 +12,10 @@ class RenderSpellInfoPanel(esper.Processor):
         self.gameworld = gameworld
 
     def process(self, game_config):
-        self.render_statusbox(game_config=game_config)
-        self.render_player_status_effects(game_config=game_config)
-        self.render_spell_info_panel(game_config=game_config)
-        self.render_player_vitals(game_config=game_config)
+        self.render_spell_infobox(game_config=game_config)
+        # self.render_player_status_effects(game_config=game_config)
+        # self.render_spell_info_panel(game_config=game_config)
+        # self.render_player_vitals(game_config=game_config)
 
     def render_player_status_effects(self, game_config):
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
@@ -55,48 +56,27 @@ class RenderSpellInfoPanel(esper.Processor):
             image_count += 1
 
     @staticmethod
-    def render_statusbox(game_config):
+    def render_spell_infobox(game_config):
 
-        statusbox_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='STATUSBOX_WIDTH')
-        statusbox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                       parameter='STATUSBOX_HEIGHT')
-        image_x_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='map_Xscale')
-        image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='map_Yscale')
+        spell_infobox_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                          parameter='SI_WIDTH')
+        spell_infobox_height = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                           section='guspellinfoi',
+                                                                           parameter='SI_DEPTH')
+        spellInfo_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                     parameter='ASCII_TOP_LEFT')
 
-        left_x = 1
+        spellInfo_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                        parameter='ASCII_BOTTOM_LEFT')
 
-        # top left
-        terminal.put(x=left_x, y=statusbox_height * image_y_scale, c=0xE700 + 0)
+        spellInfo_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                      parameter='ASCII_TOP_RIGHT')
 
-        # left edge
-        for d in range(left_x, 5):
-            terminal.put(x=left_x, y=(statusbox_height + d) * image_y_scale, c=0xE700 + 4)
+        spellInfo_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                         parameter='ASCII_BOTTOM_RIGHT')
 
-        # bottom left
-        terminal.put(x=left_x, y=(statusbox_height + 5) * image_y_scale, c=0xE700 + 2)
-
-        # top right
-        terminal.put(x=(statusbox_width) * image_x_scale, y=statusbox_height * image_y_scale, c=0xE700 + 1)
-
-        # bottom right
-        terminal.put(x=(statusbox_width) * image_x_scale, y=(statusbox_height + 5) * image_y_scale, c=0xE700 + 3)
-
-        # top edge
-        for a in range(left_x, statusbox_width):
-            terminal.put(x=a * image_x_scale, y=statusbox_height * image_y_scale, c=0xE700 + 6)
-
-        # right edge
-        for d in range(1, 5):
-            terminal.put(x=statusbox_width * image_x_scale, y=(statusbox_height + d) * image_y_scale, c=0xE700 + 5)
-
-        # bottom edge
-        for a in range(left_x, statusbox_width):
-            terminal.put(x=a * image_x_scale, y=(statusbox_height + 5) * image_y_scale, c=0xE700 + 7)
-
-        # terminal.layer(prev_layer)
+        spellInfo_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_HORIZONTAL')
+        spellInfo_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_VERTICAL')
 
     def render_spell_info_panel(self, game_config):
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
