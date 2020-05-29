@@ -2,9 +2,10 @@ from mapRelated.gameMap import GameMap
 from newGame.Entities import Entity
 from processors.castSpells import CastSpells
 from processors.move_entities import MoveEntities
-from processors.renderGameMap import RenderGameMap
+from processors.renderUI import RenderUI
 from processors.updateEntities import UpdateEntitiesProcessor
 from processors.renderMessageLog import RenderMessageLog
+from processors.renderSpellInfoPanel import RenderSpellInfoPanel
 from utilities import configUtilities
 from loguru import logger
 from utilities.externalfileutilities import Externalfiles
@@ -82,13 +83,15 @@ class SceneManager:
             update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
             move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
             cast_spells_processor = CastSpells(gameworld=gameworld, game_map=game_map)
-            render_game_map_processor = RenderGameMap(game_map=game_map, gameworld=gameworld)
+            render_ui_processor = RenderUI(game_map=game_map, gameworld=gameworld)
             render_message_log_processor = RenderMessageLog(gameworld=gameworld)
-            gameworld.add_processor(move_entities_processor)
-            gameworld.add_processor(cast_spells_processor)
-            gameworld.add_processor(update_entities_processor)
-            gameworld.add_processor(render_game_map_processor)
-            gameworld.add_processor(render_message_log_processor)
+            spell_info_processor = RenderSpellInfoPanel(gameworld=gameworld)
+            gameworld.add_processor(move_entities_processor, priority=80)
+            gameworld.add_processor(cast_spells_processor, priority=100)
+            gameworld.add_processor(update_entities_processor, priority=90)
+            gameworld.add_processor(render_ui_processor, priority=70)
+            gameworld.add_processor(render_message_log_processor, priority=60)
+            gameworld.add_processor(spell_info_processor, priority=50)
 
     @staticmethod
     # haven't created the proc-gen routines for this

@@ -1,6 +1,5 @@
 import esper
 from bearlibterminal import terminal
-from loguru import logger
 
 from utilities import configUtilities
 from utilities.mobileHelp import MobileUtilities
