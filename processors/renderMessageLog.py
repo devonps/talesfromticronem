@@ -33,7 +33,7 @@ class RenderMessageLog(esper.Processor):
 
         message_panel_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_TOP_LEFT')
 
-        message_panel_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_BOTTOM_LEFT')
+        message_panel_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_LEFT_T_JUNCTION')
 
         message_panel_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_TOP_RIGHT')
 

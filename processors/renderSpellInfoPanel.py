@@ -74,27 +74,37 @@ class RenderSpellInfoPanel(esper.Processor):
                                                                            parameter='SI_DEPTH')
         spell_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_LEFT_T_JUNCTION')
 
-        spellInfo_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        spell_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                         parameter='ASCII_BOTTOM_LEFT')
 
-        spellInfo_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        spell_info_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                       parameter='ASCII_TOP_RIGHT')
 
-        spellInfo_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        spell_info_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                          parameter='ASCII_BOTTOM_RIGHT')
 
         spell_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_HORIZONTAL')
         spell_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_VERTICAL')
 
+        # render horizontal bottom
+        for z in range(spell_infobox_start_x, (spell_infobox_start_x + spell_infobox_width)):
+            terminal.printf(x=z, y=(spell_infobox_start_y + spell_infobox_height), s=unicode_string_to_print + spell_info_horizontal + ']')
+            terminal.printf(x=z, y=spell_infobox_start_y, s=unicode_string_to_print + spell_info_horizontal + ']')
+
+        # render verticals
+        for z in range(spell_infobox_start_y, (spell_infobox_start_y + spell_infobox_height) - 1):
+            terminal.printf(x=spell_infobox_start_x, y=z + 1, s=unicode_string_to_print + spell_info_vertical + ']')
+            terminal.printf(x=(spell_infobox_start_x + spell_infobox_width), y=z + 1, s=unicode_string_to_print + spell_info_vertical + ']')
+
+
         # top left
         terminal.printf(x=spell_infobox_start_x, y=spell_infobox_start_y, s=unicode_string_to_print + spell_info_top_left_corner + ']')
-
-
-        # render horizontals
-        for z in range(spell_infobox_start_x, (spell_infobox_start_x + spell_infobox_width)):
-            terminal.printf(x=z, y=spell_infobox_start_y + 1, s=unicode_string_to_print + spell_info_vertical + ']')
-            terminal.printf(x=z, y=(spell_infobox_start_y + spell_infobox_height), s=unicode_string_to_print + spell_info_horizontal + ']')
-
+        # bottom left
+        terminal.printf(x=spell_infobox_start_x, y=(spell_infobox_start_y + spell_infobox_height), s=unicode_string_to_print + spell_info_bottom_left_corner + ']')
+        # top right
+        terminal.printf(x=(spell_infobox_start_x + spell_infobox_width), y=spell_infobox_start_y, s=unicode_string_to_print + spell_info_top_right_corner + ']')
+        # bottom right
+        terminal.printf(x=(spell_infobox_start_x + spell_infobox_width), y=(spell_infobox_start_y + spell_infobox_height), s=unicode_string_to_print + spell_info_bottom_right_corner + ']')
 
     def render_spell_info_panel(self, game_config):
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',

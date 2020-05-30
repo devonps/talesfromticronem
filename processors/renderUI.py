@@ -17,7 +17,7 @@ class RenderUI(esper.Processor):
         self.gameworld = gameworld
 
     def process(self, game_config):
-        terminal.clear()
+        # terminal.clear()
         start_time = time.perf_counter()
         # render the game map
         fov_map = self.render_map(self.gameworld, game_config, self.game_map)
@@ -32,8 +32,9 @@ class RenderUI(esper.Processor):
 
     @staticmethod
     def clear_map_layer():
-        terminal.bkcolor('black')
-        terminal.clear_area(0, 0, terminal.state(terminal.TK_WIDTH), terminal.state(terminal.TK_HEIGHT))
+        # terminal.bkcolor('black')
+        # terminal.clear_area(0, 0, terminal.state(terminal.TK_WIDTH), terminal.state(terminal.TK_HEIGHT))
+        pass
 
 
     @staticmethod
@@ -93,6 +94,7 @@ class RenderUI(esper.Processor):
                                                                      parameter='TILE_TYPE_DOOR')
         tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                       parameter='TILE_TYPE_FLOOR')
+
         player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
         player_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
