@@ -11,11 +11,10 @@ class RenderMessageLog(esper.Processor):
         self.gameworld = gameworld
 
     def process(self, game_config):
-        self.render_message_panel(self, game_config)
+        self.render_message_panel(self, game_config=game_config)
 
     @staticmethod
     def render_message_panel(self, game_config):
-        game_config = configUtilities.load_config()
 
         unicode_string_to_print = '[font=dungeon]['
 

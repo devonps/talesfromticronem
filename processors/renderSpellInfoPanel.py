@@ -58,13 +58,21 @@ class RenderSpellInfoPanel(esper.Processor):
     @staticmethod
     def render_spell_infobox(game_config):
 
+        unicode_string_to_print = '[font=dungeon]['
+
+        game_config = configUtilities.load_config()
+
+        spell_infobox_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='SI_START_X')
+
+        spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='SI_START_Y')
+
         spell_infobox_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
                                                                           parameter='SI_WIDTH')
-        spell_infobox_height = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                           section='guspellinfoi',
+        spell_infobox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
                                                                            parameter='SI_DEPTH')
-        spellInfo_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                     parameter='ASCII_TOP_LEFT')
+        spell_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_LEFT_T_JUNCTION')
 
         spellInfo_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                         parameter='ASCII_BOTTOM_LEFT')
@@ -75,8 +83,18 @@ class RenderSpellInfoPanel(esper.Processor):
         spellInfo_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                          parameter='ASCII_BOTTOM_RIGHT')
 
-        spellInfo_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_HORIZONTAL')
-        spellInfo_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_VERTICAL')
+        spell_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_HORIZONTAL')
+        spell_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_VERTICAL')
+
+        # top left
+        terminal.printf(x=spell_infobox_start_x, y=spell_infobox_start_y, s=unicode_string_to_print + spell_info_top_left_corner + ']')
+
+
+        # render horizontals
+        for z in range(spell_infobox_start_x, (spell_infobox_start_x + spell_infobox_width)):
+            terminal.printf(x=z, y=spell_infobox_start_y + 1, s=unicode_string_to_print + spell_info_vertical + ']')
+            terminal.printf(x=z, y=(spell_infobox_start_y + spell_infobox_height), s=unicode_string_to_print + spell_info_horizontal + ']')
+
 
     def render_spell_info_panel(self, game_config):
         image_y_scale = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',

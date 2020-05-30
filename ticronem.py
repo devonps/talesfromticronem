@@ -71,7 +71,7 @@ def game_loop(gameworld):
             if event_action == 'quit':
                 value = 'exit:true'
                 ReplayGame.update_game_replay_file(game_config, value)
-                Externalfiles.write_full_game_log(gameworld=gameworld, log_id=message_log_id)
+                # Externalfiles.write_full_game_log(gameworld=gameworld, log_id=message_log_id)
                 raise SystemExit()
             if event_action in ('left', 'right', 'up', 'down'):
                 MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=player, direction=event_action, speed=1)
