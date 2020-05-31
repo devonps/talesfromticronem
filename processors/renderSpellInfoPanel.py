@@ -72,7 +72,7 @@ class RenderSpellInfoPanel(esper.Processor):
                                                                           parameter='SI_WIDTH')
         spell_infobox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
                                                                            parameter='SI_DEPTH')
-        spell_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_LEFT_T_JUNCTION')
+        spell_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_TOP_LEFT')
 
         spell_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                         parameter='ASCII_BOTTOM_LEFT')

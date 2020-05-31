@@ -39,12 +39,12 @@ class MoveEntities(esper.Processor):
                         MobileUtilities.set_player_viewport_y(gameworld=self.gameworld, entity=player_entity, value=vpy)
 
                     if vpx >= (viewport_width - 8):
-                        configUtilities.write_config_value(configfile=game_config, section='gui',
-                                                                      parameter='VIEWPORT_RIGHT_VISITED', value='True')
+                        configUtilities.set_config_value(configfile=game_config, section='gui',
+                                                         parameter='VIEWPORT_RIGHT_VISITED', value='True')
 
                     if vpx - 8 <= 0:
-                        configUtilities.write_config_value(configfile=game_config, section='gui',
-                                                           parameter='VIEWPORT_LEFT_VISITED', value='True')
+                        configUtilities.set_config_value(configfile=game_config, section='gui',
+                                                         parameter='VIEWPORT_LEFT_VISITED', value='True')
 
                     if vel.dx != 0 or vel.dy != 0:
                         svx = '0'

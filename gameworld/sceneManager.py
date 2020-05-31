@@ -180,8 +180,3 @@ class SceneManager:
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         MobileUtilities.set_mobile_position(gameworld=gameworld, entity=player_entity, posx=posx, posy=posy)
 
-        vpx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
-        vpy = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
-
-        configUtilities.write_config_value(configfile=game_config, section='gui', parameter='VIEWPORT_START_X', value=str(vpx))
-        configUtilities.write_config_value(configfile=game_config, section='gui', parameter='VIEWPORT_START_Y', value=str(vpy))
