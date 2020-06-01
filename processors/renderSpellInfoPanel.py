@@ -12,7 +12,7 @@ class RenderSpellInfoPanel(esper.Processor):
         self.gameworld = gameworld
 
     def process(self, game_config):
-        self.render_spell_infobox(game_config=game_config)
+        self.render_spell_infobox()
         # self.render_player_status_effects(game_config=game_config)
         # self.render_spell_info_panel(game_config=game_config)
         # self.render_player_vitals(game_config=game_config)
@@ -56,7 +56,7 @@ class RenderSpellInfoPanel(esper.Processor):
             image_count += 1
 
     @staticmethod
-    def render_spell_infobox(game_config):
+    def render_spell_infobox():
 
         unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
 
