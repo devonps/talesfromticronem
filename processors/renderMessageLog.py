@@ -16,7 +16,7 @@ class RenderMessageLog(esper.Processor):
     @staticmethod
     def render_message_panel(self, game_config):
 
-        unicode_string_to_print = '[font=dungeon][color=red]['
+        unicode_string_to_print = '[font=dungeon][color=MSGPANEL_FRAME_COLOUR]['
         ascii_prefix = 'ASCII_SINGLE_'
 
         # get message log entity id

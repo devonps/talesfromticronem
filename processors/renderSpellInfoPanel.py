@@ -58,7 +58,7 @@ class RenderSpellInfoPanel(esper.Processor):
     @staticmethod
     def render_spell_infobox(game_config):
 
-        unicode_string_to_print = '[font=dungeon][color=green]['
+        unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
 
         game_config = configUtilities.load_config()
 

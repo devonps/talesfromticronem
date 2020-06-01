@@ -32,10 +32,8 @@ class RenderUI(esper.Processor):
 
     @staticmethod
     def clear_map_layer():
-        # terminal.bkcolor('black')
-        # terminal.clear_area(0, 0, terminal.state(terminal.TK_WIDTH), terminal.state(terminal.TK_HEIGHT))
-        pass
-
+        terminal.bkcolor('black')
+        terminal.clear_area(0, 0, terminal.state(terminal.TK_WIDTH), terminal.state(terminal.TK_HEIGHT))
 
     @staticmethod
     def render_entity_display_panel(gameworld, game_config, visible_entities):
@@ -139,8 +137,8 @@ class RenderUI(esper.Processor):
                     print_char = False
                     tile = game_map.tiles[mapx][mapy].type_of_tile
                     tile_assignment = game_map.tiles[mapx][mapy].assignment
-                    # visible = FieldOfView.get_fov_map_point(player_fov, x, y)
-                    visible = True
+                    visible = FieldOfView.get_fov_map_point(player_fov, x, y)
+                    # visible = True
                     if visible:
                         colour_code = "[color=white]"
                         print_char = True
