@@ -58,9 +58,11 @@ class RenderSpellInfoPanel(esper.Processor):
     @staticmethod
     def render_spell_infobox(game_config):
 
-        unicode_string_to_print = '[font=dungeon]['
+        unicode_string_to_print = '[font=dungeon][color=green]['
 
         game_config = configUtilities.load_config()
+
+        ascii_prefix = 'ASCII_SINGLE_'
 
         spell_infobox_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
                                                                             parameter='SI_START_X')
@@ -72,19 +74,19 @@ class RenderSpellInfoPanel(esper.Processor):
                                                                           parameter='SI_WIDTH')
         spell_infobox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
                                                                            parameter='SI_DEPTH')
-        spell_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_TOP_LEFT')
+        spell_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'TOP_LEFT')
 
         spell_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                        parameter='ASCII_BOTTOM_LEFT')
+                                                                        parameter=ascii_prefix + 'BOTTOM_LEFT')
 
         spell_info_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                      parameter='ASCII_TOP_RIGHT')
+                                                                      parameter=ascii_prefix + 'TOP_RIGHT')
 
         spell_info_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                         parameter='ASCII_BOTTOM_RIGHT')
+                                                                         parameter=ascii_prefix + 'BOTTOM_RIGHT')
 
-        spell_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_HORIZONTAL')
-        spell_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_VERTICAL')
+        spell_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'HORIZONTAL')
+        spell_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'VERTICAL')
 
         # render horizontal bottom
         for z in range(spell_infobox_start_x, (spell_infobox_start_x + spell_infobox_width)):

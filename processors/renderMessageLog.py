@@ -16,7 +16,8 @@ class RenderMessageLog(esper.Processor):
     @staticmethod
     def render_message_panel(self, game_config):
 
-        unicode_string_to_print = '[font=dungeon]['
+        unicode_string_to_print = '[font=dungeon][color=red]['
+        ascii_prefix = 'ASCII_SINGLE_'
 
         # get message log entity id
         player_entity = MobileUtilities.get_player_entity(self.gameworld, game_config)
@@ -31,16 +32,16 @@ class RenderMessageLog(esper.Processor):
         message_panel_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
                                                                             parameter='MSG_PANEL_START_Y')
 
-        message_panel_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_TOP_LEFT')
+        message_panel_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'TOP_LEFT')
 
-        message_panel_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_BOTTOM_LEFT')
+        message_panel_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'BOTTOM_LEFT')
 
-        message_panel_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_TOP_RIGHT')
+        message_panel_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'TOP_RIGHT')
 
-        message_panel_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_BOTTOM_RIGHT')
+        message_panel_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'BOTTOM_RIGHT')
 
-        message_panel_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_HORIZONTAL')
-        message_panel_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_VERTICAL')
+        message_panel_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'HORIZONTAL')
+        message_panel_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'VERTICAL')
 
         # draw message panel boundary
         # top left
