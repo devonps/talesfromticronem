@@ -54,9 +54,9 @@ class Debug:
                             start_panel_frame_height)
 
     @staticmethod
-    def entity_spy(gameworld, game_config, coords, game_map):
+    def entity_spy(gameworld, game_config, coords):
         # get entity id at position coords
-        entity_id = CommonUtils.get_entity_at_location(gameworld=gameworld, coords=coords, game_map=game_map)
+        entity_id = CommonUtils.get_entity_at_location(gameworld=gameworld, coords=coords)
         logger.debug('Entity id at this location {}', entity_id)
 
         if entity_id > 0:

@@ -9,26 +9,14 @@ from utilities.mobileHelp import MobileUtilities
 class CommonUtils:
 
     @staticmethod
-    def convert_map_to_screen_location(gameworld, coords, game_map):
-        pos_x_map = 0
+    def get_entity_at_location(gameworld, coords):
         game_config = configUtilities.load_config()
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
-        map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
-
-        vp_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                               parameter='VIEWPORT_WIDTH')
-
-        if map_pos_x > vp_width:
-            while map_pos_x > vp_width:
-                map_pos_x -= vp_width
-
-        pos_x_map = map_pos_x
-        return pos_x_map, map_pos_y
-
-    @staticmethod
-    def get_entity_at_location(gameworld, coords, game_map):
-        new_posx, new_posy = CommonUtils.convert_map_to_screen_location(gameworld=gameworld, coords=coords, game_map=game_map)
+        vp_x_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_START_X')
+        vp_y_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_START_Y')
+        new_posx = coords[0] - vp_x_offset
+        new_posy = coords[1] - vp_y_offset
         entity_id = 0
         for ent, pos in gameworld.get_components(mobiles.Position):
             entity_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)

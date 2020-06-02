@@ -102,18 +102,22 @@ class RenderUI(esper.Processor):
                                                                       parameter='VIEWPORT_WIDTH')
         vp_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='VIEWPORT_HEIGHT')
-        vp_x_min = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+        vp_x_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='VIEWPORT_START_X')
-        vp_y_min = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+        vp_y_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='VIEWPORT_START_Y')
 
         map_width = game_map.width
-        map_height = game_map.height
-        map_x_min = max(player_map_pos_x - vp_width, vp_x_min)
         map_x_max = min(player_map_pos_x + vp_width, map_width)
 
-        map_y_min = max(player_map_pos_y - vp_height, 0)
-        map_y_max = min(player_map_pos_y + vp_height, map_height)
+        viewport_from_x = int(player_map_pos_x - (vp_width / 2))
+        viewport_from_y = int(player_map_pos_y - (vp_height / 2))
+
+        if viewport_from_x < 0:
+            viewport_from_x = 0
+
+        if viewport_from_y < 0:
+            viewport_from_y = 0
 
         config_prefix = 'ASCII_'
         config_prefix_wall = config_prefix + 'WALL_'
@@ -129,27 +133,25 @@ class RenderUI(esper.Processor):
         if player_has_moved:
             RenderUI.clear_map_layer()
 
-        mapy = map_y_min
-        for y in range(vp_height):
-            mapx = map_x_min
-            for x in range(vp_width + 1):
+        # the loops display the MAP tiles surrounding the player
+        for y in range(viewport_from_y, vp_height):
+            for x in range(viewport_from_x, vp_width):
                 if x < map_x_max:
                     print_char = False
-                    tile = game_map.tiles[mapx][mapy].type_of_tile
-                    tile_assignment = game_map.tiles[mapx][mapy].assignment
+                    tile = game_map.tiles[x][y].type_of_tile
+                    tile_assignment = game_map.tiles[x][y].assignment
                     visible = FieldOfView.get_fov_map_point(player_fov, x, y)
-                    # visible = True
                     if visible:
-                        colour_code = "[color=white]"
                         print_char = True
+                        colour_code = "[color=white]"
+                        game_map.tiles[x][y].explored = True
                         if tile == tile_type_floor:
                             char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor, tile_assignment=0)
                         if tile == tile_type_wall:
                             char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_wall, tile_assignment=tile_assignment)
                         if tile == tile_type_door:
                             char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_door, tile_assignment=0)
-
-                    elif game_map.tiles[mapx][mapy].explored:
+                    elif game_map.tiles[x][y].explored:
                         colour_code = "[color=grey]"
                         print_char = True
                         if tile == tile_type_floor:
@@ -161,9 +163,7 @@ class RenderUI(esper.Processor):
 
                     if print_char and tile > 0:
                         str = colour_code + unicode_string_to_print + char_to_display + ']'
-                        terminal.printf(x=vp_x_min + x, y=vp_y_min + y, s=str)
-                    mapx += 1
-            mapy += 1
+                        terminal.printf(x=vp_x_offset + x, y=vp_y_offset + y, s=str)
         return player_fov
 
     @staticmethod
