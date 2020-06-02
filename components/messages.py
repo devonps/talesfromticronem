@@ -13,7 +13,7 @@ class MessageLog:
     stored_messages = None
     stored_log_messages = None
 
-    def __init__(self, width, height, depth, display_from_message, display_to_message, visible_log):
+    def __init__(self, width, height, depth, display_from_message, display_to_message, visible_log=0):
         self.stored_messages = []
         self.stored_log_messages = []
         self.width = width

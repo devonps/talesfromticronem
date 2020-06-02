@@ -34,7 +34,7 @@ def handle_game_keys():
     if key == terminal.TK_4:
         if terminal.check(terminal.TK_CONTROL):
             myevent = 'keypress'
-            action = 'view_log_personal'
+            action = 'view_log_game'
         else:
             myevent = 'keypress'
             action = 4

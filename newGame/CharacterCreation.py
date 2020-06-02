@@ -1738,6 +1738,7 @@ class CharacterCreation:
                 if event_action == 'enter':
                     if selected_menu_option == 0:  # accept character build and start game
                         messagelog_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
+                        CommonUtils.create_message_log_as_entity(gameworld=gameworld, log_entity=messagelog_entity)
                         MobileUtilities.set_MessageLog_for_player(gameworld=gameworld, entity=player_entity,
                                                                   logid=messagelog_entity)
                         logger.info('Mesage log stored as entity {}', messagelog_entity)

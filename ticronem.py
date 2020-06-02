@@ -1,9 +1,8 @@
 from bearlibterminal import terminal
 
-
+from components.messages import Message
 from enemyRelated.statelessAI import StatelessAI
 from newGame.initialiseNewGame import setup_gameworld
-from utilities.externalfileutilities import Externalfiles
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
@@ -29,9 +28,13 @@ def game_loop(gameworld):
     current_turn = 0
 
     spell_bar_keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
-    message_logs = ['view_log_all', 'view_log_combat', 'view_log_story', 'view_log_personal']
+    message_logs = ['view_log_all', 'view_log_combat', 'view_log_story', 'view_log_game']
     message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
     MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=False)
+
+    msg = Message(text="Hello World", msgclass="all", fg="white", bg="black", fnt="")
+    log_message = "hello world"
+    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 
     # call scene manager
     game_map = SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)

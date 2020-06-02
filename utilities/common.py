@@ -12,9 +12,9 @@ class CommonUtils:
     def get_entity_at_location(gameworld, coords):
         game_config = configUtilities.load_config()
         vp_x_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='VIEWPORT_START_X')
+                                                                  parameter='VIEWPORT_START_X')
         vp_y_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='VIEWPORT_START_Y')
+                                                                  parameter='VIEWPORT_START_Y')
         new_posx = coords[0] - vp_x_offset
         new_posy = coords[1] - vp_y_offset
         entity_id = 0
@@ -48,8 +48,9 @@ class CommonUtils:
         formatted_turn_number = CommonUtils.format_game_turn_as_string(current_turn=current_turn)
 
         msg_start = formatted_turn_number + ":" + caster_name + " hits " + target_name + " for "
-        message_text = msg_start + "[color=orange]" + str(damage_done_to_target) + " damage[/color] using [[" + spell_name + "]]"
-        msg = Message(text=message_text , msgclass="combat", fg="white",bg="black", fnt="")
+        message_text = msg_start + "[color=orange]" + str(
+            damage_done_to_target) + " damage[/color] using [[" + spell_name + "]]"
+        msg = Message(text=message_text, msgclass="combat", fg="white", bg="black", fnt="")
         log_message = msg_start + str(damage_done_to_target) + " damage using [" + spell_name + "]"
 
         CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
@@ -64,10 +65,26 @@ class CommonUtils:
 
         return turn_as_string
 
+    @staticmethod
+    def create_message_log_as_entity(gameworld, log_entity):
+        game_config = configUtilities.load_config()
+        message_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
+                                                                          parameter='MSG_PANEL_WIDTH')
+        message_panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
+                                                                           parameter='MSG_PANEL_START_Y')
+        message_panel_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
+                                                                          parameter='MSG_PANEL_DEPTH')
+        # need to add data to the components next
+        gameworld.add_component(log_entity, messages.MessageLog(width=message_panel_width,
+                                                           height=message_panel_height, depth=message_panel_depth,
+                                                           display_from_message=0, display_to_message=10,
+                                                           visible_log='all'))
 
     @staticmethod
     def add_message(gameworld, message, logid, message_for_export):
         stored_msgs = CommonUtils.get_message_log_all_messages(gameworld=gameworld, logid=logid)
+        if stored_msgs is None:
+            stored_msgs = []
         stored_msgs.append(message)
         message_component = gameworld.component_for_entity(logid, messages.MessageLog)
         message_component.storedMessages = stored_msgs
@@ -91,9 +108,9 @@ class CommonUtils:
         return messaage_log_component.visible_log
 
     @staticmethod
-    def build_message_to_be_displayed(gameworld, logid, message):
+    def build_message_to_be_displayed(gameworld, log_entity, message):
         str_to_print = ""
-        if message.msgclass == CommonUtils.get_visible_log(gameworld=gameworld, logid=logid):
+        if message.msgclass == CommonUtils.get_visible_log(gameworld=gameworld, logid=log_entity):
             fg_color = "white" if message.fg == "" else message.fg
             bg_color = "red" if message.bg == "" else message.bg
             fnt = "messageLog" if message.fnt == "" else message.fnt
@@ -143,7 +160,8 @@ class CommonUtils:
     def get_messages_for_visible_message_log(gameworld, log_id):
         stored_msgs = CommonUtils.get_message_log_all_messages(gameworld=gameworld, logid=log_id)
         visible_log = CommonUtils.get_visible_log(gameworld=gameworld, logid=log_id)
-        display_max_number_messages = CommonUtils.get_message_log_last_display_message(gameworld=gameworld, logid=log_id)
+        display_max_number_messages = CommonUtils.get_message_log_last_display_message(gameworld=gameworld,
+                                                                                       logid=log_id)
 
         visible_messages = [msg for msg in stored_msgs if msg.msgclass == visible_log]
 

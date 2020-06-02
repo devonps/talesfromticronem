@@ -98,6 +98,9 @@ class RenderUI(esper.Processor):
         player_map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         player_map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
 
+        hardcoded_zoom_factor = 10
+        hardcoded_viewport_margin = 10
+
         vp_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='VIEWPORT_WIDTH')
         vp_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
@@ -111,13 +114,16 @@ class RenderUI(esper.Processor):
         map_x_max = min(player_map_pos_x + vp_width, map_width)
 
         viewport_from_x = int(player_map_pos_x - (vp_width / 2))
+        viewport_to_x = int(player_map_pos_x + (vp_width / 2))
         viewport_from_y = int(player_map_pos_y - (vp_height / 2))
+        viewport_to_y = int(player_map_pos_y + (vp_height / 2))
 
         if viewport_from_x < 0:
             viewport_from_x = 0
 
         if viewport_from_y < 0:
             viewport_from_y = 0
+
 
         config_prefix = 'ASCII_'
         config_prefix_wall = config_prefix + 'WALL_'
@@ -134,8 +140,8 @@ class RenderUI(esper.Processor):
             RenderUI.clear_map_layer()
 
         # the loops display the MAP tiles surrounding the player
-        for y in range(viewport_from_y, vp_height):
-            for x in range(viewport_from_x, vp_width):
+        for y in range(viewport_from_y, viewport_to_y):
+            for x in range(viewport_from_x, viewport_to_x):
                 if x < map_x_max:
                     print_char = False
                     tile = game_map.tiles[x][y].type_of_tile
