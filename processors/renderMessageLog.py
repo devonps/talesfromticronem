@@ -105,6 +105,21 @@ class RenderMessageLog(esper.Processor):
         terminal.printf(x=tab_pos_x - 1, y=message_panel_start_y, s=unicode_string_to_print + message_panel_top_junction + ']')
         terminal.printf(x=tab_pos_x - 1, y=message_panel_start_y + 2, s=unicode_string_to_print + message_panel_bottom_junction + ']')
 
+        self.tab_display(visible_log=visible_log, unicode_string_to_print=unicode_string_to_print, message_panel_vertical=message_panel_vertical, message_panel_bottom_left_corner=message_panel_bottom_left_corner, message_panel_bottom_right_corner=message_panel_bottom_right_corner)
+
+        # now show the messages
+        visible_messages, display_messages_from, display_messages_to, display_messages_count = CommonUtils.get_messages_for_visible_message_log(gameworld=self.gameworld, log_id=message_log_entity)
+        display_line = 4
+        msg_log_display_x = 1
+        if display_messages_count > 0:
+            for msg in range(display_messages_from, display_messages_to):
+                message = visible_messages[msg]
+                str_to_print = CommonUtils.build_message_to_be_displayed(gameworld=self.gameworld, log_entity=message_log_entity, message=message)
+                if str_to_print != "":
+                    terminal.printf(x=msg_log_display_x, y=message_panel_start_y + display_line, s=str_to_print)
+                    display_line += 1
+
+    def tab_display(self, visible_log, unicode_string_to_print, message_panel_vertical, message_panel_bottom_left_corner, message_panel_bottom_right_corner):
         if visible_log == 'all':
             terminal.clear_area(1, 2, 7, 1)
             terminal.printf(x=0, y=2, s=unicode_string_to_print + message_panel_vertical + ']')
@@ -124,15 +139,3 @@ class RenderMessageLog(esper.Processor):
             terminal.clear_area(25, 2, 7, 1)
             terminal.printf(x=24, y=2, s=unicode_string_to_print + message_panel_bottom_right_corner + ']')
             terminal.printf(x=32, y=2, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')
-
-        # now show the messages
-        visible_messages, display_messages_from, display_messages_to, display_messages_count = CommonUtils.get_messages_for_visible_message_log(gameworld=self.gameworld, log_id=message_log_entity)
-        display_line = 4
-        msg_log_display_x = 1
-        if display_messages_count > 0:
-            for msg in range(display_messages_from, display_messages_to):
-                message = visible_messages[msg]
-                str_to_print = CommonUtils.build_message_to_be_displayed(gameworld=self.gameworld, log_entity=message_log_entity, message=message)
-                if str_to_print != "":
-                    terminal.printf(x=msg_log_display_x, y=message_panel_start_y + display_line, s=str_to_print)
-                    display_line += 1
