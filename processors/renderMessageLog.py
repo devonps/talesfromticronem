@@ -80,7 +80,7 @@ class RenderMessageLog(esper.Processor):
         message_log_entity = MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
 
         # build the tabs
-        visible_log = CommonUtils.get_visible_log(gameworld=self.gameworld, logid=message_log_entity)
+        visible_log = CommonUtils.get_current_log_id(gameworld=self.gameworld, log_entity=message_log_entity)
         logger.info('Visible log is {}', visible_log)
 
         tabs_to_display = configUtilities.get_config_value_as_list(configfile=game_config, section='messagePanel', parameter='MSG_PANEL_TABS')
@@ -89,7 +89,7 @@ class RenderMessageLog(esper.Processor):
         tab_pos_x = 1
         tab_length = 8
         for tab in range(len(tabs_to_display)):
-            if tabs_to_display[tab] != visible_log:
+            if tab != visible_log:
                 str_to_print = not_selected_tab_colour + tabs_to_display[tab]
             else:
                 str_to_print = selected_tab_color + tabs_to_display[tab]
@@ -105,10 +105,10 @@ class RenderMessageLog(esper.Processor):
         terminal.printf(x=tab_pos_x - 1, y=message_panel_start_y, s=unicode_string_to_print + message_panel_top_junction + ']')
         terminal.printf(x=tab_pos_x - 1, y=message_panel_start_y + 2, s=unicode_string_to_print + message_panel_bottom_junction + ']')
 
-        self.tab_display(visible_log=visible_log, unicode_string_to_print=unicode_string_to_print, message_panel_vertical=message_panel_vertical, message_panel_bottom_left_corner=message_panel_bottom_left_corner, message_panel_bottom_right_corner=message_panel_bottom_right_corner)
+        RenderMessageLog.log_tab_display(visible_log=visible_log, unicode_string_to_print=unicode_string_to_print, message_panel_vertical=message_panel_vertical, message_panel_bottom_left_corner=message_panel_bottom_left_corner, message_panel_bottom_right_corner=message_panel_bottom_right_corner)
 
         # now show the messages
-        visible_messages, display_messages_from, display_messages_to, display_messages_count = CommonUtils.get_messages_for_visible_message_log(gameworld=self.gameworld, log_id=message_log_entity)
+        visible_messages, display_messages_from, display_messages_to, display_messages_count = CommonUtils.get_messages_for_visible_message_log(gameworld=self.gameworld, log_entity=message_log_entity)
         display_line = 4
         msg_log_display_x = 1
         if display_messages_count > 0:
@@ -119,23 +119,24 @@ class RenderMessageLog(esper.Processor):
                     terminal.printf(x=msg_log_display_x, y=message_panel_start_y + display_line, s=str_to_print)
                     display_line += 1
 
-    def tab_display(self, visible_log, unicode_string_to_print, message_panel_vertical, message_panel_bottom_left_corner, message_panel_bottom_right_corner):
-        if visible_log == 'all':
+    @staticmethod
+    def log_tab_display(visible_log, unicode_string_to_print, message_panel_vertical, message_panel_bottom_left_corner, message_panel_bottom_right_corner):
+        if visible_log == 0:
             terminal.clear_area(1, 2, 7, 1)
             terminal.printf(x=0, y=2, s=unicode_string_to_print + message_panel_vertical + ']')
             terminal.printf(x=8, y=2, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')
 
-        if visible_log == 'combat':
+        if visible_log == 1:
             terminal.clear_area(9, 2, 7, 1)
             terminal.printf(x=8, y=2, s=unicode_string_to_print + message_panel_bottom_right_corner + ']')
             terminal.printf(x=16, y=2, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')
 
-        if visible_log == 'story':
+        if visible_log == 2:
             terminal.clear_area(17, 2, 7, 1)
             terminal.printf(x=16, y=2, s=unicode_string_to_print + message_panel_bottom_right_corner + ']')
             terminal.printf(x=24, y=2, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')
 
-        if visible_log == 'game':
+        if visible_log == 3:
             terminal.clear_area(25, 2, 7, 1)
             terminal.printf(x=24, y=2, s=unicode_string_to_print + message_panel_bottom_right_corner + ']')
             terminal.printf(x=32, y=2, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')

@@ -67,22 +67,13 @@ class CommonUtils:
 
     @staticmethod
     def create_message_log_as_entity(gameworld, log_entity):
-        game_config = configUtilities.load_config()
-        message_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
-                                                                          parameter='MSG_PANEL_WIDTH')
-        message_panel_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
-                                                                           parameter='MSG_PANEL_START_Y')
-        message_panel_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
-                                                                          parameter='MSG_PANEL_DEPTH')
         # need to add data to the components next
-        gameworld.add_component(log_entity, messages.MessageLog(width=message_panel_width,
-                                                           height=message_panel_height, depth=message_panel_depth,
-                                                           display_from_message=0, display_to_message=10,
-                                                           visible_log='all'))
+        gameworld.add_component(log_entity, messages.MessageLog(display_from_message=0, display_to_message=10,
+                                                           visible_log=0))
 
     @staticmethod
     def add_message(gameworld, message, logid, message_for_export):
-        stored_msgs = CommonUtils.get_message_log_all_messages(gameworld=gameworld, logid=logid)
+        stored_msgs = CommonUtils.get_message_log_all_messages(gameworld=gameworld, log_entity=logid)
         if stored_msgs is None:
             stored_msgs = []
         stored_msgs.append(message)
@@ -90,15 +81,36 @@ class CommonUtils:
         message_component.storedMessages = stored_msgs
 
         # this next piece of code adds a plain/vanilla message ready to be exported
-        stored_export_messages = CommonUtils.get_all_log_messages_for_export(gameworld=gameworld, logid=logid)
+        stored_export_messages = CommonUtils.get_all_log_messages_for_export(gameworld=gameworld, log_entity=logid)
         stored_export_messages.append(message_for_export)
         message_component = gameworld.component_for_entity(logid, messages.MessageLog)
         message_component.stored_log_messages = stored_export_messages
 
     @staticmethod
-    def set_visible_log(gameworld, log_id, log_to_display):
+    def get_current_log_id(gameworld, log_entity):
+        messaage_log_component = gameworld.component_for_entity(log_entity, messages.MessageLog)
+        return messaage_log_component.log_id
 
-        messaage_log_component = gameworld.component_for_entity(log_id, messages.MessageLog)
+    @staticmethod
+    def set_current_log(gameworld, log_entity):
+        # get current message log
+        current_log_id = CommonUtils.get_current_log_id(gameworld=gameworld, log_entity=log_entity)
+        logger.debug('Current log id is {}', current_log_id)
+
+        # increase the id by and check for out of bounds
+        current_log_id += 1
+        if current_log_id > 3:
+            current_log_id = 0
+
+        logger.debug('New log id is {}', current_log_id)
+        # set the current message log
+        messaage_log_component = gameworld.component_for_entity(log_entity, messages.MessageLog)
+        messaage_log_component.log_id = current_log_id
+
+    @staticmethod
+    def set_visible_log(gameworld, log_entity, log_to_display):
+
+        messaage_log_component = gameworld.component_for_entity(log_entity, messages.MessageLog)
         messaage_log_component.visible_log = log_to_display
 
     @staticmethod
@@ -110,7 +122,8 @@ class CommonUtils:
     @staticmethod
     def build_message_to_be_displayed(gameworld, log_entity, message):
         str_to_print = ""
-        if message.msgclass == CommonUtils.get_visible_log(gameworld=gameworld, logid=log_entity):
+        visible_log = CommonUtils.get_current_log_id(gameworld=gameworld, log_entity=log_entity)
+        if message.msgclass == visible_log:
             fg_color = "white" if message.fg == "" else message.fg
             bg_color = "red" if message.bg == "" else message.bg
             fnt = "messageLog" if message.fnt == "" else message.fnt
@@ -122,46 +135,26 @@ class CommonUtils:
         return str_to_print
 
     @staticmethod
-    def get_message_log_width(gameworld, logid):
-        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
-        return log_component.width
-
-    @staticmethod
-    def get_message_log_height(gameworld, logid):
-        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
-        return log_component.height
-
-    @staticmethod
-    def get_message_log_depth(gameworld, logid):
-        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
-        return log_component.depth
-
-    @staticmethod
-    def get_message_log_all_messages(gameworld, logid):
-        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
+    def get_message_log_all_messages(gameworld, log_entity):
+        log_component = gameworld.component_for_entity(log_entity, messages.MessageLog)
         return log_component.stored_messages
 
     @staticmethod
-    def get_all_log_messages_for_export(gameworld, logid):
-        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
+    def get_all_log_messages_for_export(gameworld, log_entity):
+        log_component = gameworld.component_for_entity(log_entity, messages.MessageLog)
         return log_component.stored_log_messages
 
     @staticmethod
-    def get_message_log_first_dispay_message(gameworld, logid):
-        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
-        return log_component.display_from_message
-
-    @staticmethod
-    def get_message_log_last_display_message(gameworld, logid):
-        log_component = gameworld.component_for_entity(logid, messages.MessageLog)
+    def get_message_log_last_display_message(gameworld, log_entity):
+        log_component = gameworld.component_for_entity(log_entity, messages.MessageLog)
         return log_component.display_to_message
 
     @staticmethod
-    def get_messages_for_visible_message_log(gameworld, log_id):
-        stored_msgs = CommonUtils.get_message_log_all_messages(gameworld=gameworld, logid=log_id)
-        visible_log = CommonUtils.get_visible_log(gameworld=gameworld, logid=log_id)
+    def get_messages_for_visible_message_log(gameworld, log_entity):
+        stored_msgs = CommonUtils.get_message_log_all_messages(gameworld=gameworld, log_entity=log_entity)
+        visible_log = CommonUtils.get_current_log_id(gameworld=gameworld, log_entity=log_entity)
         display_max_number_messages = CommonUtils.get_message_log_last_display_message(gameworld=gameworld,
-                                                                                       logid=log_id)
+                                                                                       log_entity=log_entity)
 
         visible_messages = [msg for msg in stored_msgs if msg.msgclass == visible_log]
 
@@ -180,5 +173,5 @@ class CommonUtils:
     def view_message_log(gameworld, player, log_to_be_displayed):
         logs = log_to_be_displayed.split('_')
         msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
-        CommonUtils.set_visible_log(gameworld=gameworld, log_id=msglog, log_to_display=logs[2])
+        CommonUtils.set_visible_log(gameworld=gameworld, log_entity=msglog, log_to_display=logs[2])
         MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=True)

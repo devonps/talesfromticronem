@@ -7,59 +7,32 @@ def handle_game_keys():
 
     key = terminal.read()
 
+    #
+    # ENTITY SELECT KEYS
+    #
     if key == terminal.TK_TAB:
         myevent = 'keypress'
         action = 'tab'
-    if key == terminal.TK_1:
-        if terminal.check(terminal.TK_CONTROL):
-            myevent = 'keypress'
-            action = 'view_log_all'
-        else:
-            myevent = 'keypress'
-            action = 1
-    if key == terminal.TK_2:
-        if terminal.check(terminal.TK_CONTROL):
-            myevent = 'keypress'
-            action = 'view_log_combat'
-        else:
-            myevent = 'keypress'
-            action = 2
-    if key == terminal.TK_3:
-        if terminal.check(terminal.TK_CONTROL):
-            myevent = 'keypress'
-            action = 'view_log_story'
-        else:
-            myevent = 'keypress'
-            action = 3
-    if key == terminal.TK_4:
-        if terminal.check(terminal.TK_CONTROL):
-            myevent = 'keypress'
-            action = 'view_log_game'
-        else:
-            myevent = 'keypress'
-            action = 4
-    if key == terminal.TK_5:
-        myevent = 'keypress'
-        action = 5
-    if key == terminal.TK_6:
-        myevent = 'keypress'
-        action = 6
-    if key == terminal.TK_7:
-        myevent = 'keypress'
-        action = 7
-    if key == terminal.TK_8:
-        myevent = 'keypress'
-        action = 8
-    if key == terminal.TK_9:
-        myevent = 'keypress'
-        action = 9
-    if key == terminal.TK_0:
-        myevent = 'keypress'
-        action = 0
+    #
+    # SPELL BAR HOTKEYS
+    #
+    spell_bar_hotkeys = [terminal.TK_1, terminal.TK_2, terminal.TK_3, terminal.TK_4, terminal.TK_5, terminal.TK_6, terminal.TK_7, terminal.TK_8, terminal.TK_9, terminal.TK_0]
 
+    if key in spell_bar_hotkeys:
+        myevent = 'keypress'
+        action = int(chr(ord('1')))
+
+    # ACCEPT KEYS
     if key == terminal.TK_ESCAPE:
         myevent = 'keypress'
         action = 'quit'
+    if key == terminal.TK_ENTER:
+        myevent = 'keypress'
+        action = 'enter'
+
+    #
+    # MOVEMENT KEYS
+    #
     if key == terminal.TK_UP:
         myevent = 'keypress'
         action = 'up'
@@ -72,9 +45,21 @@ def handle_game_keys():
     if key == terminal.TK_RIGHT:
         myevent = 'keypress'
         action = 'right'
-    if key == terminal.TK_ENTER:
-        myevent = 'keypress'
-        action = 'enter'
+
+    #
+    # ACTION KEYS
+    #
+    if key == terminal.TK_M:
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'blur'
+            action = ''
+        else:
+            myevent = 'keypress'
+            action = 'log'
+
+    #
+    # MOUSE ACTIONS
+    #
     if key == terminal.TK_MOUSE_MOVE:
         myevent = 'mousemove'
         action = (terminal.state(terminal.TK_MOUSE_X), terminal.state(terminal.TK_MOUSE_Y))
@@ -84,10 +69,5 @@ def handle_game_keys():
     if key == terminal.TK_MOUSE_RIGHT:
         myevent = 'mouserightbutton'
         action = (terminal.state(terminal.TK_MOUSE_X), terminal.state(terminal.TK_MOUSE_Y))
-
-    index = terminal.state(terminal.TK_CHAR) - ord('a')
-    if index >= 0:
-        myevent = 'keypress'
-        action = index
 
     return myevent, action

@@ -28,11 +28,10 @@ def game_loop(gameworld):
     current_turn = 0
 
     spell_bar_keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
-    message_logs = ['view_log_all', 'view_log_combat', 'view_log_story', 'view_log_game']
     message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
     MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=False)
 
-    msg = Message(text="Hello World", msgclass="all", fg="white", bg="black", fnt="")
+    msg = Message(text="Hello World", msgclass=0, fg="white", bg="black", fnt="")
     log_message = "hello world"
     CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 
@@ -59,6 +58,7 @@ def game_loop(gameworld):
         #
         MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=False)
         logger.debug('Starting turn {}', current_turn)
+        msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
 
         valid_event = False
         advance_game_turn = False
@@ -82,8 +82,8 @@ def game_loop(gameworld):
             if event_action in spell_bar_keys:
                 SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player)
                 advance_game_turn = True
-            if event_action in message_logs:
-                CommonUtils.view_message_log(gameworld=gameworld, player=player, log_to_be_displayed=event_action)
+            if event_action == 'log':
+                CommonUtils.set_current_log(gameworld=gameworld, log_entity=msglog)
                 advance_game_turn = False
         if event_to_be_processed == 'mouseleftbutton':
             Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords=event_action)

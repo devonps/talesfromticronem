@@ -29,7 +29,7 @@ class Externalfiles:
 
         filename = "game_log.txt"
         fileobject = Externalfiles.create_new_file(filename)
-        stored_msgs = CommonUtils.get_all_log_messages_for_export(gameworld=gameworld, logid=log_id)
+        stored_msgs = CommonUtils.get_all_log_messages_for_export(gameworld=gameworld, log_entity=log_id)
         for message in stored_msgs:
             Externalfiles.write_to_existing_file(filename, value=message)
 
