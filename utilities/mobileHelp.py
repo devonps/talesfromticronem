@@ -246,7 +246,6 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_mobile_derived_personality(gameworld, game_config, entity):
-        # player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
         player_entity = entity
 
         player_current_personality_component = gameworld.component_for_entity(player_entity, mobiles.Personality)
