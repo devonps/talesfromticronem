@@ -149,7 +149,7 @@ class StatelessAI:
             message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
 
             str_to_print = formatted_turn_number + ":" + target_names[0] + " had been targeted, but the spell fizzled out!"
-            msg = Message(text=str_to_print, msgclass="combat", fg="yellow", bg="", fnt="")
+            msg = Message(text=str_to_print, msgclass=1, fg="yellow", bg="", fnt="")
             log_message = str_to_print
             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,
                                     message_for_export=log_message)

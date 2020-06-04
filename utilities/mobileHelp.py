@@ -363,6 +363,18 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.Name())
         gameworld.add_component(entity_id, mobiles.ClassSpecific())
         gameworld.add_component(entity_id, mobiles.Personality())
+        gameworld.add_component(entity_id, mobiles.VisibleEntities())
+
+
+    @staticmethod
+    def set_visible_entities(gameworld, target_entity, visible_entities):
+        visible_entities_component = gameworld.component_for_entity(target_entity, mobiles.VisibleEntities)
+        visible_entities_component.list = visible_entities
+
+    @staticmethod
+    def get_visible_entities(gameworld, target_entity):
+        visible_entities_component = gameworld.component_for_entity(target_entity, mobiles.VisibleEntities)
+        return visible_entities_component.list
 
     @staticmethod
     def add_enemy_components(gameworld, entity_id):

@@ -11,7 +11,6 @@ from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from bearlibterminal import terminal
-from mapRelated.gameMap import RenderLayer
 
 
 class SpellUtilities:
@@ -164,6 +163,12 @@ class SpellUtilities:
     @staticmethod
     def cast_spell(slot, gameworld, player):
 
+        game_config = configUtilities.load_config()
+        vp_x_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_START_X')
+        vp_y_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_START_Y')
+
         message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
 
         spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
@@ -179,28 +184,11 @@ class SpellUtilities:
 
         if not is_spell_on_cooldown:
             # spell isn't on cooldown
-            valid_targets = SpellUtilities.get_valid_targets_for_spell(gameworld=gameworld,
-                                                                       casting_entity=player, spell_entity=spell_entity)
-
             # display list of valid targets and wait for the player
             # to select one of them
-            lft = 10
-            tp = 15
-            height = 5 + len(valid_targets) + 1
-            width = 26
 
-            terminal.clear_area(lft, tp, width, height)
-            prev_layer = terminal.state(terminal.TK_LAYER)
-            terminal.layer(RenderLayer.VALIDTARGETS.value)
-
-            draw_simple_frame(start_panel_frame_x=lft, start_panel_frame_y=tp, start_panel_frame_width=width, start_panel_frame_height=height, title='| Valid Targets |',
-                              fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
-
-            entity_tag = tp + 3
-            target_letters = []
-            SpellUtilities.helper_print_valid_targets(valid_targets=valid_targets, lft=lft, entity_tag=entity_tag, target_letters=target_letters, tp=tp, height=height)
-
-            terminal.layer(prev_layer)
+            visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=player)
+            target_letters = SpellUtilities.helper_print_valid_targets(gameworld=gameworld, valid_targets=visible_entities)
 
             # blit the terminal
             terminal.refresh()
@@ -213,18 +201,20 @@ class SpellUtilities:
                 if event_to_be_processed == 'keypress':
                     if event_action == 'quit':
                         player_not_pressed_a_key = False
-                    if len(target_letters) != 0:
+
+                    if event_action != 'quit':
+                        player_not_pressed_a_key = False
                         key_pressed = chr(97 + event_action)
-                        player_not_pressed_a_key, target = SpellUtilities.has_valid_target_been_selected(gameworld=gameworld, player_entity=player, target_letters=target_letters, key_pressed=key_pressed, spell_entity=spell_entity, valid_targets=valid_targets)
-                        target_name = valid_targets[target][1]
+
+                        player_not_pressed_a_key, target = SpellUtilities.has_valid_target_been_selected(gameworld=gameworld, player_entity=player, target_letters=target_letters, key_pressed=key_pressed, spell_entity=spell_entity, valid_targets=visible_entities)
+                        target_name = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=visible_entities[target])
                         logger.warning('Player casting: message log id is {}', message_log_id)
-                        SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, target_name=target_name, player_not_pressed_a_key=player_not_pressed_a_key)
+                        SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, target_name=target_name[0], player_not_pressed_a_key=player_not_pressed_a_key)
         else:
             message_text = formatted_turn_number + ":" + "Spell is on cooldown "
-            msg = Message(text=message_text, msgclass="all", fg="white", bg="black", fnt="")
+            msg = Message(text=message_text, msgclass=0, fg="white", bg="black", fnt="")
             log_message = formatted_turn_number + ":" + "Spell is on cooldown "
-            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,
-                                    message_for_export=log_message)
+            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,  message_for_export=log_message)
 
     @staticmethod
     def has_valid_target_been_selected(gameworld, player_entity, target_letters, key_pressed, spell_entity, valid_targets):
@@ -237,7 +227,7 @@ class SpellUtilities:
             # add component covering spell has been cast
             gameworld.add_component(player_entity,
                                     mobiles.SpellCast(truefalse=True, spell_entity=spell_entity, spell_caster=player_entity,
-                                                      spell_target=valid_targets[target][0], spell_bar_slot=1))
+                                                      spell_target=valid_targets[0], spell_bar_slot=1))
 
         return player_not_pressed_a_key, target
 
@@ -251,59 +241,75 @@ class SpellUtilities:
             formatted_turn_number = CommonUtils.format_game_turn_as_string(current_turn=current_turn)
 
             str_to_print = formatted_turn_number + ":" + target_name + " has been targeted."
-            msg = Message(text=str_to_print, msgclass="all", fg="yellow", bg="", fnt="")
+            msg = Message(text=str_to_print, msgclass=0, fg="yellow", bg="", fnt="")
             log_message = str_to_print
             CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,
                                     message_for_export=log_message)
 
 
     @staticmethod
-    def helper_print_valid_targets(valid_targets, lft, entity_tag, target_letters, tp, height):
+    def helper_print_valid_targets(gameworld, valid_targets):
+        game_config = configUtilities.load_config()
+        vp_x_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_START_X')
+        vp_y_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='VIEWPORT_START_Y')
+
+        height = 5 + len(valid_targets) + 1
+
+        terminal.clear_area(vp_x_offset + 1, vp_y_offset + 1, 26, height)
+
+        draw_simple_frame(start_panel_frame_x=vp_x_offset, start_panel_frame_y=vp_y_offset, start_panel_frame_width=26,
+                          start_panel_frame_height=height, title='| Valid Targets |',
+                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+
+        lft = vp_x_offset + 1
+
+        entity_tag = vp_y_offset + 2
+        target_letters = []
+
         xx = 0
         if len(valid_targets) == 0:
             str_to_print = "[color=white][font=dungeon]" + 'No valid targets'
-            terminal.printf(x=lft + 3, y=entity_tag, s=str_to_print)
+            terminal.printf(x=vp_x_offset + 3, y=entity_tag, s=str_to_print)
         else:
             for x in valid_targets:
-                str_to_print = "[color=white]" + chr(97 + xx) + ") [color=" + x[3] + "][font=dungeon][bkcolor=" + x[
-                    4] + "]" + x[2] + ' ' + x[1]
-                terminal.printf(x=lft + 2, y=entity_tag, s=str_to_print)
+                entity_name = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=x)
+                entity_fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=x)
+                entity_bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=x)
+
+                str_to_print = "[color=white]" + chr(97 + xx) + ") [color=" + entity_fg + "][font=dungeon][bkcolor=" + entity_bg + "]" + "@" + ' ' + entity_name[0]
+                terminal.printf(x=vp_x_offset + 2, y=entity_tag, s=str_to_print)
                 entity_tag += 1
                 target_letters.append(chr(97 + xx))
                 xx += 1
         str_to_print = "[color=white][font=dungeon]" + 'Press ESC to cancel'
-        terminal.printf(x=lft + 3, y=tp + height, s=str_to_print)
+        terminal.printf(x=vp_x_offset + (lft + 3), y=(vp_y_offset + height), s=str_to_print)
+
+        return target_letters
 
     @staticmethod
     def get_valid_targets_for_spell(gameworld, casting_entity, spell_entity):
-
-        # get x/y position of player character
-        sx = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=casting_entity)
-        sy = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=casting_entity)
+        # get game map x/y position of spell casting entity
+        spell_caster_x_pos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=casting_entity)
+        spell_caster_y_pos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=casting_entity)
 
         spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
 
-        fx = sx - spell_range
-        tx = (sx + spell_range) + 1
-        fy = sy - spell_range
-        ty = (sy + spell_range) + 1
-        # get list of targets within the range of the spell - I scan a square around the player character
+        from_x = spell_caster_x_pos - spell_range
+        to_x = (spell_caster_x_pos + spell_range) + 1
+        from_y = spell_caster_y_pos - spell_range
+        to_y = (spell_caster_y_pos + spell_range) + 1
+        # get list of targets within the range of the spell - I scan a square around the spell caster
         valid_targets = []
-        for xx in range(fx, tx):
-            for yy in range(fy, ty):
-                SpellUtilities.highlight_spell_range(sx, sy, xx, yy)
-                for ent, (pos, name, desc) in gameworld.get_components(mobiles.Position, mobiles.Name,
-                                                                       mobiles.Describable):
-                    if (pos.x == xx and pos.y == yy) and ent != casting_entity:
-                        # is this a valid target for the spell?
-                        valid_targets.append((ent, name.first, desc.glyph, desc.foreground, desc.background))
-        return valid_targets
+        for ent, (pos, name, desc) in gameworld.get_components(mobiles.Position, mobiles.Name,
+                                                               mobiles.Describable):
 
-    @staticmethod
-    def highlight_spell_range(sx, sy, xx, yy):
-        if xx != sx and yy != sy:
-            str_to_print = "[font=dungeon][color=blue].[/color]"
-            terminal.printf(x=xx, y=yy, s=str_to_print)
+            if (pos.x in range(from_x, to_x) and pos.y in range(from_y, to_y)) and ent != casting_entity:
+                # is this a valid target for the spell?
+                valid_targets.append((ent, name.first, desc.glyph, desc.foreground, desc.background))
+
+        return valid_targets
 
     @staticmethod
     def get_spell_cooldown_status(gameworld, spell_entity):
@@ -528,7 +534,7 @@ class SpellUtilities:
                     message_text = formatted_turn_number + ":" + target_names[0] + " screams: " + condition['dialogue_options'][0][
                             target_class]
                     msg = Message(
-                        text=message_text, msgclass="all", fg="white", bg="black", fnt="")
+                        text=message_text, msgclass=0, fg="white", bg="black", fnt="")
                     log_message = formatted_turn_number + ":" + target_names[0] + " screams: " + condition['dialogue_options'][0][
                         target_class]
                     CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
@@ -574,7 +580,7 @@ class SpellUtilities:
 
                     # add dialog for boon effect to message log
                     message_text = formatted_turn_number + ":" + target_names[0] + " " + file_boon['dialogue_options'][0][target_class]
-                    msg = Message(text=message_text, msgclass="all", fg="white", bg="black", fnt="")
+                    msg = Message(text=message_text, msgclass=0, fg="white", bg="black", fnt="")
                     log_message = formatted_turn_number + ":" + target_names[0] + " " + file_boon['dialogue_options'][0][target_class]
                     CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
 

@@ -23,6 +23,7 @@ class RenderUI(esper.Processor):
         fov_map = self.render_map(self.gameworld, game_config, self.game_map)
         self.render_items(game_config, self.gameworld)
         visible_entities = self.render_mobiles(gameworld=self.gameworld, game_config=game_config, fov_map=fov_map)
+
         if len(visible_entities) > 0:
             self.render_entity_display_panel(gameworld=self.gameworld, game_config=game_config,
                                              visible_entities=visible_entities)
@@ -198,6 +199,7 @@ class RenderUI(esper.Processor):
                     if ent != player_entity:
                         visible_entities.append(ent)
 
+        MobileUtilities.set_visible_entities(gameworld=gameworld, target_entity=player_entity, visible_entities=visible_entities)
         return visible_entities
 
     @staticmethod

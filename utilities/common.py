@@ -50,7 +50,7 @@ class CommonUtils:
         msg_start = formatted_turn_number + ":" + caster_name + " hits " + target_name + " for "
         message_text = msg_start + "[color=orange]" + str(
             damage_done_to_target) + " damage[/color] using [[" + spell_name + "]]"
-        msg = Message(text=message_text, msgclass="combat", fg="white", bg="black", fnt="")
+        msg = Message(text=message_text, msgclass=1, fg="white", bg="black", fnt="")
         log_message = msg_start + str(damage_done_to_target) + " damage using [" + spell_name + "]"
 
         CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)

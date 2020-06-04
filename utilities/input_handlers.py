@@ -51,7 +51,7 @@ def handle_game_keys():
     #
     if key == terminal.TK_M:
         if terminal.check(terminal.TK_SHIFT):
-            myevent = 'blur'
+            myevent = ''
             action = ''
         else:
             myevent = 'keypress'
@@ -69,5 +69,14 @@ def handle_game_keys():
     if key == terminal.TK_MOUSE_RIGHT:
         myevent = 'mouserightbutton'
         action = (terminal.state(terminal.TK_MOUSE_X), terminal.state(terminal.TK_MOUSE_Y))
+
+    #
+    # general keyboard
+    #
+    if myevent is None:
+        index = terminal.state(terminal.TK_CHAR) - ord('a')
+        if index >= 0:
+            myevent = 'keypress'
+            action = index
 
     return myevent, action

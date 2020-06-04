@@ -6,6 +6,11 @@ class EnemyPreferredAttackMinRange:
         self.value = value
 
 
+class VisibleEntities:
+    def __init__(self):
+        self.list = []
+
+
 class EnemyPreferredAttackMaxRange:
     def __init__(self, value=0):
         self.value = value
