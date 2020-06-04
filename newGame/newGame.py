@@ -18,22 +18,16 @@ def new_game():
     logger.info('* Initialising game *')
     logger.info('*********************')
 
-    fileName = configUtilities.get_config_value_as_string(game_config, 'files', 'BUILDLIBRARYFILE')
+    file_name = configUtilities.get_config_value_as_string(game_config, 'files', 'BUILDLIBRARYFILE')
 
     # does file exist
-    fileExists = Externalfiles.does_file_exist(fileName)
+    file_exists = Externalfiles.does_file_exist(file_name)
 
     # dynamically update start X & Y positions of where to start drawing the dungeon map
     # the dungeon is visually AFTER the message log
 
-    # message_panel_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
-    #                                                                   parameter='MSG_PANEL_DEPTH')
-
-    # configUtilities.set_config_value(configfile=game_config, section='gui', parameter='VIEWPORT_START_Y',
-    #                                  value=str(message_panel_depth + 1))
-
-    if not fileExists:
-        new_file_object = Externalfiles.create_new_file(fileName)
+    if not file_exists:
+        new_file_object = Externalfiles.create_new_file(file_name)
         logger.info('Creating blank build file')
         Externalfiles.close_existing_file(new_file_object)
 

@@ -163,12 +163,6 @@ class SpellUtilities:
     @staticmethod
     def cast_spell(slot, gameworld, player):
 
-        game_config = configUtilities.load_config()
-        vp_x_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='VIEWPORT_START_X')
-        vp_y_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='VIEWPORT_START_Y')
-
         message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
 
         spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
@@ -194,7 +188,6 @@ class SpellUtilities:
             terminal.refresh()
 
             # wait for user key press
-            # validTargets[ent, name.first, desc.glyph, desc.foreground, desc.background]
             player_not_pressed_a_key = True
             while player_not_pressed_a_key:
                 event_to_be_processed, event_action = handle_game_keys()
@@ -203,7 +196,6 @@ class SpellUtilities:
                         player_not_pressed_a_key = False
 
                     if event_action != 'quit':
-                        player_not_pressed_a_key = False
                         key_pressed = chr(97 + event_action)
 
                         player_not_pressed_a_key, target = SpellUtilities.has_valid_target_been_selected(gameworld=gameworld, player_entity=player, target_letters=target_letters, key_pressed=key_pressed, spell_entity=spell_entity, valid_targets=visible_entities)
