@@ -76,7 +76,6 @@ class CommonUtils:
         game_config = configUtilities.load_config()
 
         event_string = ''
-        et = event_title
         par1 = kwargs.get('player_name', None)
 
         events_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
@@ -84,7 +83,7 @@ class CommonUtils:
         # load file as a dictionary
         events = jsonUtilities.read_json_file(events_file_path)
         for event in events['events']:
-            if event['event-title'] == et:
+            if event['event-title'] == event_title:
                 event_string = event['event-message']
                 break
 

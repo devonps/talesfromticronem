@@ -29,6 +29,12 @@
       "event-title": "damage-direct-outgoing",
       "event-message": "You hit $1 for $2",
       "event-classes": "combat"
+    },
+    {
+      "event-id": 6,
+      "event-title": "spell-fizzle",
+      "event-message": "$1 had been targeted, but the spell fizzled out!",
+      "event-classes": "combat"
     }
     ]
 }
