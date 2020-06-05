@@ -1,0 +1,34 @@
+{
+  "events": [
+    {
+      "event-id": 1,
+      "event-title": "new-game",
+      "event-message": "$1 enters the academy.",
+      "event-classes": "all,story"
+    },
+    {
+      "event-id": 2,
+      "event-title": "game-quit",
+      "event-message": "$1 has quit.",
+      "event-classes": "all,story"
+    },
+    {
+      "event-id": 3,
+      "event-title": "game-death",
+      "event-message": "$1 has died.",
+      "event-classes": "all,story"
+    },
+    {
+      "event-id": 4,
+      "event-title": "game-won",
+      "event-message": "$1 has won!",
+      "event-classes": "all,story"
+    },
+    {
+      "event-id": 5,
+      "event-title": "damage-direct-outgoing",
+      "event-message": "You hit $1 for $2",
+      "event-classes": "combat"
+    }
+    ]
+}

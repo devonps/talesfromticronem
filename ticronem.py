@@ -31,9 +31,12 @@ def game_loop(gameworld):
     message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
     MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=False)
 
-    msg = Message(text="Hello World", msgclass=0, fg="white", bg="black", fnt="")
-    log_message = "hello world"
+    msg_text = CommonUtils.fire_event("new-game", player_name="Steve")
+
+    msg = Message(text=msg_text, msgclass=0, fg="white", bg="black", fnt="")
+    log_message = msg_text
     CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
+
 
     # call scene manager
     game_map = SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)

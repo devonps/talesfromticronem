@@ -1,7 +1,7 @@
 from loguru import logger
 
 from components.messages import Message
-from utilities import configUtilities
+from utilities import configUtilities, jsonUtilities
 from components import messages, mobiles
 from utilities.mobileHelp import MobileUtilities
 
@@ -70,6 +70,28 @@ class CommonUtils:
         # need to add data to the components next
         gameworld.add_component(log_entity, messages.MessageLog(display_from_message=0, display_to_message=10,
                                                            visible_log=0))
+
+    @staticmethod
+    def fire_event(event_title, **kwargs):
+        game_config = configUtilities.load_config()
+
+        event_string = ''
+        et = event_title
+        par1 = kwargs.get('player_name', None)
+
+        events_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                     parameter='EVENTSFILE')
+        # load file as a dictionary
+        events = jsonUtilities.read_json_file(events_file_path)
+        for event in events['events']:
+            if event['event-title'] == et:
+                event_string = event['event-message']
+                break
+
+        new_string = CommonUtils.replace_value_in_event(event_string=event_string, current_value='$1', new_value=par1)
+
+        return new_string
+
 
     @staticmethod
     def add_message(gameworld, message, logid, message_for_export):
@@ -175,3 +197,9 @@ class CommonUtils:
         msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
         CommonUtils.set_visible_log(gameworld=gameworld, log_entity=msglog, log_to_display=logs[2])
         MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=True)
+
+    @staticmethod
+    def replace_value_in_event(event_string, current_value, new_value):
+        zz = event_string.replace(current_value, new_value)
+
+        return zz
