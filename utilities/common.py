@@ -68,8 +68,7 @@ class CommonUtils:
     @staticmethod
     def create_message_log_as_entity(gameworld, log_entity):
         # need to add data to the components next
-        gameworld.add_component(log_entity, messages.MessageLog(display_from_message=0, display_to_message=10,
-                                                           visible_log=0))
+        gameworld.add_component(log_entity, messages.MessageLog(visible_log=0))
 
     @staticmethod
     def fire_event(event_title, **kwargs):

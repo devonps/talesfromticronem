@@ -109,7 +109,7 @@ class RenderMessageLog(esper.Processor):
 
         # now show the messages
         visible_messages, display_messages_from, display_messages_to, display_messages_count = CommonUtils.get_messages_for_visible_message_log(gameworld=self.gameworld, log_entity=message_log_entity)
-        display_line = 4
+        display_line = 3
         msg_log_display_x = 1
         if display_messages_count > 0:
             for msg in range(display_messages_from, display_messages_to):
