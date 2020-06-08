@@ -50,9 +50,8 @@ class CastSpells(esper.Processor):
                         MobileUtilities.set_current_health_during_combat(gameworld=self.gameworld, entity=mob.spell_target,
                                                                          damage_to_apply=damage_done_to_target)
 
-                        CommonUtils.format_combat_log_message(gameworld=self.gameworld, caster_name=caster_name[0], target_name=target_names[0],
-                                                              damage_done_to_target=damage_done_to_target,
-                                                              spell_name=spell_name)
+                        CommonUtils.fire_event("spell-causes-damage", gameworld=self.gameworld, caster=caster_name[0], target=target_names[0], damage=str(damage_done_to_target), spell_name=spell_name)
+
                 if spell_type == 'heal':
                     self.cast_healing_spell()
 

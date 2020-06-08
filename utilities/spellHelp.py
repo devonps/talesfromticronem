@@ -168,9 +168,6 @@ class SpellUtilities:
         spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                           player_entity=player)
 
-        current_turn = MobileUtilities.get_current_turn(gameworld=gameworld, entity=player)
-        formatted_turn_number = CommonUtils.format_game_turn_as_string(current_turn=current_turn)
-
         logger.info('Casting spell with entity id {} from slot {}', spell_entity, slot)
 
         # check if spell is on cool-down
@@ -199,14 +196,10 @@ class SpellUtilities:
                         key_pressed = chr(97 + event_action)
 
                         player_not_pressed_a_key, target = SpellUtilities.has_valid_target_been_selected(gameworld=gameworld, player_entity=player, target_letters=target_letters, key_pressed=key_pressed, spell_entity=spell_entity, valid_targets=visible_entities)
-                        target_name = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=visible_entities[target])
                         logger.warning('Player casting: message log id is {}', message_log_id)
-                        SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, target_name=target_name[0], player_not_pressed_a_key=player_not_pressed_a_key)
         else:
-            message_text = formatted_turn_number + ":" + "Spell is on cooldown "
-            msg = Message(text=message_text, msgclass=0, fg="white", bg="black", fnt="")
-            log_message = formatted_turn_number + ":" + "Spell is on cooldown "
-            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,  message_for_export=log_message)
+            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+            CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
 
     @staticmethod
     def has_valid_target_been_selected(gameworld, player_entity, target_letters, key_pressed, spell_entity, valid_targets):
@@ -222,22 +215,6 @@ class SpellUtilities:
                                                       spell_target=valid_targets[0], spell_bar_slot=1))
 
         return player_not_pressed_a_key, target
-
-    @staticmethod
-    def helper_add_valid_target_to_message_log(gameworld, target_name, player_not_pressed_a_key):
-        if not player_not_pressed_a_key:
-            game_config = configUtilities.load_config()
-            player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-            message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
-            current_turn = MobileUtilities.get_current_turn(gameworld=gameworld, entity=player_entity)
-            formatted_turn_number = CommonUtils.format_game_turn_as_string(current_turn=current_turn)
-
-            str_to_print = formatted_turn_number + ":" + target_name + " has been targeted."
-            msg = Message(text=str_to_print, msgclass=0, fg="yellow", bg="", fnt="")
-            log_message = str_to_print
-            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,
-                                    message_for_export=log_message)
-
 
     @staticmethod
     def helper_print_valid_targets(gameworld, valid_targets):
@@ -501,10 +478,6 @@ class SpellUtilities:
         current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=target_entity)
         target_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=target_entity)
         target_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=target_entity)
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
-        current_turn = MobileUtilities.get_current_turn(gameworld=gameworld, entity=player_entity)
-        formatted_turn_number = CommonUtils.format_game_turn_as_string(current_turn=current_turn)
 
         # read the conditions.json file
         conditions_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
@@ -523,13 +496,8 @@ class SpellUtilities:
                          'displayChar': condition['char']}
 
                     # add dialog for condition damage to message log
-                    message_text = formatted_turn_number + ":" + target_names[0] + " screams: " + condition['dialogue_options'][0][
-                            target_class]
-                    msg = Message(
-                        text=message_text, msgclass=0, fg="white", bg="black", fnt="")
-                    log_message = formatted_turn_number + ":" + target_names[0] + " screams: " + condition['dialogue_options'][0][
-                        target_class]
-                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
+                    CommonUtils.fire_event("condi-applied", gameworld=gameworld, target=target_names[0], effect_dialogue=condition['dialogue_options'][0][
+                            target_class])
 
                     current_condis.append(z)
 
@@ -546,10 +514,6 @@ class SpellUtilities:
         current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=target_entity)
         target_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=target_entity)
         target_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=target_entity)
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
-        current_turn = MobileUtilities.get_current_turn(gameworld=gameworld, entity=player_entity)
-        formatted_turn_number = CommonUtils.format_game_turn_as_string(current_turn=current_turn)
 
         # read the boons.json file
         boons_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
@@ -571,10 +535,7 @@ class SpellUtilities:
                                                                                             entity=target_entity)
 
                     # add dialog for boon effect to message log
-                    message_text = formatted_turn_number + ":" + target_names[0] + " " + file_boon['dialogue_options'][0][target_class]
-                    msg = Message(text=message_text, msgclass=0, fg="white", bg="black", fnt="")
-                    log_message = formatted_turn_number + ":" + target_names[0] + " " + file_boon['dialogue_options'][0][target_class]
-                    CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
+                    CommonUtils.fire_event("boon-applied", gameworld=gameworld, target=target_names[0], effect_dialogue=file_boon['dialogue_options'][0][target_class])
 
                     # current_boons is a map
                     current_boons.append(b)

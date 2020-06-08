@@ -20,12 +20,12 @@
       "char": "b",
       "dialogue_options": [{
         "default": "I'm bleeding",
-        "necromancer": "That's my blood!",
+        "necromancer": "that's my blood!",
         "witchdoctor": "I care not for my blood!",
-        "illusionist": "Losing blood",
+        "illusionist": "losing blood",
         "elementalist": "I'm hemorrhaging",
-        "druid": "Arrgh, it hurts",
-        "chronomancer": "It's only a drop!"
+        "druid": "arrgh, it hurts",
+        "chronomancer": "it's only a drop!"
       }]
     },
        {

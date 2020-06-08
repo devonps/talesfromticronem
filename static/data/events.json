@@ -26,7 +26,7 @@
     },
     {
       "event-id": 5,
-      "event-title": "damage-direct-outgoing",
+      "event-title": "player-outgoing-direct-damage",
       "event-message": "You hit $1 for $2",
       "event-classes": "combat"
     },
@@ -34,6 +34,54 @@
       "event-id": 6,
       "event-title": "spell-fizzle",
       "event-message": "$1 had been targeted, but the spell fizzled out!",
+      "event-classes": "combat"
+    },
+    {
+      "event-id": 7,
+      "event-title": "spell-causes-damage",
+      "event-message": "$1 hits $2 for [color=orange]$3[/color] damage using [[$4]]",
+      "event-classes": "combat"
+    },
+    {
+      "event-id": 8,
+      "event-title": "spell-cooldown",
+      "event-message": "$1 is on cooldown.",
+      "event-classes": "all,combat"
+    },
+    {
+      "event-id": 9,
+      "event-title": "condi-applied",
+      "event-message": "$1 screams $2.",
+      "event-classes": "combat"
+    },
+    {
+      "event-id": 10,
+      "event-title": "boon-applied",
+      "event-message": "$1 sighs $2.",
+      "event-classes": "combat"
+    },
+    {
+      "event-id": 11,
+      "event-title": "condi-damage",
+      "event-message": "$1 takes[color=MSGLOG_COMBAT_DAMAGE_OUTGOING] $2 damage [/color]from [color=MSGLOG_COMBAT_DAMAGE_OUTGOING][[$3]][/color]",
+      "event-classes": "combat"
+    },
+    {
+      "event-id": 12,
+      "event-title": "boon-benefit",
+      "event-message": "$1 gains [color=MSGLOG_GAME_APPLY_BOON] $2 [/color]from [color=MSGLOG_GAME_APPLY_BOON][[$3]][/color]",
+      "event-classes": "combat"
+    },
+    {
+      "event-id": 13,
+      "event-title": "boon-removal",
+      "event-message": "$1 loses [color=MSGLOG_GAME_REMOVE_BOON][[$2]][/color]",
+      "event-classes": "combat"
+    },
+    {
+      "event-id": 14,
+      "event-title": "condi-removal",
+      "event-message": "$1 is no longer [color=MSGLOG_GAME_REMOVE_CONDITION] $2[/color]",
       "event-classes": "combat"
     }
     ]

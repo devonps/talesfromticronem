@@ -39,23 +39,6 @@ class CommonUtils:
         return tile_char
 
     @staticmethod
-    def format_combat_log_message(gameworld, caster_name, target_name, damage_done_to_target, spell_name):
-
-        game_config = configUtilities.load_config()
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
-        current_turn = MobileUtilities.get_current_turn(gameworld=gameworld, entity=player_entity)
-        formatted_turn_number = CommonUtils.format_game_turn_as_string(current_turn=current_turn)
-
-        msg_start = formatted_turn_number + ":" + caster_name + " hits " + target_name + " for "
-        message_text = msg_start + "[color=orange]" + str(
-            damage_done_to_target) + " damage[/color] using [[" + spell_name + "]]"
-        msg = Message(text=message_text, msgclass=1, fg="white", bg="black", fnt="")
-        log_message = msg_start + str(damage_done_to_target) + " damage using [" + spell_name + "]"
-
-        CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id, message_for_export=log_message)
-
-    @staticmethod
     def format_game_turn_as_string(current_turn):
         base_turn_string = '00000'
         current_turn_as_string = str(current_turn)
@@ -71,12 +54,22 @@ class CommonUtils:
         gameworld.add_component(log_entity, messages.MessageLog(visible_log=0))
 
     @staticmethod
-    def fire_event(event_title, **kwargs):
+    def fire_event(event_title, gameworld, **kwargs):
+        """
+        :param event_title: name of the event/message to be generated
+        :param gameworld:
+        :param kwargs: see method definition
+        """
         game_config = configUtilities.load_config()
+        player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        message_log_entity = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+        current_turn = MobileUtilities.get_current_turn(gameworld=gameworld, entity=player)
+        formatted_turn_number = CommonUtils.format_game_turn_as_string(current_turn=current_turn)
 
-        event_string = ''
-        par1 = kwargs.get('player_name', None)
-
+        new_string = ''
+        foreground_colour = kwargs.get('fg', 'white')
+        background_colour = kwargs.get('bg', 'black')
+        event_classes = []
         events_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                      parameter='EVENTSFILE')
         # load file as a dictionary
@@ -84,26 +77,98 @@ class CommonUtils:
         for event in events['events']:
             if event['event-title'] == event_title:
                 event_string = event['event-message']
-                break
+                event_classes = CommonUtils.convert_string_to_list(event['event-classes'])
+                if event_title == 'new-game':
+                    par1 = kwargs.get('player_name', None)
+                    par2 = kwargs.get('building', None)
+                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(event_string=event_string,
+                                                                                              par1=par1, par2=par2)
+                    break
 
-        new_string = CommonUtils.replace_value_in_event(event_string=event_string, current_value='$1', new_value=par1)
+                if event_title == 'spell-causes-damage':
+                    par1 = kwargs.get('caster', None)
+                    par2 = kwargs.get('target', None)
+                    par3 = kwargs.get('damage', None)
+                    par4 = kwargs.get('spell_name', None)
+                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(
+                        event_string=event_string, par1=par1, par2=par2, par3=par3, par4=par4)
 
-        return new_string
+                    break
+                if event_title == 'spell-cooldown':
+                    par1 = kwargs.get('spell_name', None)
+                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(
+                        event_string=event_string, par1=par1)
+                    break
+
+                if event_title == 'condi-applied':
+                    par1 = kwargs.get('target', None)
+                    par2 = kwargs.get('effect_dialogue', None)
+                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(event_string=event_string,
+                                                                                              par1=par1, par2=par2)
+                    break
+
+                if event_title == 'condi-damage':
+                    par1 = kwargs.get('target', None)
+                    par2 = kwargs.get('damage', None)
+                    par3 = kwargs.get('condi_name', None)
+                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(
+                        event_string=event_string, par1=par1, par2=par2, par3=par3)
+
+                    break
+
+                if event_title == 'boon-benefit':
+                    par1 = kwargs.get('target', None)
+                    par2 = kwargs.get('benefit', None)
+                    par3 = kwargs.get('boon_name', None)
+                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(
+                        event_string=event_string, par1=par1, par2=par2, par3=par3)
+
+                    break
+
+                if event_title == 'boon-removal':
+                    par1 = kwargs.get('target', None)
+                    par2 = kwargs.get('boon_name', None)
+                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(
+                        event_string=event_string,
+                        par1=par1, par2=par2)
+                    break
+
+
+        if new_string != '':
+            n = 0
+            for _ in event_classes:
+                if event_classes[n] == 'all':
+                    message_class = 0
+                elif event_classes[n] == 'combat':
+                    message_class = 1
+                elif event_classes[n] == 'story':
+                    message_class = 2
+                else:
+                    message_class = 3
+                n += 1
+
+                msg = Message(text=new_string, msgclass=message_class, fg=foreground_colour, bg=background_colour, fnt="")
+                log_message = new_string
+                CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity, message_for_export=log_message)
 
 
     @staticmethod
-    def add_message(gameworld, message, logid, message_for_export):
-        stored_msgs = CommonUtils.get_message_log_all_messages(gameworld=gameworld, log_entity=logid)
+    def convert_string_to_list(the_string):
+        return list(the_string.split(","))
+
+    @staticmethod
+    def add_message(gameworld, message, log_entity, message_for_export):
+        stored_msgs = CommonUtils.get_message_log_all_messages(gameworld=gameworld, log_entity=log_entity)
         if stored_msgs is None:
             stored_msgs = []
         stored_msgs.append(message)
-        message_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        message_component = gameworld.component_for_entity(log_entity, messages.MessageLog)
         message_component.storedMessages = stored_msgs
 
         # this next piece of code adds a plain/vanilla message ready to be exported
-        stored_export_messages = CommonUtils.get_all_log_messages_for_export(gameworld=gameworld, log_entity=logid)
+        stored_export_messages = CommonUtils.get_all_log_messages_for_export(gameworld=gameworld, log_entity=log_entity)
         stored_export_messages.append(message_for_export)
-        message_component = gameworld.component_for_entity(logid, messages.MessageLog)
+        message_component = gameworld.component_for_entity(log_entity, messages.MessageLog)
         message_component.stored_log_messages = stored_export_messages
 
     @staticmethod
@@ -197,7 +262,23 @@ class CommonUtils:
         MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=True)
 
     @staticmethod
-    def replace_value_in_event(event_string, current_value, new_value):
-        zz = event_string.replace(current_value, new_value)
+    def replace_value_in_event(event_string, **kwargs):
+        par1 = kwargs.get('par1', None)
+        par2 = kwargs.get('par2', None)
+        par3 = kwargs.get('par3', None)
+        par4 = kwargs.get('par4', None)
+        par1_identifier = kwargs.get('par1_identifier', '$1')
+        par2_identifier = kwargs.get('par2_identifier', '$2')
+        par3_identifier = kwargs.get('par2_identifier', '$3')
+        par4_identifier = kwargs.get('par2_identifier', '$4')
 
-        return zz
+        return_string = event_string.replace(par1_identifier, par1)
+        if par2:
+            return_string = return_string.replace(par2_identifier, par2)
+        if par3:
+            return_string = return_string.replace(par3_identifier, par3)
+        if par4:
+            return_string = return_string.replace(par4_identifier, par4)
+
+        return return_string
+

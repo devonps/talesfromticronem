@@ -74,7 +74,7 @@ class StatelessAI:
                             logger.info('on turn {}: {} couldnt retreat so attempted to cast spell entity {}', current_turn,
                                         entity_names[0], spell_to_cast)
 
-                            StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent, current_turn=current_turn)
+                            StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent)
                         else:
                             # stand still #TODO
                             logger.info('on turn {}: {} felt threatened but didnt really know why', current_turn,
@@ -92,7 +92,7 @@ class StatelessAI:
                         if i_can_see_the_player:
                             spell_to_cast, spell_bar_slot_id = SpellUtilities.enemy_choose_random_spell_to_cast(spells_to_choose_from=remaining_spells, weapon_type=weapon_type)
                             logger.info('on turn {}: {} stood firm and cast spell entity {}', current_turn, entity_names[0], spell_to_cast)
-                            StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent, current_turn=current_turn)
+                            StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent)
                         else:
                             # stand still #TODO
                             logger.info('on turn {}: {} was out of luck, they couldnt see the player', current_turn,
@@ -111,7 +111,7 @@ class StatelessAI:
                         if i_can_see_the_player:
                             spell_to_cast, spell_bar_slot_id = SpellUtilities.enemy_choose_random_spell_to_cast(spells_to_choose_from=remaining_spells, weapon_type=weapon_type)
                             logger.info('on turn {}: {} is casting spell entity {}', current_turn, entity_names[0], spell_to_cast)
-                            StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent, current_turn=current_turn)
+                            StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent)
                         else:
                             logger.info('on turn {}: {} was really perplexed', current_turn,
                                         entity_names[0])
@@ -121,7 +121,7 @@ class StatelessAI:
                 elif i_can_cast_a_spell and i_can_see_the_player:
                     spell_to_cast, spell_bar_slot_id = SpellUtilities.enemy_choose_random_spell_to_cast(spells_to_choose_from=remaining_spells, weapon_type=weapon_type)
                     logger.info('on turn {}: {} decided to cast spell entity {}', current_turn, entity_names[0], spell_to_cast)
-                    StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent, current_turn=current_turn)
+                    StatelessAI.the_spell_i_want_to_cast(gameworld=gameworld, player_entity=player_entity, spell_to_cast=spell_to_cast, spell_bar_slot_id=spell_bar_slot_id, ent=ent)
                 else:
                     # stand still #TODO
                     logger.info('on turn {}: {} really didnt know what to do', current_turn, entity_names[0])
@@ -130,9 +130,7 @@ class StatelessAI:
                 pass
 
     @staticmethod
-    def the_spell_i_want_to_cast(gameworld, player_entity, spell_to_cast,spell_bar_slot_id, ent, current_turn):
-
-        target_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player_entity)
+    def the_spell_i_want_to_cast(gameworld, player_entity, spell_to_cast,spell_bar_slot_id, ent):
 
         # check if there is actually a spell to cast: if Zero then previous checks stopped a spell from being cast
         if spell_to_cast > 0:
@@ -141,18 +139,9 @@ class StatelessAI:
                                     mobiles.SpellCast(truefalse=True, spell_entity=spell_to_cast,
                                                       spell_target=player_entity, spell_bar_slot=spell_bar_slot_id,
                                                       spell_caster=ent))
-            SpellUtilities.helper_add_valid_target_to_message_log(gameworld=gameworld, target_name=target_names[0],
-                                                                  player_not_pressed_a_key=False)
         else:
             # spit out a game message
-            formatted_turn_number = CommonUtils.format_game_turn_as_string(current_turn=current_turn)
-            message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player_entity)
-
-            str_to_print = formatted_turn_number + ":" + target_names[0] + " had been targeted, but the spell fizzled out!"
-            msg = Message(text=str_to_print, msgclass=1, fg="yellow", bg="", fnt="")
-            log_message = str_to_print
-            CommonUtils.add_message(gameworld=gameworld, message=msg, logid=message_log_id,
-                                    message_for_export=log_message)
+            CommonUtils.fire_event("spell-fizzle", gameworld=gameworld, fg="yellow")
 
 
     @staticmethod

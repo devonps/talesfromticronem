@@ -25,7 +25,7 @@ class Entity:
                 y = random.randint(0, my - 1)
                 if not game_map.tiles[x][y].blocked:
                     placed = True
-                # Entity.create_enemy_role(posx=x, posy=y, gameworld=gameworld, game_config=game_config, enemy_role=enemy_role)
+                Entity.create_enemy_role(posx=x, posy=y, gameworld=gameworld, game_config=game_config, enemy_role=enemy_role)
 
     @staticmethod
     def create_new_entity(gameworld):
