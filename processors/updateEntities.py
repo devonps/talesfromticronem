@@ -2,7 +2,6 @@ import esper
 from loguru import logger
 
 from components import mobiles
-from components.messages import Message
 from utilities import formulas
 from utilities.common import CommonUtils
 from utilities.mobileHelp import MobileUtilities
@@ -10,7 +9,7 @@ from utilities.mobileHelp import MobileUtilities
 
 class UpdateEntitiesProcessor(esper.Processor):
     """
-    This processor cycles through ALL entities and calculates their attributes
+    This processor cycles through ALL MOBILES and calculates their attributes
     """
 
     def __init__(self, gameworld):

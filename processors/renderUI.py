@@ -39,8 +39,8 @@ class RenderUI(esper.Processor):
     def render_entity_display_panel(gameworld, game_config, visible_entities):
 
         # right hand side divider
-        for dy in range(47):
-            terminal.printf(x=62, y=dy, s="[color=red][font=dungeon]▒")
+        for dy in range(40):
+            terminal.printf(x=63, y=dy, s="[color=red][font=dungeon]▒")
 
         image_start_x_pos = 64
         entity_y_draw_pos = 4
