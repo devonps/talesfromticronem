@@ -5,7 +5,8 @@ from utilities import colourUtilities, configUtilities
 from utilities.common import CommonUtils
 from utilities.display import draw_simple_frame, draw_colourful_frame, set_jewellery_left_ear_string, \
     set_jewellery_right_ear_string, set_jewellery_left_hand_string, set_jewellery_right_hand_string, \
-    set_jewellery_neck_string
+    set_jewellery_neck_string, get_head_armour_details, get_chest_armour_details, get_hands_armour_details, \
+    get_legs_armour_details, get_feet_armour_details
 from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
@@ -419,23 +420,43 @@ class Debug:
                           title=section_heading[section] + " (" + str(total_armour) + ")",
                           fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
-        str_to_print = "[color=blue]Location Material Display Defense[/color]"
+        str_to_print = "[color=blue]Location Mat/Disp/Def[/color]"
 
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=str_to_print)
 
-        str_to_print = Debug.get_head_armour_details(gameworld=gameworld, entity_id=entity_id)
+        items = get_head_armour_details(gameworld=gameworld, entity_id=entity_id)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[1] + '/' + items[2] + '/' + items[3]
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=str_to_print)
 
-        str_to_print = Debug.get_chest_armour_details(gameworld=gameworld, entity_id=entity_id)
+        items = get_chest_armour_details(gameworld=gameworld, entity_id=entity_id)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[1] + '/' + items[2] + '/' + items[3]
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=str_to_print)
 
-        str_to_print = Debug.get_hands_armour_details(gameworld=gameworld, entity_id=entity_id)
+        items = get_hands_armour_details(gameworld=gameworld, entity_id=entity_id)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[1] + '/' + items[2] + '/' + items[3]
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6, s=str_to_print)
 
-        str_to_print = Debug.get_legs_armour_details(gameworld=gameworld, entity_id=entity_id)
+        items = get_legs_armour_details(gameworld=gameworld, entity_id=entity_id)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[1] + '/' + items[2] + '/' + items[3]
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 7, s=str_to_print)
 
-        str_to_print = Debug.get_feet_armour_details(gameworld=gameworld, entity_id=entity_id)
+        items = get_feet_armour_details(gameworld=gameworld, entity_id=entity_id)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[1] + '/' + items[2] + '/' + items[3]
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 8, s=str_to_print)
 
         # display primary attributes

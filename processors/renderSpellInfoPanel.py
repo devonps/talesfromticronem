@@ -1,11 +1,12 @@
 import esper
 from bearlibterminal import terminal
 
-from utilities import configUtilities, formulas
+from utilities import configUtilities
 from utilities.common import CommonUtils
 from utilities.display import set_both_hands_weapon_string_es, set_main_hand_weapon_string_es, \
     set_off_hand_weapon_string_es, set_jewellery_left_ear_string, set_jewellery_right_ear_string, \
-    set_jewellery_left_hand_string, set_jewellery_right_hand_string, set_jewellery_neck_string
+    set_jewellery_left_hand_string, set_jewellery_right_hand_string, set_jewellery_neck_string, get_head_armour_details, \
+    get_chest_armour_details, get_hands_armour_details, get_legs_armour_details, get_feet_armour_details
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
@@ -182,7 +183,53 @@ class RenderSpellInfoPanel(esper.Processor):
 
     @staticmethod
     def render_equipped_armour(gameworld, game_config):
-        return True
+        plpayer_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        spell_infobox_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='SI_START_X')
+
+        spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='SI_START_Y')
+
+        # title bar
+        terminal.printf(x=spell_infobox_start_x + 60, y=spell_infobox_start_y + 1, s='Armour')
+
+        items = get_head_armour_details(gameworld=gameworld, entity_id=plpayer_entity)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[2]
+        terminal.print_(x=spell_infobox_start_x + 60, y=spell_infobox_start_y + 2, s=str_to_print)
+
+        items = get_chest_armour_details(gameworld=gameworld, entity_id=plpayer_entity)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[2]
+
+        terminal.print_(x=spell_infobox_start_x + 60, y=spell_infobox_start_y + 3, s=str_to_print)
+
+        items = get_hands_armour_details(gameworld=gameworld, entity_id=plpayer_entity)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[2]
+
+        terminal.print_(x=spell_infobox_start_x + 60, y=spell_infobox_start_y + 4, s=str_to_print)
+
+        items = get_legs_armour_details(gameworld=gameworld, entity_id=plpayer_entity)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[2]
+
+        terminal.print_(x=spell_infobox_start_x + 60, y=spell_infobox_start_y + 5, s=str_to_print)
+
+        items = get_feet_armour_details(gameworld=gameworld, entity_id=plpayer_entity)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[2]
+        terminal.print_(x=spell_infobox_start_x + 60, y=spell_infobox_start_y + 6, s=str_to_print)
 
     def render_spell_bar(self):
         return True

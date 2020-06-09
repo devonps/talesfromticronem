@@ -6,6 +6,9 @@ from utilities.itemsHelp import ItemUtilities
 
 # the selected option is the choice from list_options that will be highlighted
 # so if list_options were  [apple, orange, grape] and selected_option were 'grape' then grape would be highlighted
+from utilities.mobileHelp import MobileUtilities
+
+
 def coloured_list(list_options, list_x, list_y, selected_option, blank_line, fg):
     list_count = 0
     start_print_string = "[color="
@@ -315,3 +318,78 @@ def set_jewellery_neck_string(gameworld, neck):
         item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=neck)
         neck_string = item_string + activator + ' ' + item_name
     return neck_string
+
+
+def get_head_armour_details(gameworld, entity_id):
+    no_item = "[color=DISPLAY_NO_ITEM_EQUIPPED]Head :None[/color]"
+    item = "[color=DISPLAY_ITEM_EQUIPPED]Head :[/color]"
+    item_list = [no_item]
+    head_armour_id = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=entity_id)
+    if head_armour_id > 0:
+        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=head_armour_id)
+        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=head_armour_id)
+        def_head_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=head_armour_id)
+
+        item_list = [item, armour_material, armour_displayname, str(def_head_value)]
+    return item_list
+
+
+def get_chest_armour_details(gameworld, entity_id):
+    no_item = "[color=DISPLAY_NO_ITEM_EQUIPPED]Chest:None[/color]"
+    item = "[color=DISPLAY_ITEM_EQUIPPED]Chest:[/color]"
+    item_list = [no_item]
+    chest_armour_id = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=entity_id)
+    if chest_armour_id > 0:
+        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=chest_armour_id)
+        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=chest_armour_id)
+        def_chest_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest_armour_id)
+
+        item_list = [item, armour_material, armour_displayname, str(def_chest_value)]
+
+    return item_list
+
+
+def get_hands_armour_details(gameworld, entity_id):
+    no_item = "[color=DISPLAY_NO_ITEM_EQUIPPED]Hands:None[/color]"
+    item = "[color=DISPLAY_ITEM_EQUIPPED]Hands:[/color]"
+    item_list = [no_item]
+    hands_armour_id = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity_id)
+    if hands_armour_id > 0:
+        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=hands_armour_id)
+        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=hands_armour_id)
+        def_hands_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands_armour_id)
+
+        item_list = [item, armour_material, armour_displayname, str(def_hands_value)]
+
+    return item_list
+
+
+def get_legs_armour_details(gameworld, entity_id):
+    no_item = "[color=DISPLAY_NO_ITEM_EQUIPPED]Legs :None[/color]"
+    item = "[color=DISPLAY_ITEM_EQUIPPED]Legs :[/color]"
+    item_list = [no_item]
+    legs_armour_id = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=entity_id)
+    if legs_armour_id > 0:
+        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=legs_armour_id)
+        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=legs_armour_id)
+        def_legs_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs_armour_id)
+
+        item_list = [item, armour_material, armour_displayname, str(def_legs_value)]
+
+    return item_list
+
+
+def get_feet_armour_details(gameworld, entity_id):
+    no_item = "[color=DISPLAY_NO_ITEM_EQUIPPED]Feet :None[/color]"
+    item = "[color=DISPLAY_ITEM_EQUIPPED]Feet :[/color]"
+    item_list = [no_item]
+    feet_armour_id = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=entity_id)
+    if feet_armour_id > 0:
+        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=feet_armour_id)
+        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=feet_armour_id)
+        def_feet_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet_armour_id)
+
+        item_list = [item, armour_material, armour_displayname, str(def_feet_value)]
+
+    return item_list
+
