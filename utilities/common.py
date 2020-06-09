@@ -80,9 +80,10 @@ class CommonUtils:
                 event_classes = CommonUtils.convert_string_to_list(event['event-classes'])
                 if event_title == 'new-game':
                     par1 = kwargs.get('player_name', None)
-                    par2 = kwargs.get('building', None)
+                    par2 = kwargs.get('player_race', None)
+                    par3 = kwargs.get('player_class', None)
                     new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(event_string=event_string,
-                                                                                              par1=par1, par2=par2)
+                                                                                              par1=par1, par2=par2, par3=par3)
                     break
 
                 if event_title == 'spell-causes-damage':

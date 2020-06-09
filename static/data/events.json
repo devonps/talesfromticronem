@@ -3,7 +3,7 @@
     {
       "event-id": 1,
       "event-title": "new-game",
-      "event-message": "$1 enters the academy.",
+      "event-message": "$1 the $2 $3 enters the academy.",
       "event-classes": "all,story"
     },
     {

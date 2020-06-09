@@ -189,9 +189,9 @@ class RenderSpellInfoPanel(esper.Processor):
         spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
                                                                             parameter='SI_START_Y')
 
-        armour_pos_x = 65
+        armour_pos_x = 60
         # title bar
-        terminal.printf(x=spell_infobox_start_x + 70, y=spell_infobox_start_y + 1, s='Armour')
+        terminal.printf(x=armour_pos_x + 5, y=spell_infobox_start_y + 1, s='Armour')
 
         items = get_head_armour_details(gameworld=gameworld, entity_id=plpayer_entity)
         if len(items) == 1:
@@ -314,16 +314,22 @@ class RenderSpellInfoPanel(esper.Processor):
                 spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=self.gameworld, spell_entity=slot_spell_entity)
 
             # cooldown counter
-
             if spell_on_cooldown:
                 spell_cooldown = unicode_cooldown_enabled
                 spell_hotkey_print = unicode_spell_hotkey_disabled
+                cooldown_value = SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld, spell_entity=slot_spell_entity)
             else:
                 spell_cooldown = unicode_cooldown_disabled
                 spell_hotkey_print = unicode_spell_hotkey_enabled
+                cooldown_value = 0
+
+            if cooldown_value == 0:
+                c1 = spell_ascii_zero
+                c2 = spell_ascii_zero
+                c3 = spell_ascii_zero
 
             terminal.printf(x=spell_cooldown_counter_start_x, y=spell_infobox_start_y + 1,
-                            s=spell_cooldown + spell_ascii_zero + '][' + spell_ascii_zero + '][' + spell_ascii_zero + ']')
+                            s=spell_cooldown + c1 + '][' + c2 + '][' + c3 + ']')
 
             # spell hotkey
             if hotkey == 0:

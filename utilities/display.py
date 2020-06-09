@@ -239,8 +239,8 @@ def draw_clear_text_box(posx, posy, width, height, text, fg, bg):
 
 
 def set_both_hands_weapon_string_es(both_weapon, gameworld):
-    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]Both: none[/color]"
-    item_string = "[color=DISPLAY_ITEM_EQUIPPED]Both: [/color]"
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]Both  : none[/color]"
+    item_string = "[color=DISPLAY_ITEM_EQUIPPED]Both  : [/color]"
     both_hands_weapon_name = no_item_string
     if both_weapon > 0:
         both_hands_weapon_name = item_string + ItemUtilities.get_item_name(gameworld=gameworld, entity=both_weapon)
