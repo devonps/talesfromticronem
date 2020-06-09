@@ -37,9 +37,7 @@ class StartGame:
 
         while show_game_start_screen:
 
-            draw_colourful_frame(title=game_title, title_decorator=True, title_loc='centre', corner_decorator='',
-                                 corner_studs='',
-                                 msg=0)
+            draw_colourful_frame(title=game_title, title_decorator=True, title_loc='centre', corner_decorator='', msg=0)
 
             # place game version message
             string_to_print = '[color=light grey]' + game_version

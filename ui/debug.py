@@ -3,12 +3,15 @@ from loguru import logger
 
 from utilities import colourUtilities, configUtilities
 from utilities.common import CommonUtils
-from utilities.display import draw_simple_frame, draw_colourful_frame
+from utilities.display import draw_simple_frame, draw_colourful_frame, set_jewellery_left_ear_string, \
+    set_jewellery_right_ear_string, set_jewellery_left_hand_string, set_jewellery_right_hand_string, \
+    set_jewellery_neck_string
 from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
+from utilities.display import set_off_hand_weapon_string_es, set_main_hand_weapon_string_es, set_both_hands_weapon_string_es
 
 
 class Debug:
@@ -64,8 +67,7 @@ class Debug:
             Debug.clear_terminal_area_es(game_config=game_config)
 
             # draw a frame around the components
-            draw_colourful_frame(title=' Entity Spy ', title_decorator=True, title_loc='centre',
-                                 corner_decorator='', corner_studs='square',
+            draw_colourful_frame(title=' Entity Spy ', title_decorator=True, title_loc='centre', corner_decorator='',
                                  msg=4)
 
             # display page one of entity components
@@ -249,8 +251,7 @@ class Debug:
         start_string = "[color=ENTITY_SPY_COMPONENT]"
         end_string = "[/color]"
 
-        draw_colourful_frame(title=" Entity Spy ", title_decorator=True, title_loc='centre',
-                             corner_decorator='', corner_studs='square', msg=4)
+        draw_colourful_frame(title=" Entity Spy ", title_decorator=True, title_loc='centre', corner_decorator='', msg=4)
 
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
@@ -302,9 +303,9 @@ class Debug:
         off_weapon = weapons_list[1]
         both_weapon = weapons_list[2]
 
-        both_hands = Debug.set_both_hands_weapon_string_es(gameworld=gameworld, both_weapon=both_weapon)
-        main_hand = Debug.set_main_hand_weapon_string_es(main_weapon=main_weapon, gameworld=gameworld)
-        off_hand = Debug.set_off_hand_weapon_string_es(off_weapon=off_weapon, gameworld=gameworld)
+        both_hands = set_both_hands_weapon_string_es(gameworld=gameworld, both_weapon=both_weapon)
+        main_hand = set_main_hand_weapon_string_es(main_weapon=main_weapon, gameworld=gameworld)
+        off_hand = set_off_hand_weapon_string_es(off_weapon=off_weapon, gameworld=gameworld)
 
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=both_hands)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=main_hand)
@@ -317,11 +318,11 @@ class Debug:
                           fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
         equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=entity_id)
-        left_ear = Debug.set_jewellery_left_ear_string(gameworld=gameworld, left_ear=equipped_jewellery[0])
-        right_ear = Debug.set_jewellery_right_ear_string(gameworld=gameworld, right_ear=equipped_jewellery[1])
-        left_hand = Debug.set_jewellery_left_hand_string(gameworld=gameworld, left_hand=equipped_jewellery[2])
-        right_hand = Debug.set_jewellery_right_hand_string(gameworld=gameworld, right_hand=equipped_jewellery[3])
-        neck = Debug.set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
+        left_ear = set_jewellery_left_ear_string(gameworld=gameworld, left_ear=equipped_jewellery[0])
+        right_ear = set_jewellery_right_ear_string(gameworld=gameworld, right_ear=equipped_jewellery[1])
+        left_hand = set_jewellery_left_hand_string(gameworld=gameworld, left_hand=equipped_jewellery[2])
+        right_hand = set_jewellery_right_hand_string(gameworld=gameworld, right_hand=equipped_jewellery[3])
+        neck = set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
 
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=left_ear)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=right_ear)
@@ -409,8 +410,7 @@ class Debug:
         # display armour
         section = 8
 
-        draw_colourful_frame(title=' Entity Spy ', title_decorator=True, title_loc='centre',
-                             corner_decorator='', corner_studs='square', msg=4)
+        draw_colourful_frame(title='-Entity Spy-', title_decorator=True, title_loc='centre', corner_decorator='', msg=4)
         total_armour = MobileUtilities.get_mobile_derived_armour_value(gameworld=gameworld, entity=entity_id)
 
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
@@ -565,7 +565,6 @@ class Debug:
             terminal.print_(x=sx + 1, y=sy + 3, s=str(max_range_string))
             terminal.print_(x=sx + 1, y=sy + 4, s=str(combat_role_string))
 
-
     @staticmethod
     def set_spellbar_slot_string(gameworld, entity_id, slotid):
         slot_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot " + str(slotid) + ":None[/color]"
@@ -578,51 +577,6 @@ class Debug:
             slot_string = "[color=ENTITY_SPY_COMPONENT]Slot " + str(slotid) + ":[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
 
         return slot_string
-
-    @staticmethod
-    def set_jewellery_left_ear_string(gameworld, left_ear):
-        left_ear_string = "[color=ENTITY_SPY_NO_COMPONENT]Left Ear:None[/color]"
-        if left_ear != 0:
-            activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=left_ear)
-            item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=left_ear)
-            left_ear_string = "[color=ENTITY_SPY_COMPONENT]Left Ear:[/color]" + activator + ' ' + item_name
-        return left_ear_string
-
-    @staticmethod
-    def set_jewellery_right_ear_string(gameworld, right_ear):
-        right_ear_string = "[color=ENTITY_SPY_NO_COMPONENT]Right Ear:None[/color]"
-        if right_ear != 0:
-            activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=right_ear)
-            item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=right_ear)
-            right_ear_string = "[color=ENTITY_SPY_COMPONENT]Right Ear:[/color]" + activator + ' ' + item_name
-        return right_ear_string
-
-    @staticmethod
-    def set_jewellery_left_hand_string(gameworld, left_hand):
-        left_hand_string = "[color=ENTITY_SPY_NO_COMPONENT]Left Hand:None[/color]"
-        if left_hand != 0:
-            activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=left_hand)
-            item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=left_hand)
-            left_hand_string = "[color=ENTITY_SPY_COMPONENT]Left Hand:[/color]" + activator + ' ' + item_name
-        return left_hand_string
-
-    @staticmethod
-    def set_jewellery_right_hand_string(gameworld, right_hand):
-        right_hand_string = "[color=ENTITY_SPY_NO_COMPONENT]Right Hand:None[/color]"
-        if right_hand != 0:
-            activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=right_hand)
-            item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=right_hand)
-            right_hand_string = "[color=ENTITY_SPY_COMPONENT]Right Hand:[/color]" + activator + ' ' + item_name
-        return right_hand_string
-
-    @staticmethod
-    def set_jewellery_neck_string(gameworld, neck):
-        neck_string = "[color=ENTITY_SPY_NO_COMPONENT]Neck:None[/color]"
-        if neck != 0:
-            activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=neck)
-            item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=neck)
-            neck_string = "[color=ENTITY_SPY_COMPONENT]Neck:[/color]" + activator + ' ' + item_name
-        return neck_string
 
     @staticmethod
     def get_head_armour_details(gameworld, entity_id):

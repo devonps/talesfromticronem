@@ -36,7 +36,7 @@ class CharacterCreation:
         while show_character_options:
 
             draw_colourful_frame(title=' Character Creation Options ', title_decorator=False, title_loc='centre',
-                                 corner_decorator='', corner_studs='square', msg=0)
+                                 corner_decorator='', msg=0)
 
             # place game menu options
             pointy_menu(header='',
@@ -146,8 +146,7 @@ class CharacterCreation:
         while show_race_options:
 
             draw_colourful_frame(title=' Character Creation - Select Race ', title_decorator=False, title_loc='centre',
-                                 corner_decorator='', corner_studs='square',
-                                 msg=0)
+                                 corner_decorator='', msg=0)
 
             pointy_menu(header='',
                         menu_options=race_name, menu_id_format=True, menu_start_x=menu_start_x,
@@ -268,8 +267,7 @@ class CharacterCreation:
         while class_not_selected:
 
             draw_colourful_frame(title='Character Creation - Select Class', title_decorator=False, title_loc='centre',
-                                 corner_decorator='', corner_studs='square',
-                                 msg=1)
+                                 corner_decorator='', msg=1)
 
             pointy_menu(header='',
                         menu_options=menu_options, menu_id_format=True, menu_start_x=class_menu_x,
@@ -522,8 +520,7 @@ class CharacterCreation:
 
         while show_weapons_options:
             draw_colourful_frame(title='Character Creation - Select Weapon', title_decorator=False, title_loc='centre',
-                                 corner_decorator='', corner_studs='square',
-                                 msg=1)
+                                 corner_decorator='', msg=1)
 
             # list available weapons
             pointy_menu(header='',
@@ -776,8 +773,7 @@ class CharacterCreation:
         while show_armour_options:
 
             draw_colourful_frame(title=' Character Creation - Choose Armourset ', title_decorator=False,
-                                 title_loc='centre', corner_decorator='', corner_studs='square',
-                                 msg=0)
+                                 title_loc='centre', corner_decorator='', msg=0)
 
             armour_description = 'You will be wearing ' + as_display_name + ' armour, ' + 'which is made from ' + \
                                  as_material + '. ' + 'Your colleagues would describe it as ' + as_flavour
@@ -1156,8 +1152,7 @@ class CharacterCreation:
         terminal.print_(x=fx, y=gy, s='Female')
 
         draw_colourful_frame(title=' Character Creation - Name Your Character ', title_decorator=False,
-                             title_loc='centre', corner_decorator='', corner_studs='square',
-                             msg=1)
+                             title_loc='centre', corner_decorator='', msg=1)
         while character_not_named:
 
             if gender_choice == 1:
@@ -1382,7 +1377,7 @@ class CharacterCreation:
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
         draw_colourful_frame(title=' Character Creation - Finished ', title_decorator=False, title_loc='centre',
-                             corner_decorator='', corner_studs='square', msg=2)
+                             corner_decorator='', msg=2)
 
         menu_options = ['Accept', 'Save Build', 'New Character']
         max_menu_option = len(menu_options) - 1

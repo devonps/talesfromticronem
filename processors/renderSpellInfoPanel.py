@@ -3,6 +3,9 @@ from bearlibterminal import terminal
 
 from utilities import configUtilities, formulas
 from utilities.common import CommonUtils
+from utilities.display import set_both_hands_weapon_string_es, set_main_hand_weapon_string_es, \
+    set_off_hand_weapon_string_es, set_jewellery_left_ear_string, set_jewellery_right_ear_string, \
+    set_jewellery_left_hand_string, set_jewellery_right_hand_string, set_jewellery_neck_string
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
@@ -34,8 +37,8 @@ class RenderSpellInfoPanel(esper.Processor):
 
     def render_equipped_items(self):
         self.render_equipped_weapons(gameworld=self.gameworld, game_config=self.game_config)
-        self.render_equipped_jewellery()
-        self.render_equipped_armour()
+        self.render_equipped_jewellery(gameworld=self.gameworld, game_config=self.game_config)
+        self.render_equipped_armour(gameworld=self.gameworld, game_config=self.game_config)
 
     def render_energy_bars(self):
         self.render_health()
@@ -124,37 +127,44 @@ class RenderSpellInfoPanel(esper.Processor):
 
         spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
                                                                             parameter='SI_START_Y')
-        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=plpayer_entity)
-        print_col_no_item = "[color=SPELLINFO_NO_ITEM_EQUIPPED]"
-        print_col_item = "[color=SPELLINFO_ITEM_EQUIPPED]"
+
+        weapons_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=plpayer_entity)
+
+        both_hands = set_both_hands_weapon_string_es(gameworld=gameworld, both_weapon=weapons_list[2])
+        main_hand = set_main_hand_weapon_string_es(main_weapon=weapons_list[0], gameworld=gameworld)
+        off_hand = set_off_hand_weapon_string_es(off_weapon=weapons_list[1], gameworld=gameworld)
 
         # title bar
         terminal.printf(x=spell_infobox_start_x + 3, y=spell_infobox_start_y + 1, s='Weapons')
 
-        # main hand
-        if equipped_weapons[0] == 0:
-            str_to_print = print_col_no_item + "Main:"
-        else:
-            str_to_print = print_col_item + "Main:" + ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[0])
-        terminal.printf(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 2, s=str_to_print)
-
-        # off hand
-        if equipped_weapons[1] == 0:
-            str_to_print = print_col_no_item + "Off:"
-        else:
-            str_to_print = print_col_item + "Off:" + ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[1])
-        terminal.printf(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 3, s=str_to_print)
-
-        # both hands
-        if equipped_weapons[2] == 0:
-            str_to_print = print_col_no_item + "Both:"
-        else:
-            str_to_print = print_col_item + "Both:" + ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[2])
-        terminal.printf(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 4, s=str_to_print)
+        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 2, s=both_hands)
+        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 3, s=main_hand)
+        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 4, s=off_hand)
 
     @staticmethod
-    def render_equipped_jewellery():
-        return True
+    def render_equipped_jewellery(gameworld,game_config):
+        plpayer_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        spell_infobox_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='SI_START_X')
+
+        spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='SI_START_Y')
+
+        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=plpayer_entity)
+        left_ear = set_jewellery_left_ear_string(gameworld=gameworld, left_ear=equipped_jewellery[0])
+        right_ear = set_jewellery_right_ear_string(gameworld=gameworld, right_ear=equipped_jewellery[1])
+        left_hand = set_jewellery_left_hand_string(gameworld=gameworld, left_hand=equipped_jewellery[2])
+        right_hand = set_jewellery_right_hand_string(gameworld=gameworld, right_hand=equipped_jewellery[3])
+        neck = set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
+
+        # title bar
+        terminal.printf(x=spell_infobox_start_x + 3, y=spell_infobox_start_y + 7, s='Jewellery')
+
+        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 8, s=left_ear)
+        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 9, s=right_ear)
+        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 10, s=left_hand)
+        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 11, s=right_hand)
+        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 12, s=neck)
 
     @staticmethod
     def render_health():
@@ -171,7 +181,7 @@ class RenderSpellInfoPanel(esper.Processor):
         return True
 
     @staticmethod
-    def render_equipped_armour():
+    def render_equipped_armour(gameworld, game_config):
         return True
 
     def render_spell_bar(self):

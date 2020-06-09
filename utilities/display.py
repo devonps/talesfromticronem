@@ -1,6 +1,7 @@
 from utilities import configUtilities, colourUtilities
 from loguru import logger
 from bearlibterminal import terminal
+from utilities.itemsHelp import ItemUtilities
 
 
 # the selected option is the choice from list_options that will be highlighted
@@ -115,7 +116,7 @@ def draw_simple_frame(start_panel_frame_x, start_panel_frame_y, start_panel_fram
         terminal.print_(x=start_panel_frame_x + pwx, y=start_panel_frame_y, s=titlestring)
 
 
-def draw_colourful_frame(title, title_decorator, title_loc, corner_decorator, corner_studs, msg):
+def draw_colourful_frame(title, title_decorator, title_loc, corner_decorator, msg):
     # get config items
     game_config = configUtilities.load_config()
 
@@ -227,14 +228,90 @@ def draw_colourful_frame(title, title_decorator, title_loc, corner_decorator, co
         terminal.put(x=start_panel_frame_width - 1, y=start_panel_frame_height - 1, c=arc_bottom_right)
 
 
-def draw_pipes_across(start_panel_frame_x, start_panel_frame_width, start_panel_frame_y, across_pipe):
-    pipe_across = (start_panel_frame_x + 1) + start_panel_frame_width
-    for posx in range(pipe_across):
-        terminal.put(x=(start_panel_frame_x + 1) + posx, y=start_panel_frame_y, c=across_pipe)
-
-
 def draw_clear_text_box(posx, posy, width, height, text, fg, bg):
     terminal.clear_area(x=posx, y=posy, width=width, height=height)
 
     string_to_print = '[color=' + fg + '][/color][bkcolor=' + bg + '][/bkcolor]' + text
     terminal.print_(x=posx, y=posy - 2, width=60, height=5, align=terminal.TK_ALIGN_LEFT, s=string_to_print)
+
+
+def set_both_hands_weapon_string_es(both_weapon, gameworld):
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]Both: none[/color]"
+    item_string = "[color=DISPLAY_ITEM_EQUIPPED]Both: [/color]"
+    both_hands_weapon_name = no_item_string
+    if both_weapon > 0:
+        both_hands_weapon_name = item_string + ItemUtilities.get_item_name(gameworld=gameworld, entity=both_weapon)
+    return both_hands_weapon_name
+
+
+def set_main_hand_weapon_string_es(main_weapon, gameworld):
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]M/Hand: none[/color]"
+    item_string = "[color=DISPLAY_ITEM_EQUIPPED]M/Hand: [/color]"
+    main_hand_weapon_name = no_item_string
+    if main_weapon > 0:
+        main_hand_weapon_name = item_string + ItemUtilities.get_item_name(gameworld=gameworld, entity=main_weapon)
+    return main_hand_weapon_name
+
+
+def set_off_hand_weapon_string_es(off_weapon, gameworld):
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]O/Hand: none[/color]"
+    item_string = "[color=DISPLAY_ITEM_EQUIPPED]O/Hand: [/color]"
+    off_hand_weapon_name = no_item_string
+    if off_weapon > 0:
+        off_hand_weapon_name = item_string + ItemUtilities.get_item_name(gameworld=gameworld, entity=off_weapon)
+    return off_hand_weapon_name
+
+
+def set_jewellery_left_ear_string(gameworld, left_ear):
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]L/Ear :None[/color]"
+    item_string = "[color=DISPLAY_ITEM_EQUIPPED]L/Ear :[/color]"
+    left_ear_string = no_item_string
+    if left_ear != 0:
+        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=left_ear)
+        item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=left_ear)
+        left_ear_string = item_string + activator + ' ' + item_name
+    return left_ear_string
+
+
+def set_jewellery_right_ear_string(gameworld, right_ear):
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]R/Ear :None[/color]"
+    item_string = "[color=DISPLAY_ITEM_EQUIPPED]R/Ear :[/color]"
+    right_ear_string = no_item_string
+    if right_ear != 0:
+        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=right_ear)
+        item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=right_ear)
+        right_ear_string = item_string + activator + ' ' + item_name
+    return right_ear_string
+
+
+def set_jewellery_left_hand_string(gameworld, left_hand):
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]L/Hand:None[/color]"
+    item_string = "[color=DISPLAY_ITEM_EQUIPPED]L/Hand:[/color]"
+    left_hand_string = no_item_string
+    if left_hand != 0:
+        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=left_hand)
+        item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=left_hand)
+        left_hand_string = item_string + activator + ' ' + item_name
+    return left_hand_string
+
+
+def set_jewellery_right_hand_string(gameworld, right_hand):
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]R/Hand:None[/color]"
+    item_string = "[color=DISPLAY_ITEM_EQUIPPED]R/Hand:[/color]"
+    right_hand_string = no_item_string
+    if right_hand != 0:
+        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=right_hand)
+        item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=right_hand)
+        right_hand_string = item_string + activator + ' ' + item_name
+    return right_hand_string
+
+
+def set_jewellery_neck_string(gameworld, neck):
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]Neck  :None[/color]"
+    item_string = "[color=DISPLAY_ITEM_EQUIPPED]Neck  :[/color]"
+    neck_string = no_item_string
+    if neck != 0:
+        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=neck)
+        item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=neck)
+        neck_string = item_string + activator + ' ' + item_name
+    return neck_string

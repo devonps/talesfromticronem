@@ -122,7 +122,7 @@ def display_build_library():
 
     # build library frame around console
     draw_colourful_frame(title=' Character Build Library ', title_decorator=True, title_loc='centre',
-                         corner_decorator='', corner_studs='square', msg=3)
+                         corner_decorator='', msg=3)
     colour_string = '[color='
     foreground_colour_blue_print = colour_string + colourUtilities.get('BLUE') + ']'
     foreground_colour_yellow_print = colour_string + colourUtilities.get('YELLOW1') + ']'
