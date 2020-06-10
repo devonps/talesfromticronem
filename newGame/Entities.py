@@ -280,52 +280,47 @@ class Entity:
 
     @staticmethod
     def choose_race_for_mobile(race_choice, entity_id, game_config, gameworld):
+
+        player_race_file = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                      section='files', parameter='RACESFILE')
+        race_file = read_json_file(player_race_file)
+        selected_race = ''
+        selected_race_size = ''
+        selected_bg_colour = ''
+        selected_race_names = ''
+
+        race_name = []
+        race_bg_colour = []
+        race_size = []
+        race_name_desc = []
+
+        for option in race_file['races']:
+            race_name.append(option['name'])
+            race_bg_colour.append(colourUtilities.get('BLACK'))
+            race_size.append(option['size'])
+            race_name_desc.append(option['singular_plural_adjective'])
+
         if race_choice == 'RANDOM':
-            player_race_file = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                          section='files', parameter='RACESFILE')
-            race_file = read_json_file(player_race_file)
-
-            race_name = []
-            race_flavour = []
-            race_prefix = []
-            race_bg_colour = []
-            race_size = []
-            race_benefits = []
-            race_name_desc = []
-            race_count = 0
-
-            for option in race_file['races']:
-                race_name.append(option['name'])
-                race_flavour.append(option['flavour'])
-                race_prefix.append(option['prefix'])
-                race_bg_colour.append(colourUtilities.get('BLACK'))
-                race_size.append(option['size'])
-                racial_bonus_count = option['attribute_count']
-                race_name_desc.append(option['singular_plural_adjective'])
-                race_count += 1
-                for attribute_bonus in range(racial_bonus_count):
-                    race_attr_name = 'attribute_' + str(attribute_bonus + 1) + '_name'
-                    race_attr_value = 'attribute_' + str(attribute_bonus + 1) + '_value'
-                    attribute_benefit_and_amount = (option[race_attr_name], option[race_attr_value])
-                    rb = [race_count]
-                    rb.extend(list(attribute_benefit_and_amount))
-                    race_benefits.append(rb)
 
             selected_race_id = random.randint(0, len(race_name) - 1)
 
             selected_race = race_name[selected_race_id]
             selected_race_size = race_size[selected_race_id]
             selected_bg_colour = race_bg_colour[selected_race_id]
+            selected_race_names = race_name_desc[selected_race_id]
 
         else:
-            selected_race = race_choice
-            selected_race_size = 'normal'
-            selected_bg_colour = 'black'
-            race_name_desc = ['unknown', 'unknown', 'unknown']
+            rcount = 0
+            for rc in race_name:
+                if rc.lower() == race_choice.lower():
+                    selected_race = race_choice
+                    selected_race_size = race_size[rcount]
+                    selected_bg_colour = race_bg_colour[rcount]
+                    selected_race_names = race_name_desc[rcount]
+                rcount += 1
 
         MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=entity_id, selected_race=selected_race,
-                                                race_size=selected_race_size, bg=selected_bg_colour, race_names=race_name_desc)
-        logger.info('Their race is {}', selected_race)
+                                                race_size=selected_race_size, bg=selected_bg_colour, race_names=selected_race_names)
 
         return selected_race
 
