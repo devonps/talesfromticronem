@@ -285,7 +285,7 @@
       "class": "necromancer",
       "image": 14,
       "turns_to_cast": "0",
-      "cool_down": "0",
+      "cool_down": "3",
       "spell_range": "spell_dist_touch",
       "weapon_type": "sword",
       "weapon_slot": "1",

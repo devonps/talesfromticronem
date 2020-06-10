@@ -92,7 +92,7 @@ class ItemUtilities:
     @staticmethod
     def get_item_can_be_rendered(gameworld, entity):
         item_render_component = gameworld.component_for_entity(entity, items.RenderItem)
-        return item_render_component.isTrue
+        return item_render_component.is_true
 
     @staticmethod
     def get_item_quality(gameworld, entity):

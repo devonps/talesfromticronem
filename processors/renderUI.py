@@ -208,7 +208,7 @@ class RenderUI(esper.Processor):
         map_view_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='MAP_VIEW_DRAW_Y')
         for ent, (rend, loc, desc) in gameworld.get_components(items.RenderItem, items.Location, items.Describable):
-            if rend.isTrue:
+            if rend.is_true:
                 draw_pos_x = map_view_across + loc.x
                 draw_pos_y = map_view_down + loc.y
                 RenderUI.render_entity(posx=draw_pos_x, posy=draw_pos_y, glyph=desc.glyph, fg=desc.fg, bg=desc.bg, )

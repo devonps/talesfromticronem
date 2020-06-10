@@ -282,17 +282,17 @@ class SpellUtilities:
 
     @staticmethod
     def get_spell_cooldown_status(gameworld, spell_entity):
-        return gameworld.component_for_entity(spell_entity, spells.CoolDown).isTrue
+        return gameworld.component_for_entity(spell_entity, spells.CoolDown).is_true
 
     @staticmethod
     def set_spell_cooldown_true(gameworld, spell_entity):
         spell_cooldown_component = gameworld.component_for_entity(spell_entity, spells.CoolDown)
-        spell_cooldown_component.isTrue = True
+        spell_cooldown_component.is_true = True
 
     @staticmethod
     def set_spell_cooldown_false(gameworld, spell_entity):
         spell_cooldown_component = gameworld.component_for_entity(spell_entity, spells.CoolDown)
-        spell_cooldown_component.isTrue = False
+        spell_cooldown_component.is_true = False
 
     @staticmethod
     def get_spell_name_in_weapon_slot(gameworld, weapon_equipped, slotid):
@@ -404,6 +404,15 @@ class SpellUtilities:
     def set_spell_cooldown_time(gameworld, spell_entity, value):
         spell_cooldown_component = gameworld.component_for_entity(spell_entity, spells.CoolDown)
         spell_cooldown_component.number_of_turns = value
+
+    @staticmethod
+    def get_spell_cooldown_remaining_turns(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.CoolDown).remaining_turns
+
+    @staticmethod
+    def set_spell_cooldown_remaining_turns(gameworld, spell_entity, value):
+        spell_cooldown_component = gameworld.component_for_entity(spell_entity, spells.CoolDown)
+        spell_cooldown_component.remaining_turns = value
 
     @staticmethod
     def get_spell_description(gameworld, spell_entity):

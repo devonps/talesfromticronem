@@ -1,6 +1,6 @@
 import esper
 
-from components import mobiles
+from components import mobiles, spells
 from utilities import formulas
 from utilities.common import CommonUtils
 from utilities.itemsHelp import ItemUtilities
@@ -17,6 +17,12 @@ class CastSpells(esper.Processor):
 
     def process(self, game_config):
 
+        # method to check if any spells should be cast this turn
+        self.check_for_spells_to_be_cast_this_turn()
+        # method to reduce spell cooldowns
+        self.reduce_spell_cool_downs()
+
+    def check_for_spells_to_be_cast_this_turn(self):
         for ent, mob in self.gameworld.get_component(mobiles.SpellCast):
             if mob.truefalse:
                 spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=mob.spell_entity)
@@ -36,12 +42,20 @@ class CastSpells(esper.Processor):
                 logger.info('condis attached to spell {}', condis_to_apply)
                 logger.info('boons attached to spell {}', boons_to_apply)
 
+                SpellUtilities.set_spell_cooldown_true(gameworld=self.gameworld, spell_entity=mob.spell_entity)
+                number_of_turns = SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld, spell_entity=mob.spell_entity)
+
+                if number_of_turns == 0:
+                    logger.warning('Spell entity {} has no cooldown number of turns set', mob.spell_entity)
+
+                SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld,
+                                                                  spell_entity=mob.spell_entity, value=number_of_turns)
+
                 if spell_type == 'combat':
                     # set inCombat to true for the target and the player --> stops health being recalculated
                     # automatically, amongst other things
                     MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=mob.spell_target)
                     MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=ent)
-                    SpellUtilities.set_spell_cooldown_true(gameworld=self.gameworld, spell_entity=mob.spell_entity)
 
                     damage_done_to_target = self.cast_combat_spell(spell_caster=ent,spell=mob.spell_entity,
                                                                    spell_target=mob.spell_target, weapon_used=slot_used)
@@ -64,6 +78,16 @@ class CastSpells(esper.Processor):
                 if len(boons_to_apply) != 0:
                     SpellUtilities.apply_boons_to_target(gameworld=self.gameworld, target_entity=mob.spell_target,
                                                          list_of_boons=boons_to_apply, spell_caster=ent)
+
+    def reduce_spell_cool_downs(self):
+        for spell_entity, cool_down in self.gameworld.get_component(spells.CoolDown):
+
+            cd_turns = int(cool_down.remaining_turns)
+            if cd_turns > 0:
+                cd_turns -= 1
+                SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld, spell_entity=spell_entity, value=cd_turns)
+            else:
+                SpellUtilities.set_spell_cooldown_false(gameworld=self.gameworld, spell_entity=spell_entity)
 
     def cast_combat_spell(self, spell_caster, spell, spell_target, weapon_used):
         equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=spell_caster)

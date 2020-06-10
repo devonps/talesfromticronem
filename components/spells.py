@@ -44,9 +44,10 @@ class CastTime:
 
 
 class CoolDown:
-    def __init__(self, number_of_turns=0, isTrue=False):
+    def __init__(self, number_of_turns=0, is_true=False):
         self.number_of_turns = number_of_turns
-        self.isTrue = isTrue
+        self.is_true = is_true
+        self.remaining_turns = 0
 
 
 class LivesFor:

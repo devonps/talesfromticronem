@@ -592,7 +592,7 @@ class MobileUtilities(numbers.Real, ABC):
         mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
         for ent, (rend, loc, desc) in gameworld.get_components(items.RenderItem, items.Location, items.Describable):
             if loc.x == px and loc.y == py:
-                if rend.isTrue:
+                if rend.is_true:
                     # check if mobile has enough space in their inventory
                     # remove item location data
                     gameworld.remove_component(ent, items.Location)
