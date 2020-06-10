@@ -117,6 +117,7 @@ class CharacterCreation:
         race_bg_colour = []
         race_size = []
         race_benefits = []
+        race_name_desc = []
         race_count = 0
 
         for option in race_file['races']:
@@ -127,6 +128,7 @@ class CharacterCreation:
                 race_bg_colour.append(colourUtilities.get('BLACK'))
                 race_size.append(option['size'])
                 racial_bonus_count = option['attribute_count']
+                race_name_desc.append(option['singular_plural_adjective'])
                 race_count += 1
                 for attribute_bonus in range(racial_bonus_count):
                     race_attr_name = 'attribute_' + str(attribute_bonus + 1) + '_name'
@@ -189,7 +191,7 @@ class CharacterCreation:
                     if event_action == 'enter':
                         MobileUtilities.setup_racial_attributes(
                             gameworld=gameworld, player=player, selected_race=race_name[selected_menu_option],
-                            race_size=race_size[selected_menu_option], bg=race_bg_colour[selected_menu_option])
+                            race_size=race_size[selected_menu_option], bg=race_bg_colour[selected_menu_option], race_names=race_name_desc[selected_menu_option])
                         logger.info('Race selected:' + race_name[selected_menu_option])
                         CharacterCreation.choose_class(gameworld)
         terminal.clear()

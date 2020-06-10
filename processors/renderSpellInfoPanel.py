@@ -46,15 +46,13 @@ class RenderSpellInfoPanel(esper.Processor):
 
     @staticmethod
     def render_boons(list_of_boons):
+        pass
 
-        for boon in list_of_boons:
-            pass
 
     @staticmethod
     def render_conditions(list_of_conditions):
+        pass
 
-        for condition in list_of_conditions:
-            pass
 
     @staticmethod
     def render_spell_info_outer_frame():
@@ -183,8 +181,6 @@ class RenderSpellInfoPanel(esper.Processor):
     @staticmethod
     def render_equipped_armour(gameworld, game_config):
         plpayer_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        spell_infobox_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='SI_START_X')
 
         spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
                                                                             parameter='SI_START_Y')
@@ -323,13 +319,10 @@ class RenderSpellInfoPanel(esper.Processor):
                 spell_hotkey_print = unicode_spell_hotkey_enabled
                 cooldown_value = 0
 
-            if cooldown_value == 0:
-                c1 = spell_ascii_zero
-                c2 = spell_ascii_zero
-                c3 = spell_ascii_zero
+            codo = [spell_ascii_zero, spell_ascii_zero, spell_ascii_zero]
 
             terminal.printf(x=spell_cooldown_counter_start_x, y=spell_infobox_start_y + 1,
-                            s=spell_cooldown + c1 + '][' + c2 + '][' + c3 + ']')
+                            s=spell_cooldown + codo[2] + '][' + codo[1] + '][' + codo[0] + ']')
 
             # spell hotkey
             if hotkey == 0:

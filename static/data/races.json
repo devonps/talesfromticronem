@@ -69,7 +69,7 @@
       "flavour": "Handeg are tough.",
       "prefix": "handeg",
       "name_generator": {"file":  "static/names/oshun.txt"},
-      "singular_plural_adjective": ["Handeg", "Handegians", "Handeg"],
+      "singular_plural_adjective": ["Handeg", "Handegian", "Handeg"],
       "bg_colour": "black",
       "size": "normal",
       "playable": false,

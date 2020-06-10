@@ -263,7 +263,7 @@ def display_build_library():
                             player_race = decoded_build[selected_build][Build.BUILDRACE]
                             MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=player_entity,
                                                                     selected_race=player_race, race_size=race_size,
-                                                                    bg=colourUtilities.get('BLACK'))
+                                                                    bg=colourUtilities.get('BLACK'), race_names=player_race)
 
                             # create racial bonuses
                             if player_race.lower() == 'dilga':

@@ -76,12 +76,16 @@ class MobileUtilities(numbers.Real, ABC):
         return gender
 
     @staticmethod
-    def setup_racial_attributes(gameworld, player, selected_race, race_size, bg):
+    def setup_racial_attributes(gameworld, player, selected_race, race_size, bg, race_names):
         describable_component = gameworld.component_for_entity(player, mobiles.Describable)
         describable_component.background = bg
         race_component = gameworld.component_for_entity(player, mobiles.Race)
         race_component.label = selected_race
         race_component.size = race_size
+        race_component.name_singular = race_names[0]
+        race_component.name_plural = race_names[1]
+        race_component.name_name_adjective = race_names[2]
+
 
     @staticmethod
     def setup_class_attributes(gameworld, player, selected_class, health, spellfile):
@@ -236,7 +240,7 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def get_mobile_race_details(gameworld, entity):
         race_component = gameworld.component_for_entity(entity, mobiles.Race)
-        racial = [race_component.label, race_component.size]
+        racial = [race_component.label, race_component.size, race_component.name_singular, race_component.name_plural, race_component.name_name_adjective]
         return racial
 
     @staticmethod

@@ -32,7 +32,7 @@ def game_loop(gameworld):
     player_name = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player)
     player_race = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
     player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player)
-    CommonUtils.fire_event("new-game", gameworld=gameworld, player_name=player_name[0], player_class=player_class, player_race=player_race[0])
+    CommonUtils.fire_event("new-game", gameworld=gameworld, player_name=player_name[0], player_class=player_class, player_race=player_race[3])
 
     # call scene manager
     game_map = SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)

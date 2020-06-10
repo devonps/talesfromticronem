@@ -73,6 +73,9 @@ class Race:
     def __init__(self, race='undefined', size='normal'):
         self.label = race
         self.size = size
+        self.name_singular = ''
+        self.name_plural = ''
+        self.name_adjective = ''
 
 
 class CharacterClass:

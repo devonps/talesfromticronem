@@ -291,6 +291,7 @@ class Entity:
             race_bg_colour = []
             race_size = []
             race_benefits = []
+            race_name_desc = []
             race_count = 0
 
             for option in race_file['races']:
@@ -300,6 +301,7 @@ class Entity:
                 race_bg_colour.append(colourUtilities.get('BLACK'))
                 race_size.append(option['size'])
                 racial_bonus_count = option['attribute_count']
+                race_name_desc.append(option['singular_plural_adjective'])
                 race_count += 1
                 for attribute_bonus in range(racial_bonus_count):
                     race_attr_name = 'attribute_' + str(attribute_bonus + 1) + '_name'
@@ -319,9 +321,10 @@ class Entity:
             selected_race = race_choice
             selected_race_size = 'normal'
             selected_bg_colour = 'black'
+            race_name_desc = ['unknown', 'unknown', 'unknown']
 
         MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=entity_id, selected_race=selected_race,
-                                                race_size=selected_race_size, bg=selected_bg_colour)
+                                                race_size=selected_race_size, bg=selected_bg_colour, race_names=race_name_desc)
         logger.info('Their race is {}', selected_race)
 
         return selected_race
