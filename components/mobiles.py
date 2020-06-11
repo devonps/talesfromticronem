@@ -20,6 +20,7 @@ class EnemyCombatRole:
     def __init__(self, value='none'):
         self.value = value
 
+
 class Name:
     def __init__(self, first='undefined', suffix='undefined'):
         self.first = first
@@ -29,7 +30,6 @@ class Name:
 class ClassSpecific:
     def __init__(self, attunement='fire'):
         self.fire = attunement
-
 
 
 class Describable:

@@ -22,9 +22,9 @@ class RenderSpellInfoPanel(esper.Processor):
         self.render_spell_info_outer_frame()
         self.render_equipped_items()
         self.render_energy_bars()
-        self.render_player_status_effects(game_config=game_config)
         self.render_class_mechanics(game_config=game_config)
         self.render_spell_bar(game_config=game_config)
+        self.render_player_status_effects(game_config=game_config)
 
     def render_player_status_effects(self, game_config):
 
@@ -34,8 +34,8 @@ class RenderSpellInfoPanel(esper.Processor):
         player_conditions = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
                                                                                  entity=player_entity)
 
-        self.render_boons(list_of_boons=player_boons)
-        self.render_conditions(list_of_conditions=player_conditions)
+        self.render_boons(list_of_boons=player_boons, game_config=game_config)
+        self.render_conditions(list_of_conditions=player_conditions, game_config=game_config)
 
     def render_equipped_items(self):
         self.render_equipped_weapons(gameworld=self.gameworld, game_config=self.game_config)
@@ -47,12 +47,38 @@ class RenderSpellInfoPanel(esper.Processor):
         self.render_mana()
 
     @staticmethod
-    def render_boons(list_of_boons):
-        pass
+    def render_boons(list_of_boons, game_config):
+        boon_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                       parameter='STATUS_EFFECTS_START_X')
+
+        boon_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                       parameter='STATUS_EFFECTS_START_Y')
+
+        unicode_boon_string = '[font=dungeon][color=BOON_BASE_COLOUR]'
+
+        boon_string = ''
+        if len(list_of_boons) > 0:
+            for z in list_of_boons:
+                boon_string += z['shortcode'] + ' '
+
+        terminal.printf(x=boon_start_x, y=boon_start_y, s=unicode_boon_string + 'Boons ' + boon_string)
 
     @staticmethod
-    def render_conditions(list_of_conditions):
-        pass
+    def render_conditions(list_of_conditions, game_config):
+        condition_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                   parameter='STATUS_EFFECTS_START_X')
+
+        condition_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                   parameter='STATUS_EFFECTS_START_Y') + 1
+
+        unicode_condition_string = '[font=dungeon][color=CONDITION_BASE_COLOUR]'
+        condition_string = ''
+
+        if len(list_of_conditions) > 0:
+            for z in list_of_conditions:
+                condition_string += z['shortcode'] + ' '
+
+        terminal.printf(x=condition_start_x, y=condition_start_y, s=unicode_condition_string + 'Conds ' + condition_string)
 
     @staticmethod
     def render_spell_info_outer_frame():
@@ -361,7 +387,10 @@ class RenderSpellInfoPanel(esper.Processor):
         unicode_cooldown_enabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_ACTIVE]['
         unicode_spell_hotkey_enabled = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]['
         unicode_spell_hotkey_disabled = '[font=dungeon][color=SPELLINFO_HOTKEY_DISABLED]['
-        spell_button_start_x = spell_infobox_start_x + 14
+
+        spell_button_original_x = spell_infobox_start_x + 17
+
+        spell_button_start_x = spell_button_original_x
         spell_button_end_y = (spell_infobox_start_y + spell_button_depth)
         spell_cooldown_counter_start_x = spell_button_start_x + 1
 
@@ -463,7 +492,7 @@ class RenderSpellInfoPanel(esper.Processor):
             spell_cooldown_counter_start_x += 4
             slotid += 1
 
-            br = spell_infobox_start_x + 14
+            br = spell_button_original_x
             for xx in range(10):
                 # bottom right
                 if xx < 9:

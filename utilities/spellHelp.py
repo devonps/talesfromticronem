@@ -500,7 +500,7 @@ class SpellUtilities:
                          'condDamageMod': float(condition['condition_damage_modifier']),
                          'weaponLevelMod': float(condition['weapon_level_modifier']), 'image': int(condition['image']),
                          'dialogue': condition['dialogue_options'][0][target_class],
-                         'displayChar': condition['char']}
+                         'displayChar': condition['char'], 'shortcode': condi[:4]}
 
                     # add dialog for condition damage to message log
                     CommonUtils.fire_event("condi-applied", gameworld=gameworld, target=target_names[0], effect_dialogue=condition['dialogue_options'][0][
@@ -533,7 +533,7 @@ class SpellUtilities:
                 if boon == file_boon['boon_status_effect']:
                     b = {'name': boon, 'duration': int(file_boon['default_exists_for_turns']),
                          'dialogue': file_boon['dialogue_options'][0][target_class], 'image': file_boon['image'],
-                         'displayChar': file_boon['char']}
+                         'displayChar': file_boon['char'], 'shortcode': boon[:4]}
                     if boon == 'fury':
                         b['improvement'] = 'crit_chance_increased'
                         b['increased_by'] = file_boon['crit_chance_improved']
