@@ -168,7 +168,7 @@ class SpellUtilities:
         spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                           player_entity=player)
 
-        logger.info('Casting spell with entity id {} from slot {}', spell_entity, slot)
+        logger.warning('Casting spell with entity id {} from slot {}', spell_entity, slot)
 
         # check if spell is on cool-down
         is_spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell_entity)
@@ -195,14 +195,14 @@ class SpellUtilities:
                     if event_action != 'quit':
                         key_pressed = chr(97 + event_action)
 
-                        player_not_pressed_a_key, target = SpellUtilities.has_valid_target_been_selected(gameworld=gameworld, player_entity=player, target_letters=target_letters, key_pressed=key_pressed, spell_entity=spell_entity, valid_targets=visible_entities)
+                        player_not_pressed_a_key, target = SpellUtilities.has_valid_target_been_selected(gameworld=gameworld, player_entity=player, target_letters=target_letters, key_pressed=key_pressed, spell_entity=spell_entity, valid_targets=visible_entities, slotid=slot)
                         logger.warning('Player casting: message log id is {}', message_log_id)
         else:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
             CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
 
     @staticmethod
-    def has_valid_target_been_selected(gameworld, player_entity, target_letters, key_pressed, spell_entity, valid_targets):
+    def has_valid_target_been_selected(gameworld, player_entity, target_letters, key_pressed, spell_entity, valid_targets, slotid):
         player_not_pressed_a_key = True
         target = 0
         if key_pressed in target_letters:
@@ -212,7 +212,7 @@ class SpellUtilities:
             # add component covering spell has been cast
             gameworld.add_component(player_entity,
                                     mobiles.SpellCast(truefalse=True, spell_entity=spell_entity, spell_caster=player_entity,
-                                                      spell_target=valid_targets[0], spell_bar_slot=1))
+                                                      spell_target=valid_targets[0], spell_bar_slot=slotid))
 
         return player_not_pressed_a_key, target
 

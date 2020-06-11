@@ -16,11 +16,36 @@ def handle_game_keys():
     #
     # SPELL BAR HOTKEYS
     #
-    spell_bar_hotkeys = [terminal.TK_1, terminal.TK_2, terminal.TK_3, terminal.TK_4, terminal.TK_5, terminal.TK_6, terminal.TK_7, terminal.TK_8, terminal.TK_9, terminal.TK_0]
-
-    if key in spell_bar_hotkeys:
+    if key == terminal.TK_1:
         myevent = 'keypress'
-        action = int(chr(ord('1')))
+        action = 1
+    if key == terminal.TK_2:
+        myevent = 'keypress'
+        action = 2
+    if key == terminal.TK_3:
+        myevent = 'keypress'
+        action = 3
+    if key == terminal.TK_4:
+        myevent = 'keypress'
+        action = 4
+    if key == terminal.TK_5:
+        myevent = 'keypress'
+        action = 5
+    if key == terminal.TK_6:
+        myevent = 'keypress'
+        action = 6
+    if key == terminal.TK_7:
+        myevent = 'keypress'
+        action = 7
+    if key == terminal.TK_8:
+        myevent = 'keypress'
+        action = 8
+    if key == terminal.TK_9:
+        myevent = 'keypress'
+        action = 9
+    if key == terminal.TK_0:
+        myevent = 'keypress'
+        action = 0
 
     # ACCEPT KEYS
     if key == terminal.TK_ESCAPE:
