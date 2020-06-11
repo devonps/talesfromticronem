@@ -1,3 +1,5 @@
+import random
+
 import esper
 from bearlibterminal import terminal
 
@@ -21,7 +23,7 @@ class RenderSpellInfoPanel(esper.Processor):
         self.render_equipped_items()
         self.render_energy_bars()
         self.render_player_status_effects(game_config=game_config)
-        self.render_class_mechanics()
+        self.render_class_mechanics(game_config=game_config)
         self.render_spell_bar(game_config=game_config)
 
     def render_player_status_effects(self, game_config):
@@ -173,8 +175,95 @@ class RenderSpellInfoPanel(esper.Processor):
     #
     # formally known as the F1 bar
     #
-    def render_class_mechanics(self):
-        return True
+    def render_class_mechanics(self, game_config):
+        plpayer_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+
+        mechanic_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='MECHANIC_START_X')
+
+        mechanic_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='MECHANIC_START_Y')
+
+        ascii_prefix = 'ASCII_SINGLE_'
+
+        mechanic_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                      parameter=ascii_prefix + 'TOP_LEFT')
+
+        mechanic_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                         parameter=ascii_prefix + 'BOTTOM_LEFT')
+
+        mechanic_info_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                       parameter=ascii_prefix + 'TOP_RIGHT')
+
+        mechanic_info_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                          parameter=ascii_prefix + 'BOTTOM_RIGHT')
+
+        mechanic_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                 parameter=ascii_prefix + 'HORIZONTAL')
+        mechanic_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                               parameter=ascii_prefix + 'VERTICAL')
+
+        mechanic_ascii_one = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'ONE')
+        mechanic_ascii_two = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'TWO')
+        mechanic_ascii_three = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'THREE')
+        mechanic_ascii_four = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'FOUR')
+        mechanic_background_fill = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'MECHANIC_FILL')
+        mechanic_f_key = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'MECHANIC_F')
+
+        mechanic_depth = 1
+        mechanic_width = 5
+        unicode_mechanic_frame_enabled = '[font=dungeon][color=CLASS_MECHANIC_FRAME_COLOUR]['
+        unicode_mechanic_id = '[font=dungeon][color=CLASS_MECHANIC_DISABLED]['
+        unicode_mechanic_partial = '[font=dungeon][color=CLASS_MECHANIC_PARTIAL]['
+
+        for loop in range (4):
+            unicode_mechanic_frame = unicode_mechanic_id if loop < 2 else unicode_mechanic_frame_enabled
+            # verticals
+            for d in range(mechanic_depth):
+                terminal.printf(x=mechanic_start_x, y=(mechanic_start_y + 1) + d,
+                                s=unicode_mechanic_frame + mechanic_info_vertical + ']')
+
+                terminal.printf(x=(mechanic_start_x + mechanic_width) + 1, y=(mechanic_start_y + 1) + d,
+                                s=unicode_mechanic_frame + mechanic_info_vertical + ']')
+
+            # horizontal
+            for a in range(mechanic_width):
+                terminal.printf(x=(mechanic_start_x + a) + 1, y=mechanic_start_y,
+                                s=unicode_mechanic_frame + mechanic_info_horizontal + ']')
+                terminal.printf(x=(mechanic_start_x + a) + 1, y=((mechanic_start_y + mechanic_depth) + 1),
+                                s=unicode_mechanic_frame + mechanic_info_horizontal + ']')
+
+            # top left
+            terminal.printf(x=mechanic_start_x, y=mechanic_start_y,
+                            s=unicode_mechanic_frame + mechanic_info_top_left_corner + ']')
+            # bottom left
+            terminal.printf(x=mechanic_start_x, y=((mechanic_start_y + mechanic_depth) + 1),
+                            s=unicode_mechanic_frame + mechanic_info_bottom_left_corner + ']')
+            # top right
+            terminal.printf(x=(mechanic_start_x + mechanic_width) + 1, y=mechanic_start_y,
+                            s=unicode_mechanic_frame + mechanic_info_top_right_corner + ']')
+            # bottom right
+            terminal.printf(x=(mechanic_start_x + mechanic_width) + 1, y=((mechanic_start_y + mechanic_depth) + 1),
+                            s=unicode_mechanic_frame + mechanic_info_bottom_right_corner + ']')
+
+            # mechanic partially filled - measured in 20% blocks
+            xx = random.randrange(1, 4)
+            for zz in range(xx):
+                terminal.printf(x=mechanic_start_x + 1 + zz, y=mechanic_start_y + 1, s=unicode_mechanic_partial + mechanic_background_fill + ']')
+
+            # mechanic ID
+            if loop == 0:
+                mechanic_id = mechanic_ascii_one
+            elif loop == 1:
+                mechanic_id = mechanic_ascii_two
+            elif loop == 2:
+                mechanic_id = mechanic_ascii_three
+            else:
+                mechanic_id = mechanic_ascii_four
+
+            terminal.printf(x=mechanic_start_x + 3, y=mechanic_start_y + 3, s=unicode_mechanic_frame + mechanic_f_key + '][' + mechanic_id + ']')
+
+            mechanic_start_x += 8
 
     @staticmethod
     def render_equipped_armour(gameworld, game_config):
