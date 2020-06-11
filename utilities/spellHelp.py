@@ -163,8 +163,6 @@ class SpellUtilities:
     @staticmethod
     def cast_spell(slot, gameworld, player):
 
-        message_log_id = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
-
         spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                           player_entity=player)
 
@@ -196,7 +194,6 @@ class SpellUtilities:
                         key_pressed = chr(97 + event_action)
 
                         player_not_pressed_a_key, target = SpellUtilities.has_valid_target_been_selected(gameworld=gameworld, player_entity=player, target_letters=target_letters, key_pressed=key_pressed, spell_entity=spell_entity, valid_targets=visible_entities, slotid=slot)
-                        logger.warning('Player casting: message log id is {}', message_log_id)
         else:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
             CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
@@ -238,8 +235,9 @@ class SpellUtilities:
         target_letters = []
 
         xx = 0
+        base_str_to_print = "[color=white][font=dungeon]"
         if len(valid_targets) == 0:
-            str_to_print = "[color=white][font=dungeon]" + 'No valid targets'
+            str_to_print = base_str_to_print + 'No valid targets'
             terminal.printf(x=vp_x_offset + 3, y=entity_tag, s=str_to_print)
         else:
             for x in valid_targets:
@@ -247,12 +245,12 @@ class SpellUtilities:
                 entity_fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=x)
                 entity_bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=x)
 
-                str_to_print = "[color=white]" + chr(97 + xx) + ") [color=" + entity_fg + "][font=dungeon][bkcolor=" + entity_bg + "]" + "@" + ' ' + entity_name[0]
+                str_to_print = base_str_to_print + chr(97 + xx) + ") [color=" + entity_fg + "][bkcolor=" + entity_bg + "]" + "@" + ' ' + entity_name[0]
                 terminal.printf(x=vp_x_offset + 2, y=entity_tag, s=str_to_print)
                 entity_tag += 1
                 target_letters.append(chr(97 + xx))
                 xx += 1
-        str_to_print = "[color=white][font=dungeon]" + 'Press ESC to cancel'
+        str_to_print = base_str_to_print + 'Press ESC to cancel'
         terminal.printf(x=vp_x_offset + (lft + 3), y=(vp_y_offset + height), s=str_to_print)
 
         return target_letters
