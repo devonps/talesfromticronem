@@ -39,9 +39,9 @@ class CommonUtils:
         return tile_char
 
     @staticmethod
-    def format_game_turn_as_string(current_turn):
-        base_turn_string = '00000'
-        current_turn_as_string = str(current_turn)
+    def format_number_as_string(base_number, base_string):
+        base_turn_string = base_string
+        current_turn_as_string = str(base_number)
         left_string = len(current_turn_as_string)
 
         turn_as_string = base_turn_string[left_string:] + current_turn_as_string
@@ -64,7 +64,7 @@ class CommonUtils:
         player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         message_log_entity = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
         current_turn = MobileUtilities.get_current_turn(gameworld=gameworld, entity=player)
-        formatted_turn_number = CommonUtils.format_game_turn_as_string(current_turn=current_turn)
+        formatted_turn_number = CommonUtils.format_number_as_string(base_number=current_turn, base_string='00000')
 
         new_string = ''
         foreground_colour = kwargs.get('fg', 'white')

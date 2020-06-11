@@ -1,5 +1,6 @@
 import esper
 from bearlibterminal import terminal
+from loguru import logger
 
 from utilities import configUtilities
 from utilities.common import CommonUtils
@@ -48,11 +49,9 @@ class RenderSpellInfoPanel(esper.Processor):
     def render_boons(list_of_boons):
         pass
 
-
     @staticmethod
     def render_conditions(list_of_conditions):
         pass
-
 
     @staticmethod
     def render_spell_info_outer_frame():
@@ -243,7 +242,7 @@ class RenderSpellInfoPanel(esper.Processor):
                                                                      parameter=ascii_prefix + 'TOP_T_JUNCTION')
 
         spell_info_bottom_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                     parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
+                                                                        parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
 
         spell_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                          parameter=ascii_prefix + 'BOTTOM_LEFT')
@@ -278,18 +277,33 @@ class RenderSpellInfoPanel(esper.Processor):
         spell_button_end_y = (spell_infobox_start_y + spell_button_depth)
         spell_cooldown_counter_start_x = spell_button_start_x + 1
 
+        cool_down_dict = {
+            '0': spell_ascii_zero,
+            '1': spell_ascii_one,
+            '2': spell_ascii_two,
+            '3': spell_ascii_three,
+            '4': spell_ascii_four,
+            '5': spell_ascii_five,
+            '6': spell_ascii_six,
+            '7': spell_ascii_seven,
+            '8': spell_ascii_eight,
+            '9': spell_ascii_nine
+        }
+
         spell_on_cooldown = False
         slotid = 1
         for hotkey in range(10):
 
             # render horizontal bottom
             for z in range(spell_button_width):
-                terminal.printf(x=spell_button_start_x + z, y=spell_button_end_y, s=unicode_string_to_print + spell_info_horizontal + ']')
+                terminal.printf(x=spell_button_start_x + z, y=spell_button_end_y,
+                                s=unicode_string_to_print + spell_info_horizontal + ']')
 
             # render verticals
             for zz in range(spell_button_depth - 1):
-                terminal.printf(x=spell_button_start_x, y=(spell_infobox_start_y + 1) + zz, s=unicode_string_to_print + spell_info_vertical + ']')
-                terminal.printf(x=(spell_button_start_x + spell_button_width) - 1, y=(spell_infobox_start_y + 1) + zz ,
+                terminal.printf(x=spell_button_start_x, y=(spell_infobox_start_y + 1) + zz,
+                                s=unicode_string_to_print + spell_info_vertical + ']')
+                terminal.printf(x=(spell_button_start_x + spell_button_width) - 1, y=(spell_infobox_start_y + 1) + zz,
                                 s=unicode_string_to_print + spell_info_vertical + ']')
 
             # bottom left
@@ -301,28 +315,37 @@ class RenderSpellInfoPanel(esper.Processor):
             terminal.printf(x=spell_button_start_x, y=spell_infobox_start_y,
                             s=unicode_string_to_print + spell_info_top_t_junction + ']')
 
-
             # spell activation checks/display
 
-            slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slotid,
+            slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld,
+                                                                                   slot=slotid,
                                                                                    player_entity=plpayer_entity)
             if slot_spell_entity > 0:
-                spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=self.gameworld, spell_entity=slot_spell_entity)
+                spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=self.gameworld,
+                                                                             spell_entity=slot_spell_entity)
 
             # cooldown counter
             if spell_on_cooldown:
                 spell_cooldown = unicode_cooldown_enabled
                 spell_hotkey_print = unicode_spell_hotkey_disabled
-                cooldown_value = SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld, spell_entity=slot_spell_entity)
+                cooldown_value = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=self.gameworld,
+                                                                        spell_entity=slot_spell_entity)
             else:
                 spell_cooldown = unicode_cooldown_disabled
                 spell_hotkey_print = unicode_spell_hotkey_enabled
                 cooldown_value = 0
 
-            codo = [spell_ascii_zero, spell_ascii_zero, spell_ascii_zero]
+            cc = list(CommonUtils.format_number_as_string(base_number=cooldown_value, base_string='000'))
+
+            down_cool = []
+
+            for a in range(len(cc)):
+                for key in cool_down_dict:
+                    if key == cc[a]:
+                        down_cool.append(cool_down_dict[key])
 
             terminal.printf(x=spell_cooldown_counter_start_x, y=spell_infobox_start_y + 1,
-                            s=spell_cooldown + codo[2] + '][' + codo[1] + '][' + codo[0] + ']')
+                            s=spell_cooldown + down_cool[0] + '][' + down_cool[1] + '][' + down_cool[2] + ']')
 
             # spell hotkey
             if hotkey == 0:

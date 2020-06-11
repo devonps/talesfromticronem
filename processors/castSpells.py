@@ -16,11 +16,10 @@ class CastSpells(esper.Processor):
         self.game_map = game_map
 
     def process(self, game_config):
-
-        # method to check if any spells should be cast this turn
-        self.check_for_spells_to_be_cast_this_turn()
         # method to reduce spell cooldowns
         self.reduce_spell_cool_downs()
+        # method to check if any spells should be cast this turn
+        self.check_for_spells_to_be_cast_this_turn()
 
     def check_for_spells_to_be_cast_this_turn(self):
         for ent, mob in self.gameworld.get_component(mobiles.SpellCast):
