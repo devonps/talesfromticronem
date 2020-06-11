@@ -3,7 +3,7 @@ import random
 import esper
 from bearlibterminal import terminal
 
-from utilities import configUtilities
+from utilities import configUtilities, formulas
 from utilities.common import CommonUtils
 from utilities.display import set_both_hands_weapon_string_es, set_main_hand_weapon_string_es, \
     set_off_hand_weapon_string_es, set_jewellery_left_ear_string, set_jewellery_right_ear_string, \
@@ -21,7 +21,7 @@ class RenderSpellInfoPanel(esper.Processor):
     def process(self, game_config):
         self.render_spell_info_outer_frame()
         self.render_equipped_items()
-        self.render_energy_bars()
+        self.render_energy_bars(game_config=game_config)
         self.render_class_mechanics(game_config=game_config)
         self.render_spell_bar(game_config=game_config)
         self.render_player_status_effects(game_config=game_config)
@@ -42,9 +42,9 @@ class RenderSpellInfoPanel(esper.Processor):
         self.render_equipped_jewellery(gameworld=self.gameworld, game_config=self.game_config)
         self.render_equipped_armour(gameworld=self.gameworld, game_config=self.game_config)
 
-    def render_energy_bars(self):
-        self.render_health()
-        self.render_mana()
+    def render_energy_bars(self, game_config):
+        self.render_health(self, game_config=game_config)
+        self.render_mana(self, game_config=game_config)
 
     @staticmethod
     def render_boons(list_of_boons, game_config):
@@ -191,12 +191,74 @@ class RenderSpellInfoPanel(esper.Processor):
         terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 12, s=neck)
 
     @staticmethod
-    def render_health():
-        return True
+    def render_health(self, game_config):
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+        health_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='ENERGY_BARS_START_X')
+
+        health_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='ENERGY_BARS_START_Y')
+
+        ascii_prefix = 'ASCII_SINGLE_'
+
+        health_lost_fill = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'HEALTH_LOST')
+        health_remiaing_fill = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'HEALTH_REMAINING')
+
+        unicode_mechanic_health_lost = '[font=dungeon][color=ENERGY_HEALTH_LOST]['
+        unicode_mechanic_health_remaining = '[font=dungeon][color=ENERGY_HEALTH_REMAINING]['
+
+        current_health_value = MobileUtilities.get_mobile_derived_current_health(gameworld=self.gameworld, entity=player_entity)
+        max_health_value = MobileUtilities.get_mobile_derived_maximum_health(gameworld=self.gameworld, entity=player_entity)
+
+        health_split = formulas.calculate_percentage(low_number=current_health_value, max_number=max_health_value)
+
+        # draw full lost health bar
+        terminal.printf(x=health_start_x, y=health_start_y, s="Health ")
+        for x in range(10):
+            terminal.printf(x=(health_start_x + 8) + x, y=health_start_y, s=unicode_mechanic_health_lost + health_lost_fill + ']')
+
+        # now draw health remaining on top of the above bar
+        split_health = int(health_split / 10)
+        for x in range(split_health):
+            terminal.printf(x=(health_start_x + 8) + x, y=health_start_y,
+                            s=unicode_mechanic_health_remaining + health_remiaing_fill + ']')
+
+
 
     @staticmethod
-    def render_mana():
-        return True
+    def render_mana(self, game_config):
+
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+        mana_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='ENERGY_BARS_START_X')
+
+        mana_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='ENERGY_BARS_START_Y') + 1
+
+        ascii_prefix = 'ASCII_SINGLE_'
+
+        mana_lost_fill = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'HEALTH_LOST')
+        mana_remiaing_fill = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'HEALTH_REMAINING')
+
+        unicode_mechanic_mana_lost = '[font=dungeon][color=ENERGY_MANA_LOST]['
+        unicode_mechanic_mana_remaining = '[font=dungeon][color=ENERGY_MANA_REMAINING]['
+
+        current_mana_value = MobileUtilities.get_mobile_derived_current_mana(gameworld=self.gameworld, entity=player_entity)
+        max_mana_value = MobileUtilities.get_mobile_derived_maximum_mana(gameworld=self.gameworld, entity=player_entity)
+
+        mana_split = formulas.calculate_percentage(low_number=current_mana_value, max_number=max_mana_value)
+
+        # draw full lost mana bar
+        terminal.printf(x=mana_start_x, y=mana_start_y, s="Mana ")
+        for x in range(10):
+            terminal.printf(x=(mana_start_x + 5) + x, y=mana_start_y,
+                            s=unicode_mechanic_mana_lost + mana_lost_fill + ']')
+
+        # now draw mana remaining on top of the above bar
+        split_mana = int(mana_split / 10)
+        for x in range(split_mana):
+            terminal.printf(x=(mana_start_x + 5) + x, y=mana_start_y,
+                            s=unicode_mechanic_mana_remaining + mana_remiaing_fill + ']')
 
     #
     # formally known as the F1 bar
