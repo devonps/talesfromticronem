@@ -81,7 +81,6 @@ def game_loop(gameworld):
                 advance_game_turn = True
             if event_action in spell_bar_keys:
                 spell_pop_up(slot=event_action, gameworld=gameworld, player=player, game_config=game_config)
-                # SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player)
                 advance_game_turn = True
             if event_action == 'log':
                 CommonUtils.set_current_log(gameworld=gameworld, log_entity=msglog)

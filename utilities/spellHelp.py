@@ -416,6 +416,10 @@ class SpellUtilities:
         return gameworld.component_for_entity(spell_entity, spells.Description).label
 
     @staticmethod
+    def get_spell_short_description(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.ShortDescription).label
+
+    @staticmethod
     def get_spell_max_targets(gameworld, spell_entity):
         return gameworld.component_for_entity(spell_entity, spells.MaxTargets).number_of_targets
 

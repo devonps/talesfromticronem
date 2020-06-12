@@ -37,9 +37,6 @@ def spell_pop_up(game_config, slot, gameworld, player):
     spell_popup_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                   parameter=ascii_prefix + 'TOP_LEFT')
 
-    spell_popup_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                     parameter=ascii_prefix + 'BOTTOM_LEFT')
-
     spell_popup_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                    parameter=ascii_prefix + 'TOP_RIGHT')
 
@@ -103,13 +100,27 @@ def spell_pop_up(game_config, slot, gameworld, player):
     terminal.printf(x=spell_popup_start_x, y=(spell_popup_start_y - spell_popup_height) - 1,
                     s=unicode_frame_colour + spell_popup_top_left_corner + ']')
     # extra step covers odd vertical count
-    terminal.printf(x=spell_popup_start_x, y=(spell_popup_start_y - spell_popup_height) ,
+    terminal.printf(x=spell_popup_start_x, y=(spell_popup_start_y - spell_popup_height),
                     s=unicode_frame_colour + spell_popup_vertical + ']')
 
+    top_of_popup = spell_popup_start_y - spell_popup_height
     # spell name
+    slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
+                                                                           player_entity=player)
+    spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_spell_entity)
+    terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup, s=spell_name.title())
+
     # spell description
+    spell_description = SpellUtilities.get_spell_short_description(gameworld=gameworld, spell_entity=slot_spell_entity)
+    terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 1, s=spell_description)
+
     # spell type
+    spell_type = SpellUtilities.get_spell_type(gameworld=gameworld, spell_entity=slot_spell_entity)
+    terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 2, s='Type:' + spell_type)
+
     # spell range
+    spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=slot_spell_entity)
+    terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 2, s='Range:' + str(spell_range))
     # spell cooldown
     # spell status effects
     # spell direct damage
@@ -120,7 +131,7 @@ def spell_pop_up(game_config, slot, gameworld, player):
         pass
     else:
         # display the cast option
-        pass
+        terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 10, s='(a) Cast (ESC) quit')
     # display the quit option
 
     # blit the terminal
@@ -131,10 +142,12 @@ def spell_pop_up(game_config, slot, gameworld, player):
     while player_not_pressed_a_key:
         event_to_be_processed, event_action = handle_game_keys()
         if event_to_be_processed == 'keypress':
+            logger.info('event action is {}', event_action)
             if event_action == 'quit':
                 player_not_pressed_a_key = False
 
-            if event_action == 'a' and not is_spell_on_cooldown:
+            if event_action == 0 and not is_spell_on_cooldown:
                 # cast the spell
                 player_not_pressed_a_key = False
+                SpellUtilities.cast_spell(slot=slot, gameworld=gameworld, player=player)
 

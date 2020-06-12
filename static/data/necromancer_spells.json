@@ -3,7 +3,7 @@
     {
       "name": "necrotic grasp",
       "description": "Send out a grasping hand that damages foes in a line and grants you life force.",
-      "short_description": "Send out a grasping hand that damages foes in a line and grants you life force.",
+      "short_description": "Damage foes and gain life force.",
       "type_of_spell": "combat",
       "class": "necromancer",
       "image": 21,
