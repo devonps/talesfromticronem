@@ -2,7 +2,6 @@ import random
 
 from loguru import logger
 from components import spells, items, mobiles
-from components.messages import Message
 from utilities import colourUtilities, configUtilities, formulas
 from utilities.common import CommonUtils
 from utilities.display import draw_simple_frame

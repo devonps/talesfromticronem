@@ -8,7 +8,6 @@ from utilities.display import draw_simple_frame, draw_colourful_frame, set_jewel
     set_jewellery_neck_string, get_head_armour_details, get_chest_armour_details, get_hands_armour_details, \
     get_legs_armour_details, get_feet_armour_details
 from utilities.input_handlers import handle_game_keys
-from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities

@@ -2,6 +2,7 @@ from bearlibterminal import terminal
 
 from enemyRelated.statelessAI import StatelessAI
 from newGame.initialiseNewGame import setup_gameworld
+from ui.spell_information import spell_pop_up
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
@@ -79,7 +80,8 @@ def game_loop(gameworld):
                 MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=player, direction=event_action, speed=1)
                 advance_game_turn = True
             if event_action in spell_bar_keys:
-                SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player)
+                spell_pop_up(slot=event_action, gameworld=gameworld, player=player, game_config=game_config)
+                # SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player)
                 advance_game_turn = True
             if event_action == 'log':
                 CommonUtils.set_current_log(gameworld=gameworld, log_entity=msglog)

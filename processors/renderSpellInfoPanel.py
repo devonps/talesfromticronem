@@ -38,9 +38,12 @@ class RenderSpellInfoPanel(esper.Processor):
         self.render_conditions(list_of_conditions=player_conditions, game_config=game_config)
 
     def render_equipped_items(self):
-        self.render_equipped_weapons(gameworld=self.gameworld, game_config=self.game_config)
-        self.render_equipped_jewellery(gameworld=self.gameworld, game_config=self.game_config)
-        self.render_equipped_armour(gameworld=self.gameworld, game_config=self.game_config)
+        minimal_display = configUtilities.get_config_value_as_string(configfile=self.game_config, section='spellinfo',
+                                                                       parameter='MINIMAL_DISPLAY_ENABLED')
+        if minimal_display != 'True':
+            self.render_equipped_weapons(gameworld=self.gameworld, game_config=self.game_config)
+            self.render_equipped_jewellery(gameworld=self.gameworld, game_config=self.game_config)
+            self.render_equipped_armour(gameworld=self.gameworld, game_config=self.game_config)
 
     def render_energy_bars(self, game_config):
         self.render_health(self, game_config=game_config)
