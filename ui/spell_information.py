@@ -1,9 +1,12 @@
 from bearlibterminal import terminal
 from loguru import logger
 
-from utilities import configUtilities
+from utilities import configUtilities, formulas
 from utilities.common import CommonUtils
 from utilities.input_handlers import handle_game_keys
+from utilities.itemsHelp import ItemUtilities
+from utilities.jsonUtilities import read_json_file
+from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 
 
@@ -120,11 +123,43 @@ def spell_pop_up(game_config, slot, gameworld, player):
 
     # spell range
     spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=slot_spell_entity)
-    terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 2, s='Range:' + str(spell_range))
+    terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 3, s='Range:' + str(spell_range))
     # spell cooldown
+    spell_cooldown_value = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld, spell_entity=slot_spell_entity)
+    terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 4, s='Cooldown turns:' + str(spell_cooldown_value))
     # spell status effects
+    condi_effects = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld, spell_entity=slot_spell_entity)
+    boon_effects = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=slot_spell_entity)
+    other_effects = SpellUtilities.get_all_resources_for_spell(gameworld=gameworld, spell_entity=slot_spell_entity)
+    terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 5, s='Boons:' + str(boon_effects))
+    terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 6, s='Conds:' + str(condi_effects))
+    terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 7, s='resources:' + str(other_effects))
+
     # spell direct damage
+    equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
+    caster_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=player)
+    spell_coeff = float(SpellUtilities.get_spell_damage_coeff(gameworld=gameworld, spell_entity=slot_spell_entity))
+
+    if equipped_weapons[2] != 0:
+        weapon = equipped_weapons[2]
+    else:
+        if slot <= 2:
+            weapon = equipped_weapons[0]
+        else:
+            weapon = equipped_weapons[1]
+
+    weapon_strength = ItemUtilities.calculate_weapon_strength(gameworld=gameworld, weapon=weapon)
+    outgoing_base_damage = formulas.outgoing_base_damage(weapon_strength=weapon_strength, power=caster_power,
+                                                         spell_coefficient=spell_coeff)
+    terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 8, s='Base Damage:' + str(outgoing_base_damage))
     # spell AoE radius
+    spell_use_aoe = SpellUtilities.get_spell_aoe_status(gameworld=gameworld, spell_entity=slot_spell_entity)
+    if spell_use_aoe == 'True':
+        aoe_radius = SpellUtilities.get_spell_aoe_size(gameworld=gameworld, spell_entity=slot_spell_entity)
+        terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 9, s='AoE Radius:' + str(aoe_radius))
+    else:
+        terminal.printf(x=spell_popup_start_x + 1, y=top_of_popup + 9, s='No AoE')
+
     # user instructions
     if is_spell_on_cooldown:
         # don't display the cast option

@@ -477,6 +477,14 @@ class SpellUtilities:
         status_effect_component.resources = current_resources
 
     @staticmethod
+    def get_spell_aoe_status(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.AreaOfEffect).use_area_of_effect
+
+    @staticmethod
+    def get_spell_aoe_size(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.AreaOfEffectSize).area_of_effect_size
+
+    @staticmethod
     def get_all_resources_for_spell(gameworld, spell_entity):
         return gameworld.component_for_entity(spell_entity, spells.StatusEffect).resources
 

@@ -76,8 +76,10 @@ def generate_spells(gameworld, game_config, spell_file, player_class):
             gameworld.add_component(thisspell, spells.DamageCoefficient(spell['damage_coef']))
             gameworld.add_component(thisspell, spells.GroundTargeted(spell['ground_targeted']))
             if spell['aoe'] == 'True':
-                gameworld.add_component(thisspell, spells.AreaOfEffect(spell['aoe']))
-                gameworld.add_component(thisspell, spells.AreaOfEffectSize(spell['aoe_size']))
+                gameworld.add_component(thisspell, spells.AreaOfEffect(use_area_of_effect=spell['aoe']))
+                gameworld.add_component(thisspell, spells.AreaOfEffectSize(area_of_effect_size=spell['aoe_size']))
+            else:
+                gameworld.add_component(thisspell, spells.AreaOfEffect(use_area_of_effect=spell['aoe']))
 
         if spell['type_of_spell'] == 'heal':
             spell_heal_file = spell['heal_duration']
