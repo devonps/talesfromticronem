@@ -2,6 +2,7 @@ from bearlibterminal import terminal
 
 from loguru import logger
 
+from newGame.CreateSpells import AsEntities
 from utilities import configUtilities, colourUtilities, world
 from utilities.externalfileutilities import Externalfiles
 from utilities.buildLibrary import BuildLibrary
@@ -76,6 +77,7 @@ class CharacterCreation:
         # Esper initialisation
         gameworld = create_game_world()
         setup_gameworld(game_config=gameconfig)
+        AsEntities.generate(gameworld=gameworld)
 
         return gameworld
 

@@ -1,89 +1,79 @@
 
 class Bleeding:
-    def __init__(self, name='Bleed', condition_status_effect='Bleeding', base_damage_per_stack=2,
-                 condition_damage_modifier=0.06, weapon_level_modifier=0.25, max_stacks=10, dialog="I'm bleeding",
-                 lasts_for=3, stacks_applied=1):
+    def __init__(self, name='Bleed', dialog="I'm bleeding"):
         self.label = name
-        self.condition_status_effect = condition_status_effect
-        self.base_damage_per_stack = base_damage_per_stack
-        self.condition_damage_modifier = condition_damage_modifier
-        self.weapon_level_modifier = weapon_level_modifier
-        self.max_stacks = max_stacks
+        self.condition_status_effect = 'Bleeding'
+        self.base_damage_per_stack = 2
+        self.condition_damage_modifier = 0.06
+        self.weapon_level_modifier = 0.25
+        self.max_stacks = 10
         self.dialog = dialog
-        self.lasts_for = lasts_for
-        self.stacks_applied = stacks_applied
+        self.lasts_for = 3
+        self.stacks_applied = 1
 
 
 class Burning:
-    def __init__(self, name='Burn', condition_status_effect='Burning', base_damage_per_stack=7,
-                 condition_damage_modifier=0.155, weapon_level_modifier=1.55, max_stacks=10, dialog='It burns',
-                 lasts_for=3, stacks_applied=1):
+    def __init__(self, name='Burn', dialog='It burns'):
 
         self.label = name
-        self.condition_status_effect = condition_status_effect
-        self.base_damage_per_stack = base_damage_per_stack
-        self.condition_damage_modifier = condition_damage_modifier
-        self.weapon_level_modifier = weapon_level_modifier
-        self.max_stacks = max_stacks
+        self.condition_status_effect = 'Burning'
+        self.base_damage_per_stack = 7
+        self.condition_damage_modifier = 0.155
+        self.weapon_level_modifier = 1.55
+        self.max_stacks = 10
         self.dialog = dialog
-        self.lasts_for = lasts_for
-        self.stacks_applied = stacks_applied
+        self.lasts_for = 3
+        self.stacks_applied = 1
 
 
 class Confusion:
-    def __init__(self, name='Confusion', condition_status_effect='Confused', base_damage_per_stack=3.5,
-                 condition_damage_modifier=0.0975, weapon_level_modifier=1.575, max_stacks=10, dialog='Where am I?',
-                 lasts_for=3, stacks_applied=1):
+    def __init__(self, name='Confusion',  dialog='Where am I?'):
 
         self.label = name
-        self.condition_status_effect = condition_status_effect
-        self.base_damage_per_stack = base_damage_per_stack
-        self.condition_damage_modifier = condition_damage_modifier
-        self.weapon_level_modifier = weapon_level_modifier
-        self.max_stacks = max_stacks
+        self.condition_status_effect = 'Confused'
+        self.base_damage_per_stack = 3.5
+        self.condition_damage_modifier = 0.0975
+        self.weapon_level_modifier = 1.575
+        self.max_stacks = 10
         self.dialog = dialog
-        self.lasts_for = lasts_for
-        self.stacks_applied = stacks_applied
+        self.lasts_for = 3
+        self.stacks_applied = 1
 
 
 class Poison:
-    def __init__(self, name='Poison', condition_status_effect='Poisoned', base_damage_per_stack=3.5,
-                 condition_damage_modifier=0.06, weapon_level_modifier=0.375, max_stacks=10, dialog="I'm poisoned",
-                 lasts_for=5, healing_effectiveness_reduced=33, stacks_applied=1):
+    def __init__(self, name='Poison', dialog="I'm poisoned"):
         self.label = name
-        self.condition_status_effect = condition_status_effect
-        self.base_damage_per_stack = base_damage_per_stack
-        self.condition_damage_modifier = condition_damage_modifier
-        self.weapon_level_modifier = weapon_level_modifier
-        self.max_stacks = max_stacks
+        self.condition_status_effect = 'Poisoned'
+        self.base_damage_per_stack = 3.5
+        self.condition_damage_modifier = 0.06
+        self.weapon_level_modifier = 0.375
+        self.max_stacks = 20
         self.dialog = dialog
-        self.lasts_for = lasts_for
-        self.healing_effectiveness_reduced = healing_effectiveness_reduced
-        self.stacks_applied = stacks_applied
+        self.lasts_for = 5
+        self.healing_effectiveness_reduced = 33
+        self.stacks_applied = 1
 
 
 class Torment:
-    def __init__(self, name='Torment', condition_status_effect='Tormented', base_damage_per_stack=2,
-                 condition_damage_modifier=0.06, weapon_level_modifier=0.25, max_stacks=10, dialog='Am I going mad?',
-                 lasts_for=5, velocity_base_damage=5, stacks_applied=1):
+    def __init__(self, name='Torment', dialog='Am I going mad?'):
         self.label = name
-        self.condition_status_effect = condition_status_effect
-        self.base_damage_per_stack = base_damage_per_stack
-        self.condition_damage_modifier = condition_damage_modifier
-        self.weapon_level_modifier = weapon_level_modifier
-        self.max_stacks = max_stacks
+        self.condition_status_effect = 'Tormented'
+        self.base_damage_per_stack = 2
+        self.condition_damage_modifier = 0.06
+        self.weapon_level_modifier = 0.25
+        self.max_stacks = 10
         self.dialog = dialog
-        self.lasts_for = lasts_for
-        self.velocity_base_damage = velocity_base_damage
-        self.stacks_applied = stacks_applied
+        self.lasts_for = 5
+        self.velocity_base_damage = 5
+        self.stacks_applied = 1
 
 
 class Blind:
     def __init__(self, name='Blind', condition_status_effect='Blinded', max_stacks=10, dialog="I'm blind",
                  lasts_for=5, next_attack_misses=True, stacks_applied=1):
         self.label = name
-        self.condition_status_effect = condition_status_effect
-        self.max_stacks = max_stacks
+        self.condition_status_effect = 'Blinded'
+        self.max_stacks = 10
         self.dialog = dialog
         self.lasts_for = lasts_for
         self.next_attack_misses = next_attack_misses

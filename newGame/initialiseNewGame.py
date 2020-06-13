@@ -17,6 +17,7 @@ def setup_gameworld(game_config):
     store_world_seed(game_config, world_seed)
 
 
+
 def generate_world_seed(game_config):
     player_seed = configUtilities.get_config_value_as_string(configfile=game_config, section='pcg',
                                                              parameter='PLAYER_SEED')
@@ -62,8 +63,6 @@ def generate_spells(gameworld, game_config, spell_file, player_class):
         gameworld.add_component(thisspell, spells.ClassName(player_class))
         gameworld.add_component(thisspell, spells.SpellType(spell['type_of_spell']))
         gameworld.add_component(thisspell, spells.StatusEffect(condis=[], boons=[], controls=[]))
-        if player_class == 'necromancer':
-            gameworld.add_component(thisspell, spells.Image(spell['image']))
         if spell['type_of_spell'] == 'combat':
             gameworld.add_component(thisspell, spells.WeaponType(spell['weapon_type']))
             gameworld.add_component(thisspell, spells.WeaponSlot(spell['weapon_slot']))

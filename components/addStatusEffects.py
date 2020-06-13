@@ -47,19 +47,19 @@ def add_class_resource(world, entity, effect, resource_value):
 
 def add_condition(world, entity, effect, condi_value):
     if effect == 'bleeding':
-        world.add_component(entity, condis.Bleeding(stacks_applied=condi_value))
+        world.add_component(entity, condis.Bleeding())
 
     if effect == 'burning':
-        world.add_component(entity, condis.Burning(stacks_applied=condi_value))
+        world.add_component(entity, condis.Burning())
 
     if effect == 'confusion':
-        world.add_component(entity, condis.Confusion(stacks_applied=condi_value))
+        world.add_component(entity, condis.Confusion())
 
     if effect == 'poison':
-        world.add_component(entity, condis.Poison(stacks_applied=condi_value))
+        world.add_component(entity, condis.Poison())
 
     if effect == 'torment':
-        world.add_component(entity, condis.Torment(stacks_applied=condi_value))
+        world.add_component(entity, condis.Torment())
 
     if effect == 'blind':
         world.add_component(entity, condis.Blind(stacks_applied=condi_value))
