@@ -20,6 +20,10 @@
         {
           "name": "gain_lifeforce",
           "value": "4"
+        },
+        {
+          "name": "bleeding",
+          "value": "2"
         }
       ]
     },
@@ -114,7 +118,7 @@
           "value": "4"
         },
         {
-          "name": "transfer_conditions",
+          "name": "transferconditions",
           "value": "3"
         },
         {
@@ -259,11 +263,11 @@
       "damage_coef": "1.0",
       "effects": [
         {
-          "name": "burn",
+          "name": "burning",
           "value": "2"
         },
         {
-          "name": "bleed",
+          "name": "bleeding",
           "value": "2"
         }
       ]
@@ -511,7 +515,7 @@
       "location": "earring1",
       "effects": [
         {
-          "name": "bleed",
+          "name": "bleeding",
           "value": "2"
         },
         {
@@ -563,7 +567,7 @@
           "value": "1"
         },
         {
-          "name": "move_faster",
+          "name": "swiftness",
           "value": "1"
         }
       ]
@@ -721,7 +725,7 @@
       "location": "hands",
       "effects": [
         {
-          "name": "convert_boons",
+          "name": "boonsconverted",
           "value": "3"
         },
         {

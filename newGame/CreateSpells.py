@@ -1,6 +1,6 @@
 from loguru import logger
 
-from components import spells
+from components import spells, addStatusEffects
 from utilities import configUtilities, world
 from utilities.jsonUtilities import read_json_file
 from utilities.spellHelp import SpellUtilities
@@ -18,21 +18,10 @@ class AsEntities:
 
         class_file = read_json_file(all_classes_file)
 
-        start_spell_entity = 0
-        end_spell_entity = 0
-
         for available_class in class_file['classes']:
-            this_spell = AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config,
+            _ = AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config,
                                                                           spell_file=available_class['spellfile'],
                                                                           playable_class=available_class['name'])
-
-            if start_spell_entity == 0:
-                start_spell_entity = this_spell
-            else:
-                end_spell_entity = this_spell
-
-        logger.debug('1st Spell entity was {}', start_spell_entity)
-        logger.debug('last Spell entity was {}', end_spell_entity)
 
     @staticmethod
     def generate_spells_as_entities_for_class(gameworld, game_config, spell_file, playable_class):
@@ -41,13 +30,6 @@ class AsEntities:
         spell_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                      parameter=spellsfile)
         spell_file = read_json_file(spell_file_path)
-
-        condis = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
-                                                          parameter='condi_effects')
-        boons = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
-                                                         parameter='boon_effects')
-        resources = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
-                                                             parameter='class_resources')
 
         logger.debug('Creating spells as entities for {}', playable_class)
         thisspell = - 1
@@ -92,16 +74,26 @@ class AsEntities:
 
             effects = spell['effects']
 
-            if len(effects) > 0:
-                for effect in spell['effects']:
-                    if effect['name'] in condis:
-                        SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=thisspell,
-                                                               status_effect=str(effect['name']))
-                    if effect['name'] in boons:
-                        SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=thisspell,
-                                                              status_effect=str(effect['name']))
-                    if effect['name'] in resources:
-                        SpellUtilities.add_resources_to_spell(gameworld=gameworld, spell_entity=thisspell,
-                                                              resource=str(effect['name']))
+            addStatusEffects.process_status_effect(gameworld=gameworld, spell_entity=thisspell, effects=effects, game_config=game_config)
 
         return thisspell
+
+    @staticmethod
+    def add_status_effects_to_spell(effects, spell, thisspell, gameworld, game_config):
+        condis = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
+                                                          parameter='condi_effects')
+        boons = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
+                                                         parameter='boon_effects')
+        resources = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
+                                                             parameter='class_resources')
+        if len(effects) > 0:
+            for effect in spell['effects']:
+                if effect['name'] in condis:
+                    SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=thisspell,
+                                                           status_effect=str(effect['name']))
+                if effect['name'] in boons:
+                    SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=thisspell,
+                                                          status_effect=str(effect['name']))
+                if effect['name'] in resources:
+                    SpellUtilities.add_resources_to_spell(gameworld=gameworld, spell_entity=thisspell,
+                                                          resource=str(effect['name']))
