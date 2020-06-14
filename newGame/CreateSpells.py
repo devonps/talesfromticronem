@@ -77,23 +77,3 @@ class AsEntities:
             addStatusEffects.process_status_effect(gameworld=gameworld, spell_entity=thisspell, effects=effects, game_config=game_config)
 
         return thisspell
-
-    @staticmethod
-    def add_status_effects_to_spell(effects, spell, thisspell, gameworld, game_config):
-        condis = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
-                                                          parameter='condi_effects')
-        boons = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
-                                                         parameter='boon_effects')
-        resources = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
-                                                             parameter='class_resources')
-        if len(effects) > 0:
-            for effect in spell['effects']:
-                if effect['name'] in condis:
-                    SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=thisspell,
-                                                           status_effect=str(effect['name']))
-                if effect['name'] in boons:
-                    SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=thisspell,
-                                                          status_effect=str(effect['name']))
-                if effect['name'] in resources:
-                    SpellUtilities.add_resources_to_spell(gameworld=gameworld, spell_entity=thisspell,
-                                                          resource=str(effect['name']))

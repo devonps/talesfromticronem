@@ -43,3 +43,14 @@ def remove_component_from_entity(gameworld, entity, component):
 
 def does_entity_have_component(gameworld, entity, component):
     return gameworld.has_component(entity, component)
+
+
+def get_all_components_for_entity(gameworld, entity):
+    return gameworld.components_for_entity(entity)
+
+
+def check_if_entity_has_component(gameworld, entity, component):
+    if gameworld.has_component(entity, component):
+        return True
+    else:
+        return False
