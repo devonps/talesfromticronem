@@ -3,8 +3,8 @@ from loguru import logger
 from bearlibterminal import terminal
 
 from newGame.ClassWeapons import WeaponClass
+from newGame.CreateSpells import AsEntities
 from newGame.Items import ItemManager
-from newGame.initialiseNewGame import generate_spells
 from utilities import configUtilities, colourUtilities, world
 from utilities.buildLibrary import BuildLibrary
 from utilities.externalfileutilities import Externalfiles
@@ -435,8 +435,10 @@ def display_build_library():
                             spellfile = MobileUtilities.get_character_class_spellfilename(gameworld, player_entity)
 
                             class_component = MobileUtilities.get_character_class(gameworld, player_entity)
-                            generate_spells(gameworld=gameworld, game_config=game_config, spell_file=spellfile,
-                                            player_class=class_component)
+                            AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld,
+                                                                             game_config=game_config,
+                                                                             spell_file=spellfile,
+                                                                             playable_class=class_component)
 
                             # weapons
                             if decoded_build[selected_build][Build.BUILDMAINHAND] == decoded_build[selected_build][

@@ -23,8 +23,8 @@ class AsEntities:
 
         for available_class in class_file['classes']:
             this_spell = AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config,
-                                                                    spell_file=available_class['spellfile'],
-                                                                    playable_class=available_class['name'])
+                                                                          spell_file=available_class['spellfile'],
+                                                                          playable_class=available_class['name'])
 
             if start_spell_entity == 0:
                 start_spell_entity = this_spell
@@ -75,7 +75,7 @@ class AsEntities:
                 if spell['aoe'] == 'True':
                     gameworld.add_component(thisspell, spells.AreaOfEffect(use_area_of_effect=spell['aoe']))
                     gameworld.add_component(thisspell,
-                                                 spells.AreaOfEffectSize(area_of_effect_size=spell['aoe_size']))
+                                            spells.AreaOfEffectSize(area_of_effect_size=spell['aoe_size']))
                 else:
                     gameworld.add_component(thisspell, spells.AreaOfEffect(use_area_of_effect=spell['aoe']))
 

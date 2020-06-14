@@ -1,7 +1,7 @@
 import random
 
+from newGame.CreateSpells import AsEntities
 from newGame.Items import ItemManager
-from newGame.initialiseNewGame import generate_spells
 from utilities import configUtilities, colourUtilities
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
@@ -449,8 +449,8 @@ class Entity:
         enemy_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
         weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon_entity)
 
-        generate_spells(gameworld=gameworld, game_config=game_config, spell_file=enemy_class,
-                        player_class=enemy_class)
+        AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config, spell_file=enemy_class, playable_class=enemy_class)
+
         spell_list = SpellUtilities.get_list_of_spells_for_enemy(gameworld=gameworld, weapon_type=weapon_type,
                                                                  mobile_class=enemy_class)
         sample_spells = ItemUtilities.load_enemy_weapon_with_spells(gameworld=gameworld, enemy_id=entity_id,

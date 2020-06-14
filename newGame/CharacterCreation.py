@@ -13,7 +13,7 @@ from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 from utilities.itemsHelp import ItemUtilities
-from newGame.initialiseNewGame import setup_gameworld, generate_spells
+from newGame.initialiseNewGame import setup_gameworld
 from newGame.Items import ItemManager
 from newGame.ClassWeapons import WeaponClass
 from components import mobiles
@@ -974,8 +974,7 @@ class CharacterCreation:
         if spellfile == '':
             logger.warning('Spell file name not set')
 
-        generate_spells(gameworld=gameworld, game_config=game_config, spell_file=spellfile,
-                        player_class=class_component)
+        AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config, spell_file=spellfile, playable_class=class_component)
 
         # create starting weapon(s) - based on what's passed into this method
         if main_hand == off_hand:
