@@ -182,6 +182,13 @@ class ArmourBeingWorn:
         self.status = status
 
 
+# armour spell information
+class ArmourSpell:
+    def __init__(self):
+        self.entity = 0
+        self.on_cool_down = False
+
+
 ####################################################
 #
 #   JEWELLERY

@@ -5,6 +5,7 @@ from components import mobiles
 
 class ArmourClass:
 
+    @staticmethod
     def get_armour_piece_from_body_location(gameworld, entity, bodylocation):
 
         armour_entity = 0

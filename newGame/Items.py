@@ -218,6 +218,7 @@ class ItemManager:
             displayname=display))
         gameworld.add_component(armour_piece, items.RenderItem(istrue=True))
         gameworld.add_component(armour_piece, items.Quality(level=as_quality))
+        gameworld.add_component(armour_piece, items.ArmourSpell())
 
         # generate armour specifics
         gameworld.add_component(armour_piece, items.Weight(label=as_weight))
