@@ -74,6 +74,6 @@ class AsEntities:
 
             effects = spell['effects']
 
-            addStatusEffects.process_status_effect(gameworld=gameworld, spell_entity=thisspell, effects=effects, game_config=game_config)
+            addStatusEffects.process_status_effect(gameworld=gameworld, spell_entity=thisspell, effects=effects, game_config=game_config, ch_class=playable_class)
 
         return thisspell

@@ -49,8 +49,8 @@
           "value": "3"
         },
          {
-          "name": "clone",
-          "value": "1"
+          "name": "summon",
+          "value": "clone"
         }
         ]
     },
@@ -148,12 +148,12 @@
       "damage_coef": "0.3",
       "effects": [
         {
-          "name": "boon",
-          "value": "99"
+          "name": "random",
+          "value": "boon"
         },
         {
-          "name": "condition",
-          "value": "99"
+          "name": "random",
+          "value": "condition"
         }
         ]
     },
@@ -179,8 +179,8 @@
           "value": "5"
         },
         {
-          "name": "clone",
-          "value": "1"
+          "name": "summon",
+          "value": "clone"
         }
         ]
     },
@@ -202,12 +202,12 @@
       "damage_coef": "0",
       "effects": [
         {
-          "name": "phantasm",
-          "value": "1"
+          "name": "summon",
+          "value": "phantasm"
         },
         {
-          "name": "phantasm",
-          "value": "1"
+          "name": "summon",
+          "value": "phantasm"
         }
         ]
     },
@@ -229,12 +229,12 @@
       "damage_coef": "0",
       "effects": [
         {
-          "name": "boon",
-          "value": "99"
+          "name": "random",
+          "value": "boon"
         },
         {
-          "name": "condition",
-          "value": "99"
+          "name": "random",
+          "value": "condition"
         }
         ]
     },
@@ -256,12 +256,12 @@
       "damage_coef": "0",
       "effects": [
         {
-          "name": "boon",
-          "value": "99"
+          "name": "random",
+          "value": "boon"
         },
         {
-          "name": "condition",
-          "value": "99"
+          "name": "random",
+          "value": "condition"
         }
         ]
     },
@@ -368,8 +368,8 @@
           "value": "2"
         },
         {
-          "name": "phantasm",
-          "value": "1"
+          "name": "summon",
+          "value": "phantasm  "
         }
         ]
     },
@@ -413,11 +413,11 @@
       "heal_coef": "0.3",
       "effects": [
         {
-          "name": "gain_health",
+          "name": "gainhealth",
           "value": "3230"
         },
         {
-          "name": "condiremoval",
+          "name": "removeconditions",
           "value": "99"
         }
       ]

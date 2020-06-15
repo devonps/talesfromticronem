@@ -52,3 +52,16 @@ class Strikesfor:
 
 class ConvertBoons:
     pass
+
+
+class Selfbleeding:
+    def __init__(self, name='Bleed', dialog="I'm bleeding"):
+        self.label = name
+        self.condition_status_effect = 'Bleeding'
+        self.base_damage_per_stack = 2
+        self.condition_damage_modifier = 0.06
+        self.weapon_level_modifier = 0.25
+        self.max_stacks = 10
+        self.dialog = dialog
+        self.lasts_for = 3
+        self.stacks_applied = 1

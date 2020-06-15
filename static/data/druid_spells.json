@@ -255,7 +255,7 @@
       "damage_coef": "0.3",
       "effects": [
         {
-          "name": "gain_heal",
+          "name": "gainhealth",
           "value": "66"
         }
         ]
@@ -301,7 +301,7 @@
       "damage_coef": "0.1",
       "effects": [
         {
-          "name": "gain_heal",
+          "name": "gainhealth",
           "value": "1450"
         }
         ]
@@ -324,7 +324,7 @@
       "damage_coef": "0.5",
       "effects": [
         {
-          "name": "immobilise",
+          "name": "immobilize",
           "value": "3"
         }
         ]
@@ -348,7 +348,7 @@
       "damage_coef": "0.1",
       "effects": [
         {
-          "name": "gain_heal",
+          "name": "gainhealth",
           "value": "162"
         },
         {
@@ -370,11 +370,11 @@
       "heal_coef": "1.0",
       "effects": [
         {
-          "name": "gain_health",
+          "name": "gainhealth",
           "value": "4920"
         },
                 {
-          "name": "condiremoval",
+          "name": "removeconditions",
           "value": "99"
         }
       ]
@@ -392,7 +392,7 @@
       "location": "earring1",
       "effects": [
         {
-          "name": "gain_heal",
+          "name": "gainhealth",
           "value": "70"
         },
         {
@@ -444,7 +444,7 @@
           "value": "2"
         },
         {
-          "name": "move_faster",
+          "name": "swiftness",
           "value": "2"
         }
       ]
@@ -462,7 +462,7 @@
       "location": "ring1",
       "effects": [
         {
-          "name": "immobilise",
+          "name": "immobilize",
           "value": "2"
         },
                 {
@@ -484,12 +484,12 @@
       "location": "ring2",
       "effects": [
         {
-          "name": "chilled",
+          "name": "chill",
           "value": "3"
         },
         {
-          "name": "summon_frostspirit",
-          "value": "1"
+          "name": "summon",
+          "value": "frostspirit"
         },
         {
           "name": "damage_increase",
@@ -514,8 +514,8 @@
       "location": "head",
       "effects": [
         {
-          "name": "summon_stonespirit",
-          "value": "1"
+          "name": "summon",
+          "value": "stonespirit"
         },
         {
           "name": "protection",
@@ -544,8 +544,8 @@
           "value": "3"
         },
         {
-          "name": "summon_stormspirit",
-          "value": "1"
+          "name": "summon",
+          "value": "stormspirit"
         },
         {
           "name": "lives_for",
@@ -570,8 +570,8 @@
           "value": "3"
         },
         {
-          "name": "summon_sunspirit",
-          "value": "1"
+          "name": "summon",
+          "value": "sunspirit"
         },
         {
           "name": "lives_for",
@@ -596,7 +596,7 @@
           "value": "3"
         },
         {
-          "name": "immobilise",
+          "name": "immobilize",
           "value": "3"
         },
         {

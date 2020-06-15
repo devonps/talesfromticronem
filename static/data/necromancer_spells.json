@@ -18,7 +18,7 @@
       "damage_coef": "0.666",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "4"
         },
         {
@@ -46,7 +46,7 @@
       "damage_coef": "0.33",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "4"
         },
         {
@@ -82,7 +82,7 @@
       "damage_coef": "0.565",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "4"
         },
         {
@@ -114,7 +114,7 @@
       "damage_coef": "1.32",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "4"
         },
         {
@@ -146,7 +146,7 @@
       "damage_coef": "0.275",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "2"
         },
         {
@@ -204,7 +204,7 @@
           "value": "4"
         },
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "3"
         },
         {
@@ -235,7 +235,7 @@
           "value": "2"
         },
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "1"
         },
         {
@@ -290,7 +290,7 @@
       "damage_coef": "1.2",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "2"
         },
         {
@@ -321,7 +321,7 @@
       "damage_coef": "1.3",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "1"
         }
       ]
@@ -348,7 +348,7 @@
           "value": "12"
         },
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "2"
         },
         {
@@ -398,7 +398,7 @@
       "damage_coef": "1.3",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "4"
         }
       ]
@@ -448,7 +448,7 @@
           "value": "8"
         },
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "2"
         }
       ]
@@ -493,11 +493,11 @@
           "value": "8"
         },
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "5"
         },
         {
-          "name": "gain_health",
+          "name": "gainhealth",
           "value": "4555"
         }
       ]
@@ -545,7 +545,7 @@
           "value": "2"
         },
         {
-          "name": "spread_condis",
+          "name": "transferconditions",
           "value": "3"
         }
       ]
@@ -563,7 +563,7 @@
       "location": "pendant",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "1"
         },
         {
@@ -585,7 +585,7 @@
       "location": "ring1",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "1"
         }
       ]
@@ -603,7 +603,7 @@
       "location": "ring2",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "3"
         },
         {
@@ -629,8 +629,8 @@
       "location": "head",
       "effects": [
         {
-          "name": "summon_fleshworm",
-          "value": "1"
+          "name": "summon",
+          "value": "fleshworm"
         }
       ]
     },
@@ -729,7 +729,7 @@
           "value": "3"
         },
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "2"
         }
       ]

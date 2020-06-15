@@ -17,7 +17,7 @@
       "damage_coef": "0.666",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "4"
         }
         ]
@@ -103,11 +103,11 @@
       "damage_coef": "1.32",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "4"
         },
         {
-          "name": "transfer_conditions",
+          "name": "transferconditions",
           "value": "3"
         },
         {
@@ -187,7 +187,7 @@
       "damage_coef": "0.8",
       "effects": [
         {
-          "name": "bleed",
+          "name": "bleeding",
           "value": "3"
         },
         {
@@ -324,7 +324,7 @@
           "value": "9"
         },
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "2"
         }
         ]
@@ -350,7 +350,7 @@
           "value": "1"
         },
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "5"
         }
         ]
@@ -376,7 +376,7 @@
           "value": "1"
         },
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "1.5"
         },
         {
@@ -410,7 +410,7 @@
           "value": "2"
         },
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "3"
         }
         ]
@@ -467,7 +467,7 @@
           "value": "1"
         },
         {
-          "name": "convert_boons",
+          "name": "boonsconverted",
           "value": "4"
         },
         {
@@ -488,7 +488,7 @@
       "heal_coef": "1.0",
       "effects": [
         {
-          "name": "gain_health",
+          "name": "gainhealth",
           "value": "5240"
         }
         ]
@@ -530,7 +530,7 @@
       "location": "earring2",
       "effects": [
         {
-          "name": "convert_boons",
+          "name": "boonsconverted",
           "value": "99"
         }
         ]
@@ -568,7 +568,7 @@
           "value": "1"
         },
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "8"
         }
         ]
@@ -585,7 +585,7 @@
       "location": "ring2",
       "effects": [
         {
-          "name": "gain_lifeforce",
+          "name": "gainlifeforce",
           "value": "15"
         },
         {
@@ -606,7 +606,7 @@
       "location": "head",
       "effects": [
         {
-          "name": "convert_boons",
+          "name": "boonsconverted",
           "value": "99"
         }
         ]

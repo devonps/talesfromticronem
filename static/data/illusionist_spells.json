@@ -61,8 +61,8 @@
       "damage_coef": "0.1",
       "effects": [
         {
-          "name": "clone",
-          "value": "1"
+          "name": "summon",
+          "value": "clone"
         },
         {
           "name": "cripple",
@@ -117,8 +117,8 @@
       "damage_coef": "0.5",
       "effects": [
         {
-          "name": "phantasm",
-          "value": "1"
+          "name": "summon",
+          "value": "phantasm"
         },
         {
           "name": "might",
@@ -143,7 +143,7 @@
       "damage_coef": "1.1",
       "effects": [
         {
-          "name": "bleed",
+          "name": "bleeding",
           "value": "1"
         },
         {
@@ -221,8 +221,8 @@
       "damage_coef": "0.75",
       "effects": [
         {
-          "name": "clone",
-          "value": "1"
+          "name": "summon",
+          "value": "clone"
         },
         {
           "name": "torment",
@@ -277,8 +277,8 @@
       "damage_coef": "0.1",
       "effects": [
         {
-          "name": "clone",
-          "value": "1"
+          "name": "summon",
+          "value": "clone"
         },
         {
           "name": "blind",
@@ -316,7 +316,7 @@
           "value": "3"
         },
         {
-          "name": "condiremoval",
+          "name": "removeconditions",
           "value": "99"
         }
         ]
@@ -339,8 +339,8 @@
       "damage_coef": "0.5",
       "effects": [
         {
-          "name": "phantasm",
-          "value": "1"
+          "name": "summon",
+          "value": "phantasm"
         },
         {
           "name": "burn",
@@ -373,8 +373,8 @@
       "damage_coef": "0.0",
       "effects": [
         {
-          "name": "clone",
-          "value": "1"
+          "name": "",
+          "value": "clone"
         },
         {
           "name": "teleport",
@@ -399,8 +399,8 @@
       "damage_coef": "1.68",
       "effects": [
         {
-          "name": "phantasm",
-          "value": "1"
+          "name": "summon",
+          "value": "phantasm"
         },
         {
           "name": "vulnerability",
@@ -420,7 +420,7 @@
       "heal_coef": "0.85",
       "effects": [
         {
-          "name": "gain_health",
+          "name": "gainhealth",
           "value": "5560"
         }
         ]
@@ -459,8 +459,8 @@
       "aoe": "False",
       "effects": [
         {
-          "name": "clone",
-          "value": "1"
+          "name": "summon",
+          "value": "clone"
         },
         {
           "name": "stealth",
@@ -480,8 +480,8 @@
       "location": "ring1",
       "effects": [
         {
-          "name": "clone",
-          "value": "2"
+          "name": "summon",
+          "value": "clone"
         }
         ]
     },
@@ -497,7 +497,7 @@
       "location": "ring2",
       "effects": [
         {
-          "name": "condiremove",
+          "name": "removeconditions",
           "value": "1"
         },
         {
@@ -564,8 +564,8 @@
       "location": "chest",
       "effects": [
         {
-          "name": "zombie",
-          "value": "5"
+          "name": "summon",
+          "value": "zombie"
         },
         {
           "name": "aoe",
@@ -610,7 +610,7 @@
       "location": "feet",
       "effects": [
         {
-          "name": "condiremove",
+          "name": "removeconditions",
           "value": "3"
         },
         {
@@ -631,8 +631,8 @@
       "location": "gloves",
       "effects": [
         {
-          "name": "phantasm",
-          "value": "1"
+          "name": "summon",
+          "value": "phantasm"
         },
         {
           "name": "damage",
