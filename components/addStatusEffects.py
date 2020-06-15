@@ -5,7 +5,6 @@
 from components import condis, boons, resources
 from loguru import logger
 from utilities import configUtilities
-from utilities.externalfileutilities import Externalfiles
 from utilities.world import check_if_entity_has_component
 
 
@@ -35,7 +34,6 @@ def process_status_effect(gameworld, spell_entity, effects, game_config, ch_clas
 
             if not valid_effect:
                 logger.warning('Effect named {} is not in lists', effect_name)
-                Externalfiles.write_to_existing_file('missing_effects.txt', value=ch_class + ':' + effect_name)
 
 
 def add_class_resource(gameworld, entity, effect, resource_value):
