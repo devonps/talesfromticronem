@@ -403,6 +403,15 @@ class ItemUtilities:
         if armourset[4] > 0:
             ItemUtilities.equip_piece_of_armour(gameworld, entity, armourset[4], 'feet')
 
+    @staticmethod
+    def add_spell_to_armour_piece(gameworld, armour_entity, spell_entity):
+        gameworld.add_component(armour_entity, items.ArmourSpell(entity=spell_entity))
+
+    @staticmethod
+    def set_spell_cooldown_status_on_armour_piece(gameworld, armour_entity, cool_down_status):
+        gameworld.add_component(armour_entity, items.ArmourSpell(on_cool_down=cool_down_status))
+
+
 ####################################################
 #
 #   JEWELLERY

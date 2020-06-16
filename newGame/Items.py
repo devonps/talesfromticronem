@@ -1,5 +1,4 @@
-
-from components import items
+from components import items, spells
 from utilities import world, jsonUtilities
 from utilities.gamemap import GameMapUtilities
 from utilities.itemsHelp import ItemUtilities
@@ -12,7 +11,6 @@ import random
 
 
 class ItemManager:
-
     """
     The purpose of the ItemManager class is to:
     Create ALL items in the game
@@ -20,15 +18,17 @@ class ItemManager:
     Place items in the dungeon
 
     """
-
+    @staticmethod
     def create_weapon(gameworld, weapon_type, game_config):
         """
         Currently this creates a new weapon using the information in an external file
         :type gameworld: esper.world
         :type weapon_type: the type of weapon to be created, e.g. sword
         """
-        weapon_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files', parameter='WEAPONSFILE')
-        weapon_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game', parameter='ITEM_WEAPON_ACTIONS')
+        weapon_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                      parameter='WEAPONSFILE')
+        weapon_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
+                                                                      parameter='ITEM_WEAPON_ACTIONS')
 
         weapon_file = jsonUtilities.read_json_file(weapon_file_path)
         for weapon in weapon_file['weapons']:
@@ -45,10 +45,7 @@ class ItemManager:
                     fg=colourUtilities.get('WHITE'),
                     bg=colourUtilities.get('BLACK'),
                     displayname=weapon['display_name']
-                    # fg=weapon['fg_colour'],
-                    # bg=weapon['bg_colour']
                 ))
-                # gameworld.add_component(myweapon, items.Location(x=0, y=0))
                 gameworld.add_component(myweapon, items.RenderItem(istrue=True))
                 gameworld.add_component(myweapon, items.Quality(level=weapon['quality_level']))
 
@@ -88,13 +85,13 @@ class ItemManager:
         class_file = jsonUtilities.read_json_file(npc_class_file)
         entity_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
 
-        for entityClass in class_file['classes']:
-            if entityClass['name'] == entity_class:
-                neck_gemstone = entityClass[jewellery_set]['neck']
-                ring1_gemstone = entityClass[jewellery_set]['ring1']
-                ring2_gemstone = entityClass[jewellery_set]['ring2']
-                ear1_gemstone = entityClass[jewellery_set]['earring1']
-                ear2_gemstone = entityClass[jewellery_set]['earring2']
+        for entityclass in class_file['classes']:
+            if entityclass['name'] == entity_class:
+                neck_gemstone = entityclass[jewellery_set]['neck']
+                ring1_gemstone = entityclass[jewellery_set]['ring1']
+                ring2_gemstone = entityclass[jewellery_set]['ring2']
+                ear1_gemstone = entityclass[jewellery_set]['earring1']
+                ear2_gemstone = entityclass[jewellery_set]['earring2']
                 # create jewellery entity
                 pendant = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck',
                                                        e_setting='copper', e_hook='copper', e_activator=neck_gemstone)
@@ -121,26 +118,25 @@ class ItemManager:
                                               trinket=right_ear)
 
                 # apply gemstone benefits
-                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=pendant)
+                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=pendant)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
-                                                    statbonus=jewelleyStatBonus)
+                                                    statbonus=jewelley_stat_bonus)
 
-                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ring)
+                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ring)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
-                                                    statbonus=jewelleyStatBonus)
+                                                    statbonus=jewelley_stat_bonus)
 
-                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ring)
+                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ring)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
-                                                    statbonus=jewelleyStatBonus)
+                                                    statbonus=jewelley_stat_bonus)
 
-                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ear)
+                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ear)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
-                                                    statbonus=jewelleyStatBonus)
+                                                    statbonus=jewelley_stat_bonus)
 
-                jewelleyStatBonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ear)
+                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ear)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
-                                                    statbonus=jewelleyStatBonus)
-
+                                                    statbonus=jewelley_stat_bonus)
 
     @staticmethod
     def create_piece_of_armour(gameworld, bodylocation, setname, prefix, game_config):
@@ -163,10 +159,8 @@ class ItemManager:
 
         for armourset in armour_set_file['armoursets']:
             if armourset['displayname'] == setname:
-                as_display_name = (armourset['displayname'])
                 as_weight = (armourset['weight'])
                 as_quality = armourset['quality']
-                as_flavour = (armourset['flavour'])
                 as_material = (armourset['material'])
                 prefix_count = armourset['prefixcount']
                 attribute_bonus_count = armourset['attributebonuscount']
@@ -194,7 +188,6 @@ class ItemManager:
                 for px in range(1, prefix_count + 1):
                     prefix_string = pxstring + str(px)
                     if armourset[prefix_string]['name'].lower() == prefix.lower():
-                        as_prefix = prefix
                         if attribute_bonus_count > 1:
                             att_bonus_string = attvaluestring + str(px)
                             att_name_string = attnamestring + str(px)
@@ -233,7 +226,20 @@ class ItemManager:
         gameworld.add_component(armour_piece, items.ArmourSet(label=setname, prefix=prefix, level=0))
         gameworld.add_component(armour_piece, items.ArmourBeingWorn(status=False))
 
+        # add spell to piece of armour
+        ItemManager.add_spell_to_piece_of_armour(gameworld=gameworld, bodylocation=bodylocation, armour_piece=armour_piece)
+
         return armour_piece
+
+    @staticmethod
+    def add_spell_to_piece_of_armour(gameworld, bodylocation, armour_piece):
+        for ent, (spell_loc, item_type) in gameworld.get_components(spells.ItemLocation, spells.ItemType):
+            if item_type.label == 'armour' and bodylocation == spell_loc.label:
+                ItemUtilities.add_spell_to_armour_piece(gameworld=gameworld, armour_entity=armour_piece,
+                                                        spell_entity=ent)
+                ItemUtilities.set_spell_cooldown_status_on_armour_piece(gameworld=gameworld, armour_entity=armour_piece,
+                                                                        cool_down_status=False)
+
 
     @staticmethod
     def create_full_armour_set(gameworld, armourset, prefix, game_config):
@@ -291,9 +297,9 @@ class ItemManager:
         trinket_activator = e_activator.lower()
 
         gemstones_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                      parameter='GEMSTONESFILE')
+                                                                         parameter='GEMSTONESFILE')
         jewellery_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
-                                                                      parameter='ITEM_JEWELLERY_ACTIONS')
+                                                                         parameter='ITEM_JEWELLERY_ACTIONS')
         if trinket_setting == '' or trinket_activator == '' or trinket_hook == '':
             logger.debug('At least one base component is missing')
             return 0
@@ -302,6 +308,7 @@ class ItemManager:
             return 0
 
         gemstone_file = jsonUtilities.read_json_file(gemstones_file_path)
+        gemstone_string = ' gemstone.'
 
         for gemstone in gemstone_file['gemstones']:
             file_gemstone = gemstone['Stone'].lower()
@@ -318,11 +325,13 @@ class ItemManager:
                 gameworld.add_component(piece_of_jewellery, items.JewelleryEquipped(istrue=False))
                 desc = 'a ' + trinket_setting
                 nm = ''
-                gameworld.add_component(piece_of_jewellery, items.JewelleryComponents(setting=trinket_setting, hook=trinket_hook, activator=trinket_activator))
+                gameworld.add_component(piece_of_jewellery,
+                                        items.JewelleryComponents(setting=trinket_setting, hook=trinket_hook,
+                                                                  activator=trinket_activator))
 
                 if 'ear' in bodylocation:
                     # create an earring
-                    desc += ' earring, offset with a ' + trinket_activator + ' gemstone.'
+                    desc += ' earring, offset with a ' + trinket_activator + gemstone_string
                     nm = 'earring'
                     gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(ears=True))
                     gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
@@ -330,7 +339,7 @@ class ItemManager:
                         statbonus=gemstone['Earring']))
                 elif bodylocation == 'neck':
                     # create an amulet
-                    desc += ' amulet, offset with a ' + trinket_activator + ' gemstone.'
+                    desc += ' amulet, offset with a ' + trinket_activator + gemstone_string
                     nm = 'amulet'
                     gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(neck=True))
                     gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
@@ -338,7 +347,7 @@ class ItemManager:
                         statbonus=gemstone['Amulet']))
                 else:
                     # create a ring
-                    desc += ' ring, offset with a ' + trinket_activator + ' gemstone.'
+                    desc += ' ring, offset with a ' + trinket_activator + gemstone_string
                     nm = 'ring'
                     gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(fingers=True))
                     gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
@@ -355,6 +364,7 @@ class ItemManager:
                 logger.info('Created {}', desc)
                 return piece_of_jewellery
 
+    @staticmethod
     def place_item_in_dungeon(gameworld, item_to_be_placed, game_map, game_config):
         """
 
@@ -366,9 +376,12 @@ class ItemManager:
         Over time I imagine this will evolve into lots of constraints and possibly be removed
         in favour of something else. 22/4/19
         """
-        map_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='MAP_WIDTH')
-        map_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='MAP_HEIGHT')
-        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon', parameter='TILE_TYPE_FLOOR')
+        map_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
+                                                                parameter='MAP_WIDTH')
+        map_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
+                                                                 parameter='MAP_HEIGHT')
+        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='TILE_TYPE_FLOOR')
 
         if item_to_be_placed == 0:
             return False
@@ -390,12 +403,14 @@ class ItemManager:
         if can_be_rendered:
 
             # get items current location --> if already exists then it is already placed in the dungeon
-            item_dungeon_posx, item_dungeon_posy = ItemUtilities.get_item_location(gameworld=gameworld, entity=item_to_be_placed)
+            item_dungeon_posx, item_dungeon_posy = ItemUtilities.get_item_location(gameworld=gameworld,
+                                                                                   entity=item_to_be_placed)
             if item_dungeon_posx > 0 or item_dungeon_posy > 0:
                 logger.info('Item is already in the dungeon, cannot place twice')
                 return False
             # get player current location
-            player_pos_x, player_pos_y = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=player_entity)
+            player_pos_x, player_pos_y = MobileUtilities.get_mobile_current_location(gameworld=gameworld,
+                                                                                     mobile=player_entity)
             if player_pos_x == 0 or player_pos_y == 0:
                 logger.warning('Cannot resolve players current position')
                 return False
@@ -407,13 +422,10 @@ class ItemManager:
                 iy = random.randrange(1, map_height)
                 tile = GameMapUtilities.get_type_of_tile(game_map, ix, iy)
                 if tile == tile_type_floor:
-                    ItemUtilities.set_item_location(gameworld=gameworld, item_entity=item_to_be_placed, posx=ix, posy=iy)
+                    ItemUtilities.set_item_location(gameworld=gameworld, item_entity=item_to_be_placed, posx=ix,
+                                                    posy=iy)
                     attempts = 499
                     item_has_been_placed = True
                 attempts += 1
 
         return item_has_been_placed
-
-
-
-

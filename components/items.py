@@ -184,9 +184,9 @@ class ArmourBeingWorn:
 
 # armour spell information
 class ArmourSpell:
-    def __init__(self):
-        self.entity = 0
-        self.on_cool_down = False
+    def __init__(self, entity=0, on_cool_down=False):
+        self.entity = entity
+        self.on_cool_down = on_cool_down
 
 
 ####################################################
