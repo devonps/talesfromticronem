@@ -20,11 +20,11 @@ class RenderSpellInfoPanel(esper.Processor):
 
     def process(self, game_config):
         self.render_spell_info_outer_frame()
-        self.render_equipped_items()
+        # self.render_equipped_items()
         self.render_energy_bars(game_config=game_config)
-        self.render_class_mechanics(game_config=game_config)
-        self.render_spell_bar(game_config=game_config)
-        self.render_player_status_effects(game_config=game_config)
+        # self.render_class_mechanics(game_config=game_config)
+        # self.render_spell_bar(game_config=game_config)
+        # self.render_player_status_effects(game_config=game_config)
 
     def render_player_status_effects(self, game_config):
 
@@ -145,6 +145,20 @@ class RenderSpellInfoPanel(esper.Processor):
                         y=(spell_infobox_start_y + spell_infobox_height),
                         s=unicode_string_to_print + spell_info_bottom_right_corner + ']')
 
+        start_list_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='START_LIST_X')
+
+        start_list_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='START_LIST_Y')
+        z = 0
+        for letter in range(26):
+            terminal.printf(x=start_list_x, y=start_list_y + letter,
+                            s=chr(65+letter) + ' 9 Glyph of Lesser Elementals 10')
+            z+= 1
+            if z == 5:
+                start_list_y += 1
+                z = 1
+
     @staticmethod
     def render_equipped_weapons(gameworld, game_config):
 
@@ -236,7 +250,7 @@ class RenderSpellInfoPanel(esper.Processor):
                                                                             parameter='ENERGY_BARS_START_X')
 
         mana_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='ENERGY_BARS_START_Y') + 1
+                                                                            parameter='ENERGY_BARS_START_Y') + 2
 
         ascii_prefix = 'ASCII_SINGLE_'
 

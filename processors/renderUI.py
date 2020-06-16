@@ -23,9 +23,9 @@ class RenderUI(esper.Processor):
         self.render_items(game_config, self.gameworld)
         visible_entities = self.render_mobiles(gameworld=self.gameworld, game_config=game_config, fov_map=fov_map)
 
-        if len(visible_entities) > 0:
-            self.render_entity_display_panel(gameworld=self.gameworld, game_config=game_config,
-                                             visible_entities=visible_entities)
+        # if len(visible_entities) > 0:
+        #     self.render_entity_display_panel(gameworld=self.gameworld, game_config=game_config,
+        #                                      visible_entities=visible_entities)
 
         end_time = time.perf_counter()
         logger.info('Time taken to render game display {}', (end_time - start_time))
@@ -146,7 +146,8 @@ class RenderUI(esper.Processor):
                     print_char = False
                     tile = game_map.tiles[x][y].type_of_tile
                     tile_assignment = game_map.tiles[x][y].assignment
-                    visible = FieldOfView.get_fov_map_point(player_fov, x, y)
+                    # visible = FieldOfView.get_fov_map_point(player_fov, x, y)
+                    visible = True
                     if visible:
                         print_char = True
                         colour_code = "[color=white]"
@@ -189,14 +190,14 @@ class RenderUI(esper.Processor):
                 map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
                 fg = desc.foreground
                 bg = desc.background
-                if FieldOfView.get_fov_map_point(fov_map, map_pos_x, map_pos_y):
-                    if map_pos_x > vp_width:
-                        mpx = int(map_pos_x / vp_width)
-                    else:
-                        mpx = map_pos_x
-                    RenderUI.render_entity(posx=mpx, posy=vp_height + map_pos_y, glyph=desc.glyph, fg=fg, bg=bg)
-                    if ent != player_entity:
-                        visible_entities.append(ent)
+                # if FieldOfView.get_fov_map_point(fov_map, map_pos_x, map_pos_y):
+                if map_pos_x > vp_width:
+                    mpx = int(map_pos_x / vp_width)
+                else:
+                    mpx = map_pos_x
+                RenderUI.render_entity(posx=mpx, posy=vp_height + map_pos_y, glyph=desc.glyph, fg=fg, bg=bg)
+                if ent != player_entity:
+                    visible_entities.append(ent)
 
         MobileUtilities.set_visible_entities(gameworld=gameworld, target_entity=player_entity, visible_entities=visible_entities)
         return visible_entities

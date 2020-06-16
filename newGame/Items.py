@@ -259,6 +259,13 @@ class ItemManager:
 
         head_armour = ItemManager.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
                                                          setname=armourset, prefix=prefix, bodylocation='head')
+
+        spell_entity_compoment = gameworld.component_for_entity(head_armour, items.ArmourSpell)
+        logger.warning('-------------------')
+        logger.warning('Spell entity loaded into head armour piece is {}', spell_entity_compoment.entity)
+        logger.warning('-------------------')
+
+
         full_armour_set.append(head_armour)
 
         chest_armour = ItemManager.create_piece_of_armour(gameworld=gameworld, game_config=game_config,

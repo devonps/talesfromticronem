@@ -960,6 +960,7 @@ class CharacterCreation:
         this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=armourset,
                                                             prefix=armour_prefix, game_config=game_config)
 
+
         ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=this_armourset)
 
         # update buildcode
