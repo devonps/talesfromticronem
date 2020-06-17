@@ -3,7 +3,8 @@ import random
 import esper
 from bearlibterminal import terminal
 
-from utilities import configUtilities, formulas
+from components import spells
+from utilities import configUtilities, formulas, world
 from utilities.common import CommonUtils
 from utilities.display import set_both_hands_weapon_string_es, set_main_hand_weapon_string_es, \
     set_off_hand_weapon_string_es, set_jewellery_left_ear_string, set_jewellery_right_ear_string, \
@@ -20,10 +21,11 @@ class RenderSpellInfoPanel(esper.Processor):
 
     def process(self, game_config):
         self.render_spell_info_outer_frame()
-        # self.render_equipped_items()
+        self.render_equipped_items()
         self.render_energy_bars(game_config=game_config)
         # self.render_class_mechanics(game_config=game_config)
-        # self.render_spell_bar(game_config=game_config)
+        self.render_spell_bar()
+        self.render_utility_spells()
         # self.render_player_status_effects(game_config=game_config)
 
     def render_player_status_effects(self, game_config):
@@ -38,12 +40,10 @@ class RenderSpellInfoPanel(esper.Processor):
         self.render_conditions(list_of_conditions=player_conditions, game_config=game_config)
 
     def render_equipped_items(self):
-        minimal_display = configUtilities.get_config_value_as_string(configfile=self.game_config, section='spellinfo',
-                                                                       parameter='MINIMAL_DISPLAY_ENABLED')
-        if minimal_display != 'True':
-            self.render_equipped_weapons(gameworld=self.gameworld, game_config=self.game_config)
-            self.render_equipped_jewellery(gameworld=self.gameworld, game_config=self.game_config)
-            self.render_equipped_armour(gameworld=self.gameworld, game_config=self.game_config)
+
+        self.render_equipped_weapons()
+        self.render_equipped_jewellery()
+        self.render_equipped_armour()
 
     def render_energy_bars(self, game_config):
         self.render_health(self, game_config=game_config)
@@ -102,6 +102,13 @@ class RenderSpellInfoPanel(esper.Processor):
                                                                           parameter='SI_WIDTH')
         spell_infobox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
                                                                            parameter='SI_DEPTH')
+
+        items_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='ITEMS_BAR_Y')
+
+        class_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+                                                                            parameter='CLASS_BAR_Y')
+
         spell_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                       parameter=ascii_prefix + 'TOP_LEFT')
 
@@ -118,6 +125,11 @@ class RenderSpellInfoPanel(esper.Processor):
                                                                  parameter=ascii_prefix + 'HORIZONTAL')
         spell_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                parameter=ascii_prefix + 'VERTICAL')
+
+        items_splitter_left_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                               parameter=ascii_prefix + 'LEFT_T_JUNCTION')
+        items_splitter_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                               parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
 
         # render horizontal bottom
         for z in range(spell_infobox_start_x, (spell_infobox_start_x + spell_infobox_width)):
@@ -145,67 +157,137 @@ class RenderSpellInfoPanel(esper.Processor):
                         y=(spell_infobox_start_y + spell_infobox_height),
                         s=unicode_string_to_print + spell_info_bottom_right_corner + ']')
 
-        start_list_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='START_LIST_X')
 
-        start_list_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='START_LIST_Y')
-        z = 0
-        for letter in range(26):
-            terminal.printf(x=start_list_x, y=start_list_y + letter,
-                            s=chr(65+letter) + ' 9 Glyph of Lesser Elementals 10')
-            z+= 1
-            if z == 5:
-                start_list_y += 1
-                z = 1
+        # render horizontal splitters
+        for z in range(spell_infobox_start_x, (spell_infobox_start_x + spell_infobox_width)):
+            terminal.printf(x=z, y=items_start_y,
+                            s=unicode_string_to_print + spell_info_horizontal + ']')
 
-    @staticmethod
-    def render_equipped_weapons(gameworld, game_config):
+            terminal.printf(x=z, y=class_start_y,
+                            s=unicode_string_to_print + spell_info_horizontal + ']')
 
-        plpayer_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        spell_infobox_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='SI_START_X')
+            terminal.printf(x=spell_infobox_start_x , y=items_start_y,
+                            s=unicode_string_to_print + items_splitter_left_t_junction + ']')
 
-        spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='SI_START_Y')
+            terminal.printf(x=(spell_infobox_start_x + spell_infobox_width), y=items_start_y,
+                            s=unicode_string_to_print + items_splitter_right_t_junction + ']')
 
-        weapons_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=plpayer_entity)
+            terminal.printf(x=spell_infobox_start_x , y=class_start_y,
+                            s=unicode_string_to_print + items_splitter_left_t_junction + ']')
 
-        both_hands = set_both_hands_weapon_string_es(gameworld=gameworld, both_weapon=weapons_list[2])
-        main_hand = set_main_hand_weapon_string_es(main_weapon=weapons_list[0], gameworld=gameworld)
-        off_hand = set_off_hand_weapon_string_es(off_weapon=weapons_list[1], gameworld=gameworld)
+            terminal.printf(x=(spell_infobox_start_x + spell_infobox_width), y=class_start_y,
+                            s=unicode_string_to_print + items_splitter_right_t_junction + ']')
 
-        # title bar
-        terminal.printf(x=spell_infobox_start_x + 3, y=spell_infobox_start_y + 1, s='Weapons')
+    def render_equipped_weapons(self):
 
-        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 2, s=both_hands)
-        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 3, s=main_hand)
-        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 4, s=off_hand)
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
 
-    @staticmethod
-    def render_equipped_jewellery(gameworld, game_config):
-        plpayer_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        spell_infobox_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='SI_START_X')
+        start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
+                                                                   parameter='START_LIST_X')
 
-        spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='SI_START_Y')
+        this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
+                                                                   parameter='START_LIST_Y')
+        unicode_section_headers = '[font=dungeon][color=SPELLINFO_ITEM_EQUIPPED]'
+        unicode_cooldown_disabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_DISABLED]'
+        unicode_cooldown_enabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_ACTIVE]'
+        unicode_white_colour = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]'
 
-        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=plpayer_entity)
-        left_ear = set_jewellery_left_ear_string(gameworld=gameworld, left_ear=equipped_jewellery[0])
-        right_ear = set_jewellery_right_ear_string(gameworld=gameworld, right_ear=equipped_jewellery[1])
-        left_hand = set_jewellery_left_hand_string(gameworld=gameworld, left_hand=equipped_jewellery[2])
-        right_hand = set_jewellery_right_hand_string(gameworld=gameworld, right_hand=equipped_jewellery[3])
-        neck = set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
+        this_letter = 49
+        terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Main Hand ')
+        this_row += 2
+        slot = 1
+        cooldown_string_x = start_list_x + 1
+        name_string_x = start_list_x + 4
+        range_string_x = start_list_x + 31
+        for _ in range(3):
 
-        # title bar
-        terminal.printf(x=spell_infobox_start_x + 3, y=spell_infobox_start_y + 7, s='Jewellery')
+            slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slot,
+                                                                                   player_entity=player_entity)
 
-        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 8, s=left_ear)
-        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 9, s=right_ear)
-        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 10, s=left_hand)
-        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 11, s=right_hand)
-        terminal.print_(x=spell_infobox_start_x + 1, y=spell_infobox_start_y + 12, s=neck)
+            spell_name, spell_range, spell_cooldown_value = SpellUtilities.get_spell_info_details(gameworld=self.gameworld, spell_entity=slot_spell_entity)
+
+            if spell_cooldown_value > 0:
+                cooldown_colour = unicode_cooldown_enabled
+            else:
+                spell_cooldown_value = 0
+                cooldown_colour = unicode_cooldown_disabled
+
+            cooldown_string = cooldown_colour + ' ' + str(spell_cooldown_value)
+            name_string = unicode_white_colour + spell_name
+            range_string = unicode_white_colour + str(spell_range)
+
+            terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
+
+            terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
+            terminal.printf(x=name_string_x, y=this_row, s=name_string)
+            terminal.printf(x=range_string_x, y=this_row, s=range_string)
+            this_row += 1
+            this_letter += 1
+            slot += 1
+
+        this_row += 1
+        terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Off Hand ')
+        this_row += 2
+        for _ in range(2):
+            slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slot,
+                                                                                   player_entity=player_entity)
+            spell_name, spell_range, spell_cooldown_value = SpellUtilities.get_spell_info_details(gameworld=self.gameworld, spell_entity=slot_spell_entity)
+
+            if spell_cooldown_value > 0:
+                cooldown_colour = unicode_cooldown_enabled
+            else:
+                spell_cooldown_value = 0
+                cooldown_colour = unicode_cooldown_disabled
+
+            cooldown_string = cooldown_colour + ' ' + str(spell_cooldown_value)
+            name_string = unicode_white_colour + spell_name
+            range_string = unicode_white_colour + str(spell_range)
+
+            terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
+
+            terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
+            terminal.printf(x=name_string_x, y=this_row, s=name_string)
+            terminal.printf(x=range_string_x, y=this_row, s=range_string)
+            this_row += 1
+            this_letter += 1
+            slot += 1
+
+    def render_equipped_jewellery(self):
+
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+
+        start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
+                                                                   parameter='START_LIST_X')
+
+        this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
+                                                               parameter='JEWELLERY_SPELL_Y')
+        unicode_section_headers = '[font=dungeon][color=SPELLINFO_ITEM_EQUIPPED]'
+
+        this_letter = 70
+        terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Jewellery')
+        this_row += 2
+
+        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=self.gameworld, mobile=player_entity)
+        left_ear = set_jewellery_left_ear_string(gameworld=self.gameworld, left_ear=equipped_jewellery[0])
+        right_ear = set_jewellery_right_ear_string(gameworld=self.gameworld, right_ear=equipped_jewellery[1])
+        left_hand = set_jewellery_left_hand_string(gameworld=self.gameworld, left_hand=equipped_jewellery[2])
+        right_hand = set_jewellery_right_hand_string(gameworld=self.gameworld, right_hand=equipped_jewellery[3])
+        neck = set_jewellery_neck_string(gameworld=self.gameworld, neck=equipped_jewellery[4])
+
+        terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + left_ear)
+        this_row += 1
+        this_letter += 1
+        terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + right_ear)
+        this_row += 1
+        this_letter += 1
+        terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + left_hand)
+        this_row += 1
+        this_letter += 1
+        terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + right_hand)
+        this_row += 1
+        this_letter += 1
+        terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + neck)
+
 
     @staticmethod
     def render_health(self, game_config):
@@ -370,218 +452,186 @@ class RenderSpellInfoPanel(esper.Processor):
 
             mechanic_start_x += 8
 
-    @staticmethod
-    def render_equipped_armour(gameworld, game_config):
-        plpayer_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+    def render_equipped_armour(self):
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
 
-        spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='SI_START_Y')
+        start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
+                                                                   parameter='START_LIST_X')
 
-        armour_pos_x = 60
-        # title bar
-        terminal.printf(x=armour_pos_x + 5, y=spell_infobox_start_y + 1, s='Armour')
+        this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
+                                                               parameter='ARMOUR_SPELL_Y')
+        unicode_section_headers = '[font=dungeon][color=SPELLINFO_ITEM_EQUIPPED]'
+        unicode_cooldown_disabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_DISABLED]'
+        unicode_cooldown_enabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_ACTIVE]'
+        unicode_white_colour = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]'
 
-        items = get_head_armour_details(gameworld=gameworld, entity_id=plpayer_entity)
-        if len(items) == 1:
-            str_to_print = items[0]
-        else:
-            str_to_print = items[0] + items[2]
-        terminal.print_(x=armour_pos_x, y=spell_infobox_start_y + 2, s=str_to_print)
+        this_letter = 65
+        slot = 1
+        cooldown_string_x = start_list_x + 1
+        name_string_x = start_list_x + 4
+        range_string_x = start_list_x + 31
 
-        items = get_chest_armour_details(gameworld=gameworld, entity_id=plpayer_entity)
-        if len(items) == 1:
-            str_to_print = items[0]
-        else:
-            str_to_print = items[0] + items[2]
+        terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Armour ')
+        this_row += 2
 
-        terminal.print_(x=armour_pos_x, y=spell_infobox_start_y + 3, s=str_to_print)
-
-        items = get_hands_armour_details(gameworld=gameworld, entity_id=plpayer_entity)
-        if len(items) == 1:
-            str_to_print = items[0]
-        else:
-            str_to_print = items[0] + items[2]
-
-        terminal.print_(x=armour_pos_x, y=spell_infobox_start_y + 4, s=str_to_print)
-
-        items = get_legs_armour_details(gameworld=gameworld, entity_id=plpayer_entity)
+        items = get_head_armour_details(gameworld=self.gameworld, entity_id=player_entity)
         if len(items) == 1:
             str_to_print = items[0]
         else:
             str_to_print = items[0] + items[2]
 
-        terminal.print_(x=armour_pos_x, y=spell_infobox_start_y + 5, s=str_to_print)
-
-        items = get_feet_armour_details(gameworld=gameworld, entity_id=plpayer_entity)
+        terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + str_to_print)
+        this_row += 1
+        this_letter += 1
+        items = get_chest_armour_details(gameworld=self.gameworld, entity_id=player_entity)
         if len(items) == 1:
             str_to_print = items[0]
         else:
             str_to_print = items[0] + items[2]
-        terminal.print_(x=armour_pos_x, y=spell_infobox_start_y + 6, s=str_to_print)
 
-    def render_spell_bar(self, game_config):
+        terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + str_to_print)
+        this_row += 1
+        this_letter += 1
 
-        plpayer_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+        items = get_hands_armour_details(gameworld=self.gameworld, entity_id=player_entity)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[2]
 
-        spell_infobox_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='SI_START_X')
+        terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + str_to_print)
+        this_row += 1
+        this_letter += 1
 
-        spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='SI_START_Y')
+        items = get_legs_armour_details(gameworld=self.gameworld, entity_id=player_entity)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[2]
+        terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + str_to_print)
+        this_row += 1
+        this_letter += 1
 
-        ascii_prefix = 'ASCII_SINGLE_'
+        items = get_feet_armour_details(gameworld=self.gameworld, entity_id=player_entity)
+        if len(items) == 1:
+            str_to_print = items[0]
+        else:
+            str_to_print = items[0] + items[2]
+        terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + str_to_print)
 
-        spell_info_top_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                     parameter=ascii_prefix + 'TOP_T_JUNCTION')
+    def render_utility_spells(self):
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
+                                                                   parameter='START_LIST_X')
 
-        spell_info_bottom_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                        parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
+        this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
+                                                                   parameter='UTILITY_SPELL_Y')
+        unicode_section_headers = '[font=dungeon][color=SPELLINFO_ITEM_EQUIPPED]'
+        unicode_cooldown_disabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_DISABLED]'
+        unicode_cooldown_enabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_ACTIVE]'
+        unicode_white_colour = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]'
+        cooldown_string_x = start_list_x + 1
+        name_string_x = start_list_x + 4
+        range_string_x = start_list_x + 31
 
-        spell_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                         parameter=ascii_prefix + 'BOTTOM_LEFT')
-
-        spell_info_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                          parameter=ascii_prefix + 'BOTTOM_RIGHT')
-
-        spell_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                 parameter=ascii_prefix + 'HORIZONTAL')
-        spell_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                               parameter=ascii_prefix + 'VERTICAL')
-
-        spell_ascii_one = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'ONE')
-        spell_ascii_two = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'TWO')
-        spell_ascii_three = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'THREE')
-        spell_ascii_four = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'FOUR')
-        spell_ascii_five = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'FIVE')
-        spell_ascii_six = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'SIX')
-        spell_ascii_seven = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'SEVEN')
-        spell_ascii_eight = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'EIGHT')
-        spell_ascii_nine = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'NINE')
-        spell_ascii_zero = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'ZERO')
-
-        spell_button_width = 5
-        spell_button_depth = 3
-        unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
-        unicode_cooldown_disabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_DISABLED]['
-        unicode_cooldown_enabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_ACTIVE]['
-        unicode_spell_hotkey_enabled = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]['
-        unicode_spell_hotkey_disabled = '[font=dungeon][color=SPELLINFO_HOTKEY_DISABLED]['
-
-        spell_button_original_x = spell_infobox_start_x + 17
-
-        spell_button_start_x = spell_button_original_x
-        spell_button_end_y = (spell_infobox_start_y + spell_button_depth)
-        spell_cooldown_counter_start_x = spell_button_start_x + 1
-
-        cool_down_dict = {
-            '0': spell_ascii_zero,
-            '1': spell_ascii_one,
-            '2': spell_ascii_two,
-            '3': spell_ascii_three,
-            '4': spell_ascii_four,
-            '5': spell_ascii_five,
-            '6': spell_ascii_six,
-            '7': spell_ascii_seven,
-            '8': spell_ascii_eight,
-            '9': spell_ascii_nine
-        }
-
-        spell_on_cooldown = False
-        slotid = 1
-        for hotkey in range(10):
-
-            # render horizontal bottom
-            for z in range(spell_button_width):
-                terminal.printf(x=spell_button_start_x + z, y=spell_button_end_y,
-                                s=unicode_string_to_print + spell_info_horizontal + ']')
-
-            # render verticals
-            for zz in range(spell_button_depth - 1):
-                terminal.printf(x=spell_button_start_x, y=(spell_infobox_start_y + 1) + zz,
-                                s=unicode_string_to_print + spell_info_vertical + ']')
-                terminal.printf(x=(spell_button_start_x + spell_button_width) - 1, y=(spell_infobox_start_y + 1) + zz,
-                                s=unicode_string_to_print + spell_info_vertical + ']')
-
-            # bottom left
-            if hotkey == 0:
-                terminal.printf(x=spell_button_start_x, y=spell_button_end_y,
-                                s=unicode_string_to_print + spell_info_bottom_left_corner + ']')
-
-            # top t-junctions
-            terminal.printf(x=spell_button_start_x, y=spell_infobox_start_y,
-                            s=unicode_string_to_print + spell_info_top_t_junction + ']')
-
-            # spell activation checks/display
-
-            slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld,
-                                                                                   slot=slotid,
-                                                                                   player_entity=plpayer_entity)
+        this_letter = 55
+        terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Utility ')
+        this_row += 2
+        slot = 7
+        for _ in range(3):
+            name_string = unicode_cooldown_disabled + 'nothing selected'
+            slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slot,
+                                                                                       player_entity=player_entity)
             if slot_spell_entity > 0:
-                spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=self.gameworld,
-                                                                             spell_entity=slot_spell_entity)
 
-            # cooldown counter
-            if spell_on_cooldown:
-                spell_cooldown = unicode_cooldown_enabled
-                spell_hotkey_print = unicode_spell_hotkey_disabled
-                cooldown_value = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=self.gameworld,
-                                                                        spell_entity=slot_spell_entity)
-            else:
-                spell_cooldown = unicode_cooldown_disabled
-                spell_hotkey_print = unicode_spell_hotkey_enabled
-                cooldown_value = 0
+                spell_name, spell_range, spell_cooldown_value = SpellUtilities.get_spell_info_details(
+                    gameworld=self.gameworld, spell_entity=slot_spell_entity)
 
-            cc = list(CommonUtils.format_number_as_string(base_number=cooldown_value, base_string='000'))
-
-            down_cool = []
-
-            for a in range(len(cc)):
-                for key in cool_down_dict:
-                    if key == cc[a]:
-                        down_cool.append(cool_down_dict[key])
-
-            terminal.printf(x=spell_cooldown_counter_start_x, y=spell_infobox_start_y + 1,
-                            s=spell_cooldown + down_cool[0] + '][' + down_cool[1] + '][' + down_cool[2] + ']')
-
-            # spell hotkey
-            if hotkey == 0:
-                spell_hotkey = spell_ascii_one
-            elif hotkey == 1:
-                spell_hotkey = spell_ascii_two
-            elif hotkey == 2:
-                spell_hotkey = spell_ascii_three
-            elif hotkey == 3:
-                spell_hotkey = spell_ascii_four
-            elif hotkey == 4:
-                spell_hotkey = spell_ascii_five
-            elif hotkey == 5:
-                spell_hotkey = spell_ascii_six
-            elif hotkey == 6:
-                spell_hotkey = spell_ascii_seven
-            elif hotkey == 7:
-                spell_hotkey = spell_ascii_eight
-            elif hotkey == 8:
-                spell_hotkey = spell_ascii_nine
-            else:
-                spell_hotkey = spell_ascii_zero
-
-            terminal.printf(x=spell_button_start_x + 2, y=spell_infobox_start_y + 2,
-                            s=spell_hotkey_print + spell_hotkey + ']')
-            spell_button_start_x += 4
-            spell_cooldown_counter_start_x += 4
-            slotid += 1
-
-            br = spell_button_original_x
-            for xx in range(10):
-                # bottom right
-                if xx < 9:
-                    bottom_corner = spell_info_bottom_t_junction
+                if spell_cooldown_value > 0:
+                    cooldown_colour = unicode_cooldown_enabled
                 else:
-                    bottom_corner = spell_info_bottom_right_corner
+                    spell_cooldown_value = 0
+                    cooldown_colour = unicode_cooldown_disabled
 
-                terminal.printf(x=(br + spell_button_width) - 1, y=spell_button_end_y,
-                                s=unicode_string_to_print + bottom_corner + ']')
-                terminal.printf(x=(br + spell_button_width) - 1, y=spell_infobox_start_y,
-                                s=unicode_string_to_print + spell_info_top_t_junction + ']')
+                cooldown_string = cooldown_colour + ' ' + str(spell_cooldown_value)
+                name_string = unicode_white_colour + spell_name
+                range_string = unicode_white_colour + str(spell_range)
 
-                br += 4
+                terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
+                terminal.printf(x=range_string_x, y=this_row, s=range_string)
+            terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
+            terminal.printf(x=name_string_x, y=this_row, s=name_string)
+            this_row += 1
+            this_letter += 1
+            slot += 1
+
+    def render_spell_bar(self):
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
+                                                                   parameter='START_LIST_X')
+
+        this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
+                                                                   parameter='HEALING_SPELL_Y')
+        unicode_section_headers = '[font=dungeon][color=SPELLINFO_ITEM_EQUIPPED]'
+        unicode_cooldown_disabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_DISABLED]'
+        unicode_cooldown_enabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_ACTIVE]'
+        unicode_white_colour = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]'
+        cooldown_string_x = start_list_x + 1
+        name_string_x = start_list_x + 4
+        range_string_x = start_list_x + 31
+
+        this_letter = 54
+        terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Healing ')
+        this_row += 2
+        # spell name
+        slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=6,
+                                                                               player_entity=player_entity)
+        spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=slot_spell_entity)
+        # spell range
+        if world.check_if_entity_has_component(gameworld=self.gameworld, entity=slot_spell_entity, component=spells.MaxRange):
+            spell_range = SpellUtilities.get_spell_max_range(gameworld=self.gameworld, spell_entity=slot_spell_entity)
+        else:
+            spell_range = '-'
+        # spell cooldown
+        spell_is_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=self.gameworld,
+                                                                        spell_entity=slot_spell_entity)
+        if spell_is_on_cooldown:
+            spell_cooldown_value = SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld,
+                                                                          spell_entity=slot_spell_entity)
+            cooldown_colur = unicode_cooldown_enabled
+        else:
+            spell_cooldown_value = 0
+            cooldown_colur = unicode_cooldown_disabled
+
+        cooldown_string = cooldown_colur + ' ' + str(spell_cooldown_value)
+        name_string = unicode_white_colour + spell_name
+        range_string = unicode_white_colour + str(spell_range)
+
+        terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
+
+        terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
+        terminal.printf(x=name_string_x, y=this_row, s=name_string)
+        terminal.printf(x=range_string_x, y=this_row, s=range_string)
+        this_row += 1
+        this_letter += 1
+        this_row += 1
+
+
+
+        #
+        # this_row = 45
+        # terminal.printf(x=start_list_x, y=this_row, s='p')
+        # this_row += 1
+        # terminal.printf(x=start_list_x, y=this_row, s='b')
+        # this_row += 1
+        # for _ in range(10):
+        #     terminal.printf(x=start_list_x, y=this_row, s='b1b')
+        #     terminal.printf(x=start_list_x + 6, y=this_row, s='b2b')
+        #     terminal.printf(x=start_list_x + 14, y=this_row, s='b3b')
+        #     terminal.printf(x=start_list_x + 22, y=this_row, s='b4b')
+        #
+        #     this_row += 1
+        #
+        # terminal.printf(x=start_list_x, y=this_row, s='b')
+        # this_row += 1
+        # terminal.printf(x=start_list_x, y=this_row, s='p')

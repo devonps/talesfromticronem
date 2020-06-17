@@ -586,3 +586,18 @@ class SpellUtilities:
     @staticmethod
     def get_current_spellbar_spells(gameworld, player_entity):
         return gameworld.component_for_entity(player_entity, mobiles.SpellBar).slots
+
+
+    @staticmethod
+    def get_spell_info_details(gameworld, spell_entity):
+        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+        spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
+        spell_is_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld,
+                                                                        spell_entity=spell_entity)
+        if spell_is_on_cooldown:
+            spell_cooldown_value = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld,
+                                                                          spell_entity=spell_entity)
+        else:
+            spell_cooldown_value = 0
+
+        return spell_name, spell_range, spell_cooldown_value
