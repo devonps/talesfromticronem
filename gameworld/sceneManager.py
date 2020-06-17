@@ -69,10 +69,6 @@ class SceneManager:
                         # generate random map
                         pass
 
-                    # generate monsters for this scene
-                    game_config = configUtilities.load_config()
-                    Entity.create_random_enemies(gameworld=gameworld, game_config=game_config, game_map=game_map)
-
         SceneManager.create_ecs_systems_yes_no(gameworld=gameworld, currentscene=currentscene, game_map=game_map)
 
         return game_map, map_area_max_x - 1, map_area_max_y - 1

@@ -377,8 +377,11 @@ class CharacterCreation:
                                                                health=int(class_health[selected_menu_option]),
                                                                spellfile=class_spell_file[selected_menu_option])
 
-                        CharacterCreation.choose_weapons(gameworld=gameworld,
-                                                         selected_class=menu_options[selected_menu_option])
+                        # CharacterCreation.choose_weapons(gameworld=gameworld,
+                        #                                  selected_class=menu_options[selected_menu_option])
+
+                        CharacterCreation.generate_player_character_from_choices(gameworld=gameworld)
+
         terminal.clear()
 
     @staticmethod
@@ -878,13 +881,10 @@ class CharacterCreation:
                         #
                         # now generate the player character - part 1
                         #
-                        CharacterCreation.generate_player_character_from_choices(gameworld=gameworld,
-                                                                                 main_hand=main_hand, off_hand=off_hand,
-                                                                                 armourset=armourset,
-                                                                                 armour_prefix=armour_prefix)
+                        CharacterCreation.generate_player_character_from_choices(gameworld=gameworld)
 
     @staticmethod
-    def generate_player_character_from_choices(gameworld, main_hand, off_hand, armourset, armour_prefix):
+    def generate_player_character_from_choices(gameworld):
         # get config items
         game_config = configUtilities.load_config()
 
@@ -956,160 +956,160 @@ class CharacterCreation:
         AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config, spell_file=spellfile, playable_class=class_component)
 
 
-        # create starting armour from armourset and prefix
-        this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=armourset,
-                                                            prefix=armour_prefix, game_config=game_config)
-
-
-        ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=this_armourset)
-
-        # update buildcode
-        if armour_prefix.lower() == 'giver':
-            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='A')
-        if armour_prefix.lower() == 'healer':
-            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='B')
-        if armour_prefix.lower() == 'malign':
-            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='C')
-        if armour_prefix.lower() == 'mighty':
-            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='D')
-        if armour_prefix.lower() == 'precise':
-            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='E')
-        if armour_prefix.lower() == 'resilient':
-            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='F')
-        if armour_prefix.lower() == 'vital':
-            BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='G')
-
-        # create starting weapon(s) - based on what's passed into this method
-        if main_hand == off_hand:
-            logger.info('creating a starting 2-handed weapon for the player')
-
-            created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand,
-                                                       game_config=game_config)
-            weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
-
-            if weapon_type == 'staff':
-                BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='C')
-                BuildLibrary.set_build_off_hand(gameworld=gameworld, entity=build_entity, label='C')
-
-            if weapon_type == 'sword':
-                BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='A')
-                BuildLibrary.set_build_off_hand(gameworld=gameworld, entity=build_entity, label='A')
-
-            # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-            logger.info('Loading the {} with the necessary spells', weapon_type)
-            WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
-
-            # equip player with newly created starting weapon
-            MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='both')
-
-        if main_hand != '' and main_hand != off_hand:
-            logger.info('creating a 1-handed weapon (main hand) for the player')
-            created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand,
-                                                       game_config=game_config)
-            weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
-
-            if weapon_type == 'wand':
-                BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='B')
-
-            if weapon_type == 'dagger':
-                BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='F')
-
-            if weapon_type == 'scepter':
-                BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='G')
-
-            # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-            logger.info('Loading that weapon with the necessary spells')
-            WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
-
-            # equip player with newly created starting weapon
-            MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='main')
-
-        if off_hand != '' and off_hand != main_hand:
-
-            created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=off_hand,
-                                                       game_config=game_config)
-            weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
-
-            if weapon_type == 'rod':
-                BuildLibrary.set_build_off_hand(gameworld=gameworld, entity=build_entity, label='D')
-
-            if weapon_type == 'focus':
-                BuildLibrary.set_build_off_hand(gameworld=gameworld, entity=build_entity, label='E')
-
-            # parameters are: gameworld, weapon object, weapon type as a string, mobile class
-            logger.info('Loading that weapon with the necessary spells')
-            WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
-
-            # equip player with newly created starting weapon
-            MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='off')
-
-
-        # load spell bar with spells from weapon
-        spell_bar_entity = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
-        MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player, spellbar_entity=spell_bar_entity)
-        logger.info('Loading spell bar based on equipped weapons')
-        SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=player)
-
-        # create jewellery pieces and equip them
-        jewellery_package = BuildLibrary.get_build_jewellery(gameworld=gameworld, entity=build_entity)
-
-        # class
-        player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player)
-        class_file = read_json_file(player_class_file)
-        jewellery_set = ''
-        if jewellery_package == 'A':
-            jewellery_set = 'defensive'
-        if jewellery_package == 'B':
-            jewellery_set = 'balanced'
-        if jewellery_package == 'C':
-            jewellery_set = 'offensive'
-
-        for p_class in class_file['classes']:
-            if p_class['name'] == player_class:
-                neck_gemstone = p_class[jewellery_set]['neck']
-                ring1_gemstone = p_class[jewellery_set]['ring1']
-                ring2_gemstone = p_class[jewellery_set]['ring2']
-                ear1_gemstone = p_class[jewellery_set]['earring1']
-                ear2_gemstone = p_class[jewellery_set]['earring2']
-
-        # create jewellery entity
-        pendant = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper',
-                                               e_hook='copper', e_activator=neck_gemstone)
-        left_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring', e_setting='copper',
-                                                 e_hook='copper', e_activator=ring1_gemstone)
-        right_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring', e_setting='copper',
-                                                  e_hook='copper', e_activator=ring2_gemstone)
-        left_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper',
-                                                e_hook='copper', e_activator=ear1_gemstone)
-        right_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper',
-                                                 e_hook='copper', e_activator=ear2_gemstone)
-
-        # equip jewellery entity to player character
-        ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player, bodylocation='neck', trinket=pendant)
-        ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player, bodylocation='left hand', trinket=left_ring)
-        ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player, bodylocation='right hand', trinket=right_ring)
-        ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player, bodylocation='left ear', trinket=left_ear)
-        ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player, bodylocation='right ear', trinket=right_ear)
-
-        # apply gemstone benefits
-        jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=pendant)
-        ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player, statbonus=jewelley_stat_bonus)
-
-        jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ring)
-        ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player, statbonus=jewelley_stat_bonus)
-
-        jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ring)
-        ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player, statbonus=jewelley_stat_bonus)
-
-        jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ear)
-        ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player, statbonus=jewelley_stat_bonus)
-
-        jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ear)
-        ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player, statbonus=jewelley_stat_bonus)
-
+        # # create starting armour from armourset and prefix
+        # this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=armourset,
+        #                                                     prefix=armour_prefix, game_config=game_config)
         #
-        # calculate derived stats
         #
+        # ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=this_armourset)
+        #
+        # # update buildcode
+        # if armour_prefix.lower() == 'giver':
+        #     BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='A')
+        # if armour_prefix.lower() == 'healer':
+        #     BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='B')
+        # if armour_prefix.lower() == 'malign':
+        #     BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='C')
+        # if armour_prefix.lower() == 'mighty':
+        #     BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='D')
+        # if armour_prefix.lower() == 'precise':
+        #     BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='E')
+        # if armour_prefix.lower() == 'resilient':
+        #     BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='F')
+        # if armour_prefix.lower() == 'vital':
+        #     BuildLibrary.set_build_armour(gameworld=gameworld, entity=build_entity, label='G')
+        #
+        # # create starting weapon(s) - based on what's passed into this method
+        # if main_hand == off_hand:
+        #     logger.info('creating a starting 2-handed weapon for the player')
+        #
+        #     created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand,
+        #                                                game_config=game_config)
+        #     weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
+        #
+        #     if weapon_type == 'staff':
+        #         BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='C')
+        #         BuildLibrary.set_build_off_hand(gameworld=gameworld, entity=build_entity, label='C')
+        #
+        #     if weapon_type == 'sword':
+        #         BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='A')
+        #         BuildLibrary.set_build_off_hand(gameworld=gameworld, entity=build_entity, label='A')
+        #
+        #     # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+        #     logger.info('Loading the {} with the necessary spells', weapon_type)
+        #     WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
+        #
+        #     # equip player with newly created starting weapon
+        #     MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='both')
+        #
+        # if main_hand != '' and main_hand != off_hand:
+        #     logger.info('creating a 1-handed weapon (main hand) for the player')
+        #     created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=main_hand,
+        #                                                game_config=game_config)
+        #     weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
+        #
+        #     if weapon_type == 'wand':
+        #         BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='B')
+        #
+        #     if weapon_type == 'dagger':
+        #         BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='F')
+        #
+        #     if weapon_type == 'scepter':
+        #         BuildLibrary.set_build_main_hand(gameworld=gameworld, entity=build_entity, label='G')
+        #
+        #     # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+        #     logger.info('Loading that weapon with the necessary spells')
+        #     WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
+        #
+        #     # equip player with newly created starting weapon
+        #     MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='main')
+        #
+        # if off_hand != '' and off_hand != main_hand:
+        #
+        #     created_weapon = ItemManager.create_weapon(gameworld=gameworld, weapon_type=off_hand,
+        #                                                game_config=game_config)
+        #     weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon)
+        #
+        #     if weapon_type == 'rod':
+        #         BuildLibrary.set_build_off_hand(gameworld=gameworld, entity=build_entity, label='D')
+        #
+        #     if weapon_type == 'focus':
+        #         BuildLibrary.set_build_off_hand(gameworld=gameworld, entity=build_entity, label='E')
+        #
+        #     # parameters are: gameworld, weapon object, weapon type as a string, mobile class
+        #     logger.info('Loading that weapon with the necessary spells')
+        #     WeaponClass.load_weapon_with_spells(gameworld, created_weapon, weapon_type, class_component)
+        #
+        #     # equip player with newly created starting weapon
+        #     MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon, hand='off')
+        #
+        #
+        # # load spell bar with spells from weapon
+        # spell_bar_entity = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
+        # MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player, spellbar_entity=spell_bar_entity)
+        # logger.info('Loading spell bar based on equipped weapons')
+        # SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=player)
+        #
+        # # create jewellery pieces and equip them
+        # jewellery_package = BuildLibrary.get_build_jewellery(gameworld=gameworld, entity=build_entity)
+        #
+        # # class
+        # player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player)
+        # class_file = read_json_file(player_class_file)
+        # jewellery_set = ''
+        # if jewellery_package == 'A':
+        #     jewellery_set = 'defensive'
+        # if jewellery_package == 'B':
+        #     jewellery_set = 'balanced'
+        # if jewellery_package == 'C':
+        #     jewellery_set = 'offensive'
+        #
+        # for p_class in class_file['classes']:
+        #     if p_class['name'] == player_class:
+        #         neck_gemstone = p_class[jewellery_set]['neck']
+        #         ring1_gemstone = p_class[jewellery_set]['ring1']
+        #         ring2_gemstone = p_class[jewellery_set]['ring2']
+        #         ear1_gemstone = p_class[jewellery_set]['earring1']
+        #         ear2_gemstone = p_class[jewellery_set]['earring2']
+        #
+        # # create jewellery entity
+        # pendant = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck', e_setting='copper',
+        #                                        e_hook='copper', e_activator=neck_gemstone)
+        # left_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring', e_setting='copper',
+        #                                          e_hook='copper', e_activator=ring1_gemstone)
+        # right_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring', e_setting='copper',
+        #                                           e_hook='copper', e_activator=ring2_gemstone)
+        # left_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper',
+        #                                         e_hook='copper', e_activator=ear1_gemstone)
+        # right_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear', e_setting='copper',
+        #                                          e_hook='copper', e_activator=ear2_gemstone)
+        #
+        # # equip jewellery entity to player character
+        # ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player, bodylocation='neck', trinket=pendant)
+        # ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player, bodylocation='left hand', trinket=left_ring)
+        # ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player, bodylocation='right hand', trinket=right_ring)
+        # ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player, bodylocation='left ear', trinket=left_ear)
+        # ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=player, bodylocation='right ear', trinket=right_ear)
+        #
+        # # apply gemstone benefits
+        # jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=pendant)
+        # ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player, statbonus=jewelley_stat_bonus)
+        #
+        # jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ring)
+        # ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player, statbonus=jewelley_stat_bonus)
+        #
+        # jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ring)
+        # ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player, statbonus=jewelley_stat_bonus)
+        #
+        # jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ear)
+        # ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player, statbonus=jewelley_stat_bonus)
+        #
+        # jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ear)
+        # ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=player, statbonus=jewelley_stat_bonus)
+        #
+        # #
+        # # calculate derived stats
+        # #
 
         MobileUtilities.set_mobile_derived_derived_attributes(gameworld=gameworld, entity=player)
 
@@ -1450,58 +1450,58 @@ class CharacterCreation:
                         s=string_to_print)
         # armour
         #
-        display_coloured_box(title='Armour', posx=display_char_armset_attr_x, posy=display_char_armset_attr_y,
-                             width=display_char_armset_attr_w, height=display_char_armset_attr_h,
-                             fg=display_char_personal_fg, bg=display_armour_info_bg)
-
-        str_to_print = "[color=blue]Location Material Display Defense[/color]"
-        terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y,
-                        width=len(str_to_print), height=1, align=terminal.TK_ALIGN_LEFT, s=str_to_print)
-
-        head_armour_id = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player_entity)
-        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=head_armour_id)
-        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=head_armour_id)
-        def_head_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=head_armour_id)
-        str_to_print = "Head:    " + armour_material + '  ' + armour_displayname + '         ' + str(def_head_value)
-
-        terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 1,
-                        width=len(str_to_print), height=1, align=terminal.TK_ALIGN_LEFT, s=str_to_print)
-
-        chest_armour_id = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=player_entity)
-        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=chest_armour_id)
-        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=chest_armour_id)
-        def_chest_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest_armour_id)
-        str_to_print = "Chest:   " + armour_material + '  ' + armour_displayname + '        ' + str(def_chest_value)
-
-        terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 2,
-                        width=len(str_to_print), height=1, align=terminal.TK_ALIGN_LEFT, s=str_to_print)
-
-        hands_armour_id = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=player_entity)
-        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=hands_armour_id)
-        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=hands_armour_id)
-        def_hands_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands_armour_id)
-        str_to_print = "Hands:   " + armour_material + '  ' + armour_displayname + ' ' + str(def_hands_value)
-
-        terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 3,
-                        width=len(str_to_print), height=1, align=terminal.TK_ALIGN_LEFT, s=str_to_print)
-
-        legs_armour_id = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player_entity)
-        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=legs_armour_id)
-        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=legs_armour_id)
-        def_legs_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs_armour_id)
-        str_to_print = "Legs:    " + armour_material + '  ' + armour_displayname + '    ' + str(def_legs_value)
-
-        terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 4,
-                        width=len(str_to_print), height=1, align=terminal.TK_ALIGN_LEFT, s=str_to_print)
-
-        feet_armour_id = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=player_entity)
-        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=feet_armour_id)
-        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=feet_armour_id)
-        def_feet_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet_armour_id)
-        str_to_print = "Feet:    " + armour_material + '  ' + armour_displayname + '     ' + str(def_feet_value)
-
-        terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 5,
-                        width=len(str_to_print), height=1, align=terminal.TK_ALIGN_LEFT, s=str_to_print)
+        # display_coloured_box(title='Armour', posx=display_char_armset_attr_x, posy=display_char_armset_attr_y,
+        #                      width=display_char_armset_attr_w, height=display_char_armset_attr_h,
+        #                      fg=display_char_personal_fg, bg=display_armour_info_bg)
+        #
+        # str_to_print = "[color=blue]Location Material Display Defense[/color]"
+        # terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y,
+        #                 width=len(str_to_print), height=1, align=terminal.TK_ALIGN_LEFT, s=str_to_print)
+        #
+        # head_armour_id = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player_entity)
+        # armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=head_armour_id)
+        # armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=head_armour_id)
+        # def_head_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=head_armour_id)
+        # str_to_print = "Head:    " + armour_material + '  ' + armour_displayname + '         ' + str(def_head_value)
+        #
+        # terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 1,
+        #                 width=len(str_to_print), height=1, align=terminal.TK_ALIGN_LEFT, s=str_to_print)
+        #
+        # chest_armour_id = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=player_entity)
+        # armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=chest_armour_id)
+        # armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=chest_armour_id)
+        # def_chest_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest_armour_id)
+        # str_to_print = "Chest:   " + armour_material + '  ' + armour_displayname + '        ' + str(def_chest_value)
+        #
+        # terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 2,
+        #                 width=len(str_to_print), height=1, align=terminal.TK_ALIGN_LEFT, s=str_to_print)
+        #
+        # hands_armour_id = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=player_entity)
+        # armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=hands_armour_id)
+        # armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=hands_armour_id)
+        # def_hands_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands_armour_id)
+        # str_to_print = "Hands:   " + armour_material + '  ' + armour_displayname + ' ' + str(def_hands_value)
+        #
+        # terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 3,
+        #                 width=len(str_to_print), height=1, align=terminal.TK_ALIGN_LEFT, s=str_to_print)
+        #
+        # legs_armour_id = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player_entity)
+        # armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=legs_armour_id)
+        # armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=legs_armour_id)
+        # def_legs_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs_armour_id)
+        # str_to_print = "Legs:    " + armour_material + '  ' + armour_displayname + '    ' + str(def_legs_value)
+        #
+        # terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 4,
+        #                 width=len(str_to_print), height=1, align=terminal.TK_ALIGN_LEFT, s=str_to_print)
+        #
+        # feet_armour_id = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=player_entity)
+        # armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=feet_armour_id)
+        # armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=feet_armour_id)
+        # def_feet_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet_armour_id)
+        # str_to_print = "Feet:    " + armour_material + '  ' + armour_displayname + '     ' + str(def_feet_value)
+        #
+        # terminal.print_(x=display_char_armour_attr_x, y=display_char_armour_attr_y + 5,
+        #                 width=len(str_to_print), height=1, align=terminal.TK_ALIGN_LEFT, s=str_to_print)
 
         #
         # attributes
@@ -1636,81 +1636,81 @@ class CharacterCreation:
                         s=string_to_print)
 
         # weapons
-
-        display_coloured_box(title="Weapons / Spells",
-                             posx=display_wpn_x, posy=display_wpn_y,
-                             width=display_wpn_w, height=display_wpn_h,
-                             fg=display_char_attributes_fg, bg=display_char_attributes_bg)
-
-        weapons_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
-        main_weapon = weapons_list[0]
-        off_weapon = weapons_list[1]
-        both_weapon = weapons_list[2]
-
-        if both_weapon > 0:
-            main_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=both_weapon)
-            slot1_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
-                                                                      slotid=1)
-            slot2_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
-                                                                      slotid=2)
-            slot3_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
-                                                                      slotid=3)
-
-            off_hand_weapon_name = main_hand_weapon_name
-            slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
-                                                                      slotid=4)
-            slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
-                                                                      slotid=5)
-
-        else:
-            main_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=main_weapon)
-            slot1_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon,
-                                                                      slotid=1)
-            slot2_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon,
-                                                                      slotid=2)
-            slot3_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon,
-                                                                      slotid=3)
-
-            off_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=off_weapon)
-            slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=off_weapon,
-                                                                      slotid=4)
-            slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=off_weapon,
-                                                                      slotid=5)
-
-        main_wpn_display = '[color=blue]Main Hand: ' + main_hand_weapon_name + '[\color]'
-        slot1_display = 'Slot 1:' + slot1_name
-        slot2_display = 'Slot 2:' + slot2_name
-        slot3_display = 'Slot 3:' + slot3_name
-        slot4_display = 'Slot 4:' + slot4_name
-        slot5_display = 'Slot 5:' + slot5_name
-
-        off_wpn_display = '[color=green]Off Hand: ' + off_hand_weapon_name
-
-        # main hand
-
-        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y, width=len(main_wpn_display), height=1,
-                        align=terminal.TK_ALIGN_LEFT,
-                        s=main_wpn_display)
-        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 1, width=len(slot1_display), height=1,
-                        align=terminal.TK_ALIGN_LEFT,
-                        s=slot1_display)
-        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 2, width=len(slot2_display), height=1,
-                        align=terminal.TK_ALIGN_LEFT,
-                        s=slot2_display)
-        terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 3, width=len(slot3_display), height=1,
-                        align=terminal.TK_ALIGN_LEFT,
-                        s=slot3_display)
-
-        # off hand
-        terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y, width=len(off_wpn_display), height=1,
-                        align=terminal.TK_ALIGN_LEFT,
-                        s=off_wpn_display)
-        terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y + 1, width=len(slot4_display), height=1,
-                        align=terminal.TK_ALIGN_LEFT,
-                        s=slot4_display)
-        terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y + 2, width=len(slot5_display), height=1,
-                        align=terminal.TK_ALIGN_LEFT,
-                        s=slot5_display)
+        #
+        # display_coloured_box(title="Weapons / Spells",
+        #                      posx=display_wpn_x, posy=display_wpn_y,
+        #                      width=display_wpn_w, height=display_wpn_h,
+        #                      fg=display_char_attributes_fg, bg=display_char_attributes_bg)
+        #
+        # weapons_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
+        # main_weapon = weapons_list[0]
+        # off_weapon = weapons_list[1]
+        # both_weapon = weapons_list[2]
+        #
+        # if both_weapon > 0:
+        #     main_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=both_weapon)
+        #     slot1_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
+        #                                                               slotid=1)
+        #     slot2_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
+        #                                                               slotid=2)
+        #     slot3_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
+        #                                                               slotid=3)
+        #
+        #     off_hand_weapon_name = main_hand_weapon_name
+        #     slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
+        #                                                               slotid=4)
+        #     slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=both_weapon,
+        #                                                               slotid=5)
+        #
+        # else:
+        #     main_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=main_weapon)
+        #     slot1_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon,
+        #                                                               slotid=1)
+        #     slot2_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon,
+        #                                                               slotid=2)
+        #     slot3_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=main_weapon,
+        #                                                               slotid=3)
+        #
+        #     off_hand_weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=off_weapon)
+        #     slot4_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=off_weapon,
+        #                                                               slotid=4)
+        #     slot5_name = SpellUtilities.get_spell_name_in_weapon_slot(gameworld=gameworld, weapon_equipped=off_weapon,
+        #                                                               slotid=5)
+        #
+        # main_wpn_display = '[color=blue]Main Hand: ' + main_hand_weapon_name + '[\color]'
+        # slot1_display = 'Slot 1:' + slot1_name
+        # slot2_display = 'Slot 2:' + slot2_name
+        # slot3_display = 'Slot 3:' + slot3_name
+        # slot4_display = 'Slot 4:' + slot4_name
+        # slot5_display = 'Slot 5:' + slot5_name
+        #
+        # off_wpn_display = '[color=green]Off Hand: ' + off_hand_weapon_name
+        #
+        # # main hand
+        #
+        # terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y, width=len(main_wpn_display), height=1,
+        #                 align=terminal.TK_ALIGN_LEFT,
+        #                 s=main_wpn_display)
+        # terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 1, width=len(slot1_display), height=1,
+        #                 align=terminal.TK_ALIGN_LEFT,
+        #                 s=slot1_display)
+        # terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 2, width=len(slot2_display), height=1,
+        #                 align=terminal.TK_ALIGN_LEFT,
+        #                 s=slot2_display)
+        # terminal.print_(x=display_main_wpn_x, y=display_main_wpn_y + 3, width=len(slot3_display), height=1,
+        #                 align=terminal.TK_ALIGN_LEFT,
+        #                 s=slot3_display)
+        #
+        # # off hand
+        # terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y, width=len(off_wpn_display), height=1,
+        #                 align=terminal.TK_ALIGN_LEFT,
+        #                 s=off_wpn_display)
+        # terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y + 1, width=len(slot4_display), height=1,
+        #                 align=terminal.TK_ALIGN_LEFT,
+        #                 s=slot4_display)
+        # terminal.print_(x=display_off_wpn_x, y=display_off_wpn_y + 2, width=len(slot5_display), height=1,
+        #                 align=terminal.TK_ALIGN_LEFT,
+        #                 s=slot5_display)
 
         saved_build = False
 
