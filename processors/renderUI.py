@@ -21,11 +21,7 @@ class RenderUI(esper.Processor):
         # render the game map
         fov_map = self.render_map(self.gameworld, game_config, self.game_map)
         self.render_items(game_config, self.gameworld)
-        visible_entities = self.render_mobiles(gameworld=self.gameworld, game_config=game_config, fov_map=fov_map)
-
-        # if len(visible_entities) > 0:
-        #     self.render_entity_display_panel(gameworld=self.gameworld, game_config=game_config,
-        #                                      visible_entities=visible_entities)
+        self.render_mobiles(gameworld=self.gameworld, game_config=game_config, fov_map=fov_map)
 
         end_time = time.perf_counter()
         logger.info('Time taken to render game display {}', (end_time - start_time))
@@ -128,7 +124,6 @@ class RenderUI(esper.Processor):
         config_prefix_door = config_prefix + 'DOOR_'
         char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor, tile_assignment=0)
         unicode_string_to_print = '[font=dungeon]['
-        colour_code = "[color=black]"
         fov_map = FieldOfView(game_map=game_map)
         player_fov = FieldOfView.create_fov_map_via_raycasting(fov_map, startx=player_map_pos_x, starty=player_map_pos_y,
                                                                game_config=game_config)
@@ -143,31 +138,20 @@ class RenderUI(esper.Processor):
                     print_char = False
                     tile = game_map.tiles[x][y].type_of_tile
                     tile_assignment = game_map.tiles[x][y].assignment
-                    # visible = FieldOfView.get_fov_map_point(player_fov, x, y)
-                    visible = True
-                    if visible:
-                        print_char = True
-                        colour_code = "[color=white]"
-                        game_map.tiles[x][y].explored = True
-                        if tile == tile_type_floor:
-                            char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor, tile_assignment=0)
-                        if tile == tile_type_wall:
-                            char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_wall, tile_assignment=tile_assignment)
-                        if tile == tile_type_door:
-                            char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_door, tile_assignment=0)
-                    elif game_map.tiles[x][y].explored:
-                        colour_code = "[color=grey]"
-                        print_char = True
-                        if tile == tile_type_floor:
-                            char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor, tile_assignment=0)
-                        if tile == tile_type_wall:
-                            char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_wall, tile_assignment=tile_assignment)
-                        if tile == tile_type_door:
-                            char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_door, tile_assignment=0)
+
+                    print_char = True
+                    colour_code = "[color=white]"
+                    game_map.tiles[x][y].explored = True
+                    if tile == tile_type_floor:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor, tile_assignment=0)
+                    if tile == tile_type_wall:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_wall, tile_assignment=tile_assignment)
+                    if tile == tile_type_door:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_door, tile_assignment=0)
 
                     if print_char and tile > 0:
-                        str = colour_code + unicode_string_to_print + char_to_display + ']'
-                        terminal.printf(x=vp_x_offset + x, y=vp_y_offset + y, s=str)
+                        string_to_print = colour_code + unicode_string_to_print + char_to_display + ']'
+                        terminal.printf(x=vp_x_offset + x, y=vp_y_offset + y, s=string_to_print)
         return player_fov
 
     @staticmethod
