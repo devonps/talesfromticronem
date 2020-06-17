@@ -28,7 +28,8 @@ class SpellUtilities:
             spells_to_choose_from.append(
                 ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
             spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld,
-                                                                                          weapon_entity= weapons_equipped[2]))
+                                                                                          weapon_entity=
+                                                                                          weapons_equipped[2]))
             spells_to_choose_from.append(
                 ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
             spells_to_choose_from.append(
@@ -39,7 +40,8 @@ class SpellUtilities:
             spells_to_choose_from.append(
                 ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
             spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld,
-                                                                                          weapon_entity= weapons_equipped[0]))
+                                                                                          weapon_entity=
+                                                                                          weapons_equipped[0]))
         if weapon_type in ['rod', 'focus']:
             spells_to_choose_from.append(
                 ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[1]))
@@ -77,15 +79,22 @@ class SpellUtilities:
 
         weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=entity_id)
         if len(weapons_equipped) != weapons_equipped.count(weapons_equipped[0]):
-            weapon_type = ItemUtilities.get_equipped_weapon_for_enemy(gameworld=gameworld, weapons_equipped=weapons_equipped)
+            weapon_type = ItemUtilities.get_equipped_weapon_for_enemy(gameworld=gameworld,
+                                                                      weapons_equipped=weapons_equipped)
 
             # get list of spells to choose from
-            spells_to_choose_from = SpellUtilities.get_spell_list_for_enemy_by_weapon_type(gameworld=gameworld, weapon_type=weapon_type, weapons_equipped=weapons_equipped)
+            spells_to_choose_from = SpellUtilities.get_spell_list_for_enemy_by_weapon_type(gameworld=gameworld,
+                                                                                           weapon_type=weapon_type,
+                                                                                           weapons_equipped=weapons_equipped)
 
             logger.info('Spells enemy can choose from {}', spells_to_choose_from)
             # check for spells on cooldown and check spell range
-            available_spells = SpellUtilities.check_for_spells_on_cooldown(gameworld=gameworld, spells_to_choose_from=spells_to_choose_from)
-            remaining_spells = SpellUtilities.check_spells_for_range_to_target(gameworld=gameworld, spells_to_choose_from=available_spells, entity_id=entity_id, target_entity=target_entity)
+            available_spells = SpellUtilities.check_for_spells_on_cooldown(gameworld=gameworld,
+                                                                           spells_to_choose_from=spells_to_choose_from)
+            remaining_spells = SpellUtilities.check_spells_for_range_to_target(gameworld=gameworld,
+                                                                               spells_to_choose_from=available_spells,
+                                                                               entity_id=entity_id,
+                                                                               target_entity=target_entity)
 
             if len(remaining_spells) > 0:
                 can_cast_a_spell = True
@@ -140,7 +149,7 @@ class SpellUtilities:
     @staticmethod
     def check_spells_for_range_to_target(gameworld, spells_to_choose_from, entity_id, target_entity):
         distance_to_target = formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=entity_id,
-                                                         to_entity=target_entity)
+                                                                   to_entity=target_entity)
         logger.info('available spells {}', spells_to_choose_from)
         for spell in spells_to_choose_from:
             spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell)
@@ -153,7 +162,6 @@ class SpellUtilities:
         spells_to_choose_from = SpellUtilities.remove_not_needed_spells_from_list(spells_to_choose_from)
 
         return spells_to_choose_from
-
 
     @staticmethod
     def get_spell_type(gameworld, spell_entity):
@@ -176,7 +184,8 @@ class SpellUtilities:
             # to select one of them
 
             visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=player)
-            target_letters = SpellUtilities.helper_print_valid_targets(gameworld=gameworld, valid_targets=visible_entities)
+            target_letters = SpellUtilities.helper_print_valid_targets(gameworld=gameworld,
+                                                                       valid_targets=visible_entities)
 
             # blit the terminal
             terminal.refresh()
@@ -192,13 +201,17 @@ class SpellUtilities:
                     if event_action != 'quit':
                         key_pressed = chr(97 + event_action)
 
-                        player_not_pressed_a_key, target = SpellUtilities.has_valid_target_been_selected(gameworld=gameworld, player_entity=player, target_letters=target_letters, key_pressed=key_pressed, spell_entity=spell_entity, valid_targets=visible_entities, slotid=slot)
+                        player_not_pressed_a_key, target = SpellUtilities.has_valid_target_been_selected(
+                            gameworld=gameworld, player_entity=player, target_letters=target_letters,
+                            key_pressed=key_pressed, spell_entity=spell_entity, valid_targets=visible_entities,
+                            slotid=slot)
         else:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
             CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
 
     @staticmethod
-    def has_valid_target_been_selected(gameworld, player_entity, target_letters, key_pressed, spell_entity, valid_targets, slotid):
+    def has_valid_target_been_selected(gameworld, player_entity, target_letters, key_pressed, spell_entity,
+                                       valid_targets, slotid):
         player_not_pressed_a_key = True
         target = 0
         if key_pressed in target_letters:
@@ -207,7 +220,8 @@ class SpellUtilities:
 
             # add component covering spell has been cast
             gameworld.add_component(player_entity,
-                                    mobiles.SpellCast(truefalse=True, spell_entity=spell_entity, spell_caster=player_entity,
+                                    mobiles.SpellCast(truefalse=True, spell_entity=spell_entity,
+                                                      spell_caster=player_entity,
                                                       spell_target=valid_targets[0], spell_bar_slot=slotid))
 
         return player_not_pressed_a_key, target
@@ -216,9 +230,9 @@ class SpellUtilities:
     def helper_print_valid_targets(gameworld, valid_targets):
         game_config = configUtilities.load_config()
         vp_x_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='VIEWPORT_START_X')
+                                                                  parameter='VIEWPORT_START_X')
         vp_y_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='VIEWPORT_START_Y')
+                                                                  parameter='VIEWPORT_START_Y')
 
         height = 5 + len(valid_targets) + 1
 
@@ -244,7 +258,8 @@ class SpellUtilities:
                 entity_fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=x)
                 entity_bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=x)
 
-                str_to_print = base_str_to_print + chr(97 + xx) + ") [color=" + entity_fg + "][bkcolor=" + entity_bg + "]" + "@" + ' ' + entity_name[0]
+                str_to_print = base_str_to_print + chr(
+                    97 + xx) + ") [color=" + entity_fg + "][bkcolor=" + entity_bg + "]" + "@" + ' ' + entity_name[0]
                 terminal.printf(x=vp_x_offset + 2, y=entity_tag, s=str_to_print)
                 entity_tag += 1
                 target_letters.append(chr(97 + xx))
@@ -336,9 +351,12 @@ class SpellUtilities:
             main_hand_weapon = weapons_equipped[0]
             off_hand_weapon = weapons_equipped[1]
             both_hands_weapon = weapons_equipped[2]
-            SpellUtilities.helper_both_hands_weapon(gameworld=gameworld, player_entity=player_entity, both_hands_weapon=both_hands_weapon)
-            SpellUtilities.helper_main_hand_weapon(gameworld=gameworld, player_entity=player_entity, main_hand_weapon=main_hand_weapon)
-            SpellUtilities.helper_off_hand_weapon(gameworld=gameworld, player_entity=player_entity, off_hand_weapon=off_hand_weapon)
+            SpellUtilities.helper_both_hands_weapon(gameworld=gameworld, player_entity=player_entity,
+                                                    both_hands_weapon=both_hands_weapon)
+            SpellUtilities.helper_main_hand_weapon(gameworld=gameworld, player_entity=player_entity,
+                                                   main_hand_weapon=main_hand_weapon)
+            SpellUtilities.helper_off_hand_weapon(gameworld=gameworld, player_entity=player_entity,
+                                                  off_hand_weapon=off_hand_weapon)
         else:
             logger.warning('no weapons equipped')
 
@@ -514,8 +532,9 @@ class SpellUtilities:
                          'displayChar': condition['char'], 'shortcode': condi[:4]}
 
                     # add dialog for condition damage to message log
-                    CommonUtils.fire_event("condi-applied", gameworld=gameworld, target=target_names[0], effect_dialogue=condition['dialogue_options'][0][
-                            target_class])
+                    CommonUtils.fire_event("condi-applied", gameworld=gameworld, target=target_names[0],
+                                           effect_dialogue=condition['dialogue_options'][0][
+                                               target_class])
 
                     current_condis.append(z)
 
@@ -553,7 +572,8 @@ class SpellUtilities:
                                                                                             entity=target_entity)
 
                     # add dialog for boon effect to message log
-                    CommonUtils.fire_event("boon-applied", gameworld=gameworld, target=target_names[0], effect_dialogue=file_boon['dialogue_options'][0][target_class])
+                    CommonUtils.fire_event("boon-applied", gameworld=gameworld, target=target_names[0],
+                                           effect_dialogue=file_boon['dialogue_options'][0][target_class])
 
                     # current_boons is a map
                     current_boons.append(b)
@@ -587,11 +607,10 @@ class SpellUtilities:
     def get_current_spellbar_spells(gameworld, player_entity):
         return gameworld.component_for_entity(player_entity, mobiles.SpellBar).slots
 
-
     @staticmethod
     def get_spell_info_details(gameworld, spell_entity):
         spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-        spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
+        spell_range = str(SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity))
         spell_is_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld,
                                                                         spell_entity=spell_entity)
         if spell_is_on_cooldown:
@@ -600,4 +619,9 @@ class SpellUtilities:
         else:
             spell_cooldown_value = 0
 
-        return spell_name, spell_range, spell_cooldown_value
+        if len(spell_range) < 2:
+            sp_range = ' ' + spell_range
+        else:
+            sp_range = spell_range
+
+        return spell_name, sp_range, spell_cooldown_value

@@ -23,7 +23,7 @@ class RenderSpellInfoPanel(esper.Processor):
         self.render_spell_info_outer_frame()
         self.render_equipped_items()
         self.render_energy_bars(game_config=game_config)
-        # self.render_class_mechanics(game_config=game_config)
+        self.render_class_mechanics(game_config=game_config)
         self.render_spell_bar()
         self.render_utility_spells()
         # self.render_player_status_effects(game_config=game_config)
@@ -187,10 +187,12 @@ class RenderSpellInfoPanel(esper.Processor):
 
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='START_LIST_Y')
-        unicode_section_headers = '[font=dungeon][color=SPELLINFO_ITEM_EQUIPPED]'
-        unicode_cooldown_disabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_DISABLED]'
-        unicode_cooldown_enabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_ACTIVE]'
-        unicode_white_colour = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]'
+        dungeon_font = "[font=dungeon]"
+
+        unicode_section_headers = dungeon_font + '[color=SPELLINFO_WEAPON_EQUIPPED]'
+        unicode_cooldown_disabled = dungeon_font + '[color=SPELLINFO_COOLDOWN_DISABLED]'
+        unicode_cooldown_enabled = dungeon_font + '[color=SPELLINFO_COOLDOWN_ACTIVE]'
+        unicode_white_colour = dungeon_font + '[color=SPELLINFO_HOTKEY_ACTIVE]'
 
         this_letter = 49
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Main Hand ')
@@ -214,7 +216,7 @@ class RenderSpellInfoPanel(esper.Processor):
 
             cooldown_string = cooldown_colour + ' ' + str(spell_cooldown_value)
             name_string = unicode_white_colour + spell_name
-            range_string = unicode_white_colour + str(spell_range)
+            range_string = unicode_white_colour + spell_range
 
             terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
 
@@ -241,7 +243,7 @@ class RenderSpellInfoPanel(esper.Processor):
 
             cooldown_string = cooldown_colour + ' ' + str(spell_cooldown_value)
             name_string = unicode_white_colour + spell_name
-            range_string = unicode_white_colour + str(spell_range)
+            range_string = unicode_white_colour + spell_range
 
             terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
 
@@ -261,7 +263,8 @@ class RenderSpellInfoPanel(esper.Processor):
 
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                parameter='JEWELLERY_SPELL_Y')
-        unicode_section_headers = '[font=dungeon][color=SPELLINFO_ITEM_EQUIPPED]'
+        dungeon_font = '[font=dungeon]'
+        unicode_section_headers = dungeon_font + '[color=SPELLINFO_JEWELLERY_EQUIPPED]'
 
         this_letter = 70
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Jewellery')
@@ -363,13 +366,14 @@ class RenderSpellInfoPanel(esper.Processor):
     # formally known as the F1 bar
     #
     def render_class_mechanics(self, game_config):
-        plpayer_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
 
-        mechanic_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='MECHANIC_START_X')
+        start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
+                                                                   parameter='MECHANIC_START_X')
 
-        mechanic_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
-                                                                            parameter='MECHANIC_START_Y')
+        this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
+                                                               parameter='MECHANIC_START_Y')
+        dungeon_font = '[font=dungeon]'
 
         ascii_prefix = 'ASCII_SINGLE_'
 
@@ -390,67 +394,55 @@ class RenderSpellInfoPanel(esper.Processor):
         mechanic_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                parameter=ascii_prefix + 'VERTICAL')
 
-        mechanic_ascii_one = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'ONE')
-        mechanic_ascii_two = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'TWO')
-        mechanic_ascii_three = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'THREE')
-        mechanic_ascii_four = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'FOUR')
         mechanic_background_fill = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'MECHANIC_FILL')
-        mechanic_f_key = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'MECHANIC_F')
 
-        mechanic_depth = 1
-        mechanic_width = 5
-        unicode_mechanic_frame_enabled = '[font=dungeon][color=CLASS_MECHANIC_FRAME_COLOUR]['
-        unicode_mechanic_id = '[font=dungeon][color=CLASS_MECHANIC_DISABLED]['
-        unicode_mechanic_partial = '[font=dungeon][color=CLASS_MECHANIC_PARTIAL]['
+        mechanic_depth = 10
+        mechanic_width = 1
+        unicode_mechanic_frame_enabled = dungeon_font + '[color=CLASS_MECHANIC_FRAME_COLOUR]['
+        unicode_mechanic_id = dungeon_font + '[color=CLASS_MECHANIC_DISABLED]['
+        unicode_mechanic_partial = dungeon_font + '[color=CLASS_MECHANIC_PARTIAL]['
 
-        for loop in range (4):
+        start_here = this_row
+        for loop in range(4):
             unicode_mechanic_frame = unicode_mechanic_id if loop < 2 else unicode_mechanic_frame_enabled
+            unicode_class_id = dungeon_font + '[color=CLASS_MECHANIC_DISABLED]' if loop < 2 else  dungeon_font + '[color=CLASS_MECHANIC_FRAME_COLOUR]'
+            # top left
+            terminal.printf(x=start_list_x, y=this_row,
+                            s=unicode_mechanic_frame + mechanic_info_top_left_corner + ']')
+            # bottom left
+            terminal.printf(x=start_list_x, y=((this_row + mechanic_depth) + 1),
+                            s=unicode_mechanic_frame + mechanic_info_bottom_left_corner + ']')
+            # top right
+            terminal.printf(x=(start_list_x + mechanic_width) + 1, y=this_row,
+                            s=unicode_mechanic_frame + mechanic_info_top_right_corner + ']')
+            # bottom right
+            terminal.printf(x=(start_list_x + mechanic_width) + 1, y=((this_row + mechanic_depth) + 1),
+                            s=unicode_mechanic_frame + mechanic_info_bottom_right_corner + ']')
+
+            # Class buttons
+            terminal.printf(x=start_list_x, y=this_row - 1, s=unicode_class_id + 'F' + str(loop + 1))
             # verticals
             for d in range(mechanic_depth):
-                terminal.printf(x=mechanic_start_x, y=(mechanic_start_y + 1) + d,
+                terminal.printf(x=start_list_x, y=this_row + d + 1,
                                 s=unicode_mechanic_frame + mechanic_info_vertical + ']')
 
-                terminal.printf(x=(mechanic_start_x + mechanic_width) + 1, y=(mechanic_start_y + 1) + d,
+                terminal.printf(x=(start_list_x + mechanic_width) + 1, y=this_row + d + 1,
                                 s=unicode_mechanic_frame + mechanic_info_vertical + ']')
 
             # horizontal
             for a in range(mechanic_width):
-                terminal.printf(x=(mechanic_start_x + a) + 1, y=mechanic_start_y,
+                terminal.printf(x=(start_list_x + a) + 1, y=this_row,
                                 s=unicode_mechanic_frame + mechanic_info_horizontal + ']')
-                terminal.printf(x=(mechanic_start_x + a) + 1, y=((mechanic_start_y + mechanic_depth) + 1),
+                terminal.printf(x=(start_list_x + a) + 1, y=((this_row + mechanic_depth) + 1),
                                 s=unicode_mechanic_frame + mechanic_info_horizontal + ']')
 
-            # top left
-            terminal.printf(x=mechanic_start_x, y=mechanic_start_y,
-                            s=unicode_mechanic_frame + mechanic_info_top_left_corner + ']')
-            # bottom left
-            terminal.printf(x=mechanic_start_x, y=((mechanic_start_y + mechanic_depth) + 1),
-                            s=unicode_mechanic_frame + mechanic_info_bottom_left_corner + ']')
-            # top right
-            terminal.printf(x=(mechanic_start_x + mechanic_width) + 1, y=mechanic_start_y,
-                            s=unicode_mechanic_frame + mechanic_info_top_right_corner + ']')
-            # bottom right
-            terminal.printf(x=(mechanic_start_x + mechanic_width) + 1, y=((mechanic_start_y + mechanic_depth) + 1),
-                            s=unicode_mechanic_frame + mechanic_info_bottom_right_corner + ']')
-
-            # mechanic partially filled - measured in 20% blocks
-            xx = random.randrange(1, 4)
+            # mechanic partially filled - measured in 10% blocks
+            xx = random.randrange(1, 10)
             for zz in range(xx):
-                terminal.printf(x=mechanic_start_x + 1 + zz, y=mechanic_start_y + 1, s=unicode_mechanic_partial + mechanic_background_fill + ']')
+                terminal.printf(x=start_list_x + 1, y=(mechanic_depth + this_row) - zz, s=unicode_mechanic_partial + mechanic_background_fill + ']')
 
-            # mechanic ID
-            if loop == 0:
-                mechanic_id = mechanic_ascii_one
-            elif loop == 1:
-                mechanic_id = mechanic_ascii_two
-            elif loop == 2:
-                mechanic_id = mechanic_ascii_three
-            else:
-                mechanic_id = mechanic_ascii_four
-
-            terminal.printf(x=mechanic_start_x + 3, y=mechanic_start_y + 3, s=unicode_mechanic_frame + mechanic_f_key + '][' + mechanic_id + ']')
-
-            mechanic_start_x += 8
+            start_list_x += 6
+            this_row = start_here
 
     def render_equipped_armour(self):
         player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
@@ -460,16 +452,10 @@ class RenderSpellInfoPanel(esper.Processor):
 
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                parameter='ARMOUR_SPELL_Y')
-        unicode_section_headers = '[font=dungeon][color=SPELLINFO_ITEM_EQUIPPED]'
-        unicode_cooldown_disabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_DISABLED]'
-        unicode_cooldown_enabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_ACTIVE]'
-        unicode_white_colour = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]'
+        dungeon_font = '[font=dungeon]'
+        unicode_section_headers = dungeon_font + '[color=SPELLINFO_ARMOUR_EQUIPPED]'
 
         this_letter = 65
-        slot = 1
-        cooldown_string_x = start_list_x + 1
-        name_string_x = start_list_x + 4
-        range_string_x = start_list_x + 31
 
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Armour ')
         this_row += 2
@@ -526,7 +512,7 @@ class RenderSpellInfoPanel(esper.Processor):
 
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='UTILITY_SPELL_Y')
-        unicode_section_headers = '[font=dungeon][color=SPELLINFO_ITEM_EQUIPPED]'
+        unicode_section_headers = '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]'
         unicode_cooldown_disabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_DISABLED]'
         unicode_cooldown_enabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_ACTIVE]'
         unicode_white_colour = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]'
@@ -555,7 +541,7 @@ class RenderSpellInfoPanel(esper.Processor):
 
                 cooldown_string = cooldown_colour + ' ' + str(spell_cooldown_value)
                 name_string = unicode_white_colour + spell_name
-                range_string = unicode_white_colour + str(spell_range)
+                range_string = unicode_white_colour + spell_range
 
                 terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
                 terminal.printf(x=range_string_x, y=this_row, s=range_string)
@@ -572,7 +558,7 @@ class RenderSpellInfoPanel(esper.Processor):
 
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='HEALING_SPELL_Y')
-        unicode_section_headers = '[font=dungeon][color=SPELLINFO_ITEM_EQUIPPED]'
+        unicode_section_headers = '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]'
         unicode_cooldown_disabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_DISABLED]'
         unicode_cooldown_enabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_ACTIVE]'
         unicode_white_colour = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]'
@@ -591,7 +577,7 @@ class RenderSpellInfoPanel(esper.Processor):
         if world.check_if_entity_has_component(gameworld=self.gameworld, entity=slot_spell_entity, component=spells.MaxRange):
             spell_range = SpellUtilities.get_spell_max_range(gameworld=self.gameworld, spell_entity=slot_spell_entity)
         else:
-            spell_range = '-'
+            spell_range = ' -'
         # spell cooldown
         spell_is_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=self.gameworld,
                                                                         spell_entity=slot_spell_entity)
@@ -615,23 +601,3 @@ class RenderSpellInfoPanel(esper.Processor):
         this_row += 1
         this_letter += 1
         this_row += 1
-
-
-
-        #
-        # this_row = 45
-        # terminal.printf(x=start_list_x, y=this_row, s='p')
-        # this_row += 1
-        # terminal.printf(x=start_list_x, y=this_row, s='b')
-        # this_row += 1
-        # for _ in range(10):
-        #     terminal.printf(x=start_list_x, y=this_row, s='b1b')
-        #     terminal.printf(x=start_list_x + 6, y=this_row, s='b2b')
-        #     terminal.printf(x=start_list_x + 14, y=this_row, s='b3b')
-        #     terminal.printf(x=start_list_x + 22, y=this_row, s='b4b')
-        #
-        #     this_row += 1
-        #
-        # terminal.printf(x=start_list_x, y=this_row, s='b')
-        # this_row += 1
-        # terminal.printf(x=start_list_x, y=this_row, s='p')
