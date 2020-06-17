@@ -22,22 +22,15 @@ class RenderSpellInfoPanel(esper.Processor):
     def process(self, game_config):
         self.render_spell_info_outer_frame()
         self.render_equipped_items()
-        self.render_energy_bars(game_config=game_config)
-        self.render_class_mechanics(game_config=game_config)
-        self.render_spell_bar()
+        self.render_energy_bars()
+        self.render_class_mechanics()
+        self.render_healing_spell()
         self.render_utility_spells()
         # self.render_player_status_effects(game_config=game_config)
 
-    def render_player_status_effects(self, game_config):
-
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
-        player_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=self.gameworld,
-                                                                           entity=player_entity)
-        player_conditions = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
-                                                                                 entity=player_entity)
-
-        self.render_boons(list_of_boons=player_boons, game_config=game_config)
-        self.render_conditions(list_of_conditions=player_conditions, game_config=game_config)
+    def render_player_status_effects(self):
+        self.render_boons()
+        self.render_conditions()
 
     def render_equipped_items(self):
 
@@ -45,16 +38,18 @@ class RenderSpellInfoPanel(esper.Processor):
         self.render_equipped_jewellery()
         self.render_equipped_armour()
 
-    def render_energy_bars(self, game_config):
-        self.render_health(self, game_config=game_config)
-        self.render_mana(self, game_config=game_config)
+    def render_energy_bars(self):
+        self.render_health()
+        self.render_mana()
 
-    @staticmethod
-    def render_boons(list_of_boons, game_config):
-        boon_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+    def render_boons(self):
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        list_of_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=self.gameworld,
+                                                                           entity=player_entity)
+        boon_start_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                        parameter='STATUS_EFFECTS_START_X')
 
-        boon_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+        boon_start_y = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                        parameter='STATUS_EFFECTS_START_Y')
 
         unicode_boon_string = '[font=dungeon][color=BOON_BASE_COLOUR]'
@@ -66,12 +61,16 @@ class RenderSpellInfoPanel(esper.Processor):
 
         terminal.printf(x=boon_start_x, y=boon_start_y, s=unicode_boon_string + 'Boons ' + boon_string)
 
-    @staticmethod
-    def render_conditions(list_of_conditions, game_config):
-        condition_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+    def render_conditions(self):
+
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+
+        list_of_conditions = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
+                                                                                 entity=player_entity)
+        condition_start_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='STATUS_EFFECTS_START_X')
 
-        condition_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+        condition_start_y = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='STATUS_EFFECTS_START_Y') + 1
 
         unicode_condition_string = '[font=dungeon][color=CONDITION_BASE_COLOUR]'
@@ -83,52 +82,48 @@ class RenderSpellInfoPanel(esper.Processor):
 
         terminal.printf(x=condition_start_x, y=condition_start_y, s=unicode_condition_string + 'Conds ' + condition_string)
 
-    @staticmethod
-    def render_spell_info_outer_frame():
+    def render_spell_info_outer_frame(self):
 
         unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
-
-        game_config = configUtilities.load_config()
-
         ascii_prefix = 'ASCII_SINGLE_'
 
-        spell_infobox_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+        spell_infobox_start_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                             parameter='SI_START_X')
 
-        spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+        spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                             parameter='SI_START_Y')
 
-        spell_infobox_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+        spell_infobox_width = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                           parameter='SI_WIDTH')
-        spell_infobox_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+        spell_infobox_height = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                            parameter='SI_DEPTH')
 
-        items_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+        items_start_y = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                             parameter='ITEMS_BAR_Y')
 
-        class_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+        class_start_y = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                             parameter='CLASS_BAR_Y')
 
-        spell_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        spell_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                       parameter=ascii_prefix + 'TOP_LEFT')
 
-        spell_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        spell_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                          parameter=ascii_prefix + 'BOTTOM_LEFT')
 
-        spell_info_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        spell_info_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                        parameter=ascii_prefix + 'TOP_RIGHT')
 
-        spell_info_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        spell_info_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                           parameter=ascii_prefix + 'BOTTOM_RIGHT')
 
-        spell_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        spell_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                  parameter=ascii_prefix + 'HORIZONTAL')
-        spell_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        spell_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                parameter=ascii_prefix + 'VERTICAL')
 
-        items_splitter_left_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        items_splitter_left_t_junction = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                parameter=ascii_prefix + 'LEFT_T_JUNCTION')
-        items_splitter_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        items_splitter_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
 
         # render horizontal bottom
@@ -156,7 +151,6 @@ class RenderSpellInfoPanel(esper.Processor):
         terminal.printf(x=(spell_infobox_start_x + spell_infobox_width),
                         y=(spell_infobox_start_y + spell_infobox_height),
                         s=unicode_string_to_print + spell_info_bottom_right_corner + ']')
-
 
         # render horizontal splitters
         for z in range(spell_infobox_start_x, (spell_infobox_start_x + spell_infobox_width)):
@@ -263,7 +257,7 @@ class RenderSpellInfoPanel(esper.Processor):
 
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                parameter='JEWELLERY_SPELL_Y')
-        dungeon_font = '[font=dungeon]'
+        dungeon_font = "[font=dungeon]"
         unicode_section_headers = dungeon_font + '[color=SPELLINFO_JEWELLERY_EQUIPPED]'
 
         this_letter = 70
@@ -291,20 +285,18 @@ class RenderSpellInfoPanel(esper.Processor):
         this_letter += 1
         terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + neck)
 
-
-    @staticmethod
-    def render_health(self, game_config):
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
-        health_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+    def render_health(self):
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        health_start_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                             parameter='ENERGY_BARS_START_X')
 
-        health_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+        health_start_y = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                             parameter='ENERGY_BARS_START_Y')
 
         ascii_prefix = 'ASCII_SINGLE_'
 
-        health_lost_fill = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'HEALTH_LOST')
-        health_remiaing_fill = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'HEALTH_REMAINING')
+        health_lost_fill = CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_LOST')
+        health_remiaing_fill = CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_REMAINING')
 
         unicode_mechanic_health_lost = '[font=dungeon][color=ENERGY_HEALTH_LOST]['
         unicode_mechanic_health_remaining = '[font=dungeon][color=ENERGY_HEALTH_REMAINING]['
@@ -325,22 +317,19 @@ class RenderSpellInfoPanel(esper.Processor):
             terminal.printf(x=(health_start_x + 8) + x, y=health_start_y,
                             s=unicode_mechanic_health_remaining + health_remiaing_fill + ']')
 
+    def render_mana(self):
 
-
-    @staticmethod
-    def render_mana(self, game_config):
-
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
-        mana_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        mana_start_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                             parameter='ENERGY_BARS_START_X')
 
-        mana_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellinfo',
+        mana_start_y = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                             parameter='ENERGY_BARS_START_Y') + 2
 
         ascii_prefix = 'ASCII_SINGLE_'
 
-        mana_lost_fill = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'HEALTH_LOST')
-        mana_remiaing_fill = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'HEALTH_REMAINING')
+        mana_lost_fill = CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_LOST')
+        mana_remiaing_fill = CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_REMAINING')
 
         unicode_mechanic_mana_lost = '[font=dungeon][color=ENERGY_MANA_LOST]['
         unicode_mechanic_mana_remaining = '[font=dungeon][color=ENERGY_MANA_REMAINING]['
@@ -365,8 +354,8 @@ class RenderSpellInfoPanel(esper.Processor):
     #
     # formally known as the F1 bar
     #
-    def render_class_mechanics(self, game_config):
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+    def render_class_mechanics(self):
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
 
         start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='MECHANIC_START_X')
@@ -377,24 +366,24 @@ class RenderSpellInfoPanel(esper.Processor):
 
         ascii_prefix = 'ASCII_SINGLE_'
 
-        mechanic_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        mechanic_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                       parameter=ascii_prefix + 'TOP_LEFT')
 
-        mechanic_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        mechanic_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                          parameter=ascii_prefix + 'BOTTOM_LEFT')
 
-        mechanic_info_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        mechanic_info_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                        parameter=ascii_prefix + 'TOP_RIGHT')
 
-        mechanic_info_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        mechanic_info_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                           parameter=ascii_prefix + 'BOTTOM_RIGHT')
 
-        mechanic_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        mechanic_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                  parameter=ascii_prefix + 'HORIZONTAL')
-        mechanic_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        mechanic_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                parameter=ascii_prefix + 'VERTICAL')
 
-        mechanic_background_fill = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'MECHANIC_FILL')
+        mechanic_background_fill = CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'MECHANIC_FILL')
 
         mechanic_depth = 10
         mechanic_width = 1
@@ -551,7 +540,7 @@ class RenderSpellInfoPanel(esper.Processor):
             this_letter += 1
             slot += 1
 
-    def render_spell_bar(self):
+    def render_healing_spell(self):
         player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
         start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='START_LIST_X')
