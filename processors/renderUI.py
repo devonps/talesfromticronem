@@ -98,9 +98,6 @@ class RenderUI(esper.Processor):
         player_map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         player_map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
 
-        hardcoded_zoom_factor = 10
-        hardcoded_viewport_margin = 10
-
         vp_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='VIEWPORT_WIDTH')
         vp_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
