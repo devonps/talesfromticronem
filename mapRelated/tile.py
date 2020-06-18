@@ -2,7 +2,7 @@
 class Tile:
 
     def __init__(self, blocked, block_sight=None):
-        self.type_of_tile = 5
+        self.type_of_tile = 0
         self.blocked = blocked
         if block_sight is None:
                 block_sight = blocked

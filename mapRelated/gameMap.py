@@ -23,7 +23,7 @@ class GameMap:
         self.tiles = self.initialize_tiles()
 
     def initialize_tiles(self):
-        tiles = [[Tile(True) for _ in range(self.height)] for _ in range(self.width)]
+        tiles = [[Tile(False) for _ in range(self.height)] for _ in range(self.width)]
 
         return tiles
 

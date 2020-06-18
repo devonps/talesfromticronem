@@ -19,9 +19,9 @@ class RenderUI(esper.Processor):
     def process(self, game_config):
         start_time = time.perf_counter()
         # render the game map
-        fov_map = self.render_map(self.gameworld, game_config, self.game_map)
+        self.render_map(self.gameworld, game_config, self.game_map)
         self.render_items(game_config, self.gameworld)
-        self.render_mobiles(gameworld=self.gameworld, game_config=game_config, fov_map=fov_map)
+        self.render_mobiles(gameworld=self.gameworld, game_config=game_config, game_map=self.game_map)
 
         end_time = time.perf_counter()
         logger.info('Time taken to render game display {}', (end_time - start_time))
@@ -89,6 +89,9 @@ class RenderUI(esper.Processor):
         tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                       parameter='TILE_TYPE_FLOOR')
 
+        tile_type_empty = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='TILE_TYPE_EMPTY')
+
         player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
         player_map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
@@ -105,7 +108,8 @@ class RenderUI(esper.Processor):
         config_prefix_wall = config_prefix + 'WALL_'
         config_prefix_floor = config_prefix + 'FLOOR_'
         config_prefix_door = config_prefix + 'DOOR_'
-        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_floor,
+        config_prefix_empty = config_prefix + 'EMPTY_'
+        original_char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_empty,
                                                              tile_assignment=0)
         unicode_string_to_print = '[font=dungeon]['
         fov_map = FieldOfView(game_map=game_map)
@@ -118,6 +122,7 @@ class RenderUI(esper.Processor):
 
         for y in range(camera_height):
             for x in range(camera_width):
+                char_to_display = original_char_to_display
                 map_x = int(camera_x + x)
                 map_y = int(camera_y + y)
                 tile = game_map.tiles[map_x][map_y].type_of_tile
@@ -160,27 +165,36 @@ class RenderUI(esper.Processor):
         return x, y
 
     @staticmethod
-    def render_mobiles(game_config, gameworld, fov_map):
+    def to_camera_coordinates(game_config, game_map, x, y):
+
+        camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_WIDTH')
+        camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_HEIGHT')
+
+        camera_x, camera_y = RenderUI.calculate_camera_position(camera_width=camera_width, camera_height=camera_height, player_map_pos_x=x, player_map_pos_y=y, game_map=game_map)
+
+        (x, y) = (x - camera_x, y - camera_y)
+
+        if x < 0 or y < 0 or x >= camera_width or y >= camera_height:
+            return None, None  # if it's outside the view, return nothing
+
+        return int(x), int(y)
+
+    @staticmethod
+    def render_mobiles(game_config, gameworld, game_map):
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         visible_entities = []
-        vp_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                parameter='VIEWPORT_START_Y')
-
-        vp_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                               parameter='VIEWPORT_WIDTH')
 
         for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
                                                                mobiles.Describable):
             if rend.isVisible:
                 map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
                 map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
+
+                x, y = RenderUI.to_camera_coordinates(game_config=game_config, game_map=game_map, x=map_pos_x, y=map_pos_y)
+
                 fg = desc.foreground
                 bg = desc.background
-                if map_pos_x > vp_width:
-                    mpx = int(map_pos_x / vp_width)
-                else:
-                    mpx = map_pos_x
-                RenderUI.render_entity(posx=mpx, posy=vp_height + map_pos_y, glyph=desc.glyph, fg=fg, bg=bg)
+                RenderUI.render_entity(posx=x, posy=y, glyph=desc.glyph, fg=fg, bg=bg)
                 if ent != player_entity:
                     visible_entities.append(ent)
 

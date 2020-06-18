@@ -64,7 +64,7 @@ class SceneManager:
                     if map_area_file != '':
                         SceneManager.build_static_scene(gameworld=gameworld, game_map=game_map,
                                                         map_area_file=map_area_file, scene_key=scene_key)
-                        GameMap.assign_tiles(game_map=game_map)
+                        # GameMap.assign_tiles(game_map=game_map)
                     else:
                         # generate random map
                         pass
@@ -105,13 +105,14 @@ class SceneManager:
                                                                       parameter='TILE_TYPE_FLOOR')
         tile_type_door = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                      parameter='TILE_TYPE_DOOR')
+        tile_type_empty = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='TILE_TYPE_EMPTY')
 
         # now load the game_map from the external file/csv
         filepath = prefab_folder + map_area_file + '.txt'
 
         file_content = Externalfiles.load_existing_file(filename=filepath)
         posy = 0
-
         for row in file_content:
             posx = 0
             for cell in row:
@@ -121,8 +122,9 @@ class SceneManager:
                                                     tile_type=tile_type_door)
                 SceneManager.place_wall_tile_yes_no(cell=cell, game_map=game_map, posx=posx, posy=posy,
                                                     tile_type=tile_type_wall)
+                SceneManager.place_empty_tile_yes_no(cell=cell, game_map=game_map, posx=posx, posy=posy, tile_type=tile_type_empty)
                 player_placed = SceneManager.place_player_tile_yes_no(cell=cell, game_map=game_map, posx=posx, posy=posy,
-                                                      tile_type=tile_type_floor, gameworld=gameworld)
+                                                      tile_type=tile_type_floor)
 
                 if player_placed:
                     SceneManager.setup_viewport(gameworld=gameworld, posx=posx, posy=posy)
@@ -134,6 +136,14 @@ class SceneManager:
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor, game_map=game_map)
                 posx += 1
             posy += 1
+
+    @staticmethod
+    def place_empty_tile_yes_no(cell, game_map, posx, posy, tile_type):
+        if cell == ' ':
+            game_map.tiles[posx][posy].type_of_tile = tile_type
+            game_map.tiles[posx][posy].image = 4
+            game_map.tiles[posx][posy].blocked = False
+            game_map.tiles[posx][posy].block_sight = False
 
     @staticmethod
     def place_floor_tile_yes_no(cell, game_map, posx, posy, tile_type):
@@ -160,7 +170,7 @@ class SceneManager:
             game_map.tiles[posx][posy].block_sight = True
 
     @staticmethod
-    def place_player_tile_yes_no(cell, game_map, posx, posy, tile_type, gameworld):
+    def place_player_tile_yes_no(cell, game_map, posx, posy, tile_type):
         player_placed = False
         if cell == '@':
             game_map.tiles[posx][posy].type_of_tile = tile_type
