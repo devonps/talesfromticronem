@@ -57,14 +57,12 @@ def game_loop(gameworld):
         # get player action aka their intent to do something
         #
         MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=False)
-        logger.debug('Starting turn {}', current_turn)
         msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
 
         valid_event = False
         advance_game_turn = False
         event_to_be_processed = ''
         event_action = ''
-        logger.debug('Waiting for player to take an action')
         while not valid_event:
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed not in ('mousemove', None):

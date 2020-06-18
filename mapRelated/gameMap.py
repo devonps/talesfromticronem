@@ -34,10 +34,10 @@ class GameMap:
                 tile_is_wall = GameMapUtilities.is_tile_blocked(game_map, x, y)
                 if tile_is_wall:
                     tile_assigned = 0
-                    tile_assigned += GameMap.check_if_north_tile_is_blocked(game_map=game_map, posx=x, posy=y)
-                    tile_assigned += GameMap.check_if_east_tile_is_blocked(game_map=game_map, posx=x, posy=y)
-                    tile_assigned += GameMap.check_if_south_tile_is_blocked(game_map=game_map, posx=x, posy=y)
-                    tile_assigned += GameMap.check_if_west_tile_is_blocked(game_map=game_map, posx=x, posy=y)
+                    # tile_assigned += GameMap.check_if_north_tile_is_blocked(game_map=game_map, posx=x, posy=y)
+                    # tile_assigned += GameMap.check_if_east_tile_is_blocked(game_map=game_map, posx=x, posy=y)
+                    # tile_assigned += GameMap.check_if_south_tile_is_blocked(game_map=game_map, posx=x, posy=y)
+                    # tile_assigned += GameMap.check_if_west_tile_is_blocked(game_map=game_map, posx=x, posy=y)
                     game_map.tiles[x][y].assignment = tile_assigned
 
     @staticmethod
