@@ -110,4 +110,4 @@ class FieldOfView:
 
     @staticmethod
     def within_field_of_view(fov_map, map_x, map_y):
-        return  tcod.map_is_in_fov(m=fov_map, x=map_x, y=map_y)
+        return tcod.map_is_in_fov(m=fov_map, x=map_x, y=map_y)

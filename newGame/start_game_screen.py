@@ -1,4 +1,3 @@
-
 from loguru import logger
 
 from ui.build_library import display_build_library
@@ -47,8 +46,8 @@ class StartGame:
             string_to_print = '[color=white]' + game_copyright + ' [color=yellow]' + game_author
             terminal.printf(x=copyright_x, y=copyright_y, s=string_to_print)
 
-            pointy_menu(header='', menu_options=['New Game', 'Choose build from library', 'Replay', 'Options', 'Help', 'Quit'],
-                        menu_id_format=True, menu_start_x=menu_start_x,menu_start_y=menu_start_y,
+            pointy_menu(header='', menu_options=['New Game', 'Build library', 'Quit'],
+                        menu_id_format=True, menu_start_x=menu_start_x, menu_start_y=menu_start_y,
                         blank_line=True, selected_option=selected_menu_option)
 
             # blit changes to terminal
@@ -57,41 +56,34 @@ class StartGame:
             event_to_be_processed, event_action = handle_game_keys()
 
             if event_to_be_processed != '':
-                if event_to_be_processed == 'keypress':
-                    if event_action == 'quit':
-                        show_game_start_screen = False
-                        logger.info('*** GAME ENDING ***')
+                if event_action == 'quit':
+                    show_game_start_screen = False
+                    logger.info('*** GAME ENDING ***')
 
-                    if event_action == 'up':
-                        selected_menu_option -= 1
-                        if selected_menu_option < 0:
-                            selected_menu_option = 5
+                if event_action == 'up':
+                    selected_menu_option -= 1
+                    if selected_menu_option < 0:
+                        selected_menu_option = 2
 
-                    if event_action == 'down':
-                        selected_menu_option += 1
-                        if selected_menu_option > 5:
-                            selected_menu_option = 0
+                if event_action == 'down':
+                    selected_menu_option += 1
+                    if selected_menu_option > 2:
+                        selected_menu_option = 0
 
-                    if event_action == 'enter':
-                        if selected_menu_option == 0:
-                            terminal.clear()
-                            CharacterCreation.display_character_creation_options()
-                        if selected_menu_option == 1:     # use existing build
-                            display_build_library()
-                            terminal.clear()
-                        if selected_menu_option == 2:     # Replay old game
-                            pass
-                        if selected_menu_option == 3:     # Game options
-                            pass
-                        if selected_menu_option == 4:     # Help menu
-                            pass
-                        if selected_menu_option == 5:
-                            show_game_start_screen = False
-                            logger.info('*** GAME ENDING ***')
-
-                if event_to_be_processed == 'mouseleftbutton':
-                    (mx, my) = event_action
-                    logger.info('MX {}', terminal.state(terminal.TK_MOUSE_X))
-                    logger.info('MY {}', terminal.state(terminal.TK_MOUSE_Y))
+                if event_action == 'enter':
+                    show_game_start_screen = StartGame.handle_enter_key_interactions(selected_menu_option=selected_menu_option)
+                    terminal.clear()
 
         terminal.close()
+
+    @staticmethod
+    def handle_enter_key_interactions(selected_menu_option):
+        if selected_menu_option == 0:
+            CharacterCreation.display_character_creation_options()
+        if selected_menu_option == 1:  # use existing build
+            display_build_library()
+        if selected_menu_option == 2:
+            show_game_start_screen = False
+            logger.info('*** GAME ENDING ***')
+            return show_game_start_screen
+        return True
