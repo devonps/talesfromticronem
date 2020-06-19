@@ -24,7 +24,9 @@ class FieldOfView:
         self.game_map = game_map
         self.width = game_map.width
         self.height = game_map.height
-        self.fov_radius = 20  # FOV Radius
+        self.fov_radius = 0  # FOV Radius
+        self.fov_light_walls = True
+        self.fov_algo = 0
 
 
     @staticmethod
@@ -106,3 +108,6 @@ class FieldOfView:
     def recompute_field_of_view(fov_map, x, y, radius, light_walls=True, algorithm=0):
         tcod.map_compute_fov(m=fov_map, x=x, y=y, radius=radius, light_walls=light_walls, algo=algorithm)
 
+    @staticmethod
+    def within_field_of_view(fov_map, map_x, map_y):
+        return  tcod.map_is_in_fov(m=fov_map, x=map_x, y=map_y)

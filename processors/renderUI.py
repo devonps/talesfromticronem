@@ -114,15 +114,12 @@ class RenderUI(esper.Processor):
                                                                       tile_assignment=0)
         unicode_string_to_print = '[font=dungeon]['
         colour_code = "[color=white]"
-        fov_algo = 0
-        fov_light_walls = True
-        fov_torch_radius = 0
         fov_object = FieldOfView(game_map=game_map)
 
         fov_map = FieldOfView.initialise_field_of_view(game_map=fov_object.game_map)
 
         if player_has_moved:
-            FieldOfView.recompute_field_of_view(fov_map=fov_map, x=player_map_pos_x, y=player_map_pos_y, radius=fov_object.fov_radius, light_walls=fov_light_walls, algorithm=fov_algo)
+            FieldOfView.recompute_field_of_view(fov_map=fov_map, x=player_map_pos_x, y=player_map_pos_y, radius=fov_object.fov_radius, light_walls=fov_object.fov_light_walls, algorithm=fov_object.fov_algo)
             RenderUI.clear_map_layer()
 
         for y in range(camera_height):
