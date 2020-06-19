@@ -1,9 +1,22 @@
 import random
 
 from loguru import logger
+
+from newGame.CreateSpells import AsEntities
 from utilities.randomNumberGenerator import PCG32Generator
 from utilities.externalfileutilities import Externalfiles
 from utilities import configUtilities
+from utilities.world import create_game_world
+
+
+def create_world():
+    gameconfig = configUtilities.load_config()
+    # Esper initialisation
+    gameworld = create_game_world()
+    setup_gameworld(game_config=gameconfig)
+    AsEntities.generate(gameworld=gameworld)
+
+    return gameworld
 
 
 def setup_gameworld(game_config):

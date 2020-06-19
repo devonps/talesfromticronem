@@ -1,3 +1,5 @@
+import textwrap
+
 from bearlibterminal import terminal
 
 from loguru import logger
@@ -8,21 +10,220 @@ from utilities.externalfileutilities import Externalfiles
 from utilities.buildLibrary import BuildLibrary
 from utilities.display import draw_colourful_frame, pointy_menu, coloured_list, display_coloured_box
 from utilities.input_handlers import handle_game_keys
-from utilities.world import create_game_world
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
-from utilities.spellHelp import SpellUtilities
-from utilities.itemsHelp import ItemUtilities
-from newGame.initialiseNewGame import setup_gameworld
-from newGame.Items import ItemManager
-from newGame.ClassWeapons import WeaponClass
-from components import mobiles
+from newGame.initialiseNewGame import create_world
 from utilities.common import CommonUtils
 
 from ticronem import game_loop
 
 
 class CharacterCreation:
+
+    @staticmethod
+    def create_new_character():
+        game_config = configUtilities.load_config()
+        unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
+        ascii_prefix = 'ASCII_SINGLE_'
+
+        terminal.clear()
+
+        spell_infobox_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                            section='newCharacter',
+                                                                            parameter='NC_START_X')
+
+        spell_infobox_start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                            section='newCharacter',
+                                                                            parameter='NC_START_Y')
+
+        spell_infobox_width = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                          section='newCharacter',
+                                                                          parameter='NC_WIDTH')
+        spell_infobox_height = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                           section='newCharacter',
+                                                                           parameter='NC_DEPTH')
+
+        choices_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
+                                                                    parameter='CHOICES_BAR_Y')
+
+        spell_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                      parameter=ascii_prefix + 'TOP_LEFT')
+
+        spell_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                         parameter=ascii_prefix + 'BOTTOM_LEFT')
+
+        spell_info_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                       parameter=ascii_prefix + 'TOP_RIGHT')
+
+        spell_info_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                          parameter=ascii_prefix + 'BOTTOM_RIGHT')
+
+        spell_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                 parameter=ascii_prefix + 'HORIZONTAL')
+        spell_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                               parameter=ascii_prefix + 'VERTICAL')
+
+        items_splitter_left_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                          parameter=ascii_prefix + 'LEFT_T_JUNCTION')
+        items_splitter_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                           parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
+
+
+        # set up UI --> options on the left --- flavour text on the right
+
+        # render horizontal bottom
+        for z in range(spell_infobox_start_x, (spell_infobox_start_x + spell_infobox_width)):
+            terminal.printf(x=z, y=(spell_infobox_start_y + spell_infobox_height),
+                            s=unicode_string_to_print + spell_info_horizontal + ']')
+            terminal.printf(x=z, y=spell_infobox_start_y, s=unicode_string_to_print + spell_info_horizontal + ']')
+
+        # render verticals
+        for z in range(spell_infobox_start_y, (spell_infobox_start_y + spell_infobox_height) - 1):
+            terminal.printf(x=spell_infobox_start_x, y=z + 1, s=unicode_string_to_print + spell_info_vertical + ']')
+            terminal.printf(x=(spell_infobox_start_x + spell_infobox_width), y=z + 1,
+                            s=unicode_string_to_print + spell_info_vertical + ']')
+
+        # top left
+        terminal.printf(x=spell_infobox_start_x, y=spell_infobox_start_y,
+                        s=unicode_string_to_print + spell_info_top_left_corner + ']')
+        # bottom left
+        terminal.printf(x=spell_infobox_start_x, y=(spell_infobox_start_y + spell_infobox_height),
+                        s=unicode_string_to_print + spell_info_bottom_left_corner + ']')
+        # top right
+        terminal.printf(x=(spell_infobox_start_x + spell_infobox_width), y=spell_infobox_start_y,
+                        s=unicode_string_to_print + spell_info_top_right_corner + ']')
+        # bottom right
+        terminal.printf(x=(spell_infobox_start_x + spell_infobox_width),
+                        y=(spell_infobox_start_y + spell_infobox_height),
+                        s=unicode_string_to_print + spell_info_bottom_right_corner + ']')
+
+        # render horizontal splitters
+        for z in range(spell_infobox_start_x, (spell_infobox_start_x + spell_infobox_width)):
+            terminal.printf(x=z, y=choices_start_y,
+                            s=unicode_string_to_print + spell_info_horizontal + ']')
+
+            terminal.printf(x=spell_infobox_start_x, y=choices_start_y,
+                            s=unicode_string_to_print + items_splitter_left_t_junction + ']')
+
+            terminal.printf(x=(spell_infobox_start_x + spell_infobox_width), y=choices_start_y,
+                            s=unicode_string_to_print + items_splitter_right_t_junction + ']')
+
+
+        # choices already made
+        start_list_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
+                                                                   parameter='START_LIST_X')
+
+        this_row = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
+                                                                   parameter='START_LIST_Y')
+
+        terminal.printf(x=start_list_x, y=this_row, s='Your Choices')
+        this_row += 2
+        terminal.printf(x=start_list_x, y=this_row, s='Race')
+        this_row += 1
+        terminal.printf(x=start_list_x, y=this_row, s='Class')
+        this_row += 1
+        terminal.printf(x=start_list_x, y=this_row, s='Gender')
+
+        show_character_options = True
+        selected_menu_option = 0
+
+        player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                      parameter='RACESFILE')
+        menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'MENU_START_X')
+        menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'MENU_START_Y')
+        race_flavour_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_FLAVOR_X')
+        original_race_flavour_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_FLAVOR_Y')
+        race_benefits_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_BENEFITS_X')
+        race_benefits_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_BENEFITS_Y')
+
+        race_file = read_json_file(player_race_file)
+
+        race_name = []
+        race_flavour = []
+        race_prefix = []
+        race_bg_colour = []
+        race_size = []
+        race_benefits = []
+        race_name_desc = []
+        race_count = 0
+
+        for option in race_file['races']:
+            if option['playable']:
+                race_name.append(option['name'])
+                race_flavour.append(option['flavour'])
+                race_prefix.append(option['prefix'])
+                race_bg_colour.append(colourUtilities.get('BLACK'))
+                race_size.append(option['size'])
+                racial_bonus_count = option['attribute_count']
+                race_name_desc.append(option['singular_plural_adjective'])
+                race_count += 1
+                for attribute_bonus in range(racial_bonus_count):
+                    race_attr_name = 'attribute_' + str(attribute_bonus + 1) + '_name'
+                    race_attr_value = 'attribute_' + str(attribute_bonus + 1) + '_value'
+                    attribute_benefit_and_amount = (option[race_attr_name], option[race_attr_value])
+                    rb = [race_count]
+                    rb.extend(list(attribute_benefit_and_amount))
+                    race_benefits.append(rb)
+
+        selected_menu_option = 0
+        max_menu_option = len(race_name) - 1
+        set_string_colour = "[color="
+        set_green_for_racial_benefit = set_string_colour + colourUtilities.get('GREEN') + '][/color]Benefit'
+        set_yellow_colour_for_print = set_string_colour + colourUtilities.get('YELLOW1') + "][/color]"
+
+        while show_character_options:
+
+            # display race options
+            pointy_menu(header='',
+                        menu_options=race_name, menu_id_format=True, menu_start_x=menu_start_x,
+                        menu_start_y=menu_start_y,
+                        blank_line=True, selected_option=selected_menu_option)
+
+            # racial flavour text
+            strings_list = []
+            strings_list = textwrap.wrap(race_flavour[selected_menu_option], width=33)
+            number_of_lines = len(strings_list)
+            string_to_print = ''.join(strings_list)
+            race_flavour_y = original_race_flavour_y
+            for line in range(5):
+                for wd in range(33):
+                    terminal.printf(x=race_flavour_x + wd, y=race_flavour_y + line, s=' ')
+
+            for line in strings_list:
+                terminal.print_(x=race_flavour_x, y=race_flavour_y, s=line, width=spell_infobox_width, height=1)
+                race_flavour_y += 1
+
+            # racial benefits
+            terminal.print_(x=race_benefits_x, y=race_benefits_y, s=set_green_for_racial_benefit)
+            posy = 0
+            for line in range(5):
+                for wd in range(33):
+                    terminal.printf(x=race_benefits_x + wd, y=race_benefits_y + line, s=' ')
+            for benefit in race_benefits:
+                if benefit[0] == selected_menu_option + 1:
+                    string_to_print = set_yellow_colour_for_print + benefit[1]
+                    terminal.printf(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
+                    posy += 1
+
+
+            event_to_be_processed, event_action = handle_game_keys()
+            if event_to_be_processed != '' and event_to_be_processed == 'keypress':
+                if event_action == 'quit':
+                    show_character_options = False
+
+                if event_action == 'up':
+                    selected_menu_option -= 1
+                    if selected_menu_option < 0:
+                        selected_menu_option = max_menu_option
+                if event_action == 'down':
+                    selected_menu_option += 1
+                    if selected_menu_option > max_menu_option:
+                        selected_menu_option = 0
+                if event_action == 'enter':
+                    if selected_menu_option == 0:  # something selected
+                        gameworld = create_world()
+                        terminal.clear()
+            terminal.refresh()
 
     @staticmethod
     def display_character_creation_options():
@@ -41,8 +242,7 @@ class CharacterCreation:
 
             # place game menu options
             pointy_menu(header='',
-                        menu_options=['Create New Character', 'Random Character',
-                                      'Replay most recent character'], menu_id_format=True, menu_start_x=menu_start_x,
+                        menu_options=['Create New Character', 'Random Character'], menu_id_format=True, menu_start_x=menu_start_x,
                         menu_start_y=menu_start_y, blank_line=True, selected_option=selected_menu_option)
 
             # blit changes to root console
@@ -56,33 +256,21 @@ class CharacterCreation:
                 if event_action == 'up':
                     selected_menu_option -= 1
                     if selected_menu_option < 0:
-                        selected_menu_option = 2
+                        selected_menu_option = 1
                 if event_action == 'down':
                     selected_menu_option += 1
-                    if selected_menu_option > 2:
+                    if selected_menu_option > 1:
                         selected_menu_option = 0
                 if event_action == 'enter':
                     if selected_menu_option == 0:  # create new character
-                        gameworld = CharacterCreation.create_world()
+                        gameworld = create_world()
                         terminal.clear()
-                        CharacterCreation.create_new_character(gameworld=gameworld)
+                        CharacterCreation.OLDcreate_new_character(gameworld=gameworld)
                     if selected_menu_option == 1:  # create random character
                         pass
-                    if selected_menu_option == 2:  # replay most recent character
-                        pass
 
     @staticmethod
-    def create_world():
-        gameconfig = configUtilities.load_config()
-        # Esper initialisation
-        gameworld = create_game_world()
-        setup_gameworld(game_config=gameconfig)
-        AsEntities.generate(gameworld=gameworld)
-
-        return gameworld
-
-    @staticmethod
-    def create_new_character(gameworld):
+    def OLDcreate_new_character(gameworld):
 
         game_config = configUtilities.load_config()
 
@@ -1756,4 +1944,4 @@ class CharacterCreation:
                         # delete player entity
                         world.delete_entity(gameworld=gameworld, entity=player_entity)
                         terminal.clear()
-                        CharacterCreation.create_new_character(gameworld=gameworld)
+                        CharacterCreation.OLDcreate_new_character(gameworld=gameworld)

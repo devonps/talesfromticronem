@@ -79,7 +79,8 @@ class StartGame:
     @staticmethod
     def handle_enter_key_interactions(selected_menu_option):
         if selected_menu_option == 0:
-            CharacterCreation.display_character_creation_options()
+            # CharacterCreation.display_character_creation_options()
+            CharacterCreation.create_new_character()
         if selected_menu_option == 1:  # use existing build
             display_build_library()
         if selected_menu_option == 2:
