@@ -115,20 +115,29 @@ class CharacterCreation:
 
         this_row = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
                                                                    parameter='START_LIST_Y')
+        selected_race = ''
+        selected_class = ''
+        selected_gender = ''
+        selected_name = ''
 
         terminal.printf(x=start_list_x, y=this_row, s='Your Choices')
         this_row += 2
-        terminal.printf(x=start_list_x, y=this_row, s='Race')
+        terminal.printf(x=start_list_x, y=this_row, s='Race ' + selected_race)
         this_row += 1
-        terminal.printf(x=start_list_x, y=this_row, s='Class')
+        terminal.printf(x=start_list_x, y=this_row, s='Class ' + selected_class)
         this_row += 1
-        terminal.printf(x=start_list_x, y=this_row, s='Gender')
+        terminal.printf(x=start_list_x, y=this_row, s='Gender ' + selected_gender)
 
         show_character_options = True
         selected_menu_option = 0
+        create_character_selected_choice = 0
+        character_build_string = ''
 
         player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='RACESFILE')
+        attribute_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                      parameter='ATTRIBUTES')
+
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'MENU_START_X')
         menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'MENU_START_Y')
         race_flavour_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_FLAVOR_X')
@@ -165,11 +174,24 @@ class CharacterCreation:
                     rb.extend(list(attribute_benefit_and_amount))
                     race_benefits.append(rb)
 
+        attribute_file = read_json_file(attribute_file)
+
+        attribute_name = []
+        attribute_flavour = []
+
+        for attribute in attribute_file['attributes']:
+            attribute_name.append(attribute['name'])
+            attribute_flavour.append(attribute['flavour'])
+
         selected_menu_option = 0
         max_menu_option = len(race_name) - 1
         set_string_colour = "[color="
-        set_green_for_racial_benefit = set_string_colour + colourUtilities.get('GREEN') + '][/color]Benefit'
         set_yellow_colour_for_print = set_string_colour + colourUtilities.get('YELLOW1') + "][/color]"
+
+        dungeon_font = "[font=dungeon]"
+        unicode_attribute_names = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_NAME]'
+        unicode_attribute_flavour = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_FLAVOUR]'
+        unicode_benefit_title = dungeon_font + '[color=CREATE_CHARACTER_BENEFITS_TITLE]'
 
         while show_character_options:
 
@@ -180,10 +202,7 @@ class CharacterCreation:
                         blank_line=True, selected_option=selected_menu_option)
 
             # racial flavour text
-            strings_list = []
             strings_list = textwrap.wrap(race_flavour[selected_menu_option], width=33)
-            number_of_lines = len(strings_list)
-            string_to_print = ''.join(strings_list)
             race_flavour_y = original_race_flavour_y
             for line in range(5):
                 for wd in range(33):
@@ -194,17 +213,26 @@ class CharacterCreation:
                 race_flavour_y += 1
 
             # racial benefits
-            terminal.print_(x=race_benefits_x, y=race_benefits_y, s=set_green_for_racial_benefit)
             posy = 0
-            for line in range(5):
+            for line in range(14):
                 for wd in range(33):
                     terminal.printf(x=race_benefits_x + wd, y=race_benefits_y + line, s=' ')
+            terminal.print_(x=race_benefits_x, y=race_benefits_y, s=unicode_benefit_title + 'Benefits')
             for benefit in race_benefits:
                 if benefit[0] == selected_menu_option + 1:
-                    string_to_print = set_yellow_colour_for_print + benefit[1]
+                    string_to_print = unicode_attribute_names + benefit[1]
                     terminal.printf(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
                     posy += 1
-
+                    for attribute in range(len(attribute_name)):
+                        attr_name = attribute_name[attribute]
+                        benefit_name = benefit[1]
+                        if attr_name.lower() == benefit_name:
+                            attr_strings_list = textwrap.wrap(attribute_flavour[attribute], width=33)
+                            for line in attr_strings_list:
+                                terminal.print_(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=unicode_attribute_flavour + line, width=spell_infobox_width,
+                                                height=1)
+                                posy += 1
+                    posy += 1
 
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '' and event_to_be_processed == 'keypress':

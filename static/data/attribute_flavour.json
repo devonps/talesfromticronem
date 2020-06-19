@@ -1,0 +1,32 @@
+{
+  "attributes": [
+    {
+    "name": "Precision",
+    "flavour": "Improves your chance of a critical strike."
+    },
+    {
+    "name": "Condition Damage",
+    "flavour": "Imrpoves the damage dealth by your conditions."
+    },
+    {
+    "name": "Ferocity",
+    "flavour": "Increases the critical damage you deal."
+    },
+    {
+    "name": "Power",
+    "flavour": "Increases all direct damage."
+    },
+    {
+    "name": "Concentration",
+    "flavour": "Increases the duration of your boons."
+    },
+    {
+    "name": "Vitality",
+    "flavour": "It gives you more health"
+    },
+        {
+    "name": "Toughness",
+    "flavour": "Allows you to withstand direct damage better."
+    }
+    ]
+}
