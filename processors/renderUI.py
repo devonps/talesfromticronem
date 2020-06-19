@@ -1,5 +1,6 @@
 import esper
 import time
+import tcod
 
 from bearlibterminal import terminal
 from loguru import logger
@@ -19,9 +20,9 @@ class RenderUI(esper.Processor):
     def process(self, game_config):
         start_time = time.perf_counter()
         # render the game map
-        self.render_map(self.gameworld, game_config, self.game_map)
-        self.render_items(game_config, self.gameworld)
-        self.render_mobiles(gameworld=self.gameworld, game_config=game_config, game_map=self.game_map)
+        fov_map = self.render_map(self.gameworld, game_config, self.game_map)
+        # self.render_items(game_config, self.gameworld)
+        self.render_mobiles(gameworld=self.gameworld, game_config=game_config, game_map=self.game_map, fov_map=fov_map)
 
         end_time = time.perf_counter()
         logger.info('Time taken to render game display {}', (end_time - start_time))
@@ -89,35 +90,39 @@ class RenderUI(esper.Processor):
         tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                       parameter='TILE_TYPE_FLOOR')
 
-        tile_type_empty = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
-                                                                      parameter='TILE_TYPE_EMPTY')
-
         player_has_moved = MobileUtilities.has_player_moved(gameworld, game_config)
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
         player_map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         player_map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
 
         camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                               parameter='VIEWPORT_WIDTH')
+                                                                   parameter='VIEWPORT_WIDTH')
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                parameter='VIEWPORT_HEIGHT')
+                                                                    parameter='VIEWPORT_HEIGHT')
 
-        camera_x, camera_y = RenderUI.calculate_camera_position(camera_width=camera_width, camera_height=camera_height, player_map_pos_x=player_map_pos_x, player_map_pos_y=player_map_pos_y, game_map=game_map)
+        camera_x, camera_y = RenderUI.calculate_camera_position(camera_width=camera_width, camera_height=camera_height,
+                                                                player_map_pos_x=player_map_pos_x,
+                                                                player_map_pos_y=player_map_pos_y, game_map=game_map)
 
         config_prefix = 'ASCII_'
         config_prefix_wall = config_prefix + 'WALL_'
         config_prefix_floor = config_prefix + 'FLOOR_'
         config_prefix_door = config_prefix + 'DOOR_'
         config_prefix_empty = config_prefix + 'EMPTY_'
-        original_char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config, config_prefix=config_prefix_empty,
-                                                             tile_assignment=0)
+        original_char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
+                                                                      config_prefix=config_prefix_empty,
+                                                                      tile_assignment=0)
         unicode_string_to_print = '[font=dungeon]['
-        fov_map = FieldOfView(game_map=game_map)
-        player_fov = FieldOfView.create_fov_map_via_raycasting(fov_map, startx=player_map_pos_x,
-                                                               starty=player_map_pos_y,
-                                                               game_config=game_config)
+        colour_code = "[color=white]"
+        fov_algo = 0
+        fov_light_walls = True
+        fov_torch_radius = 0
+        fov_object = FieldOfView(game_map=game_map)
+
+        fov_map = FieldOfView.initialise_field_of_view(game_map=fov_object.game_map)
 
         if player_has_moved:
+            FieldOfView.recompute_field_of_view(fov_map=fov_map, x=player_map_pos_x, y=player_map_pos_y, radius=fov_object.fov_radius, light_walls=fov_light_walls, algorithm=fov_algo)
             RenderUI.clear_map_layer()
 
         for y in range(camera_height):
@@ -125,28 +130,46 @@ class RenderUI(esper.Processor):
                 char_to_display = original_char_to_display
                 map_x = int(camera_x + x)
                 map_y = int(camera_y + y)
+                print_char = False
                 tile = game_map.tiles[map_x][map_y].type_of_tile
                 tile_assignment = game_map.tiles[map_x][map_y].assignment
+                visible = tcod.map_is_in_fov(m=fov_map, x=map_x, y=map_y)
+                if visible:
+                    colour_code = "[color=white]"
+                    print_char = True
+                    game_map.tiles[map_x][map_y].explored = True
+                    if tile == tile_type_floor:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
+                                                                             config_prefix=config_prefix_floor,
+                                                                             tile_assignment=0)
+                    if tile == tile_type_wall:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
+                                                                             config_prefix=config_prefix_wall,
+                                                                             tile_assignment=tile_assignment)
+                    if tile == tile_type_door:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
+                                                                             config_prefix=config_prefix_door,
+                                                                             tile_assignment=0)
+                elif game_map.tiles[x][y].explored:
+                    colour_code = "[color=grey]"
+                    print_char = True
+                    if tile == tile_type_floor:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
+                                                                             config_prefix=config_prefix_floor,
+                                                                             tile_assignment=0)
+                    if tile == tile_type_wall:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
+                                                                             config_prefix=config_prefix_wall,
+                                                                             tile_assignment=tile_assignment)
+                    if tile == tile_type_door:
+                        char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
+                                                                             config_prefix=config_prefix_door,
+                                                                             tile_assignment=0)
+                if print_char and tile > 0:
+                    string_to_print = colour_code + unicode_string_to_print + char_to_display + ']'
+                    terminal.printf(x=x, y=y, s=string_to_print)
 
-                colour_code = "[color=white]"
-                game_map.tiles[map_x][map_y].explored = True
-                if tile == tile_type_floor:
-                    char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
-                                                                         config_prefix=config_prefix_floor,
-                                                                         tile_assignment=0)
-                if tile == tile_type_wall:
-                    char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
-                                                                         config_prefix=config_prefix_wall,
-                                                                         tile_assignment=tile_assignment)
-                if tile == tile_type_door:
-                    char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
-                                                                         config_prefix=config_prefix_door,
-                                                                         tile_assignment=0)
-
-                string_to_print = colour_code + unicode_string_to_print + char_to_display + ']'
-                terminal.printf(x=x, y=y, s=string_to_print)
-
-        return player_fov
+        return fov_map
 
     @staticmethod
     def calculate_camera_position(camera_width, camera_height, player_map_pos_x, player_map_pos_y, game_map):
@@ -167,10 +190,14 @@ class RenderUI(esper.Processor):
     @staticmethod
     def to_camera_coordinates(game_config, game_map, x, y):
 
-        camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_WIDTH')
-        camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui', parameter='VIEWPORT_HEIGHT')
+        camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                   parameter='VIEWPORT_WIDTH')
+        camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='VIEWPORT_HEIGHT')
 
-        camera_x, camera_y = RenderUI.calculate_camera_position(camera_width=camera_width, camera_height=camera_height, player_map_pos_x=x, player_map_pos_y=y, game_map=game_map)
+        camera_x, camera_y = RenderUI.calculate_camera_position(camera_width=camera_width, camera_height=camera_height,
+                                                                player_map_pos_x=x, player_map_pos_y=y,
+                                                                game_map=game_map)
 
         (x, y) = (x - camera_x, y - camera_y)
 
@@ -180,7 +207,7 @@ class RenderUI(esper.Processor):
         return int(x), int(y)
 
     @staticmethod
-    def render_mobiles(game_config, gameworld, game_map):
+    def render_mobiles(game_config, gameworld, game_map, fov_map):
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         visible_entities = []
 
@@ -190,17 +217,18 @@ class RenderUI(esper.Processor):
                 map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
                 map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
 
-                x, y = RenderUI.to_camera_coordinates(game_config=game_config, game_map=game_map, x=map_pos_x, y=map_pos_y)
+                if tcod.map_is_in_fov(m=fov_map, x=map_pos_x, y=map_pos_y):
+                    x, y = RenderUI.to_camera_coordinates(game_config=game_config, game_map=game_map, x=map_pos_x,
+                                                          y=map_pos_y)
 
-                fg = desc.foreground
-                bg = desc.background
-                RenderUI.render_entity(posx=x, posy=y, glyph=desc.glyph, fg=fg, bg=bg)
-                if ent != player_entity:
-                    visible_entities.append(ent)
+                    fg = desc.foreground
+                    bg = desc.background
+                    RenderUI.render_entity(posx=x, posy=y, glyph=desc.glyph, fg=fg, bg=bg)
+                    if ent != player_entity:
+                        visible_entities.append(ent)
 
         MobileUtilities.set_visible_entities(gameworld=gameworld, target_entity=player_entity,
                                              visible_entities=visible_entities)
-        return visible_entities
 
     @staticmethod
     def render_items(game_config, gameworld):

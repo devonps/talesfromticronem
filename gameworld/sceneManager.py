@@ -64,7 +64,7 @@ class SceneManager:
                     if map_area_file != '':
                         SceneManager.build_static_scene(gameworld=gameworld, game_map=game_map,
                                                         map_area_file=map_area_file, scene_key=scene_key)
-                        # GameMap.assign_tiles(game_map=game_map)
+                        GameMap.assign_tiles(game_map=game_map)
                     else:
                         # generate random map
                         pass
