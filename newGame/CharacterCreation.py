@@ -135,6 +135,8 @@ class CharacterCreation:
 
         player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='RACESFILE')
+        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                       parameter='CLASSESFILE')
         attribute_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='ATTRIBUTES')
 
@@ -145,6 +147,9 @@ class CharacterCreation:
         race_benefits_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_BENEFITS_X')
         race_benefits_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_BENEFITS_Y')
 
+        #
+        # LOAD PLAYABLE RACES FROM DISK
+        #
         race_file = read_json_file(player_race_file)
 
         race_name = []
@@ -182,6 +187,33 @@ class CharacterCreation:
         for attribute in attribute_file['attributes']:
             attribute_name.append(attribute['name'])
             attribute_flavour.append(attribute['flavour'])
+
+        #
+        # LOAD PLAYABLE CLASSES FROM DISK
+        #
+
+        class_file = read_json_file(player_class_file)
+
+        menu_options = []
+        menu_options_flavour = []
+        class_health = []
+        class_weapons = []
+        class_defense_benefits = []
+        class_balanced_benefits = []
+        class_offense_benefits = []
+        class_spell_file = []
+
+        for option in class_file['classes']:
+            menu_options.append(option['name'])
+            menu_options_flavour.append(option['flavour'])
+            class_health.append(option['health'])
+            class_spell_file.append(option['spellfile'])
+            class_weapons.append(option['weapons'])
+            class_defense_benefits.append(option['defensive'])
+            class_balanced_benefits.append(option['balanced'])
+            class_offense_benefits.append(option['offensive'])
+
+
 
         selected_menu_option = 0
         max_menu_option = len(race_name) - 1

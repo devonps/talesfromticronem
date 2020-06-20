@@ -2,38 +2,6 @@ name: Build and Package
 on: push
 
 jobs:
-          
-  build-ubuntu:
-    name: Build for ubuntu-18.04
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.7
-    - name: Install apt dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y $(cat apt_dependencies.txt)
-    - name: install python dependencies
-      run: |
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install -r requirements.txt
-    - name: Test with pytest
-      run: |
-        pip install pytest
-        pytest
-    - name: package binary
-      run: |
-        pyinstaller --clean pyinstaller/pyinstaller.spec
-        mv dist/ticronem dist/ticronem_ubuntu18
-    - name: publish binary
-      uses: actions/upload-artifact@master
-      with:
-        name: ticronem_ubuntu18
-        path: dist/ticronem_ubuntu18
   build-windows:
     name: build for windows-2019
     runs-on: windows-2019
@@ -94,7 +62,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/release')
     name: Publish release to github
     runs-on: ubuntu-18.04
-    needs: [build-osx, build-windows, build-ubuntu]
+    needs: [build-osx, build-windows]
     steps:
       - name: Download osx artifact
         uses: actions/download-artifact@v1
@@ -104,10 +72,6 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: ticronem_windows
-      - name: Download ubuntu18 artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: ticronem_ubuntu18
       - name: Trimming tag
         id: trimmer
         run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/release/}
@@ -117,4 +81,4 @@ jobs:
           name: ${{ steps.trimmer.outputs.tag }}
           draft: false
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "ticronem_windows/ticronem.exe,ticronem_ubuntu18/ticronem_ubuntu18, ticronem_macosx/ticronem_macosx"
+          artifacts: "ticronem_windows/ticronem.exe, ticronem_macosx/ticronem_macosx"
