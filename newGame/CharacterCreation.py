@@ -194,8 +194,8 @@ class CharacterCreation:
 
         class_file = read_json_file(player_class_file)
 
-        menu_options = []
-        menu_options_flavour = []
+        character_class_name = []
+        character_class_flavour = []
         class_health = []
         class_weapons = []
         class_defense_benefits = []
@@ -204,8 +204,8 @@ class CharacterCreation:
         class_spell_file = []
 
         for option in class_file['classes']:
-            menu_options.append(option['name'])
-            menu_options_flavour.append(option['flavour'])
+            character_class_name.append(option['name'])
+            character_class_flavour.append(option['flavour'])
             class_health.append(option['health'])
             class_spell_file.append(option['spellfile'])
             class_weapons.append(option['weapons'])
@@ -218,54 +218,76 @@ class CharacterCreation:
         selected_menu_option = 0
         max_menu_option = len(race_name) - 1
         set_string_colour = "[color="
-        set_yellow_colour_for_print = set_string_colour + colourUtilities.get('YELLOW1') + "][/color]"
 
         dungeon_font = "[font=dungeon]"
         unicode_attribute_names = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_NAME]'
         unicode_attribute_flavour = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_FLAVOUR]'
         unicode_benefit_title = dungeon_font + '[color=CREATE_CHARACTER_BENEFITS_TITLE]'
+        race_selected = 0
+        class_selected = 0
 
         while show_character_options:
 
-            # display race options
-            pointy_menu(header='',
-                        menu_options=race_name, menu_id_format=True, menu_start_x=menu_start_x,
-                        menu_start_y=menu_start_y,
-                        blank_line=True, selected_option=selected_menu_option)
+            if create_character_selected_choice == 0:
+                # display race options
+                pointy_menu(header='',
+                            menu_options=race_name, menu_id_format=True, menu_start_x=menu_start_x,
+                            menu_start_y=menu_start_y,
+                            blank_line=True, selected_option=selected_menu_option)
 
-            # racial flavour text
-            strings_list = textwrap.wrap(race_flavour[selected_menu_option], width=33)
-            race_flavour_y = original_race_flavour_y
-            for line in range(5):
-                for wd in range(33):
-                    terminal.printf(x=race_flavour_x + wd, y=race_flavour_y + line, s=' ')
+                # racial flavour text
+                strings_list = textwrap.wrap(race_flavour[selected_menu_option], width=33)
+                race_flavour_y = original_race_flavour_y
+                for line in range(5):
+                    for wd in range(33):
+                        terminal.printf(x=race_flavour_x + wd, y=race_flavour_y + line, s=' ')
 
-            for line in strings_list:
-                terminal.print_(x=race_flavour_x, y=race_flavour_y, s=line, width=spell_infobox_width, height=1)
-                race_flavour_y += 1
+                for line in strings_list:
+                    terminal.print_(x=race_flavour_x, y=race_flavour_y, s=line, width=spell_infobox_width, height=1)
+                    race_flavour_y += 1
 
-            # racial benefits
-            posy = 0
-            for line in range(14):
-                for wd in range(33):
-                    terminal.printf(x=race_benefits_x + wd, y=race_benefits_y + line, s=' ')
-            terminal.print_(x=race_benefits_x, y=race_benefits_y, s=unicode_benefit_title + 'Benefits')
-            for benefit in race_benefits:
-                if benefit[0] == selected_menu_option + 1:
-                    string_to_print = unicode_attribute_names + benefit[1]
-                    terminal.printf(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
-                    posy += 1
-                    for attribute in range(len(attribute_name)):
-                        attr_name = attribute_name[attribute]
-                        benefit_name = benefit[1]
-                        if attr_name.lower() == benefit_name:
-                            attr_strings_list = textwrap.wrap(attribute_flavour[attribute], width=33)
-                            for line in attr_strings_list:
-                                terminal.print_(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=unicode_attribute_flavour + line, width=spell_infobox_width,
-                                                height=1)
-                                posy += 1
-                    posy += 1
+                # racial benefits
+                posy = 0
+                for line in range(14):
+                    for wd in range(33):
+                        terminal.printf(x=race_benefits_x + wd, y=race_benefits_y + line, s=' ')
+                terminal.print_(x=race_benefits_x, y=race_benefits_y, s=unicode_benefit_title + 'Benefits')
+                for benefit in race_benefits:
+                    if benefit[0] == selected_menu_option + 1:
+                        string_to_print = unicode_attribute_names + benefit[1]
+                        terminal.printf(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
+                        posy += 1
+                        for attribute in range(len(attribute_name)):
+                            attr_name = attribute_name[attribute]
+                            benefit_name = benefit[1]
+                            if attr_name.lower() == benefit_name:
+                                attr_strings_list = textwrap.wrap(attribute_flavour[attribute], width=33)
+                                for line in attr_strings_list:
+                                    terminal.print_(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=unicode_attribute_flavour + line, width=spell_infobox_width,
+                                                    height=1)
+                                    posy += 1
+                        posy += 1
+            else:
+                # display character class options
+                logger.info('Selected menu set at {}', selected_menu_option)
+                max_menu_option = len(character_class_name) - 1
+                pointy_menu(header='',
+                            menu_options=character_class_name, menu_id_format=True, menu_start_x=menu_start_x,
+                            menu_start_y=menu_start_y,
+                            blank_line=True, selected_option=selected_menu_option)
+                # class flavour text
+                strings_list = textwrap.wrap(character_class_flavour[selected_menu_option], width=33)
+                class_flavour_y = original_race_flavour_y
+                for line in range(5):
+                    for wd in range(33):
+                        terminal.printf(x=race_flavour_x + wd, y=class_flavour_y + line, s=' ')
 
+                for line in strings_list:
+                    terminal.print_(x=race_flavour_x, y=class_flavour_y, s=line, width=spell_infobox_width, height=1)
+                    class_flavour_y += 1
+                # class benefits
+
+                terminal.refresh()
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '' and event_to_be_processed == 'keypress':
                 if event_action == 'quit':
@@ -280,10 +302,39 @@ class CharacterCreation:
                     if selected_menu_option > max_menu_option:
                         selected_menu_option = 0
                 if event_action == 'enter':
-                    if selected_menu_option == 0:  # something selected
+                    if create_character_selected_choice == 0:
+                        race_selected = race_name[selected_menu_option]
+                        create_character_selected_choice += 1
+                        selected_menu_option = 0
+                    else:
+                        class_selected = character_class_name[selected_menu_option]
                         gameworld = create_world()
+                        show_character_options = False
                         terminal.clear()
             terminal.refresh()
+
+        logger.debug('Creating the player character entity')
+        player = MobileUtilities.get_next_entity_id(gameworld=gameworld)
+        MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player)
+        MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config,
+                                                player_entity=player)
+        logger.info('Player character stored as entity {}', player)
+
+        # setup racial stuff
+        MobileUtilities.setup_racial_attributes(
+            gameworld=gameworld, player=player, selected_race=race_selected,
+            race_size=race_size[selected_menu_option], bg=race_bg_colour[selected_menu_option],
+            race_names=race_name_desc[selected_menu_option])
+        logger.info('Race selected:' + race_name[selected_menu_option])
+
+        # create class
+
+        MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
+                                               selected_class=class_selected,
+                                               health=int(class_health[selected_menu_option]),
+                                               spellfile=class_spell_file[selected_menu_option])
+
+        CharacterCreation.generate_player_character_from_choices(gameworld=gameworld)
 
     @staticmethod
     def display_character_creation_options():
@@ -1142,7 +1193,7 @@ class CharacterCreation:
         # get player entity
         player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
-        build_entity = BuildLibrary.get_build_entity(gameworld=gameworld)
+        # build_entity = BuildLibrary.get_build_entity(gameworld=gameworld)
 
         # get race details for character
         racial_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
@@ -1150,7 +1201,7 @@ class CharacterCreation:
 
         # create racial bonuses
         if player_race.lower() == 'dilga':
-            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='A')
+            # BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='A')
             cur_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld, entity=player)
             cur_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=player)
             cur_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld, entity=player)
@@ -1163,7 +1214,7 @@ class CharacterCreation:
             MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player, value=cur_ferocity)
 
         if player_race.lower() == 'eskeri':
-            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='B')
+            # BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='B')
             cur_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=player)
             cur_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld, entity=player)
 
@@ -1173,7 +1224,7 @@ class CharacterCreation:
             MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player, value=cur_concentration)
 
         if player_race.lower() == 'jogah':
-            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='C')
+            # BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='C')
             cur_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld, entity=player)
             cur_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld, entity=player)
             cur_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld, entity=player)
@@ -1186,7 +1237,7 @@ class CharacterCreation:
             MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player, value=cur_ferocity)
 
         if player_race.lower() == 'oshun':
-            BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='D')
+            # BuildLibrary.set_build_race(gameworld=gameworld, entity=build_entity, label='D')
             cur_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld, entity=player)
             cur_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=player)
 
@@ -1639,7 +1690,7 @@ class CharacterCreation:
         not_ready_to_proceed = True
 
         # get build entity
-        build_entity = BuildLibrary.get_build_entity(gameworld=gameworld)
+        # build_entity = BuildLibrary.get_build_entity(gameworld=gameworld)
 
         # personal information
         # name
@@ -1647,16 +1698,16 @@ class CharacterCreation:
         first_name = player_names[0]
         last_name = player_names[1]
 
-        BuildLibrary.set_build_name(gameworld=gameworld, entity=build_entity, label=first_name + ' ' + last_name)
+        # BuildLibrary.set_build_name(gameworld=gameworld, entity=build_entity, label=first_name + ' ' + last_name)
 
         # gender
         player_gender = MobileUtilities.get_player_gender(gameworld=gameworld, entity=player_entity)
 
-        if player_gender == 'male':
-            BuildLibrary.set_build_gender(gameworld=gameworld, entity=build_entity, label='A')
-
-        if player_gender == 'female':
-            BuildLibrary.set_build_gender(gameworld=gameworld, entity=build_entity, label='B')
+        # if player_gender == 'male':
+        #     BuildLibrary.set_build_gender(gameworld=gameworld, entity=build_entity, label='A')
+        #
+        # if player_gender == 'female':
+        #     BuildLibrary.set_build_gender(gameworld=gameworld, entity=build_entity, label='B')
         #
         # race
         #
@@ -1666,23 +1717,23 @@ class CharacterCreation:
         #
         player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
 
-        if player_class == 'necromancer':
-            BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='A')
-
-        if player_class == 'witch doctor':
-            BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='B')
-
-        if player_class == 'druid':
-            BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='C')
-
-        if player_class == 'illusionist':
-            BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='D')
-
-        if player_class == 'elementalist':
-            BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='E')
-
-        if player_class == 'chronomancer':
-            BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='F')
+        # if player_class == 'necromancer':
+        #     BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='A')
+        #
+        # if player_class == 'witch doctor':
+        #     BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='B')
+        #
+        # if player_class == 'druid':
+        #     BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='C')
+        #
+        # if player_class == 'illusionist':
+        #     BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='D')
+        #
+        # if player_class == 'elementalist':
+        #     BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='E')
+        #
+        # if player_class == 'chronomancer':
+        #     BuildLibrary.set_build_class(gameworld=gameworld, entity=build_entity, label='F')
 
         # personality
         player_personality = MobileUtilities.get_mobile_personality_title(gameworld=gameworld, entity=player_entity)
@@ -1994,8 +2045,8 @@ class CharacterCreation:
                         game_loop(gameworld=gameworld)
                     if selected_menu_option == 1:  # save current build
                         if not saved_build:
-                            build_info = BuildLibrary.save_build_to_library(gameworld=gameworld)
-                            Externalfiles.write_to_existing_file(filename=file_name, value=build_info)
+                            # build_info = BuildLibrary.save_build_to_library(gameworld=gameworld)
+                            # Externalfiles.write_to_existing_file(filename=file_name, value=build_info)
                             saved_build = True
                     if selected_menu_option == 2:  # reject build and start again
                         not_ready_to_proceed = False
