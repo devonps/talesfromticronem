@@ -5,10 +5,8 @@ from bearlibterminal import terminal
 from loguru import logger
 
 from newGame.CreateSpells import AsEntities
-from utilities import configUtilities, colourUtilities, world
-from utilities.externalfileutilities import Externalfiles
-from utilities.buildLibrary import BuildLibrary
-from utilities.display import draw_colourful_frame, pointy_menu, coloured_list, display_coloured_box
+from utilities import configUtilities, colourUtilities
+from utilities.display import draw_colourful_frame, pointy_menu
 from utilities.input_handlers import handle_game_keys
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
@@ -515,7 +513,7 @@ class CharacterCreation:
                                              c=txt_panel_cursor)
                                 terminal.refresh()
                                 event_to_be_processed, event_action = handle_game_keys()
-                                if event_to_be_processed == 'textinput' and letter_count < max_letters and (64 < ord(event_action) < 91) or (96 < ord(event_action) < 123):
+                                if event_to_be_processed == 'textinput' and letter_count < max_letters and ((64 < ord(event_action) < 91) or (96 < ord(event_action) < 123)):
 
                                         terminal.put(x=txt_panel_write_x + letter_count, y=txt_panel_write_y,
                                                      c=ord(event_action))
