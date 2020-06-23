@@ -118,7 +118,6 @@ class CharacterCreation:
         selected_race = ''
         selected_class = ''
         selected_gender = ''
-        selected_name = ''
 
         terminal.printf(x=start_list_x, y=this_row, s='Your Choices')
         this_row += 2
@@ -129,9 +128,7 @@ class CharacterCreation:
         terminal.printf(x=start_list_x, y=this_row, s='Gender ' + selected_gender)
 
         show_character_options = True
-        selected_menu_option = 0
         create_character_selected_choice = 0
-        character_build_string = ''
 
         player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='RACESFILE')
@@ -217,7 +214,6 @@ class CharacterCreation:
 
         selected_menu_option = 0
         max_menu_option = len(race_name) - 1
-        set_string_colour = "[color="
 
         dungeon_font = "[font=dungeon]"
         unicode_attribute_names = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_NAME]'
@@ -348,9 +344,6 @@ class CharacterCreation:
         # get config items
         game_config = configUtilities.load_config()
 
-        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                       parameter='CLASSESFILE')
-
         # get player entity
         player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
@@ -408,7 +401,6 @@ class CharacterCreation:
             logger.warning('Spell file name not set')
 
         AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config, spell_file=spellfile, playable_class=class_component)
-
 
         #
         # calculate derived stats
@@ -485,8 +477,7 @@ class CharacterCreation:
                         menu_start_y=name_menu_y, blank_line=True, selected_option=selected_menu_option)
 
             event_to_be_processed, event_action = handle_game_keys()
-            if event_to_be_processed != '':
-                if event_to_be_processed == 'keypress':
+            if event_to_be_processed != '' and event_to_be_processed == 'keypress':
                     if event_action == 'quit':
                         character_not_named = False
                     if event_action == 'up':
@@ -497,13 +488,11 @@ class CharacterCreation:
                         selected_menu_option += 1
                         if selected_menu_option > max_menu_option:
                             selected_menu_option = 0
-                    if event_action == 'left':
-                        if selected_menu_option == 0:
+                    if event_action == 'left' and selected_menu_option == 0:
                             gender_choice -= 1
                             if gender_choice < 1:
                                 gender_choice = 2
-                    if event_action == 'right':
-                        if selected_menu_option == 0:
+                    if event_action == 'right' and selected_menu_option == 0:
                             gender_choice += 1
                             if gender_choice > 2:
                                 gender_choice = 1
@@ -526,8 +515,7 @@ class CharacterCreation:
                                              c=txt_panel_cursor)
                                 terminal.refresh()
                                 event_to_be_processed, event_action = handle_game_keys()
-                                if event_to_be_processed == 'textinput' and letter_count < max_letters:
-                                    if (64 < ord(event_action) < 91) or (96 < ord(event_action) < 123):
+                                if event_to_be_processed == 'textinput' and letter_count < max_letters and (64 < ord(event_action) < 91) or (96 < ord(event_action) < 123):
 
                                         terminal.put(x=txt_panel_write_x + letter_count, y=txt_panel_write_y,
                                                      c=ord(event_action))
@@ -540,8 +528,7 @@ class CharacterCreation:
                                         letter_count = 0
                                         terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y, width=35,
                                                             height=1)
-                                    if event_action == 'delete':
-                                        if letter_count > 0:
+                                    if event_action == 'delete' and letter_count > 0:
                                             terminal.put(x=(txt_panel_write_x + letter_count) - 1, y=txt_panel_write_y,
                                                          c=32)
                                             terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y,
