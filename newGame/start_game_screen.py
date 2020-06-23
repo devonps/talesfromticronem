@@ -1,6 +1,5 @@
 from loguru import logger
 
-from ui.build_library import display_build_library
 from utilities import configUtilities
 from utilities.display import draw_colourful_frame, pointy_menu
 from utilities.input_handlers import handle_game_keys
@@ -46,7 +45,7 @@ class StartGame:
             string_to_print = '[color=white]' + game_copyright + ' [color=yellow]' + game_author
             terminal.printf(x=copyright_x, y=copyright_y, s=string_to_print)
 
-            pointy_menu(header='', menu_options=['New Game', 'Build library', 'Quit'],
+            pointy_menu(header='', menu_options=['New Game', 'Quit'],
                         menu_id_format=True, menu_start_x=menu_start_x, menu_start_y=menu_start_y,
                         blank_line=True, selected_option=selected_menu_option)
 
@@ -63,11 +62,11 @@ class StartGame:
                 if event_action == 'up':
                     selected_menu_option -= 1
                     if selected_menu_option < 0:
-                        selected_menu_option = 2
+                        selected_menu_option = 1
 
                 if event_action == 'down':
                     selected_menu_option += 1
-                    if selected_menu_option > 2:
+                    if selected_menu_option > 1:
                         selected_menu_option = 0
 
                 if event_action == 'enter':
@@ -81,9 +80,7 @@ class StartGame:
         if selected_menu_option == 0:
             # CharacterCreation.display_character_creation_options()
             CharacterCreation.create_new_character()
-        if selected_menu_option == 1:  # use existing build
-            display_build_library()
-        if selected_menu_option == 2:
+        if selected_menu_option == 1:
             show_game_start_screen = False
             logger.info('*** GAME ENDING ***')
             return show_game_start_screen
