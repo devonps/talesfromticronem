@@ -2,7 +2,7 @@
   "races" : [
     {
       "name": "Dilga",
-      "flavour": "The Dilga are a religious race!",
+      "flavour": "Dilgan's are just as happy leading a religious gathering, a crusade, or cleaving their opponents single-handed all in the name of their god. Their total belief, nay devotion, in their god gives them the ability to critically strike their opponents seemingly at will. Those Dilgian's favouring the dark-gods understand how to inflict pain, torment, and fear with the upmost finesse. The opponent who doesn't kill a Dilgian quickly should be weary, their vengence is deadly.",
       "prefix": "dilga",
       "name_generator": {"file":  "static/names/dilga.txt"},
       "singular_plural_adjective": ["dilga", "dilgan", "dilga"],
@@ -19,7 +19,7 @@
     },
     {
       "name": "Eskeri",
-      "flavour": "Eskeri are born with a desire to travel the world.",
+      "flavour": "The Eskerian's are very direct in all aspects of their lives, they don't suffer fools, their magical powers stems from their desire to know every nuance about the magic at their command. That in turn grants them to increased direct magical damage against their foes. In a crowd of adversieries the Eskerian draws your attention due to the lack of physical appearance.",
       "prefix": "eskeri",
       "name_generator": {"file":  "static/names/eskeri.txt"},
       "singular_plural_adjective": ["eskeri", "eskerian", "eskeri"],
@@ -34,7 +34,7 @@
     },
     {
       "name": "Jogah",
-      "flavour": "Jogah are by nature large, savage, and short tempered.",
+      "flavour": "Jogah are big by nature, physically strong, short tempered, and generally not easy to get along with! All this makes you wonder why they choose the magical way of resolving combat! Increased health, improved concentration, and a ferocious mentality makes them a formidable opponent.",
       "prefix": "jogah",
       "name_generator": {"file":  "static/names/jogah.txt"},
       "singular_plural_adjective": ["jogah", "jogahan", "jogah"],
@@ -51,7 +51,7 @@
     },
     {
       "name": "Oshun",
-      "flavour": "Oshun are raised as warriors from birth.",
+      "flavour": "The Oshun are raised as warriors from birth, they know hardship, victory, and defeat. They are built to survive and wear down their enemies over time.",
       "prefix": "oshun",
       "name_generator": {"file":  "static/names/oshun.txt"},
       "singular_plural_adjective": ["oshun", "oshunian", "oshun"],
@@ -61,7 +61,7 @@
       "attribute_count": 2,
       "attribute_1_name": "toughness",
       "attribute_1_value": 1,
-      "attribute_2_name": "condition_damage",
+      "attribute_2_name": "condition damage",
       "attribute_2_value": 1
     },
     {

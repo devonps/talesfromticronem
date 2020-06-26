@@ -645,7 +645,6 @@ class SpellUtilities:
         cooldown_string_x = start_list_x + 1
         name_string_x = start_list_x + 4
         range_string_x = start_list_x + 31
-        # this_letter = 49
 
         if slot_spell_entity > 0:
 
@@ -666,5 +665,3 @@ class SpellUtilities:
             terminal.printf(x=range_string_x, y=this_row, s=range_string)
 
         terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
-        # this_row += 1
-        # this_letter += 1

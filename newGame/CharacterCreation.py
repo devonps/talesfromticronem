@@ -24,28 +24,16 @@ class CharacterCreation:
         spell_infobox_width = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                           section='newCharacter',
                                                                           parameter='NC_WIDTH')
-
-        terminal.clear()
-
-        CommonUtils.render_ui_framework(game_config=game_config)
+        height = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                           section='newCharacter',
+                                                                           parameter='NC_DEPTH')
 
         # choices already made
         start_list_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
                                                                    parameter='START_LIST_X')
-
-        this_row = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
-                                                                   parameter='START_LIST_Y')
         selected_race = ''
         selected_class = ''
         selected_gender = ''
-
-        terminal.printf(x=start_list_x, y=this_row, s='Your Choices')
-        this_row += 2
-        terminal.printf(x=start_list_x, y=this_row, s='Race ' + selected_race)
-        this_row += 1
-        terminal.printf(x=start_list_x, y=this_row, s='Class ' + selected_class)
-        this_row += 1
-        terminal.printf(x=start_list_x, y=this_row, s='Gender ' + selected_gender)
 
         show_character_options = True
         create_character_selected_choice = 0
@@ -140,9 +128,19 @@ class CharacterCreation:
         unicode_attribute_flavour = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_FLAVOUR]'
         unicode_benefit_title = dungeon_font + '[color=CREATE_CHARACTER_BENEFITS_TITLE]'
         race_selected = 0
-        class_selected = 0
+        race_name_selected = ''
 
         while show_character_options:
+            this_row = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
+                                                                   parameter='START_LIST_Y')
+            CommonUtils.render_ui_framework(game_config=game_config)
+            terminal.printf(x=start_list_x, y=this_row, s='Your Choices')
+            this_row += 2
+            terminal.printf(x=start_list_x, y=this_row, s='Race ' + selected_race)
+            this_row += 1
+            terminal.printf(x=start_list_x, y=this_row, s='Class ' + selected_class)
+            this_row += 1
+            terminal.printf(x=start_list_x, y=this_row, s='Gender ' + selected_gender)
 
             if create_character_selected_choice == 0:
                 # display race options
@@ -153,20 +151,18 @@ class CharacterCreation:
 
                 # racial flavour text
                 strings_list = textwrap.wrap(race_flavour[selected_menu_option], width=33)
+                flavour_text_length = len(strings_list) - 1
                 race_flavour_y = original_race_flavour_y
-                for line in range(5):
-                    for wd in range(33):
-                        terminal.printf(x=race_flavour_x + wd, y=race_flavour_y + line, s=' ')
+                terminal.clear_area(x=race_flavour_x, y=race_flavour_y, w=33, h=height)
 
                 for line in strings_list:
                     terminal.print_(x=race_flavour_x, y=race_flavour_y, s=line, width=spell_infobox_width, height=1)
                     race_flavour_y += 1
 
+                race_benefits_y = flavour_text_length + race_flavour_y + 1
+
                 # racial benefits
                 posy = 0
-                for line in range(14):
-                    for wd in range(33):
-                        terminal.printf(x=race_benefits_x + wd, y=race_benefits_y + line, s=' ')
                 terminal.print_(x=race_benefits_x, y=race_benefits_y, s=unicode_benefit_title + 'Benefits')
                 for benefit in race_benefits:
                     if benefit[0] == selected_menu_option + 1:
@@ -202,8 +198,7 @@ class CharacterCreation:
                     terminal.print_(x=race_flavour_x, y=class_flavour_y, s=line, width=spell_infobox_width, height=1)
                     class_flavour_y += 1
                 # class benefits
-
-                terminal.refresh()
+            terminal.refresh()
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '' and event_to_be_processed == 'keypress':
                 if event_action == 'quit':
@@ -224,13 +219,13 @@ class CharacterCreation:
                         create_character_selected_choice += 1
                         selected_menu_option = 0
                     else:
-                        class_selected = character_class_name[selected_menu_option]
-                        gameworld = create_world()
                         show_character_options = False
-                        terminal.clear()
-            terminal.refresh()
+            terminal.clear()
 
+        # it's a brave new world
+        gameworld = create_world()
         # setup base player entity
+        class_selected = character_class_name[selected_menu_option]
         logger.debug('Creating the player character entity')
         player = MobileUtilities.get_next_entity_id(gameworld=gameworld)
         MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player)
