@@ -1,3 +1,4 @@
+from bearlibterminal import terminal
 from loguru import logger
 
 from components.messages import Message
@@ -283,3 +284,85 @@ class CommonUtils:
 
         return return_string
 
+    @staticmethod
+    def render_ui_framework(game_config):
+
+        unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
+        ascii_prefix = 'ASCII_SINGLE_'
+
+        start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                            section='newCharacter',
+                                                                            parameter='NC_START_X')
+
+        start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                            section='newCharacter',
+                                                                            parameter='NC_START_Y')
+
+        width = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                          section='newCharacter',
+                                                                          parameter='NC_WIDTH')
+        height = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                           section='newCharacter',
+                                                                           parameter='NC_DEPTH')
+
+        choices_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
+                                                                      parameter='CHOICES_BAR_Y')
+
+        top_left_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                      parameter=ascii_prefix + 'TOP_LEFT')
+
+        bottom_left_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                         parameter=ascii_prefix + 'BOTTOM_LEFT')
+
+        top_right_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                       parameter=ascii_prefix + 'TOP_RIGHT')
+
+        bottom_right_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                          parameter=ascii_prefix + 'BOTTOM_RIGHT')
+
+        horizontal_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                 parameter=ascii_prefix + 'HORIZONTAL')
+        vertical_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                               parameter=ascii_prefix + 'VERTICAL')
+
+        left_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                          parameter=ascii_prefix + 'LEFT_T_JUNCTION')
+        right_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                           parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
+
+        # render horizontal bottom
+        for z in range(start_x, (start_x + width)):
+            terminal.printf(x=z, y=(start_y + height),
+                            s=unicode_string_to_print + horizontal_char + ']')
+            terminal.printf(x=z, y=start_y, s=unicode_string_to_print + horizontal_char + ']')
+
+        # render verticals
+        for z in range(start_y, (start_y + height) - 1):
+            terminal.printf(x=start_x, y=z + 1, s=unicode_string_to_print + vertical_char + ']')
+            terminal.printf(x=(start_x + width), y=z + 1,
+                            s=unicode_string_to_print + vertical_char + ']')
+
+        # top left
+        terminal.printf(x=start_x, y=start_y,
+                        s=unicode_string_to_print + top_left_corner_char + ']')
+        # bottom left
+        terminal.printf(x=start_x, y=(start_y + height),
+                        s=unicode_string_to_print + bottom_left_corner_char + ']')
+        # top right
+        terminal.printf(x=(start_x + width), y=start_y,
+                        s=unicode_string_to_print + top_right_corner_char + ']')
+        # bottom right
+        terminal.printf(x=(start_x + width),
+                        y=(start_y + height),
+                        s=unicode_string_to_print + bottom_right_corner_char + ']')
+
+        # render horizontal splitters
+        for z in range(start_x, (start_x + width)):
+            terminal.printf(x=z, y=choices_start_y,
+                            s=unicode_string_to_print + horizontal_char + ']')
+
+            terminal.printf(x=start_x, y=choices_start_y,
+                            s=unicode_string_to_print + left_t_junction_char + ']')
+
+            terminal.printf(x=(start_x + width), y=choices_start_y,
+                            s=unicode_string_to_print + right_t_junction_char + ']')
