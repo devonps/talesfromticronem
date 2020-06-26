@@ -89,17 +89,8 @@ class RenderSpellInfoPanel(esper.Processor):
 
         player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
 
-        start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
-                                                                   parameter='START_LIST_X')
-
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='START_LIST_Y')
-        dungeon_font = "[font=dungeon]"
-
-        unicode_section_headers = dungeon_font + '[color=SPELLINFO_WEAPON_EQUIPPED]'
-        unicode_cooldown_disabled = dungeon_font + '[color=SPELLINFO_COOLDOWN_DISABLED]'
-        unicode_cooldown_enabled = dungeon_font + '[color=SPELLINFO_COOLDOWN_ACTIVE]'
-        unicode_white_colour = dungeon_font + '[color=SPELLINFO_HOTKEY_ACTIVE]'
 
         this_letter = 49
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=1,
@@ -110,35 +101,9 @@ class RenderSpellInfoPanel(esper.Processor):
             spell_name, _, _ = SpellUtilities.get_spell_info_details(gameworld=self.gameworld, spell_entity=slot_spell_entity)
             main_hand_weapon = 'Main Hand (' + spell_name + ')'
 
-        terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + main_hand_weapon)
-        this_row += 2
         slot = 1
-        cooldown_string_x = start_list_x + 1
-        name_string_x = start_list_x + 4
-        range_string_x = start_list_x + 31
         for _ in range(3):
-
-            slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slot,
-                                                                                   player_entity=player_entity)
-
-            if slot_spell_entity > 0:
-
-                spell_name, spell_range, spell_cooldown_value = SpellUtilities.get_spell_info_details(gameworld=self.gameworld, spell_entity=slot_spell_entity)
-
-                if spell_cooldown_value > 0:
-                    cooldown_colour = unicode_cooldown_enabled
-                else:
-                    spell_cooldown_value = 0
-                    cooldown_colour = unicode_cooldown_disabled
-
-                cooldown_string = cooldown_colour + ' ' + str(spell_cooldown_value)
-                name_string = unicode_white_colour + spell_name
-                range_string = unicode_white_colour + spell_range
-                terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
-                terminal.printf(x=name_string_x, y=this_row, s=name_string)
-                terminal.printf(x=range_string_x, y=this_row, s=range_string)
-
-            terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
+            SpellUtilities.render_spell_ui(gameworld=self.gameworld, game_config=self.game_config, slot=slot, player_entity=player_entity, this_row=this_row, this_letter=this_letter, weapon_string=main_hand_weapon)
             this_row += 1
             this_letter += 1
             slot += 1
@@ -152,30 +117,10 @@ class RenderSpellInfoPanel(esper.Processor):
             spell_name, _, _ = SpellUtilities.get_spell_info_details(gameworld=self.gameworld, spell_entity=slot_spell_entity)
             off_hand_weapon = 'Off Hand (' + spell_name + ')'
 
-        terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + off_hand_weapon)
         this_row += 2
         for _ in range(2):
-            slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slot,
-                                                                                   player_entity=player_entity)
-
-            if slot_spell_entity > 0:
-                spell_name, spell_range, spell_cooldown_value = SpellUtilities.get_spell_info_details(gameworld=self.gameworld, spell_entity=slot_spell_entity)
-
-                if spell_cooldown_value > 0:
-                    cooldown_colour = unicode_cooldown_enabled
-                else:
-                    spell_cooldown_value = 0
-                    cooldown_colour = unicode_cooldown_disabled
-
-                cooldown_string = cooldown_colour + ' ' + str(spell_cooldown_value)
-                name_string = unicode_white_colour + spell_name
-                range_string = unicode_white_colour + spell_range
-                terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
-                terminal.printf(x=name_string_x, y=this_row, s=name_string)
-                terminal.printf(x=range_string_x, y=this_row, s=range_string)
-
-            terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
-
+            SpellUtilities.render_spell_ui(gameworld=self.gameworld, game_config=self.game_config, slot=slot,
+                                           player_entity=player_entity, this_row=this_row, this_letter=this_letter, weapon_string=off_hand_weapon)
 
             this_row += 1
             this_letter += 1
