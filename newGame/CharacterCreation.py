@@ -20,13 +20,51 @@ class CharacterCreation:
 
     @staticmethod
     def create_new_character():
+        race_name_selected, race_size, race_bg_colour, race_name_desc = CharacterCreation.choose_race()
+        class_selected, class_health, class_spell_file = CharacterCreation.choose_class()
+
+        game_config = configUtilities.load_config()
+
+        terminal.clear()
+
+        # it's a brave new world
+        gameworld = create_world()
+        # setup base player entity
+        # class_selected = character_class_name[selected_menu_option]
+        logger.debug('Creating the player character entity')
+        player = MobileUtilities.get_next_entity_id(gameworld=gameworld)
+        MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player)
+        MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config,
+                                                player_entity=player)
+        logger.info('Player character stored as entity {}', player)
+
+        # setup racial stuff race_name_selected, race_size, race_bg_colour, race_name_desc
+        MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=player, selected_race=race_name_selected,
+            race_size=race_size, bg=race_bg_colour, race_names=race_name_desc)
+
+        # create class
+
+        MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player, selected_class=class_selected,
+                                               health=class_health, spellfile=class_spell_file)
+
+        CharacterCreation.generate_player_character_from_choices(gameworld=gameworld)
+
+        messagelog_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
+        CommonUtils.create_message_log_as_entity(gameworld=gameworld, log_entity=messagelog_entity)
+        MobileUtilities.set_MessageLog_for_player(gameworld=gameworld, entity=player,
+                                                  logid=messagelog_entity)
+        logger.info('Mesage log stored as entity {}', messagelog_entity)
+        game_loop(gameworld=gameworld)
+
+    @staticmethod
+    def choose_race():
         game_config = configUtilities.load_config()
         spell_infobox_width = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                           section='newCharacter',
                                                                           parameter='NC_WIDTH')
         height = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                           section='newCharacter',
-                                                                           parameter='NC_DEPTH')
+                                                             section='newCharacter',
+                                                             parameter='NC_DEPTH')
 
         # choices already made
         start_list_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
@@ -36,16 +74,18 @@ class CharacterCreation:
         selected_gender = ''
 
         show_character_options = True
-        create_character_selected_choice = 0
 
         player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='RACESFILE')
 
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'MENU_START_X')
         menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'MENU_START_Y')
-        race_flavour_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_FLAVOR_X')
-        original_race_flavour_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_FLAVOR_Y')
-        race_benefits_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_BENEFITS_X')
+        race_flavour_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter',
+                                                                     'RACE_CONSOLE_FLAVOR_X')
+        original_race_flavour_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter',
+                                                                              'RACE_CONSOLE_FLAVOR_Y')
+        race_benefits_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter',
+                                                                      'RACE_CONSOLE_BENEFITS_X')
 
         #
         # LOAD PLAYABLE RACES FROM DISK
@@ -80,11 +120,6 @@ class CharacterCreation:
         # read race attributes from disk
         attribute_name, attribute_flavour = CharacterCreation.read_race_attributes(game_config=game_config)
 
-        #
-        # LOAD PLAYABLE CLASSES FROM DISK
-        #
-        character_class_name, character_class_flavour, class_health, class_spell_file = CharacterCreation.read_playable_classes(game_config=game_config)
-
         selected_menu_option = 0
         max_menu_option = len(race_name) - 1
 
@@ -92,12 +127,11 @@ class CharacterCreation:
         unicode_attribute_names = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_NAME]'
         unicode_attribute_flavour = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_FLAVOUR]'
         unicode_benefit_title = dungeon_font + '[color=CREATE_CHARACTER_BENEFITS_TITLE]'
-        race_selected = 0
-        race_name_selected = ''
+        start_row = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
+                                                                parameter='START_LIST_Y')
 
         while show_character_options:
-            this_row = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
-                                                                   parameter='START_LIST_Y')
+            this_row = start_row
             CommonUtils.render_ui_framework(game_config=game_config)
             terminal.printf(x=start_list_x, y=this_row, s='Your Choices')
             this_row += 2
@@ -107,45 +141,42 @@ class CharacterCreation:
             this_row += 1
             terminal.printf(x=start_list_x, y=this_row, s='Gender ' + selected_gender)
 
-            if create_character_selected_choice == 0:
-                # display race options
-                pointy_menu(header='',
-                            menu_options=race_name, menu_id_format=True, menu_start_x=menu_start_x,
-                            menu_start_y=menu_start_y,
-                            blank_line=True, selected_option=selected_menu_option)
+            # display race options
+            pointy_menu(header='',
+                        menu_options=race_name, menu_id_format=True, menu_start_x=menu_start_x,
+                        menu_start_y=menu_start_y,
+                        blank_line=True, selected_option=selected_menu_option)
 
-                # racial flavour text
-                strings_list = textwrap.wrap(race_flavour[selected_menu_option], width=33)
-                flavour_text_length = len(strings_list) - 1
-                race_flavour_y = original_race_flavour_y
-                terminal.clear_area(x=race_flavour_x, y=race_flavour_y, w=33, h=height)
+            # racial flavour text
+            strings_list = textwrap.wrap(race_flavour[selected_menu_option], width=33)
+            flavour_text_length = len(strings_list) - 1
+            race_flavour_y = original_race_flavour_y
+            terminal.clear_area(x=race_flavour_x, y=race_flavour_y, w=33, h=height)
 
-                CharacterCreation.print_array(strings_list=strings_list, startx=race_flavour_x, starty=race_flavour_y, width=spell_infobox_width)
+            CharacterCreation.print_array(strings_list=strings_list, startx=race_flavour_x, starty=race_flavour_y,
+                                          width=spell_infobox_width)
 
-                race_benefits_y = flavour_text_length + original_race_flavour_y + 2
+            race_benefits_y = flavour_text_length + original_race_flavour_y + 2
 
-                # racial benefits
-                posy = 0
-                terminal.print_(x=race_benefits_x, y=race_benefits_y, s=unicode_benefit_title + 'Benefits')
-                for benefit in race_benefits:
-                    if benefit[0] == selected_menu_option + 1:
-                        string_to_print = unicode_attribute_names + benefit[1]
-                        terminal.printf(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
-                        posy += 1
-                        for attribute in range(len(attribute_name)):
-                            attr_name = attribute_name[attribute]
-                            benefit_name = benefit[1]
-                            if attr_name.lower() == benefit_name:
-                                attr_strings_list = textwrap.wrap(attribute_flavour[attribute], width=33)
-                                for line in attr_strings_list:
-                                    terminal.print_(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=unicode_attribute_flavour + line, width=spell_infobox_width,
-                                                    height=1)
-                                    posy += 1
-                        posy += 1
-            else:
-                # display character class options
-                max_menu_option = len(character_class_name) - 1
-                CharacterCreation.render_playable_classes(character_class_name=character_class_name, selected_menu_option=selected_menu_option, game_config=game_config,character_class_flavour=character_class_flavour)
+            # racial benefits
+            posy = 0
+            terminal.print_(x=race_benefits_x, y=race_benefits_y, s=unicode_benefit_title + 'Benefits')
+            for benefit in race_benefits:
+                if benefit[0] == selected_menu_option + 1:
+                    string_to_print = unicode_attribute_names + benefit[1]
+                    terminal.printf(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
+                    posy += 1
+                    for attribute in range(len(attribute_name)):
+                        attr_name = attribute_name[attribute]
+                        benefit_name = benefit[1]
+                        if attr_name.lower() == benefit_name:
+                            attr_strings_list = textwrap.wrap(attribute_flavour[attribute], width=33)
+                            for line in attr_strings_list:
+                                terminal.print_(x=race_benefits_x, y=(race_benefits_y + 2) + posy,
+                                                s=unicode_attribute_flavour + line, width=spell_infobox_width,
+                                                height=1)
+                                posy += 1
+                    posy += 1
             terminal.refresh()
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '' and event_to_be_processed == 'keypress':
@@ -161,46 +192,69 @@ class CharacterCreation:
                     if selected_menu_option > max_menu_option:
                         selected_menu_option = 0
                 if event_action == 'enter':
-                    if create_character_selected_choice == 0:
-                        race_name_selected = race_name[selected_menu_option]
-                        race_selected = selected_menu_option
-                        create_character_selected_choice += 1
-                        selected_menu_option = 0
-                    else:
-                        show_character_options = False
+                    show_character_options = False
             terminal.clear()
+        return race_name[selected_menu_option], race_size[selected_menu_option], race_bg_colour[selected_menu_option], race_name_desc[selected_menu_option]
 
-        # it's a brave new world
-        gameworld = create_world()
-        # setup base player entity
-        class_selected = character_class_name[selected_menu_option]
-        logger.debug('Creating the player character entity')
-        player = MobileUtilities.get_next_entity_id(gameworld=gameworld)
-        MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player)
-        MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config,
-                                                player_entity=player)
-        logger.info('Player character stored as entity {}', player)
 
-        # setup racial stuff
-        MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=player, selected_race=race_name_selected,
-            race_size=race_size[race_selected], bg=race_bg_colour[race_selected],
-            race_names=race_name_desc[race_selected])
+    @staticmethod
+    def choose_class():
+        game_config = configUtilities.load_config()
 
-        # create class
+        # choices already made
+        start_list_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
+                                                                   parameter='START_LIST_X')
+        selected_race = ''
+        selected_class = ''
+        selected_gender = ''
 
-        MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player,
-                                               selected_class=class_selected,
-                                               health=int(class_health[selected_menu_option]),
-                                               spellfile=class_spell_file[selected_menu_option])
+        show_character_options = True
 
-        CharacterCreation.generate_player_character_from_choices(gameworld=gameworld)
 
-        messagelog_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
-        CommonUtils.create_message_log_as_entity(gameworld=gameworld, log_entity=messagelog_entity)
-        MobileUtilities.set_MessageLog_for_player(gameworld=gameworld, entity=player,
-                                                  logid=messagelog_entity)
-        logger.info('Mesage log stored as entity {}', messagelog_entity)
-        game_loop(gameworld=gameworld)
+        #
+        # LOAD PLAYABLE CLASSES FROM DISK
+        #
+        character_class_name, character_class_flavour, class_health, class_spell_file = CharacterCreation.read_playable_classes(
+            game_config=game_config)
+
+        selected_menu_option = 0
+        start_row = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
+                                                                parameter='START_LIST_Y')
+
+        while show_character_options:
+            this_row = start_row
+            CommonUtils.render_ui_framework(game_config=game_config)
+            terminal.printf(x=start_list_x, y=this_row, s='Your Choices')
+            this_row += 2
+            terminal.printf(x=start_list_x, y=this_row, s='Race ' + selected_race)
+            this_row += 1
+            terminal.printf(x=start_list_x, y=this_row, s='Class ' + selected_class)
+            this_row += 1
+            terminal.printf(x=start_list_x, y=this_row, s='Gender ' + selected_gender)
+
+            # display character class options
+            max_menu_option = len(character_class_name) - 1
+            CharacterCreation.render_playable_classes(character_class_name=character_class_name,
+                                                      selected_menu_option=selected_menu_option,
+                                                      game_config=game_config,
+                                                      character_class_flavour=character_class_flavour)
+            terminal.refresh()
+            event_to_be_processed, event_action = handle_game_keys()
+            if event_to_be_processed != '' and event_to_be_processed == 'keypress':
+                if event_action == 'quit':
+                    show_character_options = False
+                if event_action == 'up':
+                    selected_menu_option -= 1
+                    if selected_menu_option < 0:
+                        selected_menu_option = max_menu_option
+                if event_action == 'down':
+                    selected_menu_option += 1
+                    if selected_menu_option > max_menu_option:
+                        selected_menu_option = 0
+                if event_action == 'enter':
+                    show_character_options = False
+            terminal.clear()
+        return character_class_name[selected_menu_option], int(class_health[selected_menu_option]), class_spell_file[selected_menu_option]
 
     @staticmethod
     def read_playable_classes(game_config):
