@@ -40,17 +40,12 @@ class CharacterCreation:
 
         player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='RACESFILE')
-        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                       parameter='CLASSESFILE')
-        attribute_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                      parameter='ATTRIBUTES')
 
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'MENU_START_X')
         menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'MENU_START_Y')
         race_flavour_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_FLAVOR_X')
         original_race_flavour_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_FLAVOR_Y')
         race_benefits_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_BENEFITS_X')
-        race_benefits_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_BENEFITS_Y')
 
         #
         # LOAD PLAYABLE RACES FROM DISK
@@ -59,7 +54,6 @@ class CharacterCreation:
 
         race_name = []
         race_flavour = []
-        race_prefix = []
         race_bg_colour = []
         race_size = []
         race_benefits = []
@@ -70,7 +64,6 @@ class CharacterCreation:
             if option['playable']:
                 race_name.append(option['name'])
                 race_flavour.append(option['flavour'])
-                race_prefix.append(option['prefix'])
                 race_bg_colour.append(colourUtilities.get('BLACK'))
                 race_size.append(option['size'])
                 racial_bonus_count = option['attribute_count']
@@ -84,41 +77,13 @@ class CharacterCreation:
                     rb.extend(list(attribute_benefit_and_amount))
                     race_benefits.append(rb)
 
-        attribute_file = read_json_file(attribute_file)
-
-        attribute_name = []
-        attribute_flavour = []
-
-        for attribute in attribute_file['attributes']:
-            attribute_name.append(attribute['name'])
-            attribute_flavour.append(attribute['flavour'])
+        # read race attributes from disk
+        attribute_name, attribute_flavour = CharacterCreation.read_race_attributes(game_config=game_config)
 
         #
         # LOAD PLAYABLE CLASSES FROM DISK
         #
-
-        class_file = read_json_file(player_class_file)
-
-        character_class_name = []
-        character_class_flavour = []
-        class_health = []
-        class_weapons = []
-        class_defense_benefits = []
-        class_balanced_benefits = []
-        class_offense_benefits = []
-        class_spell_file = []
-
-        for option in class_file['classes']:
-            character_class_name.append(option['name'])
-            character_class_flavour.append(option['flavour'])
-            class_health.append(option['health'])
-            class_spell_file.append(option['spellfile'])
-            class_weapons.append(option['weapons'])
-            class_defense_benefits.append(option['defensive'])
-            class_balanced_benefits.append(option['balanced'])
-            class_offense_benefits.append(option['offensive'])
-
-
+        character_class_name, character_class_flavour, class_health, class_spell_file = CharacterCreation.read_playable_classes(game_config=game_config)
 
         selected_menu_option = 0
         max_menu_option = len(race_name) - 1
@@ -155,11 +120,9 @@ class CharacterCreation:
                 race_flavour_y = original_race_flavour_y
                 terminal.clear_area(x=race_flavour_x, y=race_flavour_y, w=33, h=height)
 
-                for line in strings_list:
-                    terminal.print_(x=race_flavour_x, y=race_flavour_y, s=line, width=spell_infobox_width, height=1)
-                    race_flavour_y += 1
+                CharacterCreation.print_array(strings_list=strings_list, startx=race_flavour_x, starty=race_flavour_y, width=spell_infobox_width)
 
-                race_benefits_y = flavour_text_length + race_flavour_y + 1
+                race_benefits_y = flavour_text_length + original_race_flavour_y + 2
 
                 # racial benefits
                 posy = 0
@@ -181,23 +144,8 @@ class CharacterCreation:
                         posy += 1
             else:
                 # display character class options
-                logger.info('Selected menu set at {}', selected_menu_option)
                 max_menu_option = len(character_class_name) - 1
-                pointy_menu(header='',
-                            menu_options=character_class_name, menu_id_format=True, menu_start_x=menu_start_x,
-                            menu_start_y=menu_start_y,
-                            blank_line=True, selected_option=selected_menu_option)
-                # class flavour text
-                strings_list = textwrap.wrap(character_class_flavour[selected_menu_option], width=33)
-                class_flavour_y = original_race_flavour_y
-                for line in range(5):
-                    for wd in range(33):
-                        terminal.printf(x=race_flavour_x + wd, y=class_flavour_y + line, s=' ')
-
-                for line in strings_list:
-                    terminal.print_(x=race_flavour_x, y=class_flavour_y, s=line, width=spell_infobox_width, height=1)
-                    class_flavour_y += 1
-                # class benefits
+                CharacterCreation.render_playable_classes(character_class_name=character_class_name, selected_menu_option=selected_menu_option, game_config=game_config,character_class_flavour=character_class_flavour)
             terminal.refresh()
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '' and event_to_be_processed == 'keypress':
@@ -253,6 +201,73 @@ class CharacterCreation:
                                                   logid=messagelog_entity)
         logger.info('Mesage log stored as entity {}', messagelog_entity)
         game_loop(gameworld=gameworld)
+
+    @staticmethod
+    def read_playable_classes(game_config):
+        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                       parameter='CLASSESFILE')
+        class_file = read_json_file(player_class_file)
+
+        character_class_name = []
+        character_class_flavour = []
+        class_health = []
+        class_spell_file = []
+
+        for option in class_file['classes']:
+            character_class_name.append(option['name'])
+            character_class_flavour.append(option['flavour'])
+            class_health.append(option['health'])
+            class_spell_file.append(option['spellfile'])
+
+        return character_class_name, character_class_flavour, class_health, class_spell_file
+
+    @staticmethod
+    def render_playable_classes(character_class_name, selected_menu_option, game_config, character_class_flavour):
+        menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'MENU_START_X')
+        menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'MENU_START_Y')
+        race_flavour_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_FLAVOR_X')
+
+        original_race_flavour_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'RACE_CONSOLE_FLAVOR_Y')
+        spell_infobox_width = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                          section='newCharacter',
+                                                                          parameter='NC_WIDTH')
+        height = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                           section='newCharacter',
+                                                                           parameter='NC_DEPTH')
+        pointy_menu(header='',
+                    menu_options=character_class_name, menu_id_format=True, menu_start_x=menu_start_x,
+                    menu_start_y=menu_start_y,
+                    blank_line=True, selected_option=selected_menu_option)
+        # class flavour text
+        strings_list = textwrap.wrap(character_class_flavour[selected_menu_option], width=33)
+        class_flavour_y = original_race_flavour_y
+
+        terminal.clear_area(x=race_flavour_x, y=class_flavour_y, w=33, h=height)
+
+        CharacterCreation.print_array(strings_list=strings_list, startx=race_flavour_x, starty=class_flavour_y,
+                                      width=spell_infobox_width)
+
+    @staticmethod
+    def read_race_attributes(game_config):
+
+        attribute_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                    parameter='ATTRIBUTES')
+        attribute_file = read_json_file(attribute_file)
+
+        attribute_name = []
+        attribute_flavour = []
+
+        for attribute in attribute_file['attributes']:
+            attribute_name.append(attribute['name'])
+            attribute_flavour.append(attribute['flavour'])
+
+        return attribute_name, attribute_flavour
+
+    @staticmethod
+    def print_array(strings_list, startx, starty, width):
+        for line in strings_list:
+            terminal.print_(x=startx, y=starty, s=line, width=width, height=1)
+            starty += 1
 
     @staticmethod
     def generate_player_character_from_choices(gameworld):
