@@ -30,7 +30,6 @@ class CharacterCreation:
         # it's a brave new world
         gameworld = create_world()
         # setup base player entity
-        # class_selected = character_class_name[selected_menu_option]
         logger.debug('Creating the player character entity')
         player = MobileUtilities.get_next_entity_id(gameworld=gameworld)
         MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player)
@@ -400,13 +399,13 @@ class CharacterCreation:
         #
         # calculate derived stats
         #
-
         MobileUtilities.set_mobile_derived_derived_attributes(gameworld=gameworld, entity=player)
 
         racial_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
         player_race_component = racial_details[0]
         terminal.clear()
         CharacterCreation.name_your_character(gameworld=gameworld, player_race_component=player_race_component)
+        MobileUtilities.set_player_gender(gameworld=gameworld, entity=player, gender='male')
 
     @staticmethod
     def name_your_character(gameworld, player_race_component):
@@ -416,8 +415,6 @@ class CharacterCreation:
         name_menu_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_MENU_X')
         name_menu_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_MENU_Y')
         mx = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_MALE_TAG_X')
-        fx = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_FEMALE_TAG_X')
-        gy = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'NAME_MALE_TAG_Y')
         txt_panel_write_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                         parameter='TXT_PANEL_WRITE_X')
         txt_panel_write_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
@@ -430,7 +427,7 @@ class CharacterCreation:
                                                                          parameter='TXT_PANEL_CURSOR_Y')
         txt_panel_letters_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                           parameter='TXT_PANEL_LETTERS_LEFT_X')
-        menu_options = ['Choose Gender', 'Enter a Name', 'Choose Name From List', 'Random Name']
+        menu_options = ['Enter a Name', 'Choose Name From List', 'Random Name']
         letter_count = 0
         my_word = ""
         max_letters = 15
@@ -438,25 +435,13 @@ class CharacterCreation:
         selected_menu_option = 0
         max_menu_option = len(menu_options) - 1
         gender_choice = 1
-        gender_selector = chr(62)
         selected_name = ''
-        cxoffset = 2
 
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
-        terminal.print_(x=mx, y=gy, s='Male')
-        terminal.print_(x=fx, y=gy, s='Female')
+        CommonUtils.render_ui_framework(game_config=game_config)
 
-        draw_colourful_frame(title=' Character Creation - Name Your Character ', title_decorator=False,
-                             title_loc='centre', corner_decorator='', msg=1)
         while character_not_named:
-
-            if gender_choice == 1:
-                terminal.put(x=fx - cxoffset, y=gy, c=32)
-                terminal.put(x=mx - cxoffset, y=gy, c=gender_selector)
-            else:
-                terminal.put(x=mx - cxoffset, y=gy, c=32)
-                terminal.put(x=fx - cxoffset, y=gy, c=gender_selector)
 
             if selected_name != '':
                 terminal.clear_area(x=name_menu_x, y=30, width=35, height=1)
@@ -472,7 +457,7 @@ class CharacterCreation:
                         menu_start_y=name_menu_y, blank_line=True, selected_option=selected_menu_option)
 
             event_to_be_processed, event_action = handle_game_keys()
-            if event_to_be_processed != '' and event_to_be_processed == 'keypress':
+            if event_to_be_processed != '':
                     if event_action == 'quit':
                         character_not_named = False
                     if event_action == 'up':
@@ -483,21 +468,7 @@ class CharacterCreation:
                         selected_menu_option += 1
                         if selected_menu_option > max_menu_option:
                             selected_menu_option = 0
-                    if event_action == 'left' and selected_menu_option == 0:
-                            gender_choice -= 1
-                            if gender_choice < 1:
-                                gender_choice = 2
-                    if event_action == 'right' and selected_menu_option == 0:
-                            gender_choice += 1
-                            if gender_choice > 2:
-                                gender_choice = 1
                     if event_action == 'enter':
-                        if gender_choice == 1:
-                            MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity, gender='male')
-                        else:
-                            MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity,
-                                                              gender='female')
-
                         if selected_menu_option == 1:
                             enter_name = True
                             if my_word != '':
@@ -512,10 +483,10 @@ class CharacterCreation:
                                 event_to_be_processed, event_action = handle_game_keys()
                                 if event_to_be_processed == 'textinput' and letter_count < max_letters and ((64 < ord(event_action) < 91) or (96 < ord(event_action) < 123)):
 
-                                        terminal.put(x=txt_panel_write_x + letter_count, y=txt_panel_write_y,
-                                                     c=ord(event_action))
-                                        my_word += event_action
-                                        letter_count += 1
+                                    terminal.put(x=txt_panel_write_x + letter_count, y=txt_panel_write_y,
+                                                 c=ord(event_action))
+                                    my_word += event_action
+                                    letter_count += 1
                                 if event_to_be_processed == 'keypress':
                                     if event_action == 'quit':
                                         enter_name = False
@@ -524,12 +495,12 @@ class CharacterCreation:
                                         terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y, width=35,
                                                             height=1)
                                     if event_action == 'delete' and letter_count > 0:
-                                            terminal.put(x=(txt_panel_write_x + letter_count) - 1, y=txt_panel_write_y,
-                                                         c=32)
-                                            terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y,
-                                                         c=32)
-                                            my_word = my_word[:-1]
-                                            letter_count -= 1
+                                        terminal.put(x=(txt_panel_write_x + letter_count) - 1, y=txt_panel_write_y,
+                                                     c=32)
+                                        terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y,
+                                                     c=32)
+                                        my_word = my_word[:-1]
+                                        letter_count -= 1
 
                                     if event_action == 'enter':
                                         selected_name = my_word
@@ -549,7 +520,7 @@ class CharacterCreation:
                                     string_to_print = '[color=' + colourUtilities.get('RAWSIENNA') + ']' + letters_left
                                     terminal.print(x=txt_panel_letters_x, y=txt_panel_write_y, s=string_to_print)
 
-                        if selected_menu_option == 3:
+                        if selected_menu_option == 2:
                             if selected_name != '':
                                 terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y, width=35, height=1)
                             selected_name = MobileUtilities.choose_random_name(gameworld=gameworld,
