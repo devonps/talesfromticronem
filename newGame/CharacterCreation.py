@@ -70,13 +70,8 @@ class CharacterCreation:
         start_list_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
                                                                    parameter='START_LIST_X')
         selected_race = ''
-        selected_class = ''
-        selected_gender = ''
 
         show_character_options = True
-
-        player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                      parameter='RACESFILE')
 
         menu_start_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'MENU_START_X')
         menu_start_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter', 'MENU_START_Y')
@@ -90,32 +85,8 @@ class CharacterCreation:
         #
         # LOAD PLAYABLE RACES FROM DISK
         #
-        race_file = read_json_file(player_race_file)
 
-        race_name = []
-        race_flavour = []
-        race_bg_colour = []
-        race_size = []
-        race_benefits = []
-        race_name_desc = []
-        race_count = 0
-
-        for option in race_file['races']:
-            if option['playable']:
-                race_name.append(option['name'])
-                race_flavour.append(option['flavour'])
-                race_bg_colour.append(colourUtilities.get('BLACK'))
-                race_size.append(option['size'])
-                racial_bonus_count = option['attribute_count']
-                race_name_desc.append(option['singular_plural_adjective'])
-                race_count += 1
-                for attribute_bonus in range(racial_bonus_count):
-                    race_attr_name = 'attribute_' + str(attribute_bonus + 1) + '_name'
-                    race_attr_value = 'attribute_' + str(attribute_bonus + 1) + '_value'
-                    attribute_benefit_and_amount = (option[race_attr_name], option[race_attr_value])
-                    rb = [race_count]
-                    rb.extend(list(attribute_benefit_and_amount))
-                    race_benefits.append(rb)
+        race_name, race_flavour, race_bg_colour, race_size, race_benefits, race_name_desc = CharacterCreation.read_playable_races(game_config=game_config)
 
         # read race attributes from disk
         attribute_name, attribute_flavour = CharacterCreation.read_race_attributes(game_config=game_config)
@@ -137,9 +108,9 @@ class CharacterCreation:
             this_row += 2
             terminal.printf(x=start_list_x, y=this_row, s='Race ' + selected_race)
             this_row += 1
-            terminal.printf(x=start_list_x, y=this_row, s='Class ' + selected_class)
+            terminal.printf(x=start_list_x, y=this_row, s='Class')
             this_row += 1
-            terminal.printf(x=start_list_x, y=this_row, s='Gender ' + selected_gender)
+            terminal.printf(x=start_list_x, y=this_row, s='Gender')
 
             # display race options
             pointy_menu(header='',
@@ -150,10 +121,9 @@ class CharacterCreation:
             # racial flavour text
             strings_list = textwrap.wrap(race_flavour[selected_menu_option], width=33)
             flavour_text_length = len(strings_list) - 1
-            race_flavour_y = original_race_flavour_y
-            terminal.clear_area(x=race_flavour_x, y=race_flavour_y, w=33, h=height)
+            terminal.clear_area(x=race_flavour_x, y=original_race_flavour_y, w=33, h=height)
 
-            CharacterCreation.print_array(strings_list=strings_list, startx=race_flavour_x, starty=race_flavour_y,
+            CharacterCreation.print_array(strings_list=strings_list, startx=race_flavour_x, starty=original_race_flavour_y,
                                           width=spell_infobox_width)
 
             race_benefits_y = flavour_text_length + original_race_flavour_y + 2
@@ -166,23 +136,13 @@ class CharacterCreation:
                     string_to_print = unicode_attribute_names + benefit[1]
                     terminal.printf(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
                     posy += 1
-                    for attribute in range(len(attribute_name)):
-                        attr_name = attribute_name[attribute]
-                        benefit_name = benefit[1]
-                        if attr_name.lower() == benefit_name:
-                            attr_strings_list = textwrap.wrap(attribute_flavour[attribute], width=33)
-                            for line in attr_strings_list:
-                                terminal.print_(x=race_benefits_x, y=(race_benefits_y + 2) + posy,
-                                                s=unicode_attribute_flavour + line, width=spell_infobox_width,
-                                                height=1)
-                                posy += 1
+                    posy = CharacterCreation.render_race_attributes(attribute_name=attribute_name, benefit=benefit, attribute_flavour=attribute_flavour, game_config=game_config, starty=race_benefits_y,posy=posy, unicode_attribute_flavour=unicode_attribute_flavour)
                     posy += 1
             terminal.refresh()
             event_to_be_processed, event_action = handle_game_keys()
-            if event_to_be_processed != '' and event_to_be_processed == 'keypress':
+            if event_to_be_processed != '':
                 if event_action == 'quit':
                     show_character_options = False
-
                 if event_action == 'up':
                     selected_menu_option -= 1
                     if selected_menu_option < 0:
@@ -240,7 +200,7 @@ class CharacterCreation:
                                                       character_class_flavour=character_class_flavour)
             terminal.refresh()
             event_to_be_processed, event_action = handle_game_keys()
-            if event_to_be_processed != '' and event_to_be_processed == 'keypress':
+            if event_to_be_processed != '':
                 if event_action == 'quit':
                     show_character_options = False
                 if event_action == 'up':
@@ -274,6 +234,25 @@ class CharacterCreation:
             class_spell_file.append(option['spellfile'])
 
         return character_class_name, character_class_flavour, class_health, class_spell_file
+
+    @staticmethod
+    def render_race_attributes(attribute_name, benefit, attribute_flavour, game_config, starty, posy, unicode_attribute_flavour):
+        race_benefits_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter',
+                                                                      'RACE_CONSOLE_BENEFITS_X')
+        spell_infobox_width = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                          section='newCharacter',
+                                                                          parameter='NC_WIDTH')
+        for attribute in range(len(attribute_name)):
+            attr_name = attribute_name[attribute]
+            benefit_name = benefit[1]
+            if attr_name.lower() == benefit_name:
+                attr_strings_list = textwrap.wrap(attribute_flavour[attribute], width=33)
+                for line in attr_strings_list:
+                    terminal.print_(x=race_benefits_x, y=(starty + 2) + posy,
+                                    s=unicode_attribute_flavour + line, width=spell_infobox_width,
+                                    height=1)
+                    posy += 1
+        return posy
 
     @staticmethod
     def render_playable_classes(character_class_name, selected_menu_option, game_config, character_class_flavour):
@@ -316,6 +295,38 @@ class CharacterCreation:
             attribute_flavour.append(attribute['flavour'])
 
         return attribute_name, attribute_flavour
+
+    @staticmethod
+    def read_playable_races(game_config):
+        player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                      parameter='RACESFILE')
+        race_file = read_json_file(player_race_file)
+
+        race_name = []
+        race_flavour = []
+        race_bg_colour = []
+        race_size = []
+        race_benefits = []
+        race_name_desc = []
+        race_count = 0
+
+        for option in race_file['races']:
+            if option['playable']:
+                race_name.append(option['name'])
+                race_flavour.append(option['flavour'])
+                race_bg_colour.append(colourUtilities.get('BLACK'))
+                race_size.append(option['size'])
+                racial_bonus_count = option['attribute_count']
+                race_name_desc.append(option['singular_plural_adjective'])
+                race_count += 1
+                for attribute_bonus in range(racial_bonus_count):
+                    race_attr_name = 'attribute_' + str(attribute_bonus + 1) + '_name'
+                    race_attr_value = 'attribute_' + str(attribute_bonus + 1) + '_value'
+                    attribute_benefit_and_amount = (option[race_attr_name], option[race_attr_value])
+                    rb = [race_count]
+                    rb.extend(list(attribute_benefit_and_amount))
+                    race_benefits.append(rb)
+        return race_name, race_flavour, race_bg_colour, race_size, race_benefits, race_name_desc
 
     @staticmethod
     def print_array(strings_list, startx, starty, width):
