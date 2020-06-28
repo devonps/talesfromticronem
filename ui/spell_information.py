@@ -10,7 +10,6 @@ from utilities.spellHelp import SpellUtilities
 
 
 def spell_pop_up(game_config, slot, gameworld, player):
-
     logger.info('Spell pop up')
 
     spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
@@ -19,55 +18,48 @@ def spell_pop_up(game_config, slot, gameworld, player):
     is_spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell_entity)
 
     spell_popup_start_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellpopup',
-                                                                        parameter='SP_START_X')
+                                                                      parameter='SP_START_X')
 
     spell_popup_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellpopup',
-                                                                        parameter='SP_START_Y')
+                                                                      parameter='SP_START_Y')
 
     ascii_prefix = 'ASCII_SINGLE_'
 
     spell_popup_left_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                 parameter=ascii_prefix + 'LEFT_T_JUNCTION')
+                                                                   parameter=ascii_prefix + 'LEFT_T_JUNCTION')
 
     spell_popup_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                 parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
+                                                                    parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
 
     spell_popup_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellpopup',
-                                                                      parameter='SP_WIDTH')
+                                                                    parameter='SP_WIDTH')
     spell_popup_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellpopup',
-                                                                       parameter='SP_DEPTH')
+                                                                     parameter='SP_DEPTH')
     spell_popup_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                  parameter=ascii_prefix + 'TOP_LEFT')
+                                                                   parameter=ascii_prefix + 'TOP_LEFT')
 
     spell_popup_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                   parameter=ascii_prefix + 'TOP_RIGHT')
+                                                                    parameter=ascii_prefix + 'TOP_RIGHT')
 
     spell_popup_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                      parameter=ascii_prefix + 'BOTTOM_RIGHT')
+                                                                       parameter=ascii_prefix + 'BOTTOM_RIGHT')
 
     spell_popup_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                             parameter=ascii_prefix + 'HORIZONTAL')
+                                                              parameter=ascii_prefix + 'HORIZONTAL')
     spell_popup_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                           parameter=ascii_prefix + 'VERTICAL')
+                                                            parameter=ascii_prefix + 'VERTICAL')
 
     # unicode strings of colours
     unicode_frame_colour = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
 
     # draw frame for spell pop up
-    spell_popup_start_x += ((slot -1) * 4)
+    spell_popup_start_x += ((slot - 1) * 4)
 
-    # draw verticals
-    for zz in range(spell_popup_height - 1):
-        terminal.printf(x=spell_popup_start_x, y=(spell_popup_start_y + - 1) - zz,
-                        s=unicode_frame_colour + spell_popup_vertical + ']')
+    draw_verticals(spell_popup_height=spell_popup_height, spell_popup_start_x=spell_popup_start_x,
+                   spell_popup_start_y=spell_popup_start_y, unicode_frame_colour=unicode_frame_colour,
+                   spell_popup_vertical=spell_popup_vertical, spell_popup_width=spell_popup_width)
 
-        terminal.printf(x=(spell_popup_start_x + spell_popup_width) - 1, y=(spell_popup_start_y + - 2) - zz,
-                        s=unicode_frame_colour + spell_popup_vertical + ']')
-
-    # draw top horizontal
-    for zz in range(spell_popup_width - 2):
-        terminal.printf(x=(spell_popup_start_x + 1) + zz, y=(spell_popup_start_y - spell_popup_height) - 1,
-                        s=unicode_frame_colour + spell_popup_horizontal + ']')
+    draw_horizontals(spell_popup_width=spell_popup_width, spell_popup_start_x=spell_popup_start_x, spell_popup_start_y=spell_popup_start_y, spell_popup_height=spell_popup_height, unicode_frame_colour=unicode_frame_colour, spell_popup_horizontal=spell_popup_horizontal)
 
     # draw bottom open corners
     # left open
@@ -82,13 +74,11 @@ def spell_pop_up(game_config, slot, gameworld, player):
                     s=unicode_frame_colour + spell_popup_top_left_corner + ']')
 
     # draw from right cross point to right hand vertical
-    for zz in range(spell_popup_width -6):
+    for zz in range(spell_popup_width - 6):
         terminal.printf(x=(spell_popup_start_x + 5) + zz, y=(spell_popup_start_y + - 1),
                         s=unicode_frame_colour + spell_popup_horizontal + ']')
 
-    # blank out horizontal spell button
-    for zz in range(3):
-        terminal.printf(x=(spell_popup_start_x + 1) + zz, y=spell_popup_start_y, s=' ')
+    draw_blank_buttons(spell_popup_start_x=spell_popup_start_x, spell_popup_start_y=spell_popup_start_y)
 
     # bottom right corner
     terminal.printf(x=(spell_popup_start_x + spell_popup_width) - 1, y=(spell_popup_start_y + - 1),
@@ -139,13 +129,7 @@ def spell_pop_up(game_config, slot, gameworld, player):
     caster_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=player)
     spell_coeff = float(SpellUtilities.get_spell_damage_coeff(gameworld=gameworld, spell_entity=slot_spell_entity))
 
-    if equipped_weapons[2] != 0:
-        weapon = equipped_weapons[2]
-    else:
-        if slot <= 2:
-            weapon = equipped_weapons[0]
-        else:
-            weapon = equipped_weapons[1]
+    weapon = which_weapon(equipped_weapons=equipped_weapons, slot=slot)
 
     weapon_strength = ItemUtilities.calculate_weapon_strength(gameworld=gameworld, weapon=weapon)
     outgoing_base_damage = formulas.outgoing_base_damage(weapon_strength=weapon_strength, power=caster_power,
@@ -185,3 +169,40 @@ def spell_pop_up(game_config, slot, gameworld, player):
                 player_not_pressed_a_key = False
                 SpellUtilities.cast_spell(slot=slot, gameworld=gameworld, player=player)
 
+
+def draw_blank_buttons(spell_popup_start_x, spell_popup_start_y):
+    # blank out horizontal spell button
+    for zz in range(3):
+        terminal.printf(x=(spell_popup_start_x + 1) + zz, y=spell_popup_start_y, s=' ')
+
+
+def draw_verticals(spell_popup_height, spell_popup_start_x, spell_popup_start_y, unicode_frame_colour,
+                   spell_popup_vertical, spell_popup_width):
+    # draw verticals
+    for zz in range(spell_popup_height - 1):
+        terminal.printf(x=spell_popup_start_x, y=(spell_popup_start_y + - 1) - zz,
+                        s=unicode_frame_colour + spell_popup_vertical + ']')
+
+        terminal.printf(x=(spell_popup_start_x + spell_popup_width) - 1, y=(spell_popup_start_y + - 2) - zz,
+                        s=unicode_frame_colour + spell_popup_vertical + ']')
+
+
+def draw_horizontals(spell_popup_width, spell_popup_start_x, spell_popup_start_y, spell_popup_height,
+                     unicode_frame_colour, spell_popup_horizontal):
+    # draw top horizontal
+    for zz in range(spell_popup_width - 2):
+        terminal.printf(x=(spell_popup_start_x + 1) + zz, y=(spell_popup_start_y - spell_popup_height) - 1,
+                        s=unicode_frame_colour + spell_popup_horizontal + ']')
+
+
+def which_weapon(equipped_weapons, slot):
+    weapon = 0
+    if equipped_weapons[2] != 0:
+        weapon = equipped_weapons[2]
+    else:
+        if slot <= 2:
+            weapon = equipped_weapons[0]
+        else:
+            weapon = equipped_weapons[1]
+
+    return weapon

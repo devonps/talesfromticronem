@@ -3,7 +3,6 @@ from loguru import logger
 from bearlibterminal import terminal
 from utilities.itemsHelp import ItemUtilities
 
-
 # the selected option is the choice from list_options that will be highlighted
 # so if list_options were  [apple, orange, grape] and selected_option were 'grape' then grape would be highlighted
 from utilities.mobileHelp import MobileUtilities
@@ -209,10 +208,20 @@ def draw_colourful_frame(title, title_decorator, title_loc, corner_decorator, ms
             pwx = (start_panel_frame_width - titlelen) - 4
 
         terminal.print_(x=pwx, y=start_panel_frame_y, s=titlestring)
+        draw_message(msg_x=msg_x, msg_y=msg_y, msg=msg)
 
+    draw_corner_decorators(start_panel_frame_x=start_panel_frame_x, start_panel_frame_y=start_panel_frame_y,
+                           corner_decorator=corner_decorator, start_panel_frame_height=start_panel_frame_height,
+                           start_panel_frame_width=start_panel_frame_width)
+
+
+def draw_message(msg_x, msg_y, msg):
     if msg != '':
         terminal.print_(x=msg_x, y=msg_y, s=msg)
 
+
+def draw_corner_decorators(start_panel_frame_x, start_panel_frame_y, corner_decorator, start_panel_frame_width,
+                           start_panel_frame_height):
     # You can only draw corner decorators or studs
     if corner_decorator != '':
         # unicode frame tiles
@@ -392,4 +401,3 @@ def get_feet_armour_details(gameworld, entity_id):
         item_list = [item, armour_material, armour_displayname, str(def_feet_value)]
 
     return item_list
-

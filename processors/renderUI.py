@@ -43,7 +43,7 @@ class RenderUI(esper.Processor):
         entity_y_draw_pos = 4
         str_colour_msg = "[color="
 
-        str_to_print = "[color=white]" + "Visible Entities"
+        str_to_print = "[color=RENDER_VISIBLE_ENTITIES_LIST] Visible Entities"
         terminal.printf(x=64, y=1, s=str_to_print)
 
         for entity in visible_entities:
@@ -113,7 +113,7 @@ class RenderUI(esper.Processor):
                                                                       config_prefix=config_prefix_empty,
                                                                       tile_assignment=0)
         unicode_string_to_print = '[font=dungeon]['
-        colour_code = "[color=white]"
+        colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
         fov_object = FieldOfView(game_map=game_map)
 
         fov_map = FieldOfView.initialise_field_of_view(game_map=fov_object.game_map)
@@ -132,7 +132,7 @@ class RenderUI(esper.Processor):
                 tile_assignment = game_map.tiles[map_x][map_y].assignment
                 visible = tcod.map_is_in_fov(m=fov_map, x=map_x, y=map_y)
                 if visible:
-                    colour_code = "[color=white]"
+                    colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
                     print_char = True
                     game_map.tiles[map_x][map_y].explored = True
                     if tile == tile_type_floor:

@@ -239,7 +239,6 @@ class RenderSpellInfoPanel(esper.Processor):
     # formally known as the F1 bar
     #
     def render_class_mechanics(self):
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
 
         start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='MECHANIC_START_X')
