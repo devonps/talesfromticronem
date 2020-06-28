@@ -92,39 +92,9 @@ class RenderSpellInfoPanel(esper.Processor):
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='START_LIST_Y')
 
-        this_letter = 49
-        slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=1,
-                                                                               player_entity=player_entity)
-        if slot_spell_entity == 0:
-            main_hand_weapon = 'Main Hand (Nothing)'
-        else:
-            spell_name, _, _ = SpellUtilities.get_spell_info_details(gameworld=self.gameworld, spell_entity=slot_spell_entity)
-            main_hand_weapon = 'Main Hand (' + spell_name + ')'
+        this_row, this_letter = SpellUtilities.render_main_hand_spells(gameworld=self.gameworld, game_config=self.game_config, this_row=this_row, player_entity=player_entity)
 
-        slot = 1
-        for _ in range(3):
-            SpellUtilities.render_spell_ui(gameworld=self.gameworld, game_config=self.game_config, slot=slot, player_entity=player_entity, this_row=this_row, this_letter=this_letter, weapon_string=main_hand_weapon)
-            this_row += 1
-            this_letter += 1
-            slot += 1
-
-        this_row += 1
-        slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=4,
-                                                                               player_entity=player_entity)
-        if slot_spell_entity == 0:
-            off_hand_weapon = 'Off Hand (Nothing)'
-        else:
-            spell_name, _, _ = SpellUtilities.get_spell_info_details(gameworld=self.gameworld, spell_entity=slot_spell_entity)
-            off_hand_weapon = 'Off Hand (' + spell_name + ')'
-
-        this_row += 2
-        for _ in range(2):
-            SpellUtilities.render_spell_ui(gameworld=self.gameworld, game_config=self.game_config, slot=slot,
-                                           player_entity=player_entity, this_row=this_row, this_letter=this_letter, weapon_string=off_hand_weapon)
-
-            this_row += 1
-            this_letter += 1
-            slot += 1
+        SpellUtilities.render_off_hand_spells(gameworld=self.gameworld, game_config=self.game_config, this_row=this_row, player_entity=player_entity)
 
     def render_equipped_jewellery(self):
 
@@ -139,6 +109,7 @@ class RenderSpellInfoPanel(esper.Processor):
         unicode_section_headers = dungeon_font + '[color=SPELLINFO_JEWELLERY_EQUIPPED]'
 
         this_letter = 70
+        this_row += 1
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Jewellery')
         this_row += 2
         left_ear = 'nothing'
@@ -328,7 +299,7 @@ class RenderSpellInfoPanel(esper.Processor):
         unicode_section_headers = dungeon_font + '[color=SPELLINFO_ARMOUR_EQUIPPED]'
 
         this_letter = 65
-
+        this_row += 1
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Armour ')
         this_row += 2
 
@@ -393,6 +364,7 @@ class RenderSpellInfoPanel(esper.Processor):
         range_string_x = start_list_x + 31
 
         this_letter = 55
+        this_row += 1
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Utility ')
         this_row += 2
         slot = 7
@@ -439,8 +411,9 @@ class RenderSpellInfoPanel(esper.Processor):
         range_string_x = start_list_x + 31
 
         this_letter = 54
+        this_row += 1
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Healing ')
-        this_row += 2
+        this_row += 1
         # spell name
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=6,
                                                                                player_entity=player_entity)

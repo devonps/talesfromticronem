@@ -48,8 +48,7 @@ class CharacterCreation:
 
         messagelog_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
         CommonUtils.create_message_log_as_entity(gameworld=gameworld, log_entity=messagelog_entity)
-        MobileUtilities.set_MessageLog_for_player(gameworld=gameworld, entity=player,
-                                                  logid=messagelog_entity)
+        MobileUtilities.set_MessageLog_for_player(gameworld=gameworld, entity=player, logid=messagelog_entity)
         logger.info('Mesage log stored as entity {}', messagelog_entity)
         game_loop(gameworld=gameworld)
 

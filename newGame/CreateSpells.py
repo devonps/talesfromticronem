@@ -3,6 +3,8 @@ from loguru import logger
 from components import spells, addStatusEffects
 from utilities import configUtilities, world
 from utilities.jsonUtilities import read_json_file
+from utilities.mobileHelp import MobileUtilities
+from utilities.spellHelp import SpellUtilities
 
 
 class AsEntities:
