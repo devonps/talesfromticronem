@@ -344,14 +344,17 @@ class SpellUtilities:
         spellbar = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
 
         MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spellbar)
-        # now get the heal skill
+        SpellUtilities.add_heal_spell_to_spellbar(gameworld=gameworld, player_entity=player_entity, spellbar=spellbar)
+
+    @staticmethod
+    def add_heal_spell_to_spellbar(gameworld, player_entity, spellbar):
         player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
-        healing_spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotSix)
         for ent, (cl, typ) in gameworld.get_components(spells.ClassName, spells.SpellType):
             if typ.label == 'heal' and cl.label == player_class:
-                healing_spell_component.label = str(ent)
+                SpellUtilities.set_spell_entity_in_slot_six(gameworld=gameworld, spellbar=spellbar, spell_entity=ent)
 
 
+    # below is the old/original way of tracking the spells - it needs to be deprecated
     @staticmethod
     def populate_spell_bar_initially(gameworld, player_entity):
 
@@ -790,3 +793,103 @@ class SpellUtilities:
             terminal.printf(x=range_string_x, y=this_row, s=range_string)
 
         terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
+
+    @staticmethod
+    def get_spell_entity_from_slot_one(gameworld, spellbar):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotOne)
+        return spell_component.spell_entity
+
+    @staticmethod
+    def get_spell_entity_from_slot_two(gameworld, spellbar):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotTwo)
+        return spell_component.spell_entity
+
+    @staticmethod
+    def get_spell_entity_from_slot_three(gameworld, spellbar):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotThree)
+        return spell_component.spell_entity
+
+    @staticmethod
+    def get_spell_entity_from_slot_four(gameworld, spellbar):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotFour)
+        return spell_component.spell_entity
+
+    @staticmethod
+    def get_spell_entity_from_slot_five(gameworld, spellbar):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotFive)
+        return spell_component.spell_entity
+
+    @staticmethod
+    def get_spell_entity_from_slot_six(gameworld, spellbar):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotSix)
+        return spell_component.spell_entity
+
+    @staticmethod
+    def get_spell_entity_from_slot_seven(gameworld, spellbar):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotSeven)
+        return spell_component.spell_entity
+
+    @staticmethod
+    def get_spell_entity_from_slot_eight(gameworld, spellbar):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotEight)
+        return spell_component.spell_entity
+
+    @staticmethod
+    def get_spell_entity_from_slot_nine(gameworld, spellbar):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotNine)
+        return spell_component.spell_entity
+
+    @staticmethod
+    def get_spell_entity_from_slot_ten(gameworld, spellbar):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotTen)
+        return spell_component.spell_entity
+
+    @staticmethod
+    def set_spell_entity_in_slot_one(gameworld, spellbar, spell_entity):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotOne)
+        spell_component.spell_entity = spell_entity
+
+    @staticmethod
+    def set_spell_entity_in_slot_two(gameworld, spellbar, spell_entity):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotTwo)
+        spell_component.spell_entity = spell_entity
+
+    @staticmethod
+    def set_spell_entity_in_slot_three(gameworld, spellbar, spell_entity):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotThree)
+        spell_component.spell_entity = spell_entity
+
+    @staticmethod
+    def set_spell_entity_in_slot_four(gameworld, spellbar, spell_entity):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotFour)
+        spell_component.spell_entity = spell_entity
+
+    @staticmethod
+    def set_spell_entity_in_slot_five(gameworld, spellbar, spell_entity):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotFive)
+        spell_component.spell_entity = spell_entity
+
+    @staticmethod
+    def set_spell_entity_in_slot_six(gameworld, spellbar, spell_entity):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotSix)
+        spell_component.spell_entity = spell_entity
+
+    @staticmethod
+    def set_spell_entity_in_slot_seven(gameworld, spellbar, spell_entity):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotSeven)
+        spell_component.spell_entity = spell_entity
+
+    @staticmethod
+    def set_spell_entity_in_slot_eight(gameworld, spellbar, spell_entity):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotEight)
+        spell_component.spell_entity = spell_entity
+
+    @staticmethod
+    def set_spell_entity_in_slot_nine(gameworld, spellbar, spell_entity):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotNine)
+        spell_component.spell_entity = spell_entity
+
+    @staticmethod
+    def set_spell_entity_in_slot_ten(gameworld, spellbar, spell_entity):
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.Ten)
+        spell_component.spell_entity = spell_entity
