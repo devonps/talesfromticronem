@@ -47,7 +47,7 @@ def handle_game_keys():
         myevent = 'keypress'
         action = 0
 
-    # ACCEPT KEYS
+    # ACCEPT/DELETE/QUIT KEYS
     if key == terminal.TK_ESCAPE:
         myevent = 'keypress'
         action = 'quit'
@@ -75,17 +75,6 @@ def handle_game_keys():
         action = 'right'
 
     #
-    # ACTION KEYS
-    #
-    if key == terminal.TK_M:
-        if terminal.check(terminal.TK_SHIFT):
-            myevent = ''
-            action = ''
-        else:
-            myevent = 'keypress'
-            action = 'log'
-
-    #
     # MOUSE ACTIONS
     #
     if key == terminal.TK_MOUSE_MOVE:
@@ -104,7 +93,7 @@ def handle_game_keys():
     if myevent is None:
         index = terminal.state(terminal.TK_CHAR) - ord('A')
         if index >= 0:
-            myevent = 'textinput'
+            myevent = 'keypress'
             action = index
 
     return myevent, action

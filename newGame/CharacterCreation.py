@@ -6,7 +6,7 @@ from loguru import logger
 
 from newGame.CreateSpells import AsEntities
 from utilities import configUtilities, colourUtilities
-from utilities.display import draw_colourful_frame, pointy_menu
+from utilities.display import draw_colourful_frame, pointy_menu, draw_simple_frame
 from utilities.input_handlers import handle_game_keys
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
@@ -421,43 +421,48 @@ class CharacterCreation:
         character_not_named = True
         letter_count = 0
         my_word = ''
+        dungeon_font = "[font=dungeon]"
+        unicode_help_messages = dungeon_font + '[color=NAME_CHAR_HELP_MESSAGE]'
+        unicode_name_letters_left = dungeon_font + '[color=NAME_CHAR_LETTERS_LEFT]'
 
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         terminal.clear()
-        terminal.printf(x=5, y=5, s='Name Your Character, leave blank for random name')
+        draw_simple_frame(start_panel_frame_x=txt_panel_write_x, start_panel_frame_y=txt_panel_write_y, start_panel_frame_width=35, start_panel_frame_height=6, title='Name Your Character', fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+        terminal.printf(x=txt_panel_write_x + 1, y=txt_panel_write_y + 4, s=unicode_help_messages + 'valid chars:A-Z and a-z')
+        terminal.printf(x=txt_panel_write_x + 1, y=txt_panel_write_y + 5, s=unicode_help_messages + 'leave blank for random name')
+
         while character_not_named:
             terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=txt_panel_cursor)
             terminal.refresh()
             event_to_be_processed, event_action = handle_game_keys()
-            if event_to_be_processed == 'textinput' and (letter_count < max_letters):
-                key_pressed = 65 + event_action
-                if (64 < key_pressed < 91) or (96 < key_pressed < 123):
-                    terminal.put(x=txt_panel_write_x + letter_count, y=txt_panel_write_y, c=chr(key_pressed))
-                    my_word += chr(key_pressed)
-                    letter_count += 1
-            if event_to_be_processed == 'keypress':
+            if event_to_be_processed == 'keypress' and (letter_count < max_letters):
                 if event_action == 'quit':
                     character_not_named = False
-                    terminal.clear_area(x=txt_panel_write_x, y=txt_panel_write_y, width=35,
+                    terminal.clear_area(x=txt_panel_cursor_x, y=txt_panel_cursor_y, width=35,
                                         height=1)
-                if event_action == 'delete' and letter_count > 0:
-                    terminal.put(x=(txt_panel_write_x + letter_count) - 1, y=txt_panel_write_y, c=32)
+                elif event_action == 'delete' and letter_count > 0:
+                    terminal.put(x=(txt_panel_cursor_x + letter_count) - 1, y=txt_panel_cursor_y, c=32)
                     terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=32)
                     my_word = my_word[:-1]
                     letter_count -= 1
 
-                if event_action == 'enter':
+                elif event_action == 'enter':
                     character_not_named = False
                     terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=32)
                     terminal.clear_area(x=txt_panel_letters_x, y=txt_panel_write_y, width=18,
                                         height=1)
                     CharacterCreation.assign_name_to_character(gameworld=gameworld, player_entity=player_entity, selected_name=my_word)
+                else:
+                    key_pressed = 65 + event_action
+                    if (64 < key_pressed < 91) or (96 < key_pressed < 123):
+                        terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=chr(key_pressed))
+                        my_word += chr(key_pressed)
+                        letter_count += 1
 
             # display letters remaining
             letters_remaining = max_letters - letter_count
             letters_left = ' ' + str(letters_remaining) + ' letters left '
-            string_to_print = '[color=' + colourUtilities.get('RAWSIENNA') + ']' + letters_left
-            terminal.printf(x=txt_panel_letters_x, y=txt_panel_write_y, s=string_to_print)
+            terminal.printf(x=txt_panel_letters_x, y=txt_panel_cursor_y, s=unicode_name_letters_left + letters_left)
 
     @staticmethod
     def assign_name_to_character(gameworld, player_entity, selected_name):
