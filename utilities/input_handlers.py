@@ -54,6 +54,9 @@ def handle_game_keys():
     if key == terminal.TK_ENTER:
         myevent = 'keypress'
         action = 'enter'
+    if key == terminal.TK_BACKSPACE:
+        myevent = 'keypress'
+        action = 'delete'
 
     #
     # MOVEMENT KEYS
@@ -99,9 +102,9 @@ def handle_game_keys():
     # general keyboard
     #
     if myevent is None:
-        index = terminal.state(terminal.TK_CHAR) - ord('a')
+        index = terminal.state(terminal.TK_CHAR) - ord('A')
         if index >= 0:
-            myevent = 'keypress'
+            myevent = 'textinput'
             action = index
 
     return myevent, action
