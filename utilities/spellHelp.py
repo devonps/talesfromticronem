@@ -1,7 +1,7 @@
 import random
 
 from loguru import logger
-from components import spells, items, mobiles
+from components import spells, items, mobiles, spellBar
 from utilities import colourUtilities, configUtilities, formulas
 from utilities.common import CommonUtils
 from utilities.display import draw_simple_frame
@@ -338,6 +338,19 @@ class SpellUtilities:
             spell_entity = gameworld.component_for_entity(weapon_equipped, items.Spells).slot_five
 
         return spell_entity
+
+    @staticmethod
+    def setup_player_empty_spellbar(gameworld, player_entity):
+        spellbar = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
+
+        MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spellbar)
+        # now get the heal skill
+        player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
+        healing_spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotSix)
+        for ent, (cl, typ) in gameworld.get_components(spells.ClassName, spells.SpellType):
+            if typ.label == 'heal' and cl.label == player_class:
+                healing_spell_component.label = str(ent)
+
 
     @staticmethod
     def populate_spell_bar_initially(gameworld, player_entity):

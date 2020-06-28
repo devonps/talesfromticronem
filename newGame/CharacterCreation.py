@@ -14,6 +14,7 @@ from newGame.initialiseNewGame import create_world
 from utilities.common import CommonUtils
 
 from ticronem import game_loop
+from utilities.spellHelp import SpellUtilities
 
 
 class CharacterCreation:
@@ -392,6 +393,8 @@ class CharacterCreation:
             logger.warning('Spell file name not set')
 
         AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config, spell_file=spellfile, playable_class=class_component)
+
+        SpellUtilities.setup_player_empty_spellbar(gameworld=gameworld, player_entity=player)
 
         # calculate derived stats
         MobileUtilities.set_mobile_derived_derived_attributes(gameworld=gameworld, entity=player)
