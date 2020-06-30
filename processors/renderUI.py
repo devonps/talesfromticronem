@@ -120,12 +120,6 @@ class RenderUI(esper.Processor):
         if player_has_moved:
             RenderUI.clear_map_layer()
 
-        logger.warning('-----------------------------')
-        logger.info('camera width/height {}/{}', camera_width, camera_height)
-        logger.info('camera x/y {}/{}', camera_x, camera_y)
-        logger.info('pc map x/y {}/{}', player_map_pos_x, player_map_pos_y)
-        logger.warning('-----------------------------')
-
         for y in range(camera_height):
             for x in range(camera_width):
                 char_to_display = original_char_to_display

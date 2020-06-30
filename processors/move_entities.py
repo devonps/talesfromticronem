@@ -28,11 +28,19 @@ class MoveEntities(esper.Processor):
 
             for ent, (vel, pos) in self.gameworld.get_components(mobiles.Velocity, mobiles.Position):
                 am_i_blocked = self.check_for_blocked_movement(pos.x + vel.dx, pos.y + vel.dy)
+
+                logger.warning('-----------------------------')
+                logger.info('Entity id {}', ent)
+                logger.info('Entity map x/y {}/{}', pos.x, pos.y)
+                logger.warning('-----------------------------')
+
                 if not am_i_blocked:
                     pos.x += vel.dx
                     pos.y += vel.dy
                     vpx += vel.dx
                     vpy += vel.dy
+
+
 
                     if ent == player_entity:
                         MobileUtilities.set_player_viewport_x(gameworld=self.gameworld, entity=player_entity, value=vpx)
