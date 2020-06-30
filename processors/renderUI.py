@@ -113,10 +113,11 @@ class RenderUI(esper.Processor):
                                                                       tile_assignment=0)
         unicode_string_to_print = '[font=dungeon]['
         colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
-        fov_object = FieldOfView(game_map=game_map)
+        fov_map = FieldOfView(game_map=game_map)
+        player_fov = FieldOfView.create_fov_from_raycasting(fov_map, startx=player_map_pos_x, starty=player_map_pos_y,
+                                                               game_config=game_config)
 
         if player_has_moved:
-            fov_map = ''
             RenderUI.clear_map_layer()
 
         logger.warning('-----------------------------')
@@ -133,7 +134,7 @@ class RenderUI(esper.Processor):
                 print_char = False
                 tile = game_map.tiles[map_x][map_y].type_of_tile
                 tile_assignment = game_map.tiles[map_x][map_y].assignment
-                visible = True
+                visible = FieldOfView.get_fov_map_point(player_fov, x, y)
                 if visible:
                     colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
                     print_char = True
@@ -169,7 +170,7 @@ class RenderUI(esper.Processor):
                     string_to_print = colour_code + unicode_string_to_print + char_to_display + ']'
                     terminal.printf(x=x, y=y, s=string_to_print)
 
-        return fov_map
+        return player_fov
 
     @staticmethod
     def calculate_camera_position(camera_width, camera_height, player_map_pos_x, player_map_pos_y, game_map):

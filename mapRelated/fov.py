@@ -22,10 +22,7 @@ class FieldOfView:
         self.game_map = game_map
         self.width = game_map.width
         self.height = game_map.height
-        self.fov_radius = 0  # FOV Radius
-        self.fov_light_walls = True
-        self.fov_algo = 0
-
+        self.fov_radius = 20  # FOV Radius
 
     def create_fov_from_raycasting(self, startx, starty, game_config):
         RAYS = 360  # number of degrees in a circle
@@ -163,8 +160,9 @@ class FieldOfView:
                 y += ay
                 if x < 0 or y < 0 or x > self.width - 1 or y > self.height - 1:  # If ray is out of range
                     break
-
-                fov_map[int(round(x))][int(round(y))] = True  # Make tile visible
+                xx = int(round(x))
+                yy = int(round(y))
+                fov_map[xx][yy] = True  # Make tile visible
                 tile = self.game_map.tiles[int(round(x))][int(round(y))].type_of_tile
 
                 if tile == tile_type_door or tile == tile_type_wall:  # Stop ray if it hits
@@ -235,4 +233,3 @@ class FieldOfView:
             points.reverse()
 
         return points
-
