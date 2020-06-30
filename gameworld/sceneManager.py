@@ -81,7 +81,7 @@ class SceneManager:
             cast_spells_processor = CastSpells(gameworld=gameworld, game_map=game_map)
             render_ui_processor = RenderUI(game_map=game_map, gameworld=gameworld)
             render_message_log_processor = RenderMessageLog(gameworld=gameworld)
-            spell_info_processor = RenderSpellInfoPanel(gameworld=gameworld)
+            spell_info_processor = RenderSpellInfoPanel(gameworld=gameworld, game_map=game_map)
             gameworld.add_processor(move_entities_processor, priority=80)
             gameworld.add_processor(cast_spells_processor, priority=100)
             gameworld.add_processor(update_entities_processor, priority=90)

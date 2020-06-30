@@ -60,7 +60,7 @@ class Debug:
     def entity_spy(gameworld, game_config, coords_clicked, game_map):
         # get entity id at position coords
         logger.debug('Coords clicked {}', coords_clicked)
-        entity_id = CommonUtils.get_entity_at_location(gameworld=gameworld, coords=coords_clicked, game_map=game_map)
+        entity_id = CommonUtils.get_entity_at_location(gameworld=gameworld, coords=coords_clicked)
         logger.debug('Entity id at this location {}', entity_id)
 
         if entity_id > 0:
