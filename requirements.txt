@@ -31,6 +31,5 @@ pytest-cov==2.8.1
 pytz==2019.3
 six==1.14.0
 sqlparse==0.3.1
-tcod==11.13.5
 terminal==0.4.0
 zipp==3.1.0

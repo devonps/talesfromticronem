@@ -84,7 +84,7 @@ def game_loop(gameworld):
                 CommonUtils.set_current_log(gameworld=gameworld, log_entity=msglog)
                 advance_game_turn = False
         if event_to_be_processed == 'mouseleftbutton':
-            Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords=event_action)
+            Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords_clicked=event_action, game_map=game_map)
             advance_game_turn = False
 
         if advance_game_turn:

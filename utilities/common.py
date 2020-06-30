@@ -10,14 +10,27 @@ from utilities.mobileHelp import MobileUtilities
 class CommonUtils:
 
     @staticmethod
-    def get_entity_at_location(gameworld, coords):
+    def get_entity_at_location(gameworld, coords, game_map):
         game_config = configUtilities.load_config()
-        vp_x_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                  parameter='VIEWPORT_START_X')
-        vp_y_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                  parameter='VIEWPORT_START_Y')
-        new_posx = coords[0] - vp_x_offset
-        new_posy = coords[1] - vp_y_offset
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        player_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
+        camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                   parameter='VIEWPORT_WIDTH')
+        camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='VIEWPORT_HEIGHT')
+
+
+        camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width, camera_height=camera_height,
+                                                                player_map_pos_x=player_x,
+                                                                player_map_pos_y=player_y, game_map=game_map)
+
+        new_posx = coords[0] + camera_x
+        new_posy = coords[1] + camera_y
+
+        logger.info('new pos x: {}', new_posx)
+        logger.info('new pos y: {}', new_posy)
+
         entity_id = 0
         for ent, pos in gameworld.get_components(mobiles.Position):
             entity_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
@@ -25,6 +38,23 @@ class CommonUtils:
             if entity_pos_x == new_posx and entity_pos_y == new_posy:
                 entity_id = ent
         return entity_id
+
+    @staticmethod
+    def calculate_camera_position(camera_width, camera_height, player_map_pos_x, player_map_pos_y, game_map):
+        x = player_map_pos_x - camera_width / 2
+        y = player_map_pos_y - camera_height / 2
+
+        if x < 0:
+            x = 0
+        if y < 0:
+            y = 0
+        if x > game_map.width - camera_width - 1:
+            x = game_map.width - camera_width - 1
+        if y > game_map.height - camera_height - 1:
+            y = game_map.height - camera_height - 1
+
+        return x, y
+
 
     @staticmethod
     def get_unicode_ascii_char(game_config, config_prefix, tile_assignment):

@@ -17,7 +17,7 @@
       "weapons-both": "staff"
     },
      {
-      "name": "Weapons",
+      "name": "Barry",
       "race": "RANDOM",
       "class": "witchdoctor",
       "description": "Weapons trader",
@@ -33,7 +33,7 @@
       "weapons-both": ""
       },
      {
-      "name": "Combat",
+      "name": "Charles",
       "race": "eskeri",
       "class": "druid",
       "description": "Lets fight",

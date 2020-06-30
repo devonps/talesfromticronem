@@ -1,6 +1,5 @@
 import esper
 import time
-import tcod
 
 from bearlibterminal import terminal
 from loguru import logger
@@ -100,7 +99,7 @@ class RenderUI(esper.Processor):
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='VIEWPORT_HEIGHT')
 
-        camera_x, camera_y = RenderUI.calculate_camera_position(camera_width=camera_width, camera_height=camera_height,
+        camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width, camera_height=camera_height,
                                                                 player_map_pos_x=player_map_pos_x,
                                                                 player_map_pos_y=player_map_pos_y, game_map=game_map)
 
@@ -116,11 +115,15 @@ class RenderUI(esper.Processor):
         colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
         fov_object = FieldOfView(game_map=game_map)
 
-        fov_map = FieldOfView.initialise_field_of_view(game_map=fov_object.game_map)
-
         if player_has_moved:
-            FieldOfView.recompute_field_of_view(fov_map=fov_map, x=player_map_pos_x, y=player_map_pos_y, radius=fov_object.fov_radius, light_walls=fov_object.fov_light_walls, algorithm=fov_object.fov_algo)
+            fov_map = ''
             RenderUI.clear_map_layer()
+
+        logger.warning('-----------------------------')
+        logger.info('camera width/height {}/{}', camera_width, camera_height)
+        logger.info('camera x/y {}/{}', camera_x, camera_y)
+        logger.info('pc map x/y {}/{}', player_map_pos_x, player_map_pos_y)
+        logger.warning('-----------------------------')
 
         for y in range(camera_height):
             for x in range(camera_width):
@@ -130,7 +133,7 @@ class RenderUI(esper.Processor):
                 print_char = False
                 tile = game_map.tiles[map_x][map_y].type_of_tile
                 tile_assignment = game_map.tiles[map_x][map_y].assignment
-                visible = tcod.map_is_in_fov(m=fov_map, x=map_x, y=map_y)
+                visible = True
                 if visible:
                     colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
                     print_char = True
@@ -192,7 +195,7 @@ class RenderUI(esper.Processor):
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='VIEWPORT_HEIGHT')
 
-        camera_x, camera_y = RenderUI.calculate_camera_position(camera_width=camera_width, camera_height=camera_height,
+        camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width, camera_height=camera_height,
                                                                 player_map_pos_x=x, player_map_pos_y=y,
                                                                 game_map=game_map)
 
@@ -214,15 +217,11 @@ class RenderUI(esper.Processor):
                 map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
                 map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
 
-                if tcod.map_is_in_fov(m=fov_map, x=map_pos_x, y=map_pos_y):
-                    x, y = RenderUI.to_camera_coordinates(game_config=game_config, game_map=game_map, x=map_pos_x,
-                                                          y=map_pos_y)
-
-                    fg = desc.foreground
-                    bg = desc.background
-                    RenderUI.render_entity(posx=x, posy=y, glyph=desc.glyph, fg=fg, bg=bg)
-                    if ent != player_entity:
-                        visible_entities.append(ent)
+                fg = desc.foreground
+                bg = desc.background
+                RenderUI.render_entity(posx=map_pos_x, posy=map_pos_y, glyph=desc.glyph, fg=fg, bg=bg)
+                if ent != player_entity:
+                    visible_entities.append(ent)
 
         MobileUtilities.set_visible_entities(gameworld=gameworld, target_entity=player_entity,
                                              visible_entities=visible_entities)

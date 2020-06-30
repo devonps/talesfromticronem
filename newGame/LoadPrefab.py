@@ -4,21 +4,21 @@ from utilities.externalfileutilities import Externalfiles
 from loguru import logger
 
 
-def loadPrefab():
+def load_prefab():
     game_config = configUtilities.load_config()
-    fileName = 'startArea.csv'
+    file_name = 'startArea.csv'
 
-    prefabFolder = configUtilities.get_config_value_as_string(game_config, 'files', 'PREFABFOLDER')
+    prefab_folder = configUtilities.get_config_value_as_string(game_config, 'files', 'PREFABFOLDER')
 
-    filepath = prefabFolder + fileName
+    filepath = prefab_folder + file_name
 
     # does file exist
-    fileExists = Externalfiles.does_file_exist(filepath)
+    file_exists = Externalfiles.does_file_exist(filepath)
 
-    logger.info('Checking if external file exists...{}', fileExists)
+    logger.info('Checking if external file exists...{}', file_exists)
 
     # load the file and check the contents
-    csvContent = Externalfiles.read_prefab_from_csv(filename=filepath)
-    for row in csvContent:
+    csv_content = Externalfiles.read_prefab_from_csv(filename=filepath)
+    for row in csv_content:
         logger.info(row)
 
