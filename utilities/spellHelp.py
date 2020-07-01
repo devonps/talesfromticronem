@@ -646,11 +646,7 @@ class SpellUtilities:
     @staticmethod
     def render_off_hand_spells(gameworld, player_entity, game_config, this_row):
         dungeon_font = "[font=dungeon]"
-        unicode_cooldown_disabled = dungeon_font + '[color=SPELLINFO_COOLDOWN_DISABLED]'
-        unicode_cooldown_enabled = dungeon_font + '[color=SPELLINFO_COOLDOWN_ACTIVE]'
         unicode_section_headers = dungeon_font + '[color=SPELLINFO_WEAPON_EQUIPPED]'
-        unicode_white_colour = dungeon_font + '[color=SPELLINFO_HOTKEY_ACTIVE]'
-
         slot = 4
         this_letter = 52
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
@@ -668,45 +664,49 @@ class SpellUtilities:
         this_row += 2
 
         for _ in range(2):
-            slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
-                                                                                   player_entity=player_entity)
-            if slot_spell_entity > 0:
-                cooldown_string_x = start_list_x + 1
-                name_string_x = start_list_x + 4
-                range_string_x = start_list_x + 31
-
-                spell_name, spell_range, spell_cooldown_value = SpellUtilities.get_spell_info_details(
-                    gameworld=gameworld, spell_entity=slot_spell_entity)
-
-                if spell_cooldown_value > 0:
-                    cooldown_colour = unicode_cooldown_enabled
-                else:
-                    spell_cooldown_value = 0
-                    cooldown_colour = unicode_cooldown_disabled
-
-                cooldown_string = cooldown_colour + ' ' + str(spell_cooldown_value)
-                name_string = unicode_white_colour + spell_name
-                range_string = unicode_white_colour + spell_range
-                terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
-                terminal.printf(x=name_string_x, y=this_row, s=name_string)
-                terminal.printf(x=range_string_x, y=this_row, s=range_string)
-
-            terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
-
+            SpellUtilities.render_spells_in_hand(gameworld=gameworld, slot=slot, player_entity=player_entity, start_list_x=start_list_x, this_row=this_row, this_letter=this_letter)
             this_row += 1
             this_letter += 1
             slot += 1
         return this_row, this_letter
 
     @staticmethod
+    def render_spells_in_hand(gameworld, slot, player_entity, start_list_x, this_row, this_letter):
+        dungeon_font = "[font=dungeon]"
+        unicode_cooldown_disabled = dungeon_font + '[color=SPELLINFO_COOLDOWN_DISABLED]'
+        unicode_cooldown_enabled = dungeon_font + '[color=SPELLINFO_COOLDOWN_ACTIVE]'
+        unicode_white_colour = dungeon_font + '[color=SPELLINFO_HOTKEY_ACTIVE]'
+        slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
+                                                                               player_entity=player_entity)
+        if slot_spell_entity > 0:
+            cooldown_string_x = start_list_x + 1
+            name_string_x = start_list_x + 4
+            range_string_x = start_list_x + 31
+
+            spell_name, spell_range, spell_cooldown_value = SpellUtilities.get_spell_info_details(
+                gameworld=gameworld, spell_entity=slot_spell_entity)
+
+            if spell_cooldown_value > 0:
+                cooldown_colour = unicode_cooldown_enabled
+            else:
+                spell_cooldown_value = 0
+                cooldown_colour = unicode_cooldown_disabled
+
+            cooldown_string = cooldown_colour + ' ' + str(spell_cooldown_value)
+            name_string = unicode_white_colour + spell_name
+            range_string = unicode_white_colour + spell_range
+            terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
+            terminal.printf(x=name_string_x, y=this_row, s=name_string)
+            terminal.printf(x=range_string_x, y=this_row, s=range_string)
+
+        terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
+
+    @staticmethod
     def render_main_hand_spells(gameworld, player_entity, game_config, this_row):
         this_letter = 49
         slot = 0
         dungeon_font = "[font=dungeon]"
-        unicode_cooldown_disabled = dungeon_font + '[color=SPELLINFO_COOLDOWN_DISABLED]'
-        unicode_cooldown_enabled = dungeon_font + '[color=SPELLINFO_COOLDOWN_ACTIVE]'
         unicode_section_headers = dungeon_font + '[color=SPELLINFO_WEAPON_EQUIPPED]'
-        unicode_white_colour = dungeon_font + '[color=SPELLINFO_HOTKEY_ACTIVE]'
 
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                                player_entity=player_entity)
@@ -723,31 +723,7 @@ class SpellUtilities:
         this_row += 2
 
         for _ in range(3):
-            slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
-                                                                                   player_entity=player_entity)
-            if slot_spell_entity > 0:
-                cooldown_string_x = start_list_x + 1
-                name_string_x = start_list_x + 4
-                range_string_x = start_list_x + 31
-
-                spell_name, spell_range, spell_cooldown_value = SpellUtilities.get_spell_info_details(
-                    gameworld=gameworld, spell_entity=slot_spell_entity)
-
-                if spell_cooldown_value > 0:
-                    cooldown_colour = unicode_cooldown_enabled
-                else:
-                    spell_cooldown_value = 0
-                    cooldown_colour = unicode_cooldown_disabled
-
-                cooldown_string = cooldown_colour + ' ' + str(spell_cooldown_value)
-                name_string = unicode_white_colour + spell_name
-                range_string = unicode_white_colour + spell_range
-                terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
-                terminal.printf(x=name_string_x, y=this_row, s=name_string)
-                terminal.printf(x=range_string_x, y=this_row, s=range_string)
-
-            terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
-
+            SpellUtilities.render_spells_in_hand(gameworld=gameworld, slot=slot, player_entity=player_entity, start_list_x=start_list_x, this_row=this_row, this_letter=this_letter)
             this_row += 1
             this_letter += 1
             slot += 1

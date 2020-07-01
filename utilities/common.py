@@ -11,8 +11,6 @@ class CommonUtils:
 
     @staticmethod
     def get_entity_at_location(gameworld, posx, posy):
-
-        logger.info('x/y pos passed in {}/{}', posx, posy)
         entity_id = 0
         for ent, pos in gameworld.get_components(mobiles.Position):
             entity_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)

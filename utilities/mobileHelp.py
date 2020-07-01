@@ -203,9 +203,6 @@ class MobileUtilities(numbers.Real, ABC):
         if direction == 'down':
             dx = 0
             dy = speed
-        logger.info('Direction chosen {}', direction)
-        logger.info('dx is {}', dx)
-        logger.info('dy is {}', dy)
 
         player_velocity_component.dx = dx
         player_velocity_component.dy = dy

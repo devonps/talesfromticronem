@@ -75,9 +75,7 @@ class Debug:
         posx = coords_clicked[0] + camera_x
         posy = coords_clicked[1] + camera_y
         # get entity id at position coords
-        logger.debug('Screen coords clicked {}', coords_clicked)
         entity_id = CommonUtils.get_entity_at_location(gameworld=gameworld, posx=posx, posy=posy)
-        logger.debug('Entity id at this location {}', entity_id)
 
         if entity_id > 0:
             # clear the underlying terminal

@@ -1,8 +1,6 @@
 import esper
 
 from components import mobiles
-from utilities import configUtilities
-from utilities.common import CommonUtils
 from utilities.gamemap import GameMapUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
@@ -28,8 +26,6 @@ class MoveEntities(esper.Processor):
                 py = position.y
 
                 am_i_blocked = self.check_for_blocked_movement(px + velocity.dx, py + velocity.dy)
-                if ent == player_entity:
-                    logger.debug('Player x/y map pos {}/{} before velocity', px, py)
                 if not am_i_blocked:
                     position.x += velocity.dx
                     position.y += velocity.dy
@@ -46,12 +42,7 @@ class MoveEntities(esper.Processor):
                         MobileUtilities.set_mobile_has_moved(self.gameworld, ent, True)
                         value = 'move:' + str(ent) + ':' + svx + ':' + svy
                         ReplayGame.update_game_replay_file(game_config, value)
-                        if ent == player_entity:
-                            logger.debug('Player x/y map pos {}/{} after velocity', px + velocity.dx, py + velocity.dy)
                 else:
-                    logger.debug('Entity id {}', ent)
-                    ent_name_list = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
-                    logger.debug('Entity name is {}', ent_name_list[0])
                     logger.debug(' cannot move to x/y {}/{}', position.x + velocity.dx, position.y + velocity.dy)
                 # regardless of making the move - reduce the velocity to zero
                 velocity.dx = 0
