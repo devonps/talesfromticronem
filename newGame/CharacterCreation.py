@@ -76,8 +76,6 @@ class CharacterCreation:
                                                                      'RACE_CONSOLE_FLAVOR_X')
         original_race_flavour_y = configUtilities.get_config_value_as_integer(game_config, 'newCharacter',
                                                                               'RACE_CONSOLE_FLAVOR_Y')
-        race_benefits_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter',
-                                                                      'RACE_CONSOLE_BENEFITS_X')
 
         #
         # LOAD PLAYABLE RACES FROM DISK
@@ -85,16 +83,8 @@ class CharacterCreation:
 
         race_name, race_flavour, race_bg_colour, race_size, race_benefits, race_name_desc = CharacterCreation.read_playable_races(game_config=game_config)
 
-        # read race attributes from disk
-        attribute_name, attribute_flavour = CharacterCreation.read_race_attributes(game_config=game_config)
-
         selected_menu_option = 0
         max_menu_option = len(race_name) - 1
-
-        dungeon_font = "[font=dungeon]"
-        unicode_attribute_names = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_NAME]'
-        unicode_attribute_flavour = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_FLAVOUR]'
-        unicode_benefit_title = dungeon_font + '[color=CREATE_CHARACTER_BENEFITS_TITLE]'
         start_row = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
                                                                 parameter='START_LIST_Y')
 
@@ -123,36 +113,49 @@ class CharacterCreation:
             CharacterCreation.print_array(strings_list=strings_list, startx=race_flavour_x, starty=original_race_flavour_y,
                                           width=spell_infobox_width)
 
-            race_benefits_y = flavour_text_length + original_race_flavour_y + 2
-
             # racial benefits
-            posy = 0
-            terminal.print_(x=race_benefits_x, y=race_benefits_y, s=unicode_benefit_title + 'Benefits')
-            for benefit in race_benefits:
-                if benefit[0] == selected_menu_option + 1:
-                    string_to_print = unicode_attribute_names + benefit[1]
-                    terminal.printf(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
-                    posy += 1
-                    posy = CharacterCreation.render_race_attributes(attribute_name=attribute_name, benefit=benefit, attribute_flavour=attribute_flavour, game_config=game_config, starty=race_benefits_y,posy=posy, unicode_attribute_flavour=unicode_attribute_flavour)
-                    posy += 1
+            race_benefits_y = flavour_text_length + original_race_flavour_y + 2
+            CharacterCreation.render_race_benefits(game_config=game_config, race_benefits=race_benefits, selected_menu_option=selected_menu_option, race_benefits_y=race_benefits_y)
             terminal.refresh()
             event_to_be_processed, event_action = handle_game_keys()
             if event_to_be_processed != '':
                 if event_action == 'quit':
                     show_character_options = False
-                if event_action == 'up':
-                    selected_menu_option -= 1
-                    if selected_menu_option < 0:
-                        selected_menu_option = max_menu_option
-                if event_action == 'down':
-                    selected_menu_option += 1
-                    if selected_menu_option > max_menu_option:
-                        selected_menu_option = 0
+                if event_action in ('up', 'down'):
+                    selected_menu_option = CharacterCreation.move_menu_selection(event_action=event_action,
+                                                                                 selected_menu_option=selected_menu_option,
+                                                                                 max_menu_option=max_menu_option)
                 if event_action == 'enter':
                     show_character_options = False
             terminal.clear()
         return race_name[selected_menu_option], race_size[selected_menu_option], race_bg_colour[selected_menu_option], race_name_desc[selected_menu_option]
 
+    @staticmethod
+    def render_race_benefits(game_config, race_benefits, selected_menu_option, race_benefits_y):
+        race_benefits_x = configUtilities.get_config_value_as_integer(game_config, 'newCharacter',
+                                                                      'RACE_CONSOLE_BENEFITS_X')
+        dungeon_font = "[font=dungeon]"
+        unicode_benefit_title = dungeon_font + '[color=CREATE_CHARACTER_BENEFITS_TITLE]'
+
+        # racial benefits
+        terminal.print_(x=race_benefits_x, y=race_benefits_y, s=unicode_benefit_title + 'Benefits')
+        unicode_attribute_names = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_NAME]'
+        unicode_attribute_flavour = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_FLAVOUR]'
+        posy = 0
+        # read race attributes from disk
+        attribute_name, attribute_flavour = CharacterCreation.read_race_attributes(game_config=game_config)
+
+        for benefit in race_benefits:
+            if benefit[0] == selected_menu_option + 1:
+                string_to_print = unicode_attribute_names + benefit[1]
+                terminal.printf(x=race_benefits_x, y=(race_benefits_y + 2) + posy, s=string_to_print)
+                posy += 1
+                posy = CharacterCreation.render_race_attributes(attribute_name=attribute_name, benefit=benefit,
+                                                                attribute_flavour=attribute_flavour,
+                                                                game_config=game_config, starty=race_benefits_y,
+                                                                posy=posy,
+                                                                unicode_attribute_flavour=unicode_attribute_flavour)
+                posy += 1
 
     @staticmethod
     def choose_class():
@@ -201,17 +204,23 @@ class CharacterCreation:
             if event_to_be_processed != '':
                 if event_action == 'quit':
                     show_character_options = False
-                if event_action == 'up':
-                    selected_menu_option -= 1
-                    if selected_menu_option < 0:
-                        selected_menu_option = max_menu_option
-                if event_action == 'down':
-                    selected_menu_option += 1
-                    if selected_menu_option > max_menu_option:
-                        selected_menu_option = 0
+                if event_action in ('up', 'down'):
+                    selected_menu_option = CharacterCreation.move_menu_selection(event_action=event_action, selected_menu_option=selected_menu_option, max_menu_option=max_menu_option)
                 if event_action == 'enter':
                     show_character_options = False
         return character_class_name[selected_menu_option], int(class_health[selected_menu_option]), class_spell_file[selected_menu_option]
+
+    @staticmethod
+    def move_menu_selection(event_action, selected_menu_option, max_menu_option):
+        if event_action == 'up':
+            selected_menu_option -= 1
+            if selected_menu_option < 0:
+                selected_menu_option = max_menu_option
+        if event_action == 'down':
+            selected_menu_option += 1
+            if selected_menu_option > max_menu_option:
+                selected_menu_option = 0
+        return selected_menu_option
 
     @staticmethod
     def read_playable_classes(game_config):
@@ -456,15 +465,20 @@ class CharacterCreation:
                     CharacterCreation.assign_name_to_character(gameworld=gameworld, player_entity=player_entity, selected_name=my_word)
                 else:
                     key_pressed = 65 + event_action
-                    if (64 < key_pressed < 91) or (96 < key_pressed < 123):
-                        terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=chr(key_pressed))
-                        my_word += chr(key_pressed)
-                        letter_count += 1
+                    my_word, letter_count = CharacterCreation.add_letter_to_word(key_pressed=key_pressed, txt_panel_cursor_x=txt_panel_cursor_x, letter_count=letter_count, txt_panel_cursor_y=txt_panel_cursor_y, my_word=my_word)
 
             # display letters remaining
             letters_remaining = max_letters - letter_count
             letters_left = ' ' + str(letters_remaining) + ' letters left '
             terminal.printf(x=txt_panel_letters_x, y=txt_panel_cursor_y, s=unicode_name_letters_left + letters_left)
+
+    @staticmethod
+    def add_letter_to_word(key_pressed, txt_panel_cursor_x, letter_count, txt_panel_cursor_y, my_word):
+        if (64 < key_pressed < 91) or (96 < key_pressed < 123):
+            terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=chr(key_pressed))
+            my_word += chr(key_pressed)
+            letter_count += 1
+        return my_word, letter_count
 
     @staticmethod
     def assign_name_to_character(gameworld, player_entity, selected_name):
