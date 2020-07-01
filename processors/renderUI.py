@@ -111,7 +111,7 @@ class RenderUI(esper.Processor):
         original_char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
                                                                       config_prefix=config_prefix_empty,
                                                                       tile_assignment=0)
-        unicode_string_to_print = '[font=dungeon]['
+        unicode_string_to_print = '['
         colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
         fov_map = FieldOfView(game_map=game_map)
         player_fov = FieldOfView.create_fov_from_raycasting(fov_map, startx=player_map_pos_x, starty=player_map_pos_y,
@@ -138,10 +138,15 @@ class RenderUI(esper.Processor):
                         char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
                                                                              config_prefix=config_prefix_floor,
                                                                              tile_assignment=0)
+                        colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                                 section='colorCodes',
+                                                                                 parameter='FLOOR_INSIDE_FOV')
+
                     if tile == tile_type_wall:
                         char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
                                                                              config_prefix=config_prefix_wall,
                                                                              tile_assignment=tile_assignment)
+
                     if tile == tile_type_door:
                         char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
                                                                              config_prefix=config_prefix_door,
@@ -153,6 +158,9 @@ class RenderUI(esper.Processor):
                         char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
                                                                              config_prefix=config_prefix_floor,
                                                                              tile_assignment=0)
+                        colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                                 section='colorCodes',
+                                                                                 parameter='FLOOR_OUTSIDE_FOV')
                     if tile == tile_type_wall:
                         char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
                                                                              config_prefix=config_prefix_wall,
