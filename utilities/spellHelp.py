@@ -645,8 +645,7 @@ class SpellUtilities:
 
     @staticmethod
     def render_off_hand_spells(gameworld, player_entity, game_config, this_row):
-        dungeon_font = "[font=dungeon]"
-        unicode_section_headers = dungeon_font + '[color=SPELLINFO_WEAPON_EQUIPPED]'
+        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes', parameter='SPELL_UI_SECTION_HEADERS')
         slot = 4
         this_letter = 52
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
@@ -705,8 +704,7 @@ class SpellUtilities:
     def render_main_hand_spells(gameworld, player_entity, game_config, this_row):
         this_letter = 49
         slot = 0
-        dungeon_font = "[font=dungeon]"
-        unicode_section_headers = dungeon_font + '[color=SPELLINFO_WEAPON_EQUIPPED]'
+        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes', parameter='SPELL_UI_SECTION_HEADERS')
 
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                                player_entity=player_entity)
@@ -736,7 +734,7 @@ class SpellUtilities:
         dungeon_font = "[font=dungeon]"
         unicode_cooldown_disabled = dungeon_font + '[color=SPELLINFO_COOLDOWN_DISABLED]'
         unicode_cooldown_enabled = dungeon_font + '[color=SPELLINFO_COOLDOWN_ACTIVE]'
-        unicode_section_headers = dungeon_font + '[color=SPELLINFO_WEAPON_EQUIPPED]'
+        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes', parameter='SPELL_UI_SECTION_HEADERS')
         unicode_white_colour = dungeon_font + '[color=SPELLINFO_HOTKEY_ACTIVE]'
 
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,

@@ -107,8 +107,8 @@ class RenderSpellInfoPanel(esper.Processor):
 
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                parameter='JEWELLERY_SPELL_Y')
-        dungeon_font = "[font=dungeon]"
-        unicode_section_headers = dungeon_font + '[color=SPELLINFO_JEWELLERY_EQUIPPED]'
+
+        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=self.game_config, section='colorCodes', parameter='SPELL_UI_SECTION_HEADERS')
 
         this_letter = 70
         this_row += 1
@@ -315,8 +315,8 @@ class RenderSpellInfoPanel(esper.Processor):
 
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                parameter='ARMOUR_SPELL_Y')
-        dungeon_font = '[font=dungeon]'
-        unicode_section_headers = dungeon_font + '[color=SPELLINFO_ARMOUR_EQUIPPED]'
+
+        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=self.game_config, section='colorCodes', parameter='SPELL_UI_SECTION_HEADERS')
 
         this_letter = 65
         this_row += 1
@@ -375,7 +375,8 @@ class RenderSpellInfoPanel(esper.Processor):
 
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='UTILITY_SPELL_Y')
-        unicode_section_headers = '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]'
+
+        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=self.game_config, section='colorCodes', parameter='SPELL_UI_SECTION_HEADERS')
         unicode_cooldown_disabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_DISABLED]'
         unicode_cooldown_enabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_ACTIVE]'
         unicode_white_colour = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]'
@@ -422,7 +423,8 @@ class RenderSpellInfoPanel(esper.Processor):
 
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='HEALING_SPELL_Y')
-        unicode_section_headers = '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]'
+
+        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=self.game_config, section='colorCodes', parameter='SPELL_UI_SECTION_HEADERS')
         unicode_cooldown_disabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_DISABLED]'
         unicode_cooldown_enabled = '[font=dungeon][color=SPELLINFO_COOLDOWN_ACTIVE]'
         unicode_white_colour = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]'
