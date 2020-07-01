@@ -224,7 +224,7 @@ class RenderSpellInfoPanel(esper.Processor):
                                                                        player_map_pos_y=player_map_y,
                                                                        game_map=self.game_map)
             terminal.printf(x=(mana_start_x + 5), y=mana_start_y + 2, s=colour_code_player_debug + 'Player map pos x/y ' + str(player_map_x) + '/' + str(player_map_y))
-            terminal.printf(x=(mana_start_x + 5), y=mana_start_y + 3, s=colour_code_player_debug + 'Camera starts x/y ' + str(camera_x) + '/' + str(camera_y))
+            terminal.printf(x=(mana_start_x + 5), y=mana_start_y + 3, s=colour_code_player_debug + 'Camera starts map x/y ' + str(camera_x) + '/' + str(camera_y))
 
     #
     # formally known as the F1 bar

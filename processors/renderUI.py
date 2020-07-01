@@ -98,7 +98,7 @@ class RenderUI(esper.Processor):
                                                                    parameter='VIEWPORT_WIDTH')
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='VIEWPORT_HEIGHT')
-
+        # this holds the start x/y map positions left of the players current position
         camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width, camera_height=camera_height,
                                                                 player_map_pos_x=player_map_pos_x,
                                                                 player_map_pos_y=player_map_pos_y, game_map=game_map)
@@ -120,15 +120,16 @@ class RenderUI(esper.Processor):
         if player_has_moved:
             RenderUI.clear_map_layer()
 
-        for y in range(camera_height):
-            for x in range(camera_width):
+        for scr_pos_y in range(camera_height):
+            cam_x = camera_x
+            for scr_pos_x in range(camera_width):
                 char_to_display = original_char_to_display
-                map_x = int(camera_x + x)
-                map_y = int(camera_y + y)
+                map_x = cam_x
+                map_y = camera_y
                 print_char = False
                 tile = game_map.tiles[map_x][map_y].type_of_tile
                 tile_assignment = game_map.tiles[map_x][map_y].assignment
-                visible = FieldOfView.get_fov_map_point(player_fov, x, y)
+                visible = FieldOfView.get_fov_map_point(player_fov, map_x, map_y)
                 if visible:
                     colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
                     print_char = True
@@ -145,7 +146,7 @@ class RenderUI(esper.Processor):
                         char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
                                                                              config_prefix=config_prefix_door,
                                                                              tile_assignment=0)
-                elif game_map.tiles[x][y].explored:
+                elif game_map.tiles[map_x][map_y].explored:
                     colour_code = "[color=grey]"
                     print_char = True
                     if tile == tile_type_floor:
@@ -162,28 +163,18 @@ class RenderUI(esper.Processor):
                                                                              tile_assignment=0)
                 if print_char and tile > 0:
                     string_to_print = colour_code + unicode_string_to_print + char_to_display + ']'
-                    terminal.printf(x=x, y=y, s=string_to_print)
+                    terminal.printf(x=scr_pos_x, y=scr_pos_y, s=string_to_print)
+                cam_x += 1
+            camera_y += 1
 
         return player_fov
 
     @staticmethod
-    def calculate_camera_position(camera_width, camera_height, player_map_pos_x, player_map_pos_y, game_map):
-        x = player_map_pos_x - camera_width / 2
-        y = player_map_pos_y - camera_height / 2
+    def to_camera_coordinates(game_config, game_map, x, y, gameworld):
 
-        if x < 0:
-            x = 0
-        if y < 0:
-            y = 0
-        if x > game_map.width - camera_width - 1:
-            x = game_map.width - camera_width - 1
-        if y > game_map.height - camera_height - 1:
-            y = game_map.height - camera_height - 1
-
-        return x, y
-
-    @staticmethod
-    def to_camera_coordinates(game_config, game_map, x, y):
+        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        player_map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        player_map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
 
         camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                    parameter='VIEWPORT_WIDTH')
@@ -191,13 +182,13 @@ class RenderUI(esper.Processor):
                                                                     parameter='VIEWPORT_HEIGHT')
 
         camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width, camera_height=camera_height,
-                                                                player_map_pos_x=x, player_map_pos_y=y,
+                                                                player_map_pos_x=player_map_pos_x, player_map_pos_y=player_map_pos_y,
                                                                 game_map=game_map)
 
         (x, y) = (x - camera_x, y - camera_y)
 
         if x < 0 or y < 0 or x >= camera_width or y >= camera_height:
-            return None, None  # if it's outside the view, return nothing
+            return -99, -99  # if it's outside the view, return nothing
 
         return int(x), int(y)
 
@@ -209,14 +200,18 @@ class RenderUI(esper.Processor):
         for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
                                                                mobiles.Describable):
             if rend.isVisible:
-                map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
-                map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
 
-                fg = desc.foreground
-                bg = desc.background
-                RenderUI.render_entity(posx=map_pos_x, posy=map_pos_y, glyph=desc.glyph, fg=fg, bg=bg)
-                if ent != player_entity:
-                    visible_entities.append(ent)
+                x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
+                y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
+                visible = FieldOfView.get_fov_map_point(fov_map, x, y)
+                if visible:
+                    (x, y) = RenderUI.to_camera_coordinates(game_config=game_config, game_map=game_map, x=x, y=y, gameworld=gameworld)
+                    if x != -99:
+                        fg = desc.foreground
+                        bg = desc.background
+                        RenderUI.render_entity(posx=x, posy=y, glyph=desc.glyph, fg=fg, bg=bg)
+                        if ent != player_entity:
+                            visible_entities.append(ent)
 
         MobileUtilities.set_visible_entities(gameworld=gameworld, target_entity=player_entity,
                                              visible_entities=visible_entities)

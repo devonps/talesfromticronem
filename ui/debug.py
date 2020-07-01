@@ -58,9 +58,25 @@ class Debug:
 
     @staticmethod
     def entity_spy(gameworld, game_config, coords_clicked, game_map):
+
+        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        player_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        player_map_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
+        camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                   parameter='VIEWPORT_WIDTH')
+        camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='VIEWPORT_HEIGHT')
+
+        camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width,
+                                                                   camera_height=camera_height,
+                                                                   player_map_pos_x=player_map_x,
+                                                                   player_map_pos_y=player_map_y,
+                                                                   game_map=game_map)
+        posx = coords_clicked[0] + camera_x
+        posy = coords_clicked[1] + camera_y
         # get entity id at position coords
-        logger.debug('Coords clicked {}', coords_clicked)
-        entity_id = CommonUtils.get_entity_at_location(gameworld=gameworld, coords=coords_clicked)
+        logger.debug('Screen coords clicked {}', coords_clicked)
+        entity_id = CommonUtils.get_entity_at_location(gameworld=gameworld, posx=posx, posy=posy)
         logger.debug('Entity id at this location {}', entity_id)
 
         if entity_id > 0:

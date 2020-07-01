@@ -2,6 +2,7 @@ import esper
 
 from components import mobiles
 from utilities import configUtilities
+from utilities.common import CommonUtils
 from utilities.gamemap import GameMapUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
@@ -19,58 +20,42 @@ class MoveEntities(esper.Processor):
 
         message_log_just_viewed = MobileUtilities.get_view_message_log_value(gameworld=self.gameworld, entity=player_entity)
         if not message_log_just_viewed:
+            #
+            # this works off the game map positioning AND NOT THE SCREEN POSITION
+            #
+            for ent, (velocity, position) in self.gameworld.get_components(mobiles.Velocity, mobiles.Position):
+                px = position.x
+                py = position.y
 
-            viewport_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='VIEWPORT_WIDTH')
-
-            vpx = MobileUtilities.get_player_viewport_x(gameworld=self.gameworld, entity=player_entity)
-            vpy = MobileUtilities.get_player_viewport_y(gameworld=self.gameworld, entity=player_entity)
-
-            for ent, (vel, pos) in self.gameworld.get_components(mobiles.Velocity, mobiles.Position):
-                am_i_blocked = self.check_for_blocked_movement(pos.x + vel.dx, pos.y + vel.dy)
-
-                logger.warning('-----------------------------')
-                logger.info('Entity id {}', ent)
-                logger.info('Entity map x/y {}/{}', pos.x, pos.y)
-                logger.warning('-----------------------------')
-
+                am_i_blocked = self.check_for_blocked_movement(px + velocity.dx, py + velocity.dy)
+                if ent == player_entity:
+                    logger.debug('Player x/y map pos {}/{} before velocity', px, py)
                 if not am_i_blocked:
-                    pos.x += vel.dx
-                    pos.y += vel.dy
-                    vpx += vel.dx
-                    vpy += vel.dy
+                    position.x += velocity.dx
+                    position.y += velocity.dy
 
-
-
-                    if ent == player_entity:
-                        MobileUtilities.set_player_viewport_x(gameworld=self.gameworld, entity=player_entity, value=vpx)
-                        MobileUtilities.set_player_viewport_y(gameworld=self.gameworld, entity=player_entity, value=vpy)
-
-                    if vpx >= (viewport_width - 8):
-                        configUtilities.set_config_value(configfile=game_config, section='gui',
-                                                         parameter='VIEWPORT_RIGHT_VISITED', value='True')
-
-                    if vpx - 8 <= 0:
-                        configUtilities.set_config_value(configfile=game_config, section='gui',
-                                                         parameter='VIEWPORT_LEFT_VISITED', value='True')
-
-                    if vel.dx != 0 or vel.dy != 0:
+                    if velocity.dx != 0 or velocity.dy != 0:
                         svx = '0'
                         svy = '0'
 
-                        if vel.dx != 0:
-                            svx = str(vel.dx)
-                        if vel.dy != 0:
-                            svy = str(vel.dy)
+                        if velocity.dx != 0:
+                            svx = str(velocity.dx)
+                        if velocity.dy != 0:
+                            svy = str(velocity.dy)
 
                         MobileUtilities.set_mobile_has_moved(self.gameworld, ent, True)
                         value = 'move:' + str(ent) + ':' + svx + ':' + svy
                         ReplayGame.update_game_replay_file(game_config, value)
+                        if ent == player_entity:
+                            logger.debug('Player x/y map pos {}/{} after velocity', px + velocity.dx, py + velocity.dy)
                 else:
-                    logger.debug(' cannot move to x/y {}/{}', pos.x + vel.dx, pos.y + vel.dy)
+                    logger.debug('Entity id {}', ent)
+                    ent_name_list = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
+                    logger.debug('Entity name is {}', ent_name_list[0])
+                    logger.debug(' cannot move to x/y {}/{}', position.x + velocity.dx, position.y + velocity.dy)
                 # regardless of making the move - reduce the velocity to zero
-                vel.dx = 0
-                vel.dy = 0
+                velocity.dx = 0
+                velocity.dy = 0
 
     # check if new position would cause a collision with a blockable tile
     def check_for_blocked_movement(self, newx, newy):
