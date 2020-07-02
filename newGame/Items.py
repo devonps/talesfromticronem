@@ -98,10 +98,20 @@ class ItemManager:
                 # create jewellery entity
                 pendant = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck',
                                                        e_setting='copper', e_hook='copper', e_activator=neck_gemstone)
-                left_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear',
+
+                sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=pendant)
+                logger.info('Pendant has spell {} attached to it', sp1)
+
+                left_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='earring1',
                                                         e_setting='copper', e_hook='copper', e_activator=ear1_gemstone)
-                right_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear',
+                sp2 = gameworld.component_for_entity(left_ear, items.JewellerySpell).entity
+                logger.info('left ear has spell entity {} attached to it', sp2)
+
+                right_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='earring2',
                                                          e_setting='copper', e_hook='copper', e_activator=ear2_gemstone)
+                sp3 = gameworld.component_for_entity(right_ear, items.JewellerySpell).entity
+                logger.info('right ear has spell entity {} attached to it', sp3)
+
                 # equip jewellery entity to player character
                 ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='neck',
                                               trinket=pendant)
@@ -122,6 +132,15 @@ class ItemManager:
                 jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ear)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
+        # items = ['neck', 'earring1', 'earring2']
+        # item = 'neck'
+        # for spell_entity, (name, location, spell_type, item_type) in gameworld.get_components(spells.Name, spells.ItemLocation, spells.SpellType, spells.ItemType):
+        #     if spell_type.label == 'utility':
+        #         if item_type.label == 'jewellery':
+        #             if location.label == item:
+        #                 logger.debug('==== spell identified as  {} ====', spell_entity)
+
+
 
     @staticmethod
     def create_and_equip_jewellery_for_npc(gameworld, entity_id, jewellery_set, npc_class_file):
@@ -360,6 +379,11 @@ class ItemManager:
         gemstone_file = jsonUtilities.read_json_file(gemstones_file_path)
         gemstone_string = ' gemstone.'
 
+        if bodylocation == 'earring1':
+            bdl = 'ear'
+        else:
+            bdl = bodylocation
+
         for gemstone in gemstone_file['gemstones']:
             file_gemstone = gemstone['Stone'].lower()
             if file_gemstone == trinket_activator:
@@ -378,8 +402,20 @@ class ItemManager:
                 gameworld.add_component(piece_of_jewellery,
                                         items.JewelleryComponents(setting=trinket_setting, hook=trinket_hook,
                                                                   activator=trinket_activator))
+                gameworld.add_component(piece_of_jewellery, items.JewellerySpell)
 
-                if 'ear' in bodylocation:
+                for spell_entity, (name, location, spell_type, item_type, spclass) in gameworld.get_components(spells.Name,
+                                                                                                      spells.ItemLocation,
+                                                                                                      spells.SpellType,
+                                                                                                      spells.ItemType, spells.ClassName):
+                    if spclass.label == 'necromancer':
+                        if spell_type.label == 'utility':
+                            if item_type.label == 'jewellery':
+                                if location.label == bodylocation:
+                                    logger.debug('==== spell identified as  {} ====', spell_entity)
+                                    ItemUtilities.add_spell_to_jewellery(gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, spell_entity=spell_entity)
+
+                if 'ear' in bdl:
                     # create an earring
                     desc += ' earring, offset with a ' + trinket_activator + gemstone_string
                     nm = 'earring'
@@ -387,7 +423,7 @@ class ItemManager:
                     gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
                         statname=gemstone['Attribute'],
                         statbonus=gemstone['Earring']))
-                elif bodylocation == 'neck':
+                elif bdl == 'neck':
                     # create an amulet
                     desc += ' amulet, offset with a ' + trinket_activator + gemstone_string
                     nm = 'amulet'

@@ -224,3 +224,8 @@ class JewelleryComponents:
         self.setting = setting
         self.hook = hook
         self.activator = activator
+
+
+class JewellerySpell:
+    def __init__(self, entity=0):
+        self.entity = entity

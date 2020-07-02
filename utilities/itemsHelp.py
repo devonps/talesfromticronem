@@ -2,7 +2,7 @@ import random
 
 from loguru import logger
 
-from components import items, mobiles
+from components import items, mobiles, spells
 from utilities import world
 
 
@@ -526,3 +526,16 @@ class ItemUtilities:
             current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision
             new_stat_bonus = current_stat_bonus + benefit
             gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision=new_stat_bonus
+
+    @staticmethod
+    def add_spell_to_jewellery(gameworld, piece_of_jewellery, spell_entity):
+        gameworld.add_component(piece_of_jewellery, items.JewellerySpell(entity=spell_entity))
+
+    @staticmethod
+    def get_spell_from_item(gameworld, item_entity):
+        item_type_component = gameworld.component_for_entity(item_entity, items.TypeOfItem)
+
+        if item_type_component.label == 'jewellery':
+            spell_entity = gameworld.component_for_entity(item_entity, items.JewellerySpell).entity
+            spell_name_component = gameworld.component_for_entity(spell_entity, spells.Name)
+            return spell_name_component.label
