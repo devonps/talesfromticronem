@@ -5,6 +5,7 @@ from bearlibterminal import terminal
 from loguru import logger
 
 from newGame.CreateSpells import AsEntities
+from newGame.Items import ItemManager
 from utilities import configUtilities, colourUtilities
 from utilities.display import draw_colourful_frame, pointy_menu, draw_simple_frame
 from utilities.input_handlers import handle_game_keys
@@ -413,6 +414,10 @@ class CharacterCreation:
 
         # assign male gender to character
         MobileUtilities.set_player_gender(gameworld=gameworld, entity=player, gender='male')
+
+        # create jewellery set based on the balanced package
+        # this is a temp approach being used for utility spells
+        ItemManager.create_jewellery_for_utility_spells(gameworld=gameworld, game_config=game_config)
 
     @staticmethod
     def character_naming(gameworld, game_config):
