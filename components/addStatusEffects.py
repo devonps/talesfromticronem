@@ -51,11 +51,6 @@ def add_class_resource(gameworld, entity, effect, resource_value):
 def add_condition(gameworld, entity, effect, condi_value):
     if effect == 'bleeding':
         gameworld.add_component(entity, condis.Bleeding())
-        
-        has_spell_got_bleeding = check_if_entity_has_component(gameworld=gameworld, entity=entity, component=condis.Bleeding)
-        # logger.warning('Has spell got bleeding component {}', has_spell_got_bleeding)
-        bleed_component = gameworld.component_for_entity(entity=entity, component_type=condis.Bleeding)
-        # logger.debug('Component label is {}', bleed_component.condition_status_effect)
 
     if effect == 'burning':
         gameworld.add_component(entity, condis.Burning())

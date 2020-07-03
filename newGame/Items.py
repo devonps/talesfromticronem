@@ -125,15 +125,6 @@ class ItemManager:
                 jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ear)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
-        # items = ['neck', 'earring1', 'earring2']
-        # item = 'neck'
-        # for spell_entity, (name, location, spell_type, item_type) in gameworld.get_components(spells.Name, spells.ItemLocation, spells.SpellType, spells.ItemType):
-        #     if spell_type.label == 'utility':
-        #         if item_type.label == 'jewellery':
-        #             if location.label == item:
-        #                 logger.debug('==== spell identified as  {} ====', spell_entity)
-
-
 
     @staticmethod
     def create_and_equip_jewellery_for_npc(gameworld, entity_id, jewellery_set, npc_class_file):
@@ -209,7 +200,7 @@ class ItemManager:
         pxstring = 'prefix'
         attnamestring = 'attributename'
         attvaluestring = 'attributebonus'
-        display = ''
+        piece_of_armour = ''
         defense = ''
 
         for armourset in armour_set_file['armoursets']:
@@ -221,23 +212,23 @@ class ItemManager:
                 attribute_bonus_count = armourset['attributebonuscount']
                 if bodylocation == 'head':
                     gameworld.add_component(armour_piece, items.ArmourBodyLocation(head=True))
-                    display = armourset['head']['display']
+                    piece_of_armour = armourset['head']['display']
                     defense = armourset['head']['defense']
                 if bodylocation == 'chest':
                     gameworld.add_component(armour_piece, items.ArmourBodyLocation(chest=True))
-                    display = armourset['chest']['display']
+                    piece_of_armour = armourset['chest']['display']
                     defense = armourset['chest']['defense']
                 if bodylocation == 'hands':
                     gameworld.add_component(armour_piece, items.ArmourBodyLocation(hands=True))
-                    display = armourset['hands']['display']
+                    piece_of_armour = armourset['hands']['display']
                     defense = armourset['hands']['defense']
                 if bodylocation == 'feet':
                     gameworld.add_component(armour_piece, items.ArmourBodyLocation(feet=True))
-                    display = armourset['feet']['display']
+                    piece_of_armour = armourset['feet']['display']
                     defense = armourset['feet']['defense']
                 if bodylocation == 'legs':
                     gameworld.add_component(armour_piece, items.ArmourBodyLocation(legs=True))
-                    display = armourset['legs']['display']
+                    piece_of_armour = armourset['legs']['display']
                     defense = armourset['legs']['defense']
 
                 for px in range(1, prefix_count + 1):
@@ -260,10 +251,10 @@ class ItemManager:
         gameworld.add_component(armour_piece, items.Describable(
             name=bodylocation + ' armour',
             glyph=")",
-            description='a ' + display + ' made from ' + as_material,
+            description='a ' + piece_of_armour + ' made from ' + as_material,
             fg=colourUtilities.get('WHITE'),
             bg=colourUtilities.get('BLACK'),
-            displayname=display))
+            displayname=piece_of_armour))
         gameworld.add_component(armour_piece, items.RenderItem(istrue=True))
         gameworld.add_component(armour_piece, items.Quality(level=as_quality))
         gameworld.add_component(armour_piece, items.ArmourSpell())
@@ -401,11 +392,8 @@ class ItemManager:
                                                                                                       spells.ItemLocation,
                                                                                                       spells.SpellType,
                                                                                                       spells.ItemType, spells.ClassName):
-                    if spclass.label == 'necromancer':
-                        if spell_type.label == 'utility':
-                            if item_type.label == 'jewellery':
-                                if location.label == bodylocation:
-                                    ItemUtilities.add_spell_to_jewellery(gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, spell_entity=spell_entity)
+                    if spclass.label == 'necromancer' and spell_type.label == 'utility' and item_type.label == 'jewellery' and location.label == bodylocation:
+                        ItemUtilities.add_spell_to_jewellery(gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, spell_entity=spell_entity)
 
                 if 'ear' in bdl:
                     # create an earring
