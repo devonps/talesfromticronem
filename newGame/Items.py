@@ -210,37 +210,12 @@ class ItemManager:
                 as_material = (armourset['material'])
                 prefix_count = armourset['prefixcount']
                 attribute_bonus_count = armourset['attributebonuscount']
-                if bodylocation == 'head':
-                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(head=True))
-                    piece_of_armour = armourset['head']['display']
-                    defense = armourset['head']['defense']
-                if bodylocation == 'chest':
-                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(chest=True))
-                    piece_of_armour = armourset['chest']['display']
-                    defense = armourset['chest']['defense']
-                if bodylocation == 'hands':
-                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(hands=True))
-                    piece_of_armour = armourset['hands']['display']
-                    defense = armourset['hands']['defense']
-                if bodylocation == 'feet':
-                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(feet=True))
-                    piece_of_armour = armourset['feet']['display']
-                    defense = armourset['feet']['defense']
-                if bodylocation == 'legs':
-                    gameworld.add_component(armour_piece, items.ArmourBodyLocation(legs=True))
-                    piece_of_armour = armourset['legs']['display']
-                    defense = armourset['legs']['defense']
+                piece_of_armour, defense = ItemManager.process_armour_bodylocation(gameworld=gameworld, bodylocation=bodylocation, armour_piece=armour_piece, armourset=armourset)
 
                 for px in range(1, prefix_count + 1):
                     prefix_string = pxstring + str(px)
                     if armourset[prefix_string]['name'].lower() == prefix.lower():
-                        if attribute_bonus_count > 1:
-                            att_bonus_string = attvaluestring + str(px)
-                            att_name_string = attnamestring + str(px)
-                        else:
-                            att_bonus_string = attvaluestring + str(1)
-                            att_name_string = attnamestring + str(1)
-
+                        att_bonus_string, att_name_string = ItemManager.process_armour_attribute_bonus(attribute_bonus_count=attribute_bonus_count, attvaluestring=attvaluestring, px=px, attnamestring=attnamestring)
                         px_att_bonus = armourset[prefix_string][att_bonus_string]
                         px_att_name = armourset[prefix_string][att_name_string]
 
@@ -276,6 +251,43 @@ class ItemManager:
         ItemManager.add_spell_to_piece_of_armour(gameworld=gameworld, bodylocation=bodylocation, armour_piece=armour_piece)
 
         return armour_piece
+
+    @staticmethod
+    def process_armour_attribute_bonus(attribute_bonus_count, attvaluestring, px, attnamestring):
+        if attribute_bonus_count > 1:
+            att_bonus_string = attvaluestring + str(px)
+            att_name_string = attnamestring + str(px)
+        else:
+            att_bonus_string = attvaluestring + str(1)
+            att_name_string = attnamestring + str(1)
+        return att_bonus_string, att_name_string
+
+
+    @staticmethod
+    def process_armour_bodylocation(gameworld, bodylocation, armour_piece, armourset):
+        piece_of_armour = ''
+        defense = 0
+        if bodylocation == 'head':
+            gameworld.add_component(armour_piece, items.ArmourBodyLocation(head=True))
+            piece_of_armour = armourset['head']['display']
+            defense = armourset['head']['defense']
+        if bodylocation == 'chest':
+            gameworld.add_component(armour_piece, items.ArmourBodyLocation(chest=True))
+            piece_of_armour = armourset['chest']['display']
+            defense = armourset['chest']['defense']
+        if bodylocation == 'hands':
+            gameworld.add_component(armour_piece, items.ArmourBodyLocation(hands=True))
+            piece_of_armour = armourset['hands']['display']
+            defense = armourset['hands']['defense']
+        if bodylocation == 'feet':
+            gameworld.add_component(armour_piece, items.ArmourBodyLocation(feet=True))
+            piece_of_armour = armourset['feet']['display']
+            defense = armourset['feet']['defense']
+        if bodylocation == 'legs':
+            gameworld.add_component(armour_piece, items.ArmourBodyLocation(legs=True))
+            piece_of_armour = armourset['legs']['display']
+            defense = armourset['legs']['defense']
+        return piece_of_armour, defense
 
     @staticmethod
     def add_spell_to_piece_of_armour(gameworld, bodylocation, armour_piece):
@@ -363,10 +375,7 @@ class ItemManager:
         gemstone_file = jsonUtilities.read_json_file(gemstones_file_path)
         gemstone_string = ' gemstone.'
 
-        if bodylocation == 'earring1':
-            bdl = 'ear'
-        else:
-            bdl = bodylocation
+        bdl = ItemManager.define_jewellery_bodylocation_string(bodylocation=bodylocation)
 
         for gemstone in gemstone_file['gemstones']:
             file_gemstone = gemstone['Stone'].lower()
@@ -394,31 +403,12 @@ class ItemManager:
                                                                                                       spells.ItemType, spells.ClassName):
                     if spclass.label == 'necromancer' and spell_type.label == 'utility' and item_type.label == 'jewellery' and location.label == bodylocation:
                         ItemUtilities.add_spell_to_jewellery(gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, spell_entity=spell_entity)
-
-                if 'ear' in bdl:
-                    # create an earring
-                    desc += ' earring, offset with a ' + trinket_activator + gemstone_string
-                    nm = 'earring'
-                    gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(ears=True))
-                    gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
-                        statname=gemstone['Attribute'],
-                        statbonus=gemstone['Earring']))
-                elif bdl == 'neck':
-                    # create an amulet
-                    desc += ' amulet, offset with a ' + trinket_activator + gemstone_string
-                    nm = 'amulet'
-                    gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(neck=True))
-                    gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
-                        statname=gemstone['Attribute'],
-                        statbonus=gemstone['Amulet']))
-                else:
-                    # create a ring
-                    desc += ' ring, offset with a ' + trinket_activator + gemstone_string
-                    nm = 'ring'
-                    gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(fingers=True))
-                    gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
-                        statname=gemstone['Attribute'],
-                        statbonus=gemstone['Ring']))
+                    return_desc, nm = ItemManager.earring_processing(bdl=bdl, trinket_activator=trinket_activator, gemstone_string=gemstone_string, gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, gemstone_attribute=gemstone['Attribute'], gemstone_bonus=gemstone['Earring'])
+                    desc += return_desc
+                    return_desc, nm = ItemManager.pendant_processing(bdl=bdl, trinket_activator=trinket_activator, gemstone_string=gemstone_string, gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, gemstone_attribute=gemstone['Attribute'], gemstone_bonus=gemstone['Amulet'])
+                    desc += return_desc
+                    return_desc, nm = ItemManager.hands_processing(bdl=bdl, trinket_activator=trinket_activator, gemstone_string=gemstone_string, gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, gemstone_attribute=gemstone['Attribute'], gemstone_bonus=gemstone['Ring'])
+                    desc += return_desc
 
                 gameworld.add_component(piece_of_jewellery, items.Describable(
                     description=desc,
@@ -429,6 +419,56 @@ class ItemManager:
                     displayname=trinket_activator + ' ' + nm))
                 logger.info('Created {}', desc)
                 return piece_of_jewellery
+
+    @staticmethod
+    def hands_processing(bdl, trinket_activator, gemstone_string, gameworld, piece_of_jewellery, gemstone_attribute, gemstone_bonus):
+        nm = ''
+        desc = ''
+        if 'hands' in bdl:
+            # create a ring
+            desc = ' ring, offset with a ' + trinket_activator + gemstone_string
+            nm = 'earring'
+            gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(fingers=True))
+            gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
+                statname=gemstone_attribute, statbonus=gemstone_bonus))
+        return desc, nm
+
+
+    @staticmethod
+    def pendant_processing(bdl, trinket_activator, gemstone_string, gameworld, piece_of_jewellery, gemstone_attribute, gemstone_bonus):
+        nm = ''
+        desc = ''
+        if 'neck' in bdl:
+            # create a pendant
+            desc = ' amulet, offset with a ' + trinket_activator + gemstone_string
+            nm = 'earring'
+            gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(neck=True))
+            gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
+                statname=gemstone_attribute, statbonus=gemstone_bonus))
+        return desc, nm
+
+    @staticmethod
+    def earring_processing(bdl, trinket_activator, gemstone_string, gameworld, piece_of_jewellery, gemstone_attribute, gemstone_bonus):
+        nm = ''
+        desc = ''
+        if 'ear' in bdl:
+            # create an earring
+            desc = ' earring, offset with a ' + trinket_activator + gemstone_string
+            nm = 'earring'
+            gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(ears=True))
+            gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
+                statname=gemstone_attribute, statbonus=gemstone_bonus))
+        return desc, nm
+
+    @staticmethod
+    def define_jewellery_bodylocation_string(bodylocation):
+        bdl = ''
+        if bodylocation == 'earring1' or bodylocation == 'earring2':
+            bdl = 'ear'
+        else:
+            bdl = bodylocation
+
+        return bdl
 
     @staticmethod
     def place_item_in_dungeon(gameworld, item_to_be_placed, game_map, game_config):
