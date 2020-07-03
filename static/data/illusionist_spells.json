@@ -415,7 +415,7 @@
       "type_of_spell": "heal",
       "turns_to_cast": "0",
       "cool_down": "10",
-      "spell_range": "spell_dist_personal",
+      "spell_range": "spell_dist_touch",
       "heal_duration": "instant",
       "heal_coef": "0.85",
       "effects": [

@@ -99,18 +99,11 @@ class ItemManager:
                 pendant = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck',
                                                        e_setting='copper', e_hook='copper', e_activator=neck_gemstone)
 
-                sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=pendant)
-                logger.info('Pendant has spell {} attached to it', sp1)
-
                 left_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='earring1',
                                                         e_setting='copper', e_hook='copper', e_activator=ear1_gemstone)
-                sp2 = gameworld.component_for_entity(left_ear, items.JewellerySpell).entity
-                logger.info('left ear has spell entity {} attached to it', sp2)
 
                 right_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='earring2',
                                                          e_setting='copper', e_hook='copper', e_activator=ear2_gemstone)
-                sp3 = gameworld.component_for_entity(right_ear, items.JewellerySpell).entity
-                logger.info('right ear has spell entity {} attached to it', sp3)
 
                 # equip jewellery entity to player character
                 ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='neck',
@@ -412,7 +405,6 @@ class ItemManager:
                         if spell_type.label == 'utility':
                             if item_type.label == 'jewellery':
                                 if location.label == bodylocation:
-                                    logger.debug('==== spell identified as  {} ====', spell_entity)
                                     ItemUtilities.add_spell_to_jewellery(gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, spell_entity=spell_entity)
 
                 if 'ear' in bdl:

@@ -9,6 +9,7 @@ from newGame.Items import ItemManager
 from utilities import configUtilities, colourUtilities
 from utilities.display import draw_colourful_frame, pointy_menu, draw_simple_frame
 from utilities.input_handlers import handle_game_keys
+from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from newGame.initialiseNewGame import create_world
@@ -418,6 +419,21 @@ class CharacterCreation:
         # create jewellery set based on the balanced package
         # this is a temp approach being used for utility spells
         ItemManager.create_jewellery_for_utility_spells(gameworld=gameworld, game_config=game_config)
+
+        # get entity id for pendant
+        jewellery_list = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=player)
+
+        left_ear = jewellery_list[0]
+        right_ear = jewellery_list[1]
+        neck_entity = jewellery_list[4]
+
+        sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=neck_entity)
+        sp2 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=left_ear)
+        sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear)
+
+        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=7, player_entity=player)
+        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=8, player_entity=player)
+        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=9, player_entity=player)
 
     @staticmethod
     def character_naming(gameworld, game_config):

@@ -353,6 +353,19 @@ class SpellUtilities:
             if typ.label == 'heal' and cl.label == player_class:
                 SpellUtilities.set_spell_entity_in_slot_six(gameworld=gameworld, spellbar=spellbar, spell_entity=ent)
 
+    @staticmethod
+    def add_utility_spell_to_spellbar(gameworld, player_entity, slot_id, spell_entity):
+        spellbar = MobileUtilities.get_spellbar_id_for_entity(gameworld=gameworld, entity=player_entity)
+        if slot_id == 7:
+            SpellUtilities.set_spell_entity_in_slot_seven(gameworld=gameworld, spellbar=spellbar, spell_entity=spell_entity)
+
+        if slot_id == 8:
+            SpellUtilities.set_spell_entity_in_slot_eight(gameworld=gameworld, spellbar=spellbar,
+                                                          spell_entity=spell_entity)
+
+        if slot_id == 9:
+            SpellUtilities.set_spell_entity_in_slot_nine(gameworld=gameworld, spellbar=spellbar,
+                                                          spell_entity=spell_entity)
 
     # below is the old/original way of tracking the spells - it needs to be deprecated
     @staticmethod
@@ -634,7 +647,8 @@ class SpellUtilities:
                                                                           spell_entity=spell_entity)
         else:
             spell_cooldown_value = 0
-
+        if spell_range == '':
+            pass
         if len(spell_range) < 2:
             sp_range = ' ' + spell_range
         else:

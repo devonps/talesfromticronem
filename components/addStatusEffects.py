@@ -17,7 +17,7 @@ def process_status_effect(gameworld, spell_entity, effects, game_config, ch_clas
 
     # remember the list is packed as a dictionary
     for effect in effects:
-        logger.debug('Key is {}', effect)
+        # logger.debug('Key is {}', effect)
         valid_effect = False
         effect_name = effect['name'].lower()
         if effect_name != '':
@@ -45,7 +45,7 @@ def add_class_resource(gameworld, entity, effect, resource_value):
         gameworld.add_component(entity, resources.Strikesfor())
     if effect == 'boonsconverted':
         gameworld.add_component(entity, resources.ConvertBoons())
-    logger.info('Class resource {} added to spell', effect)
+    # logger.info('Class resource {} added to spell', effect)
 
 
 def add_condition(gameworld, entity, effect, condi_value):
@@ -53,9 +53,9 @@ def add_condition(gameworld, entity, effect, condi_value):
         gameworld.add_component(entity, condis.Bleeding())
         
         has_spell_got_bleeding = check_if_entity_has_component(gameworld=gameworld, entity=entity, component=condis.Bleeding)
-        logger.warning('Has spell got bleeding component {}', has_spell_got_bleeding)
+        # logger.warning('Has spell got bleeding component {}', has_spell_got_bleeding)
         bleed_component = gameworld.component_for_entity(entity=entity, component_type=condis.Bleeding)
-        logger.debug('Component label is {}', bleed_component.condition_status_effect)
+        # logger.debug('Component label is {}', bleed_component.condition_status_effect)
 
     if effect == 'burning':
         gameworld.add_component(entity, condis.Burning())
@@ -123,4 +123,4 @@ def add_boon(gameworld, entity, effect, boon_value):
     else:
         logger.warning('Dont know about boon called {}', effect)
 
-    logger.info('Boon {} added to spell', effect)
+    # logger.info('Boon {} added to spell', effect)
