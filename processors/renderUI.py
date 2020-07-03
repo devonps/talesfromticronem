@@ -111,7 +111,6 @@ class RenderUI(esper.Processor):
         original_char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
                                                                       config_prefix=config_prefix_empty,
                                                                       tile_assignment=0)
-        unicode_string_to_print = '['
         colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
         fov_map = FieldOfView(game_map=game_map)
         player_fov = FieldOfView.create_fov_from_raycasting(fov_map, startx=player_map_pos_x, starty=player_map_pos_y,
@@ -169,13 +168,18 @@ class RenderUI(esper.Processor):
                         char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
                                                                              config_prefix=config_prefix_door,
                                                                              tile_assignment=0)
-                if print_char and tile > 0:
-                    string_to_print = colour_code + unicode_string_to_print + char_to_display + ']'
-                    terminal.printf(x=scr_pos_x, y=scr_pos_y, s=string_to_print)
+
+                RenderUI.print_char_to_the_screen(print_char=print_char, tile=tile, colour_code=colour_code, char_to_display=char_to_display, scr_pos_x=scr_pos_x, scr_pos_y=scr_pos_y)
                 cam_x += 1
             camera_y += 1
 
         return player_fov
+
+    @staticmethod
+    def print_char_to_the_screen(print_char, tile, colour_code, char_to_display, scr_pos_x, scr_pos_y):
+        if print_char and tile > 0:
+            string_to_print = colour_code + '[' + char_to_display + ']'
+            terminal.printf(x=scr_pos_x, y=scr_pos_y, s=string_to_print)
 
     @staticmethod
     def to_camera_coordinates(game_config, game_map, x, y, gameworld):
