@@ -35,7 +35,6 @@ class CommonUtils:
 
         return x, y
 
-
     @staticmethod
     def get_unicode_ascii_char(game_config, config_prefix, tile_assignment):
         tile_char = "0x" + configUtilities.get_config_value_as_string(configfile=game_config, section='dungeon',
@@ -82,70 +81,69 @@ class CommonUtils:
         background_colour = kwargs.get('bg', 'black')
         event_classes = []
         events_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                     parameter='EVENTSFILE')
+                                                                      parameter='EVENTSFILE')
         # load file as a dictionary
         events = jsonUtilities.read_json_file(events_file_path)
         for event in events['events']:
             if event['event-title'] == event_title:
                 event_string = event['event-message']
                 event_classes = CommonUtils.convert_string_to_list(event['event-classes'])
-                if event_title == 'new-game':
-                    par1 = kwargs.get('player_name', None)
-                    par2 = kwargs.get('player_race', None)
-                    par3 = kwargs.get('player_class', None)
-                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(event_string=event_string,
-                                                                                              par1=par1, par2=par2, par3=par3)
-                    break
+                return_string = CommonUtils.process_events(event_title=event_title, event_string=event_string,
+                                                           kwargs=kwargs)
+                new_string = formatted_turn_number + ":" + return_string
 
-                if event_title == 'spell-causes-damage':
-                    par1 = kwargs.get('caster', None)
-                    par2 = kwargs.get('target', None)
-                    par3 = kwargs.get('damage', None)
-                    par4 = kwargs.get('spell_name', None)
-                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(
-                        event_string=event_string, par1=par1, par2=par2, par3=par3, par4=par4)
+        CommonUtils.process_new_string(new_string=new_string, event_classes=event_classes,
+                                       foreground_colour=foreground_colour, background_colour=background_colour,
+                                       gameworld=gameworld, message_log_entity=message_log_entity)
 
-                    break
-                if event_title == 'spell-cooldown':
-                    par1 = kwargs.get('spell_name', None)
-                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(
-                        event_string=event_string, par1=par1)
-                    break
+    @staticmethod
+    def process_events(event_title, event_string, kwargs):
+        new_string = ''
 
-                if event_title == 'condi-applied':
-                    par1 = kwargs.get('target', None)
-                    par2 = kwargs.get('effect_dialogue', None)
-                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(event_string=event_string,
-                                                                                              par1=par1, par2=par2)
-                    break
+        if event_title == 'new-game':
+            par1 = kwargs.get('player_name', None)
+            par2 = kwargs.get('player_race', None)
+            par3 = kwargs.get('player_class', None)
+            new_string = CommonUtils.replace_value_in_event(event_string=event_string, par1=par1, par2=par2, par3=par3)
+        if event_title == 'spell-causes-damage':
+            par1 = kwargs.get('caster', None)
+            par2 = kwargs.get('target', None)
+            par3 = kwargs.get('damage', None)
+            par4 = kwargs.get('spell_name', None)
+            new_string = CommonUtils.replace_value_in_event(event_string=event_string, par1=par1, par2=par2, par3=par3,
+                                                            par4=par4)
 
-                if event_title == 'condi-damage':
-                    par1 = kwargs.get('target', None)
-                    par2 = kwargs.get('damage', None)
-                    par3 = kwargs.get('condi_name', None)
-                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(
-                        event_string=event_string, par1=par1, par2=par2, par3=par3)
+        if event_title == 'spell-cooldown':
+            par1 = kwargs.get('spell_name', None)
+            new_string = CommonUtils.replace_value_in_event(event_string=event_string, par1=par1)
 
-                    break
+        if event_title == 'condi-applied':
+            par1 = kwargs.get('target', None)
+            par2 = kwargs.get('effect_dialogue', None)
+            new_string = CommonUtils.replace_value_in_event(event_string=event_string, par1=par1, par2=par2)
 
-                if event_title == 'boon-benefit':
-                    par1 = kwargs.get('target', None)
-                    par2 = kwargs.get('benefit', None)
-                    par3 = kwargs.get('boon_name', None)
-                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(
-                        event_string=event_string, par1=par1, par2=par2, par3=par3)
+        if event_title == 'condi-damage':
+            par1 = kwargs.get('target', None)
+            par2 = kwargs.get('damage', None)
+            par3 = kwargs.get('condi_name', None)
+            new_string = CommonUtils.replace_value_in_event(event_string=event_string, par1=par1, par2=par2, par3=par3)
 
-                    break
+        if event_title == 'boon-benefit':
+            par1 = kwargs.get('target', None)
+            par2 = kwargs.get('benefit', None)
+            par3 = kwargs.get('boon_name', None)
+            new_string = CommonUtils.replace_value_in_event(event_string=event_string, par1=par1, par2=par2, par3=par3)
 
-                if event_title == 'boon-removal':
-                    par1 = kwargs.get('target', None)
-                    par2 = kwargs.get('boon_name', None)
-                    new_string = formatted_turn_number + ":" + CommonUtils.replace_value_in_event(
-                        event_string=event_string,
-                        par1=par1, par2=par2)
-                    break
+        if event_title == 'boon-removal':
+            par1 = kwargs.get('target', None)
+            par2 = kwargs.get('boon_name', None)
+            new_string = CommonUtils.replace_value_in_event(event_string=event_string, par1=par1, par2=par2)
 
+        return new_string
 
+    @staticmethod
+    def process_new_string(new_string, event_classes, foreground_colour, background_colour, gameworld,
+                           message_log_entity):
         if new_string != '':
             n = 0
             for _ in event_classes:
@@ -159,10 +157,11 @@ class CommonUtils:
                     message_class = 3
                 n += 1
 
-                msg = Message(text=new_string, msgclass=message_class, fg=foreground_colour, bg=background_colour, fnt="")
+                msg = Message(text=new_string, msgclass=message_class, fg=foreground_colour, bg=background_colour,
+                              fnt="")
                 log_message = new_string
-                CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity, message_for_export=log_message)
-
+                CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
+                                        message_for_export=log_message)
 
     @staticmethod
     def convert_string_to_list(the_string):
@@ -301,44 +300,44 @@ class CommonUtils:
         ascii_prefix = 'ASCII_SINGLE_'
 
         start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                            section='newCharacter',
-                                                                            parameter='NC_START_X')
+                                                              section='newCharacter',
+                                                              parameter='NC_START_X')
 
         start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                            section='newCharacter',
-                                                                            parameter='NC_START_Y')
+                                                              section='newCharacter',
+                                                              parameter='NC_START_Y')
 
         width = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                          section='newCharacter',
-                                                                          parameter='NC_WIDTH')
+                                                            section='newCharacter',
+                                                            parameter='NC_WIDTH')
         height = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                           section='newCharacter',
-                                                                           parameter='NC_DEPTH')
+                                                             section='newCharacter',
+                                                             parameter='NC_DEPTH')
 
         choices_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
                                                                       parameter='CHOICES_BAR_Y')
 
         top_left_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                      parameter=ascii_prefix + 'TOP_LEFT')
+                                                                parameter=ascii_prefix + 'TOP_LEFT')
 
         bottom_left_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                         parameter=ascii_prefix + 'BOTTOM_LEFT')
+                                                                   parameter=ascii_prefix + 'BOTTOM_LEFT')
 
         top_right_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                       parameter=ascii_prefix + 'TOP_RIGHT')
+                                                                 parameter=ascii_prefix + 'TOP_RIGHT')
 
         bottom_right_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                          parameter=ascii_prefix + 'BOTTOM_RIGHT')
+                                                                    parameter=ascii_prefix + 'BOTTOM_RIGHT')
 
         horizontal_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                 parameter=ascii_prefix + 'HORIZONTAL')
+                                                           parameter=ascii_prefix + 'HORIZONTAL')
         vertical_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                               parameter=ascii_prefix + 'VERTICAL')
+                                                         parameter=ascii_prefix + 'VERTICAL')
 
         left_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                          parameter=ascii_prefix + 'LEFT_T_JUNCTION')
+                                                                parameter=ascii_prefix + 'LEFT_T_JUNCTION')
         right_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                           parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
+                                                                 parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
 
         # render horizontal bottom
         for z in range(start_x, (start_x + width)):
