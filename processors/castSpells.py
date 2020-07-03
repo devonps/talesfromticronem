@@ -27,7 +27,6 @@ class CastSpells(esper.Processor):
                 spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=mob.spell_entity)
                 target_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld,
                                                                        entity=mob.spell_target)
-                caster_name = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=mob.spell_caster)
                 logger.warning('Danger will robinson! spell being cast is:{} by entity {}', spell_name, ent)
                 logger.warning('against {}', target_names[0])
                 MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=ent)
@@ -44,39 +43,50 @@ class CastSpells(esper.Processor):
                 SpellUtilities.set_spell_cooldown_true(gameworld=self.gameworld, spell_entity=mob.spell_entity)
                 number_of_turns = SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld, spell_entity=mob.spell_entity)
 
-                if number_of_turns == 0:
-                    logger.warning('Spell entity {} has no cooldown number of turns set', mob.spell_entity)
-
                 SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld,
                                                                   spell_entity=mob.spell_entity, value=number_of_turns)
+                self.process_combat_spells(spell_type=spell_type, target_entity=mob.spell_target, caster_entity=mob.spell_caster, slot_used=slot_used, spell_entity=mob.spell_entity)
+                self.process_healing_spell(spell_type=spell_type)
 
-                if spell_type == 'combat':
-                    # set inCombat to true for the target and the player --> stops health being recalculated
-                    # automatically, amongst other things
-                    MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=mob.spell_target)
-                    MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=ent)
+    def process_combat_spells(self, spell_type, target_entity, caster_entity, slot_used, spell_entity):
+        if spell_type == 'combat':
+            spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=caster_entity)
+            target_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld,
+                                                                   entity=target_entity)
+            caster_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=caster_entity)
+            condis_to_apply = SpellUtilities.get_all_condis_for_spell(gameworld=self.gameworld,
+                                                                      spell_entity=spell_entity)
+            boons_to_apply = SpellUtilities.get_all_boons_for_spell(gameworld=self.gameworld,
+                                                                    spell_entity=spell_entity)
 
-                    damage_done_to_target = self.cast_combat_spell(spell_caster=ent,spell=mob.spell_entity,
-                                                                   spell_target=mob.spell_target, weapon_used=slot_used)
-                    if damage_done_to_target > 0:
-                        # apply damage to target --> current health is used when in combat
-                        MobileUtilities.set_current_health_during_combat(gameworld=self.gameworld, entity=mob.spell_target,
-                                                                         damage_to_apply=damage_done_to_target)
+            # set inCombat to true for the target and the player --> stops health being recalculated
+            # automatically, amongst other things
+            MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=target_entity)
+            MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=caster_entity)
 
-                        CommonUtils.fire_event("spell-causes-damage", gameworld=self.gameworld, caster=caster_name[0], target=target_names[0], damage=str(damage_done_to_target), spell_name=spell_name)
+            damage_done_to_target = self.cast_combat_spell(spell_caster=caster_entity, spell=caster_entity,
+                                                           spell_target=target_entity, weapon_used=slot_used)
+            if damage_done_to_target > 0:
+                # apply damage to target --> current health is used when in combat
+                MobileUtilities.set_current_health_during_combat(gameworld=self.gameworld, entity=target_entity,
+                                                                 damage_to_apply=damage_done_to_target)
 
-                if spell_type == 'heal':
-                    self.cast_healing_spell()
+                CommonUtils.fire_event("spell-causes-damage", gameworld=self.gameworld, caster=caster_names[0],
+                                       target=target_names[0], damage=str(damage_done_to_target), spell_name=spell_name)
 
-                # Are there any conditions to apply to the target - regardless of damage caused
-                if len(condis_to_apply) != 0:
-                    SpellUtilities.apply_condis_to_target(gameworld=self.gameworld, target_entity=mob.spell_target,
-                                                          list_of_condis=condis_to_apply)
+            # Are there any conditions to apply to the target - regardless of damage caused
+            if len(condis_to_apply) != 0:
+                SpellUtilities.apply_condis_to_target(gameworld=self.gameworld, target_entity=target_entity,
+                                                      list_of_condis=condis_to_apply)
 
-                # are there any boons to apply to the spell caster - regardless of damage caused
-                if len(boons_to_apply) != 0:
-                    SpellUtilities.apply_boons_to_target(gameworld=self.gameworld, target_entity=mob.spell_target,
-                                                         list_of_boons=boons_to_apply, spell_caster=ent)
+            # are there any boons to apply to the spell caster - regardless of damage caused
+            if len(boons_to_apply) != 0:
+                SpellUtilities.apply_boons_to_target(gameworld=self.gameworld, target_entity=target_entity,
+                                                     list_of_boons=boons_to_apply, spell_caster=caster_entity)
+
+    def process_healing_spell(self, spell_type):
+        if spell_type == 'heal':
+            self.cast_healing_spell()
 
     def reduce_spell_cool_downs(self):
         for spell_entity, cool_down in self.gameworld.get_component(spells.CoolDown):
