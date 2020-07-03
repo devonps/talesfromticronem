@@ -105,30 +105,40 @@ class Debug:
             player_not_pressed_quit = True
             while player_not_pressed_quit:
                 event_to_be_processed, event_action = handle_game_keys()
-                if event_to_be_processed == 'keypress':
-                    if event_action == 'quit':
-                        player_not_pressed_quit = False
-                    if event_action == 'tab':
-                        Debug.clear_terminal_area_es(game_config=game_config)
-                        page_to_display = Debug.display_entity_spy_page(gameworld=gameworld, entity_id=entity_id,
-                                                                        game_config=game_config,
-                                                                        page_to_display=page_to_display)
+                player_not_pressed_quit, page_to_display = Debug.es_process_keyboard_actions(event_to_be_processed=event_to_be_processed, event_action=event_action, game_config=game_config, gameworld=gameworld, entity_id=entity_id, page_to_display=page_to_display)
 
-                        # display instructions
-                        Debug.display_es_instructions(page=page_to_display)
-                if event_to_be_processed == 'mouseleftbutton':
-                    zone_clicked, item_selected = Debug.get_zone_clicked(event_action, click_zones, page_to_display)
-                    Debug.process_zone_action(zone_clicked=zone_clicked, line_item=item_selected)
+                # display instructions
+                Debug.display_es_instructions(page=page_to_display)
+                Debug.es_process_mouse_actions(event_to_be_processed=event_to_be_processed, event_action=event_action, click_zones=click_zones, page_to_display=page_to_display)
 
                 # blit the terminal
                 terminal.refresh()
+
+    @staticmethod
+    def es_process_keyboard_actions(event_to_be_processed, event_action, game_config, gameworld, entity_id, page_to_display):
+        player_not_pressed_quit = True
+        if event_to_be_processed == 'keypress':
+            if event_action == 'quit':
+                player_not_pressed_quit = False
+            if event_action == 'tab':
+                Debug.clear_terminal_area_es(game_config=game_config)
+                page_to_display = Debug.display_entity_spy_page(gameworld=gameworld, entity_id=entity_id,
+                                                                game_config=game_config,
+                                                                page_to_display=page_to_display)
+        return player_not_pressed_quit, page_to_display
+
+    @staticmethod
+    def es_process_mouse_actions(event_to_be_processed, event_action, click_zones, page_to_display):
+        if event_to_be_processed == 'mouseleftbutton':
+            zone_clicked, item_selected = Debug.get_zone_clicked(event_action, click_zones, page_to_display)
+            Debug.process_zone_action(zone_clicked=zone_clicked, line_item=item_selected)
 
     @staticmethod
     def process_zone_action(zone_clicked, line_item):
 
         # if an invalid zone_clicked is passed then my Switch statement will come here
         def default(line):
-            logger.info('No componet zone found.')
+            logger.info('No component zone found.')
 
         def es_amendment_racial(line):
             logger.info('Racial zone activated and line {}', line)

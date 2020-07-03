@@ -10,7 +10,6 @@ from utilities import configUtilities
 from utilities.input_handlers import handle_game_keys
 from gameworld.sceneManager import SceneManager
 from newGame import newGame
-from utilities.spellHelp import SpellUtilities
 from utilities.common import CommonUtils
 from ui.debug import Debug
 
@@ -99,11 +98,6 @@ def game_loop(gameworld):
 
         # blit the console
         terminal.refresh()
-
-
-def game_replay(con, game_config):
-    ReplayGame.process(con, game_config)
-
 
 @logger.catch()
 def main():

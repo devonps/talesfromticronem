@@ -80,11 +80,6 @@ class ItemUtilities:
         item_location_component.y = posy
 
     @staticmethod
-    def get_item_texture(gameworld, entity):
-        item_material_component = gameworld.component_for_entity(entity, items.Material)
-        return item_material_component.texture
-
-    @staticmethod
     def get_item_components(gameworld, entity):
         item_components_component = gameworld.component_for_entity(entity, items.Material)
         return item_components_component.component1, item_components_component.component2, item_components_component.component3

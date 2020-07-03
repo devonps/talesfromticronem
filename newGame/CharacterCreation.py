@@ -407,6 +407,10 @@ class CharacterCreation:
 
         SpellUtilities.setup_player_empty_spellbar(gameworld=gameworld, player_entity=player)
 
+        # add heal spell to spellbar
+        heal_spell_entity = SpellUtilities.get_class_heal_spell(gameworld=gameworld, player_entity=player)
+        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=heal_spell_entity, slot=6, player_entity=player)
+
         # calculate derived stats
         MobileUtilities.set_mobile_derived_derived_attributes(gameworld=gameworld, entity=player)
 
@@ -434,6 +438,8 @@ class CharacterCreation:
         SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=7, player_entity=player)
         SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=8, player_entity=player)
         SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=9, player_entity=player)
+
+        # end of temporary code for setting utility slots
 
     @staticmethod
     def character_naming(gameworld, game_config):

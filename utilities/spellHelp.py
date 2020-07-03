@@ -344,14 +344,15 @@ class SpellUtilities:
         spellbar = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
 
         MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spellbar)
-        SpellUtilities.add_heal_spell_to_spellbar(gameworld=gameworld, player_entity=player_entity, spellbar=spellbar)
 
     @staticmethod
-    def add_heal_spell_to_spellbar(gameworld, player_entity, spellbar):
+    def get_class_heal_spell(gameworld, player_entity):
+        spell_entity = 0
         player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
         for ent, (cl, typ) in gameworld.get_components(spells.ClassName, spells.SpellType):
             if typ.label == 'heal' and cl.label == player_class:
-                SpellUtilities.set_spell_entity_in_slot_six(gameworld=gameworld, spellbar=spellbar, spell_entity=ent)
+                spell_entity = ent
+        return spell_entity
 
     @staticmethod
     def add_utility_spell_to_spellbar(gameworld, player_entity, slot_id, spell_entity):
@@ -647,8 +648,6 @@ class SpellUtilities:
                                                                           spell_entity=spell_entity)
         else:
             spell_cooldown_value = 0
-        if spell_range == '':
-            pass
         if len(spell_range) < 2:
             sp_range = ' ' + spell_range
         else:
@@ -837,5 +836,5 @@ class SpellUtilities:
 
     @staticmethod
     def set_spell_entity_in_slot_ten(gameworld, spellbar, spell_entity):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.Ten)
+        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotTen)
         spell_component.spell_entity = spell_entity
