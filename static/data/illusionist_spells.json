@@ -523,7 +523,7 @@
       "cool_down": "0",
       "spell_range": "spell_dist_nearby",
       "item_type": "jewellery",
-      "location": "pendent",
+      "location": "neck",
       "effects": [
         {
           "name": "slow",

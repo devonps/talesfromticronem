@@ -544,7 +544,7 @@
       "cool_down": "0",
       "spell_range": "spell_dist_nearby",
       "item_type": "jewellery",
-      "location": "pendant",
+      "location": "neck",
       "effects": [
         {
           "name": "spread_conditions",

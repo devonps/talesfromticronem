@@ -437,7 +437,7 @@
       "cool_down": "5",
       "spell_range": "spell_dist_touch",
       "item_type": "jewellery",
-      "location": "pendant",
+      "location": "neck",
       "effects": [
         {
           "name": "unblock",

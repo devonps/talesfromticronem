@@ -484,7 +484,7 @@
       "cool_down": "8",
       "spell_range": "spell_dist_touch",
       "item_type": "jewellery",
-      "location": "pendant",
+      "location": "neck",
       "effects": [
         {
           "name": "aegis",
