@@ -87,11 +87,38 @@ class Entity:
                         # -------------------------------------
                         Entity.choose_armourset_for_mobile(armour_file_option=armour_file_option, entity_id=entity_id, gameworld=gameworld, game_config=game_config)
 
+                        # --------------------------------------
+                        # --- CREATE SPELL BAR WITH NO SPELLS  -
+                        # --------------------------------------
+                        logger.info('Loading spell bar based on equipped weapons')
+                        SpellUtilities.setup_mobile_empty_spellbar(gameworld=gameworld, player_entity=entity_id)
+
                         # -------------------------------------
                         # --- CREATE JEWELLERYSET -------------
                         # -------------------------------------
                         Entity.choose_jewellery_package(jewellery_file_option=jewellery_file_option,
                                                       entity_id=entity_id, game_config=game_config, gameworld=gameworld)
+
+                        # get list of equipped jewellery
+                        jewellery_list = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld,
+                                                                                        mobile=entity_id)
+
+                        left_ear = jewellery_list[0]
+                        right_ear = jewellery_list[1]
+                        neck_entity = jewellery_list[4]
+
+                        # get spell entity from that piece of jewellery
+                        sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=neck_entity)
+                        sp2 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=left_ear)
+                        sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear)
+
+                        # add spells from jewellery into spell bar
+                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=7,
+                                                         player_entity=entity_id)
+                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=8,
+                                                         player_entity=entity_id)
+                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=9,
+                                                         player_entity=entity_id)
 
                         if equipped_weapons:
                             # --------------------------------------
@@ -99,11 +126,14 @@ class Entity:
                             # --- CHOOSE SPELLS AND LOAD TO WEAPON -
                             # --------------------------------------
                             Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_file_option_main, off_hand=weapon_file_option_off, both_hands=weapon_file_option_both, gameworld=gameworld, game_config=game_config)
-                            # --------------------------------------
-                            # --- CREATE SPELL BAR WITH SPELLS     -
-                            # --------------------------------------
-                            logger.info('Loading spell bar based on equipped weapons')
-                            SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=entity_id)
+
+                        # --------------------------------------
+                        # --- add heal spell to spellbar     ---
+                        # --------------------------------------
+                        heal_spell_entity = SpellUtilities.get_class_heal_spell(gameworld=gameworld,
+                                                                                player_entity=entity_id)
+                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=heal_spell_entity, slot=6,
+                                                         player_entity=entity_id)
 
                         # --------------------------------------
                         # --- SET COMBAT ROLE -

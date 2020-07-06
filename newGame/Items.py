@@ -134,30 +134,18 @@ class ItemManager:
         for entityclass in class_file['classes']:
             if entityclass['name'] == entity_class:
                 neck_gemstone = entityclass[jewellery_set]['neck']
-                ring1_gemstone = entityclass[jewellery_set]['ring1']
-                ring2_gemstone = entityclass[jewellery_set]['ring2']
                 ear1_gemstone = entityclass[jewellery_set]['earring1']
                 ear2_gemstone = entityclass[jewellery_set]['earring2']
                 # create jewellery entity
                 pendant = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='neck',
                                                        e_setting='copper', e_hook='copper', e_activator=neck_gemstone, playable_class=entity_class)
-                left_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring',
-                                                         e_setting='copper', e_hook='copper',
-                                                         e_activator=ring1_gemstone, playable_class=entity_class)
-                right_ring = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring',
-                                                          e_setting='copper', e_hook='copper',
-                                                          e_activator=ring2_gemstone, playable_class=entity_class)
-                left_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear',
+                left_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='earring1',
                                                         e_setting='copper', e_hook='copper', e_activator=ear1_gemstone, playable_class=entity_class)
-                right_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ear',
+                right_ear = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='earring2',
                                                          e_setting='copper', e_hook='copper', e_activator=ear2_gemstone, playable_class=entity_class)
                 # equip jewellery entity to player character
                 ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='neck',
                                               trinket=pendant)
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left hand',
-                                              trinket=left_ring)
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right hand',
-                                              trinket=right_ring)
                 ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left ear',
                                               trinket=left_ear)
                 ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right ear',
@@ -165,14 +153,6 @@ class ItemManager:
 
                 # apply gemstone benefits
                 jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=pendant)
-                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
-                                                    statbonus=jewelley_stat_bonus)
-
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ring)
-                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
-                                                    statbonus=jewelley_stat_bonus)
-
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ring)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
@@ -410,11 +390,8 @@ class ItemManager:
                         desc += return_desc
 
                         gameworld.add_component(piece_of_jewellery, items.Describable(
-                            description=desc,
-                            name=nm,
-                            glyph=gemstone['glyph'],
-                            fg=colourUtilities.get('BLUE'),
-                            bg=colourUtilities.get('BLACK'),
+                            description=desc, name=nm, glyph=gemstone['glyph'],
+                            fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'),
                             displayname=trinket_activator + ' ' + nm))
                         logger.info('Created {}', desc)
                         bdl = ''

@@ -405,7 +405,7 @@ class CharacterCreation:
 
         AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config, spell_file=spellfile, playable_class=class_component)
 
-        SpellUtilities.setup_player_empty_spellbar(gameworld=gameworld, player_entity=player)
+        SpellUtilities.setup_mobile_empty_spellbar(gameworld=gameworld, player_entity=player)
 
         # add heal spell to spellbar
         heal_spell_entity = SpellUtilities.get_class_heal_spell(gameworld=gameworld, player_entity=player)

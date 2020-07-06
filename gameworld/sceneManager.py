@@ -131,7 +131,7 @@ class SceneManager:
 
                 # add named NPCs to scene
                 if cell in 'ABCDEFG':
-                    # Entity.create_named_mobile(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell, gameworld=gameworld, game_config=game_config)
+                    Entity.create_named_mobile(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell, gameworld=gameworld, game_config=game_config)
                     game_map.tiles[posx][posy].type_of_tile = tile_type_floor
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor, game_map=game_map)
                 posx += 1

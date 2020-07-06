@@ -340,7 +340,7 @@ class SpellUtilities:
         return spell_entity
 
     @staticmethod
-    def setup_player_empty_spellbar(gameworld, player_entity):
+    def setup_mobile_empty_spellbar(gameworld, player_entity):
         spellbar = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
 
         MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spellbar)
