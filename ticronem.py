@@ -12,6 +12,7 @@ from gameworld.sceneManager import SceneManager
 from newGame import newGame
 from utilities.common import CommonUtils
 from ui.debug import Debug
+from utilities.spellHelp import SpellUtilities
 
 
 def game_loop(gameworld):
@@ -77,7 +78,8 @@ def game_loop(gameworld):
                 MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=player, direction=event_action, speed=1)
                 advance_game_turn = True
             if event_action in spell_bar_keys:
-                spell_pop_up(slot=event_action, gameworld=gameworld, player=player, game_config=game_config)
+                SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player)
+                # spell_pop_up(slot=event_action, gameworld=gameworld, player=player, game_config=game_config)
                 advance_game_turn = True
             if event_action == 'log':
                 CommonUtils.set_current_log(gameworld=gameworld, log_entity=msglog)

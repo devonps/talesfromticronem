@@ -30,14 +30,8 @@ class RenderSpellInfoPanel(esper.Processor):
         self.render_player_status_effects()
 
     def render_player_status_effects(self):
-        boon_start_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
-                                                                       parameter='STATUS_EFFECTS_START_X')
-
-        boon_start_y = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
-                                                                       parameter='STATUS_EFFECTS_START_Y')
-        terminal.printf(x=boon_start_x, y=boon_start_y, s='COND BOON')
         self.render_boons()
-        # self.render_conditions()
+        self.render_conditions()
 
     def render_equipped_items(self):
 
@@ -59,18 +53,16 @@ class RenderSpellInfoPanel(esper.Processor):
         boon_start_y = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                        parameter='STATUS_EFFECTS_START_Y')
 
-        unicode_boon_string = '[font=dungeon][color=BOON_BASE_COLOUR]'
+        no_boons = configUtilities.get_config_value_as_string(configfile=self.game_config, section='colorCodes', parameter='NO_STATUS_EFFECT')
+        unicode_boon_string = no_boons
 
-        # boon_string = ''
-        # if len(list_of_boons) > 0:
-        #     for z in list_of_boons:
-        #         boon_string += z['shortcode'] + ' '
-        #
-        # terminal.printf(x=boon_start_x, y=boon_start_y, s=unicode_boon_string + 'Boons ' + boon_string)
+        boon_string = 'Boons: '
+        if len(list_of_boons) > 0:
+            unicode_boon_string = '[font=dungeon][color=BOON_BASE_COLOUR]'
+            for z in list_of_boons:
+                boon_string += z['shortcode'] + ' '
 
-        # terminal.printf(x=start_list_x - 2, y=stat - 1, s='COND BOON')
-        # for a in range(1, 10):
-        terminal.printf(x=boon_start_x, y=boon_start_y + 2, s='POIS MIGH')
+        terminal.printf(x=boon_start_x, y=boon_start_y, s=unicode_boon_string + boon_string)
 
     def render_conditions(self):
 
@@ -83,15 +75,16 @@ class RenderSpellInfoPanel(esper.Processor):
 
         condition_start_y = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='STATUS_EFFECTS_START_Y') + 1
-
-        unicode_condition_string = '[font=dungeon][color=CONDITION_BASE_COLOUR]'
-        condition_string = ''
+        no_condis = configUtilities.get_config_value_as_string(configfile=self.game_config, section='colorCodes', parameter='NO_STATUS_EFFECT')
+        unicode_condition_string = no_condis
+        condition_string = 'Condis: '
 
         if len(list_of_conditions) > 0:
+            unicode_condition_string = '[font=dungeon][color=CONDITION_BASE_COLOUR]'
             for z in list_of_conditions:
                 condition_string += z['shortcode'] + ' '
 
-        terminal.printf(x=condition_start_x, y=condition_start_y, s=unicode_condition_string + 'Conds ' + condition_string)
+        terminal.printf(x=condition_start_x, y=condition_start_y, s=unicode_condition_string + condition_string)
 
     def render_spell_info_outer_frame(self):
         CommonUtils.render_ui_framework(game_config=self.game_config)

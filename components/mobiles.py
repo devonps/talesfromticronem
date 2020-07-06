@@ -44,24 +44,6 @@ class Describable:
         self.image = image
 
 
-# This class holds the image id that correspond to what the mobile is wearing or wielding
-# Some of these settings are exclusive to each other
-# For example: front is designed to hold items such as robes and cannot be used with chest or legs
-#
-class ClothingImage:
-    def __init__(self, head=0, back=0, front=0, feet=0, weapon=0, hands=0, shield=0, legs=0, chest=0, shoulders=0):
-        self.head = head
-        self.back = back
-        self.front = front
-        self.feet = feet
-        self.weapon = weapon
-        self.hands = hands
-        self.shield = shield
-        self.legs = legs
-        self.chest = chest
-        self.shoulders = shoulders
-
-
 class Personality:
     def __init__(self, charm_level=33, dignity_level=33, ferocity_level=33):
         self.charm_level = charm_level
