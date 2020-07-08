@@ -9,7 +9,7 @@ from utilities.gamemap import GameMapUtilities
 class RenderLayer(Enum):
     MAP = auto()  # dungeon floors, walls, furniture, spell effects??
     ENTITIES = auto()  # player, enemies, items, etc
-    HUD = auto()  # hp, mana, f1 bars, hotkeys, etc
+    HUD = auto()  # hp, f1 bars, hotkeys, etc
     SPELLBAR = auto()  # spell bar
     STATUSEFFECTS = auto()  # effects player is suffering from
     VALIDTARGETS = auto()  # used to show valid targets for the spells

@@ -41,7 +41,6 @@ class RenderSpellInfoPanel(esper.Processor):
 
     def render_energy_bars(self):
         self.render_health()
-        self.render_mana()
 
     def render_boons(self):
         player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
@@ -175,58 +174,6 @@ class RenderSpellInfoPanel(esper.Processor):
         for x in range(split_health):
             terminal.printf(x=(health_start_x + 8) + x, y=health_start_y,
                             s=unicode_mechanic_health_remaining + health_remiaing_fill + ']')
-
-    def render_mana(self):
-
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
-        mana_start_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
-                                                                            parameter='ENERGY_BARS_START_X')
-
-        mana_start_y = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
-                                                                            parameter='ENERGY_BARS_START_Y') + 2
-
-        debug_player = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='logging', parameter='PLAYER_DEBUG')
-        ascii_prefix = 'ASCII_SINGLE_'
-
-        mana_lost_fill = CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_LOST')
-        mana_remiaing_fill = CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_REMAINING')
-
-        unicode_mechanic_mana_lost = '[font=dungeon][color=ENERGY_MANA_LOST]['
-        unicode_mechanic_mana_remaining = '[font=dungeon][color=ENERGY_MANA_REMAINING]['
-        colour_code_player_debug = '[color=PLAYER_DEBUG]'
-
-        current_mana_value = MobileUtilities.get_mobile_derived_current_mana(gameworld=self.gameworld, entity=player_entity)
-        max_mana_value = MobileUtilities.get_mobile_derived_maximum_mana(gameworld=self.gameworld, entity=player_entity)
-
-        mana_split = formulas.calculate_percentage(low_number=current_mana_value, max_number=max_mana_value)
-
-        # draw full lost mana bar
-        terminal.printf(x=mana_start_x, y=mana_start_y, s="Mana ")
-        for x in range(10):
-            terminal.printf(x=(mana_start_x + 5) + x, y=mana_start_y,
-                            s=unicode_mechanic_mana_lost + mana_lost_fill + ']')
-
-        # now draw mana remaining on top of the above bar
-        split_mana = int(mana_split / 10)
-        for x in range(split_mana):
-            terminal.printf(x=(mana_start_x + 5) + x, y=mana_start_y,
-                            s=unicode_mechanic_mana_remaining + mana_remiaing_fill + ']')
-
-        if debug_player:
-            player_map_x = MobileUtilities.get_mobile_x_position(gameworld=self.gameworld, entity=player_entity)
-            player_map_y = MobileUtilities.get_mobile_y_position(gameworld=self.gameworld, entity=player_entity)
-            camera_width = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='gui',
-                                                                       parameter='VIEWPORT_WIDTH')
-            camera_height = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='gui',
-                                                                        parameter='VIEWPORT_HEIGHT')
-
-            camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                       camera_height=camera_height,
-                                                                       player_map_pos_x=player_map_x,
-                                                                       player_map_pos_y=player_map_y,
-                                                                       game_map=self.game_map)
-            terminal.printf(x=(mana_start_x + 5), y=mana_start_y + 2, s=colour_code_player_debug + 'Player map pos x/y ' + str(player_map_x) + '/' + str(player_map_y))
-            terminal.printf(x=(mana_start_x + 5), y=mana_start_y + 3, s=colour_code_player_debug + 'Camera starts map x/y ' + str(camera_x) + '/' + str(camera_y))
 
     #
     # formally known as the F1 bar

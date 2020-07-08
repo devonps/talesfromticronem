@@ -355,7 +355,6 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.Jewellery())
         gameworld.add_component(entity_id, mobiles.Equipped())
         gameworld.add_component(entity_id, mobiles.Velocity())
-        gameworld.add_component(entity_id, mobiles.ManaPool(current=500, maximum=1000))
         gameworld.add_component(entity_id, mobiles.SpecialBar(valuecurrent=10, valuemaximum=100))
         gameworld.add_component(entity_id, mobiles.Renderable(is_visible=True))
         gameworld.add_component(entity_id, mobiles.StatusEffects())
@@ -1092,20 +1091,6 @@ class MobileUtilities(numbers.Real, ABC):
 
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth = maximum_health
 
-    @staticmethod
-    def set_mobile_derived_current_mana(gameworld, gameconfig):
-
-        entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
-
-        current_mana = MobileUtilities.get_mobile_derived_current_mana(gameworld=gameworld, entity=entity)
-        # check boons
-        # check conditions
-        # check controls
-        # check traits
-        # check equipped items (armour, jewellery)
-        # check weapons
-        return current_mana
-
     #
     # Get derived attributes
     #
@@ -1137,14 +1122,6 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def get_mobile_derived_current_health(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth
-
-    @staticmethod
-    def get_mobile_derived_current_mana(gameworld, entity):
-        return gameworld.component_for_entity(entity, mobiles.ManaPool).current
-
-    @staticmethod
-    def get_mobile_derived_maximum_mana(gameworld, entity):
-        return gameworld.component_for_entity(entity, mobiles.ManaPool).maximum
 
     @staticmethod
     def get_mobile_derived_special_bar_current_value(gameworld, entity):

@@ -400,20 +400,15 @@ class Debug:
         current_health_value = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=entity_id)
         max_health_value = MobileUtilities.get_mobile_derived_maximum_health(gameworld=gameworld, entity=entity_id)
 
-        current_mana_value = MobileUtilities.get_mobile_derived_current_mana(gameworld=gameworld, entity=entity_id)
-        max_mana_value = MobileUtilities.get_mobile_derived_maximum_mana(gameworld=gameworld, entity=entity_id)
-
         current_f1_value = MobileUtilities.get_mobile_derived_special_bar_current_value(gameworld=gameworld,
                                                                                         entity=entity_id)
         max_f1_value = MobileUtilities.get_mobile_derived_special_bar_max_value(gameworld=gameworld, entity=entity_id)
 
         health_string = start_string + "Health:" + end_string + str(current_health_value) + " of " + str(
             max_health_value)
-        mana_string = start_string + "Mana:" + end_string + str(current_mana_value) + " of " + str(max_mana_value)
         f1_string = start_string + "Special:" + end_string + str(current_f1_value) + " of " + str(max_f1_value)
 
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=health_string)
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=mana_string)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=f1_string)
 
         section = 7
