@@ -493,9 +493,9 @@ class ItemUtilities:
         benefit = statbonus[1]
 
         if stat.lower() == 'condition damage':
-            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).conditionDamage
+            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).condition_damage
             new_stat_bonus = current_stat_bonus + benefit
-            gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).conditionDamage=new_stat_bonus
+            gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).condition_damage=new_stat_bonus
 
         if stat.lower() == 'power':
             current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power
@@ -513,9 +513,9 @@ class ItemUtilities:
             gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness=new_stat_bonus
 
         if stat.lower() == 'healing power':
-            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healingPower
+            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healing_power
             new_stat_bonus = current_stat_bonus + benefit
-            gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healingPower=new_stat_bonus
+            gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healing_power=new_stat_bonus
 
         if stat.lower() == 'precision':
             current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision

@@ -92,7 +92,7 @@ class MobileUtilities(numbers.Real, ABC):
 
         gameworld.component_for_entity(player, mobiles.CharacterClass).label = selected_class
         gameworld.component_for_entity(player, mobiles.CharacterClass).spellfile = spellfile
-        gameworld.component_for_entity(player, mobiles.CharacterClass).baseHealth = health
+        gameworld.component_for_entity(player, mobiles.CharacterClass).base_health = health
 
     @staticmethod
     def get_player_entity(gameworld, game_config):
@@ -128,11 +128,11 @@ class MobileUtilities(numbers.Real, ABC):
 
         position_component = gameworld.component_for_entity(entity, mobiles.Position)
 
-        return position_component.hasMoved
+        return position_component.has_moved
 
     @staticmethod
     def set_mobile_position(gameworld, entity, posx, posy):
-        gameworld.add_component(entity, mobiles.Position(x=posx, y=posy, hasMoved=True))
+        gameworld.add_component(entity, mobiles.Position(x=posx, y=posy, has_moved=True))
 
     @staticmethod
     def get_mobile_x_position(gameworld, entity):
@@ -215,7 +215,7 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def set_mobile_has_moved(gameworld, mobile, status):
         position_component = gameworld.component_for_entity(mobile, mobiles.Position)
-        position_component.hasMoved = status
+        position_component.has_moved = status
 
     @staticmethod
     def get_mobile_current_location(gameworld, mobile):
@@ -343,10 +343,10 @@ class MobileUtilities(numbers.Real, ABC):
     def create_base_mobile(gameworld, game_config, entity_id):
         ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_NONE')
 
-        gameworld.add_component(entity_id, mobiles.Describable(description='', glyph='',
-                                                               foreground=colourUtilities.get('WHITE'),
-                                                               background=colourUtilities.get('BLACK'),
-                                                               personality='', gender='', image=0))
+        gameworld.add_component(entity_id, mobiles.Describable())
+        MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity_id, value='@')
+        MobileUtilities.set_player_gender(gameworld=gameworld, entity=entity_id, gender='neutral')
+        MobileUtilities.set_mobile_description(gameworld=gameworld, entity=entity_id, value='something')
         gameworld.add_component(entity_id,
                                 mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
         gameworld.add_component(entity_id, mobiles.AI(ailevel=ai, description='none'))
@@ -361,7 +361,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.PrimaryAttributes())
         gameworld.add_component(entity_id, mobiles.SecondaryAttributes())
         gameworld.add_component(entity_id, mobiles.DerivedAttributes())
-        gameworld.add_component(entity_id, mobiles.SpellBar(entityId=0))
+        gameworld.add_component(entity_id, mobiles.SpellBar(entity_id=0))
         gameworld.add_component(entity_id, mobiles.Race(race='', size=''))
         gameworld.add_component(entity_id, mobiles.Position())
         gameworld.add_component(entity_id, mobiles.Name())
@@ -390,17 +390,18 @@ class MobileUtilities(numbers.Real, ABC):
     def create_player_character(gameworld, game_config, player_entity):
         player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
                                                                 parameter='AI_LEVEL_PLAYER')
-        gameworld.add_component(player_entity, mobiles.Describable(description='something', glyph='@',
-                                                                   foreground=colourUtilities.get('ORANGE'),
-                                                                   background=colourUtilities.get('BLACK'),
-                                                                   personality='Unpredictable', gender='neutral',
-                                                                   image=11))
+        gameworld.add_component(player_entity, mobiles.Describable())
+        MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=player_entity, value='@')
+        MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, game_config=game_config, entity=player_entity)
+        MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity, gender='neutral')
+        MobileUtilities.set_mobile_description(gameworld=gameworld, entity=player_entity, value='something')
+
         gameworld.add_component(player_entity,
                                 mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
         gameworld.add_component(player_entity, mobiles.CurrentTurn(current_turn=0))
         gameworld.add_component(player_entity, mobiles.Name(first='', suffix=''))
         gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai, description='player'))
-        gameworld.add_component(player_entity, mobiles.SpellBar(entityId=0))
+        gameworld.add_component(player_entity, mobiles.SpellBar(entity_id=0))
         gameworld.add_component(player_entity, mobiles.Viewport())
 
     @staticmethod
@@ -504,13 +505,13 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_spellbar_for_entity(gameworld, entity, spellbar_entity):
-        gameworld.add_component(entity, mobiles.SpellBar(entityId=spellbar_entity))
+        gameworld.add_component(entity, mobiles.SpellBar(entity_id=spellbar_entity))
 
     @staticmethod
     def get_spellbar_id_for_entity(gameworld, entity):
         spellbar_component = gameworld.component_for_entity(entity, mobiles.SpellBar)
 
-        return spellbar_component.entityId
+        return spellbar_component.entity_id
 
     @staticmethod
     def set_player_viewport_x(gameworld, entity, value):
@@ -534,13 +535,13 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_MessageLog_for_player(gameworld, entity, logid):
-        gameworld.add_component(entity, mobiles.MessageLog(entityId=logid, message_log_change=False))
+        gameworld.add_component(entity, mobiles.MessageLog(entity_id=logid, message_log_change=False))
 
     @staticmethod
     def get_MessageLog_id(gameworld, entity):
         messagelog_component = gameworld.component_for_entity(entity, mobiles.MessageLog)
 
-        return messagelog_component.entityId
+        return messagelog_component.entity_id
 
     @staticmethod
     def set_view_message_log(gameworld, entity, view_value):
@@ -588,14 +589,13 @@ class MobileUtilities(numbers.Real, ABC):
         px, py = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=mobile)
         mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
         for ent, (rend, loc, desc) in gameworld.get_components(items.RenderItem, items.Location, items.Describable):
-            if loc.x == px and loc.y == py:
-                if rend.is_true:
-                    # check if mobile has enough space in their inventory
-                    # remove item location data
-                    gameworld.remove_component(ent, items.Location)
-                    # add item entity to mobiles' inventory
-                    mobile_inventory_component.items.append(ent)
-                    logger.info('{} has been picked up', desc.name)
+            if (loc.x == px and loc.y == py) and rend.is_true:
+                # check if mobile has enough space in their inventory
+                # remove item location data
+                gameworld.remove_component(ent, items.Location)
+                # add item entity to mobiles' inventory
+                mobile_inventory_component.items.append(ent)
+                logger.info('{} has been picked up', desc.name)
 
     # drop item from inventory
     @staticmethod
@@ -871,11 +871,11 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def get_mobile_secondary_condition_damage(gameworld, entity):
         secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
-        return secondary_components.conditionDamage
+        return secondary_components.condition_damage
 
     @staticmethod
     def set_mobile_secondary_condition_damage(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).conditionDamage = value
+        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).condition_damage = value
 
     @staticmethod
     def get_mobile_secondary_expertise(gameworld, entity):
@@ -898,11 +898,11 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def get_mobile_secondary_healing_power(gameworld, entity):
         secondary_components = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes)
-        return secondary_components.healingPower
+        return secondary_components.healing_power
 
     @staticmethod
     def set_mobile_secondary_healing_power(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healingPower = value
+        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healing_power = value
 
     @staticmethod
     def is_entity_wearing_armour(gameworld, entity):
@@ -1015,7 +1015,7 @@ class MobileUtilities(numbers.Real, ABC):
 
         boon_duration_value = min(100, int(concentration_value / 15))
 
-        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).boonDuration = boon_duration_value
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).boon_duration = boon_duration_value
 
     @staticmethod
     def set_mobile_derived_critical_hit_chance(gameworld, entity):
@@ -1036,7 +1036,7 @@ class MobileUtilities(numbers.Real, ABC):
 
         critical_chance_value = min(100, base_value + boon_fury_bonus + trait_bonus + precision_bonus)
 
-        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalChance = critical_chance_value
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).critical_chance = critical_chance_value
 
     @staticmethod
     def set_mobile_derived_critical_damage(gameworld, entity):
@@ -1049,7 +1049,7 @@ class MobileUtilities(numbers.Real, ABC):
 
         critical_damage_value = base_value + critical_damage_bonus
 
-        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalDamage = critical_damage_value
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).critical_damage = critical_damage_value
 
     @staticmethod
     def set_mobile_derived_condition_duration(gameworld, entity):
@@ -1059,7 +1059,7 @@ class MobileUtilities(numbers.Real, ABC):
         cond_duration = int(expertise_value / 15)
 
         cond_duration_bonus = min(100, cond_duration)
-        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).conditionDuration = cond_duration_bonus
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).condition_duration = cond_duration_bonus
 
     @staticmethod
     def set_mobile_derived_max_health(gameworld, entity):
@@ -1070,17 +1070,17 @@ class MobileUtilities(numbers.Real, ABC):
 
         # get character class attributes component
         entity_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)
-        class_base_health = entity_class_component.baseHealth
+        class_base_health = entity_class_component.base_health
 
         vitality_calculated_health = vitality_value * 10
 
         health_value = vitality_calculated_health + class_base_health
-        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth = health_value
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximum_health = health_value
 
     @staticmethod
     def set_mobile_derived_current_health(gameworld, entity):
 
-        maximum_health = gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth
+        maximum_health = gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximum_health
         # check boons --> increase health
         # check conditions --> reduce health
         # check controls --> can affect it either way
@@ -1089,7 +1089,7 @@ class MobileUtilities(numbers.Real, ABC):
         # check armour
         # check weapons
 
-        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth = maximum_health
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).current_health = maximum_health
 
     #
     # Get derived attributes
@@ -1101,27 +1101,27 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def get_mobile_derived_boon_duration(gameworld, entity):
-        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).boonDuration
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).boon_duration
 
     @staticmethod
     def get_mobile_derived_critical_hit_chance(gameworld, entity):
-        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalChance
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).critical_chance
 
     @staticmethod
     def get_mobile_derived_critical_damage(gameworld, entity):
-        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).criticalDamage
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).critical_damage
 
     @staticmethod
     def get_mobile_derived_condition_duration(gameworld, entity):
-        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).conditionDuration
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).condition_duration
 
     @staticmethod
     def get_mobile_derived_maximum_health(gameworld, entity):
-        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximumHealth
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximum_health
 
     @staticmethod
     def get_mobile_derived_current_health(gameworld, entity):
-        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth
+        return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).current_health
 
     @staticmethod
     def get_mobile_derived_special_bar_current_value(gameworld, entity):
@@ -1134,7 +1134,7 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def get_combat_status(gameworld, entity):
         status_effects_component = gameworld.component_for_entity(entity, mobiles.StatusEffects)
-        return status_effects_component.inCombat
+        return status_effects_component.in_combat
 
     #
     # Set derived attributes
@@ -1143,17 +1143,17 @@ class MobileUtilities(numbers.Real, ABC):
     def set_current_health_during_combat(gameworld, entity, damage_to_apply):
         target_current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=entity)
         target_new_health = target_current_health - damage_to_apply
-        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).currentHealth = target_new_health
+        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).current_health = target_new_health
 
     @staticmethod
     def set_combat_status_to_true(gameworld, entity):
         status_effects_component = gameworld.component_for_entity(entity, mobiles.StatusEffects)
-        status_effects_component.inCombat = True
+        status_effects_component.in_combat = True
 
     @staticmethod
     def set_combat_status_to_false(gameworld, entity):
         status_effects_component = gameworld.component_for_entity(entity, mobiles.StatusEffects)
-        status_effects_component.inCombat = False
+        status_effects_component.in_combat = False
 
     @staticmethod
     def get_current_condis_applied_to_mobile(gameworld, entity):

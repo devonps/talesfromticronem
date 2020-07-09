@@ -33,15 +33,14 @@ class ClassSpecific:
 
 
 class Describable:
-    def __init__(self, description='undefined', glyph='@', foreground=colourUtilities.get('ORANGE'),
-                 background=colourUtilities.get('BLACK'), personality='Unpredictable', gender='undefined', image=0):
-        self.description = description
-        self.glyph = glyph
-        self.foreground = foreground
-        self.background = background
-        self.personality_title = personality
-        self.gender = gender
-        self.image = image
+    def __init__(self):
+        self.description = 'undefined'
+        self.glyph = ''
+        self.foreground = colourUtilities.get('ORANGE')
+        self.background = colourUtilities.get('BLACK')
+        self.personality_title = 'Unpredictable'
+        self.gender = 'undefined'
+        self.image = 0
 
 
 class Personality:
@@ -63,7 +62,7 @@ class Race:
 class CharacterClass:
     def __init__(self, label='undefined', base_health=99, style='balanced', spellfile=''):
         self.label = label
-        self.baseHealth = base_health
+        self.base_health = base_health
         self.style = style
         self.spellfile = spellfile
 
@@ -83,8 +82,8 @@ class SpecialBar:
 
 
 class SpellBar:
-    def __init__(self, entityId=0):
-        self.entityId = entityId
+    def __init__(self, entity_id=0):
+        self.entity_id = entity_id
         self.slots = [0] * 10
 
 
@@ -100,8 +99,8 @@ class CurrentTurn:
 
 
 class MessageLog:
-    def __init__(self, entityId=0, message_log_change=False):
-        self.entityId = entityId
+    def __init__(self, entity_id=0, message_log_change=False):
+        self.entity_id = entity_id
         self.message_log_change = message_log_change
 
 
@@ -146,14 +145,14 @@ class Equipped:
 
 class Renderable:
     def __init__(self, is_visible=True):
-        self.isVisible = is_visible
+        self.is_visible = is_visible
 
 
 class Position:
-    def __init__(self, x=0, y=0, hasMoved=False):
+    def __init__(self, x=0, y=0, has_moved=False):
         self.x = x
         self.y = y
-        self.hasMoved = hasMoved
+        self.has_moved = has_moved
 
 
 class Velocity:
@@ -167,7 +166,7 @@ class StatusEffects:
         self.boons = []
         self.conditions = []
         self.controls = []
-        self.inCombat = False
+        self.in_combat = False
 
 
 class SpellCast:
@@ -203,12 +202,12 @@ class SecondaryAttributes:
     healing power increases outgoing healiing, including self heals
     """
 
-    def __init__(self, concentration=0, conditionDamage=0, expertise=0, ferocity=0, healingPower=0):
+    def __init__(self, concentration=0, condition_damage=0, expertise=0, ferocity=0, healing_power=0):
         self.concentration = concentration
-        self.conditionDamage = conditionDamage
+        self.condition_damage = condition_damage
         self.expertise = expertise
         self.ferocity = ferocity
-        self.healingPower = healingPower
+        self.healing_power = healing_power
 
 
 class DerivedAttributes:
@@ -226,12 +225,12 @@ class DerivedAttributes:
         Base value is determined by profession and increases with level. Increased by Vitality (1 Vitality = 10 Health).
     """
 
-    def __init__(self, armour=0, boonDuration=0, criticalChance=0, CriticalDamage=0, conditionDuration=0,
-                 maximumHealth=0):
+    def __init__(self, armour=0, boon_duration=0, critical_chance=0, critical_damage=0, condition_duration=0,
+                 maximum_health=0):
         self.armour = armour
-        self.boonDuration = boonDuration
-        self.criticalChance = criticalChance
-        self.criticalDamage = CriticalDamage
-        self.conditionDuration = conditionDuration
-        self.maximumHealth = maximumHealth
-        self.currentHealth = maximumHealth
+        self.boon_duration = boon_duration
+        self.critical_chance = critical_chance
+        self.critical_damage = critical_damage
+        self.condition_duration = condition_duration
+        self.maximum_health = maximum_health
+        self.current_health = maximum_health

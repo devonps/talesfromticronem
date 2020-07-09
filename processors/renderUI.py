@@ -211,7 +211,7 @@ class RenderUI(esper.Processor):
 
         for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
                                                                mobiles.Describable):
-            if rend.isVisible:
+            if rend.is_visible:
 
                 x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
                 y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
