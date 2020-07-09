@@ -151,6 +151,9 @@ class RenderSpellInfoPanel(esper.Processor):
         health_start_y = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                             parameter='ENERGY_BARS_START_Y')
 
+        debug_mode = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='logging',
+                                                    parameter='PLAYER_DEBUG')
+
         ascii_prefix = 'ASCII_SINGLE_'
 
         health_lost_fill = CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_LOST')
@@ -174,6 +177,13 @@ class RenderSpellInfoPanel(esper.Processor):
         for x in range(split_health):
             terminal.printf(x=(health_start_x + 8) + x, y=health_start_y,
                             s=unicode_mechanic_health_remaining + health_remiaing_fill + ']')
+
+        if debug_mode:
+            px = MobileUtilities.get_mobile_x_position(gameworld=self.gameworld, entity=player_entity)
+            py = MobileUtilities.get_mobile_y_position(gameworld=self.gameworld, entity=player_entity)
+
+            terminal.printf(x=health_start_x, y=health_start_y + 2,
+                            s='map x:' + str(px) + ' map y:' + str(py))
 
     #
     # formally known as the F1 bar

@@ -86,7 +86,7 @@ class SceneManager:
             gameworld.add_processor(cast_spells_processor, priority=100)
             gameworld.add_processor(update_entities_processor, priority=90)
             gameworld.add_processor(render_ui_processor, priority=70)
-            # gameworld.add_processor(render_message_log_processor, priority=60)
+            gameworld.add_processor(render_message_log_processor, priority=60)
             gameworld.add_processor(spell_info_processor, priority=50)
 
     @staticmethod

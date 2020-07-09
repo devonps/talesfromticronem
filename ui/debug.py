@@ -72,8 +72,11 @@ class Debug:
                                                                    player_map_pos_x=player_map_x,
                                                                    player_map_pos_y=player_map_y,
                                                                    game_map=game_map)
-        posx = coords_clicked[0] + camera_x
-        posy = coords_clicked[1] + camera_y
+        screen_offset_x = 0
+        screen_offset_y = 13
+
+        posx = coords_clicked[0] + camera_x - screen_offset_x
+        posy = coords_clicked[1] + camera_y - screen_offset_y
         # get entity id at position coords
         entity_id = CommonUtils.get_entity_at_location(gameworld=gameworld, posx=posx, posy=posy)
 
@@ -113,7 +116,8 @@ class Debug:
 
                 # blit the terminal
                 terminal.refresh()
-
+        else:
+            logger.info('No entity at location {}', coords_clicked)
     @staticmethod
     def es_process_keyboard_actions(event_to_be_processed, event_action, game_config, gameworld, entity_id, page_to_display):
         player_not_pressed_quit = True

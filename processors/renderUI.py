@@ -98,6 +98,12 @@ class RenderUI(esper.Processor):
                                                                    parameter='VIEWPORT_WIDTH')
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='VIEWPORT_HEIGHT')
+        screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='SCREEN_OFFSET_X')
+        screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='SCREEN_OFFSET_Y')
+
+
         # this holds the start x/y map positions left of the players current position
         camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width, camera_height=camera_height,
                                                                 player_map_pos_x=player_map_pos_x,
@@ -169,7 +175,7 @@ class RenderUI(esper.Processor):
                                                                              config_prefix=config_prefix_door,
                                                                              tile_assignment=0)
 
-                RenderUI.print_char_to_the_screen(print_char=print_char, tile=tile, colour_code=colour_code, char_to_display=char_to_display, scr_pos_x=scr_pos_x, scr_pos_y=scr_pos_y)
+                RenderUI.print_char_to_the_screen(print_char=print_char, tile=tile, colour_code=colour_code, char_to_display=char_to_display, scr_pos_x=scr_pos_x + screen_offset_x, scr_pos_y=scr_pos_y + screen_offset_y)
                 cam_x += 1
             camera_y += 1
 
@@ -208,6 +214,10 @@ class RenderUI(esper.Processor):
     def render_mobiles(game_config, gameworld, game_map, fov_map):
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         visible_entities = []
+        screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='SCREEN_OFFSET_X')
+        screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='SCREEN_OFFSET_Y')
 
         for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
                                                                mobiles.Describable):
@@ -221,7 +231,7 @@ class RenderUI(esper.Processor):
                     if x != -99:
                         fg = desc.foreground
                         bg = desc.background
-                        RenderUI.render_entity(posx=x, posy=y, glyph=desc.glyph, fg=fg, bg=bg)
+                        RenderUI.render_entity(posx=x + screen_offset_x, posy=y + screen_offset_y, glyph=desc.glyph, fg=fg, bg=bg)
                         if ent != player_entity:
                             visible_entities.append(ent)
 
