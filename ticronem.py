@@ -79,11 +79,14 @@ def game_loop(gameworld):
                 advance_game_turn = True
             if event_action in spell_bar_keys:
                 SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player)
-                # spell_pop_up(slot=event_action, gameworld=gameworld, player=player, game_config=game_config)
                 advance_game_turn = True
             if event_action == 'log':
                 CommonUtils.set_current_log(gameworld=gameworld, log_entity=msglog)
                 advance_game_turn = False
+        if event_to_be_processed == 'infopopup' and event_action is not None:
+            logger.debug('Information needed on item {}', event_action)
+            # spell_pop_up(slot=event_action, gameworld=gameworld, player=player, game_config=game_config)
+            advance_game_turn = False
         if event_to_be_processed == 'mouseleftbutton':
             Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords_clicked=event_action, game_map=game_map)
             advance_game_turn = False

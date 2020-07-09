@@ -8,7 +8,7 @@ def handle_game_keys():
     key = terminal.read()
 
     #
-    # ENTITY SELECT KEYS
+    # ENTITY SPY PAGE SELECTION
     #
     if key == terminal.TK_TAB:
         myevent = 'keypress'
@@ -86,7 +86,29 @@ def handle_game_keys():
     if key == terminal.TK_MOUSE_RIGHT:
         myevent = 'mouserightbutton'
         action = (terminal.state(terminal.TK_MOUSE_X), terminal.state(terminal.TK_MOUSE_Y))
-
+    #
+    # spell / info pop up access keys
+    #
+    if terminal.check(terminal.TK_SHIFT):
+        myevent = 'infopopup'
+        if key == terminal.TK_1:
+            action = 1
+        if key == terminal.TK_2:
+            action = 2
+        if key == terminal.TK_3:
+            action = 3
+        if key == terminal.TK_4:
+            action = 4
+        if key == terminal.TK_5:
+            action = 5
+        if key == terminal.TK_6:
+            action = 6
+        if key == terminal.TK_7:
+            action = 7
+        if key == terminal.TK_8:
+            action = 8
+        if key == terminal.TK_9:
+            action = 9
     #
     # general keyboard
     #
