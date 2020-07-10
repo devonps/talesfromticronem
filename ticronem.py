@@ -2,7 +2,6 @@ from bearlibterminal import terminal
 
 from enemyRelated.statelessAI import StatelessAI
 from newGame.initialiseNewGame import setup_gameworld
-from ui.spell_information import spell_pop_up
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
@@ -13,6 +12,7 @@ from newGame import newGame
 from utilities.common import CommonUtils
 from ui.debug import Debug
 from utilities.spellHelp import SpellUtilities
+from ui.items_and_spells_info_panel import process
 
 
 def game_loop(gameworld):
@@ -85,7 +85,7 @@ def game_loop(gameworld):
                 advance_game_turn = False
         if event_to_be_processed == 'infopopup' and event_action is not None:
             logger.debug('Information needed on item {}', event_action)
-            # spell_pop_up(slot=event_action, gameworld=gameworld, player=player, game_config=game_config)
+            process(menu_selection=event_action)
             advance_game_turn = False
         if event_to_be_processed == 'mouseleftbutton':
             Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords_clicked=event_action, game_map=game_map)

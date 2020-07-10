@@ -53,7 +53,7 @@ class Debug:
         start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
                                                                                'START_PANEL_FRAME_HEIGHT')
 
-        terminal.clear_area(start_panel_frame_x, start_panel_frame_y, start_panel_frame_width + 20,
+        terminal.clear_area(start_panel_frame_x, start_panel_frame_y, start_panel_frame_width + 1,
                             start_panel_frame_height)
 
     @staticmethod
@@ -72,8 +72,11 @@ class Debug:
                                                                    player_map_pos_x=player_map_x,
                                                                    player_map_pos_y=player_map_y,
                                                                    game_map=game_map)
-        screen_offset_x = 0
-        screen_offset_y = 13
+
+        screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='SCREEN_OFFSET_X')
+        screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='SCREEN_OFFSET_Y')
 
         posx = coords_clicked[0] + camera_x - screen_offset_x
         posy = coords_clicked[1] + camera_y - screen_offset_y
