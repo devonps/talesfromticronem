@@ -28,11 +28,8 @@ def process(menu_selection):
     spell_item_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                    parameter=ascii_prefix + 'TOP_LEFT')
 
-    spell_item_info_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                    parameter=ascii_prefix + 'TOP_RIGHT')
-
-    spell_item_info_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                       parameter=ascii_prefix + 'BOTTOM_RIGHT')
+    spell_item_info_cross_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                    parameter=ascii_prefix + 'CROSS_JUNCTION')
 
     spell_item_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                        parameter=ascii_prefix + 'BOTTOM_LEFT')
@@ -53,7 +50,7 @@ def process(menu_selection):
 
     # draw top/bottom horizontals
     for z in range(spell_item_info_start_x, (spell_item_info_start_x + spell_item_info_width)):
-        terminal.printf(x=z, y=(spell_item_info_start_y),
+        terminal.printf(x=z, y=spell_item_info_start_y,
                         s=unicode_frame_colour + spell_item_info_horizontal + ']')
 
         terminal.printf(x=z, y=(spell_item_info_start_y + spell_item_info_depth) - 1, s=unicode_frame_colour + spell_item_info_horizontal + ']')
@@ -63,8 +60,6 @@ def process(menu_selection):
         terminal.printf(x=spell_item_info_start_x, y=spell_item_info_start_y + zz,
                         s=unicode_frame_colour + spell_item_info_vertical + ']')
 
-    # draw mid-point horizontals
-
     # draw corners
         terminal.printf(x=spell_item_info_start_x, y=spell_item_info_start_y,
                         s=unicode_frame_colour + spell_item_info_top_left_corner + ']')
@@ -73,15 +68,15 @@ def process(menu_selection):
                         s=unicode_frame_colour + spell_item_info_bottom_left_corner + ']')
 
         terminal.printf(x=(spell_item_info_start_x + spell_item_info_width), y=spell_item_info_start_y,
-                        s=unicode_frame_colour + spell_item_info_right_t_junction + ']')
+                        s=unicode_frame_colour + spell_item_info_cross_junction + ']')
 
         terminal.printf(x=(spell_item_info_start_x + spell_item_info_width), y=(spell_item_info_start_y + spell_item_info_depth) - 1,
                         s=unicode_frame_colour + spell_item_info_right_t_junction + ']')
 
     # display control message
-    terminal.printf(x=spell_item_info_start_x + 1,y=(spell_item_info_start_y + spell_item_info_depth) - 2,
+    terminal.printf(x=spell_item_info_start_x + 2,y=(spell_item_info_start_y + spell_item_info_depth) - 2,
                     s='Press Escape to return')
-    
+
     # determine which information is to be displayed
     if int(menu_selection) == 0:
         logger.info('Spell selected')
