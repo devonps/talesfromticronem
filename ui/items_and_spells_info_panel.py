@@ -92,10 +92,11 @@ def process(menu_selection):
     logger.debug('raw menu selection is {}', menu_selection)
     logger.debug('STR menu selection is {}', str(menu_selection))
 
-    if str(menu_selection) in item_selection_keys:
-        logger.info('Item selected')
-    elif menu_selection in spell_selection_keys:
+    if str(menu_selection) in spell_selection_keys:
         logger.info('Spell selected')
+
+    elif menu_selection in item_selection_keys:
+        logger.info('Item selected')
     else:
         return
 
