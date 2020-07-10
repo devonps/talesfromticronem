@@ -14,38 +14,128 @@ def handle_game_keys():
         myevent = 'keypress'
         action = 'tab'
     #
-    # SPELL BAR HOTKEYS
+    # SPELL CAST / INFO KEYS
     #
     if key == terminal.TK_1:
-        myevent = 'keypress'
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = 'keypress'
         action = 1
     if key == terminal.TK_2:
-        myevent = 'keypress'
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = 'keypress'
         action = 2
     if key == terminal.TK_3:
-        myevent = 'keypress'
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = 'keypress'
         action = 3
     if key == terminal.TK_4:
-        myevent = 'keypress'
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = 'keypress'
         action = 4
     if key == terminal.TK_5:
-        myevent = 'keypress'
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = 'keypress'
         action = 5
     if key == terminal.TK_6:
-        myevent = 'keypress'
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = 'keypress'
         action = 6
     if key == terminal.TK_7:
-        myevent = 'keypress'
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = 'keypress'
         action = 7
     if key == terminal.TK_8:
-        myevent = 'keypress'
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = 'keypress'
         action = 8
     if key == terminal.TK_9:
-        myevent = 'keypress'
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = 'keypress'
         action = 9
-    if key == terminal.TK_0:
-        myevent = 'keypress'
-        action = 0
+    if key == terminal.TK_A:
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = ''
+        action = 'A'
+    if key == terminal.TK_A:
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = ''
+        action = 'A'
+    if key == terminal.TK_B:
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = ''
+        action = 'B'
+    if key == terminal.TK_C:
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = ''
+        action = 'C'
+    if key == terminal.TK_D:
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = ''
+        action = 'D'
+    if key == terminal.TK_E:
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = ''
+        action = 'E'
+    if key == terminal.TK_F:
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = ''
+        action = 'F'
+    if key == terminal.TK_G:
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = ''
+        action = 'G'
+    if key == terminal.TK_H:
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = ''
+        action = 'H'
+    if key == terminal.TK_I:
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = ''
+        action = 'I'
+    if key == terminal.TK_J:
+        if terminal.check(terminal.TK_SHIFT):
+            myevent = 'infopopup'
+        else:
+            myevent = ''
+        action = 'J'
 
     # ACCEPT/DELETE/QUIT KEYS
     if key == terminal.TK_ESCAPE:
@@ -94,29 +184,6 @@ def handle_game_keys():
         myevent = 'keypress'
         action = 'log'
 
-    #
-    # spell / info pop up access keys
-    #
-    if terminal.check(terminal.TK_SHIFT):
-        myevent = 'infopopup'
-        if key == terminal.TK_1:
-            action = 1
-        if key == terminal.TK_2:
-            action = 2
-        if key == terminal.TK_3:
-            action = 3
-        if key == terminal.TK_4:
-            action = 4
-        if key == terminal.TK_5:
-            action = 5
-        if key == terminal.TK_6:
-            action = 6
-        if key == terminal.TK_7:
-            action = 7
-        if key == terminal.TK_8:
-            action = 8
-        if key == terminal.TK_9:
-            action = 9
     #
     # general keyboard
     #
