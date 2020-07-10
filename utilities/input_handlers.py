@@ -86,6 +86,14 @@ def handle_game_keys():
     if key == terminal.TK_MOUSE_RIGHT:
         myevent = 'mouserightbutton'
         action = (terminal.state(terminal.TK_MOUSE_X), terminal.state(terminal.TK_MOUSE_Y))
+
+    #
+    # move to next message log
+    #
+    if key == terminal.TK_M:
+        myevent = 'keypress'
+        action = 'log'
+
     #
     # spell / info pop up access keys
     #
