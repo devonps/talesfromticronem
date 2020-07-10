@@ -21,6 +21,9 @@ def process(menu_selection):
     spell_item_info_start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                           section='spellInfoPopup',
                                                                           parameter='SP_START_Y')
+    spell_item_info_item_horz = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                          section='spellInfoPopup',
+                                                                          parameter='SP_PORTRAIT_BAR')
     spell_item_info_width = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                         section='spellInfoPopup',
                                                                         parameter='SP_WIDTH')
@@ -28,12 +31,23 @@ def process(menu_selection):
                                                                         section='spellInfoPopup',
                                                                         parameter='SP_DEPTH')
 
+    spell_item_info_item_imp_text_x = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                          section='spellInfoPopup',
+                                                                          parameter='SP_IMPORTANT_TEXT_X')
+
+    spell_item_info_item_imp_text = spell_item_info_item_horz + 2
+
     ascii_prefix = 'ASCII_SINGLE_'
     spell_item_info_left_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                        parameter=ascii_prefix + 'LEFT_T_JUNCTION')
 
     spell_item_info_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                         parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
+    spell_item_info_bottom_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                        parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
+
+
+
     spell_item_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                        parameter=ascii_prefix + 'TOP_LEFT')
 
@@ -82,21 +96,67 @@ def process(menu_selection):
 
         terminal.printf(x=(spell_item_info_start_x + spell_item_info_width),
                         y=(spell_item_info_start_y + spell_item_info_depth) - 1,
-                        s=unicode_frame_colour + spell_item_info_right_t_junction + ']')
+                        s=unicode_frame_colour + spell_item_info_bottom_right_t_junction + ']')
 
     # display control message
     terminal.printf(x=spell_item_info_start_x + 2, y=(spell_item_info_start_y + spell_item_info_depth) - 2,
                     s='Press Escape to return')
 
     # determine which information is to be displayed
-    logger.debug('raw menu selection is {}', menu_selection)
-    logger.debug('STR menu selection is {}', str(menu_selection))
 
     if str(menu_selection) in spell_selection_keys:
         logger.info('Spell selected')
 
     elif menu_selection in item_selection_keys:
         logger.info('Item selected')
+        # draw middle horizontal line
+        for z in range(spell_item_info_start_x, (spell_item_info_start_x + spell_item_info_width)):
+            terminal.printf(x=z, y=spell_item_info_item_horz, s=unicode_frame_colour + spell_item_info_horizontal + ']')
+
+        terminal.printf(x=spell_item_info_start_x, y=spell_item_info_item_horz,
+                        s=unicode_frame_colour + spell_item_info_left_t_junction + ']')
+        terminal.printf(x=spell_item_info_start_x + spell_item_info_width, y=spell_item_info_item_horz,
+                        s=unicode_frame_colour + spell_item_info_right_t_junction + ']')
+
+        # draw portrait
+
+        # draw important text
+
+        # draw armour stuff
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text,
+                        s='Name:')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 1,
+                        s='Defense:')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 2,
+                        s='Location:')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 3,
+                        s='Armoourset:')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 4,
+                        s='Quality:')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 6,
+                        s='Embedded Spell Info...')
+
+        # embedded spell
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 7,
+                        s='Name:')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 8,
+                        s='Cooldown:')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 9,
+                        s='Range:')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 10,
+                        s='Effects...')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 11,
+                        s='Effect x1')
+
+
+
+        # draw jewellery stuff
+
+
+
+        # draw fluff text
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 14, s='Flavour...')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 15, s='it smells good')
     else:
         return
 
