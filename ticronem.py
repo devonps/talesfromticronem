@@ -85,7 +85,7 @@ def game_loop(gameworld):
                 advance_game_turn = False
         if event_to_be_processed == 'infopopup' and event_action is not None:
             logger.debug('Information needed on item {}', event_action)
-            process(menu_selection=event_action)
+            process(menu_selection=event_action, gameworld=gameworld, player_entity=player)
             advance_game_turn = False
         if event_to_be_processed == 'mouseleftbutton':
             Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords_clicked=event_action, game_map=game_map)

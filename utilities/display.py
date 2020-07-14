@@ -279,7 +279,7 @@ def set_jewellery_left_ear_string(gameworld, left_ear):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]L/Ear :[/color]"
     left_ear_string = no_item_string
     if left_ear != 0:
-        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=left_ear)
+        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=left_ear)
         item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=left_ear)
         left_ear_string = item_string + activator + ' ' + item_name
     return left_ear_string
@@ -290,7 +290,7 @@ def set_jewellery_right_ear_string(gameworld, right_ear):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]R/Ear :[/color]"
     right_ear_string = no_item_string
     if right_ear != 0:
-        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=right_ear)
+        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=right_ear)
         item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=right_ear)
         right_ear_string = item_string + activator + ' ' + item_name
     return right_ear_string
@@ -301,7 +301,7 @@ def set_jewellery_left_hand_string(gameworld, left_hand):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]L/Hand:[/color]"
     left_hand_string = no_item_string
     if left_hand != 0:
-        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=left_hand)
+        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=left_hand)
         item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=left_hand)
         left_hand_string = item_string + activator + ' ' + item_name
     return left_hand_string
@@ -312,7 +312,7 @@ def set_jewellery_right_hand_string(gameworld, right_hand):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]R/Hand:[/color]"
     right_hand_string = no_item_string
     if right_hand != 0:
-        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=right_hand)
+        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=right_hand)
         item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=right_hand)
         right_hand_string = item_string + activator + ' ' + item_name
     return right_hand_string
@@ -323,7 +323,7 @@ def set_jewellery_neck_string(gameworld, neck):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]Neck  :[/color]"
     neck_string = no_item_string
     if neck != 0:
-        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, entity=neck)
+        activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=neck)
         item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=neck)
         neck_string = item_string + activator + ' ' + item_name
     return neck_string

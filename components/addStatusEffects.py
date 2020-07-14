@@ -5,6 +5,7 @@
 from components import condis, boons, resources
 from loguru import logger
 from utilities import configUtilities
+from utilities.spellHelp import SpellUtilities
 from utilities.world import check_if_entity_has_component
 
 
@@ -15,6 +16,11 @@ def process_status_effect(gameworld, spell_entity, effects, game_config, ch_clas
     resources = configUtilities.get_config_value_as_list(configfile=game_config, section='spells',
                                                          parameter='class_resources')
 
+    #
+    # I use .statusEffects() to hold a list of different effects attached to the spells
+    # condis=[], boons=[], controls=[]
+    #
+    #
     # remember the list is packed as a dictionary
     for effect in effects:
         # logger.debug('Key is {}', effect)
@@ -23,7 +29,7 @@ def process_status_effect(gameworld, spell_entity, effects, game_config, ch_clas
         if effect_name != '':
             if effect_name in condis:
                 valid_effect = True
-                add_condition(gameworld=gameworld, entity=spell_entity, effect=effect_name, condi_value=effect['value'])
+                add_condition(gameworld=gameworld, entity=spell_entity, effect=effect_name)
             if effect_name in boons:
                 valid_effect = True
                 add_boon(gameworld=gameworld, entity=spell_entity, effect=effect_name, boon_value=effect['value'])
@@ -48,39 +54,47 @@ def add_class_resource(gameworld, entity, effect, resource_value):
     # logger.info('Class resource {} added to spell', effect)
 
 
-def add_condition(gameworld, entity, effect, condi_value):
+def add_condition(gameworld, entity, effect):
     if effect == 'bleeding':
         gameworld.add_component(entity, condis.Bleeding())
+        SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=entity, status_effect='bleeding')
 
     if effect == 'burning':
         gameworld.add_component(entity, condis.Burning())
-
+        SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=entity, status_effect='burning')
     if effect == 'confusion':
         gameworld.add_component(entity, condis.Confusion())
-
+        SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=entity, status_effect='confusion')
     if effect == 'poison':
         gameworld.add_component(entity, condis.Poison())
-
+        SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=entity, status_effect='poison')
     if effect == 'torment':
         gameworld.add_component(entity, condis.Torment())
+        SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=entity, status_effect='torment')
 
     if effect == 'blind':
         gameworld.add_component(entity, condis.Blind())
+        SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=entity, status_effect='blind')
 
     if effect == 'chill':
         gameworld.add_component(entity, condis.Chill())
+        SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=entity, status_effect='chill')
 
     if effect == 'cripple':
         gameworld.add_component(entity, condis.Cripple())
+        SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=entity, status_effect='cripple')
 
     if effect == 'fear':
         gameworld.add_component(entity, condis.Fear())
+        SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=entity, status_effect='fear')
 
     if effect == 'immobilize':
         gameworld.add_component(entity, condis.Immobilize())
+        SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=entity, status_effect='immobilize')
 
     if effect == 'vulnerability':
         gameworld.add_component(entity, condis.Vulnerability())
+        SpellUtilities.add_status_effect_condi(gameworld=gameworld, spell_entity=entity, status_effect='vulnerability')
 
     # logger.info('Condition {} added to spell', effect)
 

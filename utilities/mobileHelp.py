@@ -747,7 +747,7 @@ class MobileUtilities(numbers.Real, ABC):
         ItemUtilities.remove_item_from_inventory(gameworld, mobile, jewellery_entity)
 
         # equip jewellery in correct location
-        body_location = ItemUtilities.get_jewellery_valid_body_location(gameworld=gameworld, entity=jewellery_entity)
+        body_location = ItemUtilities.get_jewellery_valid_body_location(gameworld=gameworld, jewellery_entity=jewellery_entity)
 
         if body_location[0]:
             if equipped_jewellery[0] == 0:

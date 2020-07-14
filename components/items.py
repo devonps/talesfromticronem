@@ -52,7 +52,7 @@ class Material:
 # NO means: (1) it's invisible or (2) it's inside a container
 class RenderItem:
     def __init__(self, istrue=True):
-        self.isTrue = istrue
+        self.is_true = istrue
 
 
 # what is the quality of this item
@@ -161,10 +161,10 @@ class ArmourBodyLocation:
 # what bonus does this piece of armour add and to which attribute
 class AttributeBonus:
     def __init__(self, majorname='', majorbonus=0, minoronename='', minoronebonus=0):
-        self.majorName = majorname
-        self.majorBonus = majorbonus
-        self.minorOneName = minoronename
-        self.minorOneBonus = minoronebonus
+        self.major_name = majorname
+        self.major_bonus = majorbonus
+        self.minor_one_name = minoronename
+        self.minor_one_bonus = minoronebonus
 
 
 # If this piece of armour belongs to an armour set it, the set name will
@@ -200,8 +200,8 @@ class ArmourSpell:
 # the dictionary is in the format:{stat_name, bonus_value}
 class JewelleryStatBonus:
     def __init__(self, statname='', statbonus=0):
-        self.statName = statname
-        self.statBonus = statbonus
+        self.stat_name = statname
+        self.stat_bonus = statbonus
 
 
 # where on the body can this piece of jewellery be worn
@@ -227,5 +227,6 @@ class JewelleryComponents:
 
 
 class JewellerySpell:
-    def __init__(self, entity=0):
+    def __init__(self, entity=0, on_cool_down=False):
         self.entity = entity
+        self.on_cool_down = on_cool_down

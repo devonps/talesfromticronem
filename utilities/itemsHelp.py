@@ -297,14 +297,14 @@ class ItemUtilities:
     @staticmethod
     def get_armour_major_attributes(gameworld, entity):
         armour_attributes_component = gameworld.component_for_entity(entity, items.AttributeBonus)
-        major = [armour_attributes_component.majorName, armour_attributes_component.majorBonus]
+        major = [armour_attributes_component.major_name, armour_attributes_component.major_bonus]
 
         return major
 
     @staticmethod
     def get_armour_minor_attributes(gameworld, entity):
         armour_attributes_component = gameworld.component_for_entity(entity, items.AttributeBonus)
-        minor = [armour_attributes_component.minorOneName, armour_attributes_component.minorOneBonus]
+        minor = [armour_attributes_component.minor_one_name, armour_attributes_component.minor_one_bonus]
         return minor
 
     @staticmethod
@@ -414,48 +414,64 @@ class ItemUtilities:
 ####################################################
 
     @staticmethod
-    def get_jewellery_setting(gameworld, entity):
-        jewellery_materials_componet = gameworld.component_for_entity(entity, items.JewelleryComponents)
+    def get_jewellery_setting(gameworld, jewellery_entity):
+        jewellery_materials_componet = gameworld.component_for_entity(jewellery_entity, items.JewelleryComponents)
         return jewellery_materials_componet.setting
 
     @staticmethod
-    def get_jewellery_hook(gameworld, entity):
-        jewellery_materials_componet = gameworld.component_for_entity(entity, items.JewelleryComponents)
+    def get_jewellery_hook(gameworld, jewellery_entity):
+        jewellery_materials_componet = gameworld.component_for_entity(jewellery_entity, items.JewelleryComponents)
         return jewellery_materials_componet.hook
 
     @staticmethod
-    def get_jewellery_activator(gameworld, entity):
-        jewellery_materials_componet = gameworld.component_for_entity(entity, items.JewelleryComponents)
+    def get_jewellery_activator(gameworld, jewellery_entity):
+        jewellery_materials_componet = gameworld.component_for_entity(jewellery_entity, items.JewelleryComponents)
         return jewellery_materials_componet.activator
 
     @staticmethod
-    def get_jewellery_stat_bonus(gameworld, entity):
-        jewellery_statbonus_component = gameworld.component_for_entity(entity, items.JewelleryStatBonus)
-        statbonus = [jewellery_statbonus_component.statName, jewellery_statbonus_component.statBonus]
+    def get_jewellery_stat_bonus(gameworld, jewellery_entity):
+        jewellery_statbonus_component = gameworld.component_for_entity(jewellery_entity, items.JewelleryStatBonus)
+        statbonus = [jewellery_statbonus_component.stat_name, jewellery_statbonus_component.stat_bonus]
         return statbonus
 
     @staticmethod
-    def get_jewellery_valid_body_location(gameworld, entity):
-        jewellery_body_location_component = gameworld.component_for_entity(entity, items.JewelleryBodyLocation)
+    def get_jewellery_valid_body_location(gameworld, jewellery_entity):
+        jewellery_body_location_component = gameworld.component_for_entity(jewellery_entity, items.JewelleryBodyLocation)
         loc =[jewellery_body_location_component.ears, jewellery_body_location_component.fingers, jewellery_body_location_component.neck]
         return loc
 
     @staticmethod
-    def get_jewellery_already_equipped_status(gameworld, entity):
-        jewellery_equipped_component = gameworld.component_for_entity(entity, items.JewelleryEquipped)
+    def get_jewellery_already_equipped_status(gameworld, jewellery_entity):
+        jewellery_equipped_component = gameworld.component_for_entity(jewellery_entity, items.JewelleryEquipped)
         return jewellery_equipped_component.istrue
 
     @staticmethod
-    def set_jewellery_equipped_status_to_true(gameworld, entity):
-        gameworld.component_for_entity(entity, items.JewelleryEquipped).istrue = True
+    def set_jewellery_equipped_status_to_true(gameworld, jewellery_entity):
+        gameworld.component_for_entity(jewellery_entity, items.JewelleryEquipped).istrue = True
 
     @staticmethod
-    def set_jewellery_equipped_status_to_false(gameworld, entity):
-        gameworld.component_for_entity(entity, items.JewelleryEquipped).istrue = False
+    def set_jewellery_equipped_status_to_false(gameworld, jewellery_entity):
+        gameworld.component_for_entity(jewellery_entity, items.JewelleryEquipped).istrue = False
+
+    @staticmethod
+    def get_jewellery_entity_from_body_location(gameworld, entity, bodylocation):
+        jewellery_worn = 0
+        if bodylocation == 'neck':
+            jewellery_worn = gameworld.component_for_entity(entity, mobiles.Jewellery).neck
+        if bodylocation == 'lear':
+            jewellery_worn = gameworld.component_for_entity(entity, mobiles.Jewellery).left_ear
+        if bodylocation == 'rear':
+            jewellery_worn = gameworld.component_for_entity(entity, mobiles.Jewellery).right_ear
+        if bodylocation == 'lhand':
+            jewellery_worn = gameworld.component_for_entity(entity, mobiles.Jewellery).left_hand
+        if bodylocation == 'rhand':
+            jewellery_worn = gameworld.component_for_entity(entity, mobiles.Jewellery).right_hand
+
+        return jewellery_worn
 
     @staticmethod
     def equip_jewellery(gameworld, mobile, bodylocation, trinket):
-        is_jewellery_equipped = ItemUtilities.get_jewellery_already_equipped_status(gameworld, entity=trinket)
+        is_jewellery_equipped = ItemUtilities.get_jewellery_already_equipped_status(gameworld, jewellery_entity=trinket)
         if not is_jewellery_equipped:
             if bodylocation == 'left ear':
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).left_ear = trinket
@@ -468,7 +484,7 @@ class ItemUtilities:
             if bodylocation == 'neck':
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).neck = trinket
 
-            ItemUtilities.set_jewellery_equipped_status_to_true(gameworld, entity=trinket)
+            ItemUtilities.set_jewellery_equipped_status_to_true(gameworld, jewellery_entity=trinket)
 
     @staticmethod
     def unequp_piece_of_jewellery(gameworld, entity, bodylocation):
@@ -484,7 +500,7 @@ class ItemUtilities:
         if bodylocation == 'neck':
             gameworld.component_for_entity(entity, mobiles.Jewellery).neck = 0
 
-        ItemUtilities.set_jewellery_equipped_status_to_false(gameworld, entity=entity)
+        ItemUtilities.set_jewellery_equipped_status_to_false(gameworld=gameworld, jewellery_entity=entity)
 
     @staticmethod
     def add_jewellery_benefit(gameworld, entity, statbonus):

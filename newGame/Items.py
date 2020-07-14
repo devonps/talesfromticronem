@@ -114,15 +114,15 @@ class ItemManager:
                                               trinket=right_ear)
 
                 # apply gemstone benefits
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=pendant)
+                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=pendant)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ear)
+                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=left_ear)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ear)
+                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=right_ear)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
@@ -152,15 +152,15 @@ class ItemManager:
                                               trinket=right_ear)
 
                 # apply gemstone benefits
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=pendant)
+                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=pendant)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=left_ear)
+                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=left_ear)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, entity=right_ear)
+                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=right_ear)
                 ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
