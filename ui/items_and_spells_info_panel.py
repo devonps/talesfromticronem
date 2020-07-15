@@ -130,36 +130,49 @@ def process(menu_selection, gameworld, player_entity):
 
         spell_resources_list = SpellUtilities.get_all_resources_for_spell(gameworld=gameworld,
                                                                           spell_entity=spell_entity)
+        if spell_type != 'heal':
+            spell_no_targets = SpellUtilities.get_spell_max_targets(gameworld=gameworld, spell_entity=spell_entity)
 
-        terminal.print_(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 1, width=spell_item_info_width,
-                        height=1, align=terminal.TK_ALIGN_CENTER,
-                        s=value_colour_string + spell_name)
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 3,
-                        s=key_colour_string + 'Type:' + value_colour_string + spell_type)
+        y_pos = spell_item_info_start_y + 1
+
+        terminal.print_(x=spell_item_info_item_imp_text_x, y=y_pos, width=spell_item_info_width,
+                        height=1, align=terminal.TK_ALIGN_CENTER, s=value_colour_string + spell_name)
+
+        y_pos += 2
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos, s=key_colour_string + 'Type:' + value_colour_string + spell_type)
 
         cooldown_string = format_cooldown_string(spell_cooldown)
 
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 4,
+        y_pos += 1
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
                         s=key_colour_string + 'On cooldown:' + value_colour_string + cooldown_string)
 
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 5,
+        y_pos += 1
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
                         s=key_colour_string + 'Max Range:' + value_colour_string + str(spell_range))
 
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 7,
-                        s=key_colour_string + 'Effects...')
+        if spell_type != 'heal':
+            y_pos += 1
+            terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
+                            s=key_colour_string + 'No Targets:' + value_colour_string + str(spell_no_targets))
+
+        y_pos += 2
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos, s=key_colour_string + 'Effects...')
 
         condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
         boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
         resource_string = get_resources_as_string(spell_resources_list)
 
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 9,
+        y_pos += 1
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
                         s=key_colour_string + 'Causes: ' + value_colour_string + condi_string)
-
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 10,
+        y_pos += 1
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
                         s=key_colour_string + 'Gives: ' + value_colour_string + boon_string + resource_string)
 
         # draw fluff text
-        draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 14, width=spell_item_info_width,
+        y_pos += 3
+        draw_fluff_text(x=spell_item_info_item_imp_text_x, y=y_pos, width=spell_item_info_width,
                         fluff_text=spell_description, key_colour_string=key_colour_string,
                         value_colour_string=value_colour_string)
 
