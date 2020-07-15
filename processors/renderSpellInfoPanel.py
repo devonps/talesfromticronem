@@ -428,8 +428,6 @@ class RenderSpellInfoPanel(esper.Processor):
             terminal.printf(x=range_string_x, y=this_row, s=range_string)
 
         terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
-
-
         this_row += 1
         this_letter += 1
         this_row += 1
