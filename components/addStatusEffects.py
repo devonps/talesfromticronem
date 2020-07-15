@@ -6,7 +6,6 @@ from components import condis, boons, resources
 from loguru import logger
 from utilities import configUtilities
 from utilities.spellHelp import SpellUtilities
-from utilities.world import check_if_entity_has_component
 
 
 def process_status_effect(gameworld, spell_entity, effects, game_config, ch_class):
@@ -45,12 +44,19 @@ def process_status_effect(gameworld, spell_entity, effects, game_config, ch_clas
 def add_class_resource(gameworld, entity, effect, resource_value):
     if effect == 'gain_lifeforce':
         gameworld.add_component(entity, resources.Lifeforce(onhit=resource_value))
+        SpellUtilities.add_resources_to_spell(gameworld=gameworld, spell_entity=entity, resource='gainlifeforce')
     if effect == 'damage':
         gameworld.add_component(entity, resources.Damage(coefficient=resource_value))
+        SpellUtilities.add_resources_to_spell(gameworld=gameworld, spell_entity=entity, resource='damage')
     if effect == 'strikes_for':
         gameworld.add_component(entity, resources.Strikesfor())
+        SpellUtilities.add_resources_to_spell(gameworld=gameworld, spell_entity=entity, resource='strikes_for')
     if effect == 'boonsconverted':
         gameworld.add_component(entity, resources.ConvertBoons())
+        SpellUtilities.add_resources_to_spell(gameworld=gameworld, spell_entity=entity, resource='boonsconverted')
+    if effect == 'selfbleed':
+        gameworld.add_component(entity, resources.Selfbleeding())
+        SpellUtilities.add_resources_to_spell(gameworld=gameworld, spell_entity=entity, resource='selfbleed')
     # logger.info('Class resource {} added to spell', effect)
 
 
@@ -102,33 +108,43 @@ def add_condition(gameworld, entity, effect):
 def add_boon(gameworld, entity, effect, boon_value):
     if effect == 'aegis':
         gameworld.add_component(entity, boons.Aegis())
+        SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=entity, status_effect='aegis')
 
     elif effect == 'alacrity':
         gameworld.add_component(entity, boons.Alacrity())
+        SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=entity, status_effect='alacrity')
 
     elif effect == 'fury':
         gameworld.add_component(entity, boons.Fury())
+        SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=entity, status_effect='fury')
 
     elif effect == 'might':
         gameworld.add_component(entity, boons.Might())
+        SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=entity, status_effect='might')
 
     elif effect == 'protection':
         gameworld.add_component(entity, boons.Protection())
+        SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=entity, status_effect='protection')
 
     elif effect == 'regeneration':
         gameworld.add_component(entity, boons.Regeneration())
+        SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=entity, status_effect='regeneration')
 
     elif effect == 'resistance':
         gameworld.add_component(entity, boons.Resistance())
+        SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=entity, status_effect='resistance')
 
     elif effect == 'retaliation':
         gameworld.add_component(entity, boons.Retaliation())
+        SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=entity, status_effect='retaliation')
 
     elif effect == 'stability':
         gameworld.add_component(entity, boons.Stability())
+        SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=entity, status_effect='stability')
 
     elif effect == 'swiftness':
         gameworld.add_component(entity, boons.Swiftness())
+        SpellUtilities.add_status_effect_boon(gameworld=gameworld, spell_entity=entity, status_effect='swiftness')
     else:
         logger.warning('Dont know about boon called {}', effect)
 

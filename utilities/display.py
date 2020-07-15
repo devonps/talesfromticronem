@@ -275,8 +275,8 @@ def set_off_hand_weapon_string_es(off_weapon, gameworld):
 
 
 def set_jewellery_left_ear_string(gameworld, left_ear):
-    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]L/Ear :None[/color]"
-    item_string = "[color=DISPLAY_ITEM_EQUIPPED]L/Ear :[/color]"
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]Earring :None[/color]"
+    item_string = "[color=DISPLAY_ITEM_EQUIPPED]Earring :[/color]"
     left_ear_string = no_item_string
     if left_ear != 0:
         activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=left_ear)
@@ -286,8 +286,8 @@ def set_jewellery_left_ear_string(gameworld, left_ear):
 
 
 def set_jewellery_right_ear_string(gameworld, right_ear):
-    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]R/Ear :None[/color]"
-    item_string = "[color=DISPLAY_ITEM_EQUIPPED]R/Ear :[/color]"
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]Earring :None[/color]"
+    item_string = "[color=DISPLAY_ITEM_EQUIPPED]Earring :[/color]"
     right_ear_string = no_item_string
     if right_ear != 0:
         activator = ItemUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=right_ear)

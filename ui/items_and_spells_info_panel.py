@@ -3,6 +3,7 @@ from loguru import logger
 
 from utilities import configUtilities
 from utilities.common import CommonUtils
+from utilities.externalfileutilities import Externalfiles
 from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
 from utilities.spellHelp import SpellUtilities
@@ -13,6 +14,11 @@ def process(menu_selection, gameworld, player_entity):
     game_config = configUtilities.load_config()
     armour_map = {"A": "head", "B": "chest", "C": "hands", "D": "legs", "E": "feet"}
     jewellery_map = {"F": "lear", "G": "rear", "H": "lhand", "I": "rhand", "J": "neck"}
+
+    portraits_folder = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                        section='files', parameter='PORTRAITSFOLDER')
+
+    hardcoded_item_portrait_file = 'short-sleeve-shirt.txt'
 
     item_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
                                                                    parameter='ITEM_KEYS')
@@ -130,8 +136,7 @@ def process(menu_selection, gameworld, player_entity):
 
         spell_resources_list = SpellUtilities.get_all_resources_for_spell(gameworld=gameworld,
                                                                           spell_entity=spell_entity)
-        if spell_type != 'heal':
-            spell_no_targets = SpellUtilities.get_spell_max_targets(gameworld=gameworld, spell_entity=spell_entity)
+        spell_no_targets = SpellUtilities.get_spell_max_targets(gameworld=gameworld, spell_entity=spell_entity)
 
         y_pos = spell_item_info_start_y + 1
 
@@ -139,22 +144,25 @@ def process(menu_selection, gameworld, player_entity):
                         height=1, align=terminal.TK_ALIGN_CENTER, s=value_colour_string + spell_name)
 
         y_pos += 2
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos, s=key_colour_string + 'Type:' + value_colour_string + spell_type)
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos, s=key_colour_string + 'Type: ' + value_colour_string + spell_type)
 
         cooldown_string = format_cooldown_string(spell_cooldown)
 
         y_pos += 1
         terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
-                        s=key_colour_string + 'On cooldown:' + value_colour_string + cooldown_string)
+                        s=key_colour_string + 'On cooldown: ' + value_colour_string + cooldown_string)
+
+        y_pos += 1
+        if spell_range == 1:
+            tile_string = ' tile'
+        else:
+            tile_string = ' tiles'
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
+                        s=key_colour_string + 'Max Range: ' + value_colour_string + str(spell_range) + tile_string)
 
         y_pos += 1
         terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
-                        s=key_colour_string + 'Max Range:' + value_colour_string + str(spell_range))
-
-        if spell_type != 'heal':
-            y_pos += 1
-            terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
-                            s=key_colour_string + 'No Targets:' + value_colour_string + str(spell_no_targets))
+                        s=key_colour_string + 'No Targets: ' + value_colour_string + str(spell_no_targets))
 
         y_pos += 2
         terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos, s=key_colour_string + 'Effects...')
@@ -218,6 +226,13 @@ def process(menu_selection, gameworld, player_entity):
                                                                                 bodylocation=jewellery_map[
                                                                                     menu_selection])
             # draw portrait
+            filepath = portraits_folder + hardcoded_item_portrait_file
+
+            file_content = Externalfiles.load_existing_file(filename=filepath)
+            posy = spell_item_info_start_y + 3
+            for row in file_content:
+                terminal.printf(x=spell_item_info_item_imp_text_x + 7, y=posy, s=row)
+                posy += 1
 
             # draw middle horizontal line
             draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
