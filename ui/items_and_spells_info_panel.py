@@ -115,18 +115,53 @@ def process(menu_selection, gameworld, player_entity):
 
     if str(menu_selection) in spell_selection_keys:
         logger.info('Spell selected')
-        spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=menu_selection, player_entity=player_entity)
+
+        spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=menu_selection,
+                                                                          player_entity=player_entity)
         spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
         spell_cooldown = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
                                                                            spell_entity=spell_entity)
+        spell_type = SpellUtilities.get_spell_type(gameworld=gameworld, spell_entity=spell_entity)
         spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
+        spell_description = SpellUtilities.get_spell_description(gameworld=gameworld, spell_entity=spell_entity)
         spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
                                                                            spell_entity=spell_entity)
         spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=spell_entity)
 
-        terminal.print_(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 1, width=spell_item_info_width, height=1, align=terminal.TK_ALIGN_CENTER,
-                        s=value_colour_string + spell_name)
+        spell_resources_list = SpellUtilities.get_all_resources_for_spell(gameworld=gameworld,
+                                                                          spell_entity=spell_entity)
 
+        terminal.print_(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 1, width=spell_item_info_width,
+                        height=1, align=terminal.TK_ALIGN_CENTER,
+                        s=value_colour_string + spell_name)
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 3,
+                        s=key_colour_string + 'Type:' + value_colour_string + spell_type)
+
+        cooldown_string = format_cooldown_string(spell_cooldown)
+
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 4,
+                        s=key_colour_string + 'On cooldown:' + value_colour_string + cooldown_string)
+
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 5,
+                        s=key_colour_string + 'Max Range:' + value_colour_string + str(spell_range))
+
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 7,
+                        s=key_colour_string + 'Effects...')
+
+        condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
+        boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
+        resource_string = get_resources_as_string(spell_resources_list)
+
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 9,
+                        s=key_colour_string + 'Causes: ' + value_colour_string + condi_string)
+
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 10,
+                        s=key_colour_string + 'Gives: ' + value_colour_string + boon_string + resource_string)
+
+        # draw fluff text
+        draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_start_y + 14, width=spell_item_info_width,
+                        fluff_text=spell_description, key_colour_string=key_colour_string,
+                        value_colour_string=value_colour_string)
 
     elif menu_selection in item_selection_keys:
         logger.info('Item selected')
@@ -134,7 +169,6 @@ def process(menu_selection, gameworld, player_entity):
             item_entity = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity,
                                                                              bodylocation=armour_map[menu_selection])
             if item_entity > 0:
-
                 # draw portrait
 
                 # draw middle horizontal line
@@ -159,39 +193,11 @@ def process(menu_selection, gameworld, player_entity):
                                 s='Quality:')
                 terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 6,
                                 s='Embedded Spell Info...')
-                # embedded spell
-                # spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-                # spell_cooldown = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
-                #                                                                    spell_entity=spell_entity)
-                # spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
-                # spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
-                #                                                                    spell_entity=spell_entity)
-                # spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=spell_entity)
-                #
-                # terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 5,
-                #                 s=key_colour_string + 'Embedded Spell:...')
-                # terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 6,
-                #                 s=key_colour_string + 'Name:' + value_colour_string + spell_name)
-                # terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 7,
-                #                 s=key_colour_string + 'Cooldown:' + value_colour_string + str(spell_cooldown))
-                # terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 8,
-                #                 s=key_colour_string + 'Range:' + value_colour_string + str(spell_range))
-                # terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 10,
-                #                 s=key_colour_string + 'Effects...')
-
-                # condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
-                # boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
-                #
-                # terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 12,
-                #                 s=key_colour_string + 'Causes: ' + value_colour_string + condi_string)
-                #
-                # terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 13,
-                #                 s=key_colour_string + 'Gives: ' + value_colour_string + boon_string)
-
 
                 # draw fluff text
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 14, s='Flavour...')
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 15, s='it smells good')
+                draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 14,
+                                width=spell_item_info_width, fluff_text='it smells good',
+                                key_colour_string=key_colour_string, value_colour_string=value_colour_string)
 
         if menu_selection in jewellery_map:
             item_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
@@ -201,7 +207,11 @@ def process(menu_selection, gameworld, player_entity):
             # draw portrait
 
             # draw middle horizontal line
-            draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz, w=spell_item_info_width, string_colour=unicode_frame_colour, horiz_glyph=spell_item_info_horizontal, left_t_glyph=spell_item_info_left_t_junction, right_t_glyph=spell_item_info_right_t_junction)
+            draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
+                                                w=spell_item_info_width, string_colour=unicode_frame_colour,
+                                                horiz_glyph=spell_item_info_horizontal,
+                                                left_t_glyph=spell_item_info_left_t_junction,
+                                                right_t_glyph=spell_item_info_right_t_junction)
 
             # draw important text
             jewellery_statbonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
@@ -224,7 +234,8 @@ def process(menu_selection, gameworld, player_entity):
             spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
             spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
                                                                                spell_entity=spell_entity)
-            spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=spell_entity)
+            spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld,
+                                                                             spell_entity=spell_entity)
 
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 5,
                             s=key_colour_string + 'Embedded Spell:...')
@@ -246,14 +257,13 @@ def process(menu_selection, gameworld, player_entity):
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 13,
                             s=key_colour_string + 'Gives: ' + value_colour_string + boon_string)
             # draw fluff text
-            terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 15, s=key_colour_string + 'Flavour...')
-
-            terminal.print_(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 16, width=spell_item_info_width, height=5, align=terminal.TK_ALIGN_LEFT, s=value_colour_string + jewellery_description.capitalize())
-
+            draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 15,
+                            width=spell_item_info_width, fluff_text=jewellery_description,
+                            key_colour_string=key_colour_string, value_colour_string=value_colour_string)
     else:
         return
-
-    if item_entity > 0 or spell_entity > 0:
+    selected_entity = item_entity + spell_entity
+    if selected_entity > 0:
         # blit the terminal
         terminal.refresh()
 
@@ -265,6 +275,33 @@ def process(menu_selection, gameworld, player_entity):
                 logger.info('event action is {}', event_action)
                 if event_action == 'quit':
                     player_not_pressed_a_key = False
+
+
+def draw_fluff_text(x, y, key_colour_string, value_colour_string, width, fluff_text):
+    terminal.printf(x=x, y=y,
+                    s=key_colour_string + 'Description...')
+    terminal.print_(x=x, y=y + 1,
+                    width=width, height=5, align=terminal.TK_ALIGN_LEFT,
+                    s=value_colour_string + fluff_text.capitalize())
+
+
+def format_cooldown_string(spell_cooldown):
+    if spell_cooldown > 0:
+        cooldown_string = 'Yes (' + str(spell_cooldown) + ') turns remaining'
+    else:
+        cooldown_string = 'No'
+    return cooldown_string
+
+
+def get_resources_as_string(resource_list):
+    resource_string = 'Nothing'
+    if len(resource_list) > 0:
+        resource_string = ''
+        cnt = 0
+        for _ in resource_list:
+            resource_string += resource_list[cnt].capitalize() + ' '
+            cnt += 1
+    return resource_string
 
 
 def get_boons_as_string(boon_list):
