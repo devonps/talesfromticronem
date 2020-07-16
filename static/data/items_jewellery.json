@@ -1,0 +1,437 @@
+{
+  "jewellery" : [
+    {
+      "name": "copper garnet pendant",
+      "description": "a copper pendant, offset with a garnet gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "neck",
+      "gemstone": "garnet",
+      "attributes": [
+        {
+          "attributename": "power",
+          "attributevalue": "15"
+        }
+        ]
+    },
+    {
+      "name": "copper garnet ring",
+      "description": "a copper ring, offset with a garnet gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "fingers",
+      "gemstone": "garnet",
+      "attributes": [
+        {
+          "attributename": "power",
+          "attributevalue": "6"
+        }
+        ]
+    },
+    {
+      "name": "copper garnet earring",
+      "description": "a copper earring, offset with a garnet gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "ear",
+      "gemstone": "garnet",
+      "attributes": [
+        {
+          "attributename": "power",
+          "attributevalue": "5"
+        }
+        ]
+    },
+        {
+      "name": "copper tigers-eye pendant",
+      "description": "a copper pendant, offset with a tigers-eye gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "neck",
+      "gemstone": "tigers-eye",
+      "attributes": [
+        {
+          "attributename": "precision",
+          "attributevalue": "15"
+        }
+        ]
+    },
+        {
+      "name": "copper tigers-eye ring",
+      "description": "a copper ring, offset with a tigers-eye gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "fingers",
+      "gemstone": "tigers-eye",
+      "attributes": [
+        {
+          "attributename": "precision",
+          "attributevalue": "6"
+        }
+        ]
+    },
+        {
+      "name": "copper tigers-eye earring",
+      "description": "a copper earring, offset with a tigers-eye gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "ear",
+      "gemstone": "tigers-eye",
+      "attributes": [
+        {
+          "attributename": "precision",
+          "attributevalue": "5"
+        }
+        ]
+    },
+        {
+      "name": "copper malachite pendant",
+      "description": "a copper pendant, offset with a malachite gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "neck",
+      "gemstone": "malachite",
+      "attributes": [
+        {
+          "attributename": "toughness",
+          "attributevalue": "15"
+        }
+        ]
+    },
+        {
+      "name": "copper malachite ring",
+      "description": "a copper ring, offset with a malachite gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "fingers",
+      "gemstone": "malachite",
+      "attributes": [
+        {
+          "attributename": "toughness",
+          "attributevalue": "6"
+        }
+        ]
+    },
+        {
+      "name": "copper malachite earring",
+      "description": "a copper earring, offset with a malachite gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "ear",
+      "gemstone": "malachite",
+      "attributes": [
+        {
+          "attributename": "toughness",
+          "attributevalue": "5"
+        }
+        ]
+    },
+        {
+      "name": "copper turquoise pendant",
+      "description": "a copper pendant, offset with a malachite gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "neck",
+      "gemstone": "turquoise",
+      "attributes": [
+        {
+          "attributename": "vitality",
+          "attributevalue": "15"
+        }
+        ]
+    },
+        {
+      "name": "copper turquoise ring",
+      "description": "a copper ring, offset with a malachite gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "fingers",
+      "gemstone": "turquoise",
+      "attributes": [
+        {
+          "attributename": "vitality",
+          "attributevalue": "6"
+        }
+        ]
+    },
+        {
+      "name": "copper turquoise earring",
+      "description": "a copper earring, offset with a malachite gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "ear",
+      "gemstone": "turquoise",
+      "attributes": [
+        {
+          "attributename": "vitality",
+          "attributevalue": "5"
+        }
+        ]
+    },
+        {
+      "name": "copper amber pendant",
+      "description": "a copper pendant, offset with an amber gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "neck",
+      "gemstone": "amber",
+      "attributes": [
+        {
+          "attributename": "condition damage",
+          "attributevalue": "15"
+        }
+        ]
+    },
+        {
+      "name": "copper amber ring",
+      "description": "a copper ring, offset with an amber gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "fingers",
+      "gemstone": "amber",
+      "attributes": [
+        {
+          "attributename": "condition damage",
+          "attributevalue": "6"
+        }
+        ]
+    },
+        {
+      "name": "copper amber earring",
+      "description": "a copper earring, offset with an amber gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "ear",
+      "gemstone": "amber",
+      "attributes": [
+        {
+          "attributename": "condition damage",
+          "attributevalue": "5"
+        }
+        ]
+    },
+        {
+      "name": "copper amethyst pendant",
+      "description": "a copper pendant, offset with an amethyst gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "neck",
+      "gemstone": "amethyst",
+      "attributes": [
+        {
+          "attributename": "concentration",
+          "attributevalue": "15"
+        }
+        ]
+    },
+        {
+      "name": "copper amethyst ring",
+      "description": "a copper ring, offset with an amethyst gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "fingers",
+      "gemstone": "amethyst",
+      "attributes": [
+        {
+          "attributename": "concentration",
+          "attributevalue": "6"
+        }
+        ]
+    },
+        {
+      "name": "copper amethyst earring",
+      "description": "a copper earring, offset with an amethyst gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "ear",
+      "gemstone": "amethyst",
+      "attributes": [
+        {
+          "attributename": "concentration",
+          "attributevalue": "5"
+        }
+        ]
+    },
+        {
+      "name": "copper topaz pendant",
+      "description": "a copper pendant, offset with a topaz gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "neck",
+      "gemstone": "topaz",
+      "attributes": [
+        {
+          "attributename": "expertise",
+          "attributevalue": "15"
+        }
+        ]
+    },
+        {
+      "name": "copper topaz ring",
+      "description": "a copper ring, offset with a topaz gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "fingers",
+      "gemstone": "topaz",
+      "attributes": [
+        {
+          "attributename": "expertise",
+          "attributevalue": "6"
+        }
+        ]
+    },
+        {
+      "name": "copper topaz earring",
+      "description": "a copper earring, offset with a topaz gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "ear",
+      "gemstone": "topaz",
+      "attributes": [
+        {
+          "attributename": "expertise",
+          "attributevalue": "5"
+        }
+        ]
+    },
+        {
+      "name": "copper peridot pendant",
+      "description": "a copper pendant, offset with a peridot gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "neck",
+      "gemstone": "peridot",
+      "attributes": [
+        {
+          "attributename": "ferocity",
+          "attributevalue": "15"
+        }
+        ]
+    },
+        {
+      "name": "copper peridot ring",
+      "description": "a copper ring, offset with a peridot gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "fingers",
+      "gemstone": "peridot",
+      "attributes": [
+        {
+          "attributename": "ferocity",
+          "attributevalue": "6"
+        }
+        ]
+    },
+        {
+      "name": "copper peridot earring",
+      "description": "a copper earring, offset with a peridot gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "ear",
+      "gemstone": "peridot",
+      "attributes": [
+        {
+          "attributename": "ferocity",
+          "attributevalue": "5"
+        }
+        ]
+    },
+        {
+      "name": "copper pearl pendant",
+      "description": "a copper pendant, offset with a pearl gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "neck",
+      "gemstone": "pearl",
+      "attributes": [
+        {
+          "attributename": "healing power",
+          "attributevalue": "15"
+        }
+        ]
+    },
+        {
+      "name": "copper pearl ring",
+      "description": "a copper ring, offset with a pearl gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "fingers",
+      "gemstone": "pearl",
+      "attributes": [
+        {
+          "attributename": "healing power",
+          "attributevalue": "6"
+        }
+        ]
+    },
+        {
+      "name": "copper pearl earring",
+      "description": "a copper earring, offset with a pearl gemstone",
+      "glyph": "*",
+      "fg": "white",
+      "bg": "black",
+      "material": "copper",
+      "body_location": "ear",
+      "gemstone": "pearl",
+      "attributes": [
+        {
+          "attributename": "healing power",
+          "attributevalue": "5"
+        }
+        ]
+    }
+
+    ]
+}
