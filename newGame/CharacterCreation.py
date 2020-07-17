@@ -424,22 +424,34 @@ class CharacterCreation:
         # this is a temp approach being used for utility spells
         ItemManager.create_jewellery_for_utility_spells(gameworld=gameworld, game_config=game_config)
 
-        # get entity id for pendant
-        jewellery_list = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=player)
+        pendent_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='neck')
+        left_ear_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='lear')
+        right_ear_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='rear')
+        left_hand_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='lhand')
+        right_hand_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='rhand')
 
-        left_ear = jewellery_list[0]
-        right_ear = jewellery_list[1]
-        neck_entity = jewellery_list[4]
+        if pendent_entity > 0:
+            sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=pendent_entity)
+            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=7, player_entity=player)
 
-        sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=neck_entity)
-        sp2 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=left_ear)
-        sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear)
+        if left_ear_entity > 0:
+            sp2 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=left_ear_entity)
+            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=8, player_entity=player)
 
-        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=7, player_entity=player)
-        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=8, player_entity=player)
-        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=9, player_entity=player)
+        if right_ear_entity > 0:
+            sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear_entity)
+            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=9, player_entity=player)
 
         # end of temporary code for setting utility slots
+
+        # create some armour for our hero - another temporary crutch
+        # order is: heads, hands, chest, legs, feet
+        armour_set = ItemManager.create_full_armour_set(gameworld=gameworld, game_config=game_config, prefix='resilient', armourset='Embroided')
+        ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=armour_set)
+
+        # until NPC interactions has been completed
+
+
 
     @staticmethod
     def character_naming(gameworld, game_config):

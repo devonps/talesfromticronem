@@ -119,6 +119,8 @@ def process(menu_selection, gameworld, player_entity):
 
     # determine which information is to be displayed
 
+    #
+    # DISPLAY SPELL INFORMATION
     if str(menu_selection) in spell_selection_keys:
         logger.info('Spell selected')
 
@@ -184,6 +186,9 @@ def process(menu_selection, gameworld, player_entity):
                         fluff_text=spell_description, key_colour_string=key_colour_string,
                         value_colour_string=value_colour_string)
 
+    #
+    # DISPLAY ITEM INFORMATION
+    #
     elif menu_selection in item_selection_keys:
         logger.info('Item selected')
         if menu_selection in armour_map:
@@ -191,6 +196,21 @@ def process(menu_selection, gameworld, player_entity):
                                                                              bodylocation=armour_map[menu_selection])
             if item_entity > 0:
                 # draw portrait
+                # draw portrait
+                filepath = portraits_folder + hardcoded_item_portrait_file
+
+                file_content = Externalfiles.load_existing_file(filename=filepath)
+                posy = spell_item_info_start_y + 3
+                for row in file_content:
+                    terminal.printf(x=spell_item_info_item_imp_text_x + 7, y=posy, s=row)
+                    posy += 1
+
+                # draw middle horizontal line
+                draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
+                                                    w=spell_item_info_width, string_colour=unicode_frame_colour,
+                                                    horiz_glyph=spell_item_info_horizontal,
+                                                    left_t_glyph=spell_item_info_left_t_junction,
+                                                    right_t_glyph=spell_item_info_right_t_junction)
 
                 # draw middle horizontal line
                 draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
@@ -220,6 +240,9 @@ def process(menu_selection, gameworld, player_entity):
                                 width=spell_item_info_width, fluff_text='it smells good',
                                 key_colour_string=key_colour_string, value_colour_string=value_colour_string)
 
+        #
+        # DISPLAY JEWELLERY INFORMATION
+        #
         if menu_selection in jewellery_map:
             item_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
                                                                                 entity=player_entity,

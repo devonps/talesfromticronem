@@ -284,6 +284,7 @@ class RenderSpellInfoPanel(esper.Processor):
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Armour ')
         this_row += 2
 
+        # head armour
         items = get_head_armour_details(gameworld=self.gameworld, entity_id=player_entity)
         if len(items) == 1:
             str_to_print = items[0]
@@ -293,6 +294,8 @@ class RenderSpellInfoPanel(esper.Processor):
         terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + str_to_print)
         this_row += 1
         this_letter += 1
+
+        # chest armour
         items = get_chest_armour_details(gameworld=self.gameworld, entity_id=player_entity)
         if len(items) == 1:
             str_to_print = items[0]
@@ -303,6 +306,7 @@ class RenderSpellInfoPanel(esper.Processor):
         this_row += 1
         this_letter += 1
 
+        # hands armour
         items = get_hands_armour_details(gameworld=self.gameworld, entity_id=player_entity)
         if len(items) == 1:
             str_to_print = items[0]
@@ -313,6 +317,7 @@ class RenderSpellInfoPanel(esper.Processor):
         this_row += 1
         this_letter += 1
 
+        # legs armour
         items = get_legs_armour_details(gameworld=self.gameworld, entity_id=player_entity)
         if len(items) == 1:
             str_to_print = items[0]
@@ -322,6 +327,7 @@ class RenderSpellInfoPanel(esper.Processor):
         this_row += 1
         this_letter += 1
 
+        # feet armour
         items = get_feet_armour_details(gameworld=self.gameworld, entity_id=player_entity)
         if len(items) == 1:
             str_to_print = items[0]
