@@ -204,6 +204,12 @@ class JewelleryStatBonus:
         self.stat_bonus = statbonus
 
 
+# defines the gemstone embedded in the piece of jewllery
+class JewelleryGemstone:
+    def __init__(self, name=''):
+        self.name = name
+
+
 # where on the body can this piece of jewellery be worn
 # neck = Amulets, fingers = Rings, ears=Earrings
 class JewelleryBodyLocation:
