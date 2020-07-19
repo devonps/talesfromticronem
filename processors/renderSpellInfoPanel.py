@@ -428,10 +428,10 @@ class RenderSpellInfoPanel(esper.Processor):
 
             cooldown_string = cooldown_colur + ' ' + str(spell_cooldown_value)
             name_string = unicode_white_colour + spell_name
-            range_string = unicode_white_colour + str(spell_range)
+            # range_string = unicode_white_colour + str(spell_range)
             terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
             terminal.printf(x=name_string_x, y=this_row, s=name_string)
-            terminal.printf(x=range_string_x, y=this_row, s=range_string)
+            # terminal.printf(x=range_string_x, y=this_row, s=range_string)
 
         terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
         this_row += 1

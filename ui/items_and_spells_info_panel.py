@@ -214,16 +214,6 @@ def process(menu_selection, gameworld, player_entity):
                                                 left_t_glyph=spell_item_info_left_t_junction,
                                                 right_t_glyph=spell_item_info_right_t_junction)
 
-            # draw middle horizontal line
-            draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
-                                                w=spell_item_info_width, string_colour=unicode_frame_colour,
-                                                horiz_glyph=spell_item_info_horizontal,
-                                                left_t_glyph=spell_item_info_left_t_junction,
-                                                right_t_glyph=spell_item_info_right_t_junction)
-
-            # draw important text
-            # spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
-
             # draw armour stuff
             defense_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=item_entity)
             armourset_value = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=item_entity)
@@ -235,8 +225,6 @@ def process(menu_selection, gameworld, player_entity):
 
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 1,
                             s=key_colour_string + 'Defense:' + value_colour_string + str(defense_value))
-            # terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 2,
-            #                 s='Location:')
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 3,
                             s=key_colour_string + 'Armourset:' + value_colour_string + armourset_value)
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 4,
@@ -278,9 +266,6 @@ def process(menu_selection, gameworld, player_entity):
                             width=spell_item_info_width, fluff_text=armour_description_value,
                             key_colour_string=key_colour_string, value_colour_string=value_colour_string)
 
-        #
-        # DISPLAY JEWELLERY INFORMATION
-        #
     #
     # DISPLAY JEWELLERY INFORMATION
     #
