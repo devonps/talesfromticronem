@@ -510,8 +510,6 @@ class Entity:
                                                                        enemy_class=selected_class, entity_id=entity_id,
                                                                        hand_to_wield=which_hand, gameworld=gameworld, game_config=game_config)
 
-            Entity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
-                                                       entity_id=entity_id, gameworld=gameworld, game_config=game_config)
         if off_hand != '':
             weapon_to_create, which_hand = Entity.select_off_hand_weapon(off_hand=off_hand,
                                                                          selected_class=selected_class, game_config=game_config)
@@ -520,10 +518,6 @@ class Entity:
                                                                        hand_to_wield=which_hand, gameworld=gameworld,
                                                                        game_config=game_config)
 
-            Entity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
-                                                       entity_id=entity_id, gameworld=gameworld,
-                                                       game_config=game_config)
-
         if both_hands != '':
             weapon_to_create, which_hand = Entity.select_both_hands_weapon(both_hands=both_hands,
                                                                            selected_class=selected_class, game_config=game_config)
@@ -531,10 +525,6 @@ class Entity:
                                                                        enemy_class=selected_class, entity_id=entity_id,
                                                                        hand_to_wield=which_hand, gameworld=gameworld,
                                                                        game_config=game_config)
-
-            Entity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
-                                                       entity_id=entity_id, gameworld=gameworld,
-                                                       game_config=game_config)
 
         return created_weapon_entity
 

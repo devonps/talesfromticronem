@@ -549,3 +549,7 @@ class ItemUtilities:
         if item_type_component.label == 'jewellery':
             spell_entity = gameworld.component_for_entity(item_entity, items.JewellerySpell).entity
             return spell_entity
+
+        if item_type_component.label == 'armour':
+            spell_entity = gameworld.component_for_entity(item_entity, items.ArmourSpell).entity
+            return spell_entity

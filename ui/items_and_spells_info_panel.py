@@ -19,6 +19,7 @@ def process(menu_selection, gameworld, player_entity):
                                                                         section='files', parameter='PORTRAITSFOLDER')
 
     hardcoded_item_portrait_file = 'short-sleeve-shirt.txt'
+    hardoced_armour_portrait_file = 'cap.txt'
 
     armour_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
                                                                    parameter='ARMOUR_KEYS')
@@ -196,9 +197,9 @@ def process(menu_selection, gameworld, player_entity):
         item_entity = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity,
                                                                          bodylocation=armour_map[menu_selection])
         if item_entity > 0:
+            logger.debug('Armour entity is {}', item_entity)
             # draw portrait
-            # draw portrait
-            filepath = portraits_folder + hardcoded_item_portrait_file
+            filepath = portraits_folder + hardoced_armour_portrait_file
 
             file_content = Externalfiles.load_existing_file(filename=filepath)
             posy = spell_item_info_start_y + 3
@@ -224,21 +225,57 @@ def process(menu_selection, gameworld, player_entity):
             # spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
 
             # draw armour stuff
+            defense_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=item_entity)
+            armourset_value = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=item_entity)
+            quality_value = ItemUtilities.get_item_quality(gameworld=gameworld, entity=item_entity)
+            spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
+            if spell_entity is None:
+                spell_entity = -99
+            armour_description_value = ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
 
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 1,
-                            s='Defense:')
+                            s=key_colour_string + 'Defense:' + value_colour_string + str(defense_value))
             # terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 2,
             #                 s='Location:')
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 3,
-                            s='Armourset:')
+                            s=key_colour_string + 'Armourset:' + value_colour_string + armourset_value)
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 4,
-                            s='Quality:')
+                            s=key_colour_string + 'Quality:' + value_colour_string + quality_value)
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 6,
-                            s='Embedded Spell Info...')
+                            s=key_colour_string + 'Embedded Spell Info...')
+            if spell_entity == 0:
+                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 7,
+                                s='No embedded spell')
+            else:
+                spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+                spell_cooldown = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
+                                                                                   spell_entity=spell_entity)
+                spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
+                spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
+                                                                                   spell_entity=spell_entity)
+                spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld,
+                                                                                 spell_entity=spell_entity)
+                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 7,
+                                s=key_colour_string + 'Name:' + value_colour_string + spell_name)
+                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 8,
+                                s=key_colour_string + 'Cooldown:' + value_colour_string + str(spell_cooldown))
+                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 9,
+                                s=key_colour_string + 'Range:' + value_colour_string + str(spell_range))
+                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 11,
+                                s=key_colour_string + 'Effects...')
+
+                condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
+                boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
+
+                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 13,
+                                s=key_colour_string + 'Causes: ' + value_colour_string + condi_string)
+
+                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 14,
+                                s=key_colour_string + 'Gives: ' + value_colour_string + boon_string)
 
             # draw fluff text
-            draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 14,
-                            width=spell_item_info_width, fluff_text='it smells good',
+            draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 16,
+                            width=spell_item_info_width, fluff_text=armour_description_value,
                             key_colour_string=key_colour_string, value_colour_string=value_colour_string)
 
         #

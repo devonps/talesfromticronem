@@ -206,6 +206,11 @@ class ItemManager:
         attvaluestring = 'attributebonus'
         piece_of_armour = ''
         defense = ''
+        as_material = ''
+        as_quality = ''
+        as_weight = ''
+        px_att_name = ''
+        px_att_bonus = ''
 
         for armourset in armour_set_file['armoursets']:
             if armourset['displayname'] == setname:
@@ -236,7 +241,7 @@ class ItemManager:
             displayname=piece_of_armour))
         gameworld.add_component(armour_piece, items.RenderItem(istrue=True))
         gameworld.add_component(armour_piece, items.Quality(level=as_quality))
-        gameworld.add_component(armour_piece, items.ArmourSpell())
+        gameworld.add_component(armour_piece, items.ArmourSpell(entity=0, on_cool_down=False))
 
         # generate armour specifics
         gameworld.add_component(armour_piece, items.Weight(label=as_weight))
@@ -252,7 +257,9 @@ class ItemManager:
         gameworld.add_component(armour_piece, items.ArmourBeingWorn(status=False))
 
         # add spell to piece of armour
-        ItemManager.add_spell_to_piece_of_armour(gameworld=gameworld, bodylocation=bodylocation, armour_piece=armour_piece)
+        player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_class = MobileUtilities.get_character_class(gameworld, player)
+        ItemManager.add_spell_to_piece_of_armour(gameworld=gameworld, bodylocation=bodylocation, armour_piece=armour_piece, playable_class=player_class)
 
         return armour_piece
 
@@ -294,13 +301,17 @@ class ItemManager:
         return piece_of_armour, defense
 
     @staticmethod
-    def add_spell_to_piece_of_armour(gameworld, bodylocation, armour_piece):
-        for ent, (spell_loc, item_type) in gameworld.get_components(spells.ItemLocation, spells.ItemType):
-            if item_type.label == 'armour' and bodylocation == spell_loc.label:
+    def add_spell_to_piece_of_armour(gameworld, bodylocation, armour_piece, playable_class):
+        # for ent, (spell_loc, item_type) in gameworld.get_components(spells.ItemLocation, spells.ItemType):
+        for spell_entity, (name, location, spell_type, item_type, spclass) in gameworld.get_components(spells.Name,
+                                                                                                       spells.ItemLocation,
+                                                                                                       spells.SpellType,
+                                                                                                       spells.ItemType,
+                                                                                                       spells.ClassName):
+            # if item_type.label == 'armour' and bodylocation == location.label:
+            if spclass.label == playable_class and spell_type.label == 'utility' and item_type.label == 'armour' and location.label == bodylocation:
                 ItemUtilities.add_spell_to_armour_piece(gameworld=gameworld, armour_entity=armour_piece,
-                                                        spell_entity=ent)
-                ItemUtilities.set_spell_cooldown_status_on_armour_piece(gameworld=gameworld, armour_entity=armour_piece,
-                                                                        cool_down_status=False)
+                                                        spell_entity=spell_entity)
 
 
     @staticmethod
@@ -321,13 +332,6 @@ class ItemManager:
 
         head_armour = ItemManager.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
                                                          setname=armourset, prefix=prefix, bodylocation='head')
-
-        spell_entity_compoment = gameworld.component_for_entity(head_armour, items.ArmourSpell)
-        logger.warning('-------------------')
-        logger.warning('Spell entity loaded into head armour piece is {}', spell_entity_compoment.entity)
-        logger.warning('-------------------')
-
-
         full_armour_set.append(head_armour)
 
         chest_armour = ItemManager.create_piece_of_armour(gameworld=gameworld, game_config=game_config,

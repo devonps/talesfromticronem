@@ -397,14 +397,7 @@ class CharacterCreation:
             cur_condi_damage += 1
             MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player, value=cur_condi_damage)
 
-        # generate spells for this playable class
-        spellfile = MobileUtilities.get_character_class_spellfilename(gameworld, player)
-        class_component = MobileUtilities.get_character_class(gameworld, player)
-        if spellfile == '':
-            logger.warning('Spell file name not set')
-
-        AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config, spell_file=spellfile, playable_class=class_component)
-
+        # generate an empty spell bar
         SpellUtilities.setup_mobile_empty_spellbar(gameworld=gameworld, player_entity=player)
 
         # add heal spell to spellbar
