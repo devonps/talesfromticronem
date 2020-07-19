@@ -20,8 +20,12 @@ def process(menu_selection, gameworld, player_entity):
 
     hardcoded_item_portrait_file = 'short-sleeve-shirt.txt'
 
-    item_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
-                                                                   parameter='ITEM_KEYS')
+    armour_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
+                                                                   parameter='ARMOUR_KEYS')
+
+    jewellery_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
+                                                                   parameter='JEWELLERY_KEYS')
+
     spell_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
                                                                     parameter='SPELL_KEYS')
 
@@ -117,10 +121,9 @@ def process(menu_selection, gameworld, player_entity):
     item_entity = 0
     spell_entity = 0
 
-    # determine which information is to be displayed
-
     #
     # DISPLAY SPELL INFORMATION
+    #
     if str(menu_selection) in spell_selection_keys:
         logger.info('Spell selected')
 
@@ -185,69 +188,15 @@ def process(menu_selection, gameworld, player_entity):
         draw_fluff_text(x=spell_item_info_item_imp_text_x, y=y_pos, width=spell_item_info_width,
                         fluff_text=spell_description, key_colour_string=key_colour_string,
                         value_colour_string=value_colour_string)
-
     #
-    # DISPLAY ITEM INFORMATION
+    # DISPLAY ARMOUR INFORMATION
     #
-    elif menu_selection in item_selection_keys:
-        logger.info('Item selected')
-        if menu_selection in armour_map:
-            item_entity = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity,
-                                                                             bodylocation=armour_map[menu_selection])
-            if item_entity > 0:
-                # draw portrait
-                # draw portrait
-                filepath = portraits_folder + hardcoded_item_portrait_file
-
-                file_content = Externalfiles.load_existing_file(filename=filepath)
-                posy = spell_item_info_start_y + 3
-                for row in file_content:
-                    terminal.printf(x=spell_item_info_item_imp_text_x + 7, y=posy, s=row)
-                    posy += 1
-
-                # draw middle horizontal line
-                draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
-                                                    w=spell_item_info_width, string_colour=unicode_frame_colour,
-                                                    horiz_glyph=spell_item_info_horizontal,
-                                                    left_t_glyph=spell_item_info_left_t_junction,
-                                                    right_t_glyph=spell_item_info_right_t_junction)
-
-                # draw middle horizontal line
-                draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
-                                                    w=spell_item_info_width, string_colour=unicode_frame_colour,
-                                                    horiz_glyph=spell_item_info_horizontal,
-                                                    left_t_glyph=spell_item_info_left_t_junction,
-                                                    right_t_glyph=spell_item_info_right_t_junction)
-
-                # draw important text
-                # spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
-
-                # draw armour stuff
-
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 1,
-                                s='Defense:')
-                # terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 2,
-                #                 s='Location:')
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 3,
-                                s='Armoourset:')
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 4,
-                                s='Quality:')
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 6,
-                                s='Embedded Spell Info...')
-
-                # draw fluff text
-                draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 14,
-                                width=spell_item_info_width, fluff_text='it smells good',
-                                key_colour_string=key_colour_string, value_colour_string=value_colour_string)
-
-        #
-        # DISPLAY JEWELLERY INFORMATION
-        #
-        if menu_selection in jewellery_map:
-            item_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
-                                                                                entity=player_entity,
-                                                                                bodylocation=jewellery_map[
-                                                                                    menu_selection])
+    elif menu_selection in armour_selection_keys:
+        logger.info('Armour selected')
+        item_entity = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity,
+                                                                         bodylocation=armour_map[menu_selection])
+        if item_entity > 0:
+            # draw portrait
             # draw portrait
             filepath = portraits_folder + hardcoded_item_portrait_file
 
@@ -264,53 +213,108 @@ def process(menu_selection, gameworld, player_entity):
                                                 left_t_glyph=spell_item_info_left_t_junction,
                                                 right_t_glyph=spell_item_info_right_t_junction)
 
+            # draw middle horizontal line
+            draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
+                                                w=spell_item_info_width, string_colour=unicode_frame_colour,
+                                                horiz_glyph=spell_item_info_horizontal,
+                                                left_t_glyph=spell_item_info_left_t_junction,
+                                                right_t_glyph=spell_item_info_right_t_junction)
+
             # draw important text
-            jewellery_statbonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
-                                                                         jewellery_entity=item_entity)
-            spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
-            jewellery_description = ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
+            # spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
 
-            # draw jewellery stuff
+            # draw armour stuff
+
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 1,
-                            s=key_colour_string + 'Bonus to:' + value_colour_string + jewellery_statbonus[0])
-            terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 2,
-                            s=key_colour_string + 'Attribute type:' + value_colour_string + 'Primary')
+                            s='Defense:')
+            # terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 2,
+            #                 s='Location:')
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 3,
-                            s=key_colour_string + 'Bonus:' + value_colour_string + '+' + str(jewellery_statbonus[1]))
-
-            # embedded spell
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-            spell_cooldown = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
-                                                                               spell_entity=spell_entity)
-            spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
-            spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
-                                                                               spell_entity=spell_entity)
-            spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld,
-                                                                             spell_entity=spell_entity)
-
-            terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 5,
-                            s=key_colour_string + 'Embedded Spell:...')
+                            s='Armourset:')
+            terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 4,
+                            s='Quality:')
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 6,
-                            s=key_colour_string + 'Name:' + value_colour_string + spell_name)
-            terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 7,
-                            s=key_colour_string + 'Cooldown:' + value_colour_string + str(spell_cooldown))
-            terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 8,
-                            s=key_colour_string + 'Range:' + value_colour_string + str(spell_range))
-            terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 10,
-                            s=key_colour_string + 'Effects...')
+                            s='Embedded Spell Info...')
 
-            condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
-            boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
-
-            terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 12,
-                            s=key_colour_string + 'Causes: ' + value_colour_string + condi_string)
-
-            terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 13,
-                            s=key_colour_string + 'Gives: ' + value_colour_string + boon_string)
             # draw fluff text
-            draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 15,
-                            width=spell_item_info_width, fluff_text=jewellery_description,
+            draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 14,
+                            width=spell_item_info_width, fluff_text='it smells good',
                             key_colour_string=key_colour_string, value_colour_string=value_colour_string)
+
+        #
+        # DISPLAY JEWELLERY INFORMATION
+        #
+    #
+    # DISPLAY JEWELLERY INFORMATION
+    #
+    elif menu_selection in jewellery_selection_keys:
+        item_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
+                                                                            entity=player_entity,
+                                                                            bodylocation=jewellery_map[
+                                                                                menu_selection])
+        # draw portrait
+        filepath = portraits_folder + hardcoded_item_portrait_file
+
+        file_content = Externalfiles.load_existing_file(filename=filepath)
+        posy = spell_item_info_start_y + 3
+        for row in file_content:
+            terminal.printf(x=spell_item_info_item_imp_text_x + 7, y=posy, s=row)
+            posy += 1
+
+        # draw middle horizontal line
+        draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
+                                            w=spell_item_info_width, string_colour=unicode_frame_colour,
+                                            horiz_glyph=spell_item_info_horizontal,
+                                            left_t_glyph=spell_item_info_left_t_junction,
+                                            right_t_glyph=spell_item_info_right_t_junction)
+
+        # draw important text
+        jewellery_statbonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
+                                                                     jewellery_entity=item_entity)
+        spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
+        jewellery_description = ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
+
+        # draw jewellery stuff
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 1,
+                        s=key_colour_string + 'Bonus to:' + value_colour_string + jewellery_statbonus[0])
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 2,
+                        s=key_colour_string + 'Attribute type:' + value_colour_string + 'Primary')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 3,
+                        s=key_colour_string + 'Bonus:' + value_colour_string + '+' + str(jewellery_statbonus[1]))
+
+        # embedded spell
+        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+        spell_cooldown = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
+                                                                           spell_entity=spell_entity)
+        spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
+        spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
+                                                                           spell_entity=spell_entity)
+        spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld,
+                                                                         spell_entity=spell_entity)
+
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 5,
+                        s=key_colour_string + 'Embedded Spell:...')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 6,
+                        s=key_colour_string + 'Name:' + value_colour_string + spell_name)
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 7,
+                        s=key_colour_string + 'Cooldown:' + value_colour_string + str(spell_cooldown))
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 8,
+                        s=key_colour_string + 'Range:' + value_colour_string + str(spell_range))
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 10,
+                        s=key_colour_string + 'Effects...')
+
+        condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
+        boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
+
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 12,
+                        s=key_colour_string + 'Causes: ' + value_colour_string + condi_string)
+
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 13,
+                        s=key_colour_string + 'Gives: ' + value_colour_string + boon_string)
+        # draw fluff text
+        draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 15,
+                        width=spell_item_info_width, fluff_text=jewellery_description,
+                        key_colour_string=key_colour_string, value_colour_string=value_colour_string)
     else:
         return
     selected_entity = item_entity + spell_entity
