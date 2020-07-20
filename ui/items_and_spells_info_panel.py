@@ -175,8 +175,6 @@ def process(menu_selection, gameworld, player_entity):
             armourset_value = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=item_entity)
             quality_value = ItemUtilities.get_item_quality(gameworld=gameworld, entity=item_entity)
             spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
-            if spell_entity is None:
-                spell_entity = -99
             armour_description_value = ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
 
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 1,
@@ -185,37 +183,8 @@ def process(menu_selection, gameworld, player_entity):
                             s=key_colour_string + 'Armourset:' + value_colour_string + armourset_value)
             terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 4,
                             s=key_colour_string + 'Quality:' + value_colour_string + quality_value)
-            terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 6,
-                            s=key_colour_string + 'Embedded Spell Info...')
-            if spell_entity == 0:
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 7,
-                                s='No embedded spell')
-            else:
-                spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-                spell_cooldown = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
-                                                                                   spell_entity=spell_entity)
-                spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
-                spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
-                                                                                   spell_entity=spell_entity)
-                spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld,
-                                                                                 spell_entity=spell_entity)
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 7,
-                                s=key_colour_string + 'Name:' + value_colour_string + spell_name)
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 8,
-                                s=key_colour_string + 'Cooldown:' + value_colour_string + str(spell_cooldown))
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 9,
-                                s=key_colour_string + 'Range:' + value_colour_string + str(spell_range))
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 11,
-                                s=effects_title)
 
-                condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
-                boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
-
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 13,
-                                s=status_effects_condi_list_title + condi_string)
-
-                terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 14,
-                                s=status_effects_boon_title + boon_string)
+            draw_spell_info(startx=spell_item_info_item_imp_text_x, starty=spell_item_info_item_imp_text, gameworld=gameworld, spell_entity=spell_entity)
 
             # draw fluff text
             draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 16,
@@ -255,40 +224,13 @@ def process(menu_selection, gameworld, player_entity):
                         s=key_colour_string + 'Bonus:' + value_colour_string + '+' + str(jewellery_statbonus[1]))
 
         # embedded spell
-        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-        spell_cooldown = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
-                                                                           spell_entity=spell_entity)
-        spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
-        spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
-                                                                           spell_entity=spell_entity)
-        spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld,
-                                                                         spell_entity=spell_entity)
+        draw_spell_info(startx=spell_item_info_item_imp_text_x, starty=spell_item_info_item_imp_text, gameworld=gameworld, spell_entity=spell_entity)
 
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 5,
-                        s=key_colour_string + 'Embedded Spell:...')
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 6,
-                        s=key_colour_string + 'Name:' + value_colour_string + spell_name)
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 7,
-                        s=key_colour_string + 'Cooldown:' + value_colour_string + str(spell_cooldown))
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 8,
-                        s=key_colour_string + 'Range:' + value_colour_string + str(spell_range))
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 10,
-                        s=effects_title)
-
-        condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
-        boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
-
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 12,
-                        s=status_effects_condi_list_title + condi_string)
-
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 13,
-                        s=status_effects_boon_title + boon_string)
         # draw fluff text
         draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 15,
                         width=spell_item_info_width, fluff_text=jewellery_description,
                         key_colour_string=key_colour_string, value_colour_string=value_colour_string)
-    else:
-        return
+
     selected_entity = item_entity + spell_entity
     if selected_entity > 0:
         # blit the terminal
@@ -423,3 +365,36 @@ def draw_portrait(startx, starty, game_config, portrait_file):
     for row in file_content:
         terminal.printf(x=startx + 7, y=posy, s=row)
         posy += 1
+
+
+def draw_spell_info(startx, starty, gameworld, spell_entity):
+
+    key_colour_string = "[color=DISPLAY_ITEM_EQUIPPED]"
+    value_colour_string = "[/color][color=PLAYER_DEBUG]"
+    effects_title = key_colour_string + 'Effects...'
+    status_effects_condi_list_title = key_colour_string + 'Causes: ' + value_colour_string
+    status_effects_boon_title = key_colour_string + 'Gives: ' + value_colour_string
+
+    terminal.printf(x=startx, y=starty + 6, s=key_colour_string + 'Embedded Spell Info...')
+    if spell_entity == 0:
+        terminal.printf(x=startx, y=starty + 7, s='No embedded spell')
+    else:
+        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+        spell_cooldown = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
+                                                                           spell_entity=spell_entity)
+        spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
+        spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
+                                                                           spell_entity=spell_entity)
+        spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld,
+                                                                         spell_entity=spell_entity)
+        terminal.printf(x=startx, y=starty + 7, s=key_colour_string + 'Name:' + value_colour_string + spell_name)
+        terminal.printf(x=startx, y=starty + 8, s=key_colour_string + 'Cooldown:' + value_colour_string + str(spell_cooldown))
+        terminal.printf(x=startx, y=starty + 9, s=key_colour_string + 'Range:' + value_colour_string + str(spell_range))
+        terminal.printf(x=startx, y=starty + 11, s=effects_title)
+
+        condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
+        boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
+
+        terminal.printf(x=startx, y=starty + 13, s=status_effects_condi_list_title + condi_string)
+
+        terminal.printf(x=startx, y=starty + 14, s=status_effects_boon_title + boon_string)
