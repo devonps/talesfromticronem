@@ -193,11 +193,21 @@ class RenderSpellInfoPanel(esper.Processor):
         start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='MECHANIC_START_X')
 
+        start_x = configUtilities.get_config_value_as_integer(configfile=self.game_config,
+                                                              section='newCharacter', parameter='NC_START_X')
+        width = configUtilities.get_config_value_as_integer(configfile=self.game_config,
+                                                            section='newCharacter', parameter='NC_WIDTH')
+
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                parameter='MECHANIC_START_Y')
         dungeon_font = '[font=dungeon]'
 
         ascii_prefix = 'ASCII_SINGLE_'
+
+        mechanic_left_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
+                                                                parameter=ascii_prefix + 'LEFT_T_JUNCTION')
+        mechanic_right_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
+                                                                 parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
 
         mechanic_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                       parameter=ascii_prefix + 'TOP_LEFT')
@@ -225,44 +235,54 @@ class RenderSpellInfoPanel(esper.Processor):
         unicode_mechanic_partial = dungeon_font + '[color=CLASS_MECHANIC_PARTIAL]['
 
         start_here = this_row
+        for z in range(start_x, (start_x + width)):
+            terminal.printf(x=z, y=this_row - 1,
+                            s=unicode_mechanic_frame_enabled + mechanic_info_horizontal + ']')
+
+        terminal.printf(x=start_x, y=this_row - 1,
+                        s=unicode_mechanic_frame_enabled + mechanic_left_t_junction_char + ']')
+
+        terminal.printf(x=(start_x + width), y=this_row - 1,
+                        s=unicode_mechanic_frame_enabled + mechanic_right_t_junction_char + ']')
+
         for loop in range(4):
             unicode_mechanic_frame = unicode_mechanic_id if loop < 2 else unicode_mechanic_frame_enabled
-            unicode_class_id = dungeon_font + '[color=CLASS_MECHANIC_DISABLED]' if loop < 2 else  dungeon_font + '[color=CLASS_MECHANIC_FRAME_COLOUR]'
+            unicode_class_id = dungeon_font + '[color=CLASS_MECHANIC_DISABLED]' if loop < 2 else dungeon_font + '[color=CLASS_MECHANIC_FRAME_COLOUR]'
             # top left
-            terminal.printf(x=start_list_x, y=this_row,
+            terminal.printf(x=start_list_x, y=this_row + 1,
                             s=unicode_mechanic_frame + mechanic_info_top_left_corner + ']')
             # bottom left
-            terminal.printf(x=start_list_x, y=((this_row + mechanic_depth) + 1),
+            terminal.printf(x=start_list_x, y=((this_row + mechanic_depth) + 2),
                             s=unicode_mechanic_frame + mechanic_info_bottom_left_corner + ']')
             # top right
-            terminal.printf(x=(start_list_x + mechanic_width) + 1, y=this_row,
+            terminal.printf(x=(start_list_x + mechanic_width) + 1, y=this_row + 1,
                             s=unicode_mechanic_frame + mechanic_info_top_right_corner + ']')
             # bottom right
-            terminal.printf(x=(start_list_x + mechanic_width) + 1, y=((this_row + mechanic_depth) + 1),
+            terminal.printf(x=(start_list_x + mechanic_width) + 1, y=((this_row + mechanic_depth) + 2),
                             s=unicode_mechanic_frame + mechanic_info_bottom_right_corner + ']')
 
             # Class buttons
-            terminal.printf(x=start_list_x, y=this_row - 1, s=unicode_class_id + 'F' + str(loop + 1))
+            terminal.printf(x=start_list_x, y=this_row, s=unicode_class_id + 'F' + str(loop + 1))
             # verticals
             for d in range(mechanic_depth):
-                terminal.printf(x=start_list_x, y=this_row + d + 1,
+                terminal.printf(x=start_list_x, y=this_row + d + 2,
                                 s=unicode_mechanic_frame + mechanic_info_vertical + ']')
 
-                terminal.printf(x=(start_list_x + mechanic_width) + 1, y=this_row + d + 1,
+                terminal.printf(x=(start_list_x + mechanic_width) + 1, y=this_row + d + 2,
                                 s=unicode_mechanic_frame + mechanic_info_vertical + ']')
 
             # horizontal
             for a in range(mechanic_width):
-                terminal.printf(x=(start_list_x + a) + 1, y=this_row,
+                terminal.printf(x=(start_list_x + a) + 1, y=this_row + 1,
                                 s=unicode_mechanic_frame + mechanic_info_horizontal + ']')
-                terminal.printf(x=(start_list_x + a) + 1, y=((this_row + mechanic_depth) + 1),
+                terminal.printf(x=(start_list_x + a) + 1, y=((this_row + mechanic_depth) + 2),
                                 s=unicode_mechanic_frame + mechanic_info_horizontal + ']')
 
 
             # mechanic partially filled - measured in 10% blocks
             xx = random.randrange(1, 10)
             for zz in range(xx):
-                terminal.printf(x=start_list_x + 1, y=(mechanic_depth + this_row) - zz, s=unicode_mechanic_partial + mechanic_background_fill + ']')
+                terminal.printf(x=start_list_x + 1, y=(mechanic_depth + this_row + 1) - zz, s=unicode_mechanic_partial + mechanic_background_fill + ']')
 
             start_list_x += 6
             this_row = start_here
@@ -348,7 +368,6 @@ class RenderSpellInfoPanel(esper.Processor):
         unicode_white_colour = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]'
         cooldown_string_x = start_list_x + 1
         name_string_x = start_list_x + 4
-        range_string_x = start_list_x + 31
 
         this_letter = 55
         this_row += 1
@@ -372,10 +391,8 @@ class RenderSpellInfoPanel(esper.Processor):
 
                 cooldown_string = cooldown_colour + ' ' + str(spell_cooldown_value)
                 name_string = unicode_white_colour + spell_name
-                range_string = unicode_white_colour + spell_range
 
                 terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
-                terminal.printf(x=range_string_x, y=this_row, s=range_string)
             terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
             terminal.printf(x=name_string_x, y=this_row, s=name_string)
             this_row += 1

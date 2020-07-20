@@ -300,16 +300,14 @@ class CommonUtils:
         ascii_prefix = 'ASCII_SINGLE_'
 
         start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                              section='newCharacter',
-                                                              parameter='NC_START_X')
+                                                              section='newCharacter', parameter='NC_START_X')
 
         start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                               section='newCharacter',
                                                               parameter='NC_START_Y')
 
         width = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                            section='newCharacter',
-                                                            parameter='NC_WIDTH')
+                                                            section='newCharacter', parameter='NC_WIDTH')
         height = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                              section='newCharacter',
                                                              parameter='NC_DEPTH')
