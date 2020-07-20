@@ -16,7 +16,7 @@ def process(menu_selection, gameworld, player_entity):
     jewellery_map = {"F": "lear", "G": "rear", "H": "lhand", "I": "rhand", "J": "neck"}
 
     hardcoded_item_portrait_file = 'short-sleeve-shirt.txt'
-    hardcoded_armour_portrait_file = 'cap.txt'
+    hardcoded_armour_portrait_file = 'coat.txt'
 
     armour_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
                                                                    parameter='ARMOUR_KEYS')
@@ -263,7 +263,7 @@ def format_cooldown_string(spell_cooldown):
 
 
 def get_resources_as_string(resource_list):
-    resource_string = 'Nothing'
+    resource_string = ' '
     if len(resource_list) > 0:
         resource_string = ''
         cnt = 0
@@ -359,11 +359,12 @@ def draw_portrait(startx, starty, game_config, portrait_file):
                                                                         section='files', parameter='PORTRAITSFOLDER')
 
     filepath = portraits_folder + portrait_file
+    font_string = "[font=portrait]"
 
     file_content = Externalfiles.load_existing_file(filename=filepath)
     posy = starty + 3
     for row in file_content:
-        terminal.printf(x=startx + 7, y=posy, s=row)
+        terminal.printf(x=startx + 7, y=posy, s=font_string + row)
         posy += 1
 
 
