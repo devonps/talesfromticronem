@@ -111,7 +111,7 @@ class ItemManager:
                                                          e_setting='copper', e_hook='copper', e_activator=ring1_gemstone, playable_class=entity_class)
 
                 right_hand = ItemManager.create_jewellery(gameworld=gameworld, bodylocation='ring2',
-                                                         e_setting='copper', e_hook='copper', e_activator=ring1_gemstone, playable_class=entity_class)
+                                                         e_setting='copper', e_hook='copper', e_activator=ring2_gemstone, playable_class=entity_class)
 
                 # equip jewellery entity to player character
                 ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='neck',

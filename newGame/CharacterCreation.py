@@ -420,8 +420,6 @@ class CharacterCreation:
         pendent_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='neck')
         left_ear_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='lear')
         right_ear_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='rear')
-        left_hand_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='lhand')
-        right_hand_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='rhand')
 
         if pendent_entity > 0:
             sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=pendent_entity)

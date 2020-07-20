@@ -15,11 +15,8 @@ def process(menu_selection, gameworld, player_entity):
     armour_map = {"A": "head", "B": "chest", "C": "hands", "D": "legs", "E": "feet"}
     jewellery_map = {"F": "lear", "G": "rear", "H": "lhand", "I": "rhand", "J": "neck"}
 
-    portraits_folder = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                        section='files', parameter='PORTRAITSFOLDER')
-
     hardcoded_item_portrait_file = 'short-sleeve-shirt.txt'
-    hardoced_armour_portrait_file = 'cap.txt'
+    hardcoded_armour_portrait_file = 'cap.txt'
 
     armour_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
                                                                    parameter='ARMOUR_KEYS')
@@ -59,22 +56,9 @@ def process(menu_selection, gameworld, player_entity):
 
     spell_item_info_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                         parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
-    spell_item_info_bottom_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                               parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
-
-    spell_item_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                       parameter=ascii_prefix + 'TOP_LEFT')
-
-    spell_item_info_cross_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                      parameter=ascii_prefix + 'CROSS_JUNCTION')
-
-    spell_item_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                          parameter=ascii_prefix + 'BOTTOM_LEFT')
 
     spell_item_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                   parameter=ascii_prefix + 'HORIZONTAL')
-    spell_item_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                parameter=ascii_prefix + 'VERTICAL')
 
     # unicode strings of colours
     unicode_frame_colour = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
@@ -85,32 +69,7 @@ def process(menu_selection, gameworld, player_entity):
 
     # draw outer frame
 
-    # draw top/bottom horizontals
-    for z in range(spell_item_info_start_x, (spell_item_info_start_x + spell_item_info_width)):
-        terminal.printf(x=z, y=spell_item_info_start_y,
-                        s=unicode_frame_colour + spell_item_info_horizontal + ']')
-
-        terminal.printf(x=z, y=(spell_item_info_start_y + spell_item_info_depth) - 1,
-                        s=unicode_frame_colour + spell_item_info_horizontal + ']')
-
-    # draw left vertical
-    for zz in range(spell_item_info_depth - 1):
-        terminal.printf(x=spell_item_info_start_x, y=spell_item_info_start_y + zz,
-                        s=unicode_frame_colour + spell_item_info_vertical + ']')
-
-        # draw corners
-        terminal.printf(x=spell_item_info_start_x, y=spell_item_info_start_y,
-                        s=unicode_frame_colour + spell_item_info_top_left_corner + ']')
-
-        terminal.printf(x=spell_item_info_start_x, y=(spell_item_info_start_y + spell_item_info_depth) - 1,
-                        s=unicode_frame_colour + spell_item_info_bottom_left_corner + ']')
-
-        terminal.printf(x=(spell_item_info_start_x + spell_item_info_width), y=spell_item_info_start_y,
-                        s=unicode_frame_colour + spell_item_info_cross_junction + ']')
-
-        terminal.printf(x=(spell_item_info_start_x + spell_item_info_width),
-                        y=(spell_item_info_start_y + spell_item_info_depth) - 1,
-                        s=unicode_frame_colour + spell_item_info_bottom_right_t_junction + ']')
+    draw_outer_frame(startx=spell_item_info_start_x, starty=spell_item_info_start_y, width=spell_item_info_width, frame_colour=unicode_frame_colour, game_config=game_config, depth=spell_item_info_depth)
 
     # display control message
     terminal.printf(x=spell_item_info_start_x + 2, y=(spell_item_info_start_y + spell_item_info_depth) - 2,
@@ -118,6 +77,10 @@ def process(menu_selection, gameworld, player_entity):
 
     key_colour_string = "[color=DISPLAY_ITEM_EQUIPPED]"
     value_colour_string = "[/color][color=PLAYER_DEBUG]"
+
+    effects_title = key_colour_string + 'Effects...'
+    status_effects_condi_list_title = key_colour_string + 'Causes: ' + value_colour_string
+    status_effects_boon_title = key_colour_string + 'Gives: ' + value_colour_string
 
     item_entity = 0
     spell_entity = 0
@@ -159,10 +122,9 @@ def process(menu_selection, gameworld, player_entity):
                         s=key_colour_string + 'On cooldown: ' + value_colour_string + cooldown_string)
 
         y_pos += 1
-        if spell_range == 1:
-            tile_string = ' tile'
-        else:
-            tile_string = ' tiles'
+
+        tile_string = is_tile_string_plural(spell_range=spell_range)
+
         terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
                         s=key_colour_string + 'Max Range: ' + value_colour_string + str(spell_range) + tile_string)
 
@@ -171,7 +133,7 @@ def process(menu_selection, gameworld, player_entity):
                         s=key_colour_string + 'No Targets: ' + value_colour_string + str(spell_no_targets))
 
         y_pos += 2
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos, s=key_colour_string + 'Effects...')
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos, s=effects_title)
 
         condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
         boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
@@ -179,10 +141,10 @@ def process(menu_selection, gameworld, player_entity):
 
         y_pos += 1
         terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
-                        s=key_colour_string + 'Causes: ' + value_colour_string + condi_string)
+                        s=status_effects_condi_list_title + condi_string)
         y_pos += 1
         terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
-                        s=key_colour_string + 'Gives: ' + value_colour_string + boon_string + resource_string)
+                        s=status_effects_boon_title + boon_string + resource_string)
 
         # draw fluff text
         y_pos += 3
@@ -199,13 +161,7 @@ def process(menu_selection, gameworld, player_entity):
         if item_entity > 0:
             logger.debug('Armour entity is {}', item_entity)
             # draw portrait
-            filepath = portraits_folder + hardoced_armour_portrait_file
-
-            file_content = Externalfiles.load_existing_file(filename=filepath)
-            posy = spell_item_info_start_y + 3
-            for row in file_content:
-                terminal.printf(x=spell_item_info_item_imp_text_x + 7, y=posy, s=row)
-                posy += 1
+            draw_portrait(startx=spell_item_info_item_imp_text_x, starty=spell_item_info_start_y, game_config=game_config, portrait_file=hardcoded_armour_portrait_file)
 
             # draw middle horizontal line
             draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
@@ -250,16 +206,16 @@ def process(menu_selection, gameworld, player_entity):
                 terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 9,
                                 s=key_colour_string + 'Range:' + value_colour_string + str(spell_range))
                 terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 11,
-                                s=key_colour_string + 'Effects...')
+                                s=effects_title)
 
                 condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
                 boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
 
                 terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 13,
-                                s=key_colour_string + 'Causes: ' + value_colour_string + condi_string)
+                                s=status_effects_condi_list_title + condi_string)
 
                 terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 14,
-                                s=key_colour_string + 'Gives: ' + value_colour_string + boon_string)
+                                s=status_effects_boon_title + boon_string)
 
             # draw fluff text
             draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 16,
@@ -275,13 +231,7 @@ def process(menu_selection, gameworld, player_entity):
                                                                             bodylocation=jewellery_map[
                                                                                 menu_selection])
         # draw portrait
-        filepath = portraits_folder + hardcoded_item_portrait_file
-
-        file_content = Externalfiles.load_existing_file(filename=filepath)
-        posy = spell_item_info_start_y + 3
-        for row in file_content:
-            terminal.printf(x=spell_item_info_item_imp_text_x + 7, y=posy, s=row)
-            posy += 1
+        draw_portrait(startx=spell_item_info_item_imp_text_x, starty=spell_item_info_start_y, game_config=game_config, portrait_file=hardcoded_item_portrait_file)
 
         # draw middle horizontal line
         draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
@@ -323,16 +273,16 @@ def process(menu_selection, gameworld, player_entity):
         terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 8,
                         s=key_colour_string + 'Range:' + value_colour_string + str(spell_range))
         terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 10,
-                        s=key_colour_string + 'Effects...')
+                        s=effects_title)
 
         condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
         boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
 
         terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 12,
-                        s=key_colour_string + 'Causes: ' + value_colour_string + condi_string)
+                        s=status_effects_condi_list_title + condi_string)
 
         terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 13,
-                        s=key_colour_string + 'Gives: ' + value_colour_string + boon_string)
+                        s=status_effects_boon_title + boon_string)
         # draw fluff text
         draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 15,
                         width=spell_item_info_width, fluff_text=jewellery_description,
@@ -412,3 +362,64 @@ def draw_horizontal_line_after_portrait(x, y, w, string_colour, horiz_glyph, lef
                     s=string_colour + left_t_glyph + ']')
     terminal.printf(x=x + w, y=y,
                     s=string_colour + right_t_glyph + ']')
+
+
+def draw_outer_frame(startx, width, starty, frame_colour, game_config, depth):
+    ascii_prefix = 'ASCII_SINGLE_'
+    spell_item_info_bottom_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                               parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
+
+    spell_item_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                       parameter=ascii_prefix + 'TOP_LEFT')
+
+    spell_item_info_cross_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                      parameter=ascii_prefix + 'CROSS_JUNCTION')
+
+    spell_item_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                          parameter=ascii_prefix + 'BOTTOM_LEFT')
+
+    spell_item_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                  parameter=ascii_prefix + 'HORIZONTAL')
+    spell_item_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                parameter=ascii_prefix + 'VERTICAL')
+    # draw top/bottom horizontals
+    for z in range(startx, (startx + width)):
+        terminal.printf(x=z, y=starty, s=frame_colour + spell_item_info_horizontal + ']')
+
+        terminal.printf(x=z, y=(starty + depth) - 1, s=frame_colour + spell_item_info_horizontal + ']')
+
+    # draw left vertical
+    for zz in range(depth - 1):
+        terminal.printf(x=startx, y=starty + zz, s=frame_colour + spell_item_info_vertical + ']')
+
+        # draw corners
+        terminal.printf(x=startx, y=starty, s=frame_colour + spell_item_info_top_left_corner + ']')
+
+        terminal.printf(x=startx, y=(starty + depth) - 1, s=frame_colour + spell_item_info_bottom_left_corner + ']')
+
+        terminal.printf(x=(startx + width), y=starty, s=frame_colour + spell_item_info_cross_junction + ']')
+
+        terminal.printf(x=(startx + width), y=(starty + depth) - 1, s=frame_colour + spell_item_info_bottom_right_t_junction + ']')
+
+
+def is_tile_string_plural(spell_range):
+    if spell_range == 1:
+        tile_string = ' tile'
+    else:
+        tile_string = ' tiles'
+
+    return tile_string
+
+
+def draw_portrait(startx, starty, game_config, portrait_file):
+
+    portraits_folder = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                        section='files', parameter='PORTRAITSFOLDER')
+
+    filepath = portraits_folder + portrait_file
+
+    file_content = Externalfiles.load_existing_file(filename=filepath)
+    posy = starty + 3
+    for row in file_content:
+        terminal.printf(x=startx + 7, y=posy, s=row)
+        posy += 1

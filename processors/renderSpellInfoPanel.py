@@ -195,7 +195,6 @@ class RenderSpellInfoPanel(esper.Processor):
 
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                parameter='MECHANIC_START_Y')
-        stat = this_row
         dungeon_font = '[font=dungeon]'
 
         ascii_prefix = 'ASCII_SINGLE_'
@@ -397,7 +396,6 @@ class RenderSpellInfoPanel(esper.Processor):
         unicode_white_colour = '[font=dungeon][color=SPELLINFO_HOTKEY_ACTIVE]'
         cooldown_string_x = start_list_x + 1
         name_string_x = start_list_x + 4
-        range_string_x = start_list_x + 31
 
         this_letter = 54
         this_row += 1
@@ -410,11 +408,6 @@ class RenderSpellInfoPanel(esper.Processor):
         if slot_spell_entity > 0:
             spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=slot_spell_entity)
 
-            # spell range
-            if world.check_if_entity_has_component(gameworld=self.gameworld, entity=slot_spell_entity, component=spells.MaxRange):
-                spell_range = SpellUtilities.get_spell_max_range(gameworld=self.gameworld, spell_entity=slot_spell_entity)
-            else:
-                spell_range = ' -'
             # spell cooldown
             spell_is_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=self.gameworld,
                                                                             spell_entity=slot_spell_entity)
@@ -428,10 +421,8 @@ class RenderSpellInfoPanel(esper.Processor):
 
             cooldown_string = cooldown_colur + ' ' + str(spell_cooldown_value)
             name_string = unicode_white_colour + spell_name
-            # range_string = unicode_white_colour + str(spell_range)
             terminal.printf(x=cooldown_string_x, y=this_row, s=cooldown_string)
             terminal.printf(x=name_string_x, y=this_row, s=name_string)
-            # terminal.printf(x=range_string_x, y=this_row, s=range_string)
 
         terminal.printf(x=start_list_x, y=this_row, s=chr(this_letter))
         this_row += 1
