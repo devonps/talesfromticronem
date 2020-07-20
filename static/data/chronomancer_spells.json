@@ -549,6 +549,108 @@
           "value": "0.7"
         }
       ]
+    },
+
+    {
+      "name": "Blink of an Eye",
+      "description": "Gain stealth and summon an illusion to attack your foe.",
+      "short_description": "Gain stealth and summon an illusion to attack your foe.",
+      "type_of_spell": "utility",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "1",
+      "max_targets": "0",
+      "spell_range": "spell_dist_touch",
+      "item_type": "armour",
+      "location": "head",
+      "effects": [
+        {
+          "name": "summon",
+          "value": "illusion"
+        }
+      ]
+    },
+    {
+      "name": "Feedback",
+      "description": "Create a dome around your foes that reflects projectiles.",
+      "short_description": "Create a dome around your foes that reflects projectiles.",
+      "type_of_spell": "utility",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "1",
+      "max_targets": "",
+      "spell_range": "spell_dist_touch",
+      "item_type": "armour",
+      "location": "chest",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "effects": [
+        {
+          "name": "summon",
+          "value": "dome"
+        }
+      ]
+    },
+    {
+      "name": "Power Spike",
+      "description": "Damage your target and nearby foes. Inflict vulnerability on foes whose skills aren't active.",
+      "short_description": "Damage your target and nearby foes. Inflict vulnerability on foes whose skills aren't active.",
+      "type_of_spell": "utility",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "1",
+      "max_targets": "",
+      "spell_range": "spell_dist_touch",
+      "item_type": "armour",
+      "location": "legs",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "effects": [
+        {
+          "name": "vulnerability",
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "name": "Power Cleanse",
+      "description": "Remove conditions from you and nearby allies.",
+      "short_description": "Remove conditions from you and nearby allies.",
+      "type_of_spell": "utility",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "1",
+      "max_targets": "5",
+      "spell_range": "spell_dist_touch",
+      "item_type": "armour",
+      "location": "feet",
+      "aoe": "True",
+      "aoe_size": "aoe_medium",
+      "effects": [
+        {
+          "name": "removeconditions",
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "name": "Blink",
+      "description": "Teleport to a target location.",
+      "short_description": "Teleport to a target location.",
+      "type_of_spell": "utility",
+      "class": "chronomancer",
+      "turns_to_cast": "0",
+      "cool_down": "1",
+      "max_targets": "1",
+      "spell_range": "spell_dist_touch",
+      "item_type": "armour",
+      "location": "hands",
+      "effects": [
+        {
+          "name": "teleport",
+          "value": "0"
+        }
+      ]
     }
     ]
 }
