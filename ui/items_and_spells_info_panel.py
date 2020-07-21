@@ -16,7 +16,7 @@ def process(menu_selection, gameworld, player_entity):
     jewellery_map = {"F": "lear", "G": "rear", "H": "lhand", "I": "rhand", "J": "neck"}
 
     hardcoded_item_portrait_file = 'short-sleeve-shirt.txt'
-    hardcoded_armour_portrait_file = 'coat.txt'
+    hardcoded_armour_portrait_file = 'wristguards.txt'
 
     armour_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
                                                                    parameter='ARMOUR_KEYS')
@@ -362,7 +362,7 @@ def draw_portrait(startx, starty, game_config, portrait_file):
     font_string = "[font=portrait]"
 
     file_content = Externalfiles.load_existing_file(filename=filepath)
-    posy = starty + 3
+    posy = starty + 2
     for row in file_content:
         terminal.printf(x=startx + 7, y=posy, s=font_string + row)
         posy += 1
