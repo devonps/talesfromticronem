@@ -15,8 +15,8 @@ def process(menu_selection, gameworld, player_entity):
     armour_map = {"A": "head", "B": "chest", "C": "hands", "D": "legs", "E": "feet"}
     jewellery_map = {"F": "lear", "G": "rear", "H": "lhand", "I": "rhand", "J": "neck"}
 
-    hardcoded_item_portrait_file = 'trousers.txt'
-    hardcoded_armour_portrait_file = 'shoes.txt'
+    hardcoded_item_portrait_file = 'wand.txt'
+    hardcoded_armour_portrait_file = 'focus.txt'
 
     armour_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
                                                                    parameter='ARMOUR_KEYS')
