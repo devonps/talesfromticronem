@@ -9,8 +9,8 @@
 class Lifeforce:
     def __init__(self, text='lifeforce', resource_status_effect='Lifeforce steal', ondeath=10, onhit=4):
         self.label = text
-        self.onDeath = ondeath
-        self.onHit = onhit
+        self.on_death = ondeath
+        self.on_hit = onhit
         self.resource_status_effect = resource_status_effect
 
 #
