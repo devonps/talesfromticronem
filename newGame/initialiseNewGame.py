@@ -31,7 +31,7 @@ def generate_world_seed(game_config):
                                                              parameter='PLAYER_SEED')
 
     if player_seed != '':
-        world_seed = PCG32Generator.convert_string_to_integer(player_seed)
+        world_seed = PCG32Generator.convert_string_to_integer(value=player_seed)
         logger.info('Using player provided seed for world seed {}', player_seed)
     else:
         world_seed = random.getrandbits(30)

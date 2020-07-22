@@ -1,6 +1,6 @@
 
 
-class dungeonRoom:
+class Dungeonroom:
     """
     a simple container for dungeon rooms
     since you may want to return to constructing a room, edit it, etc. it helps to have some way to save them

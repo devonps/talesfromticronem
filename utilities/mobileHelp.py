@@ -793,27 +793,6 @@ class MobileUtilities(numbers.Real, ABC):
         return equipped
 
     @staticmethod
-    def generate_list_of_random_names(gameworld, game_config, entity, gender, race):
-
-        base_file_name = 'NAMESFILE'
-        race_file = race.upper() + base_file_name
-        race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                    parameter=race_file)
-        name_list = []
-        return name_list
-
-    @staticmethod
-    def choose_random_name(gameworld, game_config, entity, gender, race):
-        base_file_name = 'NAMESFILE'
-        race_file = race.upper() + base_file_name
-        race_name_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                    parameter=race_file)
-
-        selected_name = "SteveTest"
-
-        return selected_name
-
-    @staticmethod
     def stop_double_casting_same_spell(gameworld, entity):
         gameworld.remove_component(entity, mobiles.SpellCast)
 

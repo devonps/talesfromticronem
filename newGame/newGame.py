@@ -8,12 +8,6 @@ from utilities.externalfileutilities import Externalfiles
 def new_game():
     game_config = configUtilities.load_config()
 
-    #
-    # logfile = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFILE')
-    # logformat = configUtilities.get_config_value_as_string(game_config, 'logging', 'LOGFORMAT')
-
-    # logger.add(logfile, format=logformat)
-
     logger.info('*********************')
     logger.info('* Initialising game *')
     logger.info('*********************')

@@ -124,17 +124,17 @@ class BuildLibrary:
 
         build_entity = BuildLibrary.get_build_entity(gameworld=gameworld)
 
-        buildCode = BuildLibrary.get_build_race(gameworld=gameworld, entity=build_entity)
-        buildCode += BuildLibrary.get_build_class(gameworld=gameworld, entity=build_entity)
-        buildCode += BuildLibrary.get_build_jewellery(gameworld=gameworld, entity=build_entity)
-        buildCode += BuildLibrary.get_build_main_hand(gameworld=gameworld, entity=build_entity)
-        buildCode += BuildLibrary.get_build_off_hand(gameworld=gameworld, entity=build_entity)
-        buildCode += BuildLibrary.get_build_armour(gameworld=gameworld, entity=build_entity)
-        buildCode += BuildLibrary.get_build_gender(gameworld=gameworld, entity=build_entity)
+        build_code = BuildLibrary.get_build_race(gameworld=gameworld, entity=build_entity)
+        build_code += BuildLibrary.get_build_class(gameworld=gameworld, entity=build_entity)
+        build_code += BuildLibrary.get_build_jewellery(gameworld=gameworld, entity=build_entity)
+        build_code += BuildLibrary.get_build_main_hand(gameworld=gameworld, entity=build_entity)
+        build_code += BuildLibrary.get_build_off_hand(gameworld=gameworld, entity=build_entity)
+        build_code += BuildLibrary.get_build_armour(gameworld=gameworld, entity=build_entity)
+        build_code += BuildLibrary.get_build_gender(gameworld=gameworld, entity=build_entity)
         build_name = BuildLibrary.get_build_name(gameworld=gameworld, entity=build_entity)
         build_date = BuildLibrary.get_build_date(gameworld=gameworld, entity=build_entity)
         build_time = BuildLibrary.get_build_time(gameworld=gameworld, entity=build_entity)
-        build_info = buildCode + ':' + build_name + ':' + build_date + ':' + build_time
+        build_info = build_code + ':' + build_name + ':' + build_date + ':' + build_time
 
         return build_info
 

@@ -1,5 +1,4 @@
 def get(color_name):
-    cn = color_name.lower()
     color = colors.get(color_name)
     return color if color else 'white'
 

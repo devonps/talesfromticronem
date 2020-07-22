@@ -109,6 +109,7 @@ class PCG32Generator:
                 value = PCG32Generator.get_next_uint(self, upper)
         return value
 
+    @staticmethod
     def convert_string_to_integer(value):
         """
         This method converts a string, encoded as utf-8, into a series of integers and then
