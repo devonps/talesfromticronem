@@ -397,8 +397,6 @@ class ItemManager:
 
                 # create jewellery specific components
                 gameworld.add_component(piece_of_jewellery, items.JewelleryEquipped(istrue=False))
-                desc = 'a ' + trinket_setting
-                nm = ''
                 gameworld.add_component(piece_of_jewellery,
                                         items.JewelleryComponents(setting=trinket_setting, hook=trinket_hook,
                                                                   activator=trinket_activator))
