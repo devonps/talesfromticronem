@@ -161,7 +161,9 @@ def process(menu_selection, gameworld, player_entity):
         if item_entity > 0:
             logger.debug('Armour entity is {}', item_entity)
             # draw portrait
-            draw_portrait(startx=spell_item_info_item_imp_text_x, starty=spell_item_info_start_y, game_config=game_config, portrait_file=hardcoded_armour_portrait_file)
+            item_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=item_entity)
+            portrait_file = item_displayname + '.txt'
+            draw_portrait(startx=spell_item_info_item_imp_text_x, starty=spell_item_info_start_y, game_config=game_config, portrait_file=portrait_file)
 
             # draw middle horizontal line
             draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
@@ -200,7 +202,9 @@ def process(menu_selection, gameworld, player_entity):
                                                                             bodylocation=jewellery_map[
                                                                                 menu_selection])
         # draw portrait
-        draw_portrait(startx=spell_item_info_item_imp_text_x, starty=spell_item_info_start_y, game_config=game_config, portrait_file=hardcoded_item_portrait_file)
+        item_displayname = ItemUtilities.get_item_name(gameworld=gameworld, entity=item_entity)
+        portrait_file = item_displayname + '.txt'
+        draw_portrait(startx=spell_item_info_item_imp_text_x, starty=spell_item_info_start_y, game_config=game_config, portrait_file=portrait_file)
 
         # draw middle horizontal line
         draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,

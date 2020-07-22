@@ -410,25 +410,17 @@ class ItemManager:
                                                                                                       spells.ItemType, spells.ClassName):
                     if spclass.label == playable_class and spell_type.label == 'utility' and item_type.label == 'jewellery' and location.label == bodylocation:
                         ItemUtilities.add_spell_to_jewellery(gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, spell_entity=spell_entity)
-                        return_desc, nm = ItemManager.earring_processing(bdl=bdl, trinket_activator=trinket_activator, gemstone_string=gemstone_string, gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, gemstone_attribute=gemstone['Attribute'], gemstone_bonus=gemstone['Earring'])
-                        desc += return_desc
-                        return_desc, nm = ItemManager.pendant_processing(bdl=bdl, trinket_activator=trinket_activator, gemstone_string=gemstone_string, gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, gemstone_attribute=gemstone['Attribute'], gemstone_bonus=gemstone['Amulet'])
-                        desc += return_desc
-                        return_desc, nm = ItemManager.hands_processing(bdl=bdl, trinket_activator=trinket_activator, gemstone_string=gemstone_string, gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, gemstone_attribute=gemstone['Attribute'], gemstone_bonus=gemstone['Ring'])
-                        desc += return_desc
+                        ItemManager.earring_processing(bdl=bdl, trinket_activator=trinket_activator, gemstone_string=gemstone_string, gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, gemstone_attribute=gemstone['Attribute'], gemstone_bonus=gemstone['Earring'])
 
-                        gameworld.add_component(piece_of_jewellery, items.Describable(
-                            description=desc, name=nm, glyph=gemstone['glyph'],
-                            fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'),
-                            displayname=trinket_activator + ' ' + nm))
-                        logger.info('Created {}', desc)
+                        ItemManager.pendant_processing(bdl=bdl, trinket_activator=trinket_activator, gemstone_string=gemstone_string, gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, gemstone_attribute=gemstone['Attribute'], gemstone_bonus=gemstone['Amulet'])
+
+                        ItemManager.hands_processing(bdl=bdl, trinket_activator=trinket_activator, gemstone_string=gemstone_string, gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, gemstone_attribute=gemstone['Attribute'], gemstone_bonus=gemstone['Ring'])
+
                         bdl = ''
                 return piece_of_jewellery
 
     @staticmethod
     def hands_processing(bdl, trinket_activator, gemstone_string, gameworld, piece_of_jewellery, gemstone_attribute, gemstone_bonus):
-        nm = ''
-        desc = ''
         if 'hands' in bdl:
             # create a ring
             desc = ' ring, offset with a ' + trinket_activator + gemstone_string
@@ -436,13 +428,15 @@ class ItemManager:
             gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(fingers=True))
             gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
                 statname=gemstone_attribute, statbonus=gemstone_bonus))
-        return desc, nm
+            gameworld.add_component(piece_of_jewellery, items.Describable(
+                description=desc, name=nm, glyph='*',
+                fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'),
+                displayname=trinket_activator + ' ' + nm))
+
 
 
     @staticmethod
     def pendant_processing(bdl, trinket_activator, gemstone_string, gameworld, piece_of_jewellery, gemstone_attribute, gemstone_bonus):
-        nm = ''
-        desc = ''
         if 'neck' in bdl:
             # create a pendant
             desc = ' pendant, offset with a ' + trinket_activator + gemstone_string
@@ -450,12 +444,13 @@ class ItemManager:
             gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(neck=True))
             gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
                 statname=gemstone_attribute, statbonus=gemstone_bonus))
-        return desc, nm
+            gameworld.add_component(piece_of_jewellery, items.Describable(
+                description=desc, name=nm, glyph='*',
+                fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'),
+                displayname=trinket_activator + ' ' + nm))
 
     @staticmethod
     def earring_processing(bdl, trinket_activator, gemstone_string, gameworld, piece_of_jewellery, gemstone_attribute, gemstone_bonus):
-        nm = ''
-        desc = ''
         if 'ear' in bdl:
             # create an earring
             desc = ' earring, offset with a ' + trinket_activator + gemstone_string
@@ -463,7 +458,10 @@ class ItemManager:
             gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(ears=True))
             gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
                 statname=gemstone_attribute, statbonus=gemstone_bonus))
-        return desc, nm
+            gameworld.add_component(piece_of_jewellery, items.Describable(
+                description=desc, name=nm, glyph='*',
+                fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'),
+                displayname=trinket_activator + ' ' + nm))
 
     @staticmethod
     def define_jewellery_bodylocation_string(bodylocation):
