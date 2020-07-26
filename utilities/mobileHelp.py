@@ -475,10 +475,6 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.component_for_entity(entity, mobiles.Describable).background = colourUtilities.get(value)
 
     @staticmethod
-    def set_mobile_render_image(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.Describable).image = value
-
-    @staticmethod
     def set_mobile_ai_level(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.AI).ailevel = value
 

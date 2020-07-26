@@ -56,7 +56,6 @@ class Entity:
                         npc_glyph = npc['glyph']
                         npc_fg = npc['fg']
                         npc_bg = npc['bg']
-                        npc_image = int(npc['image'])
                         armour_file_option = npc['armourset']
                         jewellery_file_option = npc['jeweleryset']
                         weapon_file_option_main = npc['weapons-main']
@@ -161,8 +160,6 @@ class Entity:
                                                                     value=npc_fg.upper())
                         MobileUtilities.set_mobile_bg_render_colour(gameworld=gameworld, entity=entity_id,
                                                                     value=npc_bg.upper())
-                        MobileUtilities.set_mobile_render_image(gameworld=gameworld, entity=entity_id,
-                                                                value=npc_image)
                         MobileUtilities.set_mobile_visible(gameworld=gameworld, entity=entity_id)
                         MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx,
                                                             posy=posy)
@@ -262,7 +259,6 @@ class Entity:
                 MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity_id, value=npc_glyph)
                 MobileUtilities.set_mobile_fg_render_colour(gameworld=gameworld, entity=entity_id, value=npc_fg.upper())
                 MobileUtilities.set_mobile_bg_render_colour(gameworld=gameworld, entity=entity_id, value=npc_bg.upper())
-                MobileUtilities.set_mobile_render_image(gameworld=gameworld, entity=entity_id, value=11)
                 MobileUtilities.set_mobile_visible(gameworld=gameworld, entity=entity_id)
 
                 MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx, posy=posy)
