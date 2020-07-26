@@ -20,6 +20,16 @@
           "displayName": "Charles",
           "internalName": "",
           "identifier": "C"
+        },
+        {
+          "displayName": "David",
+          "internalName": "",
+          "identifier": "D"
+        },
+        {
+          "displayName": "Arnie",
+          "internalName": "",
+          "identifier": "E"
         }
         ],
       "wizard": [

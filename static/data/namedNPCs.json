@@ -13,14 +13,18 @@
       "jeweleryset": "balanced",
       "weapons-main": "",
       "weapons-off": "",
-      "weapons-both": "staff"
+      "weapons-both": "staff",
+      "shopkeeper": "False",
+      "type_of_shopkeeper": "",
+      "tutor": "False",
+      "type_of_tutor": ""
     },
      {
       "name": "Barry",
       "race": "RANDOM",
       "class": "witchdoctor",
       "description": "Weapons trader",
-      "ai": "wizard",
+      "ai": "master",
       "glyph": "w",
       "fg": "burlywood",
       "bg": "black",
@@ -28,14 +32,18 @@
       "jeweleryset": "RANDOM",
       "weapons-main": "RANDOM",
       "weapons-off": "",
-      "weapons-both": ""
+      "weapons-both": "",
+      "shopkeeper": "True",
+      "type_of_shopkeeper": "weapons",
+      "tutor": "False",
+      "type_of_tutor": ""
       },
      {
       "name": "Charles",
       "race": "eskeri",
       "class": "druid",
-      "description": "Lets fight",
-      "ai": "wizard",
+      "description": "Do you want armour",
+      "ai": "master",
       "glyph": "c",
       "fg": "brick",
       "bg": "black",
@@ -43,7 +51,49 @@
       "jeweleryset": "defensive",
       "weapons-main": "",
       "weapons-off": "",
-      "weapons-both": "RANDOM"
+      "weapons-both": "RANDOM",
+      "shopkeeper": "True",
+      "type_of_shopkeeper": "armour",
+      "tutor": "False",
+      "type_of_tutor": ""
+      },
+     {
+      "name": "David",
+      "race": "eskeri",
+      "class": "druid",
+      "description": "Do you like jewellery",
+      "ai": "master",
+      "glyph": "d",
+      "fg": "brick",
+      "bg": "black",
+      "armourset": "RANDOM",
+      "jeweleryset": "defensive",
+      "weapons-main": "",
+      "weapons-off": "",
+      "weapons-both": "RANDOM",
+      "shopkeeper": "True",
+      "type_of_shopkeeper": "jewellery",
+      "tutor": "False",
+      "type_of_tutor": ""
+      },
+     {
+      "name": "Arnie",
+      "race": "eskeri",
+      "class": "druid",
+      "description": "You wanna fight",
+      "ai": "master",
+      "glyph": "z",
+      "fg": "brick",
+      "bg": "black",
+      "armourset": "RANDOM",
+      "jeweleryset": "defensive",
+      "weapons-main": "",
+      "weapons-off": "",
+      "weapons-both": "RANDOM",
+      "shopkeeper": "False",
+      "type_of_shopkeeper": "",
+      "tutor": "True",
+      "type_of_tutor": "combat"
       }
     ]
 }

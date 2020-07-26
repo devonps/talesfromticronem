@@ -1,6 +1,20 @@
 from utilities import colourUtilities
 
 
+class DialogFlags:
+    def __init__(self, welcome=True, spokentobefore=False):
+        self.welcome = welcome
+        self.spoken_to_before = spokentobefore
+
+
+class NpcType:
+    def __init__(self, shopkeeper=False, tutor=False):
+        self.shopkeeper = shopkeeper
+        self.type_of_shopkeeper = ''
+        self.tutor = tutor
+        self.type_of_tutor = ''
+
+
 class EnemyPreferredAttackMinRange:
     def __init__(self, value=0):
         self.value = value
