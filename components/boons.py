@@ -1,111 +1,101 @@
 
 class Aegis:
-    def __init__(self, name='Aegis', boon_status_effect='Aegis', lasts_for=3, max_stacks=10,
-                 dialog="You will not hit me", next_attack_blocked=True):
-        self.label = name
-        self.boon_status_effect = boon_status_effect
-        self.lasts_for = lasts_for
-        self.max_stacks = max_stacks
-        self.dialog = dialog
-        self.next_attack_blocked = next_attack_blocked
+    def __init__(self):
+        self.label = 'Aegis'
+        self.boon_status_effect = 'Aegis'
+        self.lasts_for = 3
+        self.max_stacks = 10
+        self.dialog = "You will not hit me"
+        self.next_attack_blocked = True
 
 
 class Alacrity:
-    def __init__(self, name='Alacrity', boon_status_effect='Alacrity', lasts_for=3, max_stacks=5,
-                 dialog="You're so slow!", spell_recharge_improved=20):
-        self.label = name
-        self.boon_status_effect = boon_status_effect
-        self.lasts_for = lasts_for
-        self.max_stacks = max_stacks
-        self.dialog = dialog
-        self.spell_recharge_improved = spell_recharge_improved
+    def __init__(self):
+        self.label = 'Alacrity'
+        self.boon_status_effect = 'Alacrity'
+        self.lasts_for = 3
+        self.max_stacks = 5
+        self.dialog = "You're so slow!"
+        self.spell_recharge_improved = 20
 
 
 class Fury:
-    def __init__(self, name='Fury', boon_status_effect='Fury', lasts_for=3, max_stacks=5,
-                 dialog="fury rising!", crit_chance_improved=20):
-        self.label = name
-        self.boon_status_effect = boon_status_effect
-        self.lasts_for = lasts_for
-        self.max_stacks = max_stacks
-        self.dialog = dialog
-        self.crit_chance_improved = crit_chance_improved
+    def __init__(self):
+        self.label = 'Fury'
+        self.boon_status_effect = 'Fury'
+        self.lasts_for = 3
+        self.max_stacks = 5
+        self.dialog = "fury rising!"
+        self.crit_chance_improved = 20
 
 
 class Might:
-    def __init__(self, name='Might', boon_status_effect='Might', lasts_for=3, max_stacks=5,
-                 dialog="There's the power", base_damage_per_stack=5, weapon_level_modifier=0.3125):
-        self.label = name
-        self.boon_status_effect = boon_status_effect
-        self.lasts_for = lasts_for
-        self.max_stacks = max_stacks
-        self.dialog = dialog
-        self.base_damage_per_stack = base_damage_per_stack
-        self.weapon_level_modifier = weapon_level_modifier
+    def __init__(self):
+        self.label = 'Might'
+        self.boon_status_effect = 'Might'
+        self.lasts_for = 3
+        self.max_stacks = 5
+        self.dialog = "There's the power"
+        self.base_damage_per_stack = 5
+        self.weapon_level_modifier = 0.3125
 
 
 class Protection:
-    def __init__(self, name='Protection', boon_status_effect='Protection', lasts_for=3, max_stacks=10,
-                 dialog="Armour enhanced", incoming_damage_reduction=33):
-        self.label = name
-        self.boon_status_effect = boon_status_effect
-        self.lasts_for = lasts_for
-        self.max_stacks = max_stacks
-        self.dialog = dialog
-        self.incoming_damage_reduction = incoming_damage_reduction
+    def __init__(self):
+        self.label = 'Protection'
+        self.boon_status_effect = 'Protection'
+        self.lasts_for = 3
+        self.max_stacks = 10
+        self.dialog = "Armour enhanced"
+        self.incoming_damage_reduction = 33
 
 
 class Regeneration:
-    def __init__(self, name='Regeneration', boon_status_effect='Regeneration', lasts_for=3, max_stacks=10,
-                 dialog="Invigorating", base_heal_per_turn=5, heal_modifier=0.125):
-        self.label = name
-        self.boon_status_effect = boon_status_effect
-        self.lasts_for = lasts_for
-        self.max_stacks = max_stacks
-        self.dialog = dialog
-        self.base_heal_per_turn = base_heal_per_turn
-        self.heal_modifier = heal_modifier
+    def __init__(self):
+        self.label = 'Regeneration'
+        self.boon_status_effect = 'Regeneration'
+        self.lasts_for = 3
+        self.max_stacks = 10
+        self.dialog = "Invigorating"
+        self.base_heal_per_turn = 5
+        self.heal_modifier = 0.125
 
 
 class Resistance:
-    def __init__(self, name='Resistance', boon_status_effect='Resistance', lasts_for=3, max_stacks=10,
-                 dialog="Ahh! You don't scare me", conditions_are_disabled=True):
-        self.label = name
-        self.boon_status_effect = boon_status_effect
-        self.lasts_for = lasts_for
-        self.max_stacks = max_stacks
-        self.dialog = dialog
-        self.conditions_are_disabled = conditions_are_disabled
+    def __init__(self):
+        self.label = 'Resistance'
+        self.boon_status_effect = 'Resistance'
+        self.lasts_for = 3
+        self.max_stacks = 10
+        self.dialog = "Ahh! You don't scare me"
+        self.conditions_are_disabled = True
 
 
 class Retaliation:
-    def __init__(self, name='Retaliation', boon_status_effect='Retaliation', lasts_for=3, max_stacks=10,
-                 dialog="Hit me, if you dare!", reflect_taken_damage=100):
-        self.label = name
-        self.boon_status_effect = boon_status_effect
-        self.lasts_for = lasts_for
-        self.max_stacks = max_stacks
-        self.dialog = dialog
-        self.reflect_taken_damage = reflect_taken_damage
+    def __init__(self):
+        self.label = 'Retaliation'
+        self.boon_status_effect = 'Retaliation'
+        self.lasts_for = 3
+        self.max_stacks = 10
+        self.dialog = "Hit me, if you dare!"
+        self.reflect_taken_damage = 100
 
 
 class Stability:
-    def __init__(self, name='Stability', boon_status_effect='Stability', lasts_for=3, max_stacks=10,
-                 dialog="You can't control me!", cannot_be_controlled=True):
-        self.label = name
-        self.boon_status_effect = boon_status_effect
-        self.lasts_for = lasts_for
-        self.max_stacks = max_stacks
-        self.dialog = dialog
-        self.cannot_be_controlled = cannot_be_controlled
+    def __init__(self):
+        self.label = 'Stability'
+        self.boon_status_effect = 'Stability'
+        self.lasts_for = 3
+        self.max_stacks = 10
+        self.dialog = "You can't control me!"
+        self.cannot_be_controlled = True
 
 
 class Swiftness:
-    def __init__(self, name='Swiftness', boon_status_effect='Swiftness', lasts_for=3, max_stacks=10,
-                 dialog="Catch me if you can!", movement_speed_bonus=50):
-        self.label = name
-        self.boon_status_effect = boon_status_effect
-        self.lasts_for = lasts_for
-        self.max_stacks = max_stacks
-        self.dialog = dialog
-        self.movement_speed_bonus = movement_speed_bonus
+    def __init__(self):
+        self.label = 'Swiftness'
+        self.boon_status_effect = 'Swiftness'
+        self.lasts_for = 3
+        self.max_stacks = 10
+        self.dialog = "Catch me if you can!"
+        self.movement_speed_bonus = 50
