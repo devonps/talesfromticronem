@@ -34,6 +34,12 @@ class MoveEntities(esper.Processor):
                         svx = '0'
                         svy = '0'
 
+                        # remove mobile from current game map position
+                        GameMapUtilities.remove_mobile_from_map_position(game_map=self.game_map, px=px, py=py)
+
+                        # add mobile entity to new game map position
+                        GameMapUtilities.add_mobile_to_map_position(game_map=self.game_map, px=position.x, py=position.y, entity=ent)
+
                         if velocity.dx != 0:
                             svx = str(velocity.dx)
                         if velocity.dy != 0:

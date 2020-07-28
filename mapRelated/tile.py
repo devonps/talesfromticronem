@@ -18,4 +18,5 @@ class Tile:
         self.glyph = ''
         self.image = 0
         self.assignment = 0
+        self.entity = 0
 

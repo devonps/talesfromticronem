@@ -128,11 +128,13 @@ class SceneManager:
 
                 if player_placed:
                     SceneManager.setup_viewport(gameworld=gameworld, posx=posx, posy=posy)
+                    game_map.tiles[posx][posy].entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
-                # add named NPCs to scene
+                    # add named NPCs to scene
                 if cell in 'ABCDEFG':
-                    Entity.create_named_mobile(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell, gameworld=gameworld, game_config=game_config)
+                    entity_created = Entity.create_named_mobile(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell, gameworld=gameworld, game_config=game_config)
                     game_map.tiles[posx][posy].type_of_tile = tile_type_floor
+                    game_map.tiles[posx][posy].entity = entity_created
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor, game_map=game_map)
                 posx += 1
             posy += 1

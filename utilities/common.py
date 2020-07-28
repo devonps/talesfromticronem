@@ -10,16 +10,6 @@ from utilities.mobileHelp import MobileUtilities
 class CommonUtils:
 
     @staticmethod
-    def get_entity_at_location(gameworld, posx, posy):
-        entity_id = 0
-        for ent, pos in gameworld.get_components(mobiles.Position):
-            entity_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
-            entity_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
-            if entity_pos_x == posx and entity_pos_y == posy:
-                entity_id = ent
-        return entity_id
-
-    @staticmethod
     def calculate_camera_position(camera_width, camera_height, player_map_pos_x, player_map_pos_y, game_map):
         x = int(player_map_pos_x - (camera_width / 2))
         y = int(player_map_pos_y - (camera_height / 2))

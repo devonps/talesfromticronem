@@ -2,9 +2,9 @@ from utilities import colourUtilities
 
 
 class DialogFlags:
-    def __init__(self, welcome=True, spokentobefore=False):
+    def __init__(self, welcome=True, spoken_to_before=False):
         self.welcome = welcome
-        self.spoken_to_before = spokentobefore
+        self.spoken_to_before = spoken_to_before
 
 
 class NpcType:

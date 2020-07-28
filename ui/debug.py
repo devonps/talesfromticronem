@@ -7,6 +7,7 @@ from utilities.display import draw_simple_frame, draw_colourful_frame, set_jewel
     set_jewellery_right_ear_string, set_jewellery_left_hand_string, set_jewellery_right_hand_string, \
     set_jewellery_neck_string, get_head_armour_details, get_chest_armour_details, get_hands_armour_details, \
     get_legs_armour_details, get_feet_armour_details
+from utilities.gamemap import GameMapUtilities
 from utilities.input_handlers import handle_game_keys
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
@@ -80,8 +81,7 @@ class Debug:
 
         posx = coords_clicked[0] + camera_x - screen_offset_x
         posy = coords_clicked[1] + camera_y - screen_offset_y
-        # get entity id at position coords
-        entity_id = CommonUtils.get_entity_at_location(gameworld=gameworld, posx=posx, posy=posy)
+        entity_id = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=posx, y=posy)
 
         if entity_id > 0:
             # clear the underlying terminal

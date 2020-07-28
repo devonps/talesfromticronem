@@ -167,6 +167,7 @@ class Entity:
                                                                        entity=entity_id)
 
                         logger.warning('--- NEW MOBILE CREATED ---')
+        return entity_id
 
     @staticmethod
     def create_enemy_role(gameworld, game_config, posx, posy, enemy_role):
