@@ -12,7 +12,7 @@ from newGame import newGame
 from utilities.common import CommonUtils
 from ui.debug import Debug
 from utilities.spellHelp import SpellUtilities
-from ui.items_and_spells_info_panel import process
+from ui.items_and_spells_info_panel import display_spell_info_popup
 
 
 def game_loop(gameworld):
@@ -28,6 +28,7 @@ def game_loop(gameworld):
     current_turn = 0
 
     spell_bar_keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+    movement_actions = ['left', 'right', 'up', 'down']
     MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=False)
 
     player_name = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player)
@@ -74,7 +75,7 @@ def game_loop(gameworld):
                 ReplayGame.update_game_replay_file(game_config, value)
                 # Externalfiles.write_full_game_log(gameworld=gameworld, log_id=message_log_id)
                 raise SystemExit()
-            if event_action in ('left', 'right', 'up', 'down'):
+            if event_action in movement_actions:
                 MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=player, direction=event_action, speed=1)
                 advance_game_turn = True
             if event_action in spell_bar_keys:
@@ -83,9 +84,11 @@ def game_loop(gameworld):
             if event_action == 'log':
                 CommonUtils.set_current_log(gameworld=gameworld, log_entity=msglog)
                 advance_game_turn = False
+        if event_to_be_processed == 'chat':
+            logger.debug('Chat inititiated.')
         if event_to_be_processed == 'infopopup' and event_action is not None:
             logger.debug('Information needed on item {}', event_action)
-            process(menu_selection=event_action, gameworld=gameworld, player_entity=player)
+            display_spell_info_popup(menu_selection=event_action, gameworld=gameworld, player_entity=player)
             advance_game_turn = False
         if event_to_be_processed == 'mouseleftbutton':
             Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords_clicked=event_action, game_map=game_map)

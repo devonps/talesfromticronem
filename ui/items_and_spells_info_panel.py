@@ -9,7 +9,7 @@ from utilities.itemsHelp import ItemUtilities
 from utilities.spellHelp import SpellUtilities
 
 
-def process(menu_selection, gameworld, player_entity):
+def display_spell_info_popup(menu_selection, gameworld, player_entity):
     logger.info('Items and spells info panel accessed')
     game_config = configUtilities.load_config()
     armour_map = {"A": "head", "B": "chest", "C": "hands", "D": "legs", "E": "feet"}
