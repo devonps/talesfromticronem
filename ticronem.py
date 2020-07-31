@@ -80,7 +80,7 @@ def game_loop(gameworld):
                 MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=player, direction=event_action, speed=1)
                 advance_game_turn = True
             if event_action in spell_bar_keys:
-                SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player)
+                SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player, game_config=game_config)
                 advance_game_turn = True
             if event_action == 'log':
                 CommonUtils.set_current_log(gameworld=gameworld, log_entity=msglog)

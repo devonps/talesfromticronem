@@ -168,7 +168,8 @@ class SpellUtilities:
         return gameworld.component_for_entity(spell_entity, spells.SpellType).label
 
     @staticmethod
-    def cast_spell(slot, gameworld, player):
+    def cast_spell(slot, gameworld, player, game_config):
+
 
         spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                           player_entity=player)
@@ -184,8 +185,8 @@ class SpellUtilities:
             # to select one of them
 
             visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=player)
-            target_letters = SpellUtilities.helper_print_valid_targets(gameworld=gameworld,
-                                                                       valid_targets=visible_entities)
+            target_letters = CommonUtils.helper_print_valid_targets(gameworld=gameworld, valid_targets=visible_entities,
+                                                                    game_config=game_config)
 
             # blit the terminal
             terminal.refresh()
@@ -225,50 +226,7 @@ class SpellUtilities:
                                                       spell_target=valid_targets[0], spell_bar_slot=slotid))
 
         return player_not_pressed_a_key, target
-
-    @staticmethod
-    def helper_print_valid_targets(gameworld, valid_targets):
-        game_config = configUtilities.load_config()
-        vp_x_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                  parameter='VIEWPORT_START_X')
-        vp_y_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                  parameter='VIEWPORT_START_Y')
-
-        height = 5 + len(valid_targets) + 1
-
-        terminal.clear_area(vp_x_offset + 1, vp_y_offset + 1, 26, height)
-
-        draw_simple_frame(start_panel_frame_x=vp_x_offset, start_panel_frame_y=vp_y_offset, start_panel_frame_width=26,
-                          start_panel_frame_height=height, title='| Valid Targets |',
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
-
-        lft = vp_x_offset + 1
-
-        entity_tag = vp_y_offset + 2
-        target_letters = []
-
-        xx = 0
-        base_str_to_print = "[color=white][font=dungeon]"
-        if len(valid_targets) == 0:
-            str_to_print = base_str_to_print + 'No valid targets'
-            terminal.printf(x=vp_x_offset + 3, y=entity_tag, s=str_to_print)
-        else:
-            for x in valid_targets:
-                entity_name = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=x)
-                entity_fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=x)
-                entity_bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=x)
-
-                str_to_print = base_str_to_print + chr(
-                    97 + xx) + ") [color=" + entity_fg + "][bkcolor=" + entity_bg + "]" + "@" + ' ' + entity_name[0]
-                terminal.printf(x=vp_x_offset + 2, y=entity_tag, s=str_to_print)
-                entity_tag += 1
-                target_letters.append(chr(97 + xx))
-                xx += 1
-        str_to_print = base_str_to_print + 'Press ESC to cancel'
-        terminal.printf(x=vp_x_offset + (lft + 3), y=(vp_y_offset + height), s=str_to_print)
-
-        return target_letters
-
+    
     @staticmethod
     def get_valid_targets_for_spell(gameworld, casting_entity, spell_entity):
         # get game map x/y position of spell casting entity
