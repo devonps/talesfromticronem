@@ -2,6 +2,7 @@ from bearlibterminal import terminal
 
 from enemyRelated.statelessAI import StatelessAI
 from newGame.initialiseNewGame import setup_gameworld
+from utilities.dialogUtilities import initiate_dialog
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
 from loguru import logger
@@ -86,6 +87,8 @@ def game_loop(gameworld):
                 advance_game_turn = False
         if event_to_be_processed == 'chat':
             logger.debug('Chat inititiated.')
+            initiate_dialog(gameworld=gameworld, game_config=game_config)
+            advance_game_turn = False
         if event_to_be_processed == 'infopopup' and event_action is not None:
             logger.debug('Information needed on item {}', event_action)
             display_spell_info_popup(menu_selection=event_action, gameworld=gameworld, player_entity=player)

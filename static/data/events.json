@@ -83,6 +83,12 @@
       "event-title": "condi-removal",
       "event-message": "$1 is no longer [color=MSGLOG_GAME_REMOVE_CONDITION] $2[/color]",
       "event-classes": "combat"
+    },
+    {
+      "event-id": 15,
+      "event-title": "dialog-general",
+      "event-message": "$1",
+      "event-classes": "all"
     }
     ]
 }

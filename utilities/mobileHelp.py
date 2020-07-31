@@ -368,6 +368,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.ClassSpecific())
         gameworld.add_component(entity_id, mobiles.Personality())
         gameworld.add_component(entity_id, mobiles.VisibleEntities())
+        gameworld.add_component(entity_id, mobiles.DialogFlags())
 
 
     @staticmethod
