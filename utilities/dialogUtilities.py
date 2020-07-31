@@ -33,7 +33,7 @@ def get_entity_id_to_talk_to(gameworld, player_entity, entities_list, game_confi
 
     if entity_count > 0:
         # display popup
-        target_letters = helper_print_valid_targets(gameworld=gameworld, valid_targets=valid_targets, game_config=game_config)
+        target_letters = CommonUtils.helper_print_valid_targets(gameworld=gameworld, valid_targets=valid_targets, game_config=game_config)
 
         # blit the terminal
         terminal.refresh()
@@ -66,44 +66,3 @@ def get_list_of_valid_targets(gameworld, player_entity, entities_list):
             entity_count += 1
 
     return valid_targets, entity_count
-
-def helper_print_valid_targets(gameworld, valid_targets, game_config):
-    vp_x_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                              parameter='VIEWPORT_START_X')
-    vp_y_offset = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                              parameter='VIEWPORT_START_Y')
-
-    height = 5 + len(valid_targets) + 1
-
-    terminal.clear_area(vp_x_offset + 1, vp_y_offset + 1, 26, height)
-
-    draw_simple_frame(start_panel_frame_x=vp_x_offset, start_panel_frame_y=vp_y_offset, start_panel_frame_width=26,
-                      start_panel_frame_height=height, title='| Valid Targets |',
-                      fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
-
-    lft = vp_x_offset + 1
-
-    entity_tag = vp_y_offset + 2
-    target_letters = []
-
-    xx = 0
-    base_str_to_print = "[color=white][font=dungeon]"
-    if len(valid_targets) == 0:
-        str_to_print = base_str_to_print + 'No valid targets'
-        terminal.printf(x=vp_x_offset + 3, y=entity_tag, s=str_to_print)
-    else:
-        for x in valid_targets:
-            entity_name = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=x)
-            entity_fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=x)
-            entity_bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=x)
-
-            str_to_print = base_str_to_print + chr(
-                97 + xx) + ") [color=" + entity_fg + "][bkcolor=" + entity_bg + "]" + "@" + ' ' + entity_name[0]
-            terminal.printf(x=vp_x_offset + 2, y=entity_tag, s=str_to_print)
-            entity_tag += 1
-            target_letters.append(chr(97 + xx))
-            xx += 1
-    str_to_print = base_str_to_print + 'Press ESC to cancel'
-    terminal.printf(x=vp_x_offset + (lft + 3), y=(vp_y_offset + height), s=str_to_print)
-
-    return target_letters

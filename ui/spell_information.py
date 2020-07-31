@@ -167,7 +167,7 @@ def spell_pop_up(game_config, slot, gameworld, player):
             if event_action == 0 and not is_spell_on_cooldown:
                 # cast the spell
                 player_not_pressed_a_key = False
-                SpellUtilities.cast_spell(slot=slot, gameworld=gameworld, player=player)
+                SpellUtilities.cast_spell(slot=slot, gameworld=gameworld, player=player, game_config=game_config)
 
 
 def draw_blank_buttons(spell_popup_start_x, spell_popup_start_y):
