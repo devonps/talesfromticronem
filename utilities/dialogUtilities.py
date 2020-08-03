@@ -1,10 +1,9 @@
 from bearlibterminal import terminal
 
 from utilities.common import CommonUtils
-from utilities.display import draw_simple_frame
 from utilities.input_handlers import handle_game_keys
 from utilities.mobileHelp import MobileUtilities
-from utilities import formulas, configUtilities, colourUtilities
+from utilities import formulas
 
 
 def initiate_dialog(gameworld, game_config):
@@ -22,6 +21,9 @@ def check_for_nearby_valid_mobiles_to_speak_with(gameworld, game_config):
     target_entity = get_entity_id_to_talk_to(gameworld=gameworld, player_entity=player_entity, entities_list=visible_entities_list, game_config=game_config)
     if target_entity == 0:
         CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog='There is no one near enough to speak with.')
+    else:
+        CommonUtils.fire_event('dialog-general', gameworld=gameworld,
+                               dialog='Going to speak with...' + str(target_entity))
     return target_entity
 
 
@@ -44,13 +46,10 @@ def get_entity_id_to_talk_to(gameworld, player_entity, entities_list, game_confi
             event_to_be_processed, event_action = handle_game_keys()
             if event_action == 'quit':
                 player_not_pressed_a_key = False
-
-            if event_action != 'quit':
-                key_pressed = chr(97 + event_action)
-                if key_pressed in target_letters:
-                    target = target_letters.index(key_pressed)
-                    target_entity = valid_targets[target]
-                    player_not_pressed_a_key = False
+            if event_action is not None and event_action in target_letters:
+                target = target_letters.index(event_action)
+                target_entity = valid_targets[target]
+                player_not_pressed_a_key = False
 
     return target_entity
 

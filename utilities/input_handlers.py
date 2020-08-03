@@ -79,9 +79,10 @@ def handle_game_keys():
     if key == terminal.TK_A:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
+            action = 'A'
         else:
             myevent = ''
-        action = 'A'
+            action = 'a'
     if key == terminal.TK_B:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'

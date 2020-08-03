@@ -226,7 +226,7 @@ class SpellUtilities:
                                                       spell_target=valid_targets[0], spell_bar_slot=slotid))
 
         return player_not_pressed_a_key, target
-    
+
     @staticmethod
     def get_valid_targets_for_spell(gameworld, casting_entity, spell_entity):
         # get game map x/y position of spell casting entity
