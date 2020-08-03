@@ -1,13 +1,12 @@
 {
-  "npc_id": "Joe",
   "dialogue_chains": [
       {
+        "npc_id": "Joe",
         "chain_name": "welcome_to_the_game",
-        "chain_id": 1,
         "dialogue_steps": [
             {
-              "id": 1,
-              "intro_text": "Welcome $player_first_name, what do you want to know?",
+              "intro_text": "Welcome $player_first_name what do you want to know?",
+              "choice_count": 3,
               "choices": [
                 {
                   "response_text": "Tell me about the war?",
@@ -25,8 +24,8 @@
               ]
             },
             {
-              "id": 2,
               "intro_text": "Things aren't going as well as we first thought...",
+              "choice_count": 3,
               "choices": [
                   {
                       "response_text": "Oh, well don't worry I'm here now",
@@ -42,6 +41,44 @@
                   }
               ]
             }
+          ]
+      },
+      {
+        "npc_id": "Joe",
+        "chain_name": "spoke_before",
+        "dialogue_steps": [
+          {
+            "intro_text": "Ahhh, it's $PlayerFirstName, how can I help?",
+            "choice_count": 2,
+            "choices": [
+              {
+                "response_text": "Tell me about my mission?",
+                "response_option": "next_dialogue_step"
+              },
+              {
+                "response_text": "Where can I get some equipment?",
+                "response_option": "shopkeeper_intro_step"
+              }
+            ]
+          },
+          {
+            "intro_text": "Your mission is simple, disrupt the enemy training camp.",
+            "choice_count": 3,
+            "choices": [
+                {
+                  "response_text": "Oh, well don't worry I'm here now",
+                  "response_option": "open_portal_step"
+                },
+                {
+                  "response_text": "Can you tell me more?",
+                  "response_option": "next_dialogue_step"
+                },
+              {
+                "response_text": "I'm eager to get started with my mission",
+                "response_option": "open_portal_step"
+              }
+            ]
+          }
           ]
       }
     ]

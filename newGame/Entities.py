@@ -1,5 +1,6 @@
 import random
 
+from components import mobiles
 from newGame.CreateSpells import AsEntities
 from newGame.Items import ItemManager
 from utilities import configUtilities, colourUtilities
@@ -75,6 +76,8 @@ class Entity:
                         # --- CHOOSE NAME ---------------------
                         # -------------------------------------
                         Entity.choose_name_for_mobile(name_choice=npc_name, entity_id=entity_id, gameworld=gameworld)
+                        if npc_name == 'Joe':
+                            gameworld.add_component(entity_id, mobiles.DialogFlags(welcome=True))
 
                         # -------------------------------------
                         # --- CHOOSE CLASS --------------------

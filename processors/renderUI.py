@@ -219,10 +219,10 @@ class RenderUI(esper.Processor):
         screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='SCREEN_OFFSET_Y')
 
-        for ent, (rend, pos, desc) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
-                                                               mobiles.Describable):
+        for ent, (rend, pos, desc, dialog) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
+                                                               mobiles.Describable, mobiles.DialogFlags):
             if rend.is_visible:
-
+                display_char = desc.glyph
                 x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
                 y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
                 visible = FieldOfView.get_fov_map_point(fov_map, x, y)
@@ -231,7 +231,9 @@ class RenderUI(esper.Processor):
                     if x != -99:
                         fg = desc.foreground
                         bg = desc.background
-                        RenderUI.render_entity(posx=x + screen_offset_x, posy=y + screen_offset_y, glyph=desc.glyph, fg=fg, bg=bg)
+                        if dialog.welcome:
+                            bg = 'red'
+                        RenderUI.render_entity(posx=x + screen_offset_x, posy=y + screen_offset_y, glyph=display_char, fg=fg, bg=bg)
                         if ent != player_entity:
                             visible_entities.append(ent)
 

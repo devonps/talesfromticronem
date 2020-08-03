@@ -5,7 +5,7 @@ from utilities import colourUtilities
 # spoken_to_before is used by the game to understand if the PC has spoken to this NPC before
 # welcome is a one time flag to start 'welcome' text for the PC
 class DialogFlags:
-    def __init__(self, welcome=True, spoken_to_before=False, initiate=False):
+    def __init__(self, welcome=False, spoken_to_before=False, initiate=False):
         self.initiate = initiate
         self.welcome = welcome
         self.spoken_to_before = spoken_to_before
