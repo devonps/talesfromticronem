@@ -9,7 +9,7 @@
               "choice_count": 3,
               "choices": [
                 {
-                  "response_text": "Tell me about the war?",
+                  "response_text": "What can you tell me about the war?",
                   "response_option": "next_dialogue_step",
                   "response_tag": "war_status"
                 },
