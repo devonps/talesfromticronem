@@ -21,11 +21,35 @@ def initiate_dialog(gameworld, game_config):
 
         dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=entity_to_talk_with, game_config=game_config)
         logger.info(dialog_chain)
+        handle_chained_dialog(dialog_chain=dialog_chain)
 
     return entity_to_talk_with
 
 
-def load_entity_dialog_chains(gameworld, entity_id, game_config):
+def handle_chained_dialog(dialog_chain):
+
+    while dialog_chain != '':
+        # get dialog chain details
+        chain_id = dialog_chain[0]
+        intro_text = dialog_chain[1]
+        responses = [dialog_chain[2], dialog_chain[3], dialog_chain[4]]
+        response_text = 0
+        response_option = 1
+        response_tag = 2
+
+        logger.debug('------ BEGIN DIALOG CHAIN -----------')
+        logger.info('Chain ID:{}', chain_id)
+        logger.info('Intro text:{}', intro_text)
+        logger.info('Response 1 text:{}', responses[0][response_text])
+        logger.info('Response 1 option:{}', responses[0][response_option])
+        logger.info('Response 1 tag:{}', responses[0][response_tag])
+
+        # display dialog UI
+        # add individual UI elements (speaker, intro text, response choices)
+        # wait for player to press a key
+
+
+def load_entity_dialog_chains(gameworld, entity_id, game_config, dialog_steps_id=0, chain_id=0):
     dialog_chains_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                           parameter='DIALOGFILE')
     name_details = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_id)
@@ -33,8 +57,7 @@ def load_entity_dialog_chains(gameworld, entity_id, game_config):
     dialog_chain = []
     intro_text = []
     response_text = []
-    dialog_steps_id = 0
-    chain_id = 0
+
 
     dialog_file = read_json_file(dialog_chains_file)
 
