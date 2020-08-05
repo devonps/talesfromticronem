@@ -454,3 +454,15 @@ class CommonUtils:
         common_coords = [spell_item_info_item_imp_text_x, spell_item_info_start_x, spell_item_info_start_y, spell_item_info_width, spell_item_info_item_horz]
 
         return common_coords
+
+    @staticmethod
+    def move_menu_selection(event_action, selected_menu_option, max_menu_option):
+        if event_action == 'up':
+            selected_menu_option -= 1
+            if selected_menu_option < 0:
+                selected_menu_option = max_menu_option
+        if event_action == 'down':
+            selected_menu_option += 1
+            if selected_menu_option > max_menu_option:
+                selected_menu_option = 0
+        return selected_menu_option

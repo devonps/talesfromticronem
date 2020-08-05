@@ -102,9 +102,7 @@ class CharacterCreation:
             terminal.printf(x=start_list_x, y=this_row, s='Gender')
 
             # display race options
-            pointy_menu(header='',
-                        menu_options=race_name, menu_id_format=True, menu_start_x=menu_start_x,
-                        menu_start_y=menu_start_y,
+            pointy_menu(header='', menu_options=race_name, menu_start_x=menu_start_x, menu_start_y=menu_start_y,
                         blank_line=True, selected_option=selected_menu_option)
 
             # racial flavour text
@@ -275,9 +273,7 @@ class CharacterCreation:
         height = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                            section='newCharacter',
                                                                            parameter='NC_DEPTH')
-        pointy_menu(header='',
-                    menu_options=character_class_name, menu_id_format=True, menu_start_x=menu_start_x,
-                    menu_start_y=menu_start_y,
+        pointy_menu(header='', menu_options=character_class_name, menu_start_x=menu_start_x, menu_start_y=menu_start_y,
                     blank_line=True, selected_option=selected_menu_option)
         # class flavour text
         strings_list = textwrap.wrap(character_class_flavour[selected_menu_option], width=33)

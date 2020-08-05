@@ -45,9 +45,8 @@ class StartGame:
             string_to_print = '[color=white]' + game_copyright + ' [color=yellow]' + game_author
             terminal.printf(x=copyright_x, y=copyright_y, s=string_to_print)
 
-            pointy_menu(header='', menu_options=['New Game', 'Quit'],
-                        menu_id_format=True, menu_start_x=menu_start_x, menu_start_y=menu_start_y,
-                        blank_line=True, selected_option=selected_menu_option)
+            pointy_menu(header='', menu_options=['New Game', 'Quit'], menu_start_x=menu_start_x,
+                        menu_start_y=menu_start_y, blank_line=True, selected_option=selected_menu_option)
 
             # blit changes to terminal
             terminal.refresh()

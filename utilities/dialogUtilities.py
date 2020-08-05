@@ -3,10 +3,11 @@ from loguru import logger
 
 from components import mobiles
 from utilities.common import CommonUtils
+from utilities.display import pointy_menu
 from utilities.input_handlers import handle_game_keys
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
-from utilities import formulas, configUtilities
+from utilities import formulas, configUtilities, colourUtilities
 
 
 def initiate_dialog(gameworld, game_config):
@@ -21,12 +22,13 @@ def initiate_dialog(gameworld, game_config):
         dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=entity_to_talk_with,
                                                  game_config=game_config)
         logger.info(dialog_chain)
-        handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config)
+        handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0])
 
     return entity_to_talk_with
 
 
-def handle_chained_dialog(dialog_chain, game_config):
+def handle_chained_dialog(dialog_chain, game_config, speaker_name):
+    selected_response_option = 0
     while dialog_chain != '':
         # get dialog chain details
         chain_id = dialog_chain[0]
@@ -95,12 +97,16 @@ def handle_chained_dialog(dialog_chain, game_config):
                         y=(dialog_frame_start_y + dialog_frame_height),
                         s=unicode_string_to_print + frame_components_list[3] + ']')
 
-        # npc name
+        # npc/speaker name
+        terminal.printf(x=dialog_frame_start_x + 3, y=dialog_frame_start_y, s="[[ " + speaker_name + " ]]")
 
         # intro tet
         terminal.printf(x=dialog_frame_start_x + 2, y=dialog_frame_start_y + 2,  s=intro_text)
 
         # valid responses
+        pointy_menu(header='', menu_options=[responses[0][response_text], responses[1][response_text],
+                                             responses[2][response_text]], menu_start_x=dialog_frame_start_x + 3,
+                    menu_start_y=dialog_frame_start_y + 5, blank_line=True, selected_option=selected_response_option, colours=[colourUtilities.get('SPRINGGREEN'),colourUtilities.get('DARKOLIVEGREEN')])
 
         # blit the console
         terminal.refresh()
@@ -109,10 +115,16 @@ def handle_chained_dialog(dialog_chain, game_config):
         valid_event = False
         while not valid_event:
             event_to_be_processed, event_action = handle_game_keys()
-            if event_to_be_processed == 'keypress' and event_action == 'quit':
+            # if event_to_be_processed == 'keypress':
+            if event_action == 'quit':
                 dialog_chain = ''
                 valid_event = True
-        # if 'next dialog step'
+            if event_action in ('up', 'down'):
+                selected_response_option = CommonUtils.move_menu_selection(event_action=event_action, selected_menu_option=selected_response_option, max_menu_option=2)
+                valid_event = True
+            if event_action == 'enter':
+                # 'next dialog step'
+                pass
 
 
 def load_entity_dialog_chains(gameworld, entity_id, game_config, dialog_steps_id=0, chain_id=0):
@@ -181,10 +193,16 @@ def get_entity_id_to_talk_to(gameworld, player_entity, entities_list, game_confi
                 event_to_be_processed, event_action = handle_game_keys()
                 if event_action == 'quit':
                     player_not_pressed_a_key = False
-                if event_action is not None and event_action in target_letters:
-                    target = target_letters.index(event_action)
-                    target_entity = valid_targets[target]
+                if event_action in target_letters:
+                    target_entity = get_target_entity_id(event_action=event_action, target_letters=target_letters, valid_targets=valid_targets)
                     player_not_pressed_a_key = False
+
+    return target_entity
+
+
+def get_target_entity_id(event_action, target_letters, valid_targets):
+    target = target_letters.index(event_action)
+    target_entity = valid_targets[target]
 
     return target_entity
 
