@@ -22,13 +22,16 @@ def initiate_dialog(gameworld, game_config):
         dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=entity_to_talk_with,
                                                  game_config=game_config)
         logger.info(dialog_chain)
-        handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0])
+        handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0], gameworld=gameworld)
 
     return entity_to_talk_with
 
 
-def handle_chained_dialog(dialog_chain, game_config, speaker_name):
+def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld):
     selected_response_option = 0
+    player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+    player_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player_entity)
+    player_first_name = player_names[0]
     while dialog_chain != '':
         # get dialog chain details
         chain_id = dialog_chain[0]
@@ -100,8 +103,9 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name):
         # npc/speaker name
         terminal.printf(x=dialog_frame_start_x + 3, y=dialog_frame_start_y, s="[[ " + speaker_name + " ]]")
 
-        # intro tet
-        terminal.printf(x=dialog_frame_start_x + 2, y=dialog_frame_start_y + 2,  s=intro_text)
+        # intro text
+        return_text = CommonUtils.replace_value_in_event(event_string=intro_text, par1=player_first_name)
+        terminal.printf(x=dialog_frame_start_x + 2, y=dialog_frame_start_y + 2, s=return_text)
 
         # valid responses
         pointy_menu(header='', menu_options=[responses[0][response_text], responses[1][response_text],
