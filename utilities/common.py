@@ -294,6 +294,17 @@ class CommonUtils:
         unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
         ascii_prefix = 'ASCII_SINGLE_'
 
+        frame_components_list = CommonUtils.get_ui_frame_components()
+        # frame_components_list breakdown
+        # [0] = top_left_corner_char
+        # [1] = bottom_left_corner_char
+        # [2] = top_right_corner_char
+        # [3] = bottom_right_corner_char
+        # [4] = horizontal_char
+        # [5] = vertical_char
+        # [6] = left_t_junction_char
+        # [7] = right_t_junction_char
+
         start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                               section='newCharacter', parameter='NC_START_X')
 
@@ -310,64 +321,42 @@ class CommonUtils:
         choices_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
                                                                       parameter='CHOICES_BAR_Y')
 
-        top_left_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                parameter=ascii_prefix + 'TOP_LEFT')
-
-        bottom_left_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                   parameter=ascii_prefix + 'BOTTOM_LEFT')
-
-        top_right_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                 parameter=ascii_prefix + 'TOP_RIGHT')
-
-        bottom_right_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                    parameter=ascii_prefix + 'BOTTOM_RIGHT')
-
-        horizontal_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                           parameter=ascii_prefix + 'HORIZONTAL')
-        vertical_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                         parameter=ascii_prefix + 'VERTICAL')
-
-        left_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                parameter=ascii_prefix + 'LEFT_T_JUNCTION')
-        right_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                 parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
-
         # render horizontal bottom
         for z in range(start_x, (start_x + width)):
             terminal.printf(x=z, y=(start_y + height),
-                            s=unicode_string_to_print + horizontal_char + ']')
-            terminal.printf(x=z, y=start_y, s=unicode_string_to_print + horizontal_char + ']')
+                            s=unicode_string_to_print + frame_components_list[4] + ']')
+            terminal.printf(x=z, y=start_y, s=unicode_string_to_print + frame_components_list[4] + ']')
 
         # render verticals
         for z in range(start_y, (start_y + height) - 1):
-            terminal.printf(x=start_x, y=z + 1, s=unicode_string_to_print + vertical_char + ']')
+            terminal.printf(x=start_x, y=z + 1, s=unicode_string_to_print + frame_components_list[5] + ']')
             terminal.printf(x=(start_x + width), y=z + 1,
-                            s=unicode_string_to_print + vertical_char + ']')
+                            s=unicode_string_to_print + frame_components_list[5] + ']')
 
         # top left
         terminal.printf(x=start_x, y=start_y,
-                        s=unicode_string_to_print + top_left_corner_char + ']')
+                        s=unicode_string_to_print + frame_components_list[0] + ']')
         # bottom left
         terminal.printf(x=start_x, y=(start_y + height),
-                        s=unicode_string_to_print + bottom_left_corner_char + ']')
+                        s=unicode_string_to_print + frame_components_list[1] + ']')
         # top right
         terminal.printf(x=(start_x + width), y=start_y,
-                        s=unicode_string_to_print + top_right_corner_char + ']')
+                        s=unicode_string_to_print + frame_components_list[2] + ']')
         # bottom right
         terminal.printf(x=(start_x + width),
                         y=(start_y + height),
-                        s=unicode_string_to_print + bottom_right_corner_char + ']')
+                        s=unicode_string_to_print + frame_components_list[3] + ']')
 
         # render horizontal splitters
         for z in range(start_x, (start_x + width)):
             terminal.printf(x=z, y=choices_start_y,
-                            s=unicode_string_to_print + horizontal_char + ']')
+                            s=unicode_string_to_print + frame_components_list[4] + ']')
 
             terminal.printf(x=start_x, y=choices_start_y,
-                            s=unicode_string_to_print + left_t_junction_char + ']')
+                            s=unicode_string_to_print + frame_components_list[6] + ']')
 
             terminal.printf(x=(start_x + width), y=choices_start_y,
-                            s=unicode_string_to_print + right_t_junction_char + ']')
+                            s=unicode_string_to_print + frame_components_list[7] + ']')
 
     @staticmethod
     def helper_print_valid_targets(gameworld, valid_targets, game_config):
@@ -410,3 +399,58 @@ class CommonUtils:
         terminal.printf(x=vp_x_offset + (lft + 3), y=(vp_y_offset + height), s=str_to_print)
 
         return target_letters
+
+    @staticmethod
+    def get_ui_frame_components():
+        game_config = configUtilities.load_config()
+        ascii_prefix = 'ASCII_SINGLE_'
+        top_left_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                parameter=ascii_prefix + 'TOP_LEFT')
+
+        bottom_left_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                   parameter=ascii_prefix + 'BOTTOM_LEFT')
+
+        top_right_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                 parameter=ascii_prefix + 'TOP_RIGHT')
+
+        bottom_right_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                    parameter=ascii_prefix + 'BOTTOM_RIGHT')
+
+        horizontal_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                           parameter=ascii_prefix + 'HORIZONTAL')
+        vertical_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                         parameter=ascii_prefix + 'VERTICAL')
+
+        left_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                parameter=ascii_prefix + 'LEFT_T_JUNCTION')
+        right_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                 parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
+
+        frame_components = [top_left_corner_char, bottom_left_corner_char, top_right_corner_char,
+                            bottom_right_corner_char, horizontal_char, vertical_char, left_t_junction_char, right_t_junction_char]
+
+        return frame_components
+
+    @staticmethod
+    def get_item_ui_common_coords():
+        game_config = configUtilities.load_config()
+        spell_item_info_item_imp_text_x = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                                      section='spellInfoPopup',
+                                                                                      parameter='SP_IMPORTANT_TEXT_X')
+        spell_item_info_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                              section='spellInfoPopup',
+                                                                              parameter='SP_START_X')
+
+        spell_item_info_start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                              section='spellInfoPopup',
+                                                                              parameter='SP_START_Y')
+        spell_item_info_width = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                            section='spellInfoPopup',
+                                                                            parameter='SP_WIDTH')
+        spell_item_info_item_horz = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                                section='spellInfoPopup',
+                                                                                parameter='SP_PORTRAIT_BAR')
+
+        common_coords = [spell_item_info_item_imp_text_x, spell_item_info_start_x, spell_item_info_start_y, spell_item_info_width, spell_item_info_item_horz]
+
+        return common_coords

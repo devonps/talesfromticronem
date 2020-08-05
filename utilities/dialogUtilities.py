@@ -37,29 +37,17 @@ def handle_chained_dialog(dialog_chain, game_config):
         response_tag = 2
 
         unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
-        ascii_prefix = 'ASCII_SINGLE_'
 
-        top_left_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                parameter=ascii_prefix + 'TOP_LEFT')
-
-        bottom_left_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                   parameter=ascii_prefix + 'BOTTOM_LEFT')
-
-        top_right_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                 parameter=ascii_prefix + 'TOP_RIGHT')
-
-        bottom_right_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                    parameter=ascii_prefix + 'BOTTOM_RIGHT')
-
-        horizontal_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                           parameter=ascii_prefix + 'HORIZONTAL')
-        vertical_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                         parameter=ascii_prefix + 'VERTICAL')
-
-        left_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                parameter=ascii_prefix + 'LEFT_T_JUNCTION')
-        right_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                 parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
+        frame_components_list = CommonUtils.get_ui_frame_components()
+        # frame_components_list breakdown
+        # [0] = top_left_corner_char
+        # [1] = bottom_left_corner_char
+        # [2] = top_right_corner_char
+        # [3] = bottom_right_corner_char
+        # [4] = horizontal_char
+        # [5] = vertical_char
+        # [6] = left_t_junction_char
+        # [7] = right_t_junction_char
 
         dialog_frame_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                            section='gui', parameter='DIALOG_FRAME_START_X')
@@ -84,28 +72,28 @@ def handle_chained_dialog(dialog_chain, game_config):
         # render horizontals
         for z in range(dialog_frame_start_x, (dialog_frame_start_x + dialog_frame_width)):
             terminal.printf(x=z, y=(dialog_frame_start_y + dialog_frame_height),
-                            s=unicode_string_to_print + horizontal_char + ']')
-            terminal.printf(x=z, y=dialog_frame_start_y, s=unicode_string_to_print + horizontal_char + ']')
+                            s=unicode_string_to_print + frame_components_list[4] + ']')
+            terminal.printf(x=z, y=dialog_frame_start_y, s=unicode_string_to_print + frame_components_list[4] + ']')
 
         # render verticals
         for z in range(dialog_frame_start_y, (dialog_frame_start_y + dialog_frame_height) - 1):
-            terminal.printf(x=dialog_frame_start_x, y=z + 1, s=unicode_string_to_print + vertical_char + ']')
+            terminal.printf(x=dialog_frame_start_x, y=z + 1, s=unicode_string_to_print + frame_components_list[5] + ']')
             terminal.printf(x=(dialog_frame_start_x + dialog_frame_width), y=z + 1,
-                            s=unicode_string_to_print + vertical_char + ']')
+                            s=unicode_string_to_print + frame_components_list[5] + ']')
 
         # top left
         terminal.printf(x=dialog_frame_start_x, y=dialog_frame_start_y,
-                        s=unicode_string_to_print + top_left_corner_char + ']')
+                        s=unicode_string_to_print + frame_components_list[0] + ']')
         # bottom left
         terminal.printf(x=dialog_frame_start_x, y=(dialog_frame_start_y + dialog_frame_height),
-                        s=unicode_string_to_print + bottom_left_corner_char + ']')
+                        s=unicode_string_to_print + frame_components_list[1] + ']')
         # top right
         terminal.printf(x=(dialog_frame_start_x + dialog_frame_width), y=dialog_frame_start_y,
-                        s=unicode_string_to_print + top_right_corner_char + ']')
+                        s=unicode_string_to_print + frame_components_list[2] + ']')
         # bottom right
         terminal.printf(x=(dialog_frame_start_x + dialog_frame_width),
                         y=(dialog_frame_start_y + dialog_frame_height),
-                        s=unicode_string_to_print + bottom_right_corner_char + ']')
+                        s=unicode_string_to_print + frame_components_list[3] + ']')
 
         # npc name
 
@@ -121,12 +109,10 @@ def handle_chained_dialog(dialog_chain, game_config):
         valid_event = False
         while not valid_event:
             event_to_be_processed, event_action = handle_game_keys()
-            if event_to_be_processed == 'keypress':
-                if event_action == 'quit':
-                    dialog_chain = ''
-                    valid_event = True
+            if event_to_be_processed == 'keypress' and event_action == 'quit':
+                dialog_chain = ''
+                valid_event = True
         # if 'next dialog step'
-
 
 
 def load_entity_dialog_chains(gameworld, entity_id, game_config, dialog_steps_id=0, chain_id=0):

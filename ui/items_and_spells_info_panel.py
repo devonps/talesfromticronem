@@ -347,24 +347,9 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
     armour_armourset_string = armour_key_colour_string + 'Armourset:' + armour_value_colour_string
     armour_quality_string = armour_key_colour_string + 'Quality:' + armour_value_colour_string
 
-    spell_item_info_item_imp_text_x = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                                  section='spellInfoPopup',
-                                                                                  parameter='SP_IMPORTANT_TEXT_X')
-    spell_item_info_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                          section='spellInfoPopup',
-                                                                          parameter='SP_START_X')
+    item_coords = CommonUtils.get_item_ui_common_coords()
 
-    spell_item_info_start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                          section='spellInfoPopup',
-                                                                          parameter='SP_START_Y')
-    spell_item_info_width = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                        section='spellInfoPopup',
-                                                                        parameter='SP_WIDTH')
-    spell_item_info_item_horz = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                            section='spellInfoPopup',
-                                                                            parameter='SP_PORTRAIT_BAR')
-
-    spell_item_info_item_imp_text = spell_item_info_item_horz + 2
+    spell_item_info_item_imp_text = item_coords[4] + 2
 
     spell_item_info_left_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                        parameter=armour_ascii_prefix + 'LEFT_T_JUNCTION')
@@ -382,12 +367,12 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
         # draw portrait
         item_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=item_entity)
         portrait_file = item_displayname + '.txt'
-        draw_portrait(startx=spell_item_info_item_imp_text_x, starty=spell_item_info_start_y, game_config=game_config,
+        draw_portrait(startx=item_coords[0], starty=item_coords[2], game_config=game_config,
                       portrait_file=portrait_file)
 
         # draw middle horizontal line
-        draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
-                                            w=spell_item_info_width, string_colour=unicode_frame_colour,
+        draw_horizontal_line_after_portrait(x=item_coords[1], y=item_coords[4],
+                                            w=item_coords[3], string_colour=unicode_frame_colour,
                                             horiz_glyph=spell_item_info_horizontal,
                                             left_t_glyph=spell_item_info_left_t_junction,
                                             right_t_glyph=spell_item_info_right_t_junction)
@@ -399,19 +384,19 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
         spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
         armour_description_value = ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
 
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 1,
+        terminal.printf(x=item_coords[0], y=spell_item_info_item_imp_text + 1,
                         s=armour_defense_string + str(defense_value))
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 3,
+        terminal.printf(x=item_coords[0], y=spell_item_info_item_imp_text + 3,
                         s=armour_armourset_string + armourset_value)
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 4,
+        terminal.printf(x=item_coords[0], y=spell_item_info_item_imp_text + 4,
                         s=armour_quality_string + quality_value)
 
-        draw_spell_info(startx=spell_item_info_item_imp_text_x, starty=spell_item_info_item_imp_text,
+        draw_spell_info(startx=item_coords[0], starty=spell_item_info_item_imp_text,
                         gameworld=gameworld, spell_entity=spell_entity)
 
         # draw fluff text
-        draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 16,
-                        width=spell_item_info_width, fluff_text=armour_description_value,
+        draw_fluff_text(x=item_coords[0], y=spell_item_info_item_imp_text + 16,
+                        width=item_coords[3], fluff_text=armour_description_value,
                         key_colour_string=armour_key_colour_string, value_colour_string=armour_value_colour_string)
 
     return item_entity
@@ -427,24 +412,9 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
     jewellery_attribute_string = jewellery_key_colour_string + 'Attribute type:' + jewellery_value_colour_string
     jewellery_att_bonus_string = jewellery_key_colour_string + 'Bonus:' + jewellery_value_colour_string
 
-    spell_item_info_item_imp_text_x = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                                  section='spellInfoPopup',
-                                                                                  parameter='SP_IMPORTANT_TEXT_X')
-    spell_item_info_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                          section='spellInfoPopup',
-                                                                          parameter='SP_START_X')
+    item_coords = CommonUtils.get_item_ui_common_coords()
 
-    spell_item_info_start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                          section='spellInfoPopup',
-                                                                          parameter='SP_START_Y')
-    spell_item_info_width = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                        section='spellInfoPopup',
-                                                                        parameter='SP_WIDTH')
-    spell_item_info_item_horz = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                            section='spellInfoPopup',
-                                                                            parameter='SP_PORTRAIT_BAR')
-
-    spell_item_info_item_imp_text = spell_item_info_item_horz + 2
+    spell_item_info_item_imp_text = item_coords[4] + 2
 
     spell_item_info_left_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                        parameter=jewellery_ascii_prefix + 'LEFT_T_JUNCTION')
@@ -462,12 +432,12 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
         # draw portrait
         item_displayname = ItemUtilities.get_item_name(gameworld=gameworld, entity=item_entity)
         portrait_file = item_displayname + '.txt'
-        draw_portrait(startx=spell_item_info_item_imp_text_x, starty=spell_item_info_start_y, game_config=game_config,
+        draw_portrait(startx=item_coords[0], starty=item_coords[2], game_config=game_config,
                       portrait_file=portrait_file)
 
         # draw middle horizontal line
-        draw_horizontal_line_after_portrait(x=spell_item_info_start_x, y=spell_item_info_item_horz,
-                                            w=spell_item_info_width, string_colour=unicode_frame_colour,
+        draw_horizontal_line_after_portrait(x=item_coords[1], y=item_coords[4],
+                                            w=item_coords[3], string_colour=unicode_frame_colour,
                                             horiz_glyph=spell_item_info_horizontal,
                                             left_t_glyph=spell_item_info_left_t_junction,
                                             right_t_glyph=spell_item_info_right_t_junction)
@@ -479,19 +449,19 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
         jewellery_description = ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
 
         # draw jewellery stuff
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 1,
+        terminal.printf(x=item_coords[0], y=spell_item_info_item_imp_text + 1,
                         s=jewellery_bonus_string + jewellery_statbonus[0])
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 2,
+        terminal.printf(x=item_coords[0], y=spell_item_info_item_imp_text + 2,
                         s=jewellery_attribute_string + 'Primary')
-        terminal.printf(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 3,
+        terminal.printf(x=item_coords[0], y=spell_item_info_item_imp_text + 3,
                         s=jewellery_att_bonus_string + '+' + str(jewellery_statbonus[1]))
 
         # embedded spell
-        draw_spell_info(startx=spell_item_info_item_imp_text_x, starty=spell_item_info_item_imp_text, gameworld=gameworld,
+        draw_spell_info(startx=item_coords[0], starty=spell_item_info_item_imp_text, gameworld=gameworld,
                         spell_entity=spell_entity)
 
         # draw fluff text
-        draw_fluff_text(x=spell_item_info_item_imp_text_x, y=spell_item_info_item_imp_text + 15,
-                        width=spell_item_info_width, fluff_text=jewellery_description,
+        draw_fluff_text(x=item_coords[0], y=spell_item_info_item_imp_text + 15,
+                        width=item_coords[3], fluff_text=jewellery_description,
                         key_colour_string=jewellery_key_colour_string, value_colour_string=jewellery_value_colour_string)
     return item_entity
