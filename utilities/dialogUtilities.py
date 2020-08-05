@@ -22,12 +22,10 @@ def initiate_dialog(gameworld, game_config):
         dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=entity_to_talk_with,
                                                  game_config=game_config)
         logger.info(dialog_chain)
-        handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0], gameworld=gameworld)
-
-    return entity_to_talk_with
+        handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0], gameworld=gameworld, speaker_id=entity_to_talk_with)
 
 
-def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld):
+def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, speaker_id):
     selected_response_option = 0
     player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
     player_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player_entity)
@@ -128,7 +126,12 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld):
                 valid_event = True
             if event_action == 'enter':
                 # 'next dialog step'
-                pass
+                valid_event = True
+                next_step = responses[selected_response_option][response_option]
+                logger.info('Next dialog option is {}', next_step)
+                if next_step == 'next_dialogue_step':
+                    dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=speaker_id,
+                                                             game_config=game_config, dialog_steps_id=1)
 
 
 def load_entity_dialog_chains(gameworld, entity_id, game_config, dialog_steps_id=0, chain_id=0):
