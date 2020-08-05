@@ -290,10 +290,7 @@ class CommonUtils:
 
     @staticmethod
     def render_ui_framework(game_config):
-
         unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
-        ascii_prefix = 'ASCII_SINGLE_'
-
         frame_components_list = CommonUtils.get_ui_frame_components()
         # frame_components_list breakdown
         # [0] = top_left_corner_char

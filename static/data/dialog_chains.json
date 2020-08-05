@@ -36,8 +36,8 @@
                   },
                   {
                     "response_text": "Can you tell me more?",
-                    "response_option"none: "next_dialogue_step",
-                    "response_tag": ""
+                    "response_option": "next_dialogue_step",
+                    "response_tag": "none"
                   },
                   {
                     "response_text": "Thanks, I've heard enough",

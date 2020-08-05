@@ -64,9 +64,9 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
         logger.debug('------ BEGIN DIALOG CHAIN -----------')
         logger.info('Chain ID:{}', chain_id)
         logger.info('Intro text:{}', intro_text)
-        logger.info('Response 1 text:{}', responses[0][response_text])
-        logger.info('Response 1 option:{}', responses[0][response_option])
-        logger.info('Response 1 tag:{}', responses[0][response_tag])
+        logger.info('Response 1 text:{}', responses[selected_response_option][response_text])
+        logger.info('Response 1 option:{}', responses[selected_response_option][response_option])
+        logger.info('Response 1 tag:{}', responses[selected_response_option][response_tag])
 
         # display dialog UI - starting top left, ending bottom right
 
@@ -132,6 +132,8 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
                 if next_step == 'next_dialogue_step':
                     dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=speaker_id,
                                                              game_config=game_config, dialog_steps_id=1)
+
+                    logger.debug(dialog_chain)
 
 
 def load_entity_dialog_chains(gameworld, entity_id, game_config, dialog_steps_id=0, chain_id=0):
