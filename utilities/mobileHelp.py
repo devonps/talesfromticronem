@@ -36,14 +36,17 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def create_armour_for_npc(gameworld, entity_id, armour_modifier, px_bonus):
         if armour_modifier.lower() == 'healer':
-            current_healingpower = MobileUtilities.get_mobile_secondary_healing_power(gameworld=gameworld, entity=entity_id)
+            current_healingpower = MobileUtilities.get_mobile_secondary_healing_power(gameworld=gameworld,
+                                                                                      entity=entity_id)
             new_bonus = current_healingpower + px_bonus
             MobileUtilities.set_mobile_secondary_healing_power(gameworld=gameworld, entity=entity_id, value=new_bonus)
 
         if armour_modifier.lower() == 'malign':
-            current_condidamage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=entity_id)
+            current_condidamage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld,
+                                                                                        entity=entity_id)
             new_bonus = current_condidamage + px_bonus
-            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=entity_id, value=new_bonus)
+            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=entity_id,
+                                                                  value=new_bonus)
 
         if armour_modifier.lower() == 'mighty':
             current_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=entity_id)
@@ -85,7 +88,6 @@ class MobileUtilities(numbers.Real, ABC):
         race_component.name_singular = race_names[0]
         race_component.name_plural = race_names[1]
         race_component.name_name_adjective = race_names[2]
-
 
     @staticmethod
     def setup_class_attributes(gameworld, player, selected_class, health, spellfile):
@@ -241,7 +243,8 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def get_mobile_race_details(gameworld, entity):
         race_component = gameworld.component_for_entity(entity, mobiles.Race)
-        racial = [race_component.label, race_component.size, race_component.name_singular, race_component.name_plural, race_component.name_name_adjective]
+        racial = [race_component.label, race_component.size, race_component.name_singular, race_component.name_plural,
+                  race_component.name_name_adjective]
         return racial
 
     @staticmethod
@@ -341,7 +344,8 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def create_base_mobile(gameworld, game_config, entity_id):
-        ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game', parameter='AI_LEVEL_NONE')
+        ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
+                                                         parameter='AI_LEVEL_NONE')
 
         gameworld.add_component(entity_id, mobiles.Describable())
         MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity_id, value='@')
@@ -370,6 +374,30 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.VisibleEntities())
         gameworld.add_component(entity_id, mobiles.DialogFlags())
 
+    @staticmethod
+    def set_talk_to_me_flag(gameworld, target_entity):
+        dialog_component = gameworld.component_for_entity(target_entity, mobiles.DialogFlags)
+        dialog_component.talk_to_me = True
+
+    @staticmethod
+    def clear_talk_to_me_flag(gameworld, target_entity):
+        dialog_component = gameworld.component_for_entity(target_entity, mobiles.DialogFlags)
+        dialog_component.talk_to_me = False
+
+    @staticmethod
+    def get_talk_to_me_flag(gameworld, target_entity):
+        dialog_component = gameworld.component_for_entity(target_entity, mobiles.DialogFlags)
+        return dialog_component.talk_to_me
+
+    @staticmethod
+    def set_spoken_to_before_flag(gameworld, target_entity):
+        dialog_component = gameworld.component_for_entity(target_entity, mobiles.DialogFlags)
+        dialog_component.spoken_to_before = True
+
+    @staticmethod
+    def get_spoken_to_before_flag(gameworld, target_entity):
+        dialog_component = gameworld.component_for_entity(target_entity, mobiles.DialogFlags)
+        return dialog_component.spoken_to_before
 
     @staticmethod
     def set_visible_entities(gameworld, target_entity, visible_entities):
@@ -393,7 +421,8 @@ class MobileUtilities(numbers.Real, ABC):
                                                                 parameter='AI_LEVEL_PLAYER')
         gameworld.add_component(player_entity, mobiles.Describable())
         MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=player_entity, value='@')
-        MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, game_config=game_config, entity=player_entity)
+        MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, game_config=game_config,
+                                                       entity=player_entity)
         MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity, gender='neutral')
         MobileUtilities.set_mobile_description(gameworld=gameworld, entity=player_entity, value='something')
 
@@ -744,7 +773,8 @@ class MobileUtilities(numbers.Real, ABC):
         ItemUtilities.remove_item_from_inventory(gameworld, mobile, jewellery_entity)
 
         # equip jewellery in correct location
-        body_location = ItemUtilities.get_jewellery_valid_body_location(gameworld=gameworld, jewellery_entity=jewellery_entity)
+        body_location = ItemUtilities.get_jewellery_valid_body_location(gameworld=gameworld,
+                                                                        jewellery_entity=jewellery_entity)
 
         if body_location[0]:
             if equipped_jewellery[0] == 0:

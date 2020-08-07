@@ -78,6 +78,7 @@ class Entity:
                         Entity.choose_name_for_mobile(name_choice=npc_name, entity_id=entity_id, gameworld=gameworld)
                         if npc_name == 'Joe':
                             gameworld.add_component(entity_id, mobiles.DialogFlags(welcome=True))
+                            MobileUtilities.set_talk_to_me_flag(gameworld=gameworld, target_entity=entity_id)
 
                         # -------------------------------------
                         # --- CHOOSE CLASS --------------------

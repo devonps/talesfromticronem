@@ -99,15 +99,15 @@ class RenderUI(esper.Processor):
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='VIEWPORT_HEIGHT')
         screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='SCREEN_OFFSET_X')
+                                                                      parameter='SCREEN_OFFSET_X')
         screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='SCREEN_OFFSET_Y')
-
+                                                                      parameter='SCREEN_OFFSET_Y')
 
         # this holds the start x/y map positions left of the players current position
-        camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width, camera_height=camera_height,
-                                                                player_map_pos_x=player_map_pos_x,
-                                                                player_map_pos_y=player_map_pos_y, game_map=game_map)
+        camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width,
+                                                                   camera_height=camera_height,
+                                                                   player_map_pos_x=player_map_pos_x,
+                                                                   player_map_pos_y=player_map_pos_y, game_map=game_map)
 
         config_prefix = 'ASCII_'
         config_prefix_wall = config_prefix + 'WALL_'
@@ -120,7 +120,7 @@ class RenderUI(esper.Processor):
         colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
         fov_map = FieldOfView(game_map=game_map)
         player_fov = FieldOfView.create_fov_from_raycasting(fov_map, startx=player_map_pos_x, starty=player_map_pos_y,
-                                                               game_config=game_config)
+                                                            game_config=game_config)
 
         if player_has_moved:
             RenderUI.clear_map_layer()
@@ -175,7 +175,10 @@ class RenderUI(esper.Processor):
                                                                              config_prefix=config_prefix_door,
                                                                              tile_assignment=0)
 
-                RenderUI.print_char_to_the_screen(print_char=print_char, tile=tile, colour_code=colour_code, char_to_display=char_to_display, scr_pos_x=scr_pos_x + screen_offset_x, scr_pos_y=scr_pos_y + screen_offset_y)
+                RenderUI.print_char_to_the_screen(print_char=print_char, tile=tile, colour_code=colour_code,
+                                                  char_to_display=char_to_display,
+                                                  scr_pos_x=scr_pos_x + screen_offset_x,
+                                                  scr_pos_y=scr_pos_y + screen_offset_y)
                 cam_x += 1
             camera_y += 1
 
@@ -199,9 +202,11 @@ class RenderUI(esper.Processor):
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='VIEWPORT_HEIGHT')
 
-        camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width, camera_height=camera_height,
-                                                                player_map_pos_x=player_map_pos_x, player_map_pos_y=player_map_pos_y,
-                                                                game_map=game_map)
+        camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width,
+                                                                   camera_height=camera_height,
+                                                                   player_map_pos_x=player_map_pos_x,
+                                                                   player_map_pos_y=player_map_pos_y,
+                                                                   game_map=game_map)
 
         (x, y) = (x - camera_x, y - camera_y)
 
@@ -215,25 +220,28 @@ class RenderUI(esper.Processor):
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         visible_entities = []
         screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='SCREEN_OFFSET_X')
+                                                                      parameter='SCREEN_OFFSET_X')
         screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='SCREEN_OFFSET_Y')
+                                                                      parameter='SCREEN_OFFSET_Y')
 
         for ent, (rend, pos, desc, dialog) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
-                                                               mobiles.Describable, mobiles.DialogFlags):
+                                                                       mobiles.Describable, mobiles.DialogFlags):
             if rend.is_visible:
+                flag_setting = ''
                 display_char = desc.glyph
                 x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
                 y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
                 visible = FieldOfView.get_fov_map_point(fov_map, x, y)
                 if visible:
-                    (x, y) = RenderUI.to_camera_coordinates(game_config=game_config, game_map=game_map, x=x, y=y, gameworld=gameworld)
+                    (x, y) = RenderUI.to_camera_coordinates(game_config=game_config, game_map=game_map, x=x, y=y,
+                                                            gameworld=gameworld)
                     if x != -99:
                         fg = desc.foreground
                         bg = desc.background
-                        if dialog.welcome:
-                            bg = 'red'
-                        RenderUI.render_entity(posx=x + screen_offset_x, posy=y + screen_offset_y, glyph=display_char, fg=fg, bg=bg)
+                        if dialog.talk_to_me:
+                            flag_setting = 'talk_to_me'
+                        RenderUI.render_entity(posx=x + screen_offset_x, posy=y + screen_offset_y, glyph=display_char,
+                                               fg=fg, bg=bg, flag=flag_setting)
                         if ent != player_entity:
                             visible_entities.append(ent)
 
@@ -250,10 +258,13 @@ class RenderUI(esper.Processor):
             if rend.is_true:
                 draw_pos_x = map_view_across + loc.x
                 draw_pos_y = map_view_down + loc.y
-                RenderUI.render_entity(posx=draw_pos_x, posy=draw_pos_y, glyph=desc.glyph, fg=desc.fg, bg=desc.bg, )
+                RenderUI.render_entity(posx=draw_pos_x, posy=draw_pos_y, glyph=desc.glyph, fg=desc.fg, bg=desc.bg)
 
     @staticmethod
-    def render_entity(posx, posy, glyph, fg, bg):
+    def render_entity(posx, posy, glyph, fg, bg, flag=None):
 
         str_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph
+        if flag == 'talk_to_me':
+            str_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph + "[offset=0, -8][+][color=red]^[/color]"
         terminal.printf(x=posx, y=posy, s=str_to_print)
+
