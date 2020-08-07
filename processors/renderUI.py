@@ -265,6 +265,6 @@ class RenderUI(esper.Processor):
 
         str_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph
         if flag == 'talk_to_me':
-            str_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph + "[offset=0, -8][+][color=red]^[/color]"
+            str_to_print += "[offset=0, -8][+][color=red]^[/color]"
         terminal.printf(x=posx, y=posy, s=str_to_print)
 

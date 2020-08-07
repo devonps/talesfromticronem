@@ -17,52 +17,60 @@ def initiate_dialog(gameworld, game_config):
         name_details = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_to_talk_with)
         CommonUtils.fire_event('dialog-general', gameworld=gameworld,
                                dialog='Going to speak with...' + name_details[0])
-        gameworld.add_component(entity_to_talk_with, mobiles.DialogFlags(welcome=False))
+        MobileUtilities.set_dialog_welcome_flag_to_false(gameworld=gameworld, target_entity=entity_to_talk_with)
+        spoken_to_before = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=entity_to_talk_with)
+
+        speak = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=entity_to_talk_with)
+        logger.debug('Speaking with{}', entity_to_talk_with)
+        logger.debug('spoken to flag is {}', speak)
+
+        if spoken_to_before:
+            chain_id = 1
+        else:
+            chain_id = 0
 
         dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=entity_to_talk_with,
-                                                 game_config=game_config)
+                                                 game_config=game_config, chain_id=chain_id)
         logger.info(dialog_chain)
-        handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0], gameworld=gameworld, speaker_id=entity_to_talk_with)
+        handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0], gameworld=gameworld, speaker_id=entity_to_talk_with, chain_id=chain_id)
 
 
-def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, speaker_id):
+def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, speaker_id, chain_id):
     selected_response_option = 0
     player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
     player_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player_entity)
     player_first_name = player_names[0]
+    response_text = 0
+    response_option = 1
+    response_tag = 2
+    unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
+    frame_components_list = CommonUtils.get_ui_frame_components()
+    # frame_components_list breakdown
+    # [0] = top_left_corner_char
+    # [1] = bottom_left_corner_char
+    # [2] = top_right_corner_char
+    # [3] = bottom_right_corner_char
+    # [4] = horizontal_char
+    # [5] = vertical_char
+    # [6] = left_t_junction_char
+    # [7] = right_t_junction_char
+
+    dialog_frame_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                       section='gui', parameter='DIALOG_FRAME_START_X')
+    dialog_frame_start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                       section='gui', parameter='DIALOG_FRAME_START_Y')
+    dialog_frame_width = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                     section='gui', parameter='DIALOG_FRAME_WIDTH')
+    dialog_frame_height = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                      section='gui', parameter='DIALOG_FRAME_HEIGHT')
     while dialog_chain != '':
         # get dialog chain details
-        chain_id = dialog_chain[0]
+        chain_name = dialog_chain[0]
         intro_text = dialog_chain[1]
         responses = [dialog_chain[2], dialog_chain[3], dialog_chain[4]]
-        response_text = 0
-        response_option = 1
-        response_tag = 2
-
-        unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
-
-        frame_components_list = CommonUtils.get_ui_frame_components()
-        # frame_components_list breakdown
-        # [0] = top_left_corner_char
-        # [1] = bottom_left_corner_char
-        # [2] = top_right_corner_char
-        # [3] = bottom_right_corner_char
-        # [4] = horizontal_char
-        # [5] = vertical_char
-        # [6] = left_t_junction_char
-        # [7] = right_t_junction_char
-
-        dialog_frame_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                           section='gui', parameter='DIALOG_FRAME_START_X')
-        dialog_frame_start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                           section='gui', parameter='DIALOG_FRAME_START_Y')
-        dialog_frame_width = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                           section='gui', parameter='DIALOG_FRAME_WIDTH')
-        dialog_frame_height = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                           section='gui', parameter='DIALOG_FRAME_HEIGHT')
 
         logger.debug('------ BEGIN DIALOG CHAIN -----------')
-        logger.info('Chain ID:{}', chain_id)
+        logger.info('Chain ID:{}', chain_name)
         logger.info('Intro text:{}', intro_text)
         logger.info('Response 1 text:{}', responses[selected_response_option][response_text])
         logger.info('Response 1 option:{}', responses[selected_response_option][response_option])
@@ -132,6 +140,14 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
                 if next_step == 'next_dialogue_step':
                     dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=speaker_id,
                                                              game_config=game_config, dialog_steps_id=1)
+                    MobileUtilities.clear_talk_to_me_flag(gameworld=gameworld, target_entity=speaker_id)
+                    spoken_to = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=speaker_id)
+
+                    if not spoken_to:
+                        MobileUtilities.set_spoken_to_before_flag(gameworld=gameworld, target_entity=speaker_id)
+                        speak = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=speaker_id)
+                        logger.debug('Spoken to {}', speaker_id)
+                        logger.debug('spoken to flag is {}', speak)
 
                     logger.debug(dialog_chain)
 
@@ -146,6 +162,9 @@ def load_entity_dialog_chains(gameworld, entity_id, game_config, dialog_steps_id
     response_text = []
 
     dialog_file = read_json_file(dialog_chains_file)
+
+    if chain_id > 0:
+        pass
 
     top_level_dialog_chain = dialog_file['dialogue_chains'][chain_id]
     dialog_chain.append(top_level_dialog_chain['chain_name'])
