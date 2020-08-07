@@ -1,7 +1,6 @@
 from bearlibterminal import terminal
 from loguru import logger
 
-from components import mobiles
 from utilities.common import CommonUtils
 from utilities.display import pointy_menu
 from utilities.input_handlers import handle_game_keys
@@ -63,6 +62,15 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
                                                                      section='gui', parameter='DIALOG_FRAME_WIDTH')
     dialog_frame_height = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                       section='gui', parameter='DIALOG_FRAME_HEIGHT')
+    MobileUtilities.clear_talk_to_me_flag(gameworld=gameworld, target_entity=speaker_id)
+    spoken_to = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=speaker_id)
+
+    if not spoken_to:
+        MobileUtilities.set_spoken_to_before_flag(gameworld=gameworld, target_entity=speaker_id)
+        speak = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=speaker_id)
+        logger.debug('Spoken to {}', speaker_id)
+        logger.debug('spoken to flag is {}', speak)
+
     while dialog_chain != '':
         # get dialog chain details
         chain_name = dialog_chain[0]
@@ -140,14 +148,6 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
                 if next_step == 'next_dialogue_step':
                     dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=speaker_id,
                                                              game_config=game_config, dialog_steps_id=1)
-                    MobileUtilities.clear_talk_to_me_flag(gameworld=gameworld, target_entity=speaker_id)
-                    spoken_to = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=speaker_id)
-
-                    if not spoken_to:
-                        MobileUtilities.set_spoken_to_before_flag(gameworld=gameworld, target_entity=speaker_id)
-                        speak = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=speaker_id)
-                        logger.debug('Spoken to {}', speaker_id)
-                        logger.debug('spoken to flag is {}', speak)
 
                     logger.debug(dialog_chain)
 
@@ -162,9 +162,6 @@ def load_entity_dialog_chains(gameworld, entity_id, game_config, dialog_steps_id
     response_text = []
 
     dialog_file = read_json_file(dialog_chains_file)
-
-    if chain_id > 0:
-        pass
 
     top_level_dialog_chain = dialog_file['dialogue_chains'][chain_id]
     dialog_chain.append(top_level_dialog_chain['chain_name'])
