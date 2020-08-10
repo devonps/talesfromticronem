@@ -170,7 +170,7 @@ def load_entity_dialog_chains(gameworld, entity_id, game_config, dialog_steps_id
         dialog_steps = top_level_dialog_chain['dialogue_steps'][dialog_steps_id]
         intro_text.append(dialog_steps['intro_text'])
         response_choices = dialog_steps['choices']
-        resp_length = dialog_steps['choice_count']
+        resp_length = len(response_choices)
         for n in range(resp_length):
             response = response_choices[n]
             if 'response_tag' in response:

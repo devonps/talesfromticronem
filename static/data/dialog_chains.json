@@ -1,100 +1,120 @@
 {
   "dialogue_chains": [
-      {
-        "npc_id": "Joe",
-        "chain_name": "welcome_to_the_game",
-        "dialogue_steps": [
+    {
+      "npc_id": "Joe",
+      "chain_id": "001",
+      "chain_name": "welcome_to_the_game",
+      "dialogue_steps": [
+        {
+          "intro_text": "Welcome $1 what do you want to know?",
+          "rules_tag": "none",
+          "choices": [
             {
-              "intro_text": "Welcome $1 what do you want to know?",
-              "choice_count": 3,
-              "choices": [
-                {
-                  "response_text": "What can you tell me about the war?",
-                  "response_option": "next_dialogue_step",
-                  "response_tag": "war_status"
-                },
-                {
-                  "response_text": "Where can I get some equipment?",
-                  "response_option": "shopkeeper_intro_step",
-                  "response_tag": "none"
-                },
-                {
-                  "response_text": "I'm eager to get started",
-                  "response_option": "exit_to_open_portal_step",
-                  "response_tag": "none"
-                }
-              ]
+              "response_text": "What can you tell me about the war?",
+              "response_option": "001"
             },
             {
-              "intro_text": "Things aren't going as well as we first thought...",
-              "choice_count": 3,
-              "choices": [
-                  {
-                    "response_text": "Oh, well don't worry I'm here now",
-                    "response_option": "open_portal_step",
-                    "response_tag": "none"
-                  },
-                  {
-                    "response_text": "Can you tell me more?",
-                    "response_option": "next_dialogue_step",
-                    "response_tag": "none"
-                  },
-                  {
-                    "response_text": "Thanks, I've heard enough",
-                    "response_option": "exit_to_end_dialogue_step",
-                    "response_tag": "none"
-                  }
-              ]
+              "response_text": "Where can I get some equipment?",
+              "response_option": "002"
+            },
+            {
+              "response_text": "I'm eager to get started",
+              "response_option": "003"
             }
           ]
-      },
-      {
-        "npc_id": "Joe",
-        "chain_name": "spoke_before",
-        "dialogue_steps": [
-          {
-            "intro_text": "Ahhh, it's $1, how can I help?",
-            "choice_count": 3,
-            "choices": [
-              {
-                "response_text": "Tell me about my mission?",
-                "response_option": "next_dialogue_step",
-                "response_tag": "none"
-              },
-              {
-                "response_text": "Where can I get some equipment?",
-                "response_option": "shopkeeper_intro_step",
-                "response_tag": "none"
-              },
-              {
-                "response_text": "What am I doing here?",
-                "response_option": "shopkeeper_intro_step",
-                "response_tag": "none"
-              }
-            ]
-          },
-          {
-            "intro_text": "Your mission is simple, disrupt the enemy training camp.",
-            "choice_count": 3,
-            "choices": [
-                {
-                  "response_text": "Oh, well don't worry I'm here now",
-                  "response_option": "open_portal_step",
-                  "response_tag": "none"
-                },
-                {
-                  "response_text": "Can you tell me more?",
-                  "response_option": "next_dialogue_step",
-                  "response_tag": "none"
-                },
-              {
-                "response_text": "I'm eager to get started with my mission",
-                "response_option": "open_portal_step",
-                "response_tag": "none"
-              }
-            ]
-          }
+        },
+        {
+          "intro_text": "Things aren't going as well as we first thought...",
+          "rules_tag": "war_status",
+          "choices": [
+            {
+              "response_text": "Oh, well don't worry I'm here now",
+              "response_option": "open_portal_step"
+            },
+            {
+              "response_text": "Can you tell me more?",
+              "response_option": "????"
+            },
+            {
+              "response_text": "Thanks, I've heard enough",
+              "response_option": "003"
+            }
           ]
-      }
-    ]
+        },
+        {
+          "intro_text": "If you speak with Alan, Barry, and Charles they should give you what you need.",
+          "rules_tag": "none",
+          "choices": [
+            {
+              "response_text": "Thanks, I'll make my way over to them",
+              "response_option": "003"
+            }
+          ]
+        },
+        {
+          "intro_text": "Oh and don't forget to speak with D the combat tutor.",
+          "rules_tag": "none",
+          "choices": [
+            {
+              "response_text": "Thanks, I'll make my way over to them",
+              "response_option": "end_dialogue"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "npc_id": "Joe",
+      "id": "002",
+      "chain_name": "spoke_before",
+      "dialogue_steps": [
+        {
+          "intro_text": "Ahhh, it's $1, how can I help?",
+          "rules_tag": "none",
+          "choices": [
+            {
+              "response_text": "Tell me about my mission?",
+              "response_option": 1
+            },
+            {
+              "response_text": "Where can I get some equipment?",
+              "response_option": "002"
+            },
+            {
+              "response_text": "I'm ready to get started",
+              "response_option": "open_portal_step"
+            }
+          ]
+        },
+        {
+          "intro_text": "Your mission is simple, disrupt the enemy training camp.",
+          "rules_tag": "none",
+          "choices": [
+            {
+              "response_text": "Oh, well don't worry I'm here now",
+              "response_option": "open_portal_step"
+            },
+            {
+              "response_text": "Can you tell me more?",
+              "response_option": "????"
+            },
+            {
+              "response_text": "I'm eager to get started with my mission",
+              "response_option": "open_portal_step"
+            }
+          ]
+        },
+        {
+          "intro_text": "If you speak with Alan, Barry, and Charles they should give you what you need.",
+          "rules_tag": "none",
+          "choices": [
+            {
+              "response_text": "Thanks, I'll make my way over to them",
+              "response_option": "end_dialogue"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
