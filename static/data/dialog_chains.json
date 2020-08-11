@@ -37,7 +37,7 @@
             },
             {
               "response_text": "Thanks, I've heard enough",
-              "response_option": "003"
+              "response_option": "end_dialogue"
             }
           ]
         },
@@ -47,7 +47,7 @@
           "choices": [
             {
               "response_text": "Thanks, I'll make my way over to them",
-              "response_option": "003"
+              "response_option": "shopkeeper_intro"
             }
           ]
         },
@@ -56,7 +56,7 @@
           "rules_tag": "none",
           "choices": [
             {
-              "response_text": "Thanks, I'll make my way over to them",
+              "response_text": "I'll make sure to do that.",
               "response_option": "end_dialogue"
             }
           ]
@@ -74,7 +74,7 @@
           "choices": [
             {
               "response_text": "Tell me about my mission?",
-              "response_option": 1
+              "response_option": "001"
             },
             {
               "response_text": "Where can I get some equipment?",

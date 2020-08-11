@@ -140,12 +140,27 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
                 valid_event = True
                 next_step = responses[selected_response_option][response_option]
                 logger.info('Next dialog option is {}', next_step)
-                next_step_id = int(next_step)
-                dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=speaker_id,
-                                                         game_config=game_config, dialog_steps_id=next_step_id)
-                selected_response_option = 0
+                if next_step.isalnum():
+                    next_step_id = int(next_step)
+                    dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=speaker_id,
+                                                             game_config=game_config, dialog_steps_id=next_step_id)
+                    selected_response_option = 0
+                else:
+                    process_end_of_dialog(gameworld=gameworld, dialogue_action=next_step)
+                    dialog_chain = ''
 
                 logger.debug(dialog_chain)
+
+
+def process_end_of_dialog(gameworld, dialogue_action):
+
+    if dialogue_action == 'open_portal_step':
+        # set open portal to enemy camp
+        CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog='Open portal not yet implemented')
+
+    if dialogue_action == 'shopkeeper_intro':
+        pass
+        # set shopkeeper mobiles want to talk to player
 
 
 def build_responses(number_responses, dialog_chain):
