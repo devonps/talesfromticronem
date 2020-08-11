@@ -1,6 +1,26 @@
 from utilities import colourUtilities
 
 
+class Viewport:
+    def __init__(self, posx=0, posy=0):
+        self.posx = posx
+        self.posy = posy
+
+
+class CurrentTurn:
+    def __init__(self, current_turn=0):
+        self.current_turn = current_turn
+
+
+class MessageLog:
+    def __init__(self, entity_id=0, message_log_change=False):
+        self.entity_id = entity_id
+        self.message_log_change = message_log_change
+
+
+# ----------------------------------------------
+# dialogue components
+# ----------------------------------------------
 # initiate is used by the PC to talk to this NPC
 # spoken_to_before is used by the game to understand if the PC has spoken to this NPC before
 # welcome is a one time flag to start 'welcome' text for the PC
@@ -11,15 +31,15 @@ class DialogFlags:
         self.spoken_to_before = spoken_to_before
 
 
-class NpcType:
-    def __init__(self, shopkeeper=False, tutor=False):
-        self.shopkeeper = shopkeeper
-        self.type_of_shopkeeper = ''
-        self.tutor = tutor
-        self.type_of_tutor = ''
-
-
+# ----------------------------------------------
+# mobile combat components
+# ----------------------------------------------
 class EnemyPreferredAttackMinRange:
+    def __init__(self, value=0):
+        self.value = value
+
+
+class EnemyPreferredAttackMaxRange:
     def __init__(self, value=0):
         self.value = value
 
@@ -29,16 +49,14 @@ class VisibleEntities:
         self.list = []
 
 
-class EnemyPreferredAttackMaxRange:
-    def __init__(self, value=0):
-        self.value = value
-
-
 class EnemyCombatRole:
     def __init__(self, value='none'):
         self.value = value
 
 
+# ----------------------------------------------
+# describe the mobile components
+# ----------------------------------------------
 class Name:
     def __init__(self, first='undefined', suffix='undefined'):
         self.first = first
@@ -91,6 +109,17 @@ class AI:
         self.description = description
 
 
+class NpcType:
+    def __init__(self, shopkeeper=False, tutor=False):
+        self.shopkeeper = shopkeeper
+        self.type_of_shopkeeper = ''
+        self.tutor = tutor
+        self.type_of_tutor = ''
+
+
+# ----------------------------------------------
+# spell/magic components
+# ----------------------------------------------
 class SpecialBar:
     def __init__(self, maxstages=3, currentstage=0, valuecurrent=0, valuemaximum=0):
         self.maxstages = maxstages
@@ -105,23 +134,26 @@ class SpellBar:
         self.slots = [0] * 10
 
 
-class Viewport:
-    def __init__(self, posx=0, posy=0):
-        self.posx = posx
-        self.posy = posy
+class StatusEffects:
+    def __init__(self):
+        self.boons = []
+        self.conditions = []
+        self.controls = []
+        self.in_combat = False
 
 
-class CurrentTurn:
-    def __init__(self, current_turn=0):
-        self.current_turn = current_turn
+class SpellCast:
+    def __init__(self, truefalse=False, spell_entity=0, spell_target=0, spell_bar_slot=-99, spell_caster=0):
+        self.truefalse = truefalse
+        self.spell_entity = spell_entity
+        self.spell_target = spell_target
+        self.spell_bar_slot = spell_bar_slot
+        self.spell_caster = spell_caster
 
 
-class MessageLog:
-    def __init__(self, entity_id=0, message_log_change=False):
-        self.entity_id = entity_id
-        self.message_log_change = message_log_change
-
-
+# ----------------------------------------------
+# Inventory components
+# ----------------------------------------------
 class Inventory:
     def __init__(self, exists=False):
         self.exists = exists
@@ -129,6 +161,9 @@ class Inventory:
         self.items = []  # this is a list of the items in each bag [bag_number:entity_number]
 
 
+# ----------------------------------------------
+# equipment components
+# ----------------------------------------------
 class Armour:
     """
     Each body location holds the defense value, typically this is based on the equipped piece of armour
@@ -154,6 +189,7 @@ class Jewellery:
         self.right_hand = right_hand
 
 
+# weapons
 class Equipped:
     def __init__(self, main_hand=0, off_hand=0, both_hands=0):
         self.main_hand = main_hand
@@ -161,6 +197,9 @@ class Equipped:
         self.both_hands = both_hands
 
 
+# ----------------------------------------------
+# game map components
+# ----------------------------------------------
 class Renderable:
     def __init__(self, is_visible=True):
         self.is_visible = is_visible
@@ -179,23 +218,9 @@ class Velocity:
         self.dy = dy
 
 
-class StatusEffects:
-    def __init__(self):
-        self.boons = []
-        self.conditions = []
-        self.controls = []
-        self.in_combat = False
-
-
-class SpellCast:
-    def __init__(self, truefalse=False, spell_entity=0, spell_target=0, spell_bar_slot=-99, spell_caster=0):
-        self.truefalse = truefalse
-        self.spell_entity = spell_entity
-        self.spell_target = spell_target
-        self.spell_bar_slot = spell_bar_slot
-        self.spell_caster = spell_caster
-
-
+# ----------------------------------------------
+# mobile attributes components
+# ----------------------------------------------
 class PrimaryAttributes:
     """
     power increases outgoing direct damage

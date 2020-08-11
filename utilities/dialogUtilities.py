@@ -41,7 +41,7 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
     player_first_name = player_names[0]
     response_text = 0
     response_option = 1
-    response_tag = 2
+    number_responses = 1 + (len(dialog_chain) - 4)
     unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
     frame_components_list = CommonUtils.get_ui_frame_components()
     # frame_components_list breakdown
@@ -70,19 +70,22 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
         speak = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=speaker_id)
         logger.debug('Spoken to {}', speaker_id)
         logger.debug('spoken to flag is {}', speak)
-
+    responses = []
     while dialog_chain != '':
         # get dialog chain details
         chain_name = dialog_chain[0]
-        intro_text = dialog_chain[1]
-        responses = [dialog_chain[2], dialog_chain[3], dialog_chain[4]]
+        dialogue_chain_number = dialog_chain[1]
+        intro_text = dialog_chain[2]
+        for i in range(number_responses):
+            responses.append(dialog_chain[3 + i])
+        rules_tag = dialog_chain[2 + number_responses]
 
         logger.debug('------ BEGIN DIALOG CHAIN -----------')
         logger.info('Chain ID:{}', chain_name)
         logger.info('Intro text:{}', intro_text)
         logger.info('Response 1 text:{}', responses[selected_response_option][response_text])
         logger.info('Response 1 option:{}', responses[selected_response_option][response_option])
-        logger.info('Response 1 tag:{}', responses[selected_response_option][response_tag])
+        logger.info('Rules tag:{}', rules_tag)
 
         # display dialog UI - starting top left, ending bottom right
 
@@ -160,6 +163,7 @@ def load_entity_dialog_chains(gameworld, entity_id, game_config, dialog_steps_id
     dialog_chain = []
     intro_text = []
     response_text = []
+    rules_tag = []
 
     dialog_file = read_json_file(dialog_chains_file)
 
@@ -167,19 +171,18 @@ def load_entity_dialog_chains(gameworld, entity_id, game_config, dialog_steps_id
     dialog_chain.append(top_level_dialog_chain['chain_name'])
 
     if top_level_dialog_chain['npc_id'] == npc_first_name:
+        dialog_chain.append(top_level_dialog_chain['chain_id'])
         dialog_steps = top_level_dialog_chain['dialogue_steps'][dialog_steps_id]
         intro_text.append(dialog_steps['intro_text'])
         response_choices = dialog_steps['choices']
+        rules_tag.append(dialog_steps['rules_tag'])
         resp_length = len(response_choices)
         for n in range(resp_length):
             response = response_choices[n]
-            if 'response_tag' in response:
-                response_pair = (response['response_text'], response['response_option'], response['response_tag'])
-            else:
-                response_pair = (response['response_text'], response['response_option'])
+            response_pair = (response['response_text'], response['response_option'])
             response_text.append(response_pair)
 
-    merged_list = dialog_chain + intro_text + response_text
+    merged_list = dialog_chain + intro_text + response_text + rules_tag
     return merged_list
 
 
