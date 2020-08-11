@@ -35,13 +35,11 @@ def initiate_dialog(gameworld, game_config):
 
 
 def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, speaker_id, chain_id):
-    selected_response_option = 0
     player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
     player_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player_entity)
     player_first_name = player_names[0]
     response_text = 0
     response_option = 1
-    number_responses = 1 + (len(dialog_chain) - 4)
     unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
     frame_components_list = CommonUtils.get_ui_frame_components()
     # frame_components_list breakdown
@@ -70,15 +68,16 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
         speak = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=speaker_id)
         logger.debug('Spoken to {}', speaker_id)
         logger.debug('spoken to flag is {}', speak)
-    responses = []
+
+    selected_response_option = 0
     while dialog_chain != '':
+        number_responses = len(dialog_chain) - 4
+        logger.debug('number_responses {}', number_responses)
         # get dialog chain details
+        responses = build_responses(number_responses=number_responses, dialog_chain=dialog_chain)
         chain_name = dialog_chain[0]
-        dialogue_chain_number = dialog_chain[1]
         intro_text = dialog_chain[2]
-        for i in range(number_responses):
-            responses.append(dialog_chain[3 + i])
-        rules_tag = dialog_chain[2 + number_responses]
+        rules_tag = dialog_chain[3 + number_responses]
 
         logger.debug('------ BEGIN DIALOG CHAIN -----------')
         logger.info('Chain ID:{}', chain_name)
@@ -92,16 +91,10 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
         # clear dialog space
         terminal.clear_area(dialog_frame_start_x, dialog_frame_start_y, dialog_frame_width, dialog_frame_height)
         # render horizontals
-        for z in range(dialog_frame_start_x, (dialog_frame_start_x + dialog_frame_width)):
-            terminal.printf(x=z, y=(dialog_frame_start_y + dialog_frame_height),
-                            s=unicode_string_to_print + frame_components_list[4] + ']')
-            terminal.printf(x=z, y=dialog_frame_start_y, s=unicode_string_to_print + frame_components_list[4] + ']')
+        CommonUtils.draw_horiz_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y, width=dialog_frame_width, height=dialog_frame_height, glyph=unicode_string_to_print + frame_components_list[4] + ']')
 
         # render verticals
-        for z in range(dialog_frame_start_y, (dialog_frame_start_y + dialog_frame_height) - 1):
-            terminal.printf(x=dialog_frame_start_x, y=z + 1, s=unicode_string_to_print + frame_components_list[5] + ']')
-            terminal.printf(x=(dialog_frame_start_x + dialog_frame_width), y=z + 1,
-                            s=unicode_string_to_print + frame_components_list[5] + ']')
+        CommonUtils.draw_vert_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y, width=dialog_frame_width, height=dialog_frame_height, glyph=unicode_string_to_print + frame_components_list[5] + ']')
 
         # top left
         terminal.printf(x=dialog_frame_start_x, y=dialog_frame_start_y,
@@ -125,8 +118,8 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
         terminal.printf(x=dialog_frame_start_x + 2, y=dialog_frame_start_y + 2, s=return_text)
 
         # valid responses
-        pointy_menu(header='', menu_options=[responses[0][response_text], responses[1][response_text],
-                                             responses[2][response_text]], menu_start_x=dialog_frame_start_x + 3,
+        menu_response = build_menu_responses(number_responses=number_responses, responses=responses, response_text=response_text)
+        pointy_menu(header='', menu_options=menu_response, menu_start_x=dialog_frame_start_x + 3,
                     menu_start_y=dialog_frame_start_y + 5, blank_line=True, selected_option=selected_response_option, colours=[colourUtilities.get('SPRINGGREEN'),colourUtilities.get('DARKOLIVEGREEN')])
 
         # blit the console
@@ -144,15 +137,29 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
                 selected_response_option = CommonUtils.move_menu_selection(event_action=event_action, selected_menu_option=selected_response_option, max_menu_option=2)
                 valid_event = True
             if event_action == 'enter':
-                # 'next dialog step'
                 valid_event = True
                 next_step = responses[selected_response_option][response_option]
                 logger.info('Next dialog option is {}', next_step)
-                if next_step == 'next_dialogue_step':
-                    dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=speaker_id,
-                                                             game_config=game_config, dialog_steps_id=1)
+                next_step_id = int(next_step)
+                dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=speaker_id,
+                                                         game_config=game_config, dialog_steps_id=next_step_id)
+                selected_response_option = 0
 
-                    logger.debug(dialog_chain)
+                logger.debug(dialog_chain)
+
+
+def build_responses(number_responses, dialog_chain):
+    rsp = []
+    for i in range(number_responses):
+        rsp.append(dialog_chain[3 + i])
+    return rsp
+
+
+def build_menu_responses(number_responses, responses, response_text):
+    mnu = []
+    for i in range(number_responses):
+        mnu.append(responses[i][response_text])
+    return mnu
 
 
 def load_entity_dialog_chains(gameworld, entity_id, game_config, dialog_steps_id=0, chain_id=0):

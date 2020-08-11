@@ -65,7 +65,7 @@
     },
     {
       "npc_id": "Joe",
-      "id": "002",
+      "chain_id": "002",
       "chain_name": "spoke_before",
       "dialogue_steps": [
         {

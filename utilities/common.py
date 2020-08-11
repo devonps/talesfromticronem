@@ -463,3 +463,17 @@ class CommonUtils:
             if selected_menu_option > max_menu_option:
                 selected_menu_option = 0
         return selected_menu_option
+
+
+    # the next 2 methods are used by dialogutilities to draw the scripted dialog box
+    @staticmethod
+    def draw_horiz_row_of_characters(start_x, start_y, width, height, glyph):
+        for z in range(start_x, (start_x + width)):
+            terminal.printf(x=z, y=(start_y + height), s=glyph)
+            terminal.printf(x=z, y=start_y, s=glyph)
+
+    @staticmethod
+    def draw_vert_row_of_characters(start_x, start_y, width, height, glyph):
+        for z in range(start_y, (start_y + height) - 1):
+            terminal.printf(x=start_x, y=z + 1, s=glyph)
+            terminal.printf(x=(start_x + width), y=z + 1, s=glyph)
