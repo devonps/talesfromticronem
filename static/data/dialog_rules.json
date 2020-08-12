@@ -1,0 +1,82 @@
+{
+  "rules":[
+    {
+      "rule": "war_status",
+      "rules": [
+        {
+        "id": 1,
+        "evaluation": "won==0 and lost==0",
+        "intro_text": "You are our very first volunteer and I'm confident our training methods have equipped you well.",
+        "choices": [
+            {
+              "response_text": "I'm really excited about this new mission",
+              "response_option": "001"
+            },
+            {
+              "response_text": "Where can I get some equipment?",
+              "response_option": "002"
+            },
+            {
+              "response_text": "I'm eager to get started",
+              "response_option": "003"
+            }
+          ]
+        },
+        {
+        "id": 2,
+        "evaluation": "won==1 and lost==0",
+        "intro_text": "Our initial report from the frontline shows we've made an impact, over to you.",
+        "choices": [
+            {
+              "response_text": "That is good news, what next",
+              "response_option": "001"
+            },
+            {
+              "response_text": "Where can I get some equipment?",
+              "response_option": "002"
+            },
+            {
+              "response_text": "I'm eager to get started",
+              "response_option": "003"
+            }
+          ]
+        },
+        {
+        "id": 3,
+        "evaluation": "won==0 and lost==1",
+        "intro_text": "We've had an initial setback but are expecting better things from you.",
+        "choices": [
+            {
+              "response_text": "Oh, that is a shame, I hope things aren't too bad?",
+              "response_option": "001"
+            },
+            {
+              "response_text": "Where can I get some equipment?",
+              "response_option": "002"
+            },
+            {
+              "response_text": "I'm eager to get started",
+              "response_option": "003"
+            }
+          ]
+        }
+        ]
+    },
+    {
+      "rule": "food_shortage",
+      "rules": [
+        {
+        "id": 1,
+        "evaluation": "won==0 and lost==0",
+        "intro_text": "We're all good now, but don't be too long",
+        "choices": [
+            {
+              "response_text": "Don't worry I'll be back before you know it.",
+              "response_option": "001"
+            }
+          ]
+        }
+        ]
+    }
+    ]
+}

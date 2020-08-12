@@ -4,6 +4,7 @@ from loguru import logger
 from components import mobiles
 from utilities.common import CommonUtils
 from utilities.display import pointy_menu
+from utilities.externalfileutilities import Externalfiles
 from utilities.input_handlers import handle_game_keys
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
@@ -18,7 +19,8 @@ def initiate_dialog(gameworld, game_config):
         CommonUtils.fire_event('dialog-general', gameworld=gameworld,
                                dialog='Going to speak with...' + name_details[0])
         MobileUtilities.set_dialog_welcome_flag_to_false(gameworld=gameworld, target_entity=entity_to_talk_with)
-        spoken_to_before = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=entity_to_talk_with)
+        spoken_to_before = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld,
+                                                                     target_entity=entity_to_talk_with)
 
         speak = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=entity_to_talk_with)
         logger.debug('Speaking with{}', entity_to_talk_with)
@@ -32,7 +34,8 @@ def initiate_dialog(gameworld, game_config):
         dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=entity_to_talk_with,
                                                  game_config=game_config, chain_id=chain_id)
         logger.info(dialog_chain)
-        handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0], gameworld=gameworld, speaker_id=entity_to_talk_with, chain_id=chain_id)
+        handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0],
+                              gameworld=gameworld, speaker_id=entity_to_talk_with, chain_id=chain_id)
 
 
 def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, speaker_id, chain_id):
@@ -87,15 +90,21 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
         logger.info('Response 1 option:{}', responses[selected_response_option][response_option])
         logger.info('Rules tag:{}', rules_tag)
 
+        dialog_chain = process_rules_tag(rules_tag=rules_tag, current_dialog_chain=dialog_chain, game_config=game_config)
+
         # display dialog UI - starting top left, ending bottom right
 
         # clear dialog space
         terminal.clear_area(dialog_frame_start_x, dialog_frame_start_y, dialog_frame_width, dialog_frame_height)
         # render horizontals
-        CommonUtils.draw_horiz_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y, width=dialog_frame_width, height=dialog_frame_height, glyph=unicode_string_to_print + frame_components_list[4] + ']')
+        CommonUtils.draw_horiz_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y,
+                                                 width=dialog_frame_width, height=dialog_frame_height,
+                                                 glyph=unicode_string_to_print + frame_components_list[4] + ']')
 
         # render verticals
-        CommonUtils.draw_vert_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y, width=dialog_frame_width, height=dialog_frame_height, glyph=unicode_string_to_print + frame_components_list[5] + ']')
+        CommonUtils.draw_vert_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y,
+                                                width=dialog_frame_width, height=dialog_frame_height,
+                                                glyph=unicode_string_to_print + frame_components_list[5] + ']')
 
         # top left
         terminal.printf(x=dialog_frame_start_x, y=dialog_frame_start_y,
@@ -119,9 +128,11 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
         terminal.printf(x=dialog_frame_start_x + 2, y=dialog_frame_start_y + 2, s=return_text)
 
         # valid responses
-        menu_response = build_menu_responses(number_responses=number_responses, responses=responses, response_text=response_text)
+        menu_response = build_menu_responses(number_responses=number_responses, responses=responses,
+                                             response_text=response_text)
         pointy_menu(header='', menu_options=menu_response, menu_start_x=dialog_frame_start_x + 3,
-                    menu_start_y=dialog_frame_start_y + 5, blank_line=True, selected_option=selected_response_option, colours=[colourUtilities.get('SPRINGGREEN'),colourUtilities.get('DARKOLIVEGREEN')])
+                    menu_start_y=dialog_frame_start_y + 5, blank_line=True, selected_option=selected_response_option,
+                    colours=[colourUtilities.get('SPRINGGREEN'), colourUtilities.get('DARKOLIVEGREEN')])
 
         # blit the console
         terminal.refresh()
@@ -135,7 +146,9 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
                 dialog_chain = ''
                 valid_event = True
             if event_action in ('up', 'down'):
-                selected_response_option = CommonUtils.move_menu_selection(event_action=event_action, selected_menu_option=selected_response_option, max_menu_option=2)
+                selected_response_option = CommonUtils.move_menu_selection(event_action=event_action,
+                                                                           selected_menu_option=selected_response_option,
+                                                                           max_menu_option=2)
                 valid_event = True
             if event_action == 'enter':
                 valid_event = True
@@ -154,7 +167,6 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
 
 
 def process_end_of_dialog(gameworld, dialogue_action):
-
     if dialogue_action == 'open_portal_step':
         # set open portal to enemy camp
         CommonUtils.fire_event('story-general', gameworld=gameworld, dialog='Open portal not yet implemented')
@@ -247,7 +259,8 @@ def get_entity_id_to_talk_to(gameworld, player_entity, entities_list, game_confi
                 if event_action == 'quit':
                     player_not_pressed_a_key = False
                 if event_action in target_letters:
-                    target_entity = get_target_entity_id(event_action=event_action, target_letters=target_letters, valid_targets=valid_targets)
+                    target_entity = get_target_entity_id(event_action=event_action, target_letters=target_letters,
+                                                         valid_targets=valid_targets)
                     player_not_pressed_a_key = False
 
     return target_entity
@@ -272,3 +285,15 @@ def get_list_of_valid_targets(gameworld, player_entity, entities_list):
             entity_count += 1
 
     return valid_targets, entity_count
+
+
+def process_rules_tag(rules_tag, current_dialog_chain, game_config):
+    new_dialogue_chain = current_dialog_chain
+    if rules_tag != '':
+        dialog_rules_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                        parameter='DIALOGUERULESFULE')
+
+        rules_file = read_json_file(dialog_rules_file)
+
+
+    return new_dialogue_chain
