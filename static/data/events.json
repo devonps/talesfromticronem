@@ -89,6 +89,12 @@
       "event-title": "dialog-general",
       "event-message": "$1",
       "event-classes": "all"
+    },
+    {
+      "event-id": 16,
+      "event-title": "story-general",
+      "event-message": "$1",
+      "event-classes": "story"
     }
     ]
 }

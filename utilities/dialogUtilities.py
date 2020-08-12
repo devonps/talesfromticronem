@@ -156,7 +156,7 @@ def process_end_of_dialog(gameworld, dialogue_action):
 
     if dialogue_action == 'open_portal_step':
         # set open portal to enemy camp
-        CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog='Open portal not yet implemented')
+        CommonUtils.fire_event('story-general', gameworld=gameworld, dialog='Open portal not yet implemented')
 
     if dialogue_action == 'shopkeeper_intro':
         pass
