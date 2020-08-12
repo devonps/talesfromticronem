@@ -1,6 +1,7 @@
 from bearlibterminal import terminal
 from loguru import logger
 
+from components import mobiles
 from utilities.common import CommonUtils
 from utilities.display import pointy_menu
 from utilities.input_handlers import handle_game_keys
@@ -159,8 +160,10 @@ def process_end_of_dialog(gameworld, dialogue_action):
         CommonUtils.fire_event('story-general', gameworld=gameworld, dialog='Open portal not yet implemented')
 
     if dialogue_action == 'shopkeeper_intro':
-        pass
         # set shopkeeper mobiles want to talk to player
+        for ent, (npc, desc) in gameworld.get_components(mobiles.NpcType, mobiles.Describable):
+            if npc.shopkeeper:
+                MobileUtilities.set_talk_to_me_flag(gameworld=gameworld, target_entity=ent)
 
 
 def build_responses(number_responses, dialog_chain):

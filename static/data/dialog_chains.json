@@ -110,7 +110,7 @@
           "choices": [
             {
               "response_text": "Thanks, I'll make my way over to them",
-              "response_option": "end_dialogue"
+              "response_option": "shopkeeper_intro"
             }
           ]
         }

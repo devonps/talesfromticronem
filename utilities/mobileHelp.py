@@ -373,6 +373,41 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.Personality())
         gameworld.add_component(entity_id, mobiles.VisibleEntities())
         gameworld.add_component(entity_id, mobiles.DialogFlags())
+        gameworld.add_component(entity_id, mobiles.NpcType())
+
+
+    @staticmethod
+    def is_mobile_a_shopkeeper(gameworld, target_entity):
+        npctype_component = gameworld.component_for_entity(target_entity, mobiles.NpcType)
+        return npctype_component.shopkeeper
+
+    @staticmethod
+    def get_type_of_shopkeeper(gameworld, target_entity):
+        npctype_component = gameworld.component_for_entity(target_entity, mobiles.NpcType)
+        return npctype_component.type_of_shopkeeper
+
+
+    @staticmethod
+    def set_type_of_shopkeeper(gameworld, target_entity, shopkeeper_type):
+        npctype_component = gameworld.component_for_entity(target_entity, mobiles.NpcType)
+        npctype_component.type_of_shopkeeper = shopkeeper_type
+        npctype_component.shopkeeper = True
+
+    @staticmethod
+    def is_mobile_a_tutor(gameworld, target_entity):
+        npctype_component = gameworld.component_for_entity(target_entity, mobiles.NpcType)
+        return npctype_component.tutor
+
+    @staticmethod
+    def get_type_of_tutor(gameworld, target_entity):
+        npctype_component = gameworld.component_for_entity(target_entity, mobiles.NpcType)
+        return npctype_component.type_of_tutor
+
+    @staticmethod
+    def set_type_of_tutor(gameworld, target_entity, tutor_type):
+        npctype_component = gameworld.component_for_entity(target_entity, mobiles.NpcType)
+        npctype_component.type_of_tutor = tutor_type
+        npctype_component.tutor = True
 
     @staticmethod
     def set_talk_to_me_flag(gameworld, target_entity):

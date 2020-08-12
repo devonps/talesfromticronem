@@ -57,6 +57,8 @@ class Entity:
                         npc_glyph = npc['glyph']
                         npc_fg = npc['fg']
                         npc_bg = npc['bg']
+                        npc_shopkeeper = npc['shopkeeper']
+                        npc_tutor = npc['tutor']
                         armour_file_option = npc['armourset']
                         jewellery_file_option = npc['jeweleryset']
                         weapon_file_option_main = npc['weapons-main']
@@ -151,6 +153,17 @@ class Entity:
                         MobileUtilities.set_mobile_ai_level(gameworld=gameworld, entity=entity_id, value=entity_ai)
                         MobileUtilities.set_mobile_ai_description(gameworld=gameworld, entity=entity_id,
                                                                   value='NPC')
+                        # -------------------------------------
+                        # --- SHOPKEEPER ? --------------------
+                        # -------------------------------------
+                        if npc_shopkeeper == 'True':
+                            MobileUtilities.set_type_of_shopkeeper(gameworld=gameworld, target_entity=entity_id, shopkeeper_type=npc['type_of_shopkeeper'])
+
+                        # -------------------------------------
+                        # --- TUTOR ? -------------------------
+                        # -------------------------------------
+                        if npc_tutor == 'True':
+                            MobileUtilities.set_type_of_tutor(gameworld=gameworld, target_entity=entity_id, tutor_type=npc['type_of_tutor'])
 
                         # now apply the values to the base mobile object
                         Entity.set_min_max_preferred_ranges(entity_id=entity_id, min_range='TOUCH',
