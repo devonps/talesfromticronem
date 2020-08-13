@@ -1,9 +1,12 @@
 {
-  "rules":[
+  "dialogue_rules":[
     {
-      "rule": "war_status",
+      "npc_id": "Joe",
       "rules": [
         {
+        "rule": "war_status",
+        "options":[
+          {
         "id": 1,
         "evaluation": "won==0 and lost==0",
         "intro_text": "You are our very first volunteer and I'm confident our training methods have equipped you well.",
@@ -60,20 +63,6 @@
             }
           ]
         }
-        ]
-    },
-    {
-      "rule": "food_shortage",
-      "rules": [
-        {
-        "id": 1,
-        "evaluation": "won==0 and lost==0",
-        "intro_text": "We're all good now, but don't be too long",
-        "choices": [
-            {
-              "response_text": "Don't worry I'll be back before you know it.",
-              "response_option": "001"
-            }
           ]
         }
         ]

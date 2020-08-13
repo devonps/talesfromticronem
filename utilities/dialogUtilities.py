@@ -90,7 +90,7 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
         logger.info('Response 1 option:{}', responses[selected_response_option][response_option])
         logger.info('Rules tag:{}', rules_tag)
 
-        dialog_chain = process_rules_tag(rules_tag=rules_tag, current_dialog_chain=dialog_chain, game_config=game_config)
+        dialog_chain = process_rules_tag(rules_tag=rules_tag, current_dialog_chain=dialog_chain, game_config=game_config, npc_name=speaker_name)
 
         # display dialog UI - starting top left, ending bottom right
 
@@ -287,7 +287,7 @@ def get_list_of_valid_targets(gameworld, player_entity, entities_list):
     return valid_targets, entity_count
 
 
-def process_rules_tag(rules_tag, current_dialog_chain, game_config):
+def process_rules_tag(rules_tag, current_dialog_chain, game_config, npc_name):
     new_dialogue_chain = current_dialog_chain
     if rules_tag != '':
         dialog_rules_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
@@ -295,5 +295,19 @@ def process_rules_tag(rules_tag, current_dialog_chain, game_config):
 
         rules_file = read_json_file(dialog_rules_file)
 
+        for npc_rules in rules_file['dialogue_rules']:
+            rules_options = None
+            option_count = -1
+            if npc_rules['npc_id'] == npc_name:
+                rules = npc_rules['rules'][0]
+                this_tag = rules['rule']
+                if this_tag == rules_tag:
+                    rules_options = rules['options']
+                    option_count = len(rules_options)
+
+                logger.debug('Dialogue rule set {}', rules)
+                logger.debug('Dialogue rule tag {}', this_tag)
+                logger.debug('Dialogue rule options {}', rules_options)
+                logger.debug('Dialogue rule option count {}', str(option_count))
 
     return new_dialogue_chain
