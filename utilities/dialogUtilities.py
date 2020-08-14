@@ -75,23 +75,30 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
 
     selected_response_option = 0
     while dialog_chain != '':
+
+        # logger.debug('number_responses {}', number_responses)
+        # # get dialog chain details
+
+
+        #
+        # logger.debug('------ BEGIN DIALOG CHAIN -----------')
+        # logger.info('Chain ID:{}', chain_name)
+        # logger.info('Intro text:{}', intro_text)
+        # logger.info('Response 1 text:{}', responses[selected_response_option][response_text])
+        # logger.info('Response 1 option:{}', responses[selected_response_option][response_option])
+        # logger.info('Rules tag:{}', rules_tag)
+
+        this_dialog_chain = process_rules_tag(current_dialog_chain=dialog_chain,
+                                         game_config=game_config, npc_name=speaker_name)
+        dialog_chain = this_dialog_chain
         number_responses = len(dialog_chain) - 4
-        logger.debug('number_responses {}', number_responses)
-        # get dialog chain details
-        responses = build_responses(number_responses=number_responses, dialog_chain=dialog_chain)
         chain_name = dialog_chain[0]
         intro_text = dialog_chain[2]
-        rules_tag = dialog_chain[3 + number_responses]
+        rules_tag = dialog_chain[-1]
+        responses = build_responses(number_responses=number_responses, dialog_chain=dialog_chain)
 
-        logger.debug('------ BEGIN DIALOG CHAIN -----------')
-        logger.info('Chain ID:{}', chain_name)
-        logger.info('Intro text:{}', intro_text)
-        logger.info('Response 1 text:{}', responses[selected_response_option][response_text])
-        logger.info('Response 1 option:{}', responses[selected_response_option][response_option])
-        logger.info('Rules tag:{}', rules_tag)
-
-        dialog_chain = process_rules_tag(rules_tag=rules_tag, current_dialog_chain=dialog_chain,
-                                         game_config=game_config, npc_name=speaker_name)
+        logger.debug('Responses are {}', responses)
+        logger.debug('This Dialog chain is {}', this_dialog_chain)
 
         # display dialog UI - starting top left, ending bottom right
 
@@ -288,8 +295,16 @@ def get_list_of_valid_targets(gameworld, player_entity, entities_list):
     return valid_targets, entity_count
 
 
-def process_rules_tag(rules_tag, current_dialog_chain, game_config, npc_name):
-    new_dialogue_chain = current_dialog_chain
+def process_rules_tag(current_dialog_chain, game_config, npc_name):
+    new_dialogue_chain = 'nothing'
+    this_dialog_chain = 'nothing'
+    number_responses = len(current_dialog_chain) - 4
+    # logger.debug('number_responses {}', number_responses)
+    # get dialog chain details
+    responses = build_responses(number_responses=number_responses, dialog_chain=current_dialog_chain)
+    # chain_name = current_dialog_chain[0]
+    intro_text = current_dialog_chain[2]
+    rules_tag = current_dialog_chain[-1]
     if rules_tag != '':
         dialog_rules_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='DIALOGUERULESFULE')
@@ -306,33 +321,42 @@ def process_rules_tag(rules_tag, current_dialog_chain, game_config, npc_name):
                     rules_options = rules['options']
                     option_count = len(rules_options)
 
-                    evaluate_dialog_rules(rules_to_evaluate=rules_options)
+                    this_dialog_chain = evaluate_dialog_rules(rules_to_evaluate=rules_options, current_dialog_chain=current_dialog_chain)
 
-                    logger.debug('Dialogue rule set {}', rules)
-                    logger.debug('Dialogue rule tag {}', this_tag)
-                    logger.debug('Dialogue rule options {}', rules_options)
-                    logger.debug('Dialogue rule option count {}', str(option_count))
-                    logger.info('Dialogue rules option ZERO {}', rules_options[0])
+                    # logger.debug('Dialogue rule set {}', rules)
+                    # logger.debug('Dialogue rule tag {}', this_tag)
+                    # logger.debug('Dialogue rule options {}', rules_options)
+                    # logger.debug('Dialogue rule option count {}', str(option_count))
+                    # logger.info('Dialogue rules option ZERO {}', rules_options[0])
+                    # logger.warning('New Dialog Chain is {}', this_dialog_chain)
+
+                    new_dialogue_chain = this_dialog_chain
+    if new_dialogue_chain == 'nothing':
+        new_dialogue_chain = current_dialog_chain
 
     return new_dialogue_chain
 
 
-def evaluate_dialog_rules(rules_to_evaluate):
+def evaluate_dialog_rules(rules_to_evaluate, current_dialog_chain):
 
+    new_dialog_chain = ''
     # need to replace these hard-coded values with proper game metadata variables
     won = 1
     lost = 0
 
-    rule_count = 0
     for rule in rules_to_evaluate:
 
         evaluation_test = rule.get("evaluation")
-
         has_this_rule_evaluated_true = eval(evaluation_test)
-
-        logger.warning('Evaluation test: {} outcome is {}', rule_count, has_this_rule_evaluated_true)
         if has_this_rule_evaluated_true:
             message = rule.get("intro_text")
-            logger.info('Intro text is: {}', message)
-        rule_count += 1
+            responses = rule.get("choices")
+            response_zero_dict = responses[0]
+            response_zero_text = response_zero_dict.get('response_text')
+            response_zero_response = response_zero_dict.get('response_option')
+            response_zero = (response_zero_text, response_zero_response)
+            dialog_chain_name = current_dialog_chain[0]
+            new_dialog_chain = [dialog_chain_name, '001', message, response_zero, 'none']
+
+    return new_dialog_chain
 
