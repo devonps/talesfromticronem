@@ -425,7 +425,7 @@ class MobileUtilities(numbers.Real, ABC):
         return dialog_component.talk_to_me
 
     @staticmethod
-    def set_spoken_to_before_flag(gameworld, target_entity):
+    def set_spoken_to_before_flag_to_true(gameworld, target_entity):
         dialog_component = gameworld.component_for_entity(target_entity, mobiles.DialogFlags)
         dialog_component.spoken_to_before = True
 
