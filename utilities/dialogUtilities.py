@@ -4,7 +4,6 @@ from loguru import logger
 from components import mobiles
 from utilities.common import CommonUtils
 from utilities.display import pointy_menu
-from utilities.externalfileutilities import Externalfiles
 from utilities.input_handlers import handle_game_keys
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
@@ -285,6 +284,8 @@ def process_rules_tag(current_dialog_chain, game_config, npc_name):
     # get dialog chain details
     rules_tag = current_dialog_chain[-1]
     if rules_tag != '':
+        logger.warning('dialog chain {}', current_dialog_chain)
+        logger.warning('rules tag {}', rules_tag)
         dialog_rules_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='DIALOGUERULESFULE')
 
@@ -296,9 +297,8 @@ def process_rules_tag(current_dialog_chain, game_config, npc_name):
                 this_tag = rules['rule']
                 if this_tag == rules_tag:
                     rules_options = rules['options']
-                    this_dialog_chain = evaluate_dialog_rules(rules_to_evaluate=rules_options,
+                    new_dialogue_chain = evaluate_dialog_rules(rules_to_evaluate=rules_options,
                                                               current_dialog_chain=current_dialog_chain)
-                    new_dialogue_chain = this_dialog_chain
     if new_dialogue_chain == 'nothing':
         new_dialogue_chain = current_dialog_chain
 
@@ -308,7 +308,7 @@ def process_rules_tag(current_dialog_chain, game_config, npc_name):
 def evaluate_dialog_rules(rules_to_evaluate, current_dialog_chain):
     new_dialog_chain = ''
     # need to replace these hard-coded values with proper game metadata variables
-    won = 1
+    won = 0
     lost = 0
 
     for rule in rules_to_evaluate:
@@ -318,11 +318,14 @@ def evaluate_dialog_rules(rules_to_evaluate, current_dialog_chain):
         if has_this_rule_evaluated_true:
             message = rule.get("intro_text")
             responses = rule.get("choices")
-            response_zero_dict = responses[0]
-            response_zero_text = response_zero_dict.get('response_text')
-            response_zero_response = response_zero_dict.get('response_option')
-            response_zero = (response_zero_text, response_zero_response)
             dialog_chain_name = current_dialog_chain[0]
-            new_dialog_chain = [dialog_chain_name, '001', message, response_zero, 'none']
-
+            new_dialog_chain = [dialog_chain_name, '001', message]
+            for a in range(len(responses)):
+                response_dict = responses[a]
+                response_text = response_dict.get('response_text')
+                response_response = response_dict.get('response_option')
+                response_set = (response_text, response_response)
+                new_dialog_chain.append(response_set)
+            new_dialog_chain.append('none')
+            logger.debug(new_dialog_chain)
     return new_dialog_chain
