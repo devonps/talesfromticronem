@@ -3,7 +3,7 @@ from loguru import logger
 
 from components import mobiles
 from utilities.common import CommonUtils
-from utilities.display import pointy_menu
+from utilities.display import pointy_menu, coloured_list
 from utilities.input_handlers import handle_game_keys
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
@@ -14,27 +14,206 @@ def initiate_dialog(gameworld, game_config):
     entity_to_talk_with = check_for_nearby_valid_mobiles_to_speak_with(gameworld=gameworld, game_config=game_config)
 
     if entity_to_talk_with > 0:
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player_entity)
         name_details = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_to_talk_with)
         CommonUtils.fire_event('dialog-general', gameworld=gameworld,
                                dialog='Going to speak with...' + name_details[0])
-        MobileUtilities.set_dialog_welcome_flag_to_false(gameworld=gameworld, target_entity=entity_to_talk_with)
-        spoken_to_before = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld,
-                                                                     target_entity=entity_to_talk_with)
 
-        speak = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=entity_to_talk_with)
-        logger.debug('Speaking with{}', entity_to_talk_with)
-        logger.debug('spoken to flag is {}', speak)
+        am_i_a_shopkeeper = MobileUtilities.is_mobile_a_shopkeeper(gameworld=gameworld, target_entity=entity_to_talk_with)
+        if am_i_a_shopkeeper:
+            what_type_of_shopkeeper = MobileUtilities.get_type_of_shopkeeper(gameworld=gameworld, target_entity=entity_to_talk_with)
+            logger.debug('Shopkeeper got a kick')
+            open_the_shop(gameworld=gameworld, type_of_shopkeeper=what_type_of_shopkeeper, shopkeeper_id=entity_to_talk_with, player_names=player_names)
+        am_i_a_tutor = MobileUtilities.is_mobile_a_tutor(gameworld=gameworld, target_entity=entity_to_talk_with)
+        if am_i_a_tutor:
+            what_type_of_tutor = MobileUtilities.get_type_of_tutor(gameworld=gameworld, target_entity=entity_to_talk_with)
+            # do tutor stuff
+        if not am_i_a_shopkeeper and not am_i_a_tutor:
+            MobileUtilities.set_dialog_welcome_flag_to_false(gameworld=gameworld, target_entity=entity_to_talk_with)
+            spoken_to_before = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld,
+                                                                         target_entity=entity_to_talk_with)
 
-        if spoken_to_before:
-            chain_id = 1
-        else:
-            chain_id = 0
+            speak = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=entity_to_talk_with)
+            logger.debug('Speaking with{}', entity_to_talk_with)
+            logger.debug('spoken to flag is {}', speak)
 
-        dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=entity_to_talk_with,
-                                                 game_config=game_config, chain_id=chain_id)
-        logger.info(dialog_chain)
-        handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0],
-                              gameworld=gameworld, speaker_id=entity_to_talk_with, chain_id=chain_id)
+            if spoken_to_before:
+                chain_id = 1
+            else:
+                chain_id = 0
+
+            dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=entity_to_talk_with,
+                                                     game_config=game_config, chain_id=chain_id)
+            logger.info(dialog_chain)
+            handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0],
+                                  gameworld=gameworld, speaker_id=entity_to_talk_with, chain_id=chain_id)
+
+
+def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id, player_names):
+    game_config = configUtilities.load_config()
+    unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
+    player_first_name = player_names[0]
+
+    MobileUtilities.clear_talk_to_me_flag(gameworld=gameworld, target_entity=shopkeeper_id)
+    MobileUtilities.set_spoken_to_before_flag_to_true(gameworld=gameworld, target_entity=shopkeeper_id)
+
+    frame_components_list = CommonUtils.get_ui_frame_components()
+    shopkeeper_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=shopkeeper_id)
+
+    dialog_frame_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                       section='gui', parameter='DIALOG_FRAME_START_X')
+    dialog_frame_start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                       section='gui', parameter='DIALOG_FRAME_START_Y')
+    dialog_frame_width = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                     section='gui', parameter='DIALOG_FRAME_WIDTH')
+    dialog_frame_height = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                      section='gui', parameter='DIALOG_FRAME_HEIGHT')
+
+    # display dialog UI - starting top left, ending bottom right
+
+    # clear dialog space
+    terminal.clear_area(dialog_frame_start_x, dialog_frame_start_y, dialog_frame_width, dialog_frame_height)
+    # render horizontals
+    CommonUtils.draw_horiz_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y,
+                                             width=dialog_frame_width, height=dialog_frame_height,
+                                             glyph=unicode_string_to_print + frame_components_list[4] + ']')
+
+    # render verticals
+    CommonUtils.draw_vert_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y,
+                                            width=dialog_frame_width, height=dialog_frame_height,
+                                            glyph=unicode_string_to_print + frame_components_list[5] + ']')
+
+    # top left
+    terminal.printf(x=dialog_frame_start_x, y=dialog_frame_start_y,
+                    s=unicode_string_to_print + frame_components_list[0] + ']')
+    # bottom left
+    terminal.printf(x=dialog_frame_start_x, y=(dialog_frame_start_y + dialog_frame_height),
+                    s=unicode_string_to_print + frame_components_list[1] + ']')
+    # top right
+    terminal.printf(x=(dialog_frame_start_x + dialog_frame_width), y=dialog_frame_start_y,
+                    s=unicode_string_to_print + frame_components_list[2] + ']')
+    # bottom right
+    terminal.printf(x=(dialog_frame_start_x + dialog_frame_width),
+                    y=(dialog_frame_start_y + dialog_frame_height),
+                    s=unicode_string_to_print + frame_components_list[3] + ']')
+
+    # npc/speaker name
+    terminal.printf(x=dialog_frame_start_x + 3, y=dialog_frame_start_y, s="[[ " + shopkeeper_names[0] + " ]]")
+
+    selected_menu_option = 0
+    max_menu_option = 0
+    intro_text = ''
+    menu_options = []
+
+    # flavour columns
+    flavour_column_title = []
+    flavour_column_colour = []
+    flavour_column_text = []
+
+    if type_of_shopkeeper == 'armour':
+        # armour
+        logger.debug('Hello I sell armour')
+        armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                    parameter='ARMOURSETFILE')
+        armour_file = read_json_file(armourset_file)
+
+        as_internal_name = []
+        as_display_name = ''
+        as_flavour = ''
+        as_material = ''
+        as_prefix_list = []
+        px_flavour = []
+        px_att_name = []
+        px_att_bonus = []
+        pxstring = 'prefix'
+        attnamestring = 'attributename'
+        attvaluestring = 'attributebonus'
+
+        for armourset in armour_file['armoursets']:
+            if armourset['startset'] == 'true':
+                as_internal_name.append(armourset['internalsetname'])
+                as_display_name = (armourset['displayname'])
+                as_flavour = (armourset['flavour'])
+                as_material = (armourset['material'])
+                as_prefix_list = armourset['prefixlist'].split(",")
+                prefix_count = armourset['prefixcount']
+                attribute_bonus_count = armourset['attributebonuscount']
+
+                for px in range(1, prefix_count + 1):
+                    prefix_string = pxstring + str(px)
+                    px_flavour.append(armourset[prefix_string]['flavour'])
+
+                    if attribute_bonus_count > 1:
+                        att_bonus_string = attvaluestring + str(px)
+                        att_name_string = attnamestring + str(px)
+                    else:
+                        att_bonus_string = attvaluestring + str(1)
+                        att_name_string = attnamestring + str(1)
+
+                    px_att_bonus.append(armourset[prefix_string][att_bonus_string])
+                    px_att_name.append(armourset[prefix_string][att_name_string])
+
+        flavour_column_text.append(px_att_name)
+        flavour_column_text.append(px_flavour)
+
+
+        starter_text = "Ahhh if it isn't $1"
+        return_text = CommonUtils.replace_value_in_event(event_string=starter_text, par1=player_first_name)
+        intro_text = return_text + " and I see you're wearing some " + as_material + ' ' + as_display_name + ' armour, ' + '. Tell me, what kind of modifier would you like adding?'
+
+        menu_options = as_prefix_list
+        max_menu_option = len(menu_options) - 1
+
+        # armour column titles
+        flavour_column_title.append('Bonus to...')
+        flavour_column_title.append('Flavour')
+        flavour_column_colour.append('LIGHTSLATEGRAY')
+
+    # if type_of_shopkeeper == '2':
+    #     # jewellery
+    #
+    # if type_of_shopkeeper == '3':
+    #     # weapons
+
+    valid_event = False
+    while not valid_event:
+
+        # intro text
+        terminal.print_(x=dialog_frame_start_x + 2, y=dialog_frame_start_y + 2, width=dialog_frame_width - 5, s=intro_text)
+
+        pointy_menu(header='', menu_options=menu_options, menu_start_x=dialog_frame_start_x + 3,
+                    menu_start_y=dialog_frame_start_y + 9, blank_line=True, selected_option=selected_menu_option,
+                    colours=[colourUtilities.get('SPRINGGREEN'), colourUtilities.get('DARKOLIVEGREEN')])
+
+        # display flavour columns
+        terminal.printf(x=dialog_frame_start_x + 15, y=dialog_frame_start_y + 8, s='[color=' + colourUtilities.get(flavour_column_colour[0]) + ']' + flavour_column_title[0])
+        terminal.printf(x=dialog_frame_start_x + 31, y=dialog_frame_start_y + 8, s=flavour_column_title[1])
+
+        # display attribute to be modified
+        fg = colourUtilities.get('LIGHTBLUE1')
+        coloured_list(list_options=flavour_column_text[0],
+                      list_x=dialog_frame_start_x + 15, list_y=dialog_frame_start_y + 9,
+                      selected_option='nothing', blank_line=True, fg=fg)
+
+        # display flavour text
+        coloured_list(list_options=flavour_column_text[1],
+                      list_x=dialog_frame_start_x + 31, list_y=dialog_frame_start_y + 9,
+                      selected_option='nothing', blank_line=True, fg=fg)
+
+        # blit the console
+        terminal.refresh()
+
+        event_to_be_processed, event_action = handle_game_keys()
+        # if event_to_be_processed == 'keypress':
+        if event_action == 'quit':
+            valid_event = True
+        if event_action in ('up', 'down'):
+            selected_menu_option = CommonUtils.move_menu_selection(event_action=event_action,
+                                                                       selected_menu_option=selected_menu_option,
+                                                                       max_menu_option=max_menu_option)
+        if event_action == 'enter':
+            valid_event = True
 
 
 def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, speaker_id, chain_id):
