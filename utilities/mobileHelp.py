@@ -34,7 +34,7 @@ class MobileUtilities(numbers.Real, ABC):
         return can_i_see_the_entity
 
     @staticmethod
-    def create_armour_for_npc(gameworld, entity_id, armour_modifier, px_bonus):
+    def add_armour_modifier(gameworld, entity_id, armour_modifier, px_bonus):
         if armour_modifier.lower() == 'healer':
             current_healingpower = MobileUtilities.get_mobile_secondary_healing_power(gameworld=gameworld,
                                                                                       entity=entity_id)

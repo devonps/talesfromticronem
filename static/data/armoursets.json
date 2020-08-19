@@ -45,25 +45,25 @@
       },
       "prefix3": {
         "name": "Malign",
-        "flavour": "Kill your enemies quicker, over time.",
+        "flavour": "Kill your enemies more effecitvely.",
         "attributename1": "conditiondamage",
         "attributebonus1": 4
       },
       "prefix4": {
         "name": "Mighty",
-        "flavour": "Feel stronger, roar with power!",
+        "flavour": "Feel stronger, hit harder!",
         "attributename1": "power",
         "attributebonus1": 4
       },
       "prefix5": {
         "name": "Precise",
-        "flavour": "Never miss a target and kill quicker.",
+        "flavour": "Greater accuracy, kill quicker.",
         "attributename1": "precision",
         "attributebonus1": 4
       },
       "prefix6": {
         "name": "Vital",
-        "flavour": "Feel healthier, longer!",
+        "flavour": "Feel healthier, live longer!",
         "attributename1": "vitality",
         "attributebonus1": 4
       }

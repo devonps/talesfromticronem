@@ -114,13 +114,12 @@ def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id, player_names):
     if type_of_shopkeeper == 'armour':
         # armour
         logger.debug('Hello I sell armour')
+
         armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                     parameter='ARMOURSETFILE')
         armour_file = read_json_file(armourset_file)
 
-        as_internal_name = []
         as_display_name = ''
-        as_flavour = ''
         as_material = ''
         as_prefix_list = []
         px_flavour = []
@@ -132,9 +131,7 @@ def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id, player_names):
 
         for armourset in armour_file['armoursets']:
             if armourset['startset'] == 'true':
-                as_internal_name.append(armourset['internalsetname'])
                 as_display_name = (armourset['displayname'])
-                as_flavour = (armourset['flavour'])
                 as_material = (armourset['material'])
                 as_prefix_list = armourset['prefixlist'].split(",")
                 prefix_count = armourset['prefixcount']
@@ -157,10 +154,9 @@ def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id, player_names):
         flavour_column_text.append(px_att_name)
         flavour_column_text.append(px_flavour)
 
-
         starter_text = "Ahhh if it isn't $1"
         return_text = CommonUtils.replace_value_in_event(event_string=starter_text, par1=player_first_name)
-        intro_text = return_text + " and I see you're wearing some " + as_material + ' ' + as_display_name + ' armour, ' + '. Tell me, what kind of modifier would you like adding?'
+        intro_text = return_text + ", and, I see you're wearing some " + as_material + ' ' + as_display_name + ' armour, ' + 'tell me, what kind of modifier would you like adding?'
 
         menu_options = as_prefix_list
         max_menu_option = len(menu_options) - 1
@@ -176,6 +172,12 @@ def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id, player_names):
     # if type_of_shopkeeper == '3':
     #     # weapons
 
+    flavour_colour_string = '[color=' + colourUtilities.get(flavour_column_colour[0]) + ']'
+    flavour_coloumn_one_title = flavour_column_title[0]
+    flavour_coloumn_two_title = flavour_column_title[1]
+    flavour_column_one_string = flavour_colour_string + flavour_coloumn_one_title
+    flavour_column_two_string = flavour_colour_string + flavour_coloumn_two_title
+
     valid_event = False
     while not valid_event:
 
@@ -187,8 +189,8 @@ def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id, player_names):
                     colours=[colourUtilities.get('SPRINGGREEN'), colourUtilities.get('DARKOLIVEGREEN')])
 
         # display flavour columns
-        terminal.printf(x=dialog_frame_start_x + 15, y=dialog_frame_start_y + 8, s='[color=' + colourUtilities.get(flavour_column_colour[0]) + ']' + flavour_column_title[0])
-        terminal.printf(x=dialog_frame_start_x + 31, y=dialog_frame_start_y + 8, s=flavour_column_title[1])
+        terminal.printf(x=dialog_frame_start_x + 15, y=dialog_frame_start_y + 8, s=flavour_column_one_string)
+        terminal.printf(x=dialog_frame_start_x + 31, y=dialog_frame_start_y + 8, s=flavour_column_two_string)
 
         # display attribute to be modified
         fg = colourUtilities.get('LIGHTBLUE1')
@@ -214,6 +216,8 @@ def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id, player_names):
                                                                        max_menu_option=max_menu_option)
         if event_action == 'enter':
             valid_event = True
+            # apply shopkeeper bonus
+
 
 
 def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, speaker_id, chain_id):

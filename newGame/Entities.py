@@ -428,8 +428,8 @@ class Entity:
             logger.info('Their armour modifier is {}', armour_modifier)
             armour_mod_index = as_prefix_list.index(armour_modifier)
             px_bonus = int(px_att_bonus[armour_mod_index])
-            MobileUtilities.create_armour_for_npc(gameworld=gameworld, entity_id=entity_id,
-                                                  armour_modifier=armour_modifier, px_bonus=px_bonus)
+            MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=entity_id,
+                                                armour_modifier=armour_modifier, px_bonus=px_bonus)
             ItemManager.create_and_equip_armourset_for_npc(gameworld=gameworld, as_display_name=as_display_name,
                                                            armour_modifier=armour_modifier, entity_id=entity_id)
         else:
