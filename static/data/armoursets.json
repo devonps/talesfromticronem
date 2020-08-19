@@ -45,7 +45,7 @@
       },
       "prefix3": {
         "name": "Malign",
-        "flavour": "Kill your enemies more effecitvely.",
+        "flavour": "Over time, kill quicker.",
         "attributename1": "conditiondamage",
         "attributebonus1": 4
       },
