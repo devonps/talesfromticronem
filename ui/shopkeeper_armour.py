@@ -10,14 +10,12 @@ from utilities.mobileHelp import MobileUtilities
 
 def shopkeeper_armour(gameworld, player_names, shopkeeper_id):
     game_config = configUtilities.load_config()
-    unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
     player_first_name = player_names[0]
+    selected_menu_option = 0
+    flavour_column_text = []
 
     MobileUtilities.clear_talk_to_me_flag(gameworld=gameworld, target_entity=shopkeeper_id)
     MobileUtilities.set_spoken_to_before_flag_to_true(gameworld=gameworld, target_entity=shopkeeper_id)
-
-    frame_components_list = CommonUtils.get_ui_frame_components()
-    shopkeeper_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=shopkeeper_id)
 
     dialog_frame_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                        section='gui', parameter='DIALOG_FRAME_START_X')
@@ -25,42 +23,8 @@ def shopkeeper_armour(gameworld, player_names, shopkeeper_id):
                                                                        section='gui', parameter='DIALOG_FRAME_START_Y')
     dialog_frame_width = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                      section='gui', parameter='DIALOG_FRAME_WIDTH')
-    dialog_frame_height = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                      section='gui', parameter='DIALOG_FRAME_HEIGHT')
 
-    # display dialog UI - starting top left, ending bottom right
-
-    # clear dialog space
-    terminal.clear_area(dialog_frame_start_x, dialog_frame_start_y, dialog_frame_width, dialog_frame_height)
-    # render horizontals
-    CommonUtils.draw_horiz_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y,
-                                             width=dialog_frame_width, height=dialog_frame_height,
-                                             glyph=unicode_string_to_print + frame_components_list[4] + ']')
-
-    # render verticals
-    CommonUtils.draw_vert_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y,
-                                            width=dialog_frame_width, height=dialog_frame_height,
-                                            glyph=unicode_string_to_print + frame_components_list[5] + ']')
-
-    # top left
-    terminal.printf(x=dialog_frame_start_x, y=dialog_frame_start_y,
-                    s=unicode_string_to_print + frame_components_list[0] + ']')
-    # bottom left
-    terminal.printf(x=dialog_frame_start_x, y=(dialog_frame_start_y + dialog_frame_height),
-                    s=unicode_string_to_print + frame_components_list[1] + ']')
-    # top right
-    terminal.printf(x=(dialog_frame_start_x + dialog_frame_width), y=dialog_frame_start_y,
-                    s=unicode_string_to_print + frame_components_list[2] + ']')
-    # bottom right
-    terminal.printf(x=(dialog_frame_start_x + dialog_frame_width),
-                    y=(dialog_frame_start_y + dialog_frame_height),
-                    s=unicode_string_to_print + frame_components_list[3] + ']')
-
-    # npc/speaker name
-    terminal.printf(x=dialog_frame_start_x + 3, y=dialog_frame_start_y, s="[[ " + shopkeeper_names[0] + " ]]")
-
-    selected_menu_option = 0
-    flavour_column_text = []
+    CommonUtils.draw_dialog_ui(gameworld=gameworld, game_config=game_config, entity_speaking=shopkeeper_id)
 
     armour_details, as_prefix_list, px_att_bonus, px_flavour = get_all_armour_modifiers(game_config=game_config)
 

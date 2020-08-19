@@ -3,7 +3,7 @@ from loguru import logger
 
 from components.messages import Message
 from utilities import configUtilities, jsonUtilities, colourUtilities
-from components import messages, mobiles
+from components import messages
 from utilities.display import draw_simple_frame
 from utilities.mobileHelp import MobileUtilities
 
@@ -480,3 +480,60 @@ class CommonUtils:
         for z in range(start_y, (start_y + height) - 1):
             terminal.printf(x=start_x, y=z + 1, s=glyph)
             terminal.printf(x=(start_x + width), y=z + 1, s=glyph)
+
+
+    @staticmethod
+    def draw_dialog_ui(gameworld, game_config, entity_speaking):
+        # frame_components_list breakdown
+        # [0] = top_left_corner_char
+        # [1] = bottom_left_corner_char
+        # [2] = top_right_corner_char
+        # [3] = bottom_right_corner_char
+        # [4] = horizontal_char
+        # [5] = vertical_char
+        # [6] = left_t_junction_char
+        # [7] = right_t_junction_char
+
+        unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
+        entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_speaking)
+        frame_components_list = CommonUtils.get_ui_frame_components()
+
+        dialog_frame_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                           section='gui',
+                                                                           parameter='DIALOG_FRAME_START_X')
+        dialog_frame_start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                           section='gui',
+                                                                           parameter='DIALOG_FRAME_START_Y')
+        dialog_frame_width = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                         section='gui', parameter='DIALOG_FRAME_WIDTH')
+        dialog_frame_height = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                          section='gui',
+                                                                          parameter='DIALOG_FRAME_HEIGHT')
+        # clear dialog space
+        terminal.clear_area(dialog_frame_start_x, dialog_frame_start_y, dialog_frame_width, dialog_frame_height)
+        # render horizontals
+        CommonUtils.draw_horiz_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y,
+                                                 width=dialog_frame_width, height=dialog_frame_height,
+                                                 glyph=unicode_string_to_print + frame_components_list[4] + ']')
+
+        # render verticals
+        CommonUtils.draw_vert_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y,
+                                                width=dialog_frame_width, height=dialog_frame_height,
+                                                glyph=unicode_string_to_print + frame_components_list[5] + ']')
+
+        # top left
+        terminal.printf(x=dialog_frame_start_x, y=dialog_frame_start_y,
+                        s=unicode_string_to_print + frame_components_list[0] + ']')
+        # bottom left
+        terminal.printf(x=dialog_frame_start_x, y=(dialog_frame_start_y + dialog_frame_height),
+                        s=unicode_string_to_print + frame_components_list[1] + ']')
+        # top right
+        terminal.printf(x=(dialog_frame_start_x + dialog_frame_width), y=dialog_frame_start_y,
+                        s=unicode_string_to_print + frame_components_list[2] + ']')
+        # bottom right
+        terminal.printf(x=(dialog_frame_start_x + dialog_frame_width),
+                        y=(dialog_frame_start_y + dialog_frame_height),
+                        s=unicode_string_to_print + frame_components_list[3] + ']')
+
+        # npc/speaker name
+        terminal.printf(x=dialog_frame_start_x + 3, y=dialog_frame_start_y, s="[[ " + entity_names[0] + " ]]")

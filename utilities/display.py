@@ -1,6 +1,7 @@
 from utilities import configUtilities, colourUtilities
 from loguru import logger
 from bearlibterminal import terminal
+
 from utilities.itemsHelp import ItemUtilities
 
 # the selected option is the choice from list_options that will be highlighted

@@ -24,12 +24,11 @@ def initiate_dialog(gameworld, game_config):
         am_i_a_shopkeeper = MobileUtilities.is_mobile_a_shopkeeper(gameworld=gameworld, target_entity=entity_to_talk_with)
         if am_i_a_shopkeeper:
             what_type_of_shopkeeper = MobileUtilities.get_type_of_shopkeeper(gameworld=gameworld, target_entity=entity_to_talk_with)
-            logger.debug('Shopkeeper got a kick')
             open_the_shop(gameworld=gameworld, type_of_shopkeeper=what_type_of_shopkeeper, shopkeeper_id=entity_to_talk_with, player_names=player_names)
         am_i_a_tutor = MobileUtilities.is_mobile_a_tutor(gameworld=gameworld, target_entity=entity_to_talk_with)
         if am_i_a_tutor:
             what_type_of_tutor = MobileUtilities.get_type_of_tutor(gameworld=gameworld, target_entity=entity_to_talk_with)
-            # do tutor stuff
+            open_the_shop(gameworld=gameworld, type_of_shopkeeper=what_type_of_tutor, shopkeeper_id=entity_to_talk_with, player_names=player_names)
         if not am_i_a_shopkeeper and not am_i_a_tutor:
             MobileUtilities.set_dialog_welcome_flag_to_false(gameworld=gameworld, target_entity=entity_to_talk_with)
             spoken_to_before = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld,
@@ -48,7 +47,7 @@ def initiate_dialog(gameworld, game_config):
                                                      game_config=game_config, chain_id=chain_id)
             logger.info(dialog_chain)
             handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0],
-                                  gameworld=gameworld, speaker_id=entity_to_talk_with, chain_id=chain_id)
+                                  gameworld=gameworld, speaker_id=entity_to_talk_with)
 
 
 def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id, player_names):
@@ -63,32 +62,17 @@ def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id, player_names):
     #     # weapons
 
 
-def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, speaker_id, chain_id):
+def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, speaker_id):
     player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
     player_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player_entity)
     player_first_name = player_names[0]
     response_text = 0
     response_option = 1
-    unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
-    frame_components_list = CommonUtils.get_ui_frame_components()
-    # frame_components_list breakdown
-    # [0] = top_left_corner_char
-    # [1] = bottom_left_corner_char
-    # [2] = top_right_corner_char
-    # [3] = bottom_right_corner_char
-    # [4] = horizontal_char
-    # [5] = vertical_char
-    # [6] = left_t_junction_char
-    # [7] = right_t_junction_char
 
     dialog_frame_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                        section='gui', parameter='DIALOG_FRAME_START_X')
     dialog_frame_start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                        section='gui', parameter='DIALOG_FRAME_START_Y')
-    dialog_frame_width = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                     section='gui', parameter='DIALOG_FRAME_WIDTH')
-    dialog_frame_height = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                      section='gui', parameter='DIALOG_FRAME_HEIGHT')
 
     MobileUtilities.clear_talk_to_me_flag(gameworld=gameworld, target_entity=speaker_id)
     MobileUtilities.set_spoken_to_before_flag_to_true(gameworld=gameworld, target_entity=speaker_id)
@@ -104,35 +88,7 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
         responses = build_responses(number_responses=number_responses, dialog_chain=dialog_chain)
 
         # display dialog UI - starting top left, ending bottom right
-
-        # clear dialog space
-        terminal.clear_area(dialog_frame_start_x, dialog_frame_start_y, dialog_frame_width, dialog_frame_height)
-        # render horizontals
-        CommonUtils.draw_horiz_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y,
-                                                 width=dialog_frame_width, height=dialog_frame_height,
-                                                 glyph=unicode_string_to_print + frame_components_list[4] + ']')
-
-        # render verticals
-        CommonUtils.draw_vert_row_of_characters(start_x=dialog_frame_start_x, start_y=dialog_frame_start_y,
-                                                width=dialog_frame_width, height=dialog_frame_height,
-                                                glyph=unicode_string_to_print + frame_components_list[5] + ']')
-
-        # top left
-        terminal.printf(x=dialog_frame_start_x, y=dialog_frame_start_y,
-                        s=unicode_string_to_print + frame_components_list[0] + ']')
-        # bottom left
-        terminal.printf(x=dialog_frame_start_x, y=(dialog_frame_start_y + dialog_frame_height),
-                        s=unicode_string_to_print + frame_components_list[1] + ']')
-        # top right
-        terminal.printf(x=(dialog_frame_start_x + dialog_frame_width), y=dialog_frame_start_y,
-                        s=unicode_string_to_print + frame_components_list[2] + ']')
-        # bottom right
-        terminal.printf(x=(dialog_frame_start_x + dialog_frame_width),
-                        y=(dialog_frame_start_y + dialog_frame_height),
-                        s=unicode_string_to_print + frame_components_list[3] + ']')
-
-        # npc/speaker name
-        terminal.printf(x=dialog_frame_start_x + 3, y=dialog_frame_start_y, s="[[ " + speaker_name + " ]]")
+        CommonUtils.draw_dialog_ui(gameworld=gameworld, game_config=game_config, entity_speaking=speaker_id)
 
         # intro text
         return_text = CommonUtils.replace_value_in_event(event_string=intro_text, par1=player_first_name)
