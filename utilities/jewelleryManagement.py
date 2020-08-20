@@ -1,9 +1,9 @@
 from components import items, mobiles
-from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 
 
 class JewelleryUtilities:
+
     @staticmethod
     def get_jewellery_setting(gameworld, jewellery_entity):
         jewellery_materials_componet = gameworld.component_for_entity(jewellery_entity, items.JewelleryComponents)
@@ -64,7 +64,7 @@ class JewelleryUtilities:
 
     @staticmethod
     def equip_jewellery(gameworld, mobile, bodylocation, trinket):
-        is_jewellery_equipped = ItemUtilities.get_jewellery_already_equipped_status(gameworld, jewellery_entity=trinket)
+        is_jewellery_equipped = JewelleryUtilities.get_jewellery_already_equipped_status(gameworld, jewellery_entity=trinket)
         if not is_jewellery_equipped:
             if bodylocation == 'left ear':
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).left_ear = trinket
@@ -77,7 +77,7 @@ class JewelleryUtilities:
             if bodylocation == 'neck':
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).neck = trinket
 
-            ItemUtilities.set_jewellery_equipped_status_to_true(gameworld, jewellery_entity=trinket)
+            JewelleryUtilities.set_jewellery_equipped_status_to_true(gameworld, jewellery_entity=trinket)
 
     @staticmethod
     def unequp_piece_of_jewellery(gameworld, entity, bodylocation):
@@ -93,7 +93,7 @@ class JewelleryUtilities:
         if bodylocation == 'neck':
             gameworld.component_for_entity(entity, mobiles.Jewellery).neck = 0
 
-        ItemUtilities.set_jewellery_equipped_status_to_false(gameworld=gameworld, jewellery_entity=entity)
+        JewelleryUtilities.set_jewellery_equipped_status_to_false(gameworld=gameworld, jewellery_entity=entity)
 
     @staticmethod
     def add_jewellery_benefit(gameworld, entity, statbonus):
@@ -118,9 +118,6 @@ class JewelleryUtilities:
 
         if stat.lower() == 'toughness':
             MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=entity, value=benefit)
-            # current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness
-            # new_stat_bonus = current_stat_bonus + benefit
-            # gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness=new_stat_bonus
 
         if stat.lower() == 'healing power':
             current_stat_bonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healing_power

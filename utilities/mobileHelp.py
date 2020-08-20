@@ -2,7 +2,6 @@ from abc import ABC
 
 from components import mobiles, items, spellBar
 from loguru import logger
-
 from mapRelated.fov import FieldOfView
 from utilities import world
 from utilities import configUtilities, colourUtilities

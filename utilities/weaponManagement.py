@@ -1,4 +1,4 @@
-from random import random
+import random
 
 from loguru import logger
 
@@ -99,10 +99,10 @@ class WeaponUtilities:
 
     @staticmethod
     def calculate_weapon_strength(gameworld, weapon):
-        weapon_level = ItemUtilities.get_weapon_experience_values(gameworld=gameworld, entity=weapon)
+        weapon_level = WeaponUtilities.get_weapon_experience_values(gameworld=gameworld, entity=weapon)
         current_weapon_level = weapon_level[0]
 
-        weapon_strength = ItemUtilities.get_weapon_strength(gameworld=gameworld, weapon=weapon,
+        weapon_strength = WeaponUtilities.get_weapon_strength(gameworld=gameworld, weapon=weapon,
                                                             weapon_level=current_weapon_level)
 
         return weapon_strength
@@ -112,7 +112,7 @@ class WeaponUtilities:
         wpn_dmg_min = 0
         wpn_dmg_max = 0
         range_chosen = False
-        weapon_damage_range = ItemUtilities.get_weapon_damage_ranges(gameworld=gameworld, weapon=weapon)
+        weapon_damage_range = WeaponUtilities.get_weapon_damage_ranges(gameworld=gameworld, weapon=weapon)
 
         for lvl in weapon_damage_range:
             wid = lvl['id']
