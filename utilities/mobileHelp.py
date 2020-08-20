@@ -4,7 +4,6 @@ from components import mobiles, items, spellBar
 from loguru import logger
 
 from mapRelated.fov import FieldOfView
-# from utilities.itemsHelp import ItemUtilities
 from utilities import world
 from utilities import configUtilities, colourUtilities
 
@@ -885,20 +884,15 @@ class MobileUtilities(numbers.Real, ABC):
     def set_mobile_derived_critical_hit_chance(gameworld, entity):
         base_value = 5  # every hit has a 5% chance of causing a critical hit
 
-        status_effects_component = gameworld.component_for_entity(entity, mobiles.StatusEffects)
         primary_attribute_component = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
 
         precision_value = primary_attribute_component.precision
-        applied_boons = status_effects_component.boons
         # now cycle through the list of applied_boons looking for fury
         boon_fury_bonus = 0
 
-        # check the traits (currently not implemented)
-        trait_bonus = 0
-
         precision_bonus = int(precision_value / 21)
 
-        critical_chance_value = min(100, base_value + boon_fury_bonus + trait_bonus + precision_bonus)
+        critical_chance_value = min(100, base_value + boon_fury_bonus + precision_bonus)
 
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).critical_chance = critical_chance_value
 
