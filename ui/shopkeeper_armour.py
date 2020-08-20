@@ -1,9 +1,11 @@
 from bearlibterminal import terminal
+from loguru import logger
 
 from utilities import colourUtilities, configUtilities
 from utilities.common import CommonUtils
 from utilities.display import coloured_list, pointy_menu
 from utilities.input_handlers import handle_game_keys
+from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 
@@ -13,6 +15,7 @@ def shopkeeper_armour(gameworld, player_names, shopkeeper_id):
     player_first_name = player_names[0]
     selected_menu_option = 0
     flavour_column_text = []
+    player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
     MobileUtilities.clear_talk_to_me_flag(gameworld=gameworld, target_entity=shopkeeper_id)
     MobileUtilities.set_spoken_to_before_flag_to_true(gameworld=gameworld, target_entity=shopkeeper_id)
@@ -26,7 +29,7 @@ def shopkeeper_armour(gameworld, player_names, shopkeeper_id):
 
     CommonUtils.draw_dialog_ui(gameworld=gameworld, game_config=game_config, entity_speaking=shopkeeper_id)
 
-    armour_details, as_prefix_list, px_att_bonus, px_flavour = get_all_armour_modifiers(game_config=game_config)
+    armour_details, as_prefix_list, px_att_bonus, px_att_name, px_flavour = get_all_armour_modifiers(game_config=game_config)
 
     as_display_name = armour_details[0]
     as_material = armour_details[1]
@@ -79,6 +82,17 @@ def shopkeeper_armour(gameworld, player_names, shopkeeper_id):
         if event_action == 'enter':
             valid_event = True
             # apply shopkeeper bonus
+            logger.debug('Armour modifier chosen is {}', as_prefix_list[selected_menu_option])
+            logger.debug('Attribute to be modified is {}', px_att_name[selected_menu_option])
+            logger.debug('Attribute bonus is {}', px_att_bonus[selected_menu_option])
+
+            armour_worn_on_head = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player_entity)
+            if armour_worn_on_head:
+                armour_entity = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity, bodylocation='head')
+                attribute_bonus_list = ItemUtilities.get_armour_major_attributes(gameworld=gameworld, entity=armour_entity)
+
+                logger.debug('Armour entity on head is {}', armour_entity)
+                logger.debug('Attribute bonus list {}', attribute_bonus_list)
 
 
 def get_all_armour_modifiers(game_config):
@@ -88,11 +102,13 @@ def get_all_armour_modifiers(game_config):
 
     pxstring = 'prefix'
     attvaluestring = 'attributebonus'
+    attnamestring = 'attributename'
 
     as_prefix_list = []
     px_flavour = []
     px_att_bonus = []
     armour_details = []
+    px_att_name = []
 
     for armourset in armour_file['armoursets']:
         if armourset['startset'] == 'true':
@@ -108,9 +124,12 @@ def get_all_armour_modifiers(game_config):
 
                 if attribute_bonus_count > 1:
                     att_bonus_string = attvaluestring + str(px)
+                    att_name_string = attnamestring + str(px)
                 else:
                     att_bonus_string = attvaluestring + str(1)
+                    att_name_string = attnamestring + str(1)
 
                 px_att_bonus.append(armourset[prefix_string][att_bonus_string])
+                px_att_name.append(armourset[prefix_string][att_name_string])
 
-    return armour_details, as_prefix_list, px_att_bonus, px_flavour
+    return armour_details, as_prefix_list, px_att_bonus, px_att_name, px_flavour

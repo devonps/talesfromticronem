@@ -401,7 +401,7 @@ class CharacterCreation:
         SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=heal_spell_entity, slot=6, player_entity=player)
 
         # calculate derived stats
-        MobileUtilities.set_mobile_derived_derived_attributes(gameworld=gameworld, entity=player)
+        MobileUtilities.set_mobile_derived_attributes(gameworld=gameworld, entity=player)
 
         # name the character
         CharacterCreation.character_naming(gameworld=gameworld, game_config=game_config)
@@ -433,7 +433,7 @@ class CharacterCreation:
 
         # create some armour for our hero - another temporary crutch
         # order is: heads, hands, chest, legs, feet
-        armour_set = ItemManager.create_full_armour_set(gameworld=gameworld, game_config=game_config, prefix='resilient', armourset='Embroided')
+        armour_set = ItemManager.create_full_armour_set(gameworld=gameworld, game_config=game_config, prefix='', armourset='Embroided')
         ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=armour_set)
 
         # until NPC interactions has been completed

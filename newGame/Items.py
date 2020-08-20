@@ -246,7 +246,8 @@ class ItemManager:
         # generate armour specifics
         gameworld.add_component(armour_piece, items.Weight(label=as_weight))
         gameworld.add_component(armour_piece, items.Defense(value=int(defense)))
-
+        if prefix == '':
+            px_att_bonus = 0
         gameworld.add_component(armour_piece, items.AttributeBonus(
             majorname=px_att_name,
             majorbonus=int(px_att_bonus),

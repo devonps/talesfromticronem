@@ -36,7 +36,7 @@ class UpdateEntitiesProcessor(esper.Processor):
                 # gain resources from spells
 
                 if not in_combat:
-                    MobileUtilities.set_mobile_derived_derived_attributes(self.gameworld, entity=ent)
+                    MobileUtilities.set_mobile_derived_attributes(self.gameworld, entity=ent)
 
     def apply_conditions(self, entity_names, player_entity, message_log_id, target_entity):
         current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,

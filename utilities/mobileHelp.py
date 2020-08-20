@@ -4,7 +4,7 @@ from components import mobiles, items, spellBar
 from loguru import logger
 
 from mapRelated.fov import FieldOfView
-from utilities.itemsHelp import ItemUtilities
+# from utilities.itemsHelp import ItemUtilities
 from utilities import world
 from utilities import configUtilities, colourUtilities
 
@@ -663,192 +663,6 @@ class MobileUtilities(numbers.Real, ABC):
                 mobile_inventory_component.items.append(ent)
                 logger.info('{} has been picked up', desc.name)
 
-    # drop item from inventory
-    @staticmethod
-    def drop_item_from_inventory(gameworld, mobile, entity):
-        # is item in inventory
-        # add dungeon position component
-        ItemUtilities.add_dungeon_position_component(gameworld=gameworld, entity=entity)
-
-        # set item location to mobile's location
-        px, py = MobileUtilities.get_mobile_current_location(gameworld=gameworld, mobile=mobile)
-        ItemUtilities.set_item_location(gameworld=gameworld, item_entity=entity, posx=px, posy=py)
-
-        # remove item from inventory component
-        ItemUtilities.remove_item_from_inventory(gameworld, mobile, entity)
-
-    # destroy item from inventory
-    @staticmethod
-    def destroy_item_from_inventory(gameworld, mobile, entity):
-
-        # remove item from inventory component
-        ItemUtilities.remove_item_from_inventory(gameworld, mobile, entity)
-
-        # remove entity from gameworld
-        ItemUtilities.delete_item(gameworld=gameworld, entity=entity)
-
-    # equip armour from inventory
-    @staticmethod
-    def equip_armour_from_inventory(gameworld, mobile, armour_piece):
-        # worn_body_armour = 0
-        # determine body location from armour piece
-        body_location = ItemUtilities.get_armour_body_location(gameworld=gameworld, armour_piece=armour_piece)
-
-        # if there's any armour already being worn then store that entity
-        worn_body_armour = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=mobile,
-                                                                              bodylocation=body_location)
-
-        # unequip current armour from body location
-        ItemUtilities.unequip_piece_of_armour(gameworld=gameworld, entity=mobile, bodylocation=body_location)
-
-        # remove unequipped armour from inventory component
-        ItemUtilities.remove_item_from_inventory(gameworld, mobile, armour_piece)
-
-        # equip new armour to body location
-        ItemUtilities.equip_piece_of_armour(gameworld=gameworld, entity=mobile, piece_of_armour=armour_piece,
-                                            bodylocation=body_location)
-
-        # add original armour to the inventory
-        if worn_body_armour != 0:
-            mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
-            mobile_inventory_component.items.append(worn_body_armour)
-
-        # # determine which body location is being swapped out
-        # if body_location == 'head':
-        #     # Is armour already being worn here
-        #     ap = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=mobile)
-        #     if ap != 0:
-        #         worn_body_armour = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=mobile, bodylocation='head')
-        #         ItemUtilities.unequip_piece_of_armour(gameworld=gameworld,entity=mobile, bodylocation='head')
-        #     ItemUtilities.equip_piece_of_armour(gameworld=gameworld, entity=mobile,piece_of_armour=armour_piece, bodylocation=body_location)
-        #
-        # if body_location == 'chest':
-        #     ap = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=mobile)
-        #     if ap != 0:
-        #         worn_body_armour = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld,
-        #                                                                               entity=mobile,
-        #                                                                               bodylocation='chest')
-        #         ItemUtilities.unequip_piece_of_armour(gameworld=gameworld,entity=mobile, bodylocation='chest')
-        # if body_location == 'hands':
-        #     ap = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=mobile)
-        #     if ap != 0:
-        #         worn_body_armour = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=mobile, bodylocation='hands')
-        #         ItemUtilities.unequip_piece_of_armour(gameworld=gameworld,entity=mobile, bodylocation='hands')
-        #
-        # if body_location == 'legs':
-        #     ap = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=mobile)
-        #     if ap != 0:
-        #         worn_body_armour = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=mobile, bodylocation='legs')
-        #         ItemUtilities.unequip_piece_of_armour(gameworld=gameworld,entity=mobile, bodylocation='legs')
-        #
-        # if body_location == 'feet':
-        #     ap = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=mobile)
-        #     if ap != 0:
-        #         worn_body_armour = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=mobile, bodylocation='feet')
-        #         ItemUtilities.unequip_piece_of_armour(gameworld=gameworld,entity=mobile, bodylocation='feet')
-        #
-        #
-        # # equip new piece of armour
-        #
-        # # add original armour to the inventory
-        # if worn_body_armour != 0:
-        #     mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
-        #     mobile_inventory_component.items.append(worn_body_armour)
-
-    @staticmethod
-    def wield_weapon_from_inventory(gameworld, mobile, entity):
-
-        # get list of weapons currently equipped as a list of entities
-        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld, mobile)
-
-        # remove unequipped weapon from inventory component
-        ItemUtilities.remove_item_from_inventory(gameworld, mobile, entity)
-
-        # determine which hand the weapon can be equipped in
-        hand_to_wield = ItemUtilities.get_hand_weapon_can_be_wielded_in(gameworld=gameworld, weapon_entity=entity)
-
-        if hand_to_wield == 'main':
-            MobileUtilities.equip_weapon(gameworld=gameworld, entity=mobile, weapon=entity, hand=hand_to_wield)
-            # add previously equipped weapon (item) to the inventory
-            mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
-            # add item entity to mobiles' inventory
-            mobile_inventory_component.items.append(equipped_weapons[0])
-            # check for holding a 2-handed weapon
-            if equipped_weapons[2] > 0:
-                gameworld.component_for_entity(mobile, mobiles.Equipped).both_hands = 0
-                mobile_inventory_component.items.append(equipped_weapons[2])
-
-        if hand_to_wield == 'off':
-            MobileUtilities.equip_weapon(gameworld=gameworld, entity=mobile, weapon=entity, hand=hand_to_wield)
-            # add previously equipped weapon (item) to the inventory
-            mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
-            # add item entity to mobiles' inventory
-            mobile_inventory_component.items.append(equipped_weapons[1])
-            # check for holding a 2-handed weapon
-            if equipped_weapons[2] > 0:
-                gameworld.component_for_entity(mobile, mobiles.Equipped).both_hands = 0
-                mobile_inventory_component.items.append(equipped_weapons[2])
-
-        if hand_to_wield == 'both':
-            MobileUtilities.equip_weapon(gameworld=gameworld, entity=mobile, weapon=entity, hand=hand_to_wield)
-            # add previously equipped weapon (item) to the inventory
-            mobile_inventory_component = gameworld.component_for_entity(mobile, mobiles.Inventory)
-            # add both items entities to mobiles' inventory
-            # is there a weapon in either the main or off hand - that's not a 2-handed weapon
-            if equipped_weapons[0] > 0:
-                mobile_inventory_component.items.append(equipped_weapons[0])
-                gameworld.component_for_entity(mobile, mobiles.Equipped).main_hand = 0
-            if equipped_weapons[1] > 0:
-                mobile_inventory_component.items.append(equipped_weapons[1])
-                gameworld.component_for_entity(mobile, mobiles.Equipped).off_hand = 0
-            elif equipped_weapons[2] > 0:
-                mobile_inventory_component.items.append(equipped_weapons[2])
-
-    @staticmethod
-    def wear_jewellery_from_inventory(gameworld, mobile, jewellery_entity):
-        # get list of currently equipped jewellery
-        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld, mobile)
-
-        # remove unequipped jewelery from inventory
-        ItemUtilities.remove_item_from_inventory(gameworld, mobile, jewellery_entity)
-
-        # equip jewellery in correct location
-        body_location = ItemUtilities.get_jewellery_valid_body_location(gameworld=gameworld,
-                                                                        jewellery_entity=jewellery_entity)
-
-        if body_location[0]:
-            if equipped_jewellery[0] == 0:
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='left ear',
-                                              trinket=jewellery_entity)
-            if equipped_jewellery[1] == 0:
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='right ear',
-                                              trinket=jewellery_entity)
-            if equipped_jewellery[0] != 0 and equipped_jewellery[1] != 0:
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='left ear',
-                                              trinket=jewellery_entity)
-                ItemUtilities.add_previously_equipped_item_to_inventory(gameworld=gameworld, mobile=mobile,
-                                                                        item_to_inventory=equipped_jewellery[0])
-
-        if body_location[1]:
-            if equipped_jewellery[2] == 0:
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='left hand',
-                                              trinket=jewellery_entity)
-            if equipped_jewellery[3] == 0:
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='right hand',
-                                              trinket=jewellery_entity)
-            if equipped_jewellery[2] != 0 and equipped_jewellery[3] != 0:
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='left hand',
-                                              trinket=jewellery_entity)
-                ItemUtilities.add_previously_equipped_item_to_inventory(gameworld=gameworld, mobile=mobile,
-                                                                        item_to_inventory=equipped_jewellery[2])
-
-        if body_location[2]:
-            ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=mobile, bodylocation='neck',
-                                          trinket=jewellery_entity)
-            if equipped_jewellery[4] != 0:
-                ItemUtilities.add_previously_equipped_item_to_inventory(gameworld=gameworld, mobile=mobile,
-                                                                        item_to_inventory=equipped_jewellery[4])
-
     @staticmethod
     def get_jewellery_already_equipped(gameworld, mobile):
         equipped = [gameworld.component_for_entity(mobile, mobiles.Jewellery).left_ear,
@@ -891,7 +705,9 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_mobile_primary_toughness(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness = value
+        current_stat_bonus = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld, entity=entity)
+        new_stat_bonus = current_stat_bonus + value
+        gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).toughness = new_stat_bonus
 
     @staticmethod
     def get_mobile_primary_vitality(gameworld, entity):
@@ -978,7 +794,7 @@ class MobileUtilities(numbers.Real, ABC):
     # Calculate derived attributes
     #
     @staticmethod
-    def set_mobile_derived_derived_attributes(gameworld, entity):
+    def set_mobile_derived_attributes(gameworld, entity):
         MobileUtilities.set_mobile_derived_armour_attribute(gameworld, entity)
         MobileUtilities.set_mobile_derived_boon_duration(gameworld, entity)
         MobileUtilities.set_mobile_derived_condition_duration(gameworld, entity)
@@ -1008,49 +824,51 @@ class MobileUtilities(numbers.Real, ABC):
         toughness_value = primary_attribute_component.toughness
 
         # get defense values based on equipped pieces of armour
-        defense_value = MobileUtilities.get_current_armour_based_defense_value(gameworld=gameworld, entity=entity)
+        defense_value = MobileUtilities.get_mobile_derived_armour_value(gameworld=gameworld, entity=entity)
+        # defense_value = MobileUtilities.get_current_armour_based_defense_value(gameworld=gameworld, entity=entity)
 
         armour_value = defense_value + toughness_value
 
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).armour = armour_value
 
-    @staticmethod
-    def get_current_armour_based_defense_value(gameworld, entity):
-
-        head = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=entity)
-        chest = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=entity)
-        legs = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=entity)
-        feet = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=entity)
-        hands = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity)
-
-        if chest != 0:
-            def_chest_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest)
-        else:
-            def_chest_value = 0
-
-        if head != 0:
-            def_head_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=head)
-        else:
-            def_head_value = 0
-
-        if legs != 0:
-            def_legs_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs)
-        else:
-            def_legs_value = 0
-
-        if feet != 0:
-            def_feet_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet)
-        else:
-            def_feet_value = 0
-
-        if hands != 0:
-            def_hands_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands)
-        else:
-            def_hands_value = 0
-
-        defense_value = def_chest_value + def_head_value + def_legs_value + def_feet_value + def_hands_value
-
-        return defense_value
+    # @staticmethod
+    # def get_current_armour_based_defense_value(gameworld, entity):
+    #
+    #     head = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=entity)
+    #     chest = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=entity)
+    #     legs = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=entity)
+    #     feet = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=entity)
+    #     hands = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity)
+    #
+    #     if chest != 0:
+    #         def_chest_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest)
+    #
+    #     else:
+    #         def_chest_value = 0
+    #
+    #     if head != 0:
+    #         def_head_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=head)
+    #     else:
+    #         def_head_value = 0
+    #
+    #     if legs != 0:
+    #         def_legs_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs)
+    #     else:
+    #         def_legs_value = 0
+    #
+    #     if feet != 0:
+    #         def_feet_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet)
+    #     else:
+    #         def_feet_value = 0
+    #
+    #     if hands != 0:
+    #         def_hands_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands)
+    #     else:
+    #         def_hands_value = 0
+    #
+    #     defense_value = def_chest_value + def_head_value + def_legs_value + def_feet_value + def_hands_value
+    #
+    #     return defense_value
 
     @staticmethod
     def set_mobile_derived_boon_duration(gameworld, entity):

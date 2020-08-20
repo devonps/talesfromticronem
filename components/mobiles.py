@@ -229,7 +229,7 @@ class PrimaryAttributes:
     vitality increases health
     """
 
-    def __init__(self, power=37, precision=37, toughness=37, vitality=37):
+    def __init__(self, power=37, precision=37, toughness=0, vitality=37):
         self.power = power
         self.precision = precision
         self.toughness = toughness
