@@ -2,10 +2,10 @@ from bearlibterminal import terminal
 from loguru import logger
 
 from utilities import colourUtilities, configUtilities
+from utilities.armourManagement import ArmourUtilities
 from utilities.common import CommonUtils
 from utilities.display import coloured_list, pointy_menu
 from utilities.input_handlers import handle_game_keys
-from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 
@@ -88,8 +88,8 @@ def shopkeeper_armour(gameworld, player_names, shopkeeper_id):
 
             armour_worn_on_head = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player_entity)
             if armour_worn_on_head:
-                armour_entity = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity, bodylocation='head')
-                attribute_bonus_list = ItemUtilities.get_armour_major_attributes(gameworld=gameworld, entity=armour_entity)
+                armour_entity = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity, bodylocation='head')
+                attribute_bonus_list = ArmourUtilities.get_armour_major_attributes(gameworld=gameworld, entity=armour_entity)
 
                 logger.debug('Armour entity on head is {}', armour_entity)
                 logger.debug('Attribute bonus list {}', attribute_bonus_list)

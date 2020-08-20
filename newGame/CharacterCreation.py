@@ -4,12 +4,13 @@ from bearlibterminal import terminal
 
 from loguru import logger
 
-from newGame.CreateSpells import AsEntities
 from newGame.Items import ItemManager
 from utilities import configUtilities, colourUtilities
-from utilities.display import draw_colourful_frame, pointy_menu, draw_simple_frame
+from utilities.armourManagement import ArmourUtilities
+from utilities.display import pointy_menu, draw_simple_frame
 from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
+from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from newGame.initialiseNewGame import create_world
@@ -413,9 +414,9 @@ class CharacterCreation:
         # this is a temp approach being used for utility spells
         ItemManager.create_jewellery_for_utility_spells(gameworld=gameworld, game_config=game_config)
 
-        pendent_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='neck')
-        left_ear_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='lear')
-        right_ear_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='rear')
+        pendent_entity = JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='neck')
+        left_ear_entity = JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='lear')
+        right_ear_entity = JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='rear')
 
         if pendent_entity > 0:
             sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=pendent_entity)
@@ -434,7 +435,7 @@ class CharacterCreation:
         # create some armour for our hero - another temporary crutch
         # order is: heads, hands, chest, legs, feet
         armour_set = ItemManager.create_full_armour_set(gameworld=gameworld, game_config=game_config, prefix='', armourset='Embroided')
-        ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=armour_set)
+        ArmourUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=armour_set)
 
         # until NPC interactions has been completed
 

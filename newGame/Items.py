@@ -1,12 +1,10 @@
 from components import items, spells
 from utilities import world, jsonUtilities
-from utilities.gamemap import GameMapUtilities
-from utilities.itemsHelp import ItemUtilities
+from utilities.armourManagement import ArmourUtilities
+from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities import configUtilities, colourUtilities
 from loguru import logger
-
-import random
 
 
 class ItemManager:
@@ -77,7 +75,7 @@ class ItemManager:
         this_armourset = ItemManager.create_full_armour_set(gameworld=gameworld, armourset=as_display_name,
                                                             prefix=armour_modifier, game_config=game_config)
 
-        ItemUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=entity_id, armourset=this_armourset)
+        ArmourUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=entity_id, armourset=this_armourset)
 
     @staticmethod
     def create_jewellery_for_utility_spells(gameworld, game_config):
@@ -114,38 +112,38 @@ class ItemManager:
                                                          e_setting='copper', e_hook='copper', e_activator=ring2_gemstone, playable_class=entity_class)
 
                 # equip jewellery entity to player character
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='neck',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='neck',
                                               trinket=pendant)
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left ear',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left ear',
                                               trinket=left_ear)
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right ear',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right ear',
                                               trinket=right_ear)
 
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left hand',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left hand',
                                               trinket=left_hand)
 
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right hand',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right hand',
                                               trinket=right_hand)
 
 
                 # apply gemstone benefits
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=pendant)
-                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=pendant)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=left_ear)
-                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=left_ear)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=right_ear)
-                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=right_ear)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=left_hand)
-                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id, statbonus=jewelley_stat_bonus)
+                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=left_hand)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id, statbonus=jewelley_stat_bonus)
 
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=right_hand)
-                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id, statbonus=jewelley_stat_bonus)
+                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=right_hand)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id, statbonus=jewelley_stat_bonus)
 
 
     @staticmethod
@@ -168,24 +166,24 @@ class ItemManager:
                                                          e_setting='copper', e_hook='copper', e_activator=ear2_gemstone, playable_class=entity_class)
 
                 # equip jewellery entity to player character
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='neck',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='neck',
                                               trinket=pendant)
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left ear',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left ear',
                                               trinket=left_ear)
-                ItemUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right ear',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right ear',
                                               trinket=right_ear)
 
                 # apply gemstone benefits
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=pendant)
-                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=pendant)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=left_ear)
-                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=left_ear)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
-                jewelley_stat_bonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=right_ear)
-                ItemUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=right_ear)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
                                                     statbonus=jewelley_stat_bonus)
 
     @staticmethod
@@ -311,7 +309,7 @@ class ItemManager:
                                                                                                        spells.ClassName):
             # if item_type.label == 'armour' and bodylocation == location.label:
             if spclass.label == playable_class and spell_type.label == 'utility' and item_type.label == 'armour' and location.label == bodylocation:
-                ItemUtilities.add_spell_to_armour_piece(gameworld=gameworld, armour_entity=armour_piece,
+                ArmourUtilities.add_spell_to_armour_piece(gameworld=gameworld, armour_entity=armour_piece,
                                                         spell_entity=spell_entity)
 
 
@@ -408,7 +406,7 @@ class ItemManager:
                                                                                                       spells.SpellType,
                                                                                                       spells.ItemType, spells.ClassName):
                     if spclass.label == playable_class and spell_type.label == 'utility' and item_type.label == 'jewellery' and location.label == bodylocation:
-                        ItemUtilities.add_spell_to_jewellery(gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, spell_entity=spell_entity)
+                        JewelleryUtilities.add_spell_to_jewellery(gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, spell_entity=spell_entity)
                         ItemManager.earring_processing(bdl=bdl, trinket_activator=trinket_activator, gemstone_string=gemstone_string, gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, gemstone_attribute=gemstone['Attribute'], gemstone_bonus=gemstone['Earring'])
 
                         ItemManager.pendant_processing(bdl=bdl, trinket_activator=trinket_activator, gemstone_string=gemstone_string, gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, gemstone_attribute=gemstone['Attribute'], gemstone_bonus=gemstone['Amulet'])

@@ -2,10 +2,12 @@ from bearlibterminal import terminal
 from loguru import logger
 
 from utilities import configUtilities
+from utilities.armourManagement import ArmourUtilities
 from utilities.common import CommonUtils
 from utilities.externalfileutilities import Externalfiles
 from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
+from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.spellHelp import SpellUtilities
 
 
@@ -360,7 +362,7 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
     spell_item_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                   parameter=armour_ascii_prefix + 'HORIZONTAL')
 
-    item_entity = ItemUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity,
+    item_entity = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity,
                                                                      bodylocation=bodylocation)
     if item_entity > 0:
         logger.debug('Armour entity is {}', item_entity)
@@ -378,8 +380,8 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
                                             right_t_glyph=spell_item_info_right_t_junction)
 
         # draw armour stuff
-        defense_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=item_entity)
-        armourset_value = ItemUtilities.get_armour_set_name(gameworld=gameworld, entity=item_entity)
+        defense_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=item_entity)
+        armourset_value = ArmourUtilities.get_armour_set_name(gameworld=gameworld, entity=item_entity)
         quality_value = ItemUtilities.get_item_quality(gameworld=gameworld, entity=item_entity)
         spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
         armour_description_value = ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
@@ -425,7 +427,7 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
     spell_item_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                   parameter=jewellery_ascii_prefix + 'HORIZONTAL')
 
-    item_entity = ItemUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
+    item_entity = JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
                                                                         entity=player_entity,
                                                                         bodylocation=bodylocation)
     if item_entity > 0:
@@ -443,7 +445,7 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
                                             right_t_glyph=spell_item_info_right_t_junction)
 
         # draw important text
-        jewellery_statbonus = ItemUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
+        jewellery_statbonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
                                                                      jewellery_entity=item_entity)
         spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
         jewellery_description = ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
