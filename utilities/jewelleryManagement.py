@@ -5,16 +5,6 @@ from utilities.mobileHelp import MobileUtilities
 class JewelleryUtilities:
 
     @staticmethod
-    def get_jewellery_setting(gameworld, jewellery_entity):
-        jewellery_materials_componet = gameworld.component_for_entity(jewellery_entity, items.JewelleryComponents)
-        return jewellery_materials_componet.setting
-
-    @staticmethod
-    def get_jewellery_hook(gameworld, jewellery_entity):
-        jewellery_materials_componet = gameworld.component_for_entity(jewellery_entity, items.JewelleryComponents)
-        return jewellery_materials_componet.hook
-
-    @staticmethod
     def get_jewellery_activator(gameworld, jewellery_entity):
         jewellery_materials_componet = gameworld.component_for_entity(jewellery_entity, items.JewelleryComponents)
         return jewellery_materials_componet.activator
@@ -24,14 +14,6 @@ class JewelleryUtilities:
         jewellery_statbonus_component = gameworld.component_for_entity(jewellery_entity, items.JewelleryStatBonus)
         statbonus = [jewellery_statbonus_component.stat_name, jewellery_statbonus_component.stat_bonus]
         return statbonus
-
-    @staticmethod
-    def get_jewellery_valid_body_location(gameworld, jewellery_entity):
-        jewellery_body_location_component = gameworld.component_for_entity(jewellery_entity,
-                                                                           items.JewelleryBodyLocation)
-        loc = [jewellery_body_location_component.ears, jewellery_body_location_component.fingers,
-               jewellery_body_location_component.neck]
-        return loc
 
     @staticmethod
     def get_jewellery_already_equipped_status(gameworld, jewellery_entity):
@@ -78,22 +60,6 @@ class JewelleryUtilities:
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).neck = trinket
 
             JewelleryUtilities.set_jewellery_equipped_status_to_true(gameworld, jewellery_entity=trinket)
-
-    @staticmethod
-    def unequp_piece_of_jewellery(gameworld, entity, bodylocation):
-
-        if bodylocation == 'left ear':
-            gameworld.component_for_entity(entity, mobiles.Jewellery).left_ear = 0
-        if bodylocation == 'right ear':
-            gameworld.component_for_entity(entity, mobiles.Jewellery).right_ear = 0
-        if bodylocation == 'left hand':
-            gameworld.component_for_entity(entity, mobiles.Jewellery).left_hand = 0
-        if bodylocation == 'right hand':
-            gameworld.component_for_entity(entity, mobiles.Jewellery).right_hand = 0
-        if bodylocation == 'neck':
-            gameworld.component_for_entity(entity, mobiles.Jewellery).neck = 0
-
-        JewelleryUtilities.set_jewellery_equipped_status_to_false(gameworld=gameworld, jewellery_entity=entity)
 
     @staticmethod
     def add_jewellery_benefit(gameworld, entity, statbonus):
