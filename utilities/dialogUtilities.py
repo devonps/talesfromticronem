@@ -4,7 +4,7 @@ from loguru import logger
 from components import mobiles
 from ui.shopkeeper_armour import shopkeeper_armour
 from utilities.common import CommonUtils
-from utilities.display import pointy_menu, coloured_list
+from utilities.display import pointy_menu
 from utilities.input_handlers import handle_game_keys
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
@@ -15,8 +15,6 @@ def initiate_dialog(gameworld, game_config):
     entity_to_talk_with = check_for_nearby_valid_mobiles_to_speak_with(gameworld=gameworld, game_config=game_config)
 
     if entity_to_talk_with > 0:
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        player_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player_entity)
         name_details = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_to_talk_with)
         CommonUtils.fire_event('dialog-general', gameworld=gameworld,
                                dialog='Going to speak with...' + name_details[0])
@@ -24,11 +22,11 @@ def initiate_dialog(gameworld, game_config):
         am_i_a_shopkeeper = MobileUtilities.is_mobile_a_shopkeeper(gameworld=gameworld, target_entity=entity_to_talk_with)
         if am_i_a_shopkeeper:
             what_type_of_shopkeeper = MobileUtilities.get_type_of_shopkeeper(gameworld=gameworld, target_entity=entity_to_talk_with)
-            open_the_shop(gameworld=gameworld, type_of_shopkeeper=what_type_of_shopkeeper, shopkeeper_id=entity_to_talk_with, player_names=player_names)
+            open_the_shop(gameworld=gameworld, type_of_shopkeeper=what_type_of_shopkeeper, shopkeeper_id=entity_to_talk_with)
         am_i_a_tutor = MobileUtilities.is_mobile_a_tutor(gameworld=gameworld, target_entity=entity_to_talk_with)
         if am_i_a_tutor:
             what_type_of_tutor = MobileUtilities.get_type_of_tutor(gameworld=gameworld, target_entity=entity_to_talk_with)
-            open_the_shop(gameworld=gameworld, type_of_shopkeeper=what_type_of_tutor, shopkeeper_id=entity_to_talk_with, player_names=player_names)
+            open_the_shop(gameworld=gameworld, type_of_shopkeeper=what_type_of_tutor, shopkeeper_id=entity_to_talk_with)
         if not am_i_a_shopkeeper and not am_i_a_tutor:
             MobileUtilities.set_dialog_welcome_flag_to_false(gameworld=gameworld, target_entity=entity_to_talk_with)
             spoken_to_before = MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld,
@@ -50,10 +48,10 @@ def initiate_dialog(gameworld, game_config):
                                   gameworld=gameworld, speaker_id=entity_to_talk_with)
 
 
-def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id, player_names):
+def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id):
 
     if type_of_shopkeeper == 'armour':
-        shopkeeper_armour(gameworld=gameworld, player_names=player_names, shopkeeper_id=shopkeeper_id)
+        shopkeeper_armour(gameworld=gameworld, shopkeeper_id=shopkeeper_id)
 
     # if type_of_shopkeeper == '2':
     #     # jewellery
