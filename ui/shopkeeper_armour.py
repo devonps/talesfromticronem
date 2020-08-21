@@ -90,3 +90,5 @@ def shopkeeper_armour(gameworld, shopkeeper_id):
                                                                         attribute_name=px_att_name[selected_menu_option],
                                                                         attribute_bonus=px_att_bonus[
                                                                             selected_menu_option])
+
+            MobileUtilities.set_mobile_derived_attributes(gameworld=gameworld, entity=player_entity)
