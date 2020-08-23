@@ -32,8 +32,6 @@ ENV/
 .scannerwork
 /.coverage
 /coverage_html/
-# build library
-/builds.txt
 *.log
 bt.log
 game_log.txt

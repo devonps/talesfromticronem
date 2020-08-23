@@ -12,6 +12,7 @@
       "earring2": "pearl",
       "attributes": {
         "benefitName": "ferocity",
+        "benefitFlavour": "Increases critical damage",
         "benefitValue": "15"
       }
     },
@@ -23,6 +24,7 @@
       "earring2": "pearl",
       "attributes": {
         "benefitName": "healing",
+        "benefitFlavour": "Improved all healing",
         "benefitValue": "15"
       }
     },
@@ -34,6 +36,7 @@
       "earring2": "malachite",
       "attributes": {
         "benefitName": "expertise",
+        "benefitFlavour": "Increases condition duration",
         "benefitValue": "15"
       }
     },
@@ -60,6 +63,7 @@
       "earring2": "pearl",
       "attributes": {
         "benefitName": "concentration",
+        "benefitFlavour": "Increases boon duration",
         "benefitValue": "15"
       }
       },
@@ -71,6 +75,7 @@
       "earring2": "pearl",
       "attributes": {
         "benefitName": "healing",
+        "benefitFlavour": "Improved all healing",
         "benefitValue": "15"
       }
     },
@@ -82,6 +87,7 @@
       "earring2": "malachite",
       "attributes": {
         "benefitName": "expertise",
+        "benefitFlavour": "Increases condition duration",
         "benefitValue": "15"
       }
     },
@@ -108,6 +114,7 @@
       "earring2": "turquoise",
       "attributes": {
         "benefitName": "ferocity",
+        "benefitFlavour": "Increases critical damage",
         "benefitValue": "15"
       }
       },
@@ -119,6 +126,7 @@
       "earring2": "malachite",
       "attributes": {
         "benefitName": "concentration",
+        "benefitFlavour": "Increases boon duration",
         "benefitValue": "15"
       }
     },
@@ -130,6 +138,7 @@
       "earring2": "pearl",
       "attributes": {
         "benefitName": "healing",
+        "benefitFlavour": "Improved all healing",
         "benefitValue": "15"
       }
     },
@@ -156,6 +165,7 @@
       "earring2": "pearl",
       "attributes": {
         "benefitName": "concentration",
+        "benefitFlavour": "Increases boon duration",
         "benefitValue": "15"
       }
       },
@@ -167,6 +177,7 @@
       "earring2": "malachite",
       "attributes": {
         "benefitName": "concentration",
+        "benefitFlavour": "Increases boon duration",
         "benefitValue": "15"
       }
     },
@@ -178,6 +189,7 @@
       "earring2": "pearl",
       "attributes": {
         "benefitName": "ferocity",
+        "benefitFlavour": "Increases critical damage",
         "benefitValue": "15"
       }
     },
@@ -204,6 +216,7 @@
     "earring2": "pearl",
     "attributes": {
       "benefitName": "ferocity",
+      "benefitFlavour": "Increases critical damage",
       "benefitValue": "15"
     }
     },
@@ -215,6 +228,7 @@
     "earring2": "tigerseye",
     "attributes": {
       "benefitName": "healing",
+      "benefitFlavour": "Improved all healing",
       "benefitValue": "15"
     }
   },
@@ -226,6 +240,7 @@
     "earring2": "turquoise",
     "attributes": {
       "benefitName": "expertise",
+      "benefitFlavour": "Increases condition duration",
       "benefitValue": "15"
     }
   },
@@ -252,6 +267,7 @@
     "earring2": "garnet",
     "attributes": {
       "benefitName": "expertise",
+      "benefitFlavour": "Increases condition duration",
       "benefitValue": "15"
     }
     },
@@ -263,6 +279,7 @@
     "earring2": "garnet",
     "attributes": {
       "benefitName": "expertise",
+      "benefitFlavour": "Increases condition duration",
       "benefitValue": "15"
     }
   },
@@ -274,6 +291,7 @@
     "earring2": "garnet",
     "attributes": {
       "benefitName": "expertise",
+      "benefitFlavour": "Increases condition duration",
       "benefitValue": "15"
     }
   },

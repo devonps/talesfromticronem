@@ -3,6 +3,7 @@ from loguru import logger
 
 from components import mobiles
 from ui.shopkeeper_armour import shopkeeper_armour
+from ui.shopkeeper_jewellery import shopkeeper_jeweller
 from utilities.common import CommonUtils
 from utilities.display import pointy_menu
 from utilities.input_handlers import handle_game_keys
@@ -53,9 +54,9 @@ def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id):
     if type_of_shopkeeper == 'armour':
         shopkeeper_armour(gameworld=gameworld, shopkeeper_id=shopkeeper_id)
 
-    # if type_of_shopkeeper == '2':
-    #     # jewellery
-    #
+    if type_of_shopkeeper == 'jewellery':
+        shopkeeper_jeweller(gameworld=gameworld, shopkeeper_id=shopkeeper_id)
+
     # if type_of_shopkeeper == '3':
     #     # weapons
 
