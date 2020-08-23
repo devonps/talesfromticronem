@@ -85,10 +85,11 @@ def shopkeeper_armour(gameworld, shopkeeper_id):
             logger.debug('Armour modifier chosen is {}', as_prefix_list[selected_menu_option])
             logger.debug('Attribute to be modified is {}', px_att_name[selected_menu_option])
             logger.debug('Attribute bonus is {}', px_att_bonus[selected_menu_option])
-            ArmourUtilities.add_major_attribute_bonus_to_full_armourset(gameworld=gameworld,
-                                                                        player_entity=player_entity,
-                                                                        attribute_name=px_att_name[selected_menu_option],
-                                                                        attribute_bonus=px_att_bonus[
+            ArmourUtilities.apply_major_attribute_bonus_to_full_armourset(gameworld=gameworld,
+                                                                          player_entity=player_entity,
+                                                                          attribute_name=as_prefix_list[selected_menu_option],
+                                                                          attribute_bonus=px_att_bonus[
                                                                             selected_menu_option])
 
+            ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=gameworld, entity=player_entity)
             MobileUtilities.set_mobile_derived_attributes(gameworld=gameworld, entity=player_entity)

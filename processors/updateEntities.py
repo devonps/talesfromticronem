@@ -3,6 +3,7 @@ from loguru import logger
 
 from components import mobiles
 from utilities import formulas
+from utilities.armourManagement import ArmourUtilities
 from utilities.common import CommonUtils
 from utilities.mobileHelp import MobileUtilities
 
@@ -36,6 +37,7 @@ class UpdateEntitiesProcessor(esper.Processor):
                 # gain resources from spells
 
                 if not in_combat:
+                    ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=self.gameworld, entity=ent)
                     MobileUtilities.set_mobile_derived_attributes(self.gameworld, entity=ent)
 
     def apply_conditions(self, entity_names, player_entity, message_log_id, target_entity):

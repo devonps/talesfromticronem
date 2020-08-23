@@ -438,13 +438,11 @@ class Debug:
         section = 8
 
         draw_colourful_frame(title='-Entity Spy-', title_decorator=True, title_loc='centre', corner_decorator='', msg=4)
-        total_armour = MobileUtilities.get_mobile_derived_armour_value(gameworld=gameworld, entity=entity_id)
 
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
                           start_panel_frame_height=section_lines[section],
-                          title=section_heading[section] + " (" + str(total_armour) + ")",
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          title=section_heading[section], fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
         str_to_print = "[color=blue]Location Mat/Disp/Def[/color]"
 
@@ -546,6 +544,7 @@ class Debug:
                                                                                     entity=entity_id)
         entity_condi_duration = MobileUtilities.get_mobile_derived_condition_duration(gameworld=gameworld,
                                                                                       entity=entity_id)
+        total_armour = MobileUtilities.get_mobile_derived_armour_value(gameworld=gameworld, entity=entity_id)
 
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2,
                         s="[color=ENTITY_SPY_COMPONENT]Boon Duration:[/color]+" + str(entity_boon_duration))
@@ -555,6 +554,10 @@ class Debug:
                         s="[color=ENTITY_SPY_COMPONENT]Critical Damage:[/color]" + str(entity_critical_damage) + "%")
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5,
                         s="[color=ENTITY_SPY_COMPONENT]Condition Duration:[/color]+" + str(entity_condi_duration))
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6,
+                        s="[color=ENTITY_SPY_COMPONENT]Defense:[/color]" + str(total_armour))
+
+
 
         # display applied status effects
         section = 12

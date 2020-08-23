@@ -402,6 +402,7 @@ class CharacterCreation:
         SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=heal_spell_entity, slot=6, player_entity=player)
 
         # calculate derived stats
+        ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=gameworld, entity=player)
         MobileUtilities.set_mobile_derived_attributes(gameworld=gameworld, entity=player)
 
         # name the character

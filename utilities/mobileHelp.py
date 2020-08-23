@@ -34,37 +34,23 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def add_armour_modifier(gameworld, entity_id, armour_modifier, px_bonus):
         if armour_modifier.lower() == 'healer':
-            current_healingpower = MobileUtilities.get_mobile_secondary_healing_power(gameworld=gameworld,
-                                                                                      entity=entity_id)
-            new_bonus = current_healingpower + px_bonus
-            MobileUtilities.set_mobile_secondary_healing_power(gameworld=gameworld, entity=entity_id, value=new_bonus)
+            MobileUtilities.set_mobile_secondary_healing_power(gameworld=gameworld, entity=entity_id, value=px_bonus)
 
         if armour_modifier.lower() == 'malign':
-            current_condidamage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld,
-                                                                                        entity=entity_id)
-            new_bonus = current_condidamage + px_bonus
             MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=entity_id,
-                                                                  value=new_bonus)
+                                                                  value=px_bonus)
 
         if armour_modifier.lower() == 'mighty':
-            current_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=entity_id)
-            new_bonus = current_power + px_bonus
-            MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=entity_id, value=new_bonus)
+            MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=entity_id, value=px_bonus)
 
         if armour_modifier.lower() == 'precise':
-            current_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld, entity=entity_id)
-            new_bonus = current_precision + px_bonus
-            MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=entity_id, value=new_bonus)
+            MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=entity_id, value=px_bonus)
 
         if armour_modifier.lower() == 'resilient':
-            current_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld, entity=entity_id)
-            new_bonus = current_toughness + px_bonus
-            MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=entity_id, value=new_bonus)
+            MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=entity_id, value=px_bonus)
 
         if armour_modifier.lower() == 'vital':
-            current_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld, entity=entity_id)
-            new_bonus = current_vitality + px_bonus
-            MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=entity_id, value=new_bonus)
+            MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=entity_id, value=px_bonus)
 
     @staticmethod
     def set_player_gender(gameworld, entity, gender):
@@ -793,7 +779,6 @@ class MobileUtilities(numbers.Real, ABC):
     #
     @staticmethod
     def set_mobile_derived_attributes(gameworld, entity):
-        MobileUtilities.set_mobile_derived_armour_attribute(gameworld, entity)
         MobileUtilities.set_mobile_derived_boon_duration(gameworld, entity)
         MobileUtilities.set_mobile_derived_condition_duration(gameworld, entity)
         MobileUtilities.set_mobile_derived_critical_damage(gameworld, entity)
@@ -806,67 +791,6 @@ class MobileUtilities(numbers.Real, ABC):
     def set_mobile_derived_special_bar_current_value(gameworld, entity):
         pass
         # do nothing yet
-
-    @staticmethod
-    def set_mobile_derived_armour_attribute(gameworld, entity):
-        """
-        Need to calculate the 'defense' value first
-        Then get the toughness attribute value
-        :param gameworld: object: the game world
-        :param entity: integer: represents the entity in the gameworld
-        :return: None
-        """
-        # entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=gameconfig)
-        # get toughness value from primary attributes
-        primary_attribute_component = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
-        toughness_value = primary_attribute_component.toughness
-
-        # get defense values based on equipped pieces of armour
-        defense_value = MobileUtilities.get_mobile_derived_armour_value(gameworld=gameworld, entity=entity)
-        # defense_value = MobileUtilities.get_current_armour_based_defense_value(gameworld=gameworld, entity=entity)
-
-        armour_value = defense_value + toughness_value
-
-        gameworld.component_for_entity(entity, mobiles.DerivedAttributes).armour = armour_value
-
-    # @staticmethod
-    # def get_current_armour_based_defense_value(gameworld, entity):
-    #
-    #     head = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=entity)
-    #     chest = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=entity)
-    #     legs = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=entity)
-    #     feet = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=entity)
-    #     hands = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity)
-    #
-    #     if chest != 0:
-    #         def_chest_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest)
-    #
-    #     else:
-    #         def_chest_value = 0
-    #
-    #     if head != 0:
-    #         def_head_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=head)
-    #     else:
-    #         def_head_value = 0
-    #
-    #     if legs != 0:
-    #         def_legs_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs)
-    #     else:
-    #         def_legs_value = 0
-    #
-    #     if feet != 0:
-    #         def_feet_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet)
-    #     else:
-    #         def_feet_value = 0
-    #
-    #     if hands != 0:
-    #         def_hands_value = ItemUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands)
-    #     else:
-    #         def_hands_value = 0
-    #
-    #     defense_value = def_chest_value + def_head_value + def_legs_value + def_feet_value + def_hands_value
-    #
-    #     return defense_value
 
     @staticmethod
     def set_mobile_derived_boon_duration(gameworld, entity):
