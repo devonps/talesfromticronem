@@ -68,32 +68,22 @@ class JewelleryUtilities:
         benefit = statbonus[1]
 
         if stat.lower() == 'condition damage':
-            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).condition_damage
-            new_stat_bonus = current_stat_bonus + benefit
-            gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).condition_damage = new_stat_bonus
+            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=entity, value=benefit)
 
         if stat.lower() == 'power':
-            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power
-            new_stat_bonus = current_stat_bonus + benefit
-            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power = new_stat_bonus
+            MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=entity, value=benefit)
 
         if stat.lower() == 'vitality':
-            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality
-            new_stat_bonus = current_stat_bonus + benefit
-            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality = new_stat_bonus
+            MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=entity, value=benefit)
 
         if stat.lower() == 'toughness':
             MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=entity, value=benefit)
 
         if stat.lower() == 'healing power':
-            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healing_power
-            new_stat_bonus = current_stat_bonus + benefit
-            gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healing_power = new_stat_bonus
+            MobileUtilities.set_mobile_secondary_healing_power(gameworld=gameworld, entity=entity, value=benefit)
 
         if stat.lower() == 'precision':
-            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision
-            new_stat_bonus = current_stat_bonus + benefit
-            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision = new_stat_bonus
+            MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=entity, value=benefit)
 
     @staticmethod
     def add_spell_to_jewellery(gameworld, piece_of_jewellery, spell_entity):

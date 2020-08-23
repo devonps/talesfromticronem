@@ -353,46 +353,23 @@ class CharacterCreation:
 
         # create racial bonuses
         if player_race.lower() == 'dilga':
-            cur_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld, entity=player)
-            cur_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=player)
-            cur_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld, entity=player)
 
-            cur_precision += 1
-            MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=player, value=cur_precision)
-            cur_condi_damage += 1
-            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player, value=cur_condi_damage)
-            cur_ferocity += 1
-            MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player, value=cur_ferocity)
+            MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=player, value=1)
+            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player, value=1)
+            MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player, value=1)
 
         if player_race.lower() == 'eskeri':
-            cur_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=player)
-            cur_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld, entity=player)
-
-            cur_power += 1
-            MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=player, value=cur_power)
-            cur_concentration += 1
-            MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player, value=cur_concentration)
+            MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=player, value=1)
+            MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player, value=1)
 
         if player_race.lower() == 'jogah':
-            cur_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld, entity=player)
-            cur_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld, entity=player)
-            cur_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld, entity=player)
-
-            cur_vitality += 1
-            MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=player, value=cur_vitality)
-            cur_concentration += 1
-            MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player, value=cur_concentration)
-            cur_ferocity += 1
-            MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player, value=cur_ferocity)
+            MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=player, value=1)
+            MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player, value=1)
+            MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player, value=1)
 
         if player_race.lower() == 'oshun':
-            cur_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld, entity=player)
-            cur_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=player)
-
-            cur_toughness += 1
-            MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=player, value=cur_toughness)
-            cur_condi_damage += 1
-            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player, value=cur_condi_damage)
+            MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=player, value=1)
+            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player, value=1)
 
         # generate an empty spell bar
         SpellUtilities.setup_mobile_empty_spellbar(gameworld=gameworld, player_entity=player)

@@ -671,7 +671,9 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_mobile_primary_power(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power = value
+        current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power
+        new_stat_bonus = current_stat_bonus + value
+        gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).power = new_stat_bonus
 
     @staticmethod
     def get_mobile_primary_precision(gameworld, entity):
@@ -680,7 +682,9 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_mobile_primary_precision(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision = value
+            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision
+            new_stat_bonus = current_stat_bonus + value
+            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision = new_stat_bonus
 
     @staticmethod
     def get_mobile_primary_toughness(gameworld, entity):
@@ -700,7 +704,9 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_mobile_primary_vitality(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality = value
+        current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality
+        new_stat_bonus = current_stat_bonus + value
+        gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).vitality = new_stat_bonus
 
     #
     # Get secondary attributes
@@ -721,7 +727,9 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_mobile_secondary_condition_damage(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).condition_damage = value
+        current_stat_bonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).condition_damage
+        new_stat_bonus = current_stat_bonus + value
+        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).condition_damage = new_stat_bonus
 
     @staticmethod
     def get_mobile_secondary_expertise(gameworld, entity):
@@ -748,7 +756,9 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_mobile_secondary_healing_power(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healing_power = value
+        current_stat_bonus = gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healing_power
+        new_stat_bonus = current_stat_bonus + value
+        gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healing_power = new_stat_bonus
 
     @staticmethod
     def is_entity_wearing_armour(gameworld, entity):
