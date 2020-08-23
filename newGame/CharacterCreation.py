@@ -435,7 +435,7 @@ class CharacterCreation:
 
         # create some armour for our hero - another temporary crutch
         # order is: heads, hands, chest, legs, feet
-        armour_set = ItemManager.create_full_armour_set(gameworld=gameworld, game_config=game_config, prefix='', armourset='Embroided')
+        armour_set = ArmourUtilities.create_full_armour_set(gameworld=gameworld, game_config=game_config, prefix='', armourset='Embroided')
         ArmourUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=armour_set)
 
         # until NPC interactions has been completed

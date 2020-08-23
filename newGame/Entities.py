@@ -4,6 +4,7 @@ from components import mobiles
 from newGame.CreateSpells import AsEntities
 from newGame.Items import ItemManager
 from utilities import configUtilities, colourUtilities
+from utilities.armourManagement import ArmourUtilities
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from loguru import logger
@@ -430,7 +431,7 @@ class Entity:
             px_bonus = int(px_att_bonus[armour_mod_index])
             MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=entity_id,
                                                 armour_modifier=armour_modifier, px_bonus=px_bonus)
-            ItemManager.create_and_equip_armourset_for_npc(gameworld=gameworld, as_display_name=as_display_name,
+            ArmourUtilities.create_and_equip_armourset_for_npc(gameworld=gameworld, as_display_name=as_display_name,
                                                            armour_modifier=armour_modifier, entity_id=entity_id)
         else:
             logger.info('They are wearing no armour')
