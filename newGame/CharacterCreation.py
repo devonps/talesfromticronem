@@ -4,13 +4,10 @@ from bearlibterminal import terminal
 
 from loguru import logger
 
-from newGame.Items import ItemManager
 from utilities import configUtilities, colourUtilities
 from utilities.armourManagement import ArmourUtilities
 from utilities.display import pointy_vertical_menu, draw_simple_frame
 from utilities.input_handlers import handle_game_keys
-from utilities.itemsHelp import ItemUtilities
-from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from newGame.initialiseNewGame import create_world
@@ -387,15 +384,6 @@ class CharacterCreation:
 
         # assign male gender to character
         MobileUtilities.set_player_gender(gameworld=gameworld, entity=player, gender='male')
-
-        # create some armour for our hero - another temporary crutch
-        # order is: heads, hands, chest, legs, feet
-        armour_set = ArmourUtilities.create_full_armour_set(gameworld=gameworld, game_config=game_config, prefix='', armourset='Embroided')
-        ArmourUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player, armourset=armour_set)
-
-        # until NPC interactions has been completed
-
-
 
     @staticmethod
     def character_naming(gameworld, game_config):
