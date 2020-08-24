@@ -457,11 +457,11 @@ class CommonUtils:
 
     @staticmethod
     def move_menu_selection(event_action, selected_menu_option, max_menu_option):
-        if event_action == 'up':
+        if event_action in ('up', 'left'):
             selected_menu_option -= 1
             if selected_menu_option < 0:
                 selected_menu_option = max_menu_option
-        if event_action == 'down':
+        if event_action in ('down', 'right'):
             selected_menu_option += 1
             if selected_menu_option > max_menu_option:
                 selected_menu_option = 0

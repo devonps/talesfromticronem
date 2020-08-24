@@ -4,7 +4,7 @@ from loguru import logger
 from utilities import colourUtilities, configUtilities
 from utilities.armourManagement import ArmourUtilities
 from utilities.common import CommonUtils
-from utilities.display import coloured_list, pointy_menu
+from utilities.display import coloured_list, pointy_vertical_menu
 from utilities.input_handlers import handle_game_keys
 from utilities.mobileHelp import MobileUtilities
 
@@ -54,9 +54,9 @@ def shopkeeper_armour(gameworld, shopkeeper_id):
         terminal.print_(x=dialog_frame_start_x + 2, y=dialog_frame_start_y + 2, width=dialog_frame_width - 5,
                         s=intro_text)
 
-        pointy_menu(header='', menu_options=menu_options, menu_start_x=dialog_frame_start_x + 3,
-                    menu_start_y=dialog_frame_start_y + 9, blank_line=True, selected_option=selected_menu_option,
-                    colours=[colourUtilities.get('SPRINGGREEN'), colourUtilities.get('DARKOLIVEGREEN')])
+        pointy_vertical_menu(header='', menu_options=menu_options, menu_start_x=dialog_frame_start_x + 3,
+                             menu_start_y=dialog_frame_start_y + 9, blank_line=True, selected_option=selected_menu_option,
+                             colours=[colourUtilities.get('SPRINGGREEN'), colourUtilities.get('DARKOLIVEGREEN')])
 
         # display flavour columns
         terminal.printf(x=dialog_frame_start_x + 15, y=dialog_frame_start_y + 8, s=flavour_column_one_string)

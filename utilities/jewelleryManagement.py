@@ -1,8 +1,48 @@
 from components import items, mobiles
+from utilities import configUtilities
+from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 
 
 class JewelleryUtilities:
+
+    @staticmethod
+    def get_gemstone_details(this_gemstone):
+        game_config = configUtilities.load_config()
+        playable_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                    parameter='GEMSTONESFILE')
+        gemstone_file = read_json_file(playable_class_file)
+
+        gem_details = []
+
+        for gems in gemstone_file['gemstones']:
+            if this_gemstone == gems['Stone'].lower():
+                gem_details.append(gems['shop_display'])
+                gem_details.append(str(gems['Amulet']))
+                gem_details.append(str(gems['Ring']))
+                gem_details.append(str(gems['Earring']))
+
+        return gem_details
+
+
+    @staticmethod
+    def load_jewellery_package_based_on_class(playable_class, game_config):
+        playable_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                    parameter='CLASSESFILE')
+        class_file = read_json_file(playable_class_file)
+
+        balanced = []
+        defensive = []
+        offensive = []
+
+        for play_class in class_file['classes']:
+            if playable_class == play_class['name']:
+                balanced.append(play_class['balanced'])
+                defensive.append(play_class['defensive'])
+                offensive.append(play_class['offensive'])
+
+        return defensive, balanced, offensive
+
 
     @staticmethod
     def get_jewellery_activator(gameworld, jewellery_entity):

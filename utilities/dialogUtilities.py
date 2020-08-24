@@ -5,7 +5,7 @@ from components import mobiles
 from ui.shopkeeper_armour import shopkeeper_armour
 from ui.shopkeeper_jewellery import shopkeeper_jeweller
 from utilities.common import CommonUtils
-from utilities.display import pointy_menu
+from utilities.display import pointy_vertical_menu
 from utilities.input_handlers import handle_game_keys
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
@@ -96,9 +96,9 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
         # valid responses
         menu_response = build_menu_responses(number_responses=number_responses, responses=responses,
                                              response_text=response_text)
-        pointy_menu(header='', menu_options=menu_response, menu_start_x=dialog_frame_start_x + 3,
-                    menu_start_y=dialog_frame_start_y + 5, blank_line=True, selected_option=selected_response_option,
-                    colours=[colourUtilities.get('SPRINGGREEN'), colourUtilities.get('DARKOLIVEGREEN')])
+        pointy_vertical_menu(header='', menu_options=menu_response, menu_start_x=dialog_frame_start_x + 3,
+                             menu_start_y=dialog_frame_start_y + 5, blank_line=True, selected_option=selected_response_option,
+                             colours=[colourUtilities.get('SPRINGGREEN'), colourUtilities.get('DARKOLIVEGREEN')])
 
         # blit the console
         terminal.refresh()

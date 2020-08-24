@@ -1,7 +1,7 @@
 from loguru import logger
 
 from utilities import configUtilities
-from utilities.display import draw_colourful_frame, pointy_menu
+from utilities.display import draw_colourful_frame, pointy_vertical_menu
 from utilities.input_handlers import handle_game_keys
 from newGame.CharacterCreation import CharacterCreation
 
@@ -45,8 +45,8 @@ class StartGame:
             string_to_print = '[color=white]' + game_copyright + ' [color=yellow]' + game_author
             terminal.printf(x=copyright_x, y=copyright_y, s=string_to_print)
 
-            pointy_menu(header='', menu_options=['New Game', 'Quit'], menu_start_x=menu_start_x,
-                        menu_start_y=menu_start_y, blank_line=True, selected_option=selected_menu_option)
+            pointy_vertical_menu(header='', menu_options=['New Game', 'Quit'], menu_start_x=menu_start_x,
+                                 menu_start_y=menu_start_y, blank_line=True, selected_option=selected_menu_option)
 
             # blit changes to terminal
             terminal.refresh()

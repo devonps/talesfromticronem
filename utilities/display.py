@@ -32,16 +32,13 @@ def coloured_list(list_options, list_x, list_y, selected_option, blank_line, fg)
 #
 # this is like a single select menu
 #
-def pointy_menu(header, menu_options, menu_start_x, menu_start_y, blank_line, selected_option, colours=None):
+def pointy_vertical_menu(header, menu_options, menu_start_x, menu_start_y, blank_line, selected_option, colours=None):
     if colours is None:
         selected_colour = colourUtilities.get('YELLOW1')
         non_selected_colour = colourUtilities.get('WHITE')
     else:
         selected_colour = colours[0]
         non_selected_colour = colours[1]
-
-    if len(menu_options) > 26:
-        raise ValueError('Cannot have a menu with more than 26 options.')
 
     # print the header, with auto-wrap
     if header != '':
@@ -67,6 +64,38 @@ def pointy_menu(header, menu_options, menu_start_x, menu_start_y, blank_line, se
         mnu += 1
         if blank_line:
             menu_count += 1
+
+
+def pointy_horizontal_menu(header, menu_options, menu_start_x, menu_start_y, selected_option, colours=None):
+    if colours is None:
+        selected_colour = colourUtilities.get('YELLOW1')
+        non_selected_colour = colourUtilities.get('WHITE')
+    else:
+        selected_colour = colours[0]
+        non_selected_colour = colours[1]
+
+    # print the header, with auto-wrap
+    if header != '':
+        terminal.print_(x=menu_start_x, y=10, s=header)
+
+    # print the menu options
+    next_pos = 0
+    mnu = 0
+    start_print_string = "[color="
+    end_print_string = ']'
+
+    for option_text in menu_options:
+        if selected_option == mnu:
+            fg_color = selected_colour
+            mnu_pointer = '>'
+        else:
+            fg_color = non_selected_colour
+            mnu_pointer = ' '
+        men_text = start_print_string + fg_color + end_print_string + mnu_pointer + ' ' + option_text
+
+        terminal.print_(x=menu_start_x + next_pos, y=menu_start_y, s=men_text)
+        next_pos += len(option_text) + 3
+        mnu += 1
 
 
 def display_coloured_box(title, posx, posy, width, height, fg, bg):
