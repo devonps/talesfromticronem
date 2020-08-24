@@ -3,10 +3,56 @@ import random
 from loguru import logger
 
 from components import items
+from utilities import configUtilities
 from utilities.itemsHelp import ItemUtilities
+from utilities.jsonUtilities import read_json_file
 
 
 class WeaponUtilities:
+
+    @staticmethod
+    def get_available_weapons_for_class(selected_class, game_config):
+        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                       parameter='CLASSESFILE')
+        class_file = read_json_file(player_class_file)
+        available_weapons = []
+
+        for option in class_file['classes']:
+            if option['spellfile'] == selected_class:
+                wpns = option["weapons"]
+
+                # If you use this approach along
+                # with a small trick, then you can process the keys and values of any dictionary.
+                # The trick consists of using the indexing operator[] with the dictionary and its keys to
+                # get access to the values:
+
+                for key in wpns:
+                    if wpns[key] == 'true':
+                        available_weapons.append(key)
+        return available_weapons
+
+    @staticmethod
+    def get_weapon_flavour_info(game_config, available_weapons):
+        weapon_flavour_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                       parameter='WEAPONSFILE')
+        weapon_file = read_json_file(weapon_flavour_file)
+        weapon_description = []
+        weapon_wielded = []
+        weapon_damage_ranges = []
+        weapon_quality = []
+
+        for weapon in available_weapons:
+            for option in weapon_file['weapons']:
+                if option['name'] == weapon:
+                    weapon_description.append(option["description"])
+                    weapon_wielded.append(option["wielded_hands"])
+                    weapon_quality.append(option["quality_level"])
+
+                    full_damage_range_list = option["damage_ranges"]
+                    weapon_damage_ranges.append(full_damage_range_list[0])
+
+        return weapon_description, weapon_wielded, weapon_description, weapon_quality, weapon_damage_ranges
+
     @staticmethod
     def get_equipped_weapon_for_enemy(gameworld, weapons_equipped):
         weapon_id = 0
