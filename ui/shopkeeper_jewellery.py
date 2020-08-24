@@ -4,8 +4,10 @@ from utilities import configUtilities, colourUtilities
 from utilities.common import CommonUtils
 from utilities.display import pointy_horizontal_menu
 from utilities.input_handlers import handle_game_keys
+from utilities.itemsHelp import ItemUtilities
 from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.mobileHelp import MobileUtilities
+from utilities.spellHelp import SpellUtilities
 
 
 def shopkeeper_jeweller(gameworld, shopkeeper_id):
@@ -30,8 +32,7 @@ def shopkeeper_jeweller(gameworld, shopkeeper_id):
     CommonUtils.draw_dialog_ui(gameworld=gameworld, game_config=game_config, entity_speaking=shopkeeper_id)
 
     starter_text = "Ahhh if it isn't $1, I'm the jewellery man!"
-    return_text = CommonUtils.replace_value_in_event(event_string=starter_text, par1=player_first_name)
-    intro_text = return_text
+    intro_text = CommonUtils.replace_value_in_event(event_string=starter_text, par1=player_first_name)
 
     menu_options = ['Defensive', 'Balanced', 'Offensive']
     trinket_headings = ['Gemstone', 'Attribute', 'Uplift', 'Bonus']
@@ -39,48 +40,48 @@ def shopkeeper_jeweller(gameworld, shopkeeper_id):
     max_menu_option = len(menu_options) - 1
     flavour_colour_string = '[color=' + colourUtilities.get('LIGHTSLATEGRAY') + ']'
     flavour_colour_content = '[color=' + colourUtilities.get('YELLOW4') + ']'
+    current_package = []
 
     defensive_package, balanced_package, offensive_package = JewelleryUtilities.load_jewellery_package_based_on_class(
         playable_class=player_class, game_config=game_config)
 
+    current_package.append(defensive_package)
+    current_package.append(balanced_package)
+    current_package.append(offensive_package)
+
+    # intro text
+    terminal.print_(x=dialog_frame_start_x + 2, y=dialog_frame_start_y + 2, width=dialog_frame_width - 5,
+                    s=intro_text)
+
+    # display trinket headings
+    hx = dialog_frame_start_x + 13
+    sy = dialog_frame_start_y + 7
+    terminal.printf(x=hx, y=sy, s=flavour_colour_string + trinket_headings[0])
+    hx += len(trinket_headings[0]) + 2
+    terminal.printf(x=hx, y=sy, s=flavour_colour_string + trinket_headings[1])
+    hx += len(trinket_headings[1]) + 2
+    terminal.printf(x=hx, y=sy, s=flavour_colour_string + trinket_headings[2])
+    hx += len(trinket_headings[2]) + 2
+    terminal.printf(x=hx, y=sy, s=flavour_colour_string + trinket_headings[3])
+
+    # display flavour columns
+    sx = dialog_frame_start_x + 3
+    sy = dialog_frame_start_y + 10
+    for a in range(len(flavour_headings)):
+        terminal.printf(x=sx, y=sy, s=flavour_colour_string + flavour_headings[a])
+        sy += 2
+
     valid_event = False
     while not valid_event:
-
-        # intro text
-        terminal.print_(x=dialog_frame_start_x + 2, y=dialog_frame_start_y + 2, width=dialog_frame_width - 5,
-                        s=intro_text)
 
         # display package menu options
         pointy_horizontal_menu(header='', menu_options=menu_options, menu_start_x=dialog_frame_start_x + 13,
                                menu_start_y=dialog_frame_start_y + 5, selected_option=selected_menu_option,
                                colours=[colourUtilities.get('SPRINGGREEN'), colourUtilities.get('DARKOLIVEGREEN')])
 
-        # display flavour columns
-        sx = dialog_frame_start_x + 3
-        sy = dialog_frame_start_y + 10
-        for a in range(len(flavour_headings)):
-            terminal.printf(x=sx, y=sy, s=flavour_colour_string + flavour_headings[a])
-            sy += 2
-
-        # display trinket headings
-        hx = dialog_frame_start_x + 13
-        sy = dialog_frame_start_y + 7
-        terminal.printf(x=hx, y=sy, s=flavour_colour_string + trinket_headings[0])
-        hx += len(trinket_headings[0]) + 2
-        terminal.printf(x=hx, y=sy, s=flavour_colour_string + trinket_headings[1])
-        hx += len(trinket_headings[1]) + 2
-        terminal.printf(x=hx, y=sy, s=flavour_colour_string + trinket_headings[2])
-        hx += len(trinket_headings[2]) + 2
-        terminal.printf(x=hx, y=sy, s=flavour_colour_string + trinket_headings[3])
-        current_package = []
-        if selected_menu_option == 0:
-            current_package = defensive_package
-        if selected_menu_option == 1:
-            current_package = balanced_package
-        if selected_menu_option == 2:
-            current_package = offensive_package
-
-        display_jewellery_package(sx=dialog_frame_start_x + 13, sy=dialog_frame_start_y + 10, flavour_colour_content=flavour_colour_content, jewellery_package=current_package)
+        display_jewellery_package(sx=dialog_frame_start_x + 13, sy=dialog_frame_start_y + 10,
+                                  flavour_colour_content=flavour_colour_content,
+                                  jewellery_package=current_package[selected_menu_option])
 
         # blit the console
         terminal.refresh()
@@ -96,9 +97,42 @@ def shopkeeper_jeweller(gameworld, shopkeeper_id):
             valid_event = True
             # apply shopkeeper bonus
 
+            # create jewellery set based on the balanced package
+            # this is a temp approach being used for utility spells
+
+            jewellery_package = menu_options[selected_menu_option]
+
+            JewelleryUtilities.create_jewellery_for_utility_spells(gameworld=gameworld, game_config=game_config,
+                                                                   jewellery_set=jewellery_package.lower())
+
+            set_spellbar_utility_spells(gameworld=gameworld, player_entity=player_entity)
+
+
+def set_spellbar_utility_spells(gameworld, player_entity):
+    pendent_entity = JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
+                                                                                entity=player_entity,
+                                                                                bodylocation='neck')
+    left_ear_entity = JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
+                                                                                 entity=player_entity,
+                                                                                 bodylocation='lear')
+    right_ear_entity = JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
+                                                                                  entity=player_entity,
+                                                                                  bodylocation='rear')
+
+    if pendent_entity > 0:
+        sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=pendent_entity)
+        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=7, player_entity=player_entity)
+
+    if left_ear_entity > 0:
+        sp2 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=left_ear_entity)
+        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=8, player_entity=player_entity)
+
+    if right_ear_entity > 0:
+        sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear_entity)
+        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=9, player_entity=player_entity)
+
 
 def display_jewellery_package(sx, sy, flavour_colour_content, jewellery_package):
-
     this_gem_details = JewelleryUtilities.get_gemstone_details(this_gemstone=jewellery_package[0]['neck'])
     terminal.printf(x=sx, y=sy, s=flavour_colour_content + jewellery_package[0]['neck'] + '    ')
     terminal.printf(x=sx + 10, y=sy, s=flavour_colour_content + this_gem_details[0] + '    ')

@@ -388,28 +388,6 @@ class CharacterCreation:
         # assign male gender to character
         MobileUtilities.set_player_gender(gameworld=gameworld, entity=player, gender='male')
 
-        # create jewellery set based on the balanced package
-        # this is a temp approach being used for utility spells
-        ItemManager.create_jewellery_for_utility_spells(gameworld=gameworld, game_config=game_config)
-
-        pendent_entity = JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='neck')
-        left_ear_entity = JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='lear')
-        right_ear_entity = JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player, bodylocation='rear')
-
-        if pendent_entity > 0:
-            sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=pendent_entity)
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=7, player_entity=player)
-
-        if left_ear_entity > 0:
-            sp2 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=left_ear_entity)
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=8, player_entity=player)
-
-        if right_ear_entity > 0:
-            sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear_entity)
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=9, player_entity=player)
-
-        # end of temporary code for setting utility slots
-
         # create some armour for our hero - another temporary crutch
         # order is: heads, hands, chest, legs, feet
         armour_set = ArmourUtilities.create_full_armour_set(gameworld=gameworld, game_config=game_config, prefix='', armourset='Embroided')
