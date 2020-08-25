@@ -1,3 +1,5 @@
+import textwrap
+
 from bearlibterminal import terminal
 from utilities import configUtilities, colourUtilities
 from utilities.common import CommonUtils
@@ -22,7 +24,7 @@ def shopkeeper_weaponsmith(gameworld, shopkeeper_id):
     available_weapons = WeaponUtilities.get_available_weapons_for_class(selected_class=player_class,
                                                                         game_config=game_config)
     max_menu_option = len(available_weapons) - 1
-    weapon_description, weapon_wielded, weapon_description, weapon_quality, weapon_damage_ranges = WeaponUtilities.get_weapon_flavour_info(
+    weapon_description, weapon_wielded, weapon_quality, weapon_damage_ranges = WeaponUtilities.get_weapon_flavour_info(
         game_config=game_config, available_weapons=available_weapons)
 
     dialog_frame_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
@@ -51,10 +53,18 @@ def shopkeeper_weaponsmith(gameworld, shopkeeper_id):
                              colours=[colourUtilities.get('SPRINGGREEN'), colourUtilities.get('DARKOLIVEGREEN')])
 
         # weapon flavour text
-        # This is a 2-handed sword, it is of normal quality, and does between 55 and 99 direct damage per target.
-        weapon_flavour_text = build_weapon_flavour_text(weapon_damage_ranges=weapon_damage_ranges, selected_menu_option=selected_menu_option)
-        terminal.print_(x=dialog_frame_start_x + 14, y=dialog_frame_start_y + 6, width=dialog_frame_width - 15,
-                        s=weapon_flavour_text)
+        # This is a 2-handed sword and does between 55 and 99 direct damage per target.
+        weapon_flavour_text_list = build_weapon_flavour_text(weapon_damage_ranges=weapon_damage_ranges, selected_menu_option=selected_menu_option, weapon_wielded=weapon_wielded, weapon_description=weapon_description, weapon_quality=weapon_quality)
+        yy = dialog_frame_start_y + 6
+        xx = dialog_frame_start_x + 14
+        for y in range(4):
+            for x in range(45):
+                terminal.printf(x=xx + x, y=yy + y, s=' ')
+
+        dy = dialog_frame_start_y + 6
+        for a in range(len(weapon_flavour_text_list)):
+            terminal.printf(x=dialog_frame_start_x + 14, y=dy, s=weapon_flavour_text_list[a])
+            dy += 1
 
         # blit the console
         terminal.refresh()
@@ -71,12 +81,25 @@ def shopkeeper_weaponsmith(gameworld, shopkeeper_id):
             # apply shopkeeper bonus
 
 
-def build_weapon_flavour_text(weapon_damage_ranges, selected_menu_option):
+def build_weapon_flavour_text(weapon_damage_ranges, selected_menu_option, weapon_wielded, weapon_description, weapon_quality):
+    start_text = 'This is '
+    weapon_desc_text = weapon_description[selected_menu_option]
+    weapon_quality = ', it is of ' + weapon_quality[selected_menu_option] + ' quality'
+    wielded_text = ' and is wielded in '
+
+    if weapon_wielded[selected_menu_option] == 'both':
+        wielded_text += 'both hands, '
+    if weapon_wielded[selected_menu_option] == 'main':
+        wielded_text += 'the main hand, '
+    if weapon_wielded[selected_menu_option] == 'off':
+        wielded_text += 'the off hand, '
 
     wpn_dam = weapon_damage_ranges[selected_menu_option]
     weapon_min_damage = wpn_dam.get('min')
     weapon_max_damage = wpn_dam.get('max')
-    weapon_flavour_text = 'Deals between '
-    weapon_flavour_text += str(weapon_min_damage) + ' and ' + str(weapon_max_damage) + ' direct damage.'
+    weapon_damage_range_text = 'and deals between ' + str(weapon_min_damage) + ' and ' + str(weapon_max_damage) + ' direct damage.'
+    flavour_text = start_text + weapon_desc_text + weapon_quality + wielded_text + weapon_damage_range_text
+
+    weapon_flavour_text_list = textwrap.wrap(flavour_text, width=45)
     
-    return weapon_flavour_text
+    return weapon_flavour_text_list

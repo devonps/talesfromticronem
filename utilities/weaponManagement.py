@@ -51,7 +51,7 @@ class WeaponUtilities:
                     full_damage_range_list = option["damage_ranges"]
                     weapon_damage_ranges.append(full_damage_range_list[0])
 
-        return weapon_description, weapon_wielded, weapon_description, weapon_quality, weapon_damage_ranges
+        return weapon_description, weapon_wielded, weapon_quality, weapon_damage_ranges
 
     @staticmethod
     def get_equipped_weapon_for_enemy(gameworld, weapons_equipped):
