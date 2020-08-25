@@ -2,9 +2,8 @@ import random
 
 from loguru import logger
 from components import spells, items, mobiles, spellBar
-from utilities import colourUtilities, configUtilities, formulas
+from utilities import configUtilities, formulas
 from utilities.common import CommonUtils
-from utilities.display import draw_simple_frame
 from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
@@ -626,9 +625,14 @@ class SpellUtilities:
         if slot_spell_entity == 0:
             off_hand_weapon = 'Off Hand (Nothing)'
         else:
-            spell_name, _, _ = SpellUtilities.get_spell_info_details(gameworld=gameworld,
-                                                                     spell_entity=slot_spell_entity)
-            off_hand_weapon = 'Off Hand (' + spell_name + ')'
+            weapon_name = ''
+            # List of items equipped in main, off, and both hands
+            equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
+            if equipped_weapons[1] > 0:
+                weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[1])
+            if equipped_weapons[2] > 0:
+                weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[2])
+            off_hand_weapon = 'Off Hand (' + weapon_name + ')'
         this_row += 1
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + off_hand_weapon)
         this_row += 2
@@ -683,9 +687,14 @@ class SpellUtilities:
         if slot_spell_entity == 0:
             main_hand_weapon = 'Main Hand (Nothing)'
         else:
-            spell_name, _, _ = SpellUtilities.get_spell_info_details(gameworld=gameworld,
-                                                                     spell_entity=slot_spell_entity)
-            main_hand_weapon = 'Main Hand (' + spell_name + ')'
+            weapon_name = ''
+            # List of items equipped in main, off, and both hands
+            equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
+            if equipped_weapons[0] > 0:
+                weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[0])
+            if equipped_weapons[2] > 0:
+                weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[2])
+            main_hand_weapon = 'Main Hand (' + weapon_name + ')'
         this_row += 2
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + main_hand_weapon)
         this_row += 2

@@ -10,6 +10,7 @@ from utilities.mobileHelp import MobileUtilities
 from loguru import logger
 from utilities.jsonUtilities import read_json_file
 from utilities.spellHelp import SpellUtilities
+from utilities.weaponManagement import WeaponUtilities
 
 
 class Entity:
@@ -492,13 +493,13 @@ class Entity:
     def generate_sample_spells_to_be_loaded(created_weapon_entity, entity_id, gameworld, game_config):
 
         enemy_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
-        weapon_type = ItemUtilities.get_weapon_type(gameworld, created_weapon_entity)
+        weapon_type = WeaponUtilities.get_weapon_type(gameworld, created_weapon_entity)
 
         AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config, spell_file=enemy_class, playable_class=enemy_class)
 
         spell_list = SpellUtilities.get_list_of_spells_for_enemy(gameworld=gameworld, weapon_type=weapon_type,
                                                                  mobile_class=enemy_class)
-        sample_spells = ItemUtilities.load_enemy_weapon_with_spells(gameworld=gameworld, enemy_id=entity_id,
+        sample_spells = WeaponUtilities.load_enemy_weapon_with_spells(gameworld=gameworld, enemy_id=entity_id,
                                                                     spell_list=spell_list,
                                                                     weapon_entity_id=created_weapon_entity,
                                                                     weapon_type=weapon_type)

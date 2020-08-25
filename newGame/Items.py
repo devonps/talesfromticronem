@@ -1,10 +1,8 @@
-from components import items, spells
+from components import items
 from utilities import world, jsonUtilities
-from utilities.armourManagement import ArmourUtilities
 from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities import configUtilities, colourUtilities
-from loguru import logger
 
 
 class ItemManager:
