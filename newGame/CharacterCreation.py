@@ -4,6 +4,7 @@ from bearlibterminal import terminal
 
 from loguru import logger
 
+from newGame.Items import ItemManager
 from utilities import configUtilities, colourUtilities
 from utilities.armourManagement import ArmourUtilities
 from utilities.display import pointy_vertical_menu, draw_simple_frame
@@ -15,6 +16,7 @@ from utilities.common import CommonUtils
 
 from ticronem import game_loop
 from utilities.spellHelp import SpellUtilities
+from utilities.weaponManagement import WeaponUtilities
 
 
 class CharacterCreation:
@@ -384,6 +386,21 @@ class CharacterCreation:
 
         # assign male gender to character
         MobileUtilities.set_player_gender(gameworld=gameworld, entity=player, gender='male')
+
+        # give the player a 2-handed staff with spells fully loaded
+        player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player)
+
+        if player_class == 'illusionist':
+            weapon_to_be_created = 'sword'
+        else:
+            weapon_to_be_created = 'staff'
+
+        created_weapon_entity = ItemManager.create_weapon(gameworld=gameworld, weapon_type=weapon_to_be_created,
+                                                          game_config=game_config)
+        MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon_entity, hand='both')
+        spell_list = SpellUtilities.get_list_of_spells_for_enemy(gameworld=gameworld, weapon_type=weapon_to_be_created,
+                                                                 mobile_class=player_class)
+        WeaponUtilities.load_player_spellbar_from_weapons(gameworld=gameworld, weapon_type=weapon_to_be_created, spell_list=spell_list, player_entity=player)
 
     @staticmethod
     def character_naming(gameworld, game_config):

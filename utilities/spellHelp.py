@@ -673,7 +673,7 @@ class SpellUtilities:
     @staticmethod
     def render_main_hand_spells(gameworld, player_entity, game_config, this_row):
         this_letter = 49
-        slot = 0
+        slot = 1
         unicode_section_headers = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes', parameter='SPELL_UI_SECTION_HEADERS')
 
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,

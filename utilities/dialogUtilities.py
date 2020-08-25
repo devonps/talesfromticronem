@@ -4,7 +4,6 @@ from loguru import logger
 from components import mobiles
 from ui.shopkeeper_armour import shopkeeper_armour
 from ui.shopkeeper_jewellery import shopkeeper_jeweller
-from ui.shopkeeper_weaponsmith import shopkeeper_weaponsmith
 from utilities.common import CommonUtils
 from utilities.display import pointy_vertical_menu
 from utilities.input_handlers import handle_game_keys
@@ -57,9 +56,6 @@ def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id):
 
     if type_of_shopkeeper == 'jewellery':
         shopkeeper_jeweller(gameworld=gameworld, shopkeeper_id=shopkeeper_id)
-
-    if type_of_shopkeeper == 'weapons':
-        shopkeeper_weaponsmith(gameworld=gameworld, shopkeeper_id=shopkeeper_id)
 
 
 def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, speaker_id):
