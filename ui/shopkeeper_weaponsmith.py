@@ -6,6 +6,7 @@ from utilities.common import CommonUtils
 from utilities.display import pointy_vertical_menu
 from utilities.input_handlers import handle_game_keys
 from utilities.mobileHelp import MobileUtilities
+from utilities.spellHelp import SpellUtilities
 from utilities.weaponManagement import WeaponUtilities
 
 
@@ -15,6 +16,7 @@ def shopkeeper_weaponsmith(gameworld, shopkeeper_id):
     player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
     player_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player_entity)
     player_first_name = player_names[0]
+    spell_slot_column_title_colour_string = '[color=' + colourUtilities.get('LIGHTSLATEGRAY') + ']'
 
     player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
 
@@ -54,17 +56,25 @@ def shopkeeper_weaponsmith(gameworld, shopkeeper_id):
 
         # weapon flavour text
         # This is a 2-handed sword and does between 55 and 99 direct damage per target.
-        weapon_flavour_text_list = build_weapon_flavour_text(weapon_damage_ranges=weapon_damage_ranges, selected_menu_option=selected_menu_option, weapon_wielded=weapon_wielded, weapon_description=weapon_description, weapon_quality=weapon_quality)
-        yy = dialog_frame_start_y + 6
-        xx = dialog_frame_start_x + 14
-        for y in range(4):
-            for x in range(45):
-                terminal.printf(x=xx + x, y=yy + y, s=' ')
+        weapon_flavour_text_list = build_weapon_flavour_text(weapon_damage_ranges=weapon_damage_ranges,
+                                                             selected_menu_option=selected_menu_option,
+                                                             weapon_wielded=weapon_wielded,
+                                                             weapon_description=weapon_description,
+                                                             weapon_quality=weapon_quality)
+        display_weapon_flavour_text(flavour_text=weapon_flavour_text_list, dialog_frame_start_x=dialog_frame_start_x, dialog_frame_start_y=dialog_frame_start_y)
+        # spell slots 1 through 5
+        spell_slot_heading = 'Spell '
+        sx = dialog_frame_start_x + 14
+        sy = dialog_frame_start_y + 10
+        spell_list = SpellUtilities.get_list_of_spells_for_enemy(gameworld=gameworld, weapon_type=available_weapons[selected_menu_option],
+                                                                 mobile_class=player_class)
+        for a in range(5):
+            terminal.print_(x=sx, y=(dialog_frame_start_y + 10) + a, s='                         ')
 
-        dy = dialog_frame_start_y + 6
-        for a in range(len(weapon_flavour_text_list)):
-            terminal.printf(x=dialog_frame_start_x + 14, y=dy, s=weapon_flavour_text_list[a])
-            dy += 1
+        for a in range(len(spell_list)):
+            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_list[a])
+            terminal.print_(x=sx, y=sy, s=spell_slot_column_title_colour_string + spell_slot_heading + str(a + 1) + '.' + spell_name.title())
+            sy += 1
 
         # blit the console
         terminal.refresh()
@@ -103,3 +113,16 @@ def build_weapon_flavour_text(weapon_damage_ranges, selected_menu_option, weapon
     weapon_flavour_text_list = textwrap.wrap(flavour_text, width=45)
     
     return weapon_flavour_text_list
+
+
+def display_weapon_flavour_text(flavour_text, dialog_frame_start_x, dialog_frame_start_y):
+    yy = dialog_frame_start_y + 6
+    xx = dialog_frame_start_x + 14
+    for y in range(4):
+        for x in range(45):
+            terminal.printf(x=xx + x, y=yy + y, s=' ')
+
+    dy = dialog_frame_start_y + 6
+    for a in range(len(flavour_text)):
+        terminal.printf(x=dialog_frame_start_x + 14, y=dy, s=flavour_text[a])
+        dy += 1
