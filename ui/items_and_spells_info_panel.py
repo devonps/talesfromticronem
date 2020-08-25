@@ -276,65 +276,66 @@ def display_spell_information(gameworld, menu_selection, player_entity, game_con
 
     spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=menu_selection,
                                                                       player_entity=player_entity)
-    spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-    spell_cooldown = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
-                                                                       spell_entity=spell_entity)
-    spell_type = SpellUtilities.get_spell_type(gameworld=gameworld, spell_entity=spell_entity)
-    spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
-    spell_description = SpellUtilities.get_spell_description(gameworld=gameworld, spell_entity=spell_entity)
-    spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
-                                                                       spell_entity=spell_entity)
-    spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=spell_entity)
+    if spell_entity > 0:
+        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+        spell_cooldown = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
+                                                                           spell_entity=spell_entity)
+        spell_type = SpellUtilities.get_spell_type(gameworld=gameworld, spell_entity=spell_entity)
+        spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
+        spell_description = SpellUtilities.get_spell_description(gameworld=gameworld, spell_entity=spell_entity)
+        spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
+                                                                           spell_entity=spell_entity)
+        spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=spell_entity)
 
-    spell_resources_list = SpellUtilities.get_all_resources_for_spell(gameworld=gameworld,
-                                                                      spell_entity=spell_entity)
-    spell_no_targets = SpellUtilities.get_spell_max_targets(gameworld=gameworld, spell_entity=spell_entity)
+        spell_resources_list = SpellUtilities.get_all_resources_for_spell(gameworld=gameworld,
+                                                                          spell_entity=spell_entity)
+        spell_no_targets = SpellUtilities.get_spell_max_targets(gameworld=gameworld, spell_entity=spell_entity)
 
-    y_pos = spell_item_info_start_y + 1
+        y_pos = spell_item_info_start_y + 1
 
-    terminal.print_(x=spell_item_info_item_imp_text_x, y=y_pos, width=spell_item_info_width,
-                    height=1, align=terminal.TK_ALIGN_CENTER, s=spell_value_colour_string + spell_name)
+        terminal.print_(x=spell_item_info_item_imp_text_x, y=y_pos, width=spell_item_info_width,
+                        height=1, align=terminal.TK_ALIGN_CENTER, s=spell_value_colour_string + spell_name)
 
-    y_pos += 2
-    terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
-                    s=spell_type_string + spell_type)
+        y_pos += 2
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
+                        s=spell_type_string + spell_type)
 
-    cooldown_string = format_cooldown_string(spell_cooldown)
+        cooldown_string = format_cooldown_string(spell_cooldown)
 
-    y_pos += 1
-    terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
-                    s=spell_cooldown_string + cooldown_string)
+        y_pos += 1
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
+                        s=spell_cooldown_string + cooldown_string)
 
-    y_pos += 1
+        y_pos += 1
 
-    tile_string = is_tile_string_plural(spell_range=spell_range)
+        tile_string = is_tile_string_plural(spell_range=spell_range)
 
-    terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
-                    s=spell_range_string + str(spell_range) + tile_string)
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
+                        s=spell_range_string + str(spell_range) + tile_string)
 
-    y_pos += 1
-    terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
-                    s=spell_targets_string + str(spell_no_targets))
+        y_pos += 1
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
+                        s=spell_targets_string + str(spell_no_targets))
 
-    y_pos += 2
-    terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos, s=effects_title)
+        y_pos += 2
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos, s=effects_title)
 
-    condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
-    boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
-    resource_string = get_resources_as_string(spell_resources_list)
+        condi_string = get_condis_as_string(condi_list=spell_condi_effects_list)
+        boon_string = get_boons_as_string(boon_list=spell_boon_effects_list)
+        resource_string = get_resources_as_string(spell_resources_list)
 
-    y_pos += 1
-    terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
-                    s=status_effects_condi_list_title + condi_string)
-    y_pos += 1
-    terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
-                    s=status_effects_boon_title + boon_string + resource_string)
+        y_pos += 1
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
+                        s=status_effects_condi_list_title + condi_string)
+        y_pos += 1
+        terminal.printf(x=spell_item_info_item_imp_text_x, y=y_pos,
+                        s=status_effects_boon_title + boon_string + resource_string)
 
-    # draw fluff text
-    y_pos += 3
-    draw_fluff_text(x=spell_item_info_item_imp_text_x, y=y_pos, width=spell_item_info_width,
-                    fluff_text=spell_description, key_colour_string=spell_key_colour_string,
-                    value_colour_string=spell_value_colour_string)
+        # draw fluff text
+        y_pos += 3
+        draw_fluff_text(x=spell_item_info_item_imp_text_x, y=y_pos, width=spell_item_info_width,
+                        fluff_text=spell_description, key_colour_string=spell_key_colour_string,
+                        value_colour_string=spell_value_colour_string)
 
     return spell_entity
 
