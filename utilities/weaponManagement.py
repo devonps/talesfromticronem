@@ -132,11 +132,11 @@ class WeaponUtilities:
     @staticmethod
     def load_player_spellbar_from_weapons(weapon_type, spell_list, gameworld, player_entity):
         if weapon_type in ['sword', 'staff']:
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[0], slot=1, player_entity=player_entity)
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[1], slot=2, player_entity=player_entity)
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[2], slot=3, player_entity=player_entity)
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[3], slot=4, player_entity=player_entity)
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[4], slot=5, player_entity=player_entity)
+            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[0], slot=0, player_entity=player_entity)
+            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[1], slot=1, player_entity=player_entity)
+            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[2], slot=2, player_entity=player_entity)
+            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[3], slot=3, player_entity=player_entity)
+            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[4], slot=4, player_entity=player_entity)
 
     @staticmethod
     def load_enemy_weapon_with_spells(gameworld, enemy_id, spell_list, weapon_entity_id, weapon_type):

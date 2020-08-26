@@ -21,6 +21,8 @@ class SpellUtilities:
     def get_spell_list_for_enemy_by_weapon_type(gameworld, weapons_equipped, weapon_type):
         spells_to_choose_from = []
 
+        spellBar = 0
+
         if weapon_type in ['sword', 'staff']:
             spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_one(gameworld=gameworld, spellbar=spellBar))
             spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_two(gameworld=gameworld, spellbar=spellBar))

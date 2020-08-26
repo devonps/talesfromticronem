@@ -1,4 +1,5 @@
 from bearlibterminal import terminal
+from loguru import logger
 
 from utilities import configUtilities, colourUtilities
 from utilities.common import CommonUtils
@@ -121,15 +122,15 @@ def set_spellbar_utility_spells(gameworld, player_entity):
 
     if pendent_entity > 0:
         sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=pendent_entity)
-        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=7, player_entity=player_entity)
+        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=6, player_entity=player_entity)
 
     if left_ear_entity > 0:
         sp2 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=left_ear_entity)
-        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=8, player_entity=player_entity)
+        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=7, player_entity=player_entity)
 
     if right_ear_entity > 0:
         sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear_entity)
-        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=9, player_entity=player_entity)
+        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=8, player_entity=player_entity)
 
 
 def display_jewellery_package(sx, sy, flavour_colour_content, jewellery_package):
