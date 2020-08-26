@@ -1,7 +1,27 @@
+from loguru import logger
+
 from components import items
 
 
 class ItemUtilities:
+
+    @staticmethod
+    def get_equipped_weapon_for_enemy(gameworld, weapons_equipped):
+        weapon_id = 0
+
+        if len(weapons_equipped) == 0:
+            logger.warning('NO WEAPONS EQUIPPED')
+            return weapon_id
+        if weapons_equipped[0] > 0:
+            weapon_id = weapons_equipped[0]
+        elif weapons_equipped[1] > 0:
+            weapon_id = weapons_equipped[1]
+        else:
+            weapon_id = weapons_equipped[2]
+
+        weapon_type = ItemUtilities.get_item_name(gameworld=gameworld, entity=weapon_id)
+
+        return weapon_type
 
     @staticmethod
     def get_item_name(gameworld, entity):

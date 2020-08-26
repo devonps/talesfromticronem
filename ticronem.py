@@ -2,6 +2,7 @@ from bearlibterminal import terminal
 
 from enemyRelated.statelessAI import StatelessAI
 from newGame.initialiseNewGame import setup_gameworld
+from ui.swap_spells_or_items import swap_spells
 from utilities.dialogUtilities import initiate_dialog
 from utilities.mobileHelp import MobileUtilities
 from utilities.replayGame import ReplayGame
@@ -93,6 +94,9 @@ def game_loop(gameworld):
             logger.debug('Information needed on item {}', event_action)
             display_spell_info_popup(menu_selection=event_action, gameworld=gameworld, player_entity=player)
             advance_game_turn = False
+        if event_to_be_processed == 'swap' and event_action is not None:
+            swap_spells(gameworld=gameworld, player_entity=player)
+            advance_game_turn = True
         if event_to_be_processed == 'mouseleftbutton':
             Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords_clicked=event_action, game_map=game_map)
             advance_game_turn = False

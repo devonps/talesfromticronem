@@ -1,6 +1,6 @@
 from abc import ABC
 
-from components import mobiles, items, spellBar
+from components import mobiles, items
 from loguru import logger
 from mapRelated.fov import FieldOfView
 from utilities import world
@@ -535,23 +535,6 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def set_mobile_ai_description(gameworld, entity, value):
         gameworld.component_for_entity(entity, mobiles.AI).description = value
-
-    @staticmethod
-    def create_spell_bar_as_entity(gameworld):
-        spell_bar = MobileUtilities.get_next_entity_id(gameworld=gameworld)
-
-        gameworld.add_component(spell_bar, spellBar.SlotOne())
-        gameworld.add_component(spell_bar, spellBar.SlotTwo())
-        gameworld.add_component(spell_bar, spellBar.SlotThree())
-        gameworld.add_component(spell_bar, spellBar.SlotFour())
-        gameworld.add_component(spell_bar, spellBar.SlotFive())
-        gameworld.add_component(spell_bar, spellBar.SlotSix())
-        gameworld.add_component(spell_bar, spellBar.SlotSeven())
-        gameworld.add_component(spell_bar, spellBar.SlotEight())
-        gameworld.add_component(spell_bar, spellBar.SlotNine())
-        gameworld.add_component(spell_bar, spellBar.SlotTen())
-
-        return spell_bar
 
     @staticmethod
     def set_spellbar_for_entity(gameworld, entity, spellbar_entity):

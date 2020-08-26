@@ -55,24 +55,6 @@ class WeaponUtilities:
         return weapon_description, weapon_wielded, weapon_quality, weapon_damage_ranges
 
     @staticmethod
-    def get_equipped_weapon_for_enemy(gameworld, weapons_equipped):
-        weapon_id = 0
-
-        if len(weapons_equipped) == 0:
-            logger.warning('NO WEAPONS EQUIPPED')
-            return weapon_id
-        if weapons_equipped[0] > 0:
-            weapon_id = weapons_equipped[0]
-        elif weapons_equipped[1] > 0:
-            weapon_id = weapons_equipped[1]
-        else:
-            weapon_id = weapons_equipped[2]
-
-        weapon_type = ItemUtilities.get_item_name(gameworld=gameworld, entity=weapon_id)
-
-        return weapon_type
-
-    @staticmethod
     def get_is_weapon_wielded(gameworld, weapon_entity):
         wielded_component = gameworld.component_for_entity(weapon_entity, items.Wielded)
         return wielded_component.true_or_false
@@ -109,36 +91,6 @@ class WeaponUtilities:
         hallmarks_component = gameworld.component_for_entity(entity, items.Hallmarks)
         hallmarks = [hallmarks_component.hallmark_slot_one, hallmarks_component.hallmark_slot_two]
         return hallmarks
-
-    @staticmethod
-    def get_weapon_spell_slot_one_entity(gameworld, weapon_entity):
-        slot_component = gameworld.component_for_entity(weapon_entity, items.Spells)
-        spell_entity = slot_component.slot_one
-        return int(spell_entity)
-
-    @staticmethod
-    def get_weapon_spell_slot_two_entity(gameworld, weapon_entity):
-        slot_component = gameworld.component_for_entity(weapon_entity, items.Spells)
-        spell_entity = slot_component.slot_two
-        return int(spell_entity)
-
-    @staticmethod
-    def get_weapon_spell_slot_three_entity(gameworld, weapon_entity):
-        slot_component = gameworld.component_for_entity(weapon_entity, items.Spells)
-        spell_entity = slot_component.slot_three
-        return int(spell_entity)
-
-    @staticmethod
-    def get_weapon_spell_slot_four_entity(gameworld, weapon_entity):
-        slot_component = gameworld.component_for_entity(weapon_entity, items.Spells)
-        spell_entity = slot_component.slot_four
-        return int(spell_entity)
-
-    @staticmethod
-    def get_weapon_spell_slot_five_entity(gameworld, weapon_entity):
-        slot_component = gameworld.component_for_entity(weapon_entity, items.Spells)
-        spell_entity = slot_component.slot_five
-        return int(spell_entity)
 
     @staticmethod
     def get_weapon_damage_ranges(gameworld, weapon):

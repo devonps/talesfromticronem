@@ -1,7 +1,7 @@
 import random
 
 from loguru import logger
-from components import spells, items, mobiles, spellBar
+from components import spells, items, mobiles
 from utilities import configUtilities, formulas
 from utilities.common import CommonUtils
 from utilities.input_handlers import handle_game_keys
@@ -22,30 +22,20 @@ class SpellUtilities:
         spells_to_choose_from = []
 
         if weapon_type in ['sword', 'staff']:
-            spells_to_choose_from.append(
-                ItemUtilities.get_weapon_spell_slot_one_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
-            spells_to_choose_from.append(
-                ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld,
-                                                                                          weapon_entity=
-                                                                                          weapons_equipped[2]))
-            spells_to_choose_from.append(
-                ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
-            spells_to_choose_from.append(
-                ItemUtilities.get_weapon_spell_slot_five_entity(gameworld=gameworld, weapon_entity=weapons_equipped[2]))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_one(gameworld=gameworld, spellbar=spellBar))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_two(gameworld=gameworld, spellbar=spellBar))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_three(gameworld=gameworld, spellbar=spellBar))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_four(gameworld=gameworld, spellbar=spellBar))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_five(gameworld=gameworld, spellbar=spellBar))
+
         if weapon_type in ['wand', 'scepter', 'dagger']:
-            spells_to_choose_from.append(
-                ItemUtilities.get_weapon_spell_slot_one_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
-            spells_to_choose_from.append(
-                ItemUtilities.get_weapon_spell_slot_two_entity(gameworld=gameworld, weapon_entity=weapons_equipped[0]))
-            spells_to_choose_from.append(ItemUtilities.get_weapon_spell_slot_three_entity(gameworld=gameworld,
-                                                                                          weapon_entity=
-                                                                                          weapons_equipped[0]))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_one(gameworld=gameworld, spellbar=spellBar))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_two(gameworld=gameworld, spellbar=spellBar))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_three(gameworld=gameworld, spellbar=spellBar))
+
         if weapon_type in ['rod', 'focus']:
-            spells_to_choose_from.append(
-                ItemUtilities.get_weapon_spell_slot_four_entity(gameworld=gameworld, weapon_entity=weapons_equipped[1]))
-            spells_to_choose_from.append(
-                ItemUtilities.get_weapon_spell_slot_five_entity(gameworld=gameworld, weapon_entity=weapons_equipped[1]))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_four(gameworld=gameworld, spellbar=spellBar))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_five(gameworld=gameworld, spellbar=spellBar))
 
         return spells_to_choose_from
 
@@ -298,9 +288,9 @@ class SpellUtilities:
 
     @staticmethod
     def setup_mobile_empty_spellbar(gameworld, player_entity):
-        spellbar = MobileUtilities.create_spell_bar_as_entity(gameworld=gameworld)
+        spell_bar = MobileUtilities.get_next_entity_id(gameworld=gameworld)
 
-        MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spellbar)
+        MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spell_bar)
 
     @staticmethod
     def get_class_heal_spell(gameworld, player_entity):
@@ -581,9 +571,9 @@ class SpellUtilities:
     @staticmethod
     def set_spellbar_slot(gameworld, spell_entity, slot, player_entity):
         current_spells = SpellUtilities.get_current_spellbar_spells(gameworld=gameworld, player_entity=player_entity)
-        logger.warning('current spells in spell bar are {}', current_spells)
+        logger.debug('current spells in spell bar are {}', current_spells)
         if len(current_spells) > 0:
-            current_spells[slot - 1] = spell_entity
+            current_spells[slot] = spell_entity
         else:
             current_spells[0] = spell_entity
 
@@ -707,101 +697,10 @@ class SpellUtilities:
         return this_row, this_letter
 
     @staticmethod
-    def get_spell_entity_from_slot_one(gameworld, spellbar):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotOne)
-        return spell_component.spell_entity
-
-    @staticmethod
-    def get_spell_entity_from_slot_two(gameworld, spellbar):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotTwo)
-        return spell_component.spell_entity
-
-    @staticmethod
-    def get_spell_entity_from_slot_three(gameworld, spellbar):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotThree)
-        return spell_component.spell_entity
-
-    @staticmethod
-    def get_spell_entity_from_slot_four(gameworld, spellbar):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotFour)
-        return spell_component.spell_entity
-
-    @staticmethod
-    def get_spell_entity_from_slot_five(gameworld, spellbar):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotFive)
-        return spell_component.spell_entity
-
-    @staticmethod
-    def get_spell_entity_from_slot_six(gameworld, spellbar):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotSix)
-        return spell_component.spell_entity
-
-    @staticmethod
-    def get_spell_entity_from_slot_seven(gameworld, spellbar):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotSeven)
-        return spell_component.spell_entity
-
-    @staticmethod
-    def get_spell_entity_from_slot_eight(gameworld, spellbar):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotEight)
-        return spell_component.spell_entity
-
-    @staticmethod
-    def get_spell_entity_from_slot_nine(gameworld, spellbar):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotNine)
-        return spell_component.spell_entity
-
-    @staticmethod
-    def get_spell_entity_from_slot_ten(gameworld, spellbar):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotTen)
-        return spell_component.spell_entity
-
-    @staticmethod
-    def set_spell_entity_in_slot_one(gameworld, spellbar, spell_entity):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotOne)
-        spell_component.spell_entity = spell_entity
-
-    @staticmethod
-    def set_spell_entity_in_slot_two(gameworld, spellbar, spell_entity):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotTwo)
-        spell_component.spell_entity = spell_entity
-
-    @staticmethod
-    def set_spell_entity_in_slot_three(gameworld, spellbar, spell_entity):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotThree)
-        spell_component.spell_entity = spell_entity
-
-    @staticmethod
-    def set_spell_entity_in_slot_four(gameworld, spellbar, spell_entity):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotFour)
-        spell_component.spell_entity = spell_entity
-
-    @staticmethod
-    def set_spell_entity_in_slot_five(gameworld, spellbar, spell_entity):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotFive)
-        spell_component.spell_entity = spell_entity
-
-    @staticmethod
-    def set_spell_entity_in_slot_six(gameworld, spellbar, spell_entity):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotSix)
-        spell_component.spell_entity = spell_entity
-
-    @staticmethod
-    def set_spell_entity_in_slot_seven(gameworld, spellbar, spell_entity):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotSeven)
-        spell_component.spell_entity = spell_entity
-
-    @staticmethod
-    def set_spell_entity_in_slot_eight(gameworld, spellbar, spell_entity):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotEight)
-        spell_component.spell_entity = spell_entity
-
-    @staticmethod
-    def set_spell_entity_in_slot_nine(gameworld, spellbar, spell_entity):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotNine)
-        spell_component.spell_entity = spell_entity
-
-    @staticmethod
-    def set_spell_entity_in_slot_ten(gameworld, spellbar, spell_entity):
-        spell_component = gameworld.component_for_entity(spellbar, spellBar.SlotTen)
-        spell_component.spell_entity = spell_entity
+    def get_list_of_utility_spells_for_player(gameworld, player_entity):
+        utility_spells_list = []
+        player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
+        for ent, (cl, typ) in gameworld.get_components(spells.ClassName, spells.SpellType):
+            if typ.label == 'utility' and cl.label == player_class:
+                utility_spells_list.append(ent)
+        return utility_spells_list

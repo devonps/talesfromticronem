@@ -375,7 +375,7 @@ class CharacterCreation:
 
         # add heal spell to spellbar
         heal_spell_entity = SpellUtilities.get_class_heal_spell(gameworld=gameworld, player_entity=player)
-        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=heal_spell_entity, slot=6, player_entity=player)
+        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=heal_spell_entity, slot=5, player_entity=player)
 
         # calculate derived stats
         ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=gameworld, entity=player)
