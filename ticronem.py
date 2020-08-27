@@ -95,7 +95,7 @@ def game_loop(gameworld):
             display_spell_info_popup(menu_selection=event_action, gameworld=gameworld, player_entity=player)
             advance_game_turn = False
         if event_to_be_processed == 'swap' and event_action is not None:
-            swap_spells(gameworld=gameworld, player_entity=player)
+            swap_spells(gameworld=gameworld, player_entity=player, key_pressed=event_action)
             advance_game_turn = True
         if event_to_be_processed == 'mouseleftbutton':
             Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords_clicked=event_action, game_map=game_map)

@@ -19,8 +19,6 @@ def handle_game_keys():
     if key == terminal.TK_1:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
-        elif terminal.check(terminal.TK_CONTROL):
-            myevent = 'swap'
         else:
             myevent = 'keypress'
         action = 1
@@ -57,18 +55,24 @@ def handle_game_keys():
     if key == terminal.TK_7:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
+        elif terminal.check(terminal.TK_CONTROL):
+            myevent = 'swap'
         else:
             myevent = 'keypress'
         action = 7
     if key == terminal.TK_8:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
+        elif terminal.check(terminal.TK_CONTROL):
+            myevent = 'swap'
         else:
             myevent = 'keypress'
         action = 8
     if key == terminal.TK_9:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
+        elif terminal.check(terminal.TK_CONTROL):
+            myevent = 'swap'
         else:
             myevent = 'keypress'
         action = 9

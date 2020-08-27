@@ -70,6 +70,22 @@ class JewelleryUtilities:
     def set_jewellery_equipped_status_to_false(gameworld, jewellery_entity):
         gameworld.component_for_entity(jewellery_entity, items.JewelleryEquipped).istrue = False
 
+
+    @staticmethod
+    def get_list_of_spell_entities_for_equpped_jewellery(gameworld, player_entity):
+        spell_entities = []
+
+        for a in ['neck', 'lear', 'rear', 'lhand', 'rhand']:
+            entity_id = JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld, entity=player_entity, bodylocation=a)
+
+            if entity_id > 0:
+                spell_id = JewelleryUtilities.get_spell_entity_from_jewellery(gameworld=gameworld, piece_of_jewellery=entity_id)
+                if spell_id > 0:
+                    spell_entities.append(spell_id)
+
+        return spell_entities
+
+
     @staticmethod
     def get_jewellery_entity_from_body_location(gameworld, entity, bodylocation):
         jewellery_worn = 0
@@ -130,6 +146,12 @@ class JewelleryUtilities:
     @staticmethod
     def add_spell_to_jewellery(gameworld, piece_of_jewellery, spell_entity):
         gameworld.add_component(piece_of_jewellery, items.JewellerySpell(entity=spell_entity))
+
+
+    @staticmethod
+    def get_spell_entity_from_jewellery(gameworld, piece_of_jewellery):
+        jewellery_spell_component = gameworld.component_for_entity(piece_of_jewellery, items.JewellerySpell)
+        return jewellery_spell_component.entity
 
 
     @staticmethod

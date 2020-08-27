@@ -706,3 +706,12 @@ class SpellUtilities:
             if typ.label == 'utility' and cl.label == player_class:
                 utility_spells_list.append(ent)
         return utility_spells_list
+
+    @staticmethod
+    def get_list_of_weapon_spells_for_player(gameworld, player_entity, weapon_type):
+        utility_spells_list = []
+        player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
+        for ent, (cl, typ, weapon) in gameworld.get_components(spells.ClassName, spells.SpellType, spells.WeaponType):
+            if typ.label == 'combat' and cl.label == player_class and weapon.label == weapon_type:
+                utility_spells_list.append(ent)
+        return utility_spells_list

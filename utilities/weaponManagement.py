@@ -70,17 +70,6 @@ class WeaponUtilities:
         return weapon_type_component.label
 
     @staticmethod
-    def get_weapon_held_in_hand(gameworld, entity):
-        wielded_component = gameworld.component_for_entity(entity, items.Wielded)
-        if wielded_component.both_hands != 0:
-            return 'both hands'
-        if wielded_component.main_hand != 0:
-            return 'main hand'
-        if wielded_component.off_hand != 0:
-            return 'off hand'
-        return 'unknown'
-
-    @staticmethod
     def get_weapon_experience_values(gameworld, entity):
         experience_component = gameworld.component_for_entity(entity, items.Experience)
         levels = [experience_component.current_level, experience_component.max_level]

@@ -128,10 +128,15 @@ class SpecialBar:
         self.maximumvalue = valuemaximum
 
 
+#
+# slots 0,1,2 hold main hand weapon
+# slots 3, 4 hold off hand weapon
+# slot 5 holds healing spell
+# slots 6,7,8 hold utility spells
 class SpellBar:
     def __init__(self, entity_id=0):
         self.entity_id = entity_id
-        self.slots = [0] * 10
+        self.slots = [0] * 9
 
 
 class StatusEffects:

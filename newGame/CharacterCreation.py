@@ -390,10 +390,9 @@ class CharacterCreation:
         # give the player a 2-handed staff with spells fully loaded
         player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player)
 
+        weapon_to_be_created = 'staff'
         if player_class == 'illusionist':
             weapon_to_be_created = 'sword'
-        else:
-            weapon_to_be_created = 'staff'
 
         created_weapon_entity = ItemManager.create_weapon(gameworld=gameworld, weapon_type=weapon_to_be_created,
                                                           game_config=game_config)

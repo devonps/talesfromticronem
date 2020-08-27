@@ -120,11 +120,11 @@ class Entity:
                         sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear)
 
                         # add spells from jewellery into spell bar
-                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=7,
+                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=6,
                                                          player_entity=entity_id)
-                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=8,
+                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=7,
                                                          player_entity=entity_id)
-                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=9,
+                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=8,
                                                          player_entity=entity_id)
 
                         if equipped_weapons:
@@ -139,7 +139,7 @@ class Entity:
                         # --------------------------------------
                         heal_spell_entity = SpellUtilities.get_class_heal_spell(gameworld=gameworld,
                                                                                 player_entity=entity_id)
-                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=heal_spell_entity, slot=6,
+                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=heal_spell_entity, slot=5,
                                                          player_entity=entity_id)
 
                         # --------------------------------------
