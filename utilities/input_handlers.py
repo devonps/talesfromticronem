@@ -80,20 +80,13 @@ def handle_game_keys():
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
         else:
-            myevent = ''
-        action = 'A'
-    if key == terminal.TK_A:
-        if terminal.check(terminal.TK_SHIFT):
-            myevent = 'infopopup'
+            myevent = 'keypress'
             action = 'A'
-        else:
-            myevent = ''
-            action = 'a'
     if key == terminal.TK_B:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
         else:
-            myevent = ''
+            myevent = 'keypress'
         action = 'B'
     if key == terminal.TK_C:
         if terminal.check(terminal.TK_SHIFT):
@@ -105,43 +98,43 @@ def handle_game_keys():
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
         else:
-            myevent = ''
+            myevent = 'keypress'
         action = 'D'
     if key == terminal.TK_E:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
         else:
-            myevent = ''
+            myevent = 'keypress'
         action = 'E'
     if key == terminal.TK_F:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
         else:
-            myevent = ''
+            myevent = 'keypress'
         action = 'F'
     if key == terminal.TK_G:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
         else:
-            myevent = ''
+            myevent = 'keypress'
         action = 'G'
     if key == terminal.TK_H:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
         else:
-            myevent = ''
+            myevent = 'keypress'
         action = 'H'
     if key == terminal.TK_I:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
         else:
-            myevent = ''
+            myevent = 'keypress'
         action = 'I'
     if key == terminal.TK_J:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
         else:
-            myevent = ''
+            myevent = 'keypress'
         action = 'J'
 
     # ACCEPT/DELETE/QUIT KEYS

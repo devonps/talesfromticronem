@@ -1,5 +1,7 @@
 from loguru import logger
 
+from components import spells
+from utilities.input_handlers import handle_game_keys
 from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.spellHelp import SpellUtilities
 
@@ -34,14 +36,11 @@ def swap_spells(gameworld, player_entity, key_pressed):
         else:
             logger.info('No armour equipped')
 
-        # logger.debug('ALL available spells are {}', available_spells_dict)
-        #
-        # logger.debug('Utility spells are {}', available_spells_dict['utility'])
-
-        swap_utility_spells(gameworld=gameworld, spells_to_choose_from=available_spells_dict)
+        if len(utility_spells_list) > 0 or len(armour_spells_list) > 0:
+            swap_utility_spells(gameworld=gameworld, spells_to_choose_from=available_spells_dict, key_pressed=key_pressed, player_entity=player_entity)
 
 
-def swap_utility_spells(gameworld, spells_to_choose_from):
+def swap_utility_spells(gameworld, spells_to_choose_from, key_pressed, player_entity):
     # display a list of available spells
     # initially use the keyboard to swap the spell
     # use letters as the selector
@@ -50,21 +49,49 @@ def swap_utility_spells(gameworld, spells_to_choose_from):
     # B Blood Is Power
     # C Epidemic
     # [ESC] cancel
-    utility_spells_list = spells_to_choose_from['utility']
-    armour_spells_list = spells_to_choose_from['armour']
     start_char = 65
     swap_spells_list = []
+    sort_spells_list = []
+    valid_keys = []
+    utility_slot_to_be_swapped_out = key_pressed - 1
 
-    for a in range(len(utility_spells_list)):
-        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=utility_spells_list[a])
-        swap_spells_list.append(chr(start_char) + ' ' + spell_name)
-        start_char += 1
+    if 'utility' in spells_to_choose_from:
+        utility_spells_list = spells_to_choose_from['utility']
+        for a in range(len(utility_spells_list)):
+            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=utility_spells_list[a])
+            swap_spells_list.append(chr(start_char) + ' ' + spell_name)
+            sort_spells_list.append(spell_name)
+            valid_keys.append(chr(start_char))
+            start_char += 1
 
-    for a in range(len(armour_spells_list)):
-        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=armour_spells_list[a])
-        swap_spells_list.append(chr(start_char) + ' ' + spell_name)
-        start_char += 1
+    if 'armour' in spells_to_choose_from:
+        armour_spells_list = spells_to_choose_from['armour']
+        for a in range(len(armour_spells_list)):
+            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=armour_spells_list[a])
+            swap_spells_list.append(chr(start_char) + ' ' + spell_name)
+            sort_spells_list.append(spell_name)
+            start_char += 1
+
+    swap_spells_list.append('[ESC] Quit')
 
     # temp code
     for a in range(len(swap_spells_list)):
-        logger.debug('spell...{}',swap_spells_list[a] )
+        logger.debug('spell...{}', swap_spells_list[a])
+
+    swap_mode_is_active = True
+
+    while swap_mode_is_active:
+        event_to_be_processed, event_action = handle_game_keys()
+        if event_to_be_processed == 'keypress':
+            if event_action == 'quit':
+                swap_mode_is_active = False
+            if event_action != '':
+                logger.info('event is {}', event_action)
+            if event_action in valid_keys:
+                swap_mode_is_active = False
+                pos = valid_keys.index(event_action)
+                logger.debug('This is in index position {}', pos)
+                for ent, (name, desc) in gameworld.get_components(spells.Name, spells.Description):
+                    if name.label == sort_spells_list[pos]:
+                        logger.warning('Found a spell called {} with an id of {}', name.label, ent)
+                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=ent, slot=utility_slot_to_be_swapped_out, player_entity=player_entity)
