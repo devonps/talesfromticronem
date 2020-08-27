@@ -129,9 +129,6 @@ class ArmourUtilities:
 
     @staticmethod
     def equip_piece_of_armour(gameworld, entity, piece_of_armour, bodylocation):
-        # logger.info('Armour entity is {} / mobile entity is {} / body location is {}', piece_of_armour, entity, bodylocation)
-        # is_armour_being_worn = ItemUtilities.get_armour_being_worn_status(gameworld, piece_of_armour)
-        # if not is_armour_being_worn:
         if bodylocation == 'head':
             gameworld.component_for_entity(entity, mobiles.Armour).head = piece_of_armour
         if bodylocation == 'chest':
@@ -160,6 +157,12 @@ class ArmourUtilities:
     @staticmethod
     def add_spell_to_armour_piece(gameworld, armour_entity, spell_entity):
         gameworld.add_component(armour_entity, items.ArmourSpell(entity=spell_entity))
+
+
+    @staticmethod
+    def get_spell_entity_from_armour_piece(gameworld, armour_entity):
+        spell_component = gameworld.component_for_entity(armour_entity, items.ArmourSpell)
+        return spell_component.entity
 
     @staticmethod
     def get_all_armour_modifiers(game_config):
@@ -261,7 +264,7 @@ class ArmourUtilities:
     def create_and_equip_armourset_for_npc(gameworld, as_display_name, armour_modifier, entity_id):
         game_config = configUtilities.load_config()
         this_armourset = ArmourUtilities.create_full_armour_set(gameworld=gameworld, armourset=as_display_name,
-                                                            prefix=armour_modifier, game_config=game_config)
+                                                                prefix=armour_modifier, game_config=game_config)
 
         ArmourUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=entity_id, armourset=this_armourset)
 
@@ -282,23 +285,23 @@ class ArmourUtilities:
         full_armour_set = []
 
         head_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
-                                                         setname=armourset, prefix=prefix, bodylocation='head')
+                                                             setname=armourset, prefix=prefix, bodylocation='head')
         full_armour_set.append(head_armour)
 
         chest_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
-                                                          setname=armourset, prefix=prefix, bodylocation='chest')
+                                                              setname=armourset, prefix=prefix, bodylocation='chest')
         full_armour_set.append(chest_armour)
 
         hands_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
-                                                          setname=armourset, prefix=prefix, bodylocation='hands')
+                                                              setname=armourset, prefix=prefix, bodylocation='hands')
         full_armour_set.append(hands_armour)
 
         legs_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
-                                                         setname=armourset, prefix=prefix, bodylocation='legs')
+                                                             setname=armourset, prefix=prefix, bodylocation='legs')
         full_armour_set.append(legs_armour)
 
         feet_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
-                                                         setname=armourset, prefix=prefix, bodylocation='feet')
+                                                             setname=armourset, prefix=prefix, bodylocation='feet')
         full_armour_set.append(feet_armour)
 
         return full_armour_set
@@ -334,12 +337,17 @@ class ArmourUtilities:
                 as_material = (armourset['material'])
                 prefix_count = armourset['prefixcount']
                 attribute_bonus_count = armourset['attributebonuscount']
-                piece_of_armour, defense = ArmourUtilities.process_armour_bodylocation(gameworld=gameworld, bodylocation=bodylocation, armour_piece=armour_piece, armourset=armourset)
+                piece_of_armour, defense = ArmourUtilities.process_armour_bodylocation(gameworld=gameworld,
+                                                                                       bodylocation=bodylocation,
+                                                                                       armour_piece=armour_piece,
+                                                                                       armourset=armourset)
 
                 for px in range(1, prefix_count + 1):
                     prefix_string = pxstring + str(px)
                     if armourset[prefix_string]['name'].lower() == prefix.lower():
-                        att_bonus_string, att_name_string = ArmourUtilities.process_armour_attribute_bonus(attribute_bonus_count=attribute_bonus_count, attvaluestring=attvaluestring, px=px, attnamestring=attnamestring)
+                        att_bonus_string, att_name_string = ArmourUtilities.process_armour_attribute_bonus(
+                            attribute_bonus_count=attribute_bonus_count, attvaluestring=attvaluestring, px=px,
+                            attnamestring=attnamestring)
                         px_att_bonus = armourset[prefix_string][att_bonus_string]
                         px_att_name = armourset[prefix_string][att_name_string]
 
@@ -375,10 +383,10 @@ class ArmourUtilities:
         # add spell to piece of armour
         player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         player_class = MobileUtilities.get_character_class(gameworld, player)
-        ArmourUtilities.add_spell_to_piece_of_armour(gameworld=gameworld, bodylocation=bodylocation, armour_piece=armour_piece, playable_class=player_class)
+        ArmourUtilities.add_spell_to_piece_of_armour(gameworld=gameworld, bodylocation=bodylocation,
+                                                     armour_piece=armour_piece, playable_class=player_class)
 
         return armour_piece
-
 
     @staticmethod
     def process_armour_attribute_bonus(attribute_bonus_count, attvaluestring, px, attnamestring):
@@ -392,17 +400,14 @@ class ArmourUtilities:
 
     @staticmethod
     def add_spell_to_piece_of_armour(gameworld, bodylocation, armour_piece, playable_class):
-        # for ent, (spell_loc, item_type) in gameworld.get_components(spells.ItemLocation, spells.ItemType):
         for spell_entity, (name, location, spell_type, item_type, spclass) in gameworld.get_components(spells.Name,
                                                                                                        spells.ItemLocation,
                                                                                                        spells.SpellType,
                                                                                                        spells.ItemType,
                                                                                                        spells.ClassName):
-            # if item_type.label == 'armour' and bodylocation == location.label:
             if spclass.label == playable_class and spell_type.label == 'utility' and item_type.label == 'armour' and location.label == bodylocation:
                 ArmourUtilities.add_spell_to_armour_piece(gameworld=gameworld, armour_entity=armour_piece,
-                                                        spell_entity=spell_entity)
-
+                                                          spell_entity=spell_entity)
 
     @staticmethod
     def process_armour_bodylocation(gameworld, bodylocation, armour_piece, armourset):

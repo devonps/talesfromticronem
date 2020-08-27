@@ -2,6 +2,7 @@ from loguru import logger
 
 from components import items, mobiles, spells
 from utilities import configUtilities, jsonUtilities, world, colourUtilities
+from utilities.armourManagement import ArmourUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 
@@ -84,6 +85,19 @@ class JewelleryUtilities:
                     spell_entities.append(spell_id)
 
         return spell_entities
+
+    @staticmethod
+    def get_list_of_spell_entities_for_equipped_armour(gameworld, player_entity):
+        spell_entities = []
+        for a in ['head','chest','hands','legs','feet']:
+            entity_id = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity, bodylocation=a)
+
+            if entity_id > 0:
+                spell_id = ArmourUtilities.get_spell_entity_from_armour_piece(gameworld=gameworld, armour_entity=entity_id)
+                spell_entities.append((spell_id))
+
+        return spell_entities
+
 
 
     @staticmethod
