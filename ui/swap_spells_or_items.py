@@ -150,8 +150,6 @@ def draw_outer_frame(spell_list):
     # unicode strings of colours
     frame_colour = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
     ascii_prefix = 'ASCII_SINGLE_'
-    spell_swap_bottom_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                               parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
 
     spell_swap_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                        parameter=ascii_prefix + 'TOP_LEFT')
