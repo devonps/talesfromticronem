@@ -274,7 +274,7 @@ def display_spell_information(gameworld, menu_selection, player_entity, game_con
                                                                         section='spellInfoPopup',
                                                                         parameter='SP_WIDTH')
 
-    spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=menu_selection,
+    spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=menu_selection - 1,
                                                                       player_entity=player_entity)
     if spell_entity > 0:
         spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)

@@ -91,8 +91,10 @@ def handle_game_keys():
     if key == terminal.TK_C:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
-        else:
+        elif terminal.check(terminal.TK_CONTROL):
             myevent = 'chat'
+        else:
+            myevent = 'keypress'
         action = 'C'
     if key == terminal.TK_D:
         if terminal.check(terminal.TK_SHIFT):

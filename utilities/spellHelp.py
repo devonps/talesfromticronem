@@ -568,7 +568,7 @@ class SpellUtilities:
     @staticmethod
     def get_spell_entity_from_spellbar_slot(gameworld, slot, player_entity):
         current_spells = SpellUtilities.get_current_spellbar_spells(gameworld=gameworld, player_entity=player_entity)
-        return current_spells[slot - 1]
+        return current_spells[slot]
 
     @staticmethod
     def set_spellbar_slot(gameworld, spell_entity, slot, player_entity):
@@ -608,7 +608,7 @@ class SpellUtilities:
     @staticmethod
     def render_off_hand_spells(gameworld, player_entity, game_config, this_row):
         unicode_section_headers = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes', parameter='SPELL_UI_SECTION_HEADERS')
-        slot = 4
+        slot = 3
         this_letter = 52
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                                player_entity=player_entity)
@@ -669,7 +669,7 @@ class SpellUtilities:
     @staticmethod
     def render_main_hand_spells(gameworld, player_entity, game_config, this_row):
         this_letter = 49
-        slot = 1
+        slot = 0
         unicode_section_headers = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes', parameter='SPELL_UI_SECTION_HEADERS')
 
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,

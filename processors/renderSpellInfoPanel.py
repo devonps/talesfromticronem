@@ -371,7 +371,7 @@ class RenderSpellInfoPanel(esper.Processor):
         this_row += 1
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Utility ')
         this_row += 2
-        slot = 7
+        slot = 6
         for _ in range(3):
             name_string = unicode_cooldown_disabled + 'nothing selected'
             slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slot,
@@ -417,7 +417,7 @@ class RenderSpellInfoPanel(esper.Processor):
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Healing ')
         this_row += 1
         # spell name
-        slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=6,
+        slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=5,
                                                                                player_entity=player_entity)
 
         if slot_spell_entity > 0:
