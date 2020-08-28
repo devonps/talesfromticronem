@@ -1,6 +1,9 @@
+from bearlibterminal import terminal
 from loguru import logger
 
 from components import spells
+from utilities import configUtilities
+from utilities.common import CommonUtils
 from utilities.input_handlers import handle_game_keys
 from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.spellHelp import SpellUtilities
@@ -73,9 +76,13 @@ def swap_utility_spells(gameworld, spells_to_choose_from, key_pressed, player_en
             valid_keys.append(chr(start_char))
             start_char += 1
 
-    swap_spells_list.append('[ESC] Quit')
+    swap_spells_list.append(' ')
+    swap_spells_list.append('[[ESC]] Quit')
 
     swap_mode_is_active = True
+
+    draw_outer_frame(spell_list=swap_spells_list)
+    terminal.refresh()
 
     while swap_mode_is_active:
         event_to_be_processed, event_action = handle_game_keys()
@@ -136,3 +143,66 @@ def remove_already_equipped_armour_spells(gameworld, player_entity, armour_spell
         armour_spells_list.remove(slot8_spell_entity)
 
     return armour_spells_list
+
+
+def draw_outer_frame(spell_list):
+    game_config = configUtilities.load_config()
+    # unicode strings of colours
+    frame_colour = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
+    ascii_prefix = 'ASCII_SINGLE_'
+    spell_swap_bottom_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                               parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
+
+    spell_swap_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                       parameter=ascii_prefix + 'TOP_LEFT')
+
+    spell_swap_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                      parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
+
+    spell_swap_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                          parameter=ascii_prefix + 'BOTTOM_LEFT')
+
+    spell_swap_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                  parameter=ascii_prefix + 'HORIZONTAL')
+    spell_swap_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                parameter=ascii_prefix + 'VERTICAL')
+    left_edge_of_spell_info_panel = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                          section='spellSwapPopup',
+                                                                          parameter='SS_STARTX')
+    starty = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellSwapPopup', parameter='SS_STARTY')
+
+    longest_spell_name = 0
+    for a in range(len(spell_list)):
+        if len(spell_list[a]) > longest_spell_name:
+            longest_spell_name = len(spell_list[a])
+
+    if longest_spell_name == 0:
+        logger.warning('INVALID SPELL LENGTH FOR SWAP UI')
+        return
+    else:
+        width = longest_spell_name + 3
+        depth = len(spell_list) + 4
+        startx = left_edge_of_spell_info_panel - width
+
+
+    # draw top/bottom horizontals
+    for z in range(startx, (startx + width)):
+        terminal.printf(x=z, y=starty, s=frame_colour + spell_swap_horizontal + ']')
+
+        terminal.printf(x=z, y=(starty + depth) - 1, s=frame_colour + spell_swap_horizontal + ']')
+
+    # draw left vertical
+    for zz in range(depth - 1):
+        terminal.printf(x=startx, y=starty + zz, s=frame_colour + spell_swap_vertical + ']')
+
+        # draw corners
+        terminal.printf(x=startx, y=starty, s=frame_colour + spell_swap_top_left_corner + ']')
+
+        terminal.printf(x=startx, y=(starty + depth) - 1, s=frame_colour + spell_swap_bottom_left_corner + ']')
+
+        terminal.printf(x=(startx + width), y=starty, s=frame_colour + spell_swap_right_t_junction + ']')
+
+        terminal.printf(x=(startx + width), y=(starty + depth) - 1, s=frame_colour + spell_swap_right_t_junction + ']')
+
+    for a in range(len(spell_list)):
+        terminal.printf(x=startx + 2, y=(starty + 2) + a, s=spell_list[a])
