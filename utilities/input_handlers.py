@@ -81,7 +81,7 @@ def handle_game_keys():
             myevent = 'infopopup'
         else:
             myevent = 'keypress'
-            action = 'A'
+        action = 'A'
     if key == terminal.TK_B:
         if terminal.check(terminal.TK_SHIFT):
             myevent = 'infopopup'
@@ -138,6 +138,10 @@ def handle_game_keys():
         else:
             myevent = 'keypress'
         action = 'J'
+
+    if key == terminal.TK_T:
+        myevent = 'chat'
+        action = 'T'
 
     # ACCEPT/DELETE/QUIT KEYS
     if key == terminal.TK_ESCAPE:
