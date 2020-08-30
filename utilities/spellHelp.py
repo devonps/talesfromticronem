@@ -4,6 +4,7 @@ from loguru import logger
 from components import spells, items, mobiles
 from utilities import configUtilities, formulas
 from utilities.common import CommonUtils
+from utilities.gamemap import GameMapUtilities
 from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
@@ -159,9 +160,7 @@ class SpellUtilities:
         return gameworld.component_for_entity(spell_entity, spells.SpellType).label
 
     @staticmethod
-    def cast_spell(slot, gameworld, player, game_config):
-
-
+    def cast_spell(slot, gameworld, player, game_config, game_map):
         spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                           player_entity=player)
 
@@ -171,52 +170,87 @@ class SpellUtilities:
         is_spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell_entity)
 
         if not is_spell_on_cooldown:
-            # spell isn't on cooldown
-            # display list of valid targets and wait for the player
-            # to select one of them
+            # spell targeting
+            spell_uses_aoe_targetting = SpellUtilities.get_spell_aoe_status(gameworld=gameworld, spell_entity=spell_entity)
 
-            visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=player)
-            target_letters = CommonUtils.helper_print_valid_targets(gameworld=gameworld, valid_targets=visible_entities,
-                                                                    game_config=game_config)
+            if spell_uses_aoe_targetting:
+                spell_aoe_size = SpellUtilities.get_spell_aoe_size(gameworld=gameworld, spell_entity=spell_entity)
 
-            # blit the terminal
-            terminal.refresh()
+            targeting_a_spell = True
+            targeting_cursor_centre_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player)
+            targeting_cursor_centre_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player)
+            targeting_cursor = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_SPELL_TARGETING_CURSOR')
+            move_target_cursor = ['left', 'right', 'up', 'down']
+            unicode_targeting_cursor_colour = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
+            config_prefix_floor = 'ASCII_FLOOR_'
+            char_to_display = ''
+            screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                          parameter='SCREEN_OFFSET_X')
+            screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                          parameter='SCREEN_OFFSET_Y')
+            tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                          parameter='TILE_TYPE_FLOOR')
 
-            # wait for user key press
-            player_not_pressed_a_key = True
-            while player_not_pressed_a_key:
+            while targeting_a_spell:
+                entity_at_targeting_cursor_position = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=targeting_cursor_centre_x, y=targeting_cursor_centre_y)
+                oldx = targeting_cursor_centre_x
+                oldy = targeting_cursor_centre_y
+                # display targeting cursor
+                terminal.printf(x=screen_offset_x + targeting_cursor_centre_x, y=screen_offset_y + targeting_cursor_centre_y, s=unicode_targeting_cursor_colour + targeting_cursor + ']')
+
+                # refresh terminal
+                terminal.refresh()
+
+                # get keyboard command
                 event_to_be_processed, event_action = handle_game_keys()
                 if event_to_be_processed == 'keypress':
                     if event_action == 'quit':
-                        player_not_pressed_a_key = False
+                        targeting_a_spell = False
+                    if event_action in move_target_cursor:
+                        this_x, this_y = SpellUtilities.move_spell_targetting_cursor(direction=event_action, curx=targeting_cursor_centre_x, cury=targeting_cursor_centre_y)
+                        is_the_targeting_cursor_blocked = SpellUtilities.check_for_blocked_movement(game_map=game_map, newx=this_x, newy=this_y)
+                        if not is_the_targeting_cursor_blocked:
+                            targeting_cursor_centre_x = this_x
+                            targeting_cursor_centre_y = this_y
+                        # draw entity back to screen
+                        if entity_at_targeting_cursor_position > 0:
+                            char_to_display = MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=entity_at_targeting_cursor_position)
+                        else:
+                            tile = game_map.tiles[oldx][oldy].type_of_tile
+                            if tile == tile_type_floor:
+                                char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
+                                                                                     config_prefix=config_prefix_floor,
+                                                                                     tile_assignment=0)
+                        string_to_print = unicode_targeting_cursor_colour + char_to_display + ']'
+                        terminal.printf(x=screen_offset_x + oldx, y=screen_offset_y + oldy, s=string_to_print)
+                    if event_action == 'enter':
+                        SpellUtilities.set_spell_cooldown_true(gameworld=gameworld, spell_entity=spell_entity)
+                        targeting_a_spell = False
+                        spell_target_entity = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
+                                                                            x=targeting_cursor_centre_x,
+                                                                            y=targeting_cursor_centre_y)
 
-                    if event_action != 'quit':
-                        key_pressed = chr(97 + event_action)
-
-                        player_not_pressed_a_key, target = SpellUtilities.has_valid_target_been_selected(
-                            gameworld=gameworld, player_entity=player, target_letters=target_letters,
-                            key_pressed=key_pressed, spell_entity=spell_entity, valid_targets=visible_entities,
-                            slotid=slot)
+                        logger.debug('Entity id targeted is {}', spell_target_entity)
         else:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
             CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
 
     @staticmethod
-    def has_valid_target_been_selected(gameworld, player_entity, target_letters, key_pressed, spell_entity,
-                                       valid_targets, slotid):
-        player_not_pressed_a_key = True
-        target = 0
-        if key_pressed in target_letters:
-            target = target_letters.index(key_pressed)
-            player_not_pressed_a_key = False
+    def move_spell_targetting_cursor(direction, curx, cury):
+        if direction == 'left':
+            curx -= 1
+        if direction == 'right':
+            curx += 1
+        if direction == 'up':
+            cury -= 1
+        if direction == 'down':
+            cury += 1
 
-            # add component covering spell has been cast
-            gameworld.add_component(player_entity,
-                                    mobiles.SpellCast(truefalse=True, spell_entity=spell_entity,
-                                                      spell_caster=player_entity,
-                                                      spell_target=valid_targets[0], spell_bar_slot=slotid))
+        return curx, cury
 
-        return player_not_pressed_a_key, target
+    @staticmethod
+    def check_for_blocked_movement(game_map, newx, newy):
+        return GameMapUtilities.is_tile_blocked(game_map, newx, newy)
 
     @staticmethod
     def get_valid_targets_for_spell(gameworld, casting_entity, spell_entity):
