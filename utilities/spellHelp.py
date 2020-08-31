@@ -171,69 +171,100 @@ class SpellUtilities:
 
         if not is_spell_on_cooldown:
             # spell targeting
-            spell_uses_aoe_targetting = SpellUtilities.get_spell_aoe_status(gameworld=gameworld, spell_entity=spell_entity)
-
-            if spell_uses_aoe_targetting:
-                spell_aoe_size = SpellUtilities.get_spell_aoe_size(gameworld=gameworld, spell_entity=spell_entity)
-
-            targeting_a_spell = True
-            targeting_cursor_centre_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player)
-            targeting_cursor_centre_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player)
-            targeting_cursor = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter='ASCII_SPELL_TARGETING_CURSOR')
-            move_target_cursor = ['left', 'right', 'up', 'down']
-            unicode_targeting_cursor_colour = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
-            config_prefix_floor = 'ASCII_FLOOR_'
-            char_to_display = ''
-            screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                          parameter='SCREEN_OFFSET_X')
-            screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                          parameter='SCREEN_OFFSET_Y')
-            tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
-                                                                          parameter='TILE_TYPE_FLOOR')
-
-            while targeting_a_spell:
-                entity_at_targeting_cursor_position = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=targeting_cursor_centre_x, y=targeting_cursor_centre_y)
-                oldx = targeting_cursor_centre_x
-                oldy = targeting_cursor_centre_y
-                # display targeting cursor
-                terminal.printf(x=screen_offset_x + targeting_cursor_centre_x, y=screen_offset_y + targeting_cursor_centre_y, s=unicode_targeting_cursor_colour + targeting_cursor + ']')
-
-                # refresh terminal
-                terminal.refresh()
-
-                # get keyboard command
-                event_to_be_processed, event_action = handle_game_keys()
-                if event_to_be_processed == 'keypress':
-                    if event_action == 'quit':
-                        targeting_a_spell = False
-                    if event_action in move_target_cursor:
-                        this_x, this_y = SpellUtilities.move_spell_targetting_cursor(direction=event_action, curx=targeting_cursor_centre_x, cury=targeting_cursor_centre_y)
-                        is_the_targeting_cursor_blocked = SpellUtilities.check_for_blocked_movement(game_map=game_map, newx=this_x, newy=this_y)
-                        if not is_the_targeting_cursor_blocked:
-                            targeting_cursor_centre_x = this_x
-                            targeting_cursor_centre_y = this_y
-                        # draw entity back to screen
-                        if entity_at_targeting_cursor_position > 0:
-                            char_to_display = MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=entity_at_targeting_cursor_position)
-                        else:
-                            tile = game_map.tiles[oldx][oldy].type_of_tile
-                            if tile == tile_type_floor:
-                                char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
-                                                                                     config_prefix=config_prefix_floor,
-                                                                                     tile_assignment=0)
-                        string_to_print = unicode_targeting_cursor_colour + char_to_display + ']'
-                        terminal.printf(x=screen_offset_x + oldx, y=screen_offset_y + oldy, s=string_to_print)
-                    if event_action == 'enter':
-                        SpellUtilities.set_spell_cooldown_true(gameworld=gameworld, spell_entity=spell_entity)
-                        targeting_a_spell = False
-                        spell_target_entity = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
-                                                                            x=targeting_cursor_centre_x,
-                                                                            y=targeting_cursor_centre_y)
-
-                        logger.debug('Entity id targeted is {}', spell_target_entity)
+            spell_target_entity = SpellUtilities.spell_targeting(gameworld=gameworld, game_map=game_map, player=player, spell_entity=spell_entity)
+            logger.debug('Entity id targeted is {}', spell_target_entity)
         else:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
             CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
+
+    @staticmethod
+    def spell_targeting(gameworld, game_map, player, spell_entity):
+        game_config = configUtilities.load_config()
+        spell_target_entity = 0
+        targeting_a_spell = True
+        targeting_cursor_centre_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player)
+        targeting_cursor_centre_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player)
+        targeting_cursor = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                            parameter='ASCII_SPELL_TARGETING_CURSOR')
+        move_target_cursor = ['left', 'right', 'up', 'down']
+        targeting_cursor_colour = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]'
+        string_to_print = ''
+        screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='SCREEN_OFFSET_X')
+        screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='SCREEN_OFFSET_Y')
+
+        while targeting_a_spell:
+            entity_at_targeting_cursor_position = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
+                                                                                                      x=targeting_cursor_centre_x,
+                                                                                                      y=targeting_cursor_centre_y)
+            oldx = targeting_cursor_centre_x
+            oldy = targeting_cursor_centre_y
+            # display targeting cursor
+            terminal.printf(x=screen_offset_x + targeting_cursor_centre_x,
+                            y=screen_offset_y + targeting_cursor_centre_y,
+                            s=targeting_cursor_colour + '[' + targeting_cursor + ']')
+
+            # refresh terminal
+            terminal.refresh()
+
+            # get keyboard command
+            event_to_be_processed, event_action = handle_game_keys()
+            if event_action == 'quit':
+                targeting_a_spell = False
+            if event_action in move_target_cursor:
+                this_x, this_y = SpellUtilities.move_spell_targetting_cursor(direction=event_action,
+                                                                             curx=targeting_cursor_centre_x,
+                                                                             cury=targeting_cursor_centre_y)
+                is_the_targeting_cursor_blocked = SpellUtilities.check_for_blocked_movement(game_map=game_map,
+                                                                                            newx=this_x,
+                                                                                            newy=this_y)
+                if not is_the_targeting_cursor_blocked:
+                    targeting_cursor_centre_x = this_x
+                    targeting_cursor_centre_y = this_y
+                # draw entity back to screen
+                string_to_print = SpellUtilities.determine_if_need_to_draw_entity(gameworld=gameworld,
+                                                                                  game_map=game_map, oldx=oldx,
+                                                                                  oldy=oldy,
+                                                                                  target_entity=entity_at_targeting_cursor_position)
+            terminal.printf(x=screen_offset_x + oldx, y=screen_offset_y + oldy, s=string_to_print)
+            if event_action == 'enter':
+                SpellUtilities.set_spell_cooldown_true(gameworld=gameworld, spell_entity=spell_entity)
+                targeting_a_spell = False
+                spell_target_entity = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
+                                                                                          x=targeting_cursor_centre_x,
+                                                                                          y=targeting_cursor_centre_y)
+        return spell_target_entity
+
+
+    @staticmethod
+    def determine_if_need_to_draw_entity(gameworld, game_map, oldx, oldy, target_entity):
+        game_config = configUtilities.load_config()
+        config_prefix_floor = 'ASCII_FLOOR_'
+        tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='TILE_TYPE_FLOOR')
+        string_to_print = ''
+        if target_entity > 0:
+            char_to_display = MobileUtilities.get_mobile_glyph(gameworld=gameworld,
+                                                               entity=target_entity)
+            fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld,
+                                                             entity=target_entity)
+            bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld,
+                                                             entity=target_entity)
+            string_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + char_to_display
+
+        else:
+            tile = game_map.tiles[oldx][oldy].type_of_tile
+            if tile == tile_type_floor:
+                char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
+                                                                     config_prefix=config_prefix_floor,
+                                                                     tile_assignment=0)
+                colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                         section='colorCodes',
+                                                                         parameter='FLOOR_INSIDE_FOV')
+                string_to_print = colour_code + '[' + char_to_display + ']'
+
+        return string_to_print
 
     @staticmethod
     def move_spell_targetting_cursor(direction, curx, cury):
