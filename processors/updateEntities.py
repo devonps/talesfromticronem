@@ -16,29 +16,29 @@ class UpdateEntitiesProcessor(esper.Processor):
     def __init__(self, gameworld):
         self.gameworld = gameworld
 
-    def process(self, game_config):
+    def process(self, game_config, advance_game_turn):
+        if advance_game_turn:
+            player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+            message_log_just_viewed = MobileUtilities.get_view_message_log_value(gameworld=self.gameworld,
+                                                                                 entity=player_entity)
 
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
-        message_log_just_viewed = MobileUtilities.get_view_message_log_value(gameworld=self.gameworld,
-                                                                             entity=player_entity)
+            if not message_log_just_viewed:
+                message_log_id = MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
 
-        if not message_log_just_viewed:
-            message_log_id = MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
+                for ent, ai in self.gameworld.get_component(mobiles.AI):
+                    in_combat = MobileUtilities.get_combat_status(self.gameworld, entity=ent)
+                    entity_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
 
-            for ent, ai in self.gameworld.get_component(mobiles.AI):
-                in_combat = MobileUtilities.get_combat_status(self.gameworld, entity=ent)
-                entity_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
+                    self.apply_conditions(entity_names=entity_names, player_entity=player_entity,
+                                          message_log_id=message_log_id, target_entity=ent)
+                    self.apply_boons(entity_names=entity_names, player_entity=player_entity, message_log_id=message_log_id,
+                                     target_entity=ent)
+                    # apply controls
+                    # gain resources from spells
 
-                self.apply_conditions(entity_names=entity_names, player_entity=player_entity,
-                                      message_log_id=message_log_id, target_entity=ent)
-                self.apply_boons(entity_names=entity_names, player_entity=player_entity, message_log_id=message_log_id,
-                                 target_entity=ent)
-                # apply controls
-                # gain resources from spells
-
-                if not in_combat:
-                    ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=self.gameworld, entity=ent)
-                    MobileUtilities.set_mobile_derived_attributes(self.gameworld, entity=ent)
+                    if not in_combat:
+                        ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=self.gameworld, entity=ent)
+                        MobileUtilities.set_mobile_derived_attributes(self.gameworld, entity=ent)
 
     def apply_conditions(self, entity_names, player_entity, message_log_id, target_entity):
         current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,

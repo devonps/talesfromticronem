@@ -11,7 +11,7 @@ class RenderMessageLog(esper.Processor):
     def __init__(self, gameworld):
         self.gameworld = gameworld
 
-    def process(self, game_config):
+    def process(self, game_config, advance_game_turn):
         self.render_message_panel(self, game_config=game_config)
 
     @staticmethod

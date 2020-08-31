@@ -18,7 +18,7 @@ class RenderSpellInfoPanel(esper.Processor):
         self.game_map = game_map
         self.game_config = configUtilities.load_config()
 
-    def process(self, game_config):
+    def process(self, game_config, advance_game_turn):
         self.render_spell_info_outer_frame()
         self.render_equipped_items()
         self.render_energy_bars()

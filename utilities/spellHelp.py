@@ -179,10 +179,7 @@ class SpellUtilities:
             spell_target_entity = SpellUtilities.spell_targeting(gameworld=gameworld, game_map=game_map, player=player, spell_entity=spell_entity)
             logger.debug('Entity id targeted is {}', spell_target_entity)
             if spell_target_entity > 0:
-                gameworld.add_component(player,
-                                        mobiles.SpellCast(truefalse=True, spell_entity=spell_entity,
-                                                          spell_target=spell_target_entity, spell_bar_slot=slot,
-                                                          spell_caster=player))
+                MobileUtilities.set_spell_to_cast_this_turn(gameworld=gameworld, mobile=player, spell_entity=spell_entity, spell_target_entity=spell_target_entity, slot=slot)
 
     @staticmethod
     def spell_targeting(gameworld, game_map, player, spell_entity):

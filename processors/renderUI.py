@@ -16,7 +16,7 @@ class RenderUI(esper.Processor):
         self.game_map = game_map
         self.gameworld = gameworld
 
-    def process(self, game_config):
+    def process(self, game_config, advance_game_turn):
         start_time = time.perf_counter()
         # render the game map
         fov_map = self.render_map(self.gameworld, game_config, self.game_map)
@@ -267,4 +267,5 @@ class RenderUI(esper.Processor):
         if flag == 'talk_to_me':
             str_to_print += "[offset=0, -8][+][color=red]^[/color]"
         terminal.printf(x=posx, y=posy, s=str_to_print)
+
 

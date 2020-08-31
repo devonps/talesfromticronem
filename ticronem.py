@@ -41,8 +41,9 @@ def game_loop(gameworld):
     # call scene manager
     game_map = SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)
     scene_change = False
+    advance_game_turn = False
     # process all intended actions
-    gameworld.process(game_config)
+    gameworld.process(game_config, advance_game_turn)
     # blit the console
     terminal.refresh()
     current_turn += 1
@@ -108,8 +109,8 @@ def game_loop(gameworld):
             StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player, game_map=game_map)
             current_turn += 1
             MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
-            # process all intended actions
-            gameworld.process(game_config)
+        # process all intended actions
+        gameworld.process(game_config, advance_game_turn)
 
         # blit the console
         terminal.refresh()

@@ -644,6 +644,14 @@ class MobileUtilities(numbers.Real, ABC):
     def stop_double_casting_same_spell(gameworld, entity):
         gameworld.remove_component(entity, mobiles.SpellCast)
 
+
+    @staticmethod
+    def set_spell_to_cast_this_turn(gameworld, mobile, spell_entity, spell_target_entity, slot):
+        gameworld.add_component(mobile,
+                                mobiles.SpellCast(truefalse=True, spell_entity=spell_entity,
+                                                  spell_target=spell_target_entity, spell_bar_slot=slot,
+                                                  spell_caster=mobile))
+
     #
     # Get primary attributes
     #
