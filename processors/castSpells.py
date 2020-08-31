@@ -8,6 +8,7 @@ from utilities.mobileHelp import MobileUtilities
 from loguru import logger
 
 from utilities.spellHelp import SpellUtilities
+from utilities.weaponManagement import WeaponUtilities
 
 
 class CastSpells(esper.Processor):
@@ -50,7 +51,7 @@ class CastSpells(esper.Processor):
 
     def process_combat_spells(self, spell_type, target_entity, caster_entity, slot_used, spell_entity):
         if spell_type == 'combat':
-            spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=caster_entity)
+            spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=spell_entity)
             target_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld,
                                                                    entity=target_entity)
             caster_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=caster_entity)
@@ -64,7 +65,7 @@ class CastSpells(esper.Processor):
             MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=target_entity)
             MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=caster_entity)
 
-            damage_done_to_target = self.cast_combat_spell(spell_caster=caster_entity, spell=caster_entity,
+            damage_done_to_target = self.cast_combat_spell(spell_caster=caster_entity, spell=spell_entity,
                                                            spell_target=target_entity, weapon_used=slot_used)
             if damage_done_to_target > 0:
                 # apply damage to target --> current health is used when in combat
@@ -95,6 +96,7 @@ class CastSpells(esper.Processor):
             if cd_turns > 0:
                 cd_turns -= 1
                 SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld, spell_entity=spell_entity, value=cd_turns)
+                logger.debug('Spell entity {} cooldown reduced to {}', spell_entity, cd_turns)
             else:
                 SpellUtilities.set_spell_cooldown_false(gameworld=self.gameworld, spell_entity=spell_entity)
 
@@ -111,7 +113,7 @@ class CastSpells(esper.Processor):
             else:
                 weapon = equipped_weapons[1]
 
-        weapon_strength = ItemUtilities.calculate_weapon_strength(gameworld=self.gameworld, weapon=weapon)
+        weapon_strength = WeaponUtilities.calculate_weapon_strength(gameworld=self.gameworld, weapon=weapon)
         outgoing_base_damage = formulas.outgoing_base_damage(weapon_strength=weapon_strength, power=caster_power,
                                                              spell_coefficient=spell_coeff)
 

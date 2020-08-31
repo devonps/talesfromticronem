@@ -81,7 +81,7 @@ def game_loop(gameworld):
                 MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=player, direction=event_action, speed=1)
                 advance_game_turn = True
             if event_action in spell_bar_keys:
-                SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player, game_config=game_config, game_map=game_map)
+                SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player, game_map=game_map)
                 advance_game_turn = True
             if event_action == 'log':
                 CommonUtils.set_current_log(gameworld=gameworld, log_entity=msglog)
@@ -108,8 +108,8 @@ def game_loop(gameworld):
             StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player, game_map=game_map)
             current_turn += 1
             MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
-        # process all intended actions
-        gameworld.process(game_config)
+            # process all intended actions
+            gameworld.process(game_config)
 
         # blit the console
         terminal.refresh()

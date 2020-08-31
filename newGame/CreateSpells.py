@@ -40,7 +40,7 @@ class AsEntities:
             gameworld.add_component(thisspell, spells.Description(spell['description']))
             gameworld.add_component(thisspell, spells.ShortDescription(spell['short_description']))
             gameworld.add_component(thisspell, spells.CastTime(spell['turns_to_cast']))
-            gameworld.add_component(thisspell, spells.CoolDown(spell['cool_down']))
+            gameworld.add_component(thisspell, spells.CoolDown(int(spell['cool_down'])))
             gameworld.add_component(thisspell, spells.ClassName(playable_class))
             gameworld.add_component(thisspell, spells.SpellType(spell['type_of_spell']))
             gameworld.add_component(thisspell, spells.StatusEffect(condis=[], boons=[], controls=[]))

@@ -160,22 +160,29 @@ class SpellUtilities:
         return gameworld.component_for_entity(spell_entity, spells.SpellType).label
 
     @staticmethod
-    def cast_spell(slot, gameworld, player, game_config, game_map):
+    def cast_spell(slot, gameworld, player, game_map):
+        # programatically spell slots start at zero - but are represented on screen as starting from one
+        slot -= 1
         spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                           player_entity=player)
 
         logger.warning('Casting spell with entity id {} from slot {}', spell_entity, slot)
 
         # check if spell is on cool-down
-        is_spell_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell_entity)
+        spell_is_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=spell_entity)
 
-        if not is_spell_on_cooldown:
+        if spell_is_on_cooldown:
+            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+            CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
+        else:
             # spell targeting
             spell_target_entity = SpellUtilities.spell_targeting(gameworld=gameworld, game_map=game_map, player=player, spell_entity=spell_entity)
             logger.debug('Entity id targeted is {}', spell_target_entity)
-        else:
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-            CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
+            if spell_target_entity > 0:
+                gameworld.add_component(player,
+                                        mobiles.SpellCast(truefalse=True, spell_entity=spell_entity,
+                                                          spell_target=spell_target_entity, spell_bar_slot=slot,
+                                                          spell_caster=player))
 
     @staticmethod
     def spell_targeting(gameworld, game_map, player, spell_entity):
@@ -213,15 +220,9 @@ class SpellUtilities:
             if event_action == 'quit':
                 targeting_a_spell = False
             if event_action in move_target_cursor:
-                this_x, this_y = SpellUtilities.move_spell_targetting_cursor(direction=event_action,
+                targeting_cursor_centre_x, targeting_cursor_centre_y = SpellUtilities.move_spell_targetting_cursor(direction=event_action,
                                                                              curx=targeting_cursor_centre_x,
-                                                                             cury=targeting_cursor_centre_y)
-                is_the_targeting_cursor_blocked = SpellUtilities.check_for_blocked_movement(game_map=game_map,
-                                                                                            newx=this_x,
-                                                                                            newy=this_y)
-                if not is_the_targeting_cursor_blocked:
-                    targeting_cursor_centre_x = this_x
-                    targeting_cursor_centre_y = this_y
+                                                                             cury=targeting_cursor_centre_y, game_map=game_map)
                 # draw entity back to screen
                 string_to_print = SpellUtilities.determine_if_need_to_draw_entity(gameworld=gameworld,
                                                                                   game_map=game_map, oldx=oldx,
@@ -230,10 +231,12 @@ class SpellUtilities:
             terminal.printf(x=screen_offset_x + oldx, y=screen_offset_y + oldy, s=string_to_print)
             if event_action == 'enter':
                 SpellUtilities.set_spell_cooldown_true(gameworld=gameworld, spell_entity=spell_entity)
+                logger.debug('Spell entity {} has been put on cooldown', spell_entity)
                 targeting_a_spell = False
                 spell_target_entity = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
                                                                                           x=targeting_cursor_centre_x,
                                                                                           y=targeting_cursor_centre_y)
+
         return spell_target_entity
 
 
@@ -267,7 +270,9 @@ class SpellUtilities:
         return string_to_print
 
     @staticmethod
-    def move_spell_targetting_cursor(direction, curx, cury):
+    def move_spell_targetting_cursor(game_map, direction, curx, cury):
+        oldx = curx
+        oldy = cury
         if direction == 'left':
             curx -= 1
         if direction == 'right':
@@ -277,7 +282,17 @@ class SpellUtilities:
         if direction == 'down':
             cury += 1
 
-        return curx, cury
+        is_the_targeting_cursor_blocked = SpellUtilities.check_for_blocked_movement(game_map=game_map,
+                                                                                    newx=curx,
+                                                                                    newy=cury)
+        if not is_the_targeting_cursor_blocked:
+            this_x = curx
+            this_y = cury
+        else:
+            this_x = oldx
+            this_y = oldy
+
+        return this_x, this_y
 
     @staticmethod
     def check_for_blocked_movement(game_map, newx, newy):
