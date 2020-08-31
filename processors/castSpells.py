@@ -97,7 +97,6 @@ class CastSpells(esper.Processor):
             if cd_turns > 0:
                 cd_turns -= 1
                 SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld, spell_entity=spell_entity, value=cd_turns)
-                logger.debug('Spell entity {} cooldown reduced to {}', spell_entity, cd_turns)
             else:
                 SpellUtilities.set_spell_cooldown_false(gameworld=self.gameworld, spell_entity=spell_entity)
 

@@ -228,6 +228,8 @@ class SpellUtilities:
             terminal.printf(x=screen_offset_x + oldx, y=screen_offset_y + oldy, s=string_to_print)
             if event_action == 'enter':
                 SpellUtilities.set_spell_cooldown_true(gameworld=gameworld, spell_entity=spell_entity)
+                game_turns_on_cooldown = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld, spell_entity=spell_entity)
+                SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=gameworld, spell_entity=spell_entity, value=game_turns_on_cooldown)
                 logger.debug('Spell entity {} has been put on cooldown', spell_entity)
                 targeting_a_spell = False
                 spell_target_entity = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
@@ -670,7 +672,7 @@ class SpellUtilities:
         spell_is_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld,
                                                                         spell_entity=spell_entity)
         if spell_is_on_cooldown:
-            spell_cooldown_value = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld,
+            spell_cooldown_value = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
                                                                           spell_entity=spell_entity)
         else:
             spell_cooldown_value = 0
