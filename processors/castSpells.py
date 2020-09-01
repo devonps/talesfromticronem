@@ -25,7 +25,7 @@ class CastSpells(esper.Processor):
 
     def check_for_spells_to_be_cast_this_turn(self):
         for ent, mob in self.gameworld.get_component(mobiles.SpellCast):
-            if mob.truefalse:
+            if mob.has_cast_a_spell:
                 spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=mob.spell_entity)
                 target_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld,
                                                                        entity=mob.spell_target)
@@ -43,11 +43,14 @@ class CastSpells(esper.Processor):
                 logger.info('boons attached to spell {}', boons_to_apply)
 
                 SpellUtilities.set_spell_cooldown_true(gameworld=self.gameworld, spell_entity=mob.spell_entity)
-                number_of_turns = SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld, spell_entity=mob.spell_entity)
+                number_of_turns = SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld,
+                                                                         spell_entity=mob.spell_entity)
 
                 SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld,
                                                                   spell_entity=mob.spell_entity, value=number_of_turns)
-                self.process_combat_spells(spell_type=spell_type, target_entity=mob.spell_target, caster_entity=mob.spell_caster, slot_used=slot_used, spell_entity=mob.spell_entity)
+                self.process_combat_spells(spell_type=spell_type, target_entity=mob.spell_target,
+                                           caster_entity=mob.spell_caster, slot_used=slot_used,
+                                           spell_entity=mob.spell_entity)
                 self.process_healing_spell(spell_type=spell_type)
 
     def process_combat_spells(self, spell_type, target_entity, caster_entity, slot_used, spell_entity):
@@ -60,6 +63,10 @@ class CastSpells(esper.Processor):
                                                                       spell_entity=spell_entity)
             boons_to_apply = SpellUtilities.get_all_boons_for_spell(gameworld=self.gameworld,
                                                                     spell_entity=spell_entity)
+            spell_has_aoe_effects = SpellUtilities.get_spell_aoe_status(gameworld=self.gameworld, spell_entity=spell_entity)
+
+            if spell_has_aoe_effects == 'True':
+                spell_aoe_size = SpellUtilities.get_spell_aoe_size(gameworld=self.gameworld, spell_entity=spell_entity)
 
             # set inCombat to true for the target and the player --> stops health being recalculated
             # automatically, amongst other things
@@ -96,15 +103,13 @@ class CastSpells(esper.Processor):
             cd_turns = int(cool_down.remaining_turns)
             if cd_turns > 0:
                 cd_turns -= 1
-                SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld, spell_entity=spell_entity, value=cd_turns)
+                SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld, spell_entity=spell_entity,
+                                                                  value=cd_turns)
             else:
                 SpellUtilities.set_spell_cooldown_false(gameworld=self.gameworld, spell_entity=spell_entity)
 
-    def cast_combat_spell(self, spell_caster, spell, spell_target, weapon_used):
+    def get_weapon_damage_used_in_casting(self, spell_caster, weapon_used):
         equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=spell_caster)
-        caster_power = MobileUtilities.get_mobile_primary_power(gameworld=self.gameworld, entity=spell_caster)
-        spell_coeff = float(SpellUtilities.get_spell_damage_coeff(gameworld=self.gameworld, spell_entity=spell))
-
         if equipped_weapons[2] != 0:
             weapon = equipped_weapons[2]
         else:
@@ -114,6 +119,15 @@ class CastSpells(esper.Processor):
                 weapon = equipped_weapons[1]
 
         weapon_strength = WeaponUtilities.calculate_weapon_strength(gameworld=self.gameworld, weapon=weapon)
+
+        return weapon_strength
+
+    def cast_combat_spell(self, spell_caster, spell, spell_target, weapon_used):
+        caster_power = MobileUtilities.get_mobile_primary_power(gameworld=self.gameworld, entity=spell_caster)
+        spell_coeff = float(SpellUtilities.get_spell_damage_coeff(gameworld=self.gameworld, spell_entity=spell))
+
+        weapon_strength = self.get_weapon_damage_used_in_casting(spell_caster=spell_caster, weapon_used=weapon_used)
+
         outgoing_base_damage = formulas.outgoing_base_damage(weapon_strength=weapon_strength, power=caster_power,
                                                              spell_coefficient=spell_coeff)
 

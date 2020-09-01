@@ -646,11 +646,11 @@ class MobileUtilities(numbers.Real, ABC):
 
 
     @staticmethod
-    def set_spell_to_cast_this_turn(gameworld, mobile, spell_entity, spell_target_entity, slot):
+    def set_spell_to_cast_this_turn(gameworld, mobile, spell_entity, spell_target_entity, slot, map_coords):
         gameworld.add_component(mobile,
-                                mobiles.SpellCast(truefalse=True, spell_entity=spell_entity,
+                                mobiles.SpellCast(has_cast_a_spell=True, spell_entity=spell_entity,
                                                   spell_target=spell_target_entity, spell_bar_slot=slot,
-                                                  spell_caster=mobile))
+                                                  spell_caster=mobile, map_coords=map_coords))
 
     #
     # Get primary attributes

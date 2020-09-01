@@ -176,10 +176,10 @@ class SpellUtilities:
             CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
         else:
             # spell targeting
-            spell_target_entity = SpellUtilities.spell_targeting(gameworld=gameworld, game_map=game_map, player=player, spell_entity=spell_entity)
+            spell_target_entity, (x,y) = SpellUtilities.spell_targeting(gameworld=gameworld, game_map=game_map, player=player, spell_entity=spell_entity)
             logger.debug('Entity id targeted is {}', spell_target_entity)
             if spell_target_entity > 0:
-                MobileUtilities.set_spell_to_cast_this_turn(gameworld=gameworld, mobile=player, spell_entity=spell_entity, spell_target_entity=spell_target_entity, slot=slot)
+                MobileUtilities.set_spell_to_cast_this_turn(gameworld=gameworld, mobile=player, spell_entity=spell_entity, spell_target_entity=spell_target_entity, slot=slot, map_coords=(x,y))
 
     @staticmethod
     def spell_targeting(gameworld, game_map, player, spell_entity):
@@ -236,7 +236,7 @@ class SpellUtilities:
                                                                                           x=targeting_cursor_centre_x,
                                                                                           y=targeting_cursor_centre_y)
 
-        return spell_target_entity
+        return spell_target_entity, (targeting_cursor_centre_x, targeting_cursor_centre_y)
 
 
     @staticmethod

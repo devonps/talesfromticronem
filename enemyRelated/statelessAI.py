@@ -135,7 +135,7 @@ class StatelessAI:
         if spell_to_cast > 0:
             # add component covering spell has been cast
             gameworld.add_component(ent,
-                                    mobiles.SpellCast(truefalse=True, spell_entity=spell_to_cast,
+                                    mobiles.SpellCast(has_cast_a_spell=True, spell_entity=spell_to_cast,
                                                       spell_target=player_entity, spell_bar_slot=spell_bar_slot_id,
                                                       spell_caster=ent))
         else:
