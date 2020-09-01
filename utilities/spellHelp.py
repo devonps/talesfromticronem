@@ -25,20 +25,30 @@ class SpellUtilities:
         spell_bar = 0
 
         if weapon_type in ['sword', 'staff']:
-            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_one(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_two(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_three(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_four(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_five(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(
+                SpellUtilities.get_spell_entity_from_slot_one(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(
+                SpellUtilities.get_spell_entity_from_slot_two(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(
+                SpellUtilities.get_spell_entity_from_slot_three(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(
+                SpellUtilities.get_spell_entity_from_slot_four(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(
+                SpellUtilities.get_spell_entity_from_slot_five(gameworld=gameworld, spellbar=spell_bar))
 
         if weapon_type in ['wand', 'scepter', 'dagger']:
-            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_one(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_two(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_three(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(
+                SpellUtilities.get_spell_entity_from_slot_one(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(
+                SpellUtilities.get_spell_entity_from_slot_two(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(
+                SpellUtilities.get_spell_entity_from_slot_three(gameworld=gameworld, spellbar=spell_bar))
 
         if weapon_type in ['rod', 'focus']:
-            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_four(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(SpellUtilities.get_spell_entity_from_slot_five(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(
+                SpellUtilities.get_spell_entity_from_slot_four(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(
+                SpellUtilities.get_spell_entity_from_slot_five(gameworld=gameworld, spellbar=spell_bar))
 
         return spells_to_choose_from
 
@@ -176,10 +186,16 @@ class SpellUtilities:
             CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
         else:
             # spell targeting
-            spell_target_entity, (x,y) = SpellUtilities.spell_targeting(gameworld=gameworld, game_map=game_map, player=player, spell_entity=spell_entity)
+            spell_target_entity, spell_cast_at = SpellUtilities.spell_targeting(gameworld=gameworld, game_map=game_map,
+                                                                                player=player,
+                                                                                spell_entity=spell_entity)
             logger.debug('Entity id targeted is {}', spell_target_entity)
             if spell_target_entity > 0:
-                MobileUtilities.set_spell_to_cast_this_turn(gameworld=gameworld, mobile=player, spell_entity=spell_entity, spell_target_entity=spell_target_entity, slot=slot, map_coords=(x,y))
+                SpellUtilities.set_spell_to_cast_this_turn(gameworld=gameworld, mobile_entity=player,
+                                                           spell_entity=spell_entity,
+                                                           spell_target_entity=spell_target_entity, slot=slot,
+                                                           map_coords_list=spell_cast_at)
+                print('Steve')
 
     @staticmethod
     def spell_targeting(gameworld, game_map, player, spell_entity):
@@ -217,9 +233,10 @@ class SpellUtilities:
             if event_action == 'quit':
                 targeting_a_spell = False
             if event_action in move_target_cursor:
-                targeting_cursor_centre_x, targeting_cursor_centre_y = SpellUtilities.move_spell_targetting_cursor(direction=event_action,
-                                                                             curx=targeting_cursor_centre_x,
-                                                                             cury=targeting_cursor_centre_y, game_map=game_map)
+                targeting_cursor_centre_x, targeting_cursor_centre_y = SpellUtilities.move_spell_targetting_cursor(
+                    direction=event_action,
+                    curx=targeting_cursor_centre_x,
+                    cury=targeting_cursor_centre_y, game_map=game_map)
                 # draw entity back to screen
                 string_to_print = SpellUtilities.determine_if_need_to_draw_entity(gameworld=gameworld,
                                                                                   game_map=game_map, oldx=oldx,
@@ -228,16 +245,17 @@ class SpellUtilities:
             terminal.printf(x=screen_offset_x + oldx, y=screen_offset_y + oldy, s=string_to_print)
             if event_action == 'enter':
                 SpellUtilities.set_spell_cooldown_true(gameworld=gameworld, spell_entity=spell_entity)
-                game_turns_on_cooldown = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld, spell_entity=spell_entity)
-                SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=gameworld, spell_entity=spell_entity, value=game_turns_on_cooldown)
+                game_turns_on_cooldown = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld,
+                                                                                spell_entity=spell_entity)
+                SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=gameworld, spell_entity=spell_entity,
+                                                                  value=game_turns_on_cooldown)
                 logger.debug('Spell entity {} has been put on cooldown', spell_entity)
                 targeting_a_spell = False
                 spell_target_entity = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
                                                                                           x=targeting_cursor_centre_x,
                                                                                           y=targeting_cursor_centre_y)
 
-        return spell_target_entity, (targeting_cursor_centre_x, targeting_cursor_centre_y)
-
+        return spell_target_entity, [targeting_cursor_centre_x, targeting_cursor_centre_y]
 
     @staticmethod
     def determine_if_need_to_draw_entity(gameworld, game_map, oldx, oldy, target_entity):
@@ -382,20 +400,6 @@ class SpellUtilities:
                 spell_entity = ent
         return spell_entity
 
-    @staticmethod
-    def add_utility_spell_to_spellbar(gameworld, player_entity, slot_id, spell_entity):
-        spellbar = MobileUtilities.get_spellbar_id_for_entity(gameworld=gameworld, entity=player_entity)
-        if slot_id == 7:
-            SpellUtilities.set_spell_entity_in_slot_seven(gameworld=gameworld, spellbar=spellbar, spell_entity=spell_entity)
-
-        if slot_id == 8:
-            SpellUtilities.set_spell_entity_in_slot_eight(gameworld=gameworld, spellbar=spellbar,
-                                                          spell_entity=spell_entity)
-
-        if slot_id == 9:
-            SpellUtilities.set_spell_entity_in_slot_nine(gameworld=gameworld, spellbar=spellbar,
-                                                          spell_entity=spell_entity)
-
     # below is the old/original way of tracking the spells - it needs to be deprecated
     @staticmethod
     def populate_spell_bar_initially(gameworld, player_entity):
@@ -464,6 +468,18 @@ class SpellUtilities:
     @staticmethod
     def get_spell_name(gameworld, spell_entity):
         return gameworld.component_for_entity(spell_entity, spells.Name).label
+
+    @staticmethod
+    def set_spell_to_cast_this_turn(gameworld, mobile_entity, spell_entity, spell_target_entity, slot, map_coords_list):
+        gameworld.add_component(mobile_entity, mobiles.SpellCast(has_cast_a_spell=True, spell_entity=spell_entity,
+                                                                 spell_target=spell_target_entity, spell_bar_slot=slot,
+                                                                 spell_caster=mobile_entity,
+                                                                 spell_cast_at=map_coords_list))
+
+    @staticmethod
+    def get_spell_cast_center_coords(gameworld, mobile_entity):
+        spell_component = gameworld.component_for_entity(mobile_entity, mobiles.SpellCast)
+        return spell_component.spell_cast_at
 
     @staticmethod
     def get_spell_cast_time(gameworld, spell_entity):
@@ -673,7 +689,7 @@ class SpellUtilities:
                                                                         spell_entity=spell_entity)
         if spell_is_on_cooldown:
             spell_cooldown_value = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
-                                                                          spell_entity=spell_entity)
+                                                                                     spell_entity=spell_entity)
         else:
             spell_cooldown_value = 0
         if len(spell_range) < 2:
@@ -683,10 +699,11 @@ class SpellUtilities:
 
         return spell_name, sp_range, spell_cooldown_value
 
-
     @staticmethod
     def render_off_hand_spells(gameworld, player_entity, game_config, this_row):
-        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes', parameter='SPELL_UI_SECTION_HEADERS')
+        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                             section='colorCodes',
+                                                                             parameter='SPELL_UI_SECTION_HEADERS')
         slot = 3
         this_letter = 52
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
@@ -709,7 +726,9 @@ class SpellUtilities:
         this_row += 2
 
         for _ in range(2):
-            SpellUtilities.render_spells_in_hand(gameworld=gameworld, slot=slot, player_entity=player_entity, start_list_x=start_list_x, this_row=this_row, this_letter=this_letter, game_config=game_config)
+            SpellUtilities.render_spells_in_hand(gameworld=gameworld, slot=slot, player_entity=player_entity,
+                                                 start_list_x=start_list_x, this_row=this_row, this_letter=this_letter,
+                                                 game_config=game_config)
             this_row += 1
             this_letter += 1
             slot += 1
@@ -717,9 +736,14 @@ class SpellUtilities:
 
     @staticmethod
     def render_spells_in_hand(gameworld, slot, player_entity, start_list_x, this_row, this_letter, game_config):
-        unicode_cooldown_disabled = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes', parameter='SPELL_COOLDOWN_DISABLED')
-        unicode_cooldown_enabled = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes', parameter='SPELL_COOLDOWN_ENABLED')
-        unicode_white_colour = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes', parameter='SPELL_CURRENTLY_ACTIVE')
+        unicode_cooldown_disabled = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                               section='colorCodes',
+                                                                               parameter='SPELL_COOLDOWN_DISABLED')
+        unicode_cooldown_enabled = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                              section='colorCodes',
+                                                                              parameter='SPELL_COOLDOWN_ENABLED')
+        unicode_white_colour = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes',
+                                                                          parameter='SPELL_CURRENTLY_ACTIVE')
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                                player_entity=player_entity)
         if slot_spell_entity > 0:
@@ -749,7 +773,9 @@ class SpellUtilities:
     def render_main_hand_spells(gameworld, player_entity, game_config, this_row):
         this_letter = 49
         slot = 0
-        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes', parameter='SPELL_UI_SECTION_HEADERS')
+        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                             section='colorCodes',
+                                                                             parameter='SPELL_UI_SECTION_HEADERS')
 
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                                player_entity=player_entity)
@@ -771,7 +797,9 @@ class SpellUtilities:
         this_row += 2
 
         for _ in range(3):
-            SpellUtilities.render_spells_in_hand(gameworld=gameworld, slot=slot, player_entity=player_entity, start_list_x=start_list_x, this_row=this_row, this_letter=this_letter, game_config=game_config)
+            SpellUtilities.render_spells_in_hand(gameworld=gameworld, slot=slot, player_entity=player_entity,
+                                                 start_list_x=start_list_x, this_row=this_row, this_letter=this_letter,
+                                                 game_config=game_config)
             this_row += 1
             this_letter += 1
             slot += 1
