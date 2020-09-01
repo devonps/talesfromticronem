@@ -574,7 +574,7 @@ class SpellUtilities:
 
     @staticmethod
     def get_spell_aoe_size(gameworld, spell_entity):
-        return gameworld.component_for_entity(spell_entity, spells.AreaOfEffectSize).area_of_effect_size
+        return gameworld.component_for_entity(spell_entity, spells.AreaOfEffectShape).area_of_effect_shape
 
     @staticmethod
     def get_all_resources_for_spell(gameworld, spell_entity):

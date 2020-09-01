@@ -21,8 +21,8 @@ class AsEntities:
 
         for available_class in class_file['classes']:
             _ = AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config,
-                                                                          spell_file=available_class['spellfile'],
-                                                                          playable_class=available_class['name'])
+                                                                 spell_file=available_class['spellfile'],
+                                                                 playable_class=available_class['name'])
 
     @staticmethod
     def generate_spells_as_entities_for_class(gameworld, game_config, spell_file, playable_class):
@@ -56,12 +56,10 @@ class AsEntities:
                 gameworld.add_component(thisspell, spells.DamageDuration(spell['damage_duration']))
                 gameworld.add_component(thisspell, spells.DamageCoefficient(spell['damage_coef']))
                 gameworld.add_component(thisspell, spells.GroundTargeted(spell['ground_targeted']))
-                if spell['aoe'] == 'True':
-                    gameworld.add_component(thisspell, spells.AreaOfEffect(use_area_of_effect=spell['aoe']))
+                gameworld.add_component(thisspell, spells.AreaOfEffect(use_area_of_effect=spell['aoe']))
+                if spell['aoe']:
                     gameworld.add_component(thisspell,
-                                            spells.AreaOfEffectSize(area_of_effect_size=spell['aoe_size']))
-                else:
-                    gameworld.add_component(thisspell, spells.AreaOfEffect(use_area_of_effect=spell['aoe']))
+                                            spells.AreaOfEffectShape(area_of_effect_shape=spell['aoe_shape']))
 
             if spell['type_of_spell'] == 'heal':
                 spell_heal_file = spell['heal_duration']
@@ -76,6 +74,7 @@ class AsEntities:
 
             effects = spell['effects']
 
-            addStatusEffects.process_status_effect(gameworld=gameworld, spell_entity=thisspell, effects=effects, game_config=game_config, ch_class=playable_class)
+            addStatusEffects.process_status_effect(gameworld=gameworld, spell_entity=thisspell, effects=effects,
+                                                   game_config=game_config, ch_class=playable_class)
 
         return thisspell

@@ -1,0 +1,38 @@
+{
+  "aoe_cursors":[
+    {
+      "id": "3x3_square",
+      "dimensions": [
+        {
+          "width": 3,
+          "height": 3
+        }
+      ],
+      "graph": [
+        {
+          "row_0": "...",
+          "row_1": ".x.",
+          "row_2": "..."
+        }
+        ]
+    },
+        {
+      "id": "3x5_pill",
+      "dimensions": [
+        {
+          "width": 3,
+          "height": 5
+        }
+      ],
+      "graph": [
+        {
+          "row_0": " . ",
+          "row_1": "...",
+          "row_2": ".x.",
+          "row_3": "...",
+          "row_4": " . "
+        }
+        ]
+    }
+  ]
+}

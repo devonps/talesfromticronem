@@ -75,9 +75,9 @@ class AreaOfEffect:
         self.use_area_of_effect = use_area_of_effect
 
 
-class AreaOfEffectSize:
-    def __init__(self, area_of_effect_size=1):
-        self.area_of_effect_size = area_of_effect_size
+class AreaOfEffectShape:
+    def __init__(self, area_of_effect_shape=''):
+        self.area_of_effect_shape = area_of_effect_shape
 
 
 class DamageDuration:
