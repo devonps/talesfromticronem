@@ -206,43 +206,17 @@ class SpellUtilities:
         game_config = configUtilities.load_config()
         spell_target_entity = 0
         targeting_a_spell = True
+        move_target_cursor = ['left', 'right', 'up', 'down']
         targeting_cursor_centre_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player)
         targeting_cursor_centre_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player)
         spell_has_aoe = SpellUtilities.get_spell_aoe_status(gameworld=gameworld, spell_entity=spell_entity)
+        cursor_info = []
         if spell_has_aoe:
-            aoe_shape = SpellUtilities.get_spell_aoe_shape(gameworld=gameworld, spell_entity=spell_entity)
-            aoe_cursors_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                          parameter='AOECURSORSFILE')
-            cursor_width = 0
-            cursor_height = 0
-            cursor_shape = []
-            cursors_file = read_json_file(aoe_cursors_file)
-            for aoe_cursor in cursors_file['aoe_cursors']:
-                if aoe_cursor['id'] == aoe_shape:
-                    cursor_dimensions = aoe_cursor['dimensions']
-                    cursor_width = cursor_dimensions[0]['width']
-                    cursor_height = cursor_dimensions[0]['height']
-                    cursor_depth = cursor_dimensions[0]['depth']
-                    cursor_graph = aoe_cursor['graph']
-                    for a in range(cursor_depth):
-                        rw = 'row_' + str(a)
-                        cursor_shape.append(cursor_graph[0][rw])
+            cursor_height, cursor_width, cursor_shape = SpellUtilities.read_spell_aoe_cursors_file(gameworld=gameworld, game_config=game_config, spell_entity=spell_entity)
+            cursor_info.append(cursor_height)
+            cursor_info.append(cursor_width)
+            cursor_info.append(cursor_shape)
 
-            logger.debug('aoe cursor width is {}', cursor_width)
-            logger.debug('aoe cursor height is {}', cursor_height)
-            for a in range(len(cursor_shape)):
-                logger.debug('aoe is {}', cursor_shape[a])
-
-        targeting_cursor = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                            parameter='ASCII_SPELL_TARGETING_CURSOR')
-        move_target_cursor = ['left', 'right', 'up', 'down']
-        targeting_cursor_colour = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]'
-        aoe_cursor_colour = '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]'
-        screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='SCREEN_OFFSET_X')
-        screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='SCREEN_OFFSET_Y')
-        colour_code = "[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]"
         while targeting_a_spell:
             entity_at_targeting_cursor_position = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
                                                                                                       x=targeting_cursor_centre_x,
@@ -252,23 +226,15 @@ class SpellUtilities:
 
             # display AoE cursor
             if spell_has_aoe:
-                idx = 0
-                for outer_loop in range(-cursor_height, cursor_height + 1):
-                    this_row = cursor_shape[idx]
-                    row_slice = 0
-                    posy = (screen_offset_y + oldy) + outer_loop
-                    for inner_loop in range(-cursor_width, cursor_width + 1):
-                        posx = (screen_offset_x + oldx) + inner_loop
-                        terminal.printf(x=posx, y=posy, s=aoe_cursor_colour + this_row[row_slice])
-                        row_slice += 1
-                        posx += 1
-                    idx += 1
+                SpellUtilities.render_spell_aoe_cursor(target_x=targeting_cursor_centre_x,
+                                                       target_y=targeting_cursor_centre_y, cursor_info=cursor_info,
+                                                       mode_flag=1)
             else:
-                # display targeting cursor
-                terminal.printf(x=screen_offset_x + targeting_cursor_centre_x,
-                                y=screen_offset_y + targeting_cursor_centre_y,
-                                s=targeting_cursor_colour + '[' + targeting_cursor + ']')
-            # refresh terminal
+                SpellUtilities.render_spell_targeting_cursor(gameworld=gameworld, game_map=game_map,
+                                                             target_x=targeting_cursor_centre_x,
+                                                             target_y=targeting_cursor_centre_y, mode_flag=1,
+                                                             entity_at_cursor=entity_at_targeting_cursor_position)
+
             terminal.refresh()
 
             # get keyboard command
@@ -282,25 +248,12 @@ class SpellUtilities:
                     cury=targeting_cursor_centre_y, game_map=game_map)
                 # display AoE cursor
                 if spell_has_aoe:
-                    idx = 0
-                    for outer_loop in range(-cursor_height, cursor_height + 1):
-                        this_row = cursor_shape[idx]
-                        row_slice = 0
-                        posy = (screen_offset_y + oldy) + outer_loop
-                        for inner_loop in range(-cursor_width, cursor_width + 1):
-                            posx = (screen_offset_x + oldx) + inner_loop
-                            terminal.printf(x=posx, y=posy, s=colour_code + this_row[row_slice])
-                            row_slice += 1
-                            posx += 1
-                        idx += 1
+                    SpellUtilities.render_spell_aoe_cursor(target_x=oldx, target_y=oldy, cursor_info=cursor_info,
+                                                           mode_flag=0)
                 else:
-                    # draw entity back to screen
-                    string_to_print = SpellUtilities.determine_if_need_to_draw_entity(gameworld=gameworld,
-                                                                                      game_map=game_map, oldx=oldx,
-                                                                                      oldy=oldy,
-                                                                                      target_entity=entity_at_targeting_cursor_position)
-
-                    terminal.printf(x=screen_offset_x + oldx, y=screen_offset_y + oldy, s=string_to_print)
+                    SpellUtilities.render_spell_targeting_cursor(gameworld=gameworld, game_map=game_map, target_x=oldx,
+                                                                 target_y=oldy, mode_flag=0,
+                                                                 entity_at_cursor=entity_at_targeting_cursor_position)
 
             if event_action == 'enter':
                 SpellUtilities.set_spell_cooldown_true(gameworld=gameworld, spell_entity=spell_entity)
@@ -315,6 +268,84 @@ class SpellUtilities:
                                                                                           y=targeting_cursor_centre_y)
 
         return spell_target_entity, [targeting_cursor_centre_x, targeting_cursor_centre_y]
+
+    @staticmethod
+    def read_spell_aoe_cursors_file(gameworld, game_config, spell_entity):
+        aoe_shape = SpellUtilities.get_spell_aoe_shape(gameworld=gameworld, spell_entity=spell_entity)
+        aoe_cursors_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                      parameter='AOECURSORSFILE')
+        cursor_width = 0
+        cursor_height = 0
+        cursor_shape = []
+        cursors_file = read_json_file(aoe_cursors_file)
+        for aoe_cursor in cursors_file['aoe_cursors']:
+            if aoe_cursor['id'] == aoe_shape:
+                cursor_dimensions = aoe_cursor['dimensions']
+                cursor_width = cursor_dimensions[0]['width']
+                cursor_height = cursor_dimensions[0]['height']
+                cursor_depth = cursor_dimensions[0]['depth']
+                cursor_graph = aoe_cursor['graph']
+                for a in range(cursor_depth):
+                    rw = 'row_' + str(a)
+                    cursor_shape.append(cursor_graph[0][rw])
+
+        return cursor_height, cursor_width, cursor_shape
+
+    @staticmethod
+    def render_spell_aoe_cursor(target_x, target_y, cursor_info, mode_flag):
+        game_config = configUtilities.load_config()
+        if mode_flag == 1:
+            colour_code = '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]'
+        else:
+            colour_code = "[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]"
+        screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='SCREEN_OFFSET_X')
+        screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='SCREEN_OFFSET_Y')
+        oldx = target_x
+        oldy = target_y
+
+        # display AoE cursor
+        cursor_height = cursor_info[0]
+        cursor_width = cursor_info[1]
+        cursor_shape = cursor_info[2]
+        idx = 0
+        for outer_loop in range(-cursor_height, cursor_height + 1):
+            this_row = cursor_shape[idx]
+            row_slice = 0
+            posy = (screen_offset_y + oldy) + outer_loop
+            for inner_loop in range(-cursor_width, cursor_width + 1):
+                posx = (screen_offset_x + oldx) + inner_loop
+                terminal.printf(x=posx, y=posy, s=colour_code + this_row[row_slice])
+                row_slice += 1
+                posx += 1
+            idx += 1
+
+    @staticmethod
+    def render_spell_targeting_cursor(gameworld, game_map, target_x, target_y, mode_flag, entity_at_cursor):
+        game_config = configUtilities.load_config()
+        if mode_flag == 1:
+            colour_code = '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]'
+        else:
+            colour_code = "[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]"
+        targeting_cursor = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                            parameter='ASCII_SPELL_TARGETING_CURSOR')
+        screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='SCREEN_OFFSET_X')
+        screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='SCREEN_OFFSET_Y')
+        oldx = target_x
+        oldy = target_y
+        if mode_flag == 1:
+            terminal.printf(x=screen_offset_x + target_x, y=screen_offset_y + target_y,
+                            s=colour_code + '[' + targeting_cursor + ']')
+        else:
+            string_to_print = SpellUtilities.determine_if_need_to_draw_entity(gameworld=gameworld,
+                                                                              game_map=game_map, oldx=oldx,
+                                                                              oldy=oldy,
+                                                                              target_entity=entity_at_cursor)
+
+            terminal.printf(x=screen_offset_x + oldx, y=screen_offset_y + oldy, s=string_to_print)
 
     @staticmethod
     def determine_if_need_to_draw_entity(gameworld, game_map, oldx, oldy, target_entity):
