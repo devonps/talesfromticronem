@@ -4,8 +4,9 @@
       "id": "3x3_square",
       "dimensions": [
         {
-          "width": 3,
-          "height": 3
+          "width": 1,
+          "height": 1,
+          "depth": 3
         }
       ],
       "graph": [
@@ -20,8 +21,9 @@
       "id": "3x5_pill",
       "dimensions": [
         {
-          "width": 3,
-          "height": 5
+          "width": 1,
+          "height": 2,
+          "depth": 5
         }
       ],
       "graph": [

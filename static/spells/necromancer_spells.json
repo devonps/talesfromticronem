@@ -41,7 +41,7 @@
       "max_targets": "99",
       "ground_targeted": "True",
       "aoe": true,
-      "aoe_shape": "3x3_square",
+      "aoe_shape": "3x5_pill",
       "damage_duration": "instant",
       "damage_coef": "0.33",
       "effects": [
