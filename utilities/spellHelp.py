@@ -186,15 +186,20 @@ class SpellUtilities:
             CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
         else:
             # spell targeting
-            spell_target_entity, spell_cast_at = SpellUtilities.spell_targeting(gameworld=gameworld, game_map=game_map,
+            spell_target_list, spell_cast_at = SpellUtilities.spell_targeting(gameworld=gameworld, game_map=game_map,
                                                                                 player=player,
                                                                                 spell_entity=spell_entity)
-            logger.debug('Entity id targeted is {}', spell_target_entity)
-            if spell_target_entity > 0:
+            logger.debug('Entity target list {}', spell_target_list)
+            logger.debug('Entity casting this spell {}', player)
+            if len(spell_target_list) > 0:
                 SpellUtilities.set_spell_to_cast_this_turn(gameworld=gameworld, mobile_entity=player,
                                                            spell_entity=spell_entity,
-                                                           spell_target_entity=spell_target_entity, slot=slot,
+                                                           spell_target_entity=spell_target_list, slot=slot,
                                                            map_coords_list=spell_cast_at)
+            else:
+                # fire message log for no entity to target
+                spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+                CommonUtils.fire_event("spell-notarget", gameworld=gameworld, spell_name=spell_name)
 
     @staticmethod
     def get_spell_aoe_shape(gameworld, spell_entity):
@@ -204,13 +209,13 @@ class SpellUtilities:
     @staticmethod
     def spell_targeting(gameworld, game_map, player, spell_entity):
         game_config = configUtilities.load_config()
-        spell_target_entity = 0
         targeting_a_spell = True
         move_target_cursor = ['left', 'right', 'up', 'down']
         targeting_cursor_centre_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player)
         targeting_cursor_centre_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player)
         spell_has_aoe = SpellUtilities.get_spell_aoe_status(gameworld=gameworld, spell_entity=spell_entity)
         cursor_info = []
+        enemy_list = []
         if spell_has_aoe:
             cursor_height, cursor_width, cursor_shape = SpellUtilities.read_spell_aoe_cursors_file(gameworld=gameworld, game_config=game_config, spell_entity=spell_entity)
             cursor_info.append(cursor_height)
@@ -263,11 +268,36 @@ class SpellUtilities:
                                                                   value=game_turns_on_cooldown)
                 logger.debug('Spell entity {} has been put on cooldown', spell_entity)
                 targeting_a_spell = False
-                spell_target_entity = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
-                                                                                          x=targeting_cursor_centre_x,
-                                                                                          y=targeting_cursor_centre_y)
 
-        return spell_target_entity, [targeting_cursor_centre_x, targeting_cursor_centre_y]
+                # create a list of targets for this spell - even if that list only contains 1 entry
+                # which means I need to switch over the CastSpell process to use this list rather than a single target
+                if spell_has_aoe:
+                    # get list of targets
+                    enemy_list = SpellUtilities.get_list_of_aoe_targets(game_map=game_map, target_x=targeting_cursor_centre_x, target_y=targeting_cursor_centre_y, cursor_info=cursor_info)
+                else:
+
+                    enemy_list.append(GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
+                                                                                              x=targeting_cursor_centre_x,
+                                                                                              y=targeting_cursor_centre_y))
+                logger.debug('List of enemies to attack {}', enemy_list)
+
+        return enemy_list, [targeting_cursor_centre_x, targeting_cursor_centre_y]
+
+    @staticmethod
+    def get_list_of_aoe_targets(game_map, target_x, target_y, cursor_info):
+        cursor_height = cursor_info[0]
+        cursor_width = cursor_info[1]
+        enemies_list = []
+
+        for outer_loop in range(-cursor_height, cursor_height + 1):
+            cury = target_y + outer_loop
+            for inner_loop in range(-cursor_width, cursor_width + 1):
+                curx = target_x + inner_loop
+                enemy_entity = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=curx, y=cury)
+                if enemy_entity > 0:
+                    enemies_list.append(enemy_entity)
+        return enemies_list
+
 
     @staticmethod
     def read_spell_aoe_cursors_file(gameworld, game_config, spell_entity):
@@ -564,12 +594,12 @@ class SpellUtilities:
         gameworld.add_component(mobile_entity, mobiles.SpellCast(has_cast_a_spell=True, spell_entity=spell_entity,
                                                                  spell_target=spell_target_entity, spell_bar_slot=slot,
                                                                  spell_caster=mobile_entity,
-                                                                 spell_cast_at=map_coords_list))
+                                                                 spell_cast_at_x=map_coords_list[0], spell_cast_at_y=map_coords_list[1]))
 
     @staticmethod
     def get_spell_cast_center_coords(gameworld, mobile_entity):
-        spell_component = gameworld.component_for_entity(mobile_entity, mobiles.SpellCast)
-        return spell_component.spell_cast_at
+        mobile_component = gameworld.component_for_entity(mobile_entity, mobiles.SpellCast)
+        return [mobile_component.spell_cast_at_x, mobile_component.spell_cast_at_y]
 
     @staticmethod
     def get_spell_cast_time(gameworld, spell_entity):

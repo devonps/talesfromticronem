@@ -457,6 +457,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai, description='player'))
         gameworld.add_component(player_entity, mobiles.SpellBar(entity_id=0))
         gameworld.add_component(player_entity, mobiles.Viewport())
+        gameworld.add_component(player_entity, mobiles.SpellCast())
 
     @staticmethod
     def set_enemy_preferred_min_distance_from_target(gameworld, entity, value):

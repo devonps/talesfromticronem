@@ -137,6 +137,11 @@ class CommonUtils:
         if event_title == 'story-general':
             par1 = kwargs.get('dialog', None)
             new_string = CommonUtils.replace_value_in_event(event_string=event_string, par1=par1)
+
+        if event_title == 'spell-notarget':
+            par1 = kwargs.get('spell_name', None)
+            new_string = CommonUtils.replace_value_in_event(event_string=event_string, par1=par1)
+
         return new_string
 
     @staticmethod
