@@ -4,7 +4,6 @@ from components import mobiles, spells
 from utilities import formulas, configUtilities
 from utilities.common import CommonUtils
 from utilities.gamemap import GameMapUtilities
-from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 from loguru import logger
 
@@ -27,99 +26,47 @@ class CastSpells(esper.Processor):
     def check_for_spells_to_be_cast_this_turn(self):
         for ent, mob in self.gameworld.get_component(mobiles.SpellCast):
             if mob.has_cast_a_spell:
-                target_list = mob.spell_target
                 spell_entity = mob.spell_entity
                 caster_entity = mob.spell_caster
                 spell_bar_slot_used = mob.spell_bar_slot
-                if len(target_list) == 1:
-                    target_entities = target_list[0]
-                    spell_type = SpellUtilities.get_spell_type(gameworld=self.gameworld, spell_entity=spell_entity)
-                    condis_to_apply_list = SpellUtilities.get_all_condis_for_spell(gameworld=self.gameworld,
-                                                                              spell_entity=spell_entity)
-                    boons_to_apply_list = SpellUtilities.get_all_boons_for_spell(gameworld=self.gameworld,
-                                                                            spell_entity=spell_entity)
-                    spell_cast_coords_list = SpellUtilities.get_spell_cast_center_coords(gameworld=self.gameworld,
-                                                                                         mobile_entity=caster_entity)
-                    spell_status_effects = [boons_to_apply_list, condis_to_apply_list]
-
-                    SpellUtilities.set_spell_cooldown_true(gameworld=self.gameworld, spell_entity=spell_entity)
-                    number_of_turns = SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld,
+                target_entities = mob.spell_target
+                spell_type = SpellUtilities.get_spell_type(gameworld=self.gameworld, spell_entity=spell_entity)
+                condis_to_apply_list = SpellUtilities.get_all_condis_for_spell(gameworld=self.gameworld,
+                                                                               spell_entity=spell_entity)
+                boons_to_apply_list = SpellUtilities.get_all_boons_for_spell(gameworld=self.gameworld,
                                                                              spell_entity=spell_entity)
+                spell_status_effects = [boons_to_apply_list, condis_to_apply_list]
 
-                    SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld,
-                                                                      spell_entity=spell_entity, value=number_of_turns)
-                    if spell_type == 'combat':
-                        self.process_combat_spells(target_entities=target_entities,
-                                                   caster_entity=caster_entity, slot_used=spell_bar_slot_used,
-                                                   spell_entity=spell_entity, spell_cast_coords=spell_cast_coords_list, spell_status_effects=spell_status_effects)
-                    if spell_type == 'heal':
-                        self.process_healing_spell(spell_type=spell_type)
+                self.set_spell_cooldown_value(spell_entity=spell_entity)
+
+                if spell_type == 'combat':
+                    self.process_combat_spells(target_entities=target_entities,
+                                               caster_entity=caster_entity, slot_used=spell_bar_slot_used,
+                                               spell_entity=spell_entity, spell_status_effects=spell_status_effects)
+                if spell_type == 'heal':
+                    self.process_healing_spell(spell_type=spell_type)
 
                 MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=ent)
 
-    def process_combat_spells(self, target_entities, caster_entity, slot_used, spell_entity, spell_cast_coords, spell_status_effects):
-        game_config = configUtilities.load_config()
+    def set_spell_cooldown_value(self, spell_entity):
+        SpellUtilities.set_spell_cooldown_true(gameworld=self.gameworld, spell_entity=spell_entity)
+        number_of_turns = SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld,
+                                                                 spell_entity=spell_entity)
+
+        SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld,
+                                                          spell_entity=spell_entity, value=number_of_turns - 1)
+
+    def process_combat_spells(self, target_entities, caster_entity, slot_used, spell_entity, spell_status_effects):
         boons_to_apply = spell_status_effects[0]
         condis_to_apply = spell_status_effects[1]
 
-        spell_has_aoe_effects = SpellUtilities.get_spell_aoe_status(gameworld=self.gameworld,
-                                                                    spell_entity=spell_entity)
-
-        if spell_has_aoe_effects:
-            spell_aoe_size_string = SpellUtilities.get_spell_aoe_size(gameworld=self.gameworld,  spell_entity=spell_entity)
-            logger.debug('Spell entity {}, AoE size is {}', spell_entity, spell_aoe_size_string)
-            spell_aoe_size_value = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                              section='spells',
-                                                                              parameter=spell_aoe_size_string.upper())
-            logger.debug('and that is converted to {} tiles', spell_aoe_size_value)
-            spell_centre_x = spell_cast_coords[0]
-            spell_centre_y = spell_cast_coords[1]
-
-            spell_min_x, spell_max_x, spell_min_y, spell_max_y = self.adjust_aoe_start_end_tile_locations(spell_centre_x=spell_centre_x, spell_centre_y=spell_centre_y, spell_aoe_size_value=int(spell_aoe_size_value))
-
-            for outer_loop in range(spell_min_y, spell_max_y):
-                for inner_loop in range(spell_min_x, spell_max_x):
-                    entity_at_aoe_location = GameMapUtilities.get_mobile_entity_at_this_location(
-                        game_map=self.game_map, x=inner_loop, y=outer_loop)
-
-                    if entity_at_aoe_location > 0:
-                        target_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld,
-                                                                               entity=entity_at_aoe_location)
-                        logger.warning('NPC {} has been hit by the splash damage', target_names[0])
-                        # the targeted enemy is now in combat with the caster
-                        MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=caster_entity)
-                        # if entity is here then apply damage to that entity
-                        self.apply_damage_to_target(caster_entity=caster_entity, target_entity=entity_at_aoe_location,
-                                                    spell_entity=spell_entity, slot_used=slot_used)
-                        # apply spell effects if any
-                        self.apply_spell_effects(caster_entity=caster_entity, target_entity=entity_at_aoe_location,
-                                                 condis_to_apply=condis_to_apply, boons_to_apply=boons_to_apply)
-
-        else:
-            # the spell has no AoE component...
-            self.apply_damage_to_target(caster_entity=caster_entity, target_entity=target_entities,
+        for target_entity in range(len(target_entities)):
+            self.apply_damage_to_target(caster_entity=caster_entity, target_entity=target_entities[target_entity],
                                         spell_entity=spell_entity, slot_used=slot_used)
-            MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=target_entities)
+            MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=target_entities[target_entity])
             MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=caster_entity)
-            self.apply_spell_effects(caster_entity=caster_entity, target_entity=target_entities,
+            self.apply_spell_effects(caster_entity=caster_entity, target_entity=target_entities[target_entity],
                                      condis_to_apply=condis_to_apply, boons_to_apply=boons_to_apply)
-
-    def adjust_aoe_start_end_tile_locations(self, spell_centre_x, spell_centre_y, spell_aoe_size_value):
-        spell_min_x = spell_centre_x - spell_aoe_size_value
-        spell_max_x = (spell_centre_x + spell_aoe_size_value) + 1
-        spell_min_y = spell_centre_y - spell_aoe_size_value
-        spell_max_y = (spell_centre_y + spell_aoe_size_value) + 1
-
-        if spell_min_x < 1:
-            spell_min_x = 1
-        if spell_min_y < 1:
-            spell_min_y = 1
-        if spell_max_x > self.game_map.width:
-            spell_max_x = self.game_map.width
-        if spell_max_y > self.game_map.height:
-            spell_max_y = self.game_map.height
-
-        return spell_min_x, spell_max_x, spell_min_y, spell_max_y
 
     def apply_spell_effects(self, caster_entity, target_entity, condis_to_apply, boons_to_apply):
         # Are there any conditions to apply to the target - regardless of damage caused
