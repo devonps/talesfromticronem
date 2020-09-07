@@ -1,9 +1,8 @@
 import esper
 
 from components import mobiles, spells
-from utilities import formulas, configUtilities
+from utilities import formulas
 from utilities.common import CommonUtils
-from utilities.gamemap import GameMapUtilities
 from utilities.mobileHelp import MobileUtilities
 from loguru import logger
 

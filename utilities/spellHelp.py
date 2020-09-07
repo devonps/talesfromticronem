@@ -230,15 +230,7 @@ class SpellUtilities:
             oldy = targeting_cursor_centre_y
 
             # display AoE cursor
-            if spell_has_aoe:
-                SpellUtilities.render_spell_aoe_cursor(target_x=targeting_cursor_centre_x,
-                                                       target_y=targeting_cursor_centre_y, cursor_info=cursor_info,
-                                                       mode_flag=1)
-            else:
-                SpellUtilities.render_spell_targeting_cursor(gameworld=gameworld, game_map=game_map,
-                                                             target_x=targeting_cursor_centre_x,
-                                                             target_y=targeting_cursor_centre_y, mode_flag=1,
-                                                             entity_at_cursor=entity_at_targeting_cursor_position)
+            SpellUtilities.draw_spell_targeting_cursor(gameworld=gameworld, game_map=game_map, spell_has_aoe=spell_has_aoe, spell_centre_x=targeting_cursor_centre_x, spell_centre_y=targeting_cursor_centre_y, entity_id=entity_at_targeting_cursor_position, cursor_info=cursor_info, mode_flag=1)
 
             terminal.refresh()
 
@@ -252,13 +244,12 @@ class SpellUtilities:
                     curx=targeting_cursor_centre_x,
                     cury=targeting_cursor_centre_y, game_map=game_map)
                 # display AoE cursor
-                if spell_has_aoe:
-                    SpellUtilities.render_spell_aoe_cursor(target_x=oldx, target_y=oldy, cursor_info=cursor_info,
-                                                           mode_flag=0)
-                else:
-                    SpellUtilities.render_spell_targeting_cursor(gameworld=gameworld, game_map=game_map, target_x=oldx,
-                                                                 target_y=oldy, mode_flag=0,
-                                                                 entity_at_cursor=entity_at_targeting_cursor_position)
+                SpellUtilities.draw_spell_targeting_cursor(gameworld=gameworld, game_map=game_map,
+                                                           spell_has_aoe=spell_has_aoe,
+                                                           spell_centre_x=oldx,
+                                                           spell_centre_y=oldy,
+                                                           entity_id=entity_at_targeting_cursor_position,
+                                                           cursor_info=cursor_info, mode_flag=0)
 
             if event_action == 'enter':
                 SpellUtilities.set_spell_cooldown_true(gameworld=gameworld, spell_entity=spell_entity)
@@ -282,6 +273,19 @@ class SpellUtilities:
                 logger.debug('List of enemies to attack {}', enemy_list)
 
         return enemy_list, [targeting_cursor_centre_x, targeting_cursor_centre_y]
+
+    @staticmethod
+    def draw_spell_targeting_cursor(gameworld, game_map, spell_has_aoe, spell_centre_x, spell_centre_y, entity_id, cursor_info, mode_flag):
+        if spell_has_aoe:
+            SpellUtilities.render_spell_aoe_cursor(target_x=spell_centre_x,
+                                                   target_y=spell_centre_y, cursor_info=cursor_info,
+                                                   mode_flag=mode_flag)
+        else:
+            SpellUtilities.render_spell_targeting_cursor(gameworld=gameworld, game_map=game_map,
+                                                         target_x=spell_centre_x,
+                                                         target_y=spell_centre_y, mode_flag=mode_flag,
+                                                         entity_at_cursor=entity_id)
+
 
     @staticmethod
     def get_list_of_aoe_targets(game_map, target_x, target_y, cursor_info):
