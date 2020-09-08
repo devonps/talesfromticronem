@@ -251,27 +251,42 @@ class SpellUtilities:
                                                            cursor_info=cursor_info, mode_flag=0, entities_found=entities_found)
 
             if event_action == 'enter':
-                SpellUtilities.set_spell_cooldown_true(gameworld=gameworld, spell_entity=spell_entity)
-                game_turns_on_cooldown = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld,
-                                                                                spell_entity=spell_entity)
-                SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=gameworld, spell_entity=spell_entity,
-                                                                  value=game_turns_on_cooldown)
-                logger.debug('Spell entity {} has been put on cooldown', spell_entity)
+                SpellUtilities.set_spell_cooldown_to_true(gameworld=gameworld, spell_entity=spell_entity)
+                enemy_list = SpellUtilities.get_targets_for_this_spell(game_map=game_map, spell_has_aoe=spell_has_aoe, target_x=targeting_cursor_centre_x, target_y=targeting_cursor_centre_y, aoe_cursor=cursor_info)
+                # do spell casting visual effects
+                SpellUtilities.draw_spell_casting_visual_effects()
                 targeting_a_spell = False
 
-                # create a list of targets for this spell - even if that list only contains 1 entry
-                # which means I need to switch over the CastSpell process to use this list rather than a single target
-                if spell_has_aoe:
-                    # get list of targets
-                    enemy_list = SpellUtilities.get_list_of_aoe_targets(game_map=game_map, target_x=targeting_cursor_centre_x, target_y=targeting_cursor_centre_y, cursor_info=cursor_info)
-                else:
-
-                    enemy_list.append(GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
-                                                                                              x=targeting_cursor_centre_x,
-                                                                                              y=targeting_cursor_centre_y))
-                logger.debug('List of enemies to attack {}', enemy_list)
-
         return enemy_list, [targeting_cursor_centre_x, targeting_cursor_centre_y]
+
+    @staticmethod
+    def get_targets_for_this_spell(game_map, spell_has_aoe, target_x, target_y, aoe_cursor):
+        enemy_list = []
+        if spell_has_aoe:
+            # get list of targets
+            enemy_list = SpellUtilities.get_list_of_aoe_targets(game_map=game_map, target_x=target_x,
+                                                                target_y=target_y,
+                                                                cursor_info=aoe_cursor)
+        else:
+
+            enemy_list.append(GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
+                                                                                  x=target_x,
+                                                                                  y=target_y))
+        logger.debug('List of enemies to attack {}', enemy_list)
+        return enemy_list
+
+    @staticmethod
+    def draw_spell_casting_visual_effects():
+
+
+    @staticmethod
+    def set_spell_cooldown_to_true(gameworld, spell_entity):
+        SpellUtilities.set_spell_cooldown_true(gameworld=gameworld, spell_entity=spell_entity)
+        game_turns_on_cooldown = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld,
+                                                                        spell_entity=spell_entity)
+        SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=gameworld, spell_entity=spell_entity,
+                                                          value=game_turns_on_cooldown)
+        logger.debug('Spell entity {} has been put on cooldown', spell_entity)
 
     @staticmethod
     def draw_spell_targeting_cursor(gameworld, game_map, spell_has_aoe, spell_centre, entity_id, cursor_info, mode_flag, entities_found=None):
