@@ -328,10 +328,8 @@ class SpellUtilities:
     @staticmethod
     def render_spell_aoe_cursor(target_x, target_y, cursor_info, mode_flag):
         game_config = configUtilities.load_config()
-        if mode_flag == 1:
-            colour_code = '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]'
-        else:
-            colour_code = "[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]"
+        colour_choice = ['[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]', '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]']
+        colour_code = colour_choice[mode_flag]
         screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='SCREEN_OFFSET_X')
         screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
@@ -358,10 +356,8 @@ class SpellUtilities:
     @staticmethod
     def render_spell_targeting_cursor(gameworld, game_map, target_x, target_y, mode_flag, entity_at_cursor):
         game_config = configUtilities.load_config()
-        if mode_flag == 1:
-            colour_code = '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]'
-        else:
-            colour_code = "[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]"
+        colour_choice = ['[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]', '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]']
+        colour_code = colour_choice[mode_flag]
         targeting_cursor = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                             parameter='ASCII_SPELL_TARGETING_CURSOR')
         screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
