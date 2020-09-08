@@ -213,6 +213,8 @@ class SpellUtilities:
         move_target_cursor = ['left', 'right', 'up', 'down']
         targeting_cursor_centre_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player)
         targeting_cursor_centre_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player)
+        caster_map_x = targeting_cursor_centre_x
+        caster_map_y = targeting_cursor_centre_y
         spell_has_aoe = SpellUtilities.get_spell_aoe_status(gameworld=gameworld, spell_entity=spell_entity)
         cursor_info = []
         enemy_list = []
@@ -254,7 +256,7 @@ class SpellUtilities:
                 SpellUtilities.set_spell_cooldown_to_true(gameworld=gameworld, spell_entity=spell_entity)
                 enemy_list = SpellUtilities.get_targets_for_this_spell(game_map=game_map, spell_has_aoe=spell_has_aoe, target_x=targeting_cursor_centre_x, target_y=targeting_cursor_centre_y, aoe_cursor=cursor_info)
                 # do spell casting visual effects
-                SpellUtilities.draw_spell_casting_visual_effects()
+                SpellUtilities.draw_spell_casting_visual_effects(gameworld=gameworld, game_config=game_config, caster_x=caster_map_x, caster_y=caster_map_y, target_list=enemy_list, player_entity=player)
                 targeting_a_spell = False
 
         return enemy_list, [targeting_cursor_centre_x, targeting_cursor_centre_y]
@@ -276,8 +278,47 @@ class SpellUtilities:
         return enemy_list
 
     @staticmethod
-    def draw_spell_casting_visual_effects():
-        pass
+    def draw_spell_casting_visual_effects(gameworld, game_config, caster_x, caster_y, player_entity, target_list):
+        # this draws 'something' from the caster to the centre point of where the spell was targeted
+        spell_casting_visual = 'O'
+        target_entity = target_list[0]
+
+        screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='SCREEN_OFFSET_X')
+        screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='SCREEN_OFFSET_Y')
+        dest_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
+        dest_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
+        distance_to_target = int(formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=player_entity,
+                                                                   to_entity=target_entity))
+        sx = caster_x + screen_offset_x
+        sy = caster_y + screen_offset_y
+
+        glyph_colour_string = '[font=dungeon]'
+
+        for _ in range(distance_to_target):
+            if dest_x > caster_x:
+                dx = 1
+            elif dest_x < caster_x:
+                dx = -1
+            else:
+                dx = 0
+
+            if dest_y > caster_y:
+                dy = 1
+            elif dest_y < caster_y:
+                dy = -1
+            else:
+                dy = 0
+
+            sx += dx
+            sy += dy
+
+            terminal.printf(x=sx, y=sy, s=glyph_colour_string + spell_casting_visual)
+
+            terminal.refresh()
+
+        # and now we've arrived at the target...what happens?
 
     @staticmethod
     def set_spell_cooldown_to_true(gameworld, spell_entity):
