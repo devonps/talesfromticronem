@@ -320,6 +320,20 @@ class SpellUtilities:
 
         # and now we've arrived at the target...what happens?
 
+        # this array tells the explosion how many tiles to travel in a given direction
+        compass_dir_dist = []
+        xplosion_string = ['&', '£', '!', '^', '*', ')', ':', '+', '=']
+
+        for _ in range(8):
+            dist = random.randrange(1, 3)
+            compass_dir_dist.append(dist)
+
+        for _ in range(10):
+            dx = random.randrange(0, 8)
+            blast_char = random.randrange(0, 9)
+            terminal.printf(x=sx + compass_dir_dist[dx], y=sy + compass_dir_dist[dx], s=glyph_colour_string + xplosion_string[blast_char])
+            terminal.refresh()
+
     @staticmethod
     def set_spell_cooldown_to_true(gameworld, spell_entity):
         SpellUtilities.set_spell_cooldown_true(gameworld=gameworld, spell_entity=spell_entity)
