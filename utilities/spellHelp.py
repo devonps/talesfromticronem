@@ -277,7 +277,7 @@ class SpellUtilities:
 
     @staticmethod
     def draw_spell_casting_visual_effects():
-
+        pass
 
     @staticmethod
     def set_spell_cooldown_to_true(gameworld, spell_entity):
