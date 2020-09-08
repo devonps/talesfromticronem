@@ -293,26 +293,26 @@ class SpellUtilities:
                                                                    to_entity=target_entity))
         sx = caster_x + screen_offset_x
         sy = caster_y + screen_offset_y
+        dx = dest_x + screen_offset_x
+        dy = dest_y + screen_offset_y
 
         glyph_colour_string = '[font=dungeon]'
 
         for _ in range(distance_to_target):
-            if dest_x > caster_x:
-                dx = 1
-            elif dest_x < caster_x:
-                dx = -1
-            else:
-                dx = 0
 
-            if dest_y > caster_y:
-                dy = 1
-            elif dest_y < caster_y:
-                dy = -1
+            if sx > dx:
+                sx += -1
+            elif sx < dx:
+                sx += 1
             else:
-                dy = 0
+                sx += 0
 
-            sx += dx
-            sy += dy
+            if sy > dy:
+                sy += -1
+            elif sy < dy:
+                sy += 1
+            else:
+                sy += 0
 
             terminal.printf(x=sx, y=sy, s=glyph_colour_string + spell_casting_visual)
 
@@ -329,9 +329,10 @@ class SpellUtilities:
             compass_dir_dist.append(dist)
 
         for _ in range(10):
-            dx = random.randrange(0, 8)
+            dx = random.randrange(-1, 2)
+            dy = random.randrange(-1, 2)
             blast_char = random.randrange(0, 9)
-            terminal.printf(x=sx + compass_dir_dist[dx], y=sy + compass_dir_dist[dx], s=glyph_colour_string + xplosion_string[blast_char])
+            terminal.printf(x=(dest_x + screen_offset_x) + dx, y=(dest_y + screen_offset_y) + dy, s=glyph_colour_string + xplosion_string[blast_char])
             terminal.refresh()
 
     @staticmethod
