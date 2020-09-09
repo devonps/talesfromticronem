@@ -20,6 +20,18 @@ def calculate_distance_to_target(gameworld, from_entity, to_entity):
     return math.sqrt(dx ** 2 + dy ** 2)
 
 
+def distance_between_two_tiles(from_coords, to_coords):
+    from_x = from_coords[0]
+    from_y = from_coords[1]
+
+    to_x = to_coords[0]
+    to_y = to_coords[1]
+
+    dx = to_x - from_x
+    dy = to_y - from_y
+    return int(math.sqrt(dx ** 2 + dy ** 2))
+
+
 def outgoing_base_damage(weapon_strength, power, spell_coefficient):
     # weapon strength - random number representing potential damage for that weapon
     # power - mobile's current power attribute
@@ -30,7 +42,7 @@ def outgoing_base_damage(weapon_strength, power, spell_coefficient):
 def base_condi_damage(condition_damage_modifier, condition_damage_stat, weapon_level_modifier, base_damage_per_stack,
                       weapon_level):
     base_damage = (condition_damage_modifier * condition_damage_stat) + (
-                weapon_level_modifier * weapon_level) + base_damage_per_stack
+            weapon_level_modifier * weapon_level) + base_damage_per_stack
     logger.debug('Condition damage of ' + str(base_damage) + ' is calculated as: (' + str(
         condition_damage_modifier) + ' * ' + str(condition_damage_stat) + ') + (' + str(
         weapon_level_modifier) + ' * ' + str(weapon_level) + ') + ' + str(base_damage_per_stack))

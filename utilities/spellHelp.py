@@ -256,7 +256,7 @@ class SpellUtilities:
                 SpellUtilities.set_spell_cooldown_to_true(gameworld=gameworld, spell_entity=spell_entity)
                 enemy_list = SpellUtilities.get_targets_for_this_spell(game_map=game_map, spell_has_aoe=spell_has_aoe, target_x=targeting_cursor_centre_x, target_y=targeting_cursor_centre_y, aoe_cursor=cursor_info)
                 # do spell casting visual effects
-                SpellUtilities.draw_spell_casting_visual_effects(gameworld=gameworld, game_config=game_config, caster_x=caster_map_x, caster_y=caster_map_y, target_list=enemy_list, player_entity=player)
+                SpellUtilities.draw_spell_casting_visual_effects(gameworld=gameworld, game_config=game_config, caster_coords=[caster_map_x, caster_map_y], target_coords=[targeting_cursor_centre_x, targeting_cursor_centre_y], target_list=enemy_list, player_entity=player)
                 targeting_a_spell = False
 
         return enemy_list, [targeting_cursor_centre_x, targeting_cursor_centre_y]
@@ -278,21 +278,31 @@ class SpellUtilities:
         return enemy_list
 
     @staticmethod
-    def draw_spell_casting_visual_effects(gameworld, game_config, caster_x, caster_y, player_entity, target_list):
+    def draw_spell_casting_visual_effects(gameworld, game_config, caster_coords, target_coords, player_entity, target_list):
         # this draws 'something' from the caster to the centre point of where the spell was targeted
         spell_casting_visual = 'O'
-        target_entity = target_list[0]
-
         screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='SCREEN_OFFSET_X')
         screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='SCREEN_OFFSET_Y')
-        dest_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
-        dest_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
-        distance_to_target = int(formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=player_entity,
-                                                                   to_entity=target_entity))
+        caster_x = caster_coords[0]
+        caster_y = caster_coords[1]
+
         sx = caster_x + screen_offset_x
         sy = caster_y + screen_offset_y
+
+        if target_list[0] == 0:
+            dest_x = target_coords[0]
+            dest_y = target_coords[1]
+            distance_to_target = formulas.distance_between_two_tiles(from_coords=[caster_x, caster_y], to_coords=[dest_x, dest_y])
+        else:
+            target_entity = target_list[0]
+
+            dest_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
+            dest_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
+            distance_to_target = int(formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=player_entity,
+                                                                       to_entity=target_entity))
+
         dx = dest_x + screen_offset_x
         dy = dest_y + screen_offset_y
 
