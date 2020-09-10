@@ -185,6 +185,10 @@ class Entity:
                         MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, game_config=game_config,
                                                                        entity=entity_id)
 
+                        # calculate derived stats
+                        ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=gameworld, entity=entity_id)
+                        MobileUtilities.set_mobile_derived_attributes(gameworld=gameworld, entity=entity_id)
+
                         logger.warning('--- NEW MOBILE CREATED ---')
         return entity_id
 
