@@ -192,6 +192,7 @@ class SpellUtilities:
                                                                               spell_entity=spell_entity)
             logger.debug('Entity target list {}', spell_target_list)
             logger.debug('Entity casting this spell {}', player)
+
             if len(spell_target_list) > 0:
                 SpellUtilities.set_spell_to_cast_this_turn(gameworld=gameworld, mobile_entity=player,
                                                            spell_entity=spell_entity,
@@ -589,6 +590,22 @@ class SpellUtilities:
                 valid_targets.append((ent, name.first, desc.glyph, desc.foreground, desc.background))
 
         return valid_targets
+
+    @staticmethod
+    def check_for_spell_cast_blocks(gameworld, target_name, caster_condis):
+        spell_blocked = False
+        caster_is_blind = False
+        # cycle through current condis attached to the caster
+        for condi in caster_condis:
+            condi_name = condi['name']
+            if condi_name == 'blinded':
+                caster_is_blind = True
+
+        if caster_is_blind:
+            CommonUtils.fire_event("spell-fizzle", gameworld=gameworld, target=target_name)
+            spell_blocked = True
+
+        return spell_blocked
 
     @staticmethod
     def get_spell_ground_targeted_status(gameworld, spell_entity):

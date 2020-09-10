@@ -100,7 +100,7 @@
       "event-id": 17,
       "event-title": "spell-notarget",
       "event-message": "No target selected for $1",
-      "event-classes": "all, combat"
+      "event-classes": "all,combat"
     }
     ]
 }

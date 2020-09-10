@@ -142,6 +142,10 @@ class CommonUtils:
             par1 = kwargs.get('spell_name', None)
             new_string = CommonUtils.replace_value_in_event(event_string=event_string, par1=par1)
 
+        if event_title == 'spell-fizzle':
+            par1 = kwargs.get('target', None)
+            new_string = CommonUtils.replace_value_in_event(event_string=event_string, par1=par1)
+
         return new_string
 
     @staticmethod
@@ -151,20 +155,32 @@ class CommonUtils:
             n = 0
             for _ in event_classes:
                 if event_classes[n] == 'all':
-                    message_class = 0
+                    msg = Message(text=new_string, msgclass=0, fg=foreground_colour, bg=background_colour,
+                                  fnt="")
+                    log_message = new_string
+                    CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
+                                            message_for_export=log_message)
                 elif event_classes[n] == 'combat':
-                    message_class = 1
+                    msg = Message(text=new_string, msgclass=1, fg=foreground_colour, bg=background_colour,
+                                  fnt="")
+                    log_message = new_string
+                    CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
+                                            message_for_export=log_message)
                 elif event_classes[n] == 'story':
-                    message_class = 2
+                    msg = Message(text=new_string, msgclass=2, fg=foreground_colour, bg=background_colour,
+                                  fnt="")
+                    log_message = new_string
+                    CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
+                                            message_for_export=log_message)
                 else:
-                    message_class = 3
+                    msg = Message(text=new_string, msgclass=3, fg=foreground_colour, bg=background_colour,
+                                  fnt="")
+                    log_message = new_string
+                    CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
+                                            message_for_export=log_message)
                 n += 1
 
-                msg = Message(text=new_string, msgclass=message_class, fg=foreground_colour, bg=background_colour,
-                              fnt="")
-                log_message = new_string
-                CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
-                                        message_for_export=log_message)
+
 
     @staticmethod
     def convert_string_to_list(the_string):
