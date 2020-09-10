@@ -1,6 +1,8 @@
 import random
 
+from bearlibterminal import terminal
 from loguru import logger
+
 from components import spells, items, mobiles
 from utilities import configUtilities, formulas
 from utilities.common import CommonUtils
@@ -9,7 +11,6 @@ from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
-from bearlibterminal import terminal
 
 
 class SpellUtilities:
@@ -187,8 +188,8 @@ class SpellUtilities:
         else:
             # spell targeting
             spell_target_list, spell_cast_at = SpellUtilities.spell_targeting(gameworld=gameworld, game_map=game_map,
-                                                                                player=player,
-                                                                                spell_entity=spell_entity)
+                                                                              player=player,
+                                                                              spell_entity=spell_entity)
             logger.debug('Entity target list {}', spell_target_list)
             logger.debug('Entity casting this spell {}', player)
             if len(spell_target_list) > 0:
@@ -219,7 +220,9 @@ class SpellUtilities:
         cursor_info = []
         enemy_list = []
         if spell_has_aoe:
-            cursor_height, cursor_width, cursor_shape = SpellUtilities.read_spell_aoe_cursors_file(gameworld=gameworld, game_config=game_config, spell_entity=spell_entity)
+            cursor_height, cursor_width, cursor_shape = SpellUtilities.read_spell_aoe_cursors_file(gameworld=gameworld,
+                                                                                                   game_config=game_config,
+                                                                                                   spell_entity=spell_entity)
             cursor_info.append(cursor_height)
             cursor_info.append(cursor_width)
             cursor_info.append(cursor_shape)
@@ -232,7 +235,12 @@ class SpellUtilities:
             oldy = targeting_cursor_centre_y
 
             # display AoE cursor
-            entities_found = SpellUtilities.draw_spell_targeting_cursor(gameworld=gameworld, game_map=game_map, spell_has_aoe=spell_has_aoe, spell_centre=[targeting_cursor_centre_x, targeting_cursor_centre_y], entity_id=entity_at_targeting_cursor_position, cursor_info=cursor_info, mode_flag=1)
+            entities_found = SpellUtilities.draw_spell_targeting_cursor(gameworld=gameworld, game_map=game_map,
+                                                                        spell_has_aoe=spell_has_aoe,
+                                                                        spell_centre=[targeting_cursor_centre_x,
+                                                                                      targeting_cursor_centre_y],
+                                                                        entity_id=entity_at_targeting_cursor_position,
+                                                                        cursor_info=cursor_info, mode_flag=1)
 
             terminal.refresh()
 
@@ -250,13 +258,21 @@ class SpellUtilities:
                                                            spell_has_aoe=spell_has_aoe,
                                                            spell_centre=[oldx, oldy],
                                                            entity_id=entity_at_targeting_cursor_position,
-                                                           cursor_info=cursor_info, mode_flag=0, entities_found=entities_found)
+                                                           cursor_info=cursor_info, mode_flag=0,
+                                                           entities_found=entities_found)
 
             if event_action == 'enter':
                 SpellUtilities.set_spell_cooldown_to_true(gameworld=gameworld, spell_entity=spell_entity)
-                enemy_list = SpellUtilities.get_targets_for_this_spell(game_map=game_map, spell_has_aoe=spell_has_aoe, target_x=targeting_cursor_centre_x, target_y=targeting_cursor_centre_y, aoe_cursor=cursor_info)
+                enemy_list = SpellUtilities.get_targets_for_this_spell(game_map=game_map, spell_has_aoe=spell_has_aoe,
+                                                                       target_x=targeting_cursor_centre_x,
+                                                                       target_y=targeting_cursor_centre_y,
+                                                                       aoe_cursor=cursor_info)
                 # do spell casting visual effects
-                SpellUtilities.draw_spell_casting_visual_effects(gameworld=gameworld, game_config=game_config, caster_coords=[caster_map_x, caster_map_y], target_coords=[targeting_cursor_centre_x, targeting_cursor_centre_y], target_list=enemy_list, player_entity=player)
+                SpellUtilities.draw_spell_casting_visual_effects(gameworld=gameworld, game_config=game_config,
+                                                                 caster_coords=[caster_map_x, caster_map_y],
+                                                                 target_coords=[targeting_cursor_centre_x,
+                                                                                targeting_cursor_centre_y],
+                                                                 target_list=enemy_list, player_entity=player, spell_has_aoe=spell_has_aoe)
                 targeting_a_spell = False
 
         return enemy_list, [targeting_cursor_centre_x, targeting_cursor_centre_y]
@@ -269,6 +285,8 @@ class SpellUtilities:
             enemy_list = SpellUtilities.get_list_of_aoe_targets(game_map=game_map, target_x=target_x,
                                                                 target_y=target_y,
                                                                 cursor_info=aoe_cursor)
+            if len(enemy_list) == 0:
+                enemy_list.append(0)
         else:
 
             enemy_list.append(GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
@@ -278,7 +296,8 @@ class SpellUtilities:
         return enemy_list
 
     @staticmethod
-    def draw_spell_casting_visual_effects(gameworld, game_config, caster_coords, target_coords, player_entity, target_list):
+    def draw_spell_casting_visual_effects(gameworld, game_config, caster_coords, target_coords, player_entity,
+                                          target_list, spell_has_aoe):
         # this draws 'something' from the caster to the centre point of where the spell was targeted
         spell_casting_visual = 'O'
         screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
@@ -294,14 +313,16 @@ class SpellUtilities:
         if target_list[0] == 0:
             dest_x = target_coords[0]
             dest_y = target_coords[1]
-            distance_to_target = formulas.distance_between_two_tiles(from_coords=[caster_x, caster_y], to_coords=[dest_x, dest_y])
+            distance_to_target = formulas.distance_between_two_tiles(from_coords=[caster_x, caster_y],
+                                                                     to_coords=[dest_x, dest_y])
         else:
             target_entity = target_list[0]
 
             dest_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
             dest_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
-            distance_to_target = int(formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=player_entity,
-                                                                       to_entity=target_entity))
+            distance_to_target = int(
+                formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=player_entity,
+                                                      to_entity=target_entity))
 
         dx = dest_x + screen_offset_x
         dy = dest_y + screen_offset_y
@@ -342,7 +363,8 @@ class SpellUtilities:
             dx = random.randrange(-1, 2)
             dy = random.randrange(-1, 2)
             blast_char = random.randrange(0, 9)
-            terminal.printf(x=(dest_x + screen_offset_x) + dx, y=(dest_y + screen_offset_y) + dy, s=glyph_colour_string + xplosion_string[blast_char])
+            terminal.printf(x=(dest_x + screen_offset_x) + dx, y=(dest_y + screen_offset_y) + dy,
+                            s=glyph_colour_string + xplosion_string[blast_char])
             terminal.refresh()
 
     @staticmethod
@@ -355,15 +377,17 @@ class SpellUtilities:
         logger.debug('Spell entity {} has been put on cooldown', spell_entity)
 
     @staticmethod
-    def draw_spell_targeting_cursor(gameworld, game_map, spell_has_aoe, spell_centre, entity_id, cursor_info, mode_flag, entities_found=None):
+    def draw_spell_targeting_cursor(gameworld, game_map, spell_has_aoe, spell_centre, entity_id, cursor_info, mode_flag,
+                                    entities_found=None):
         if entities_found is None:
             entities_found = []
         aoe_centre_x = spell_centre[0]
         aoe_centre_y = spell_centre[1]
         if spell_has_aoe:
             entities_found = SpellUtilities.render_spell_aoe_cursor(gameworld=gameworld, target_x=aoe_centre_x,
-                                                   target_y=aoe_centre_y, cursor_info=cursor_info,
-                                                   mode_flag=mode_flag, game_map=game_map, entities_found=entities_found)
+                                                                    target_y=aoe_centre_y, cursor_info=cursor_info,
+                                                                    mode_flag=mode_flag, game_map=game_map,
+                                                                    entities_found=entities_found)
         else:
             SpellUtilities.render_spell_targeting_cursor(gameworld=gameworld, game_map=game_map,
                                                          target_x=aoe_centre_x,
@@ -385,7 +409,6 @@ class SpellUtilities:
                 if enemy_entity > 0:
                     enemies_list.append(enemy_entity)
         return enemies_list
-
 
     @staticmethod
     def read_spell_aoe_cursors_file(gameworld, game_config, spell_entity):
@@ -412,7 +435,8 @@ class SpellUtilities:
     @staticmethod
     def render_spell_aoe_cursor(gameworld, target_x, target_y, cursor_info, mode_flag, game_map, entities_found):
         game_config = configUtilities.load_config()
-        colour_choice = ['[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]', '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]']
+        colour_choice = ['[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]',
+                         '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]']
         colour_code = colour_choice[mode_flag]
         if entities_found is None:
             entities_found = []
@@ -435,7 +459,9 @@ class SpellUtilities:
             for inner_loop in range(-cursor_width, cursor_width + 1):
                 posx = (screen_offset_x + oldx) + inner_loop
                 terminal.printf(x=posx, y=posy, s=colour_code + this_row[row_slice])
-                entity_id = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=(oldx + inner_loop), y=(oldy + outer_loop))
+                entity_id = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
+                                                                                x=(oldx + inner_loop),
+                                                                                y=(oldy + outer_loop))
                 if entity_id > 0:
                     entities_found.append([entity_id, posx, posy])
                 row_slice += 1
@@ -461,7 +487,8 @@ class SpellUtilities:
     @staticmethod
     def render_spell_targeting_cursor(gameworld, game_map, target_x, target_y, mode_flag, entity_at_cursor):
         game_config = configUtilities.load_config()
-        colour_choice = ['[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]', '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]']
+        colour_choice = ['[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]',
+                         '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]']
         colour_code = colour_choice[mode_flag]
         targeting_cursor = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                             parameter='ASCII_SPELL_TARGETING_CURSOR')
@@ -703,7 +730,8 @@ class SpellUtilities:
         gameworld.add_component(mobile_entity, mobiles.SpellCast(has_cast_a_spell=True, spell_entity=spell_entity,
                                                                  spell_target=spell_target_entity, spell_bar_slot=slot,
                                                                  spell_caster=mobile_entity,
-                                                                 spell_cast_at_x=map_coords_list[0], spell_cast_at_y=map_coords_list[1]))
+                                                                 spell_cast_at_x=map_coords_list[0],
+                                                                 spell_cast_at_y=map_coords_list[1]))
 
     @staticmethod
     def get_spell_cast_center_coords(gameworld, mobile_entity):
