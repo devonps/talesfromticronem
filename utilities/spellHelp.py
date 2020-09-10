@@ -564,6 +564,10 @@ class SpellUtilities:
         return valid_targets
 
     @staticmethod
+    def get_spell_ground_targeted_status(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.GroundTargeted).uses_ground_targeting
+
+    @staticmethod
     def get_spell_cooldown_status(gameworld, spell_entity):
         return gameworld.component_for_entity(spell_entity, spells.CoolDown).is_true
 

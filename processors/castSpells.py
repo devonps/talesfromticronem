@@ -59,13 +59,24 @@ class CastSpells(esper.Processor):
         boons_to_apply = spell_status_effects[0]
         condis_to_apply = spell_status_effects[1]
 
-        for target_entity in range(len(target_entities)):
-            self.apply_damage_to_target(caster_entity=caster_entity, target_entity=target_entities[target_entity],
-                                        spell_entity=spell_entity, slot_used=slot_used)
-            MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=target_entities[target_entity])
-            MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=caster_entity)
-            self.apply_spell_effects(caster_entity=caster_entity, target_entity=target_entities[target_entity],
-                                     condis_to_apply=condis_to_apply, boons_to_apply=boons_to_apply)
+        if target_entities[0] > 0:
+            # spell has a target entity to work against
+            for target_entity in range(len(target_entities)):
+                self.apply_damage_to_target(caster_entity=caster_entity, target_entity=target_entities[target_entity],
+                                            spell_entity=spell_entity, slot_used=slot_used)
+                MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=target_entities[target_entity])
+                MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=caster_entity)
+                self.apply_spell_effects(caster_entity=caster_entity, target_entity=target_entities[target_entity],
+                                         condis_to_apply=condis_to_apply, boons_to_apply=boons_to_apply)
+        else:
+            # no target entity
+            # this is where ground based spells come into force
+            this_spell_is_ground_based = SpellUtilities.get_spell_ground_targeted_status(gameworld=self.gameworld, spell_entity=spell_entity)
+            if this_spell_is_ground_based:
+                logger.info('Spell {} uses ground based targeting - fix it', spell_entity)
+            else:
+                # it's not ground based that means the player has misplaced the cursor!
+                logger.warning('Came to an empty code section for spell {} - is that correct?', spell_entity)
 
     def apply_spell_effects(self, caster_entity, target_entity, condis_to_apply, boons_to_apply):
         # Are there any conditions to apply to the target - regardless of damage caused
