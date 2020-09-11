@@ -592,14 +592,13 @@ class SpellUtilities:
         return valid_targets
 
     @staticmethod
-    def check_for_spell_cast_blocks(gameworld, target_name, caster_condis):
+    def check_for_spell_cast_blocks(gameworld, target_name, target_entity):
         spell_blocked = False
         caster_is_blind = False
-        # cycle through current condis attached to the caster
-        for condi in caster_condis:
-            condi_name = condi['name']
-            if condi_name == 'blinded':
-                caster_is_blind = True
+        condi_is_attached_to_player = CommonUtils.check_if_entity_has_condi_applied(gameworld=gameworld, target_entity=target_entity, condi_being_checked='blinded')
+
+        if condi_is_attached_to_player:
+            caster_is_blind = True
 
         if caster_is_blind:
             CommonUtils.fire_event("spell-fizzle", gameworld=gameworld, target=target_name)
@@ -886,6 +885,7 @@ class SpellUtilities:
 
                     current_condis.append(z)
 
+            # this is technical debt - move it a helper method
             status_effects_component = gameworld.component_for_entity(target_entity, mobiles.StatusEffects)
             status_effects_component.conditions = current_condis
 
@@ -926,6 +926,7 @@ class SpellUtilities:
                     # current_boons is a map
                     current_boons.append(b)
         if len(current_boons) != 0:
+            # this is technical debt - move it a helper method
             status_effects_component = gameworld.component_for_entity(target_entity, mobiles.StatusEffects)
             status_effects_component.boons = current_boons
             logger.debug('Boons applied to {} is {}', target_names[0], current_boons)

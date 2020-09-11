@@ -11,6 +11,18 @@ from utilities.mobileHelp import MobileUtilities
 class CommonUtils:
 
     @staticmethod
+    def check_if_entity_has_condi_applied(gameworld, target_entity, condi_being_checked):
+        found_condi = False
+        current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
+                                                                              entity=target_entity)
+        for condi in current_condis:
+            condi_name = condi['name']
+            if condi_being_checked == condi_name:
+                found_condi = True
+
+        return found_condi
+
+    @staticmethod
     def calculate_camera_position(camera_width, camera_height, player_map_pos_x, player_map_pos_y, game_map):
         x = int(player_map_pos_x - (camera_width / 2))
         y = int(player_map_pos_y - (camera_height / 2))

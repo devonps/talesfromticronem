@@ -809,7 +809,9 @@ class MobileUtilities(numbers.Real, ABC):
 
         precision_bonus = int(precision_value / 21)
 
-        critical_chance_value = min(100, base_value + boon_fury_bonus + precision_bonus)
+        stat_based_critical_hit_chance = base_value + boon_fury_bonus + precision_bonus
+
+        critical_chance_value = min(100, stat_based_critical_hit_chance)
 
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).critical_chance = critical_chance_value
 

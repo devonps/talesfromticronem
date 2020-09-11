@@ -1,4 +1,5 @@
 import math
+import random
 
 from loguru import logger
 
@@ -60,7 +61,7 @@ def critical_damage_calculation(ferocity_stat):
     return crit_damage
 
 
-def critical_hit_damage_modifier(crit_hit_chance, base_damage, ferocity_stat):
+def calculate_critical_hit_damage(crit_hit_chance, base_damage, ferocity_stat):
     crit_damage = critical_damage_calculation(ferocity_stat)
 
     average_damage = base_damage * (1 + crit_hit_chance * crit_damage - 1)
@@ -68,6 +69,14 @@ def critical_hit_damage_modifier(crit_hit_chance, base_damage, ferocity_stat):
     return average_damage
 
 
+def get_chance_of_critical_hit(critical_hit_chance):
+    critical_hit = False
+    rng = random.randrange(0, 100)
+
+    if critical_hit_chance > rng:
+        critical_hit = True
+
+    return critical_hit
 # TODO calculate defense forumla
 
 

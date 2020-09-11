@@ -58,11 +58,9 @@ class CastSpells(esper.Processor):
     def process_combat_spells(self, target_entities, caster_entity, slot_used, spell_entity, spell_status_effects):
         boons_to_apply = spell_status_effects[0]
         condis_to_apply = spell_status_effects[1]
-        current_condis_on_caster = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
-                                                                              entity=caster_entity)
 
         target_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=target_entities[0])
-        spell_blocked = SpellUtilities.check_for_spell_cast_blocks(gameworld=self.gameworld, target_name=target_names[0], caster_condis=current_condis_on_caster)
+        spell_blocked = SpellUtilities.check_for_spell_cast_blocks(gameworld=self.gameworld, target_name=target_names[0], target_entity=caster_entity)
 
         if not spell_blocked:
             if target_entities[0] > 0:
@@ -148,23 +146,52 @@ class CastSpells(esper.Processor):
         outgoing_base_damage = formulas.outgoing_base_damage(weapon_strength=weapon_strength, power=caster_power,
                                                              spell_coefficient=spell_coeff)
 
+        critical_damage_to_be_applied = 0
+
         logger.debug('weapon strength {}', weapon_strength)
         logger.debug('spell coeff {}', spell_coeff)
         logger.debug('base damage {}', outgoing_base_damage)
 
         target_defense = MobileUtilities.get_mobile_derived_armour_value(gameworld=self.gameworld, entity=spell_target)
-        critical_hit = -99
-        weakness = -99
-        vulnerability = -99
+        critical_hit_chance = MobileUtilities.get_mobile_derived_critical_hit_chance(gameworld=self.gameworld, entity=spell_caster)
+
+        if critical_hit_chance >= 100:
+            apply_critical_hit = True
+        else:
+            apply_critical_hit = formulas.get_chance_of_critical_hit(critical_hit_chance=critical_hit_chance)
+
+        if apply_critical_hit:
+            critical_damage_to_be_applied = formulas.calculate_critical_hit_damage(crit_hit_chance=critical_hit_chance, base_damage=outgoing_base_damage, ferocity_stat=1)
+        logger.info('Critical hit has popped')
+        logger.info('Critical damage is {}', critical_damage_to_be_applied)
+
+        damage_done_before_modification = int(outgoing_base_damage / target_defense)
+        current_damage = damage_done_before_modification
+        # 'weakness' applied to the caster - each attack deals 50% less damage
+        condi_is_attached_to_player = CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
+                                                                                    target_entity=spell_caster,
+                                                                                    condi_being_checked='weakness')
+        if condi_is_attached_to_player:
+            current_damage = current_damage / 2
+            logger.info('damage modified by weakness')
+
+        # 'vulnerability' is applied to the target - increases damage by 1% per stack
+        condi_is_attached_to_the_target = CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
+                                                                                    target_entity=spell_target,
+                                                                                    condi_being_checked='vulnerability')
+        if condi_is_attached_to_the_target:
+            # in this formula the '1' has to be replaced with the number of stacks
+            damage_to_add = formulas.calculate_percentage(low_number=1, max_number=current_damage)
+            current_damage += damage_to_add
+            logger.info('Incoming damage to the target modified by vulnerability is {}', current_damage )
+
+        # 'protection' is applied to the target - reduces incoming damage by 33%
         protection = -99
 
         logger.debug('target defense rating {}', target_defense)
+        logger.debug('Calculated damage - after armour {}', damage_done_before_modification)
 
-        damage_done = int(outgoing_base_damage / target_defense)
 
-        logger.debug('Calculated damage - after armour - before further modification {}', damage_done)
-        logger.info('damage modified by critical hits {}', critical_hit)
-        logger.info('damage modified by weakness {}', weakness)
         logger.info('damage modified by vulnerability {}', vulnerability)
         logger.info('damage modified by protection {}', protection)
 
