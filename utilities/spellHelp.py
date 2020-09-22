@@ -592,7 +592,7 @@ class SpellUtilities:
         return valid_targets
 
     @staticmethod
-    def check_for_spell_cast_blocks(gameworld, target_name, target_entity):
+    def check_for_effects_stopping_spell_being_cast(gameworld, target_name, target_entity):
         spell_blocked = False
         caster_is_blind = False
         condi_is_attached_to_player = CommonUtils.check_if_entity_has_condi_applied(gameworld=gameworld, target_entity=target_entity, condi_being_checked='blinded')

@@ -18,7 +18,7 @@
       "damage_coef": "0.666",
       "effects": [
         {
-          "name": "gainlifeforce",
+          "name": "weakness",
           "value": "4"
         },
         {

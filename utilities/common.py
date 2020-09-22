@@ -11,16 +11,29 @@ from utilities.mobileHelp import MobileUtilities
 class CommonUtils:
 
     @staticmethod
+    def check_if_entity_has_boon_applied(gameworld, target_entity, boon_being_checked):
+        found_boon = False
+        current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=target_entity)
+        for boon in current_boons:
+            boon_name = boon['name']
+            if boon_name == boon_being_checked:
+                found_boon = True
+
+        return found_boon
+
+    @staticmethod
     def check_if_entity_has_condi_applied(gameworld, target_entity, condi_being_checked):
         found_condi = False
+        condi_count = 0
         current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
                                                                               entity=target_entity)
         for condi in current_condis:
             condi_name = condi['name']
             if condi_being_checked == condi_name:
                 found_condi = True
+                condi_count += 1
 
-        return found_condi
+        return found_condi, condi_count
 
     @staticmethod
     def calculate_camera_position(camera_width, camera_height, player_map_pos_x, player_map_pos_y, game_map):

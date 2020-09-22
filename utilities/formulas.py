@@ -6,6 +6,27 @@ from loguru import logger
 from utilities.mobileHelp import MobileUtilities
 
 
+def calculate_condi_confusion_damage(gameworld, caster_entity, current_weapon_level):
+    condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=caster_entity)
+
+    current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
+                                                                          entity=caster_entity)
+
+    confusion_damage = 0
+
+    for condi in current_condis:
+        condi_name = condi['name']
+        if condi_name == 'confusion':
+            base_damage_per_stack = condi['baseDamage']
+            condition_damage_modifier = condi['condDamageMod']
+            weapon_level_modifier = condi['weaponLevelMod']
+
+            confusion_damage = (condition_damage_modifier * condi_damage) + (
+                    weapon_level_modifier * current_weapon_level) + base_damage_per_stack
+
+    return confusion_damage
+
+
 def calculate_percentage(low_number, max_number):
     return int((low_number / max_number) * 100)
 
@@ -77,6 +98,8 @@ def get_chance_of_critical_hit(critical_hit_chance):
         critical_hit = True
 
     return critical_hit
+
+
 # TODO calculate defense forumla
 
 
