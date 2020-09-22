@@ -595,7 +595,7 @@ class SpellUtilities:
     def check_for_effects_stopping_spell_being_cast(gameworld, target_name, target_entity):
         spell_blocked = False
         caster_is_blind = False
-        condi_is_attached_to_player = CommonUtils.check_if_entity_has_condi_applied(gameworld=gameworld, target_entity=target_entity, condi_being_checked='blinded')
+        condi_is_attached_to_player, condi_count = CommonUtils.check_if_entity_has_condi_applied(gameworld=gameworld, target_entity=target_entity, condi_being_checked='blinded')
 
         if condi_is_attached_to_player:
             caster_is_blind = True

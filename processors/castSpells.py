@@ -27,7 +27,6 @@ class CastSpells(esper.Processor):
             if mob.has_cast_a_spell:
                 spell_entity = mob.spell_entity
                 caster_entity = mob.spell_caster
-                spell_bar_slot_used = mob.spell_bar_slot
                 target_entities = mob.spell_target
                 spell_type = SpellUtilities.get_spell_type(gameworld=self.gameworld, spell_entity=spell_entity)
                 condis_to_apply_list = SpellUtilities.get_all_condis_for_spell(gameworld=self.gameworld,
@@ -40,7 +39,7 @@ class CastSpells(esper.Processor):
 
                 if spell_type == 'combat':
                     self.process_combat_spells(target_entities=target_entities,
-                                               caster_entity=caster_entity, slot_used=spell_bar_slot_used,
+                                               caster_entity=caster_entity,
                                                spell_entity=spell_entity, spell_status_effects=spell_status_effects)
                 if spell_type == 'heal':
                     self.process_healing_spell(spell_type=spell_type)
@@ -55,7 +54,7 @@ class CastSpells(esper.Processor):
         SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld,
                                                           spell_entity=spell_entity, value=number_of_turns - 1)
 
-    def process_combat_spells(self, target_entities, caster_entity, slot_used, spell_entity, spell_status_effects):
+    def process_combat_spells(self, target_entities, caster_entity, spell_entity, spell_status_effects):
         boons_to_apply = spell_status_effects[0]
         condis_to_apply = spell_status_effects[1]
 
@@ -67,7 +66,7 @@ class CastSpells(esper.Processor):
                 # spell has a target entity to work against
                 for target_entity in range(len(target_entities)):
                     self.apply_damage_to_target(caster_entity=caster_entity, target_entity=target_entities[target_entity],
-                                                spell_entity=spell_entity, slot_used=slot_used)
+                                                spell_entity=spell_entity)
                     MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=target_entities[target_entity])
                     MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=caster_entity)
                     self.apply_spell_effects(caster_entity=caster_entity, target_entity=target_entities[target_entity],
@@ -93,13 +92,26 @@ class CastSpells(esper.Processor):
             SpellUtilities.apply_boons_to_target(gameworld=self.gameworld, target_entity=target_entity,
                                                  list_of_boons=boons_to_apply, spell_caster=caster_entity)
 
-    def apply_damage_to_target(self, caster_entity, target_entity, spell_entity, slot_used):
+    def apply_damage_to_target(self, caster_entity, target_entity, spell_entity):
         spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=spell_entity)
         target_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld,
                                                                entity=target_entity)
         caster_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=caster_entity)
+
+        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=caster_entity)
+        main_weapon = equipped_weapons[0]
+        off_weapon = equipped_weapons[1]
+        both_weapons = equipped_weapons[2]
+
+        if both_weapons > 0:
+            current_weapon = both_weapons
+        elif main_weapon > 0:
+            current_weapon = main_weapon
+        else:
+            current_weapon = off_weapon
+
         damage_done_to_target, damage_applied_to_caster = self.cast_combat_spell(spell_caster=caster_entity, spell=spell_entity,
-                                                       spell_target=target_entity, weapon_used=slot_used)
+                                                       spell_target=target_entity, weapon_used=current_weapon)
         if damage_done_to_target > 0:
             # apply damage to target --> current health is used when in combat
             MobileUtilities.set_current_health_during_combat(gameworld=self.gameworld, entity=target_entity,
@@ -188,14 +200,13 @@ class CastSpells(esper.Processor):
 
         # now check for critical damage
         critical_hit_chance = MobileUtilities.get_mobile_derived_critical_hit_chance(gameworld=self.gameworld, entity=spell_caster)
-
         if critical_hit_chance >= 100:
             apply_critical_hit = True
         else:
             apply_critical_hit = formulas.get_chance_of_critical_hit(critical_hit_chance=critical_hit_chance)
 
         if apply_critical_hit:
-            critical_damage_to_be_applied = formulas.calculate_critical_hit_damage(crit_hit_chance=critical_hit_chance, base_damage=outgoing_base_damage, ferocity_stat=1)
+            critical_damage_to_be_applied = formulas.calculate_critical_hit_damage(base_damage=current_damage, ferocity_stat=1)
             logger.info('Critical hit has popped')
             logger.info('Critical damage is {}', critical_damage_to_be_applied)
             current_damage += critical_damage_to_be_applied

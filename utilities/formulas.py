@@ -72,7 +72,7 @@ def base_condi_damage(condition_damage_modifier, condition_damage_stat, weapon_l
     return base_damage
 
 
-def critical_damage_calculation(ferocity_stat):
+def calculate_critical_damage_percentage(ferocity_stat):
     base_crit_damage = 150
 
     modifier = int(ferocity_stat / 15)
@@ -82,12 +82,14 @@ def critical_damage_calculation(ferocity_stat):
     return crit_damage
 
 
-def calculate_critical_hit_damage(crit_hit_chance, base_damage, ferocity_stat):
-    crit_damage = critical_damage_calculation(ferocity_stat)
+def calculate_critical_hit_damage(base_damage, ferocity_stat):
+    crit_damage_percentage = calculate_critical_damage_percentage(ferocity_stat)
 
-    average_damage = base_damage * (1 + crit_hit_chance * crit_damage - 1)
+    crit_damage_to_be_added = calculate_percentage(low_number=base_damage,  max_number=crit_damage_percentage)
 
-    return average_damage
+    critical_hit__damage = base_damage + crit_damage_to_be_added
+
+    return critical_hit__damage
 
 
 def get_chance_of_critical_hit(critical_hit_chance):
