@@ -167,35 +167,38 @@ class CastSpells(esper.Processor):
 
         outgoing_base_damage = formulas.outgoing_base_damage(weapon_strength=weapon_strength, power=caster_power,
                                                              spell_coefficient=spell_coeff)
-
+        logger.warning('------ STARTING COMBAT SPELL DAMAGE CALCULATIONS -------')
+        logger.debug('caster power {}', caster_power)
         logger.debug('weapon strength {}', weapon_strength)
+        logger.debug('weapon level {}', current_weapon_level)
         logger.debug('spell coeff {}', spell_coeff)
-        logger.debug('outgoing base damage {}', outgoing_base_damage)
+        logger.debug('outgoing base damage {} [{} * {} * {}]', outgoing_base_damage, weapon_strength, caster_power, spell_coeff)
 
         target_defense = MobileUtilities.get_mobile_derived_armour_value(gameworld=self.gameworld, entity=spell_target)
-        logger.debug('target defense rating {}', target_defense)
+        logger.debug('target current defense rating {}', target_defense)
+
         damage_done_before_modification = int(outgoing_base_damage / target_defense)
-        logger.info('damage before being modified {}', damage_done_before_modification)
+        logger.debug('base damage before status effects modification {} [{} / {}]', damage_done_before_modification, outgoing_base_damage, target_defense)
         current_damage = damage_done_before_modification
         damage_applied_to_caster = 0
 
         # 'vulnerability' is applied to the target - increases damage by 1% per stack
-        condi_is_attached_to_the_target, condi_count = CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
+        spell_target_is_vulnerable, condi_stack_count = CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
                                                                                     target_entity=spell_target,
                                                                                     condi_being_checked='vulnerability')
-        if condi_is_attached_to_the_target:
-            # in this formula condi_count represents the number of stacks
-            damage_to_add = formulas.calculate_percentage(low_number=condi_count, max_number=current_damage)
+        if spell_target_is_vulnerable:
+            damage_to_add = formulas.calculate_percentage(low_number=condi_stack_count, max_number=current_damage)
+            logger.debug('Target is vulnerable, base damage will be increased by {}% or {}', condi_stack_count, damage_to_add)
             current_damage += damage_to_add
-            logger.info('Incoming damage to the target increased by vulnerability to {}', current_damage)
+            logger.debug('Incoming damage to the target has been increased to {}', current_damage)
 
         # 'confusion' is applied to the caster - cannot be mitigated
-        condi_is_attached_to_the_target, condi_count = CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
+        spell_caster_is_confused, condi_stack_count = CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
                                                                                     target_entity=spell_caster,
                                                                                     condi_being_checked='confusion')
-
-        if condi_is_attached_to_the_target:
+        if spell_caster_is_confused:
             damage_to_add = formulas.calculate_condi_confusion_damage(gameworld=self.gameworld, caster_entity=spell_caster, current_weapon_level=current_weapon_level)
+            logger.debug('Spell caster is confused and will suffer {} pts of direct damage for casting this spell', damage_to_add)
             damage_applied_to_caster = damage_to_add
 
         # now check for critical damage
@@ -207,27 +210,31 @@ class CastSpells(esper.Processor):
 
         if apply_critical_hit:
             critical_damage_to_be_applied = formulas.calculate_critical_hit_damage(base_damage=current_damage, ferocity_stat=1)
-            logger.info('Critical hit has popped')
-            logger.info('Critical damage is {}', critical_damage_to_be_applied)
+            logger.debug('Target has been hit with a critical strike')
+            logger.debug('Critical damage is {}', critical_damage_to_be_applied)
             current_damage += critical_damage_to_be_applied
 
         # 'weakness' applied to the caster - each attack deals 50% less damage
-        condi_is_attached_to_player, condi_count = CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
+        spell_caster_is_weak, condi_count = CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
                                                                                     target_entity=spell_caster,
                                                                                     condi_being_checked='weakness')
-        if condi_is_attached_to_player:
+        if spell_caster_is_weak:
             current_damage = int (current_damage / 2)
-            logger.info('damage modified by weakness down to {}', current_damage)
+            logger.debug('Spell caster is weak, outgoing damage has been reduced to {}', current_damage)
 
         # 'protection' is applied to the target - reduces incoming damage by 33%
-        boon_is_attached_to_the_target = CommonUtils.check_if_entity_has_boon_applied(gameworld=self.gameworld, target_entity=spell_target, boon_being_checked='protection')
-        if boon_is_attached_to_the_target:
-            damage_to_be_removed = formulas.calculate_percentage(low_number=33, max_number=current_damage)
+        target_is_protected = CommonUtils.check_if_entity_has_boon_applied(gameworld=self.gameworld, target_entity=spell_target, boon_being_checked='protection')
+        if target_is_protected:
+            percentage_of_damage_to_remove = 33
+            damage_to_be_removed = formulas.calculate_percentage(low_number=percentage_of_damage_to_remove, max_number=current_damage)
+            logger.debug('Spell target is under protection, incoming damage will be reduced by {}% or {}pts', percentage_of_damage_to_remove, damage_to_be_removed)
             current_damage -= damage_to_be_removed
-            logger.info('damage after being modified down by protection {}', current_damage)
 
-        logger.debug('Calculated damage - after modification {}', current_damage)
+        logger.debug('After all calculations damage applied to the target is {}', current_damage)
+        if damage_applied_to_caster > 0:
+            logger.debug('AND damage applied to the spell caster is {}', damage_applied_to_caster)
 
+        logger.warning('------ ENDING COMBAT SPELL DAMAGE CALCULATIONS -------')
         return current_damage, damage_applied_to_caster
 
     def cast_healing_spell(self):
