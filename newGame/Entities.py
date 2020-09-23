@@ -182,13 +182,10 @@ class Entity:
                         MobileUtilities.set_mobile_visible(gameworld=gameworld, entity=entity_id)
                         MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx,
                                                             posy=posy)
-                        MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, game_config=game_config,
-                                                                       entity=entity_id)
-
+                        MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, entity=entity_id)
                         # calculate derived stats
                         ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=gameworld, entity=entity_id)
                         MobileUtilities.set_mobile_derived_attributes(gameworld=gameworld, entity=entity_id)
-
                         logger.warning('--- NEW MOBILE CREATED ---')
         return entity_id
 
@@ -287,8 +284,7 @@ class Entity:
 
                 MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx, posy=posy)
                 Entity.set_min_max_preferred_ranges(entity_id=entity_id, min_range=min_range, max_range=max_range, gameworld=gameworld, game_config=game_config)
-                MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, game_config=game_config,
-                                                               entity=entity_id)
+                MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, entity=entity_id)
 
     @staticmethod
     def set_min_max_preferred_ranges(entity_id, min_range, max_range, game_config, gameworld):

@@ -237,7 +237,7 @@ class MobileUtilities(numbers.Real, ABC):
         return describeable_component.personality_title
 
     @staticmethod
-    def set_mobile_derived_personality(gameworld, game_config, entity):
+    def set_mobile_derived_personality(gameworld, entity):
         player_entity = entity
 
         player_current_personality_component = gameworld.component_for_entity(player_entity, mobiles.Personality)
@@ -445,8 +445,7 @@ class MobileUtilities(numbers.Real, ABC):
                                                                 parameter='AI_LEVEL_PLAYER')
         gameworld.add_component(player_entity, mobiles.Describable())
         MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=player_entity, value='@')
-        MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, game_config=game_config,
-                                                       entity=player_entity)
+        MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, entity=player_entity)
         MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity, gender='neutral')
         MobileUtilities.set_mobile_description(gameworld=gameworld, entity=player_entity, value='something')
 
@@ -842,8 +841,7 @@ class MobileUtilities(numbers.Real, ABC):
     def set_mobile_derived_max_health(gameworld, entity):
 
         # get primary attributes component
-        primary_attribute_component = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes)
-        vitality_value = primary_attribute_component.vitality
+        vitality_value = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld, entity=entity)
 
         # get character class attributes component
         entity_class_component = gameworld.component_for_entity(entity, mobiles.CharacterClass)

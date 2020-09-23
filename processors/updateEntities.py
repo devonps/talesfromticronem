@@ -2,7 +2,7 @@ import esper
 from loguru import logger
 
 from components import mobiles
-from utilities import formulas
+from utilities import formulas, world
 from utilities.armourManagement import ArmourUtilities
 from utilities.common import CommonUtils
 from utilities.mobileHelp import MobileUtilities
@@ -26,19 +26,25 @@ class UpdateEntitiesProcessor(esper.Processor):
                 message_log_id = MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
 
                 for ent, ai in self.gameworld.get_component(mobiles.AI):
+                    current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=self.gameworld, entity=ent)
                     in_combat = MobileUtilities.get_combat_status(self.gameworld, entity=ent)
                     entity_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
 
-                    self.apply_conditions(entity_names=entity_names, player_entity=player_entity,
-                                          message_log_id=message_log_id, target_entity=ent)
-                    self.apply_boons(entity_names=entity_names, player_entity=player_entity, message_log_id=message_log_id,
-                                     target_entity=ent)
-                    # apply controls
-                    # gain resources from spells
+                    logger.info('{}/s current health is {}', entity_names[0], current_health)
 
-                    if not in_combat:
-                        ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=self.gameworld, entity=ent)
-                        MobileUtilities.set_mobile_derived_attributes(self.gameworld, entity=ent)
+                    if current_health < 0:
+                        world.delete_entity(gameworld=self.gameworld, entity=ent)
+                    else:
+                        self.apply_conditions(entity_names=entity_names, player_entity=player_entity,
+                                              message_log_id=message_log_id, target_entity=ent)
+                        self.apply_boons(entity_names=entity_names, player_entity=player_entity, message_log_id=message_log_id,
+                                         target_entity=ent)
+                        # apply controls
+                        # gain resources from spells
+
+                        if not in_combat:
+                            ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=self.gameworld, entity=ent)
+                            MobileUtilities.set_mobile_derived_attributes(self.gameworld, entity=ent)
 
     def apply_conditions(self, entity_names, player_entity, message_log_id, target_entity):
         current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
