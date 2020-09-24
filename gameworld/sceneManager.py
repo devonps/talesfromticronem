@@ -76,7 +76,7 @@ class SceneManager:
     @staticmethod
     def create_ecs_systems_yes_no(gameworld, currentscene, game_map):
         if currentscene == 1:
-            update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld)
+            update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld, game_map=game_map)
             move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
             cast_spells_processor = CastSpells(gameworld=gameworld, game_map=game_map)
             render_ui_processor = RenderUI(game_map=game_map, gameworld=gameworld)

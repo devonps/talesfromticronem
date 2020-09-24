@@ -744,6 +744,33 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.component_for_entity(entity, mobiles.SecondaryAttributes).healing_power = new_stat_bonus
 
     @staticmethod
+    def get_full_armourset_ids_from_entity(gameworld, entity):
+        armour_equipped = []
+        head = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=entity)
+        chest = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=entity)
+        legs = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=entity)
+        feet = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=entity)
+        hands = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity)
+
+        if chest != 0:
+            armour_equipped.append(chest)
+
+        if head != 0:
+            armour_equipped.append(head)
+
+        if legs != 0:
+            armour_equipped.append(legs)
+
+        if feet != 0:
+            armour_equipped.append(feet)
+
+        if hands != 0:
+            armour_equipped.append(hands)
+
+        return armour_equipped
+
+
+    @staticmethod
     def is_entity_wearing_armour(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.DerivedAttributes).armour
 
@@ -849,7 +876,8 @@ class MobileUtilities(numbers.Real, ABC):
 
         vitality_calculated_health = vitality_value * 10
 
-        health_value = vitality_calculated_health + class_base_health
+        # health_value = vitality_calculated_health + class_base_health
+        health_value = 10
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximum_health = health_value
 
     @staticmethod

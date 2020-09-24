@@ -7,6 +7,7 @@ from utilities.mobileHelp import MobileUtilities
 
 
 class ArmourUtilities:
+
     @staticmethod
     def get_armour_defense_value(gameworld, entity):
         return gameworld.component_for_entity(entity, items.Defense).value

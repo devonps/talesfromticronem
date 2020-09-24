@@ -13,8 +13,9 @@ class UpdateEntitiesProcessor(esper.Processor):
     This processor cycles through ALL MOBILES and calculates their attributes
     """
 
-    def __init__(self, gameworld):
+    def __init__(self, gameworld, game_map):
         self.gameworld = gameworld
+        self.game_map = game_map
 
     def process(self, game_config, advance_game_turn):
         if advance_game_turn:
@@ -33,7 +34,7 @@ class UpdateEntitiesProcessor(esper.Processor):
                     logger.info('{}/s current health is {}', entity_names[0], current_health)
 
                     if current_health < 0:
-                        world.delete_entity(gameworld=self.gameworld, entity=ent)
+                        self.entity_is_dead(dead_entity_id=ent)
                     else:
                         self.apply_conditions(entity_names=entity_names, player_entity=player_entity,
                                               message_log_id=message_log_id, target_entity=ent)
@@ -45,6 +46,18 @@ class UpdateEntitiesProcessor(esper.Processor):
                         if not in_combat:
                             ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=self.gameworld, entity=ent)
                             MobileUtilities.set_mobile_derived_attributes(self.gameworld, entity=ent)
+
+    def entity_is_dead(self, dead_entity_id):
+
+        # gather equipped items
+        equipped_armour = MobileUtilities.get_full_armourset_ids_from_entity(gameworld=self.gameworld, entity=dead_entity_id)
+        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=self.gameworld, mobile=dead_entity_id)
+        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=dead_entity_id)
+
+        # pick some random equipment to drop on to the game map
+
+        # And finally delete the entity + ALL associated components
+        world.delete_entity(gameworld=self.gameworld, entity=dead_entity_id)
 
     def apply_conditions(self, entity_names, player_entity, message_log_id, target_entity):
         current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
