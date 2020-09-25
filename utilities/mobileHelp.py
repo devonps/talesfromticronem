@@ -876,8 +876,7 @@ class MobileUtilities(numbers.Real, ABC):
 
         vitality_calculated_health = vitality_value * 10
 
-        # health_value = vitality_calculated_health + class_base_health
-        health_value = 10
+        health_value = vitality_calculated_health + class_base_health
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximum_health = health_value
 
     @staticmethod

@@ -373,34 +373,37 @@ class Entity:
     @staticmethod
     def choose_class_for_mobile(class_choice, entity_id, game_config, gameworld):
 
+        enemy_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                      parameter='CLASSESFILE')
+        class_file = read_json_file(enemy_class_file)
+        class_name = []
+        class_health = []
+        class_spell_file = []
+        selected_class_id = - 1
+
+        for option in class_file['classes']:
+            class_name.append(option['name'])
+            class_health.append(option['health'])
+            class_spell_file.append(option['spellfile'])
+
         if class_choice == 'RANDOM':
-            enemy_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                           parameter='CLASSESFILE')
-            class_file = read_json_file(enemy_class_file)
-            class_name = []
-            class_health = []
-            class_spell_file = []
-
-            for option in class_file['classes']:
-                class_name.append(option['name'])
-                class_health.append(option['health'])
-                class_spell_file.append(option['spellfile'])
-
             selected_class_id = random.randint(0, len(class_name) - 1)
-            selected_class_name = class_name[selected_class_id]
-            selected_class_health = class_health[selected_class_id]
-            selected_cass_spellfile = class_spell_file[selected_class_id]
-
         else:
-            selected_class_name = class_choice
-            selected_class_health = 100
-            selected_cass_spellfile = class_choice
+            for n in range(len(class_name)):
+                if class_name[n] == class_choice:
+                    selected_class_id = n
+
+        selected_class_name = class_name[selected_class_id]
+        selected_class_health = class_health[selected_class_id]
+        selected_cass_spellfile = class_spell_file[selected_class_id]
 
         MobileUtilities.setup_class_attributes(gameworld=gameworld, player=entity_id,
                                                selected_class=selected_class_name, health=int(selected_class_health),
                                                spellfile=selected_cass_spellfile)
 
         logger.info('Their class is {}', selected_class_name)
+        logger.info('Their class health is {}', selected_class_health)
+
 
     @staticmethod
     def choose_armourset_for_mobile(armour_file_option, entity_id, game_config, gameworld):
@@ -463,8 +466,8 @@ class Entity:
         armour_modifier = ''
         if armour_file_option == 'RANDOM':
             # generate them procedurally
-            # choose random armour modifier taken from as_prefix_list
-            armour_modifier = random.choice(as_prefix_list)
+            # choose random armour modifier taken from as_prefix_list-armour_modifier = random.choice(as_prefix_list)
+            armour_modifier = 'malign'
         else:
             armour_modifier = armour_file_option.lower()
 

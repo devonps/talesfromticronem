@@ -28,6 +28,7 @@ def game_loop(gameworld):
     playing_game = True
     current_scene = 1
     current_turn = 0
+    player_died = False
 
     spell_bar_keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
     movement_actions = ['left', 'right', 'up', 'down']
@@ -119,6 +120,7 @@ def game_loop(gameworld):
         current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=player)
         if current_health <=0:
             playing_game = False
+            player_died = True
         else:
             # process all intended actions
             gameworld.process(game_config, advance_game_turn)
@@ -127,9 +129,10 @@ def game_loop(gameworld):
         terminal.refresh()
 
     # player has died or quit the game
-    current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=player)
-    if current_health <= 0:
+    if player_died:
         logger.debug('Player Died - display Game Over Screen')
+        terminal.clear()
+        newGame.new_game()
     else:
         logger.debug('Player Quit - display something else')
     raise SystemExit()

@@ -41,7 +41,7 @@
      {
       "name": "Charles",
       "race": "eskeri",
-      "class": "druid",
+      "class": "illusionist",
       "description": "Do you want armour",
       "ai": "master",
       "glyph": "c",
@@ -60,7 +60,7 @@
      {
       "name": "David",
       "race": "eskeri",
-      "class": "druid",
+      "class": "elementalist",
       "description": "Do you like jewellery",
       "ai": "master",
       "glyph": "d",
@@ -79,7 +79,7 @@
      {
       "name": "Arnie",
       "race": "eskeri",
-      "class": "druid",
+      "class": "chronomancer",
       "description": "You wanna fight",
       "ai": "master",
       "glyph": "z",

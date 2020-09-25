@@ -49,7 +49,7 @@
       "rod": "true",
       "focus": "true"
     },
-    "health": "28"
+    "health": "1"
   },
   {
     "name": "witchdoctor",
@@ -100,7 +100,7 @@
       "rod": "true",
       "focus": "true"
     },
-    "health": "28"
+    "health": "2"
   },
   {
     "name": "druid",
@@ -151,7 +151,7 @@
       "rod": "true",
       "focus": "false"
     },
-    "health": "20"
+    "health": "3"
   },
   {
     "name": "illusionist",
@@ -202,7 +202,7 @@
       "rod": "true",
       "focus": "true"
     },
-    "health": "20"
+    "health": "4"
   },
   {
     "name": "elementalist",
@@ -253,7 +253,7 @@
     "rod": "false",
     "focus": "true"
   },
-  "health": "15"
+  "health": "5"
   },
   {
   "name": "chronomancer",
@@ -304,7 +304,7 @@
     "rod": "true",
     "focus": "false"
   },
-  "health": "15"
+  "health": "6"
   }
 ]
 }
