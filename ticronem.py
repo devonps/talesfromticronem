@@ -1,5 +1,6 @@
 from bearlibterminal import terminal
 
+from components import mobiles
 from enemyRelated.statelessAI import StatelessAI
 from newGame.initialiseNewGame import setup_gameworld
 from ui.swap_spells_or_items import swap_spells
@@ -18,7 +19,6 @@ from ui.items_and_spells_info_panel import display_spell_info_popup
 
 
 def game_loop(gameworld):
-
     # turn zero setup
     game_config = configUtilities.load_config()
     player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
@@ -36,7 +36,8 @@ def game_loop(gameworld):
     player_name = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player)
     player_race = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
     player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player)
-    CommonUtils.fire_event("new-game", gameworld=gameworld, player_name=player_name[0], player_class=player_class, player_race=player_race[3])
+    CommonUtils.fire_event("new-game", gameworld=gameworld, player_name=player_name[0], player_class=player_class,
+                           player_race=player_race[3])
 
     # call scene manager
     game_map = SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)
@@ -77,7 +78,7 @@ def game_loop(gameworld):
                 value = 'exit:true'
                 ReplayGame.update_game_replay_file(game_config, value)
                 # Externalfiles.write_full_game_log(gameworld=gameworld, log_id=message_log_id)
-                raise SystemExit()
+                playing_game = False
             if event_action in movement_actions:
                 MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=player, direction=event_action, speed=1)
                 advance_game_turn = True
@@ -99,29 +100,46 @@ def game_loop(gameworld):
             swap_spells(gameworld=gameworld, player_entity=player, key_pressed=event_action)
             advance_game_turn = True
         if event_to_be_processed == 'mouseleftbutton':
-            Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords_clicked=event_action, game_map=game_map)
+            Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords_clicked=event_action,
+                             game_map=game_map)
             advance_game_turn = False
+        if event_to_be_processed == 'death':
+            gameworld.component_for_entity(player, mobiles.DerivedAttributes).current_health = -1
+            advance_game_turn = True
 
         if advance_game_turn:
             #
             # get monsters intended action
             #
-            StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player, game_map=game_map)
+            StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player,
+                                     game_map=game_map)
             current_turn += 1
             MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
-        # process all intended actions
-        gameworld.process(game_config, advance_game_turn)
+
+        current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=player)
+        if current_health <=0:
+            playing_game = False
+        else:
+            # process all intended actions
+            gameworld.process(game_config, advance_game_turn)
 
         # blit the console
         terminal.refresh()
 
+    # player has died or quit the game
+    current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=player)
+    if current_health <= 0:
+        logger.debug('Player Died - display Game Over Screen')
+    else:
+        logger.debug('Player Quit - display something else')
+    raise SystemExit()
+
+
 @logger.catch()
 def main():
-
     terminal.open()
     newGame.new_game()
 
 
 if __name__ == '__main__':
     main()
-
