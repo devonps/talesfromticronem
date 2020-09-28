@@ -141,6 +141,10 @@ def handle_game_keys():
         myevent = 'chat'
         action = 'T'
 
+    if key == terminal.TK_W:
+        myevent = 'keypress'
+        action = 'W'
+
     if key == terminal.TK_Z:
         myevent = 'death'
         action = 'Z'
