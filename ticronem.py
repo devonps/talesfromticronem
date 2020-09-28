@@ -130,7 +130,7 @@ def game_loop(gameworld):
         terminal.refresh()
 
     # player has died or quit the game
-    GameOver.process_game_over(player_died=player_died)
+    GameOver.process_game_over(player_died=player_died, gameworld=gameworld)
     raise SystemExit()
 
 
