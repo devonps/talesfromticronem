@@ -3,6 +3,7 @@ from bearlibterminal import terminal
 from components import mobiles
 from enemyRelated.statelessAI import StatelessAI
 from newGame.initialiseNewGame import setup_gameworld
+from newGame.GameOver import GameOver
 from ui.swap_spells_or_items import swap_spells
 from utilities.dialogUtilities import initiate_dialog
 from utilities.mobileHelp import MobileUtilities
@@ -129,12 +130,7 @@ def game_loop(gameworld):
         terminal.refresh()
 
     # player has died or quit the game
-    if player_died:
-        logger.debug('Player Died - display Game Over Screen')
-        terminal.clear()
-        newGame.new_game()
-    else:
-        logger.debug('Player Quit - display something else')
+    GameOver.process_game_over(player_died=player_died)
     raise SystemExit()
 
 
