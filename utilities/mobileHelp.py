@@ -875,8 +875,13 @@ class MobileUtilities(numbers.Real, ABC):
         class_base_health = entity_class_component.base_health
 
         vitality_calculated_health = vitality_value * 10
+        logger.debug('------ SETTING HEALTH -------')
+        logger.debug('Class base health is {}', class_base_health)
+        logger.debug('Vitality value is {}', vitality_value)
+        logger.debug('Calculated vitality is {}', vitality_calculated_health)
 
         health_value = vitality_calculated_health + class_base_health
+        logger.debug('Final health for character is {}', health_value)
         gameworld.component_for_entity(entity, mobiles.DerivedAttributes).maximum_health = health_value
 
     @staticmethod

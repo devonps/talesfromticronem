@@ -50,11 +50,9 @@ class UpdateEntitiesProcessor(esper.Processor):
     def entity_is_dead(self, dead_entity_id):
 
         # gather equipped items
-        equipped_armour = MobileUtilities.get_full_armourset_ids_from_entity(gameworld=self.gameworld, entity=dead_entity_id)
-        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=self.gameworld, mobile=dead_entity_id)
-        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=dead_entity_id)
 
         # pick some random equipment to drop on to the game map
+        logger.warning('An entity is dead')
 
         # And finally delete the entity + ALL associated components
         world.delete_entity(gameworld=self.gameworld, entity=dead_entity_id)

@@ -119,7 +119,7 @@ def game_loop(gameworld):
             MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
 
         current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=player)
-        if current_health <=0:
+        if current_health <= 0:
             playing_game = False
             player_died = True
         else:

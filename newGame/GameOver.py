@@ -3,7 +3,9 @@ from loguru import logger
 
 from utilities import configUtilities
 from utilities.common import CommonUtils
+from utilities.display import get_head_armour_details
 from utilities.input_handlers import handle_game_keys
+from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
 
 
@@ -138,6 +140,10 @@ class GameOver:
                                                                             section='gameOver',
                                                                             parameter='GO_EQUIP_TAB_WIDTH')
 
+        equipped_armour = MobileUtilities.get_full_armourset_ids_from_entity(gameworld=gameworld, entity=player_entity)
+        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=player_entity)
+        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
+
         # the thing that killed the player
         terminal.printf(x=killed_by_x, y=killed_by_y, s='You died of poisoning!')
 
@@ -248,33 +254,42 @@ class GameOver:
         GameOver.ep_tab_display(visible_panel=visible_panel, unicode_string_to_print=unicode_string_to_print, message_panel_vertical=equipment_panel_vertical, message_panel_bottom_left_corner=equipment_panel_bottom_left_corner, message_panel_bottom_right_corner=equipment_panel_bottom_right_corner)
 
         # display items
-        GameOver.display_equipment(visible_panel=visible_panel, equipment_panel_item_x=equipment_panel_item_x, equipment_panel_item_y=equipment_panel_item_y)
+        GameOver.display_equipment(visible_panel=visible_panel, equipment_panel_item_x=equipment_panel_item_x, equipment_panel_item_y=equipment_panel_item_y, equipped_armour=equipped_armour, equipped_jewellery=equipped_jewellery, equipped_weapons=equipped_weapons, gameworld=gameworld)
 
 
     @staticmethod
-    def display_equipment(visible_panel, equipment_panel_item_x, equipment_panel_item_y):
+    def display_equipment(visible_panel, equipment_panel_item_x, equipment_panel_item_y, equipped_armour, equipped_jewellery, equipped_weapons, gameworld):
         if visible_panel == 0:
-            GameOver.display_equipped_armour(posx=equipment_panel_item_x, posy=equipment_panel_item_y)
+            GameOver.display_equipped_armour(posx=equipment_panel_item_x, posy=equipment_panel_item_y, equipped_armour=equipped_armour, gameworld=gameworld)
         if visible_panel == 1:
-            GameOver.display_equipped_jewellery(posx=equipment_panel_item_x, posy=equipment_panel_item_y)
+            GameOver.display_equipped_jewellery(posx=equipment_panel_item_x, posy=equipment_panel_item_y, equipped_jewellery=equipped_jewellery, gameworld=gameworld)
 
         if visible_panel == 2:
-            GameOver.display_equipped_weapons(posx=equipment_panel_item_x, posy=equipment_panel_item_y)
+            GameOver.display_equipped_weapons(posx=equipment_panel_item_x, posy=equipment_panel_item_y, equipped_weapons=equipped_weapons, gameworld=gameworld)
 
     @staticmethod
-    def display_equipped_armour(posx, posy):
-        for a in range(5):
-            terminal.printf(x=posx, y=posy + a, s='Armour ' + str(a))
+    def display_equipped_armour(posx, posy, equipped_armour, gameworld):
+        for armour_entity in range(len(equipped_armour)):
+            armour_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=equipped_armour[armour_entity])
+            terminal.print_(x=posx, y=posy, s=armour_piece_name)
+            posy += 1
 
     @staticmethod
-    def display_equipped_jewellery(posx, posy):
-        for a in range(5):
-            terminal.printf(x=posx, y=posy + a, s='Jewellery ' + str(a))
+    def display_equipped_jewellery(posx, posy, equipped_jewellery, gameworld):
+        for jewellery_entity in range(len(equipped_jewellery)):
+            jewellery_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld,
+                                                                   entity=equipped_jewellery[jewellery_entity])
+            terminal.print_(x=posx, y=posy, s=jewellery_piece_name)
+            posy += 1
 
     @staticmethod
-    def display_equipped_weapons(posx, posy):
-        for a in range(2):
-            terminal.printf(x=posx, y=posy + a, s='Weapon ' + str(a))
+    def display_equipped_weapons(posx, posy, equipped_weapons, gameworld):
+        for weapon_entity in range(len(equipped_weapons)):
+            if equipped_weapons[weapon_entity] > 0:
+                weapon_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld,
+                                                                       entity=equipped_weapons[weapon_entity])
+                terminal.print_(x=posx, y=posy, s=weapon_piece_name)
+                posy += 1
 
 
 
