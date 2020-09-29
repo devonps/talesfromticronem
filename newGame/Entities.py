@@ -112,7 +112,7 @@ class Entity:
 
                         left_ear = jewellery_list[0]
                         right_ear = jewellery_list[1]
-                        neck_entity = jewellery_list[4]
+                        neck_entity = jewellery_list[2]
 
                         # get spell entity from that piece of jewellery
                         sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=neck_entity)

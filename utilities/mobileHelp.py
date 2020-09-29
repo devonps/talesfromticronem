@@ -632,11 +632,23 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def get_jewellery_already_equipped(gameworld, mobile):
-        equipped = [gameworld.component_for_entity(mobile, mobiles.Jewellery).left_ear,
-                    gameworld.component_for_entity(mobile, mobiles.Jewellery).right_ear,
-                    gameworld.component_for_entity(mobile, mobiles.Jewellery).left_hand,
-                    gameworld.component_for_entity(mobile, mobiles.Jewellery).right_hand,
-                    gameworld.component_for_entity(mobile, mobiles.Jewellery).neck]
+        equipped = []
+
+        lear = gameworld.component_for_entity(mobile, mobiles.Jewellery).left_ear
+        if lear > 0:
+            equipped.append(lear)
+        rear = gameworld.component_for_entity(mobile, mobiles.Jewellery).right_ear
+        if rear > 0:
+            equipped.append(rear)
+        lhand = gameworld.component_for_entity(mobile, mobiles.Jewellery).left_hand
+        if lhand > 0:
+            equipped.append(lhand)
+        rhand = gameworld.component_for_entity(mobile, mobiles.Jewellery).right_hand
+        if rhand > 0:
+            equipped.append(rhand)
+        neck = gameworld.component_for_entity(mobile, mobiles.Jewellery).neck
+        if neck > 0:
+            equipped.append(neck)
 
         return equipped
 

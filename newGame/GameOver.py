@@ -269,27 +269,36 @@ class GameOver:
 
     @staticmethod
     def display_equipped_armour(posx, posy, equipped_armour, gameworld):
-        for armour_entity in range(len(equipped_armour)):
-            armour_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=equipped_armour[armour_entity])
-            terminal.print_(x=posx, y=posy, s=armour_piece_name)
-            posy += 1
+        if len(equipped_armour) > 0:
+            for armour_entity in range(len(equipped_armour)):
+                armour_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=equipped_armour[armour_entity])
+                terminal.print_(x=posx, y=posy, s=armour_piece_name)
+                posy += 1
+        else:
+            terminal.print_(x=posx, y=posy, s='No armour equipped')
 
     @staticmethod
     def display_equipped_jewellery(posx, posy, equipped_jewellery, gameworld):
-        for jewellery_entity in range(len(equipped_jewellery)):
-            jewellery_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld,
-                                                                   entity=equipped_jewellery[jewellery_entity])
-            terminal.print_(x=posx, y=posy, s=jewellery_piece_name)
-            posy += 1
+        if len(equipped_jewellery) > 0:
+            for jewellery_entity in range(len(equipped_jewellery)):
+                jewellery_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld,
+                                                                       entity=equipped_jewellery[jewellery_entity])
+                terminal.print_(x=posx, y=posy, s=jewellery_piece_name)
+                posy += 1
+        else:
+            terminal.print_(x=posx, y=posy, s='No jewellery equipped')
 
     @staticmethod
     def display_equipped_weapons(posx, posy, equipped_weapons, gameworld):
-        for weapon_entity in range(len(equipped_weapons)):
-            if equipped_weapons[weapon_entity] > 0:
-                weapon_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld,
-                                                                       entity=equipped_weapons[weapon_entity])
-                terminal.print_(x=posx, y=posy, s=weapon_piece_name)
-                posy += 1
+        if len(equipped_weapons) > 0:
+            for weapon_entity in range(len(equipped_weapons)):
+                if equipped_weapons[weapon_entity] > 0:
+                    weapon_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld,
+                                                                           entity=equipped_weapons[weapon_entity])
+                    terminal.print_(x=posx, y=posy, s=weapon_piece_name)
+                    posy += 1
+        else:
+            terminal.print_(x=posx, y=posy, s='No weapons equipped')
 
 
 

@@ -34,6 +34,13 @@ class CharacterCreation:
         logger.debug('Creating the player character entity')
         player = MobileUtilities.get_next_entity_id(gameworld=gameworld)
         MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player)
+        equipped_armour = MobileUtilities.get_full_armourset_ids_from_entity(gameworld=gameworld, entity=player)
+        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=player)
+        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
+        logger.warning('Jewellery Equipped is {}', equipped_jewellery)
+        logger.warning('Weapons Equipped is {}', equipped_weapons)
+        logger.warning('Armour Equipped is {}', equipped_armour)
+
         MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config,
                                                 player_entity=player)
         logger.info('Player character stored as entity {}', player)
@@ -43,7 +50,6 @@ class CharacterCreation:
             race_size=race_size, bg=race_bg_colour, race_names=race_name_desc)
 
         # create class
-
         MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player, selected_class=class_selected,
                                                health=class_health, spellfile=class_spell_file)
 
@@ -400,6 +406,7 @@ class CharacterCreation:
         spell_list = SpellUtilities.get_list_of_spells_for_enemy(gameworld=gameworld, weapon_type=weapon_to_be_created,
                                                                  mobile_class=player_class)
         WeaponUtilities.load_player_spellbar_from_weapons(gameworld=gameworld, weapon_type=weapon_to_be_created, spell_list=spell_list, player_entity=player)
+
 
     @staticmethod
     def character_naming(gameworld, game_config):
