@@ -151,30 +151,11 @@ class GameOver:
         terminal.printf(x=died_when_x, y=died_when_y, s='At the time of your death...')
 
         # condis attached
-        current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=player_entity)
-        condi_string = 'You were suffering from '
-        if len(current_condis) > 0:
-            for condi in range(len(current_condis)):
-                if (condi + 1) < len(current_condis):
-                    condi_string += current_condis['name'] + ', '
-                else:
-                    condi_string += 'and ' + current_condis[condi] + '.'
-        else:
-            condi_string += 'no conditions, lucky you!'
-
+        condi_string = GameOver.format_condi_string(gameworld=gameworld, player_entity=player_entity)
         terminal.printf(x=condi_print_x, y=condi_print_y, s=condi_string)
 
         # boons attached
-        current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=player_entity)
-        boon_string = 'You benefited from '
-        if len(current_boons) > 0:
-            for boon in range(len(current_boons)):
-                if (boon + 1) < len(current_boons):
-                    boon_string += current_boons['name'] + ', '
-                else:
-                    boon_string += 'and ' + current_boons[boon] + '.'
-        else:
-            boon_string += 'absolutely nothing.'
+        boon_string = GameOver.format_boon_string(gameworld=gameworld, player_entity=player_entity)
 
         terminal.printf(x=boon_print_x, y=boon_print_y, s=boon_string)
 
@@ -252,7 +233,42 @@ class GameOver:
 
 
     @staticmethod
+    def format_condi_string(gameworld, player_entity):
+        current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=player_entity)
+        condi_string = 'You were suffering from '
+        if len(current_condis) > 0:
+            for condi in range(len(current_condis)):
+                if (condi + 1) < len(current_condis):
+                    condi_string += current_condis['name'] + ', '
+                else:
+                    condi_string += 'and ' + current_condis[condi] + '.'
+        else:
+            condi_string += 'no conditions, lucky you!'
+
+        return condi_string
+
+    @staticmethod
+    def format_boon_string(gameworld, player_entity):
+        current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=player_entity)
+        boon_string = 'You benefited from '
+        if len(current_boons) > 0:
+            for boon in range(len(current_boons)):
+                if (boon + 1) < len(current_boons):
+                    boon_string += current_boons['name'] + ', '
+                else:
+                    boon_string += 'and ' + current_boons[boon] + '.'
+        else:
+            boon_string += 'absolutely nothing.'
+
+        return boon_string
+
+    @staticmethod
     def display_equipment(visible_panel, equipment_panel_item_x, equipment_panel_item_y, equipped_armour, equipped_jewellery, equipped_weapons, gameworld):
+        posy = equipment_panel_item_y
+        string_space = ' ' * 30
+        for _ in range(5):
+            terminal.print_(x=equipment_panel_item_x, y=posy, s=string_space)
+            posy += 1
         if visible_panel == 0:
             GameOver.display_equipped_armour(posx=equipment_panel_item_x, posy=equipment_panel_item_y, equipped_armour=equipped_armour, gameworld=gameworld)
         if visible_panel == 1:
@@ -289,6 +305,7 @@ class GameOver:
                 if equipped_weapons[weapon_entity] > 0:
                     weapon_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld,
                                                                            entity=equipped_weapons[weapon_entity])
+
                     terminal.print_(x=posx, y=posy, s=weapon_piece_name)
                     posy += 1
         else:
