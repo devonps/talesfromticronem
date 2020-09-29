@@ -154,14 +154,11 @@ class GameOver:
         current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=player_entity)
         condi_string = 'You were suffering from '
         if len(current_condis) > 0:
-            condi_count = 0
-            max_condi = len(current_condis)
-            for condi in current_condis:
-                condi_string += condi['name']
-                if condi_count + 1 < max_condi:
-                    condi_string += ', '
+            for condi in range(len(current_condis)):
+                if (condi + 1) < len(current_condis):
+                    condi_string += current_condis['name'] + ', '
                 else:
-                    condi_string += ', and '
+                    condi_string += 'and ' + current_condis[condi] + '.'
         else:
             condi_string += 'no conditions, lucky you!'
 
@@ -170,15 +167,12 @@ class GameOver:
         # boons attached
         current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=player_entity)
         boon_string = 'You benefited from '
-        max_boon = len(current_boons)
-        if max_boon > 0:
-            boon_count = 0
-            for boon in current_boons:
-                boon_string += boon['name']
-                if boon_count + 1 < max_boon:
-                    boon_string += ', '
+        if len(current_boons) > 0:
+            for boon in range(len(current_boons)):
+                if (boon + 1) < len(current_boons):
+                    boon_string += current_boons['name'] + ', '
                 else:
-                    boon_string += ', and '
+                    boon_string += 'and ' + current_boons[boon] + '.'
         else:
             boon_string += 'absolutely nothing.'
 
