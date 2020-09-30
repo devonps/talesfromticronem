@@ -5,6 +5,7 @@ from utilities import configUtilities, formulas
 from utilities.common import CommonUtils
 from utilities.gamemap import GameMapUtilities
 from utilities.mobileHelp import MobileUtilities
+from utilities.scorekeeper import ScorekeeperUtilities
 from utilities.spellHelp import SpellUtilities
 
 
@@ -35,7 +36,7 @@ class StatelessAI:
         mobile_ai_level = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
                                                                       parameter='AI_LEVEL_MONSTER')
 
-        current_turn = MobileUtilities.get_current_turn(gameworld=gameworld, entity=player_entity)
+        current_turn = ScorekeeperUtilities.get_current_turn_id(gameworld=gameworld)
 
         for ent, ai in gameworld.get_component(mobiles.AI):
             entity_ai = MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=ent)

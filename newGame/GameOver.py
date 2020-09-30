@@ -3,10 +3,10 @@ from loguru import logger
 
 from utilities import configUtilities
 from utilities.common import CommonUtils
-from utilities.display import get_head_armour_details
 from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
+from utilities.scorekeeper import ScorekeeperUtilities
 
 
 class GameOver:
@@ -22,6 +22,7 @@ class GameOver:
         if player_died:
             logger.debug('Player Died - display Game Over Screen')
             GameOver.display_killed_by_information(game_config=game_config, gameworld=gameworld, player_entity=player_entity, visible_panel=visible_panel)
+            GameOver.display_end_game_key_statistics(gameworld=gameworld)
         else:
             logger.debug('Player Quit - display something else')
 
@@ -40,7 +41,13 @@ class GameOver:
 
             GameOver.display_killed_by_information(game_config=game_config, gameworld=gameworld,
                                                    player_entity=player_entity, visible_panel=visible_panel)
+            GameOver.display_end_game_key_statistics(gameworld=gameworld)
             terminal.refresh()
+
+    @staticmethod
+    def display_end_game_key_statistics(gameworld):
+        current_turn = ScorekeeperUtilities.get_current_turn_id(gameworld=gameworld)
+        terminal.print_(x=25, y=30, s='You died on turn ' + str(current_turn))
 
     @staticmethod
     def display_game_over_screen(game_config):
@@ -310,9 +317,6 @@ class GameOver:
                     posy += 1
         else:
             terminal.print_(x=posx, y=posy, s='No weapons equipped')
-
-
-
 
     @staticmethod
     def ep_tab_display(visible_panel, unicode_string_to_print, message_panel_vertical, message_panel_bottom_left_corner, message_panel_bottom_right_corner):

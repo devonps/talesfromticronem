@@ -1,6 +1,6 @@
 import random
 
-from components import mobiles
+from components import mobiles, scorekeeper
 from newGame.CreateSpells import AsEntities
 from newGame.Items import ItemManager
 from utilities import configUtilities, colourUtilities
@@ -39,8 +39,6 @@ class Entity:
     def create_named_mobile(npcs_for_scene, posx, posy, cellid, gameworld, game_config):
         entity_id = Entity.create_new_entity(gameworld=gameworld)
 
-        equipped_weapons = False
-
         for npc in npcs_for_scene:
             identifer = npc['identifier']
             if identifer == cellid:
@@ -67,8 +65,7 @@ class Entity:
                         weapon_file_option_off = npc['weapons-off']
                         weapon_file_option_both = npc['weapons-both']
 
-                        if weapon_file_option_both != '' or weapon_file_option_main != '' or weapon_file_option_off != '':
-                            equipped_weapons = True
+                        equipped_weapons = Entity.are_weapons_equipped(both_hands=weapon_file_option_both, main_hand=weapon_file_option_main, off_hand=weapon_file_option_off)
 
                         logger.warning('--- CREATING NEW MOBILE ---')
                         # -------------------------------------
@@ -80,9 +77,6 @@ class Entity:
                         # --- CHOOSE NAME ---------------------
                         # -------------------------------------
                         Entity.choose_name_for_mobile(name_choice=npc_name, entity_id=entity_id, gameworld=gameworld)
-                        if npc_name == 'Joe':
-                            gameworld.add_component(entity_id, mobiles.DialogFlags(welcome=True))
-                            MobileUtilities.set_talk_to_me_flag(gameworld=gameworld, target_entity=entity_id)
 
                         # -------------------------------------
                         # --- CHOOSE CLASS --------------------
@@ -158,14 +152,12 @@ class Entity:
                         # -------------------------------------
                         # --- SHOPKEEPER ? --------------------
                         # -------------------------------------
-                        if npc_shopkeeper == 'True':
-                            MobileUtilities.set_type_of_shopkeeper(gameworld=gameworld, target_entity=entity_id, shopkeeper_type=npc['type_of_shopkeeper'])
+                        Entity.is_npc_a_shopkeeper(gameworld=gameworld, entity_id=entity_id, npc_shopkeeper=npc_shopkeeper, shopkeeper_type=npc['type_of_shopkeeper'])
 
                         # -------------------------------------
                         # --- TUTOR ? -------------------------
                         # -------------------------------------
-                        if npc_tutor == 'True':
-                            MobileUtilities.set_type_of_tutor(gameworld=gameworld, target_entity=entity_id, tutor_type=npc['type_of_tutor'])
+                        Entity.is_npc_a_tutor(gameworld=gameworld, entity_id=entity_id, npc_tutor=npc_tutor, tutor_type=npc['type_of_tutor'])
 
                         # now apply the values to the base mobile object
                         Entity.set_min_max_preferred_ranges(entity_id=entity_id, min_range='TOUCH',
@@ -188,6 +180,25 @@ class Entity:
                         MobileUtilities.set_mobile_derived_attributes(gameworld=gameworld, entity=entity_id)
                         logger.warning('--- NEW MOBILE CREATED ---')
         return entity_id
+
+    @staticmethod
+    def is_npc_a_tutor(gameworld, entity_id, npc_tutor, tutor_type):
+        if npc_tutor == 'True':
+            MobileUtilities.set_type_of_tutor(gameworld=gameworld, target_entity=entity_id,
+                                              tutor_type=tutor_type)
+
+    @staticmethod
+    def is_npc_a_shopkeeper(gameworld, entity_id, npc_shopkeeper, shopkeeper_type):
+        if npc_shopkeeper == 'True':
+            MobileUtilities.set_type_of_shopkeeper(gameworld=gameworld, target_entity=entity_id,
+                                                   shopkeeper_type=shopkeeper_type)
+
+    @staticmethod
+    def are_weapons_equipped(both_hands, main_hand, off_hand):
+        equipped_weapons = False
+        if both_hands != '' or main_hand != '' or off_hand != '':
+            equipped_weapons = True
+        return equipped_weapons
 
     @staticmethod
     def create_enemy_role(gameworld, game_config, posx, posy, enemy_role):
@@ -323,6 +334,10 @@ class Entity:
 
         logger.info('Their name is {}', first_name)
         MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=entity_id, name=first_name)
+
+        if name_choice == 'Joe':
+            gameworld.add_component(entity_id, mobiles.DialogFlags(welcome=True))
+            MobileUtilities.set_talk_to_me_flag(gameworld=gameworld, target_entity=entity_id)
 
     @staticmethod
     def choose_race_for_mobile(race_choice, entity_id, game_config, gameworld):
@@ -648,3 +663,13 @@ class Entity:
         MobileUtilities.equip_weapon(gameworld=gameworld, entity=entity_id, weapon=created_weapon_entity,
                                      hand=hand_to_wield)
         return created_weapon_entity
+
+    @staticmethod
+    def create_scorekeeper_entity(gameworld):
+        scorekeeper_entity = Entity.create_new_entity(gameworld=gameworld)
+
+        logger.debug('===----- Creating scorekeeper -----===')
+        logger.debug('Scorekeeper entity id {}', scorekeeper_entity)
+        gameworld.add_component(scorekeeper_entity, scorekeeper.NumberOfTurns())
+        gameworld.add_component(scorekeeper_entity, scorekeeper.ScoreKeeperFlag(sc_flag=True))
+        logger.debug('===----- Scorekeeper: now created-----===')

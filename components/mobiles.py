@@ -7,11 +7,6 @@ class Viewport:
         self.posy = posy
 
 
-class CurrentTurn:
-    def __init__(self, current_turn=0):
-        self.current_turn = current_turn
-
-
 class MessageLog:
     def __init__(self, entity_id=0, message_log_change=False):
         self.entity_id = entity_id

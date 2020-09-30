@@ -15,6 +15,7 @@ from gameworld.sceneManager import SceneManager
 from newGame import newGame
 from utilities.common import CommonUtils
 from ui.debug import Debug
+from utilities.scorekeeper import ScorekeeperUtilities
 from utilities.spellHelp import SpellUtilities
 from ui.items_and_spells_info_panel import display_spell_info_popup
 
@@ -28,7 +29,6 @@ def game_loop(gameworld):
 
     playing_game = True
     current_scene = 1
-    current_turn = 0
     player_died = False
 
     spell_bar_keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
@@ -49,8 +49,8 @@ def game_loop(gameworld):
     gameworld.process(game_config, advance_game_turn)
     # blit the console
     terminal.refresh()
-    current_turn += 1
-    MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
+    ScorekeeperUtilities.increase_game_turn_count(gameworld=gameworld)
+    # MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
 
     while playing_game:
         #
@@ -115,8 +115,7 @@ def game_loop(gameworld):
             #
             StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player,
                                      game_map=game_map)
-            current_turn += 1
-            MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
+            ScorekeeperUtilities.increase_game_turn_count(gameworld=gameworld)
 
         current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=player)
         if current_health <= 0:

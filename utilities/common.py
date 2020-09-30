@@ -6,6 +6,7 @@ from utilities import configUtilities, jsonUtilities, colourUtilities
 from components import messages
 from utilities.display import draw_simple_frame
 from utilities.mobileHelp import MobileUtilities
+from utilities.scorekeeper import ScorekeeperUtilities
 
 
 class CommonUtils:
@@ -89,7 +90,7 @@ class CommonUtils:
         game_config = configUtilities.load_config()
         player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         message_log_entity = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
-        current_turn = MobileUtilities.get_current_turn(gameworld=gameworld, entity=player)
+        current_turn = ScorekeeperUtilities.get_current_turn_id(gameworld=gameworld)
         formatted_turn_number = CommonUtils.format_number_as_string(base_number=current_turn, base_string='00000')
 
         new_string = ''

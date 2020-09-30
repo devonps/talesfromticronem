@@ -4,6 +4,7 @@ from bearlibterminal import terminal
 
 from loguru import logger
 
+from newGame.Entities import Entity
 from newGame.Items import ItemManager
 from utilities import configUtilities, colourUtilities
 from utilities.armourManagement import ArmourUtilities
@@ -59,6 +60,9 @@ class CharacterCreation:
         CommonUtils.create_message_log_as_entity(gameworld=gameworld, log_entity=messagelog_entity)
         MobileUtilities.set_MessageLog_for_player(gameworld=gameworld, entity=player, logid=messagelog_entity)
         logger.info('Mesage log stored as entity {}', messagelog_entity)
+
+        # create the scorekeeper
+        Entity.create_scorekeeper_entity(gameworld=gameworld)
         game_loop(gameworld=gameworld)
 
     @staticmethod

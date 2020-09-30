@@ -451,7 +451,6 @@ class MobileUtilities(numbers.Real, ABC):
 
         gameworld.add_component(player_entity,
                                 mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
-        gameworld.add_component(player_entity, mobiles.CurrentTurn(current_turn=0))
         gameworld.add_component(player_entity, mobiles.Name(first='', suffix=''))
         gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai, description='player'))
         gameworld.add_component(player_entity, mobiles.SpellBar(entity_id=0))
@@ -986,11 +985,3 @@ class MobileUtilities(numbers.Real, ABC):
     def get_current_controls_applied_to_mobile(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.StatusEffects).controls
 
-    @staticmethod
-    def set_current_turn(gameworld, thisturn, entity):
-        current_turn_component = gameworld.component_for_entity(entity, mobiles.CurrentTurn)
-        current_turn_component.current_turn = thisturn
-
-    @staticmethod
-    def get_current_turn(gameworld, entity):
-        return gameworld.component_for_entity(entity, mobiles.CurrentTurn).current_turn
