@@ -22,7 +22,7 @@ class GameOver:
         if player_died:
             logger.debug('Player Died - display Game Over Screen')
             GameOver.display_killed_by_information(game_config=game_config, gameworld=gameworld, player_entity=player_entity, visible_panel=visible_panel)
-            GameOver.display_end_game_key_statistics(gameworld=gameworld)
+            GameOver.display_end_game_key_statistics(gameworld=gameworld, game_config=game_config)
         else:
             logger.debug('Player Quit - display something else')
 
@@ -41,13 +41,17 @@ class GameOver:
 
             GameOver.display_killed_by_information(game_config=game_config, gameworld=gameworld,
                                                    player_entity=player_entity, visible_panel=visible_panel)
-            GameOver.display_end_game_key_statistics(gameworld=gameworld)
             terminal.refresh()
 
     @staticmethod
-    def display_end_game_key_statistics(gameworld):
+    def display_end_game_key_statistics(gameworld, game_config):
+        turn_killed_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
+                                                                  parameter='GO_STATS_POS_X')
+        turn_killed_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
+                                                                  parameter='GO_STATS_POS_Y')
+
         current_turn = ScorekeeperUtilities.get_current_turn_id(gameworld=gameworld)
-        terminal.print_(x=25, y=30, s='You died on turn ' + str(current_turn))
+        terminal.print_(x=turn_killed_x, y=turn_killed_y, s='You died on turn ' + str(current_turn))
 
     @staticmethod
     def display_game_over_screen(game_config):
