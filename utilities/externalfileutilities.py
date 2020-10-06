@@ -16,7 +16,7 @@ class Externalfiles:
 
     @staticmethod
     def create_new_file(filename):
-        fileobject = open(filename, 'w')
+        fileobject = open(filename, 'w+')
         return fileobject
 
     @staticmethod
