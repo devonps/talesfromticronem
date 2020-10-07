@@ -8,20 +8,20 @@ def read_name_file(file_to_read):
 
 
 def process_name_file(name_file):
-    syllablesStart_string = ''
-    syllablesMiddle_string = ''
-    syllablesEnd_string = ''
+    syllables_start_string = ''
+    syllables_middle_string = ''
+    syllables_end_string = ''
     rules_string = ''
 
     for namegen in name_file['male']:
-        syllablesStart_string = namegen['syllablesStart']
-        syllablesMiddle_string = namegen['syllablesMiddle']
-        syllablesEnd_string = namegen['syllablesEnd']
+        syllables_start_string = namegen['syllablesStart']
+        syllables_middle_string = namegen['syllablesMiddle']
+        syllables_end_string = namegen['syllablesEnd']
         rules_string = namegen['rules']
 
-    syllables_start = syllablesStart_string.split(',')
-    syllables_middle = syllablesMiddle_string.split(',')
-    syllables_end = syllablesEnd_string.split(',')
+    syllables_start = syllables_start_string.split(',')
+    syllables_middle = syllables_middle_string.split(',')
+    syllables_end = syllables_end_string.split(',')
     rules = rules_string.split('$')
 
     mega_list = [syllables_start, syllables_middle, syllables_end, rules]
@@ -53,13 +53,13 @@ def generate_name(name_components):
             # use a middle syllable
             sm_len = len(syllables_middle)
             random_syllable_index = random_range.get_next_uint(bound=sm_len)
-            logger.warning('Random start syllable is {}', syllables_middle[random_syllable_index])
+            logger.warning('Random middle syllable is {}', syllables_middle[random_syllable_index])
             compiled_name += syllables_middle[random_syllable_index]
         if rule == 'e':
             # use an end syllable
             se_len = len(syllables_end)
             random_syllable_index = random_range.get_next_uint(bound=se_len)
-            logger.warning('Random start syllable is {}', syllables_end[random_syllable_index])
+            logger.warning('Random end syllable is {}', syllables_end[random_syllable_index])
             compiled_name += syllables_end[random_syllable_index]
 
     logger.warning('Compiled name is {}', compiled_name)
