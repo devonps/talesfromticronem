@@ -28,7 +28,7 @@ class UpdateEntitiesProcessor(esper.Processor):
 
                 for ent, ai in self.gameworld.get_component(mobiles.AI):
                     current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=self.gameworld, entity=ent)
-                    in_combat = MobileUtilities.get_combat_status(self.gameworld, entity=ent)
+
                     entity_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
 
                     logger.info('{}/s current health is {}', entity_names[0], current_health)
@@ -42,10 +42,13 @@ class UpdateEntitiesProcessor(esper.Processor):
                                          target_entity=ent)
                         # apply controls
                         # gain resources from spells
+                        self.check_for_combat(entity_id=ent)
 
-                        if not in_combat:
-                            ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=self.gameworld, entity=ent)
-                            MobileUtilities.set_mobile_derived_attributes(self.gameworld, entity=ent)
+    def check_for_combat(self, entity_id):
+        in_combat = MobileUtilities.get_combat_status(self.gameworld, entity=entity_id)
+        if not in_combat:
+            ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=self.gameworld, entity=entity_id)
+            MobileUtilities.set_mobile_derived_attributes(self.gameworld, entity=entity_id)
 
     def entity_is_dead(self, dead_entity_id):
 
