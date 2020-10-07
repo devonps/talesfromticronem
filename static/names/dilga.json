@@ -3,15 +3,15 @@
     {
       "syllablesStart": "Aen,Agno,All,Ba,Beo,Brig,Ci,Cre,Dan,Del,Ela,Eo,En,Er,Et,In,Io,Morr,Nem,Nu,Og,Or,Ta",
       "syllablesMiddle": "a,ar,ba,bo,ch,d,ig",
-      "syllablesEnd": "aid,ain,an,and,th,ed,eth,gus,lam,lor,man,od,t,thach",
+      "syllablesEnd": "ai,an,da,id,iu,ma,me,na,ne,tha",
       "rules": "$s$m$e"
     }
     ],
-    "female": [
-      {
+  "female": [
+    {
       "syllablesStart": "",
       "syllablesEnd": "",
       "rules": ""
-      }
-      ]
+    }
+    ]
 }

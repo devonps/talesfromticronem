@@ -30,6 +30,7 @@ def process_name_file(name_file):
 
 
 def generate_name(name_components):
+    formatted_name = ''
     syllables_start = name_components[0]
     syllables_middle = name_components[1]
     syllables_end = name_components[2]
@@ -47,21 +48,17 @@ def generate_name(name_components):
             # use a starting syllable
             ss_len = len(syllables_start)
             random_syllable_index = random_range.get_next_uint(bound=ss_len)
-            logger.warning('Random start syllable is {}', syllables_start[random_syllable_index])
             compiled_name += syllables_start[random_syllable_index]
         if rule == 'm':
             # use a middle syllable
             sm_len = len(syllables_middle)
             random_syllable_index = random_range.get_next_uint(bound=sm_len)
-            logger.warning('Random middle syllable is {}', syllables_middle[random_syllable_index])
             compiled_name += syllables_middle[random_syllable_index]
         if rule == 'e':
             # use an end syllable
             se_len = len(syllables_end)
             random_syllable_index = random_range.get_next_uint(bound=se_len)
-            logger.warning('Random end syllable is {}', syllables_end[random_syllable_index])
             compiled_name += syllables_end[random_syllable_index]
+            formatted_name = compiled_name.replace(" ", "")
 
-    logger.warning('Compiled name is {}', compiled_name)
-
-    return compiled_name
+    return formatted_name

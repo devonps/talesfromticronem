@@ -1,0 +1,17 @@
+{
+  "male": [
+    {
+      "syllablesStart": "A, Ann, Ash, E', En, Er, Gil, In, Ir, Ish, Mar, Ni, Nin, Re, Ti, Ur",
+      "syllablesMiddle": "am, an, du, esh, gam, gir, ka, ki, li, un, ur, ta",
+      "syllablesEnd": "aki, al, ar, at, du, eph, esh, il, im, ki, nu, uk, ur, uz",
+      "rules": "$s$m$e"
+    }
+    ],
+  "female": [
+    {
+      "syllablesStart": "",
+      "syllablesEnd": "",
+      "rules": ""
+    }
+    ]
+}
