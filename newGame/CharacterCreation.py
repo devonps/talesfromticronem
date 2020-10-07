@@ -6,7 +6,7 @@ from loguru import logger
 
 from newGame.Entities import Entity
 from newGame.Items import ItemManager
-from utilities import configUtilities, colourUtilities
+from utilities import configUtilities, colourUtilities, namegenUtilities
 from utilities.armourManagement import ArmourUtilities
 from utilities.display import pointy_vertical_menu, draw_simple_frame
 from utilities.input_handlers import handle_game_keys
@@ -484,5 +484,23 @@ class CharacterCreation:
             MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
                                                   name=selected_name)
         else:
-            MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
-                                                  name="Random")
+            random_name = CharacterCreation.generate_random_name_based_on_race(gameworld=gameworld, player_entity=player_entity)
+            MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity, name=random_name)
+
+    @staticmethod
+    def generate_random_name_based_on_race(gameworld, player_entity):
+        # get race details for character
+        racial_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player_entity)
+        player_race = racial_details[0]
+        name_file = player_race.upper() + 'NAMESFILE'
+        game_config = configUtilities.load_config()
+
+        # read names file
+        racial_names_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                   parameter=name_file)
+
+        name_file = namegenUtilities.read_name_file(file_to_read=racial_names_file)
+        name_components = namegenUtilities.process_name_file(name_file=name_file)
+        random_name = namegenUtilities.generate_name(name_components=name_components)
+
+        return random_name
