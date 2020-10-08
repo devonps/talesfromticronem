@@ -1,3 +1,5 @@
+import random
+
 from loguru import logger
 from utilities.jsonUtilities import read_json_file
 from utilities.randomNumberGenerator import PCG32Generator
@@ -39,7 +41,7 @@ def generate_name(name_components):
     compiled_name = ''
 
     # TEMP SOLUTION TO USE SAFE PRNG
-    prng_seed = 99
+    prng_seed = random.randrange(1, 100)
     stream = 1
     random_range = PCG32Generator(prng_seed, stream)
 
