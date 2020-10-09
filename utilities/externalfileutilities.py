@@ -1,5 +1,5 @@
 
-import os.path
+import os
 import csv
 
 from utilities.common import CommonUtils
@@ -16,7 +16,8 @@ class Externalfiles:
 
     @staticmethod
     def create_new_file(filename):
-        fileobject = open(filename, 'w+')
+        with open(file=filename, mode='w+') as fileobject:
+            pass
         return fileobject
 
     @staticmethod
