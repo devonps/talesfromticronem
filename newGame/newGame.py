@@ -21,9 +21,8 @@ def new_game():
     # the dungeon is visually AFTER the message log
 
     if not file_exists:
-        new_file_object = Externalfiles.create_new_file(file_name)
+        Externalfiles.new_file(filename=file_name)
         logger.info('Creating blank build file')
-        Externalfiles.close_existing_file(new_file_object)
 
     StartGame.start_game_screen()
 

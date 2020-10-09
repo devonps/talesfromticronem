@@ -1,8 +1,6 @@
-
 import os
 import csv
-
-from utilities.common import CommonUtils
+from pathlib import Path
 
 
 class Externalfiles:
@@ -15,26 +13,13 @@ class Externalfiles:
         return csv_reader
 
     @staticmethod
-    def create_new_file(filename):
-        with open(file=filename, mode='w+') as fileobject:
-            pass
-        return fileobject
+    def new_file(filename):
+        Path(filename).touch()
 
     @staticmethod
     def write_to_existing_file(filename, value):
         with open(filename, 'a') as file:
             file.write(value + '\n')
-
-    @staticmethod
-    def write_full_game_log(gameworld, log_id):
-
-        filename = "game_log.txt"
-        fileobject = Externalfiles.create_new_file(filename)
-        stored_msgs = CommonUtils.get_all_log_messages_for_export(gameworld=gameworld, log_entity=log_id)
-        for message in stored_msgs:
-            Externalfiles.write_to_existing_file(filename, value=message)
-
-        Externalfiles.close_existing_file(fileobject=fileobject)
 
     @staticmethod
     def close_existing_file(fileobject):
@@ -53,8 +38,7 @@ class Externalfiles:
     def start_new_game_replay_file(filename):
         if Externalfiles.does_file_exist(filename):
             Externalfiles.delete_existing_file(filename)
-        fileobject = Externalfiles.create_new_file(filename)
-        return fileobject
+            Externalfiles.new_file(filename=filename)
 
     @staticmethod
     def does_file_exist(filename):

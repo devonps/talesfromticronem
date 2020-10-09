@@ -43,11 +43,12 @@ def generate_world_seed(game_config):
 def store_world_seed(game_config, world_seed):
     action_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                              parameter='GAME_ACTIONS_FILE')
-    fileobject = Externalfiles.start_new_game_replay_file(action_file)
 
+    Externalfiles.new_file(filename=action_file)
     value = 'world_seed:' + str(world_seed)
     Externalfiles.write_to_existing_file(action_file, value)
-    Externalfiles.close_existing_file(fileobject)
+    f = open(action_file, 'r')
+    f.close()
 
 
 def create_jewellery_entities(gameworld):
