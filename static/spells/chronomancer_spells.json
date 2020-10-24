@@ -1,5 +1,4 @@
-{
-  "spells": [
+[
     {
       "name": "spatial surge",
       "description": "Shoot a beam at your foe. The farther away they are, the more damage you deal.",
@@ -556,7 +555,6 @@
         }
       ]
     },
-
     {
       "name": "Blink of an Eye",
       "description": "Gain stealth and summon an illusion to attack your foe.",
@@ -660,5 +658,4 @@
         }
       ]
     }
-    ]
-}
+  ]

@@ -1,5 +1,4 @@
-{
-  "spells": [
+[
     {
       "name": "ricochet",
       "description": "Bounce a beam of light between multiple foes, gaining might for each foe hit.",
@@ -645,5 +644,4 @@
         }
       ]
     }
-    ]
-}
+]

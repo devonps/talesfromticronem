@@ -1,5 +1,4 @@
-{
-  "spells": [
+[
     {
       "name": "necrotic grasp",
       "description": "Send out a grasping hand that damages foes in a line and grants you life force.",
@@ -756,5 +755,4 @@
         }
       ]
     }
-  ]
-}
+]
