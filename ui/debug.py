@@ -12,7 +12,8 @@ from utilities.input_handlers import handle_game_keys
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
-from utilities.display import set_off_hand_weapon_string_es, set_main_hand_weapon_string_es, set_both_hands_weapon_string_es
+from utilities.display import set_off_hand_weapon_string_es, set_main_hand_weapon_string_es, \
+    set_both_hands_weapon_string_es
 
 
 class Debug:
@@ -58,8 +59,7 @@ class Debug:
                             start_panel_frame_height)
 
     @staticmethod
-    def entity_spy(gameworld, game_config, coords_clicked, game_map):
-
+    def get_camera_position(gameworld, game_config, game_map):
         player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
         player_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         player_map_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
@@ -73,11 +73,17 @@ class Debug:
                                                                    player_map_pos_x=player_map_x,
                                                                    player_map_pos_y=player_map_y,
                                                                    game_map=game_map)
+        return camera_x, camera_y
+
+    @staticmethod
+    def entity_spy(gameworld, game_config, coords_clicked, game_map):
+
+        camera_x, camera_y = Debug.get_camera_position(gameworld=gameworld, game_config=game_config, game_map=game_map)
 
         screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='SCREEN_OFFSET_X')
+                                                                      parameter='SCREEN_OFFSET_X')
         screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                    parameter='SCREEN_OFFSET_Y')
+                                                                      parameter='SCREEN_OFFSET_Y')
 
         posx = coords_clicked[0] + camera_x - screen_offset_x
         posy = coords_clicked[1] + camera_y - screen_offset_y
@@ -111,18 +117,23 @@ class Debug:
             player_not_pressed_quit = True
             while player_not_pressed_quit:
                 event_to_be_processed, event_action = handle_game_keys()
-                player_not_pressed_quit, page_to_display = Debug.es_process_keyboard_actions(event_to_be_processed=event_to_be_processed, event_action=event_action, game_config=game_config, gameworld=gameworld, entity_id=entity_id, page_to_display=page_to_display)
+                player_not_pressed_quit, page_to_display = Debug.es_process_keyboard_actions(
+                    event_to_be_processed=event_to_be_processed, event_action=event_action, game_config=game_config,
+                    gameworld=gameworld, entity_id=entity_id, page_to_display=page_to_display)
 
                 # display instructions
                 Debug.display_es_instructions(page=page_to_display)
-                Debug.es_process_mouse_actions(event_to_be_processed=event_to_be_processed, event_action=event_action, click_zones=click_zones, page_to_display=page_to_display)
+                Debug.es_process_mouse_actions(event_to_be_processed=event_to_be_processed, event_action=event_action,
+                                               click_zones=click_zones, page_to_display=page_to_display)
 
                 # blit the terminal
                 terminal.refresh()
         else:
             logger.info('No entity at location {}', coords_clicked)
+
     @staticmethod
-    def es_process_keyboard_actions(event_to_be_processed, event_action, game_config, gameworld, entity_id, page_to_display):
+    def es_process_keyboard_actions(event_to_be_processed, event_action, game_config, gameworld, entity_id,
+                                    page_to_display):
         player_not_pressed_quit = True
         if event_to_be_processed == 'keypress':
             if event_action == 'quit':
@@ -419,7 +430,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=f1_string)
 
         section = 7
-        Debug.draw_monster_specific_components(gameworld=gameworld, entity_id=entity_id, sx=section_posx[section], sy=section_posy[section],
+        Debug.draw_monster_specific_components(gameworld=gameworld, entity_id=entity_id, sx=section_posx[section],
+                                               sy=section_posy[section],
                                                sw=section_width[section], sl=section_lines[section],
                                                sh=section_heading[section])
 
@@ -442,7 +454,8 @@ class Debug:
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
                           start_panel_frame_height=section_lines[section],
-                          title=section_heading[section], fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          title=section_heading[section], fg=colourUtilities.get('BLUE'),
+                          bg=colourUtilities.get('BLACK'))
 
         str_to_print = "[color=blue]Location Mat/Disp/Def[/color]"
 
@@ -557,8 +570,6 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6,
                         s="[color=ENTITY_SPY_COMPONENT]Defense:[/color]" + str(total_armour))
 
-
-
         # display applied status effects
         section = 12
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
@@ -617,14 +628,15 @@ class Debug:
 
     @staticmethod
     def set_spellbar_slot_string(gameworld, entity_id, slotid):
+        slotid -= 1
         slot_string = "[color=ENTITY_SPY_NO_COMPONENT]Slot " + str(slotid) + ":None[/color]"
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slotid,
-                                                                                   player_entity=entity_id)
+                                                                               player_entity=entity_id)
         if slot_spell_entity > 0:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_spell_entity)
             spell_cooldown_status = str(
                 SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_spell_entity))
-            slot_string = "[color=ENTITY_SPY_COMPONENT]Slot " + str(slotid) + ":[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
+            slot_string = "[color=ENTITY_SPY_COMPONENT]Slot " + str(
+                slotid) + ":[/color]" + spell_name + " [color=ENTITY_SPY_ADDT_INFO]" + spell_cooldown_status
 
         return slot_string
-
