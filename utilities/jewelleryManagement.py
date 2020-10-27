@@ -354,15 +354,7 @@ class JewelleryUtilities:
             gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
                 statname=gemstone_attribute, statbonus=gemstone_bonus))
 
-            ItemUtilities.set_item_name(gameworld=gameworld, entity_id=piece_of_jewellery, value=nm)
-            ItemUtilities.set_item_description(gameworld=gameworld, entity_id=piece_of_jewellery, value=desc)
-            ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=piece_of_jewellery, value='*')
-            ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
-                                                     value=colourUtilities.get('BLUE'))
-            ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
-                                                     value=colourUtilities.get('BLACK'))
-            ItemUtilities.set_item_displayname(gameworld=gameworld, entity_id=piece_of_jewellery,
-                                               value=trinket_activator + ' ' + nm)
+            JewelleryUtilities.common_jewellery_create_method(gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, nm=nm, desc=desc, trinket_activator=trinket_activator)
 
     @staticmethod
     def pendant_processing(bdl, trinket_activator, gemstone_string, gameworld, piece_of_jewellery, gemstone_attribute, gemstone_bonus):
@@ -374,15 +366,7 @@ class JewelleryUtilities:
             gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
                 statname=gemstone_attribute, statbonus=gemstone_bonus))
 
-            ItemUtilities.set_item_name(gameworld=gameworld, entity_id=piece_of_jewellery, value=nm)
-            ItemUtilities.set_item_description(gameworld=gameworld, entity_id=piece_of_jewellery, value=desc)
-            ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=piece_of_jewellery, value='*')
-            ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
-                                                     value=colourUtilities.get('BLUE'))
-            ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
-                                                     value=colourUtilities.get('BLACK'))
-            ItemUtilities.set_item_displayname(gameworld=gameworld, entity_id=piece_of_jewellery,
-                                               value=trinket_activator + ' ' + nm)
+            JewelleryUtilities.common_jewellery_create_method(gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, nm=nm, desc=desc, trinket_activator=trinket_activator)
 
     @staticmethod
     def earring_processing(bdl, trinket_activator, gemstone_string, gameworld, piece_of_jewellery, gemstone_attribute, gemstone_bonus):
@@ -394,14 +378,16 @@ class JewelleryUtilities:
             gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
                 statname=gemstone_attribute, statbonus=gemstone_bonus))
 
-            ItemUtilities.set_item_name(gameworld=gameworld, entity_id=piece_of_jewellery, value=nm)
-            ItemUtilities.set_item_description(gameworld=gameworld, entity_id=piece_of_jewellery, value=desc)
-            ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=piece_of_jewellery, value='*')
-            ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
-                                                     value=colourUtilities.get('BLUE'))
-            ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
-                                                     value=colourUtilities.get('BLACK'))
-            ItemUtilities.set_item_displayname(gameworld=gameworld, entity_id=piece_of_jewellery,
-                                               value=trinket_activator + ' ' + nm)
+            JewelleryUtilities.common_jewellery_create_method(gameworld=gameworld, piece_of_jewellery=piece_of_jewellery, nm=nm, desc=desc, trinket_activator=trinket_activator)
 
-
+    @staticmethod
+    def common_jewellery_create_method(gameworld,piece_of_jewellery, nm, desc, trinket_activator):
+        ItemUtilities.set_item_name(gameworld=gameworld, entity_id=piece_of_jewellery, value=nm)
+        ItemUtilities.set_item_description(gameworld=gameworld, entity_id=piece_of_jewellery, value=desc)
+        ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=piece_of_jewellery, value='*')
+        ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                                 value=colourUtilities.get('BLUE'))
+        ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                                 value=colourUtilities.get('BLACK'))
+        ItemUtilities.set_item_displayname(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                           value=trinket_activator + ' ' + nm)
