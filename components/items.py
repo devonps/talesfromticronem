@@ -19,14 +19,34 @@ class Actionlist:
         self.actions = action_list
 
 
-class Describable:
-    def __init__(self, name='', description='', glyph='', fg=0, bg=0, displayname=''):
-        self.name = name
-        self.description = description
+class Name:
+    def __init__(self, label=''):
+        self.label = label
+
+
+class Description:
+    def __init__(self, label=''):
+        self.label = label
+
+
+class ItemGlyph:
+    def __init__(self, glyph=''):
         self.glyph = glyph
+
+
+class ItemForeColour:
+    def __init__(self, fg=0):
         self.fg = fg
+
+
+class ItemBackColour:
+    def __init__(self, bg=0):
         self.bg = bg
-        self.displayname = displayname
+
+
+class ItemDisplayName:
+    def __init__(self, label=''):
+        self.label = label
 
 
 # physical location on the game map

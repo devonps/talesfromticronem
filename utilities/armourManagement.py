@@ -1,7 +1,9 @@
 from loguru import logger
 
 from components import items, mobiles, spells
+from newGame.Items import ItemManager
 from utilities import configUtilities, jsonUtilities, world, colourUtilities
+from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 
@@ -310,22 +312,17 @@ class ArmourUtilities:
     @staticmethod
     def create_piece_of_armour(gameworld, bodylocation, setname, prefix, game_config):
 
-        armour_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
-                                                                      parameter='ITEM_ARMOUR_ACTIONS')
-
         armour_set_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                      parameter='ARMOURSETFILE')
 
         armour_set_file = jsonUtilities.read_json_file(armour_set_path)
 
-        armour_piece = world.get_next_entity_id(gameworld=gameworld)
+        armour_piece = ItemManager.create_base_item(gameworld=gameworld)
 
         pxstring = 'prefix'
         attnamestring = 'attributename'
         attvaluestring = 'attributebonus'
-        piece_of_armour = ''
         defense = ''
-        as_material = ''
         as_quality = ''
         as_weight = ''
         px_att_name = ''
@@ -335,7 +332,6 @@ class ArmourUtilities:
             if armourset['displayname'] == setname:
                 as_weight = (armourset['weight'])
                 as_quality = armourset['quality']
-                as_material = (armourset['material'])
                 prefix_count = armourset['prefixcount']
                 attribute_bonus_count = armourset['attributebonuscount']
                 piece_of_armour, defense = ArmourUtilities.process_armour_bodylocation(gameworld=gameworld,
@@ -353,16 +349,8 @@ class ArmourUtilities:
                         px_att_name = armourset[prefix_string][att_name_string]
 
         # generate common item components
-        gameworld.add_component(armour_piece, items.TypeOfItem(label='armour'))
-        gameworld.add_component(armour_piece, items.Material(texture=as_material))
-        gameworld.add_component(armour_piece, items.Actionlist(action_list=armour_action_list))
-        gameworld.add_component(armour_piece, items.Describable(
-            name=bodylocation + ' armour',
-            glyph=")",
-            description='a ' + piece_of_armour + ' made from ' + as_material,
-            fg=colourUtilities.get('WHITE'),
-            bg=colourUtilities.get('BLACK'),
-            displayname=piece_of_armour))
+
+        ItemUtilities.set_type_of_item(gameworld=gameworld, entity_id=armour_piece, value='armour')
         gameworld.add_component(armour_piece, items.RenderItem(istrue=True))
         gameworld.add_component(armour_piece, items.Quality(level=as_quality))
         gameworld.add_component(armour_piece, items.ArmourSpell(entity=0, on_cool_down=False))

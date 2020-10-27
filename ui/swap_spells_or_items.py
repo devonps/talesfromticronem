@@ -23,8 +23,18 @@ def swap_spells(gameworld, player_entity, key_pressed):
         else:
             logger.info('No jewellery equipped')
 
-        armour_spells_list = JewelleryUtilities.get_list_of_spell_entities_for_equipped_armour(gameworld=gameworld,
-                                                                                               player_entity=player_entity)
+        spell_entities = []
+        for a in ['head', 'chest', 'hands', 'legs', 'feet']:
+            entity_id = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld,
+                                                                             entity=player_entity, bodylocation=a)
+
+            if entity_id > 0:
+                spell_id = ArmourUtilities.get_spell_entity_from_armour_piece(gameworld=gameworld,
+                                                                              armour_entity=entity_id)
+                spell_entities.append((spell_id))
+
+        armour_spells_list = spell_entities
+
         if len(armour_spells_list) > 0:
             available_spells_dict['armour'] = armour_spells_list
         else:

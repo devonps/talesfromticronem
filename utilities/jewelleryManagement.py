@@ -1,13 +1,61 @@
 from loguru import logger
 
 from components import items, mobiles, spells
-from utilities import configUtilities, jsonUtilities, world, colourUtilities
-from utilities.armourManagement import ArmourUtilities
+from newGame.Items import ItemManager
+from utilities import configUtilities, jsonUtilities, colourUtilities
+from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 
 
 class JewelleryUtilities:
+
+    @staticmethod
+    def create_and_equip_jewellery_for_npc(gameworld, entity_id, jewellery_set, npc_class_file):
+        class_file = jsonUtilities.read_json_file(npc_class_file)
+        entity_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
+
+        for entityclass in class_file['classes']:
+            if entityclass['name'] == entity_class:
+                neck_gemstone = entityclass[jewellery_set]['neck']
+                ear1_gemstone = entityclass[jewellery_set]['earring1']
+                ear2_gemstone = entityclass[jewellery_set]['earring2']
+                # create jewellery entity
+                pendant = JewelleryUtilities.create_jewellery(gameworld=gameworld, bodylocation='neck',
+                                                              e_setting='copper', e_hook='copper',
+                                                              e_activator=neck_gemstone, playable_class=entity_class)
+                left_ear = JewelleryUtilities.create_jewellery(gameworld=gameworld, bodylocation='earring1',
+                                                               e_setting='copper', e_hook='copper',
+                                                               e_activator=ear1_gemstone, playable_class=entity_class)
+
+                right_ear = JewelleryUtilities.create_jewellery(gameworld=gameworld, bodylocation='earring2',
+                                                                e_setting='copper', e_hook='copper',
+                                                                e_activator=ear2_gemstone, playable_class=entity_class)
+
+                # equip jewellery entity to player character
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='neck',
+                                                   trinket=pendant)
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left ear',
+                                                   trinket=left_ear)
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right ear',
+                                                   trinket=right_ear)
+
+                # apply gemstone benefits
+                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
+                                                                                  jewellery_entity=pendant)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                                                         statbonus=jewelley_stat_bonus)
+
+                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
+                                                                                  jewellery_entity=left_ear)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                                                         statbonus=jewelley_stat_bonus)
+
+                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
+                                                                                  jewellery_entity=right_ear)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
+                                                         statbonus=jewelley_stat_bonus)
+
 
     @staticmethod
     def get_gemstone_details(this_gemstone):
@@ -83,18 +131,6 @@ class JewelleryUtilities:
                 spell_id = JewelleryUtilities.get_spell_entity_from_jewellery(gameworld=gameworld, piece_of_jewellery=entity_id)
                 if spell_id > 0:
                     spell_entities.append(spell_id)
-
-        return spell_entities
-
-    @staticmethod
-    def get_list_of_spell_entities_for_equipped_armour(gameworld, player_entity):
-        spell_entities = []
-        for a in ['head','chest','hands','legs','feet']:
-            entity_id = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity, bodylocation=a)
-
-            if entity_id > 0:
-                spell_id = ArmourUtilities.get_spell_entity_from_armour_piece(gameworld=gameworld, armour_entity=entity_id)
-                spell_entities.append((spell_id))
 
         return spell_entities
 
@@ -254,8 +290,6 @@ class JewelleryUtilities:
 
         gemstones_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                          parameter='GEMSTONESFILE')
-        jewellery_action_list = configUtilities.get_config_value_as_list(configfile=game_config, section='game',
-                                                                         parameter='ITEM_JEWELLERY_ACTIONS')
         if trinket_setting == '' or trinket_activator == '' or trinket_hook == '':
             logger.debug('At least one base component is missing')
             return 0
@@ -270,13 +304,12 @@ class JewelleryUtilities:
             file_gemstone = gemstone['Stone'].lower()
             if file_gemstone == trinket_activator:
                 bdl = JewelleryUtilities.define_jewellery_bodylocation_string(bodylocation=bodylocation)
-                piece_of_jewellery = world.get_next_entity_id(gameworld=gameworld)
+                piece_of_jewellery = ItemManager.create_base_item(gameworld=gameworld)
                 # generate common item components
-                gameworld.add_component(piece_of_jewellery, items.TypeOfItem(label='jewellery'))
+                ItemUtilities.set_type_of_item(gameworld=gameworld, entity_id=piece_of_jewellery, value='jewellery')
                 gameworld.add_component(piece_of_jewellery, items.Material(texture=trinket_setting))
                 gameworld.add_component(piece_of_jewellery, items.RenderItem(istrue=True))
                 gameworld.add_component(piece_of_jewellery, items.Quality(level='common'))
-                gameworld.add_component(piece_of_jewellery, items.Actionlist(action_list=jewellery_action_list))
 
                 # create jewellery specific components
                 gameworld.add_component(piece_of_jewellery, items.JewelleryEquipped(istrue=False))
@@ -320,10 +353,16 @@ class JewelleryUtilities:
             gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(fingers=True))
             gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
                 statname=gemstone_attribute, statbonus=gemstone_bonus))
-            gameworld.add_component(piece_of_jewellery, items.Describable(
-                description=desc, name=nm, glyph='*',
-                fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'),
-                displayname=trinket_activator + ' ' + nm))
+
+            ItemUtilities.set_item_name(gameworld=gameworld, entity_id=piece_of_jewellery, value=nm)
+            ItemUtilities.set_item_description(gameworld=gameworld, entity_id=piece_of_jewellery, value=desc)
+            ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=piece_of_jewellery, value='*')
+            ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                                     value=colourUtilities.get('BLUE'))
+            ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                                     value=colourUtilities.get('BLACK'))
+            ItemUtilities.set_item_displayname(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                               value=trinket_activator + ' ' + nm)
 
     @staticmethod
     def pendant_processing(bdl, trinket_activator, gemstone_string, gameworld, piece_of_jewellery, gemstone_attribute, gemstone_bonus):
@@ -334,10 +373,16 @@ class JewelleryUtilities:
             gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(neck=True))
             gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
                 statname=gemstone_attribute, statbonus=gemstone_bonus))
-            gameworld.add_component(piece_of_jewellery, items.Describable(
-                description=desc, name=nm, glyph='*',
-                fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'),
-                displayname=trinket_activator + ' ' + nm))
+
+            ItemUtilities.set_item_name(gameworld=gameworld, entity_id=piece_of_jewellery, value=nm)
+            ItemUtilities.set_item_description(gameworld=gameworld, entity_id=piece_of_jewellery, value=desc)
+            ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=piece_of_jewellery, value='*')
+            ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                                     value=colourUtilities.get('BLUE'))
+            ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                                     value=colourUtilities.get('BLACK'))
+            ItemUtilities.set_item_displayname(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                               value=trinket_activator + ' ' + nm)
 
     @staticmethod
     def earring_processing(bdl, trinket_activator, gemstone_string, gameworld, piece_of_jewellery, gemstone_attribute, gemstone_bonus):
@@ -348,8 +393,15 @@ class JewelleryUtilities:
             gameworld.add_component(piece_of_jewellery, items.JewelleryBodyLocation(ears=True))
             gameworld.add_component(piece_of_jewellery, items.JewelleryStatBonus(
                 statname=gemstone_attribute, statbonus=gemstone_bonus))
-            gameworld.add_component(piece_of_jewellery, items.Describable(
-                description=desc, name=nm, glyph='*',
-                fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'),
-                displayname=trinket_activator + ' ' + nm))
+
+            ItemUtilities.set_item_name(gameworld=gameworld, entity_id=piece_of_jewellery, value=nm)
+            ItemUtilities.set_item_description(gameworld=gameworld, entity_id=piece_of_jewellery, value=desc)
+            ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=piece_of_jewellery, value='*')
+            ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                                     value=colourUtilities.get('BLUE'))
+            ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                                     value=colourUtilities.get('BLACK'))
+            ItemUtilities.set_item_displayname(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                               value=trinket_activator + ' ' + nm)
+
 

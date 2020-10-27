@@ -6,6 +6,34 @@ from components import items
 class ItemUtilities:
 
     @staticmethod
+    def set_item_name(gameworld, entity_id, value):
+        gameworld.add_component(entity_id, items.Name(label=value))
+
+    @staticmethod
+    def set_type_of_item(gameworld, entity_id, value):
+        gameworld.add_component(entity_id, items.TypeOfItem(label=value))
+
+    @staticmethod
+    def set_item_description(gameworld, entity_id, value):
+        gameworld.add_component(entity_id, items.Description(label=value))
+
+    @staticmethod
+    def set_item_glyph(gameworld, entity_id, value):
+        gameworld.add_component(entity_id, items.ItemGlyph(glyph=value))
+
+    @staticmethod
+    def set_item_foreground_colour(gameworld, entity_id, value):
+        gameworld.add_component(entity_id, items.ItemForeColour(fg=value))
+
+    @staticmethod
+    def set_item_background_colour(gameworld, entity_id, value):
+        gameworld.add_component(entity_id, items.ItemBackColour(bg=value))
+
+    @staticmethod
+    def set_item_displayname(gameworld, entity_id, value):
+        gameworld.add_component(entity_id, items.ItemDisplayName(label=value))
+
+    @staticmethod
     def get_equipped_weapon_for_enemy(gameworld, weapons_equipped):
         weapon_id = 0
 
@@ -25,8 +53,8 @@ class ItemUtilities:
 
     @staticmethod
     def get_item_name(gameworld, entity):
-        item_described_component = gameworld.component_for_entity(entity, items.Describable)
-        return item_described_component.name
+        item_described_component = gameworld.component_for_entity(entity, items.Name)
+        return item_described_component.label
 
     @staticmethod
     def get_item_material(gameworld, entity):
@@ -35,13 +63,13 @@ class ItemUtilities:
 
     @staticmethod
     def get_item_displayname(gameworld, entity):
-        item_described_component = gameworld.component_for_entity(entity, items.Describable)
-        return item_described_component.displayname
+        item_described_component = gameworld.component_for_entity(entity, items.ItemDisplayName)
+        return item_described_component.label
 
     @staticmethod
     def get_item_description(gameworld, entity):
-        item_described_component = gameworld.component_for_entity(entity, items.Describable)
-        return item_described_component.description
+        item_described_component = gameworld.component_for_entity(entity, items.Description)
+        return item_described_component.label
 
     @staticmethod
     def get_item_quality(gameworld, entity):

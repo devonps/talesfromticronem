@@ -6,6 +6,7 @@ from newGame.Items import ItemManager
 from utilities import configUtilities, colourUtilities
 from utilities.armourManagement import ArmourUtilities
 from utilities.itemsHelp import ItemUtilities
+from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.mobileHelp import MobileUtilities
 from loguru import logger
 from utilities.jsonUtilities import read_json_file
@@ -502,8 +503,10 @@ class Entity:
                 jewellery_set = jewellery_file_option.lower()
 
             logger.info('Their jewellery package is {}', jewellery_set)
-            ItemManager.create_and_equip_jewellery_for_npc(gameworld=gameworld, entity_id=entity_id,
+            JewelleryUtilities.create_and_equip_jewellery_for_npc(gameworld=gameworld, entity_id=entity_id,
                                                            jewellery_set=jewellery_set, npc_class_file=npc_class_file)
+            # ItemManager.create_and_equip_jewellery_for_npc(gameworld=gameworld, entity_id=entity_id,
+            #                                                jewellery_set=jewellery_set, npc_class_file=npc_class_file)
         else:
             logger.info('They are wearing no jewellery')
 

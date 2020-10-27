@@ -4,9 +4,11 @@ from loguru import logger
 
 from components import items
 from newGame.CreateSpells import AsEntities
+from newGame.Items import ItemManager
+from utilities.itemsHelp import ItemUtilities
 from utilities.randomNumberGenerator import PCG32Generator
 from utilities.externalfileutilities import Externalfiles
-from utilities import configUtilities, jsonUtilities, world
+from utilities import configUtilities, jsonUtilities, world, colourUtilities
 
 
 def create_world():
@@ -59,10 +61,17 @@ def create_jewellery_entities(gameworld):
     jewellery_file = jsonUtilities.read_json_file(jewellery_file_path)
 
     for jewellery in jewellery_file['jewellery']:
-        piece_of_jewellery = world.get_next_entity_id(gameworld=gameworld)
-        gameworld.add_component(piece_of_jewellery, items.TypeOfItem(label='jewellery'))
-        gameworld.add_component(piece_of_jewellery, items.Describable(name=jewellery['name'], description=jewellery['description'], glyph=jewellery['glyph'], fg=jewellery['fg'], bg=jewellery['bg']))
+        piece_of_jewellery = ItemManager.create_base_item(gameworld=gameworld)
+        ItemUtilities.set_type_of_item(gameworld=gameworld, entity_id=piece_of_jewellery, value='jewellery')
         gameworld.add_component(piece_of_jewellery, items.Material(texture=jewellery['material']))
+        ItemUtilities.set_item_name(gameworld=gameworld, entity_id=piece_of_jewellery, value=jewellery['name'])
+        ItemUtilities.set_item_description(gameworld=gameworld, entity_id=piece_of_jewellery, value=jewellery['description'])
+        ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=piece_of_jewellery, value=jewellery['glyph'])
+        ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                                 value=jewellery['fg'])
+        ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
+                                                 value=jewellery['bg'])
+
         gameworld.add_component(piece_of_jewellery, items.JewellerySpell)
         gameworld.add_component(piece_of_jewellery, items.RenderItem(istrue=True))
         gameworld.add_component(piece_of_jewellery, items.JewelleryGemstone(name=jewellery['gemstone']))
