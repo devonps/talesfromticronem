@@ -636,18 +636,28 @@ class MobileUtilities(numbers.Real, ABC):
         lear = gameworld.component_for_entity(mobile, mobiles.Jewellery).left_ear
         if lear > 0:
             equipped.append(lear)
+        else:
+            equipped.append(0)
         rear = gameworld.component_for_entity(mobile, mobiles.Jewellery).right_ear
         if rear > 0:
             equipped.append(rear)
+        else:
+            equipped.append(0)
         lhand = gameworld.component_for_entity(mobile, mobiles.Jewellery).left_hand
         if lhand > 0:
             equipped.append(lhand)
+        else:
+            equipped.append(0)
         rhand = gameworld.component_for_entity(mobile, mobiles.Jewellery).right_hand
         if rhand > 0:
             equipped.append(rhand)
+        else:
+            equipped.append(0)
         neck = gameworld.component_for_entity(mobile, mobiles.Jewellery).neck
         if neck > 0:
             equipped.append(neck)
+        else:
+            equipped.append(0)
 
         return equipped
 

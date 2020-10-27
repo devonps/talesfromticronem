@@ -77,13 +77,19 @@ class ItemUtilities:
         return item_quality_component.level
 
     @staticmethod
-    def get_spell_from_item(gameworld, item_entity):
+    def get_item_type(gameworld, item_entity):
         item_type_component = gameworld.component_for_entity(item_entity, items.TypeOfItem)
 
-        if item_type_component.label == 'jewellery':
+        return item_type_component.label
+
+    @staticmethod
+    def get_spell_from_item(gameworld, item_entity):
+        item_type = ItemUtilities.get_item_type(gameworld=gameworld, item_entity=item_entity)
+
+        if item_type == 'jewellery':
             spell_entity = gameworld.component_for_entity(item_entity, items.JewellerySpell).entity
             return spell_entity
 
-        if item_type_component.label == 'armour':
+        if item_type == 'armour':
             spell_entity = gameworld.component_for_entity(item_entity, items.ArmourSpell).entity
             return spell_entity

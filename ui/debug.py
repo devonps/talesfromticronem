@@ -1,6 +1,7 @@
 from bearlibterminal import terminal
 from loguru import logger
 
+from components import mobiles, items
 from utilities import colourUtilities, configUtilities
 from utilities.common import CommonUtils
 from utilities.display import draw_simple_frame, draw_colourful_frame, set_jewellery_left_ear_string, \
@@ -9,6 +10,7 @@ from utilities.display import draw_simple_frame, draw_colourful_frame, set_jewel
     get_legs_armour_details, get_feet_armour_details
 from utilities.gamemap import GameMapUtilities
 from utilities.input_handlers import handle_game_keys
+from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
@@ -85,12 +87,25 @@ class Debug:
         return posx, posy
 
     @staticmethod
+    def get_entity_type(gameworld, entity_id):
+        entity_type = 'undefined'
+        if gameworld.has_component(entity_id, mobiles.Name):
+            entity_type = 'mobile'
+        if gameworld.has_component(entity_id, items.Name):
+            entity_type = ItemUtilities.get_item_type(gameworld=gameworld, item_entity=entity_id)
+
+        return entity_type
+
+
+
+    @staticmethod
     def entity_spy(gameworld, game_config, coords_clicked, game_map):
 
         posx, posy = Debug.get_entity_map_position(gameworld=gameworld, game_config=game_config, game_map=game_map, coords_clicked=coords_clicked)
         entity_id = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=posx, y=posy)
 
         if entity_id > 0:
+
             # clear the underlying terminal
             Debug.clear_terminal_area_es(game_config=game_config)
 
@@ -362,17 +377,21 @@ class Debug:
                           fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
 
         equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=entity_id)
-        left_ear = set_jewellery_left_ear_string(gameworld=gameworld, left_ear=equipped_jewellery[0])
-        right_ear = set_jewellery_right_ear_string(gameworld=gameworld, right_ear=equipped_jewellery[1])
-        left_hand = set_jewellery_left_hand_string(gameworld=gameworld, left_hand=equipped_jewellery[2])
-        right_hand = set_jewellery_right_hand_string(gameworld=gameworld, right_hand=equipped_jewellery[3])
-        neck = set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
-
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=left_ear)
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=right_ear)
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=left_hand)
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=right_hand)
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6, s=neck)
+        if equipped_jewellery[0] > 0:
+            left_ear = set_jewellery_left_ear_string(gameworld=gameworld, left_ear=equipped_jewellery[0])
+            terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=left_ear)
+        if equipped_jewellery[1] > 0:
+            right_ear = set_jewellery_right_ear_string(gameworld=gameworld, right_ear=equipped_jewellery[1])
+            terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=right_ear)
+        if equipped_jewellery[2] > 0:
+            left_hand = set_jewellery_left_hand_string(gameworld=gameworld, left_hand=equipped_jewellery[2])
+            terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=left_hand)
+        if equipped_jewellery[3] > 0:
+            right_hand = set_jewellery_right_hand_string(gameworld=gameworld, right_hand=equipped_jewellery[3])
+            terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=right_hand)
+        if equipped_jewellery[4] > 0:
+            neck = set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
+            terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6, s=neck)
 
         # spell bar combat
         section = 4

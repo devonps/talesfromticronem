@@ -29,7 +29,8 @@ class Entity:
                 y = random.randint(0, my - 1)
                 if not game_map.tiles[x][y].blocked:
                     placed = True
-                Entity.create_enemy_role(posx=x, posy=y, gameworld=gameworld, game_config=game_config, enemy_role=enemy_role)
+                Entity.create_enemy_role(posx=x, posy=y, gameworld=gameworld, game_config=game_config,
+                                         enemy_role=enemy_role)
 
     @staticmethod
     def create_new_entity(gameworld):
@@ -66,13 +67,16 @@ class Entity:
                         weapon_file_option_off = npc['weapons-off']
                         weapon_file_option_both = npc['weapons-both']
 
-                        equipped_weapons = Entity.are_weapons_equipped(both_hands=weapon_file_option_both, main_hand=weapon_file_option_main, off_hand=weapon_file_option_off)
+                        equipped_weapons = Entity.are_weapons_equipped(both_hands=weapon_file_option_both,
+                                                                       main_hand=weapon_file_option_main,
+                                                                       off_hand=weapon_file_option_off)
 
                         logger.warning('--- CREATING NEW MOBILE ---')
                         # -------------------------------------
                         # --- CHOOSE RACE ---------------------
                         # -------------------------------------
-                        Entity.choose_race_for_mobile(race_choice=npc_race, entity_id=entity_id, gameworld=gameworld, game_config=game_config)
+                        Entity.choose_race_for_mobile(race_choice=npc_race, entity_id=entity_id, gameworld=gameworld,
+                                                      game_config=game_config)
 
                         # -------------------------------------
                         # --- CHOOSE NAME ---------------------
@@ -82,12 +86,14 @@ class Entity:
                         # -------------------------------------
                         # --- CHOOSE CLASS --------------------
                         # -------------------------------------
-                        Entity.choose_class_for_mobile(class_choice=npc_class, entity_id=entity_id, gameworld=gameworld, game_config=game_config)
+                        Entity.choose_class_for_mobile(class_choice=npc_class, entity_id=entity_id, gameworld=gameworld,
+                                                       game_config=game_config)
 
                         # -------------------------------------
                         # --- CREATE ARMOURSET ----------------
                         # -------------------------------------
-                        Entity.choose_armourset_for_mobile(armour_file_option=armour_file_option, entity_id=entity_id, gameworld=gameworld, game_config=game_config)
+                        Entity.choose_armourset_for_mobile(armour_file_option=armour_file_option, entity_id=entity_id,
+                                                           gameworld=gameworld, game_config=game_config)
 
                         # --------------------------------------
                         # --- CREATE SPELL BAR WITH NO SPELLS  -
@@ -99,7 +105,8 @@ class Entity:
                         # --- CREATE JEWELLERYSET -------------
                         # -------------------------------------
                         Entity.choose_jewellery_package(jewellery_file_option=jewellery_file_option,
-                                                      entity_id=entity_id, game_config=game_config, gameworld=gameworld)
+                                                        entity_id=entity_id, game_config=game_config,
+                                                        gameworld=gameworld)
 
                         # get list of equipped jewellery
                         jewellery_list = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld,
@@ -110,24 +117,27 @@ class Entity:
                         neck_entity = jewellery_list[2]
 
                         # get spell entity from that piece of jewellery
-                        sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=neck_entity)
-                        sp2 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=left_ear)
-                        sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear)
-
-                        # add spells from jewellery into spell bar
-                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=6,
-                                                         player_entity=entity_id)
-                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=7,
-                                                         player_entity=entity_id)
-                        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=8,
-                                                         player_entity=entity_id)
+                        if neck_entity > 0:
+                            sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=neck_entity)
+                            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=6,
+                                                             player_entity=entity_id)
+                        if left_ear > 0:
+                            sp2 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=left_ear)
+                            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=7,
+                                                             player_entity=entity_id)
+                        if right_ear > 0:
+                            sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear)
+                            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=8,
+                                                             player_entity=entity_id)
 
                         if equipped_weapons:
                             # --------------------------------------
                             # --- CREATE WEAPONSET AND -------------
                             # --- CHOOSE SPELLS AND LOAD TO WEAPON -
                             # --------------------------------------
-                            Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_file_option_main, off_hand=weapon_file_option_off, both_hands=weapon_file_option_both, gameworld=gameworld, game_config=game_config)
+                            Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_file_option_main,
+                                                    off_hand=weapon_file_option_off, both_hands=weapon_file_option_both,
+                                                    gameworld=gameworld, game_config=game_config)
 
                         # --------------------------------------
                         # --- add heal spell to spellbar     ---
@@ -153,12 +163,15 @@ class Entity:
                         # -------------------------------------
                         # --- SHOPKEEPER ? --------------------
                         # -------------------------------------
-                        Entity.is_npc_a_shopkeeper(gameworld=gameworld, entity_id=entity_id, npc_shopkeeper=npc_shopkeeper, shopkeeper_type=npc['type_of_shopkeeper'])
+                        Entity.is_npc_a_shopkeeper(gameworld=gameworld, entity_id=entity_id,
+                                                   npc_shopkeeper=npc_shopkeeper,
+                                                   shopkeeper_type=npc['type_of_shopkeeper'])
 
                         # -------------------------------------
                         # --- TUTOR ? -------------------------
                         # -------------------------------------
-                        Entity.is_npc_a_tutor(gameworld=gameworld, entity_id=entity_id, npc_tutor=npc_tutor, tutor_type=npc['type_of_tutor'])
+                        Entity.is_npc_a_tutor(gameworld=gameworld, entity_id=entity_id, npc_tutor=npc_tutor,
+                                              tutor_type=npc['type_of_tutor'])
 
                         # now apply the values to the base mobile object
                         Entity.set_min_max_preferred_ranges(entity_id=entity_id, min_range='TOUCH',
@@ -228,7 +241,7 @@ class Entity:
                 min_range = role['min-range']
                 max_range = role['max-range']
 
-                if weapon_both_hands != '' or weapon_main_hand !='' or weapon_off_hand !='':
+                if weapon_both_hands != '' or weapon_main_hand != '' or weapon_off_hand != '':
                     equipped_weapons = True
 
                 logger.warning('--- CREATING ENEMY ROLE {} ---', enemy_role)
@@ -237,7 +250,8 @@ class Entity:
                 # -------------------------------------
                 # --- CHOOSE RACE ---------------------
                 # -------------------------------------
-                Entity.choose_race_for_mobile(race_choice=npc_race, entity_id=entity_id, game_config=game_config, gameworld=gameworld)
+                Entity.choose_race_for_mobile(race_choice=npc_race, entity_id=entity_id, game_config=game_config,
+                                              gameworld=gameworld)
 
                 # -------------------------------------
                 # --- CHOOSE NAME ---------------------
@@ -247,25 +261,28 @@ class Entity:
                 # -------------------------------------
                 # --- CHOOSE CLASS --------------------
                 # -------------------------------------
-                Entity.choose_class_for_mobile(class_choice=npc_class, entity_id=entity_id, gameworld=gameworld, game_config=game_config)
+                Entity.choose_class_for_mobile(class_choice=npc_class, entity_id=entity_id, gameworld=gameworld,
+                                               game_config=game_config)
 
                 # -------------------------------------
                 # --- CREATE ARMOURSET ----------------
                 # -------------------------------------
-                Entity.choose_armourset_for_mobile(armour_file_option=armour_file_option, entity_id=entity_id, gameworld=gameworld, game_config=game_config)
+                Entity.choose_armourset_for_mobile(armour_file_option=armour_file_option, entity_id=entity_id,
+                                                   gameworld=gameworld, game_config=game_config)
 
                 # -------------------------------------
                 # --- CREATE JEWELLERYSET -------------
                 # -------------------------------------
-                Entity.choose_jewellery_package(jewellery_file_option=jewellery_file_option, entity_id=entity_id, game_config=game_config, gameworld=gameworld)
+                Entity.choose_jewellery_package(jewellery_file_option=jewellery_file_option, entity_id=entity_id,
+                                                game_config=game_config, gameworld=gameworld)
 
                 if equipped_weapons:
                     # -------------------------------------
                     # --- CREATE WEAPONSET ----------------
                     # -------------------------------------
                     Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_main_hand,
-                                                                    off_hand=weapon_off_hand,
-                                                                    both_hands=weapon_both_hands, gameworld=gameworld, game_config=game_config)
+                                            off_hand=weapon_off_hand,
+                                            both_hands=weapon_both_hands, gameworld=gameworld, game_config=game_config)
 
                     # --------------------------------------
                     # --- CREATE SPELL BAR WITH SPELLS     -
@@ -295,7 +312,8 @@ class Entity:
                 MobileUtilities.set_mobile_visible(gameworld=gameworld, entity=entity_id)
 
                 MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx, posy=posy)
-                Entity.set_min_max_preferred_ranges(entity_id=entity_id, min_range=min_range, max_range=max_range, gameworld=gameworld, game_config=game_config)
+                Entity.set_min_max_preferred_ranges(entity_id=entity_id, min_range=min_range, max_range=max_range,
+                                                    gameworld=gameworld, game_config=game_config)
                 MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, entity=entity_id)
 
     @staticmethod
@@ -382,7 +400,8 @@ class Entity:
                 rcount += 1
 
         MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=entity_id, selected_race=selected_race,
-                                                race_size=selected_race_size, bg=selected_bg_colour, race_names=selected_race_names)
+                                                race_size=selected_race_size, bg=selected_bg_colour,
+                                                race_names=selected_race_names)
 
         return selected_race
 
@@ -420,7 +439,6 @@ class Entity:
         logger.info('Their class is {}', selected_class_name)
         logger.info('Their class health is {}', selected_class_health)
 
-
     @staticmethod
     def choose_armourset_for_mobile(armour_file_option, entity_id, game_config, gameworld):
         if armour_file_option != 'none':
@@ -452,7 +470,7 @@ class Entity:
             MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=entity_id,
                                                 armour_modifier=armour_modifier, px_bonus=px_bonus)
             ArmourUtilities.create_and_equip_armourset_for_npc(gameworld=gameworld, as_display_name=as_display_name,
-                                                           armour_modifier=armour_modifier, entity_id=entity_id)
+                                                               armour_modifier=armour_modifier, entity_id=entity_id)
         else:
             logger.info('They are wearing no armour')
 
@@ -504,7 +522,8 @@ class Entity:
 
             logger.info('Their jewellery package is {}', jewellery_set)
             JewelleryUtilities.create_and_equip_jewellery_for_npc(gameworld=gameworld, entity_id=entity_id,
-                                                           jewellery_set=jewellery_set, npc_class_file=npc_class_file)
+                                                                  jewellery_set=jewellery_set,
+                                                                  npc_class_file=npc_class_file)
             # ItemManager.create_and_equip_jewellery_for_npc(gameworld=gameworld, entity_id=entity_id,
             #                                                jewellery_set=jewellery_set, npc_class_file=npc_class_file)
         else:
@@ -516,14 +535,15 @@ class Entity:
         enemy_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
         weapon_type = WeaponUtilities.get_weapon_type(gameworld, created_weapon_entity)
 
-        AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config, spell_file=enemy_class, playable_class=enemy_class)
+        AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config,
+                                                         spell_file=enemy_class, playable_class=enemy_class)
 
         spell_list = SpellUtilities.get_list_of_spells_for_enemy(gameworld=gameworld, weapon_type=weapon_type,
                                                                  mobile_class=enemy_class)
         sample_spells = WeaponUtilities.load_enemy_weapon_with_spells(gameworld=gameworld, enemy_id=entity_id,
-                                                                    spell_list=spell_list,
-                                                                    weapon_entity_id=created_weapon_entity,
-                                                                    weapon_type=weapon_type)
+                                                                      spell_list=spell_list,
+                                                                      weapon_entity_id=created_weapon_entity,
+                                                                      weapon_type=weapon_type)
 
         logger.debug('=================')
         for k in sample_spells:
@@ -542,14 +562,18 @@ class Entity:
         # gather list of available weapons for the player class
 
         if main_hand != '':
-            weapon_to_create, which_hand = Entity.select_main_hand_weapon(main_hand=main_hand, selected_class=selected_class, game_config=game_config)
+            weapon_to_create, which_hand = Entity.select_main_hand_weapon(main_hand=main_hand,
+                                                                          selected_class=selected_class,
+                                                                          game_config=game_config)
             created_weapon_entity = Entity.create_weapon_and_equip_npc(weapon_to_be_created=weapon_to_create,
                                                                        enemy_class=selected_class, entity_id=entity_id,
-                                                                       hand_to_wield=which_hand, gameworld=gameworld, game_config=game_config)
+                                                                       hand_to_wield=which_hand, gameworld=gameworld,
+                                                                       game_config=game_config)
 
         if off_hand != '':
             weapon_to_create, which_hand = Entity.select_off_hand_weapon(off_hand=off_hand,
-                                                                         selected_class=selected_class, game_config=game_config)
+                                                                         selected_class=selected_class,
+                                                                         game_config=game_config)
             created_weapon_entity = Entity.create_weapon_and_equip_npc(weapon_to_be_created=weapon_to_create,
                                                                        enemy_class=selected_class, entity_id=entity_id,
                                                                        hand_to_wield=which_hand, gameworld=gameworld,
@@ -557,7 +581,8 @@ class Entity:
 
         if both_hands != '':
             weapon_to_create, which_hand = Entity.select_both_hands_weapon(both_hands=both_hands,
-                                                                           selected_class=selected_class, game_config=game_config)
+                                                                           selected_class=selected_class,
+                                                                           game_config=game_config)
             created_weapon_entity = Entity.create_weapon_and_equip_npc(weapon_to_be_created=weapon_to_create,
                                                                        enemy_class=selected_class, entity_id=entity_id,
                                                                        hand_to_wield=which_hand, gameworld=gameworld,
