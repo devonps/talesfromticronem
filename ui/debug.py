@@ -317,8 +317,7 @@ class Debug:
 
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
-                          start_panel_frame_height=section_lines[section], title=section_heading[section],
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         race_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=entity_id)
         string_to_print = start_string + "Race:" + end_string + race_details[0]
@@ -338,8 +337,7 @@ class Debug:
         section = 1
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
-                          start_panel_frame_height=section_lines[section], title=section_heading[section],
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_id)
         first_name_string = start_string + "First Name:" + end_string + entity_names[0]
@@ -363,8 +361,7 @@ class Debug:
         section = 2
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
-                          start_panel_frame_height=section_lines[section], title=section_heading[section],
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         weapons_list = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=entity_id)
         main_weapon = weapons_list[0]
@@ -385,8 +382,7 @@ class Debug:
         section = 3
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
-                          start_panel_frame_height=section_lines[section], title=section_heading[section],
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=entity_id)
         if equipped_jewellery[0] > 0:
@@ -411,8 +407,7 @@ class Debug:
         section = 4
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
-                          start_panel_frame_height=section_lines[section], title=section_heading[section],
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         slot_one = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=1)
         slot_two = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=2)
@@ -432,8 +427,7 @@ class Debug:
         section = 5
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
-                          start_panel_frame_height=section_lines[section], title=section_heading[section],
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         slot_six = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=6)
         slot_seven = Debug.set_spellbar_slot_string(gameworld=gameworld, entity_id=entity_id, slotid=7)
@@ -451,8 +445,7 @@ class Debug:
         section = 6
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
-                          start_panel_frame_height=section_lines[section], title=section_heading[section],
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          start_panel_frame_height=section_lines[section], title=section_heading[section])
         current_health_value = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=entity_id)
         max_health_value = MobileUtilities.get_mobile_derived_maximum_health(gameworld=gameworld, entity=entity_id)
 
@@ -495,8 +488,7 @@ class Debug:
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
                           start_panel_frame_height=section_lines[section],
-                          title=section_heading[section], fg=colourUtilities.get('BLUE'),
-                          bg=colourUtilities.get('BLACK'))
+                          title=section_heading[section])
 
         str_to_print = "[color=blue]Location Mat/Disp/Def[/color]"
 
@@ -541,8 +533,7 @@ class Debug:
         section = 9
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
-                          start_panel_frame_height=section_lines[section], title=section_heading[section],
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         entity_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=entity_id)
         entity_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld, entity=entity_id)
@@ -562,8 +553,7 @@ class Debug:
         section = 10
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
-                          start_panel_frame_height=section_lines[section], title=section_heading[section],
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         entity_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld, entity=entity_id)
         entity_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld,
@@ -587,8 +577,7 @@ class Debug:
         section = 11
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
-                          start_panel_frame_height=section_lines[section], title=section_heading[section],
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         entity_boon_duration = MobileUtilities.get_mobile_derived_boon_duration(gameworld=gameworld, entity=entity_id)
 
@@ -615,8 +604,7 @@ class Debug:
         section = 12
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
-                          start_panel_frame_height=section_lines[section], title=section_heading[section],
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         applied_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=entity_id)
         applied_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=entity_id)
@@ -652,8 +640,7 @@ class Debug:
         if ai_level > 1:
             draw_simple_frame(start_panel_frame_x=sx, start_panel_frame_y=sy,
                               start_panel_frame_width=sw,
-                              start_panel_frame_height=sl, title=sh,
-                              fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                              start_panel_frame_height=sl, title=sh)
 
             pref_min_attack_range = MobileUtilities.get_enemy_preferred_min_range(gameworld=gameworld, entity=entity_id)
             pre_max_attack_range = MobileUtilities.get_enemy_preferred_max_range(gameworld=gameworld, entity=entity_id)

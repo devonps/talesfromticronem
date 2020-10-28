@@ -328,7 +328,7 @@ class CharacterCreation:
             if option['playable']:
                 race_name.append(option['name'])
                 race_flavour.append(option['flavour'])
-                race_bg_colour.append(colourUtilities.get('BLACK'))
+                race_bg_colour.append('black')
                 race_size.append(option['size'])
                 racial_bonus_count = option['attribute_count']
                 race_name_desc.append(option['singular_plural_adjective'])
@@ -436,7 +436,7 @@ class CharacterCreation:
 
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         terminal.clear()
-        draw_simple_frame(start_panel_frame_x=txt_panel_write_x, start_panel_frame_y=txt_panel_write_y, start_panel_frame_width=35, start_panel_frame_height=6, title='Name Your Character', fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+        draw_simple_frame(start_panel_frame_x=txt_panel_write_x, start_panel_frame_y=txt_panel_write_y, start_panel_frame_width=35, start_panel_frame_height=6, title='Name Your Character')
         terminal.printf(x=txt_panel_write_x + 1, y=txt_panel_write_y + 4, s=unicode_help_messages + 'valid chars:A-Z and a-z')
         terminal.printf(x=txt_panel_write_x + 1, y=txt_panel_write_y + 5, s=unicode_help_messages + 'leave blank for random name')
 

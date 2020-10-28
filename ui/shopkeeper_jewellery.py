@@ -39,8 +39,8 @@ def shopkeeper_jeweller(gameworld, shopkeeper_id):
     trinket_headings = ['Gemstone', 'Attribute', 'Uplift', 'Bonus']
     flavour_headings = ['pendant', 'ring', 'ring', 'earring', 'earring']
     max_menu_option = len(menu_options) - 1
-    flavour_colour_string = '[color=' + colourUtilities.get('LIGHTSLATEGRAY') + ']'
-    flavour_colour_content = '[color=' + colourUtilities.get('YELLOW4') + ']'
+    flavour_colour_string = '[color=SHOPKEEPER_JEWELLER_COLUMN_FLAVOUR]'
+    flavour_colour_content = '[color=SHOPKEEPER_JEWELLER_FLAVOUR]'
     current_package = []
 
     defensive_package, balanced_package, offensive_package = JewelleryUtilities.load_jewellery_package_based_on_class(
@@ -77,8 +77,7 @@ def shopkeeper_jeweller(gameworld, shopkeeper_id):
 
         # display package menu options
         pointy_horizontal_menu(header='', menu_options=menu_options, menu_start_x=dialog_frame_start_x + 13,
-                               menu_start_y=dialog_frame_start_y + 5, selected_option=selected_menu_option,
-                               colours=[colourUtilities.get('SPRINGGREEN'), colourUtilities.get('DARKOLIVEGREEN')])
+                               menu_start_y=dialog_frame_start_y + 5, selected_option=selected_menu_option)
 
         display_jewellery_package(sx=dialog_frame_start_x + 13, sy=dialog_frame_start_y + 10,
                                   flavour_colour_content=flavour_colour_content,

@@ -13,15 +13,13 @@ from utilities.mobileHelp import MobileUtilities
 
 def coloured_list(list_options, list_x, list_y, selected_option, blank_line, fg):
     list_count = 0
-    start_print_string = "[color="
-    end_print_string = ']'
 
     for option in list_options:
         if selected_option.lower() == option.lower():
-            fg_color = colourUtilities.get('YELLOW1')
+            fg_color = "[color=COLOURED_LIST_NOT_SELECTED]"
         else:
             fg_color = fg
-        string_to_print = start_print_string + fg_color + end_print_string + option
+        string_to_print = fg_color + option
         terminal.printf(x=list_x, y=list_y + list_count, s=string_to_print)
 
         list_count += 1
@@ -32,13 +30,9 @@ def coloured_list(list_options, list_x, list_y, selected_option, blank_line, fg)
 #
 # this is like a single select menu
 #
-def pointy_vertical_menu(header, menu_options, menu_start_x, menu_start_y, blank_line, selected_option, colours=None):
-    if colours is None:
-        selected_colour = colourUtilities.get('YELLOW1')
-        non_selected_colour = colourUtilities.get('WHITE')
-    else:
-        selected_colour = colours[0]
-        non_selected_colour = colours[1]
+def pointy_vertical_menu(header, menu_options, menu_start_x, menu_start_y, blank_line, selected_option):
+    selected_colour = '[color=POINTY_VERTICAL_MENU_SELECTED]'
+    non_selected_colour = '[color=POINTY_VERTICAL_MENU_NOT_SELECTED]'
 
     # print the header, with auto-wrap
     if header != '':
@@ -47,8 +41,6 @@ def pointy_vertical_menu(header, menu_options, menu_start_x, menu_start_y, blank
     # print the menu options
     menu_count = 0
     mnu = 0
-    start_print_string = "[color="
-    end_print_string = ']'
 
     for option_text in menu_options:
         if selected_option == mnu:
@@ -57,7 +49,7 @@ def pointy_vertical_menu(header, menu_options, menu_start_x, menu_start_y, blank
         else:
             fg_color = non_selected_colour
             mnu_pointer = ' '
-        men_text = start_print_string + fg_color + end_print_string + mnu_pointer + ' ' + option_text
+        men_text = fg_color + mnu_pointer + ' ' + option_text
 
         terminal.print_(x=menu_start_x, y=menu_start_y + menu_count, s=men_text)
         menu_count += 1
@@ -66,13 +58,9 @@ def pointy_vertical_menu(header, menu_options, menu_start_x, menu_start_y, blank
             menu_count += 1
 
 
-def pointy_horizontal_menu(header, menu_options, menu_start_x, menu_start_y, selected_option, colours=None):
-    if colours is None:
-        selected_colour = colourUtilities.get('YELLOW1')
-        non_selected_colour = colourUtilities.get('WHITE')
-    else:
-        selected_colour = colours[0]
-        non_selected_colour = colours[1]
+def pointy_horizontal_menu(header, menu_options, menu_start_x, menu_start_y, selected_option):
+    selected_colour = '[color=POINTY_VERTICAL_MENU_SELECTED]'
+    non_selected_colour = '[color=POINTY_VERTICAL_MENU_NOT_SELECTED]'
 
     # print the header, with auto-wrap
     if header != '':
@@ -81,8 +69,6 @@ def pointy_horizontal_menu(header, menu_options, menu_start_x, menu_start_y, sel
     # print the menu options
     next_pos = 0
     mnu = 0
-    start_print_string = "[color="
-    end_print_string = ']'
 
     for option_text in menu_options:
         if selected_option == mnu:
@@ -91,7 +77,7 @@ def pointy_horizontal_menu(header, menu_options, menu_start_x, menu_start_y, sel
         else:
             fg_color = non_selected_colour
             mnu_pointer = ' '
-        men_text = start_print_string + fg_color + end_print_string + mnu_pointer + ' ' + option_text
+        men_text = fg_color + mnu_pointer + ' ' + option_text
 
         terminal.print_(x=menu_start_x + next_pos, y=menu_start_y, s=men_text)
         next_pos += len(option_text) + 3
@@ -100,7 +86,7 @@ def pointy_horizontal_menu(header, menu_options, menu_start_x, menu_start_y, sel
 
 def display_coloured_box(title, posx, posy, width, height, fg, bg):
     draw_simple_frame(start_panel_frame_x=posx, start_panel_frame_y=posy, start_panel_frame_width=width,
-                      start_panel_frame_height=height, title=title, fg=fg, bg=bg)
+                      start_panel_frame_height=height, title=title)
 
     draw_coloured_rectangle(start_panel_frame_x=posx, start_panel_frame_y=posy, start_panel_frame_width=width,
                             start_panel_frame_height=height, ch=u'\u0020', fg=fg, bg=bg)
@@ -115,7 +101,7 @@ def draw_coloured_rectangle(start_panel_frame_x, start_panel_frame_y, start_pane
 
 
 def draw_simple_frame(start_panel_frame_x, start_panel_frame_y, start_panel_frame_width, start_panel_frame_height,
-                      title, fg, bg):
+                      title):
     # unicode frame tiles
     top_left = u'\u250c'
     top_right = u'\u2510'
@@ -150,7 +136,7 @@ def draw_simple_frame(start_panel_frame_x, start_panel_frame_y, start_panel_fram
         terminal.put(x=start_panel_frame_x, y=(start_panel_frame_y + 1) + posy, c=down_pipe)
 
     if title != '':
-        titlestring = '[color=' + fg + ']' + title
+        titlestring = '[color=SIMPLE_FRAME_HEADING_TITLE]' + title
         titlelen = len(title)
         titleminuspanel = start_panel_frame_width - titlelen
         pwx = int(titleminuspanel / 2)

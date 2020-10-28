@@ -417,8 +417,7 @@ class CommonUtils:
         terminal.clear_area(vp_x_offset + 1, vp_y_offset + 1, 26, height)
 
         draw_simple_frame(start_panel_frame_x=vp_x_offset, start_panel_frame_y=vp_y_offset, start_panel_frame_width=26,
-                          start_panel_frame_height=height, title='| Valid Targets |',
-                          fg=colourUtilities.get('BLUE'), bg=colourUtilities.get('BLACK'))
+                          start_panel_frame_height=height, title='| Valid Targets |')
 
         lft = vp_x_offset + 1
 

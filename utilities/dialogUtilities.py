@@ -94,8 +94,7 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
         menu_response = build_menu_responses(number_responses=number_responses, responses=responses,
                                              response_text=response_text)
         pointy_vertical_menu(header='', menu_options=menu_response, menu_start_x=dialog_frame_start_x + 3,
-                             menu_start_y=dialog_frame_start_y + 5, blank_line=True, selected_option=selected_response_option,
-                             colours=[colourUtilities.get('SPRINGGREEN'), colourUtilities.get('DARKOLIVEGREEN')])
+                             menu_start_y=dialog_frame_start_y + 5, blank_line=True, selected_option=selected_response_option)
 
         # blit the console
         terminal.refresh()

@@ -371,7 +371,7 @@ class Entity:
 
         for option in race_file['races']:
             race_name.append(option['name'])
-            race_bg_colour.append(colourUtilities.get('BLACK'))
+            race_bg_colour.append('0,0,0')
             race_size.append(option['size'])
             race_name_desc.append(option['singular_plural_adjective'])
 

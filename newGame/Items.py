@@ -40,6 +40,10 @@ class ItemManager:
                                                                       parameter='WEAPONSFILE')
 
         weapon_file = jsonUtilities.read_json_file(weapon_file_path)
+
+        item_fg = "[color=ITEM_GENERIC_FG]"
+        item_bg = "[color=ITEM_GENERIC_BG]"
+
         for weapon in weapon_file['weapons']:
             if weapon['name'] == weapon_type:
                 myweapon = ItemManager.create_base_item(gameworld=gameworld)
@@ -49,8 +53,8 @@ class ItemManager:
                 ItemUtilities.set_item_name(gameworld=gameworld, entity_id=myweapon, value=weapon['name'])
                 ItemUtilities.set_item_description(gameworld=gameworld, entity_id=myweapon, value=weapon['description'])
                 ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=myweapon, value=weapon['glyph'])
-                ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=myweapon, value=colourUtilities.get('WHITE'))
-                ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=myweapon, value=colourUtilities.get('BLACK'))
+                ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=myweapon, value=item_fg)
+                ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=myweapon, value=item_bg)
                 ItemUtilities.set_item_displayname(gameworld=gameworld, entity_id=myweapon, value=weapon['display_name'])
 
                 gameworld.add_component(myweapon, items.RenderItem(istrue=True))

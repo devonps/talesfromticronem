@@ -43,7 +43,7 @@ def shopkeeper_armour(gameworld, shopkeeper_id):
     max_menu_option = len(menu_options) - 1
 
     # armour column titles
-    flavour_colour_string = '[color=' + colourUtilities.get('LIGHTSLATEGRAY') + ']'
+    flavour_colour_string = '[color=SHOPKEEPER_ARMOUR_COLUMN_FLAVOUR]'
     flavour_coloumn_one_title = 'Flavour'
     flavour_column_one_string = flavour_colour_string + flavour_coloumn_one_title
 
@@ -55,14 +55,13 @@ def shopkeeper_armour(gameworld, shopkeeper_id):
                         s=intro_text)
 
         pointy_vertical_menu(header='', menu_options=menu_options, menu_start_x=dialog_frame_start_x + 3,
-                             menu_start_y=dialog_frame_start_y + 9, blank_line=True, selected_option=selected_menu_option,
-                             colours=[colourUtilities.get('SPRINGGREEN'), colourUtilities.get('DARKOLIVEGREEN')])
+                             menu_start_y=dialog_frame_start_y + 9, blank_line=True, selected_option=selected_menu_option)
 
         # display flavour columns
         terminal.printf(x=dialog_frame_start_x + 15, y=dialog_frame_start_y + 8, s=flavour_column_one_string)
 
         # display attribute to be modified
-        fg = colourUtilities.get('LIGHTBLUE1')
+        fg = "[color=SHOPKEEPER_ARMOUR_ATTRIBUTE_FLAVOUR]"
 
         # display flavour text
         coloured_list(list_options=flavour_column_text[0],
