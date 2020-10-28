@@ -703,7 +703,6 @@ class Entity:
 
         logger.debug('===----- Creating scorekeeper -----===')
         logger.debug('Scorekeeper entity id {}', scorekeeper_entity)
-        gameworld.add_component(scorekeeper_entity, scorekeeper.NumberOfTurns())
         gameworld.add_component(scorekeeper_entity, scorekeeper.ScoreKeeperFlag(sc_flag=True))
         gameworld.add_component(scorekeeper_entity, scorekeeper.MetaEvents())
         logger.debug('===----- Scorekeeper: now created-----===')
