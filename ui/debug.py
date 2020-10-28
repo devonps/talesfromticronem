@@ -306,6 +306,9 @@ class Debug:
         section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.populate_es_lists(
             entity_spy_file)
 
+        #
+        # DRAW THE UI
+        #
         section = 0
         start_string = "[color=ENTITY_SPY_COMPONENT]"
         end_string = "[/color]"
@@ -329,6 +332,9 @@ class Debug:
             gameworld=gameworld, entity=entity_id)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=glyph_print)
 
+        #
+        # ENTITY PERSONAL DETAILS
+        #
         section = 1
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
@@ -351,6 +357,9 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=ai_level_string)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=personality_string)
 
+        #
+        # WEAPONS
+        #
         section = 2
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
@@ -370,6 +379,9 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=main_hand)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=off_hand)
 
+        #
+        # JEWELLERY
+        #
         section = 3
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
@@ -393,7 +405,9 @@ class Debug:
             neck = set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
             terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6, s=neck)
 
-        # spell bar combat
+        #
+        # SPELL BAR COMBAT
+        #
         section = 4
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
@@ -412,7 +426,9 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=slot_four)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6, s=slot_five)
 
-        # spell bar utils
+        #
+        # SPELL BAR UTILITIES
+        #
         section = 5
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
@@ -429,7 +445,9 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=slot_eight)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=slot_nine)
 
-        # energy bars
+        #
+        # ENERGY BARS
+        #
         section = 6
         draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                           start_panel_frame_width=section_width[section],
@@ -449,6 +467,9 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=health_string)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=f1_string)
 
+        #
+        # MONSTER SPECIFICS
+        #
         section = 7
         Debug.draw_monster_specific_components(gameworld=gameworld, entity_id=entity_id, sx=section_posx[section],
                                                sy=section_posy[section],
