@@ -49,8 +49,8 @@ def game_loop(gameworld):
     gameworld.process(game_config, advance_game_turn)
     # blit the console
     terminal.refresh()
-    ScorekeeperUtilities.increase_game_turn_count(gameworld=gameworld)
-    # MobileUtilities.set_current_turn(gameworld=gameworld, thisturn=current_turn, entity=player)
+
+    ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name='game_turn', event_starting_value=1)
 
     while playing_game:
         #
@@ -115,7 +115,7 @@ def game_loop(gameworld):
             #
             StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player,
                                      game_map=game_map)
-            ScorekeeperUtilities.increase_game_turn_count(gameworld=gameworld)
+            ScorekeeperUtilities.add_one_to_meta_event_value(gameworld=gameworld, event_name='game_turn')
 
         current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=player)
         if current_health <= 0:

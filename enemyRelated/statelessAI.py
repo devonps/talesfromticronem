@@ -36,7 +36,7 @@ class StatelessAI:
         mobile_ai_level = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
                                                                       parameter='AI_LEVEL_MONSTER')
 
-        current_turn = ScorekeeperUtilities.get_current_turn_id(gameworld=gameworld)
+        current_turn = ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
 
         for ent, ai in gameworld.get_component(mobiles.AI):
             entity_ai = MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=ent)

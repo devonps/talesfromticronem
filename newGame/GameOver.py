@@ -50,7 +50,7 @@ class GameOver:
         turn_killed_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
                                                                   parameter='GO_STATS_POS_Y')
 
-        current_turn = ScorekeeperUtilities.get_current_turn_id(gameworld=gameworld)
+        current_turn = ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
         terminal.print_(x=turn_killed_x, y=turn_killed_y, s='You died on turn ' + str(current_turn))
 
     @staticmethod

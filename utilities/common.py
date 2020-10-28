@@ -90,7 +90,7 @@ class CommonUtils:
         game_config = configUtilities.load_config()
         player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         message_log_entity = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
-        current_turn = ScorekeeperUtilities.get_current_turn_id(gameworld=gameworld)
+        current_turn = ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
         formatted_turn_number = CommonUtils.format_number_as_string(base_number=current_turn, base_string='00000')
 
         new_string = ''
