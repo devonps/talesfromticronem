@@ -1,9 +1,24 @@
 import os
 import csv
 from pathlib import Path
+import pickle
 
 
 class Externalfiles:
+
+    @staticmethod
+    def write_meta_events_to_pickle(filename, meta_events):
+
+        output = open(filename, 'wb')
+        pickle.dump(meta_events, output)
+        output.close()
+
+    @staticmethod
+    def read_meta_events_from_pickle(filename):
+        pickle_file = open(filename, 'rb')
+        mydict = pickle.load(pickle_file)
+
+        return mydict
 
     @staticmethod
     def read_prefab_from_csv(filename):
