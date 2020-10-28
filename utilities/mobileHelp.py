@@ -53,19 +53,18 @@ class MobileUtilities(numbers.Real, ABC):
             MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=entity_id, value=px_bonus)
 
     @staticmethod
-    def set_player_gender(gameworld, entity, gender):
-        describable_component = gameworld.component_for_entity(entity, mobiles.Describable)
-        describable_component.gender = gender
+    def set_mobile_gender(gameworld, entity, gender):
+        describable_component = gameworld.component_for_entity(entity, mobiles.MobileGender)
+        describable_component.label = gender
 
     @staticmethod
-    def get_player_gender(gameworld, entity):
-        gender = gameworld.component_for_entity(entity, mobiles.Describable).gender
+    def get_mobile_gender(gameworld, entity):
+        gender = gameworld.component_for_entity(entity, mobiles.MobileGender).label
         return gender
 
     @staticmethod
     def setup_racial_attributes(gameworld, player, selected_race, race_size, bg, race_names):
-        describable_component = gameworld.component_for_entity(player, mobiles.Describable)
-        describable_component.background = bg
+        MobileUtilities.set_mobile_bg_render_colour(gameworld=gameworld, entity=player, value=bg)
         race_component = gameworld.component_for_entity(player, mobiles.Race)
         race_component.label = selected_race
         race_component.size = race_size
@@ -233,17 +232,16 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def get_mobile_personality_title(gameworld, entity):
-        describeable_component = gameworld.component_for_entity(entity, mobiles.Describable)
-        return describeable_component.personality_title
+        describeable_component = gameworld.component_for_entity(entity, mobiles.Personality)
+        return describeable_component.label
 
     @staticmethod
     def set_mobile_derived_personality(gameworld, entity):
         player_entity = entity
 
         player_current_personality_component = gameworld.component_for_entity(player_entity, mobiles.Personality)
-        player_describable_personality_component = gameworld.component_for_entity(player_entity, mobiles.Describable)
 
-        player_personality = player_describable_personality_component.personality_title
+        player_personality = player_current_personality_component.label
 
         # get current personality trait values
         charm_level = player_current_personality_component.charm_level
@@ -271,7 +269,7 @@ class MobileUtilities(numbers.Real, ABC):
         if charm_level == 25 and dignity_level == 25 and ferocity_level == 50:
             player_personality = 'Brute'
 
-        player_describable_personality_component.personality_title = player_personality
+        player_current_personality_component.label = player_personality
 
     # check ALL hand combos: main, off, and both hands
     @staticmethod
@@ -331,9 +329,13 @@ class MobileUtilities(numbers.Real, ABC):
         ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
                                                          parameter='AI_LEVEL_NONE')
 
-        gameworld.add_component(entity_id, mobiles.Describable())
+        gameworld.add_component(entity_id, mobiles.MobileGender())
+        gameworld.add_component(entity_id, mobiles.MobileDescription())
+        gameworld.add_component(entity_id, mobiles.MobileGlyph())
+        gameworld.add_component(entity_id, mobiles.MobileForeColour())
+        gameworld.add_component(entity_id, mobiles.MobileBackColour())
         MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity_id, value='@')
-        MobileUtilities.set_player_gender(gameworld=gameworld, entity=entity_id, gender='neutral')
+        MobileUtilities.set_mobile_gender(gameworld=gameworld, entity=entity_id, gender='neutral')
         MobileUtilities.set_mobile_description(gameworld=gameworld, entity=entity_id, value='something')
         gameworld.add_component(entity_id,
                                 mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
@@ -359,7 +361,6 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.DialogFlags())
         gameworld.add_component(entity_id, mobiles.NpcType())
 
-
     @staticmethod
     def is_mobile_a_shopkeeper(gameworld, target_entity):
         npctype_component = gameworld.component_for_entity(target_entity, mobiles.NpcType)
@@ -369,7 +370,6 @@ class MobileUtilities(numbers.Real, ABC):
     def get_type_of_shopkeeper(gameworld, target_entity):
         npctype_component = gameworld.component_for_entity(target_entity, mobiles.NpcType)
         return npctype_component.type_of_shopkeeper
-
 
     @staticmethod
     def set_type_of_shopkeeper(gameworld, target_entity, shopkeeper_type):
@@ -443,10 +443,9 @@ class MobileUtilities(numbers.Real, ABC):
     def create_player_character(gameworld, game_config, player_entity):
         player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
                                                                 parameter='AI_LEVEL_PLAYER')
-        gameworld.add_component(player_entity, mobiles.Describable())
         MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=player_entity, value='@')
         MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, entity=player_entity)
-        MobileUtilities.set_player_gender(gameworld=gameworld, entity=player_entity, gender='neutral')
+        MobileUtilities.set_mobile_gender(gameworld=gameworld, entity=player_entity, gender='neutral')
         MobileUtilities.set_mobile_description(gameworld=gameworld, entity=player_entity, value='something')
 
         gameworld.add_component(player_entity,
@@ -499,33 +498,33 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_mobile_description(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.Describable).description = value
+        gameworld.component_for_entity(entity, mobiles.MobileDescription).label = value
 
     @staticmethod
     def set_mobile_glyph(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.Describable).glyph = value
+        gameworld.component_for_entity(entity, mobiles.MobileGlyph).glyph = value
 
     @staticmethod
     def get_mobile_glyph(gameworld, entity):
-        describe_component = gameworld.component_for_entity(entity, mobiles.Describable)
+        describe_component = gameworld.component_for_entity(entity, mobiles.MobileGlyph)
 
         return describe_component.glyph
 
     @staticmethod
     def get_mobile_fg_render_colour(gameworld, entity):
-        return gameworld.component_for_entity(entity, mobiles.Describable).foreground
+        return gameworld.component_for_entity(entity, mobiles.MobileForeColour).fg
 
     @staticmethod
     def get_mobile_bg_render_colour(gameworld, entity):
-        return gameworld.component_for_entity(entity, mobiles.Describable).background
+        return gameworld.component_for_entity(entity, mobiles.MobileBackColour).bg
 
     @staticmethod
     def set_mobile_fg_render_colour(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.Describable).foreground = colourUtilities.get(value)
+        gameworld.component_for_entity(entity, mobiles.MobileForeColour).fg = colourUtilities.get(value)
 
     @staticmethod
     def set_mobile_bg_render_colour(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.Describable).background = colourUtilities.get(value)
+        gameworld.component_for_entity(entity, mobiles.MobileBackColour).bg = colourUtilities.get(value)
 
     @staticmethod
     def set_mobile_ai_level(gameworld, entity, value):
@@ -591,7 +590,7 @@ class MobileUtilities(numbers.Real, ABC):
         player_name_component = gameworld.component_for_entity(entity, mobiles.Name)
         player_race_component = gameworld.component_for_entity(entity, mobiles.Race)
         player_class = MobileUtilities.get_character_class(gameworld, entity)
-        player_gender = MobileUtilities.get_player_gender(gameworld, entity)
+        player_gender = MobileUtilities.get_mobile_gender(gameworld, entity)
         player_style = MobileUtilities.get_character_style(gameworld, entity)
 
         return player_name_component.first + ' is a ' + player_gender + ' ' + player_race_component.label + ' ' + player_class + ' ( ' + player_style + ' )'
@@ -686,9 +685,9 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_mobile_primary_precision(gameworld, entity, value):
-            current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision
-            new_stat_bonus = current_stat_bonus + value
-            gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision = new_stat_bonus
+        current_stat_bonus = gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision
+        new_stat_bonus = current_stat_bonus + value
+        gameworld.component_for_entity(entity, mobiles.PrimaryAttributes).precision = new_stat_bonus
 
     @staticmethod
     def get_mobile_primary_toughness(gameworld, entity):
@@ -789,7 +788,6 @@ class MobileUtilities(numbers.Real, ABC):
             armour_equipped.append(hands)
 
         return armour_equipped
-
 
     @staticmethod
     def is_entity_wearing_armour(gameworld, entity):
@@ -994,4 +992,3 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def get_current_controls_applied_to_mobile(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.StatusEffects).controls
-

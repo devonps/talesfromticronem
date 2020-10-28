@@ -343,7 +343,7 @@ class Debug:
 
         entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_id)
         first_name_string = start_string + "First Name:" + end_string + entity_names[0]
-        gender_string = start_string + "Gender:" + end_string + MobileUtilities.get_player_gender(
+        gender_string = start_string + "Gender:" + end_string + MobileUtilities.get_mobile_gender(
             gameworld=gameworld, entity=entity_id)
 
         personality_string = start_string + "Personality:" + end_string + MobileUtilities.get_mobile_personality_title(

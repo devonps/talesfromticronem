@@ -395,7 +395,7 @@ class CharacterCreation:
         CharacterCreation.character_naming(gameworld=gameworld, game_config=game_config)
 
         # assign male gender to character
-        MobileUtilities.set_player_gender(gameworld=gameworld, entity=player, gender='male')
+        MobileUtilities.set_mobile_gender(gameworld=gameworld, entity=player, gender='male')
 
         # give the player a 2-handed staff with spells fully loaded
         player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player)

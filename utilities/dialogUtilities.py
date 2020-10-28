@@ -143,7 +143,7 @@ def process_end_of_dialog(gameworld, dialogue_action):
 
     if dialogue_action == 'shopkeeper_intro':
         # set shopkeeper mobiles want to talk to player
-        for ent, (npc, desc) in gameworld.get_components(mobiles.NpcType, mobiles.Describable):
+        for ent, (npc, typ) in gameworld.get_components(mobiles.NpcType, mobiles.NpcType):
             if npc.shopkeeper:
                 MobileUtilities.set_talk_to_me_flag(gameworld=gameworld, target_entity=ent)
 

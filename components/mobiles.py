@@ -63,22 +63,37 @@ class ClassSpecific:
         self.fire = attunement
 
 
-class Describable:
-    def __init__(self):
-        self.description = 'undefined'
-        self.glyph = ''
-        self.foreground = colourUtilities.get('ORANGE')
-        self.background = colourUtilities.get('BLACK')
-        self.personality_title = 'Unpredictable'
-        self.gender = 'undefined'
-        self.image = 0
+class MobileGender:
+    def __init__(self, label='undefined'):
+        self.label = label
+
+
+class MobileDescription:
+    def __init__(self, label=''):
+        self.label = label
+
+
+class MobileGlyph:
+    def __init__(self, glyph=''):
+        self.glyph = glyph
+
+
+class MobileForeColour:
+    def __init__(self, fg=0):
+        self.fg = fg
+
+
+class MobileBackColour:
+    def __init__(self, bg=0):
+        self.bg = bg
 
 
 class Personality:
-    def __init__(self, charm_level=33, dignity_level=33, ferocity_level=33):
+    def __init__(self, charm_level=33, dignity_level=33, ferocity_level=33, label='Unpredictable'):
         self.charm_level = charm_level
         self.dignity_level = dignity_level
         self.ferocity_level = ferocity_level
+        self.label = label
 
 
 class Race:
@@ -144,7 +159,8 @@ class StatusEffects:
 
 class SpellCast:
 
-    def __init__(self, has_cast_a_spell=False, spell_entity=0, spell_target=0, spell_bar_slot=-99, spell_caster=0, spell_cast_at_x=0, spell_cast_at_y=0):
+    def __init__(self, has_cast_a_spell=False, spell_entity=0, spell_target=0, spell_bar_slot=-99, spell_caster=0,
+                 spell_cast_at_x=0, spell_cast_at_y=0):
         self.has_cast_a_spell = has_cast_a_spell
         self.spell_entity = spell_entity
         self.spell_target = spell_target

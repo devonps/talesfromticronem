@@ -339,7 +339,7 @@ class Entity:
     @staticmethod
     def choose_name_for_mobile(name_choice, gameworld, entity_id):
         first_name = name_choice
-        MobileUtilities.set_player_gender(gameworld=gameworld, entity=entity_id, gender='male')
+        MobileUtilities.set_mobile_gender(gameworld=gameworld, entity=entity_id, gender='male')
         if name_choice == 'RANDOM':
             # need to create random name generator here
             random_suffix = str(random.randint(3, 100))

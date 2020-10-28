@@ -224,11 +224,11 @@ class RenderUI(esper.Processor):
         screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='SCREEN_OFFSET_Y')
 
-        for ent, (rend, pos, desc, dialog) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
-                                                                       mobiles.Describable, mobiles.DialogFlags):
+        for ent, (rend, pos, dialog) in gameworld.get_components(mobiles.Renderable, mobiles.Position,
+                                                                 mobiles.DialogFlags):
             if rend.is_visible:
                 flag_setting = ''
-                display_char = desc.glyph
+                display_char = MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=ent)
                 x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=ent)
                 y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=ent)
                 visible = FieldOfView.get_fov_map_point(fov_map, x, y)
@@ -236,8 +236,8 @@ class RenderUI(esper.Processor):
                     (x, y) = RenderUI.to_camera_coordinates(game_config=game_config, game_map=game_map, x=x, y=y,
                                                             gameworld=gameworld)
                     if x != -99:
-                        fg = desc.foreground
-                        bg = desc.background
+                        fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=ent)
+                        bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=ent)
                         if dialog.talk_to_me:
                             flag_setting = 'talk_to_me'
                         RenderUI.render_entity(posx=x + screen_offset_x, posy=y + screen_offset_y, glyph=display_char,
@@ -254,18 +254,19 @@ class RenderUI(esper.Processor):
                                                                       parameter='MAP_VIEW_DRAW_X')
         map_view_down = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='MAP_VIEW_DRAW_Y')
-        for ent, (rend, loc, desc) in gameworld.get_components(items.RenderItem, items.Location, items.Describable):
+        for ent, (rend, loc) in gameworld.get_components(items.RenderItem, items.Location):
             if rend.is_true:
                 draw_pos_x = map_view_across + loc.x
                 draw_pos_y = map_view_down + loc.y
-                RenderUI.render_entity(posx=draw_pos_x, posy=draw_pos_y, glyph=desc.glyph, fg=desc.fg, bg=desc.bg)
+                display_char = MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=ent)
+                fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=ent)
+                bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=ent)
+                RenderUI.render_entity(posx=draw_pos_x, posy=draw_pos_y, glyph=display_char, fg=fg, bg=bg)
 
     @staticmethod
     def render_entity(posx, posy, glyph, fg, bg, flag=None):
 
-        str_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph
+        str_to_print = "[color=" + str(fg) + "][font=dungeon][bkcolor=" + str(bg) + "]" + glyph
         if flag == 'talk_to_me':
             str_to_print += "[offset=0, -8][+][color=red]^[/color]"
         terminal.printf(x=posx, y=posy, s=str_to_print)
-
-

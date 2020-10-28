@@ -582,12 +582,14 @@ class SpellUtilities:
         to_y = (spell_caster_y_pos + spell_range) + 1
         # get list of targets within the range of the spell - I scan a square around the spell caster
         valid_targets = []
-        for ent, (pos, name, desc) in gameworld.get_components(mobiles.Position, mobiles.Name,
-                                                               mobiles.Describable):
+        for ent, (pos, name) in gameworld.get_components(mobiles.Position, mobiles.Name):
 
             if (pos.x in range(from_x, to_x) and pos.y in range(from_y, to_y)) and ent != casting_entity:
                 # is this a valid target for the spell?
-                valid_targets.append((ent, name.first, desc.glyph, desc.foreground, desc.background))
+                display_char = MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=ent)
+                fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=ent)
+                bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=ent)
+                valid_targets.append((ent, name.first, display_char, fg, bg))
 
         return valid_targets
 
