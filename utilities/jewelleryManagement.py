@@ -253,23 +253,23 @@ class JewelleryUtilities:
 
 
                 # apply gemstone benefits
-                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=pendant)
+                jewellery_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=pendant)
                 JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
-                                                    statbonus=jewelley_stat_bonus)
+                                                    statbonus=jewellery_stat_bonus)
 
-                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=left_ear)
+                jewellery_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=left_ear)
                 JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
-                                                    statbonus=jewelley_stat_bonus)
+                                                    statbonus=jewellery_stat_bonus)
 
-                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=right_ear)
+                jewellery_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=right_ear)
                 JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id,
-                                                    statbonus=jewelley_stat_bonus)
+                                                    statbonus=jewellery_stat_bonus)
 
-                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=left_hand)
-                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id, statbonus=jewelley_stat_bonus)
+                jewellery_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=left_hand)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id, statbonus=jewellery_stat_bonus)
 
-                jewelley_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=right_hand)
-                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id, statbonus=jewelley_stat_bonus)
+                jewellery_stat_bonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld, jewellery_entity=right_hand)
+                JewelleryUtilities.add_jewellery_benefit(gameworld=gameworld, entity=entity_id, statbonus=jewellery_stat_bonus)
 
     @staticmethod
     def create_jewellery(gameworld, bodylocation, e_setting, e_hook, e_activator, playable_class):

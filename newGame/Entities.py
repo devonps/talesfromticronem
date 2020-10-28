@@ -67,10 +67,6 @@ class Entity:
                         weapon_file_option_off = npc['weapons-off']
                         weapon_file_option_both = npc['weapons-both']
 
-                        equipped_weapons = Entity.are_weapons_equipped(both_hands=weapon_file_option_both,
-                                                                       main_hand=weapon_file_option_main,
-                                                                       off_hand=weapon_file_option_off)
-
                         logger.warning('--- CREATING NEW MOBILE ---')
                         # -------------------------------------
                         # --- CHOOSE RACE ---------------------
@@ -108,36 +104,16 @@ class Entity:
                                                         entity_id=entity_id, game_config=game_config,
                                                         gameworld=gameworld)
 
-                        # get list of equipped jewellery
-                        jewellery_list = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld,
-                                                                                        mobile=entity_id)
+                        # ---------------------------------------------
+                        # --- ADD JEWELLERY BASED SPELLS TO SPELLBAR --
+                        # ---------------------------------------------
+                        Entity.add_spells_to_spell_bar_based_on_equipped_jewellery(gameworld=gameworld, entity_id=entity_id)
 
-                        left_ear = jewellery_list[0]
-                        right_ear = jewellery_list[1]
-                        neck_entity = jewellery_list[2]
-
-                        # get spell entity from that piece of jewellery
-                        if neck_entity > 0:
-                            sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=neck_entity)
-                            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=6,
-                                                             player_entity=entity_id)
-                        if left_ear > 0:
-                            sp2 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=left_ear)
-                            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=7,
-                                                             player_entity=entity_id)
-                        if right_ear > 0:
-                            sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear)
-                            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=8,
-                                                             player_entity=entity_id)
-
-                        if equipped_weapons:
-                            # --------------------------------------
-                            # --- CREATE WEAPONSET AND -------------
-                            # --- CHOOSE SPELLS AND LOAD TO WEAPON -
-                            # --------------------------------------
-                            Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_file_option_main,
-                                                    off_hand=weapon_file_option_off, both_hands=weapon_file_option_both,
-                                                    gameworld=gameworld, game_config=game_config)
+                        # --------------------------------------
+                        # --- CREATE WEAPONSET AND -------------
+                        # --- CHOOSE SPELLS AND LOAD TO WEAPON -
+                        # --------------------------------------
+                        Entity.choose_weapons(weapon_file_option_both=weapon_file_option_both, weapon_file_option_main=weapon_file_option_main, weapon_file_option_off=weapon_file_option_off, entity_id=entity_id, gameworld=gameworld, game_config=game_config)
 
                         # --------------------------------------
                         # --- add heal spell to spellbar     ---
@@ -195,6 +171,31 @@ class Entity:
                         logger.warning('--- NEW MOBILE CREATED ---')
         return entity_id
 
+
+    @staticmethod
+    def add_spells_to_spell_bar_based_on_equipped_jewellery(gameworld, entity_id):
+        # get list of equipped jewellery
+        jewellery_list = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld,
+                                                                        mobile=entity_id)
+
+        left_ear = jewellery_list[0]
+        right_ear = jewellery_list[1]
+        neck_entity = jewellery_list[2]
+
+        # get spell entity from that piece of jewellery
+        if neck_entity > 0:
+            sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=neck_entity)
+            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=6,
+                                             player_entity=entity_id)
+        if left_ear > 0:
+            sp2 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=left_ear)
+            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=7,
+                                             player_entity=entity_id)
+        if right_ear > 0:
+            sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear)
+            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=8,
+                                             player_entity=entity_id)
+
     @staticmethod
     def is_npc_a_tutor(gameworld, entity_id, npc_tutor, tutor_type):
         if npc_tutor == 'True':
@@ -221,8 +222,6 @@ class Entity:
         MobileUtilities.add_enemy_components(gameworld=gameworld, entity_id=entity_id)
 
         npc_name = 'RANDOM'
-        equipped_weapons = False
-
         npc_fg = 'white'
         npc_bg = 'black'
 
@@ -240,9 +239,6 @@ class Entity:
                 weapon_both_hands = role['both-hands-weapon']
                 min_range = role['min-range']
                 max_range = role['max-range']
-
-                if weapon_both_hands != '' or weapon_main_hand != '' or weapon_off_hand != '':
-                    equipped_weapons = True
 
                 logger.warning('--- CREATING ENEMY ROLE {} ---', enemy_role)
                 logger.info('With entity id {}', entity_id)
@@ -276,19 +272,18 @@ class Entity:
                 Entity.choose_jewellery_package(jewellery_file_option=jewellery_file_option, entity_id=entity_id,
                                                 game_config=game_config, gameworld=gameworld)
 
-                if equipped_weapons:
-                    # -------------------------------------
-                    # --- CREATE WEAPONSET ----------------
-                    # -------------------------------------
-                    Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_main_hand,
-                                            off_hand=weapon_off_hand,
-                                            both_hands=weapon_both_hands, gameworld=gameworld, game_config=game_config)
+                # -------------------------------------
+                # --- CREATE WEAPONSET ----------------
+                # -------------------------------------
+                Entity.choose_weapons(weapon_file_option_both=weapon_both_hands, weapon_file_option_main=weapon_main_hand,
+                                      weapon_file_option_off=weapon_off_hand, entity_id=entity_id,
+                                      gameworld=gameworld, game_config=game_config)
 
-                    # --------------------------------------
-                    # --- CREATE SPELL BAR WITH SPELLS     -
-                    # --------------------------------------
-                    logger.info('Loading spell bar based on equipped weapons')
-                    SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=entity_id)
+                # --------------------------------------
+                # --- CREATE SPELL BAR WITH SPELLS     -
+                # --------------------------------------
+                logger.info('Loading spell bar based on equipped weapons')
+                SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=entity_id)
 
                 # --------------------------------------
                 # --- SET COMBAT ROLE -
@@ -550,6 +545,16 @@ class Entity:
             name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=k)
             logger.info('Sample spell {}', name)
         logger.debug('=================')
+
+    @staticmethod
+    def choose_weapons(weapon_file_option_both, weapon_file_option_main, weapon_file_option_off, entity_id, gameworld, game_config):
+        equipped_weapons = Entity.are_weapons_equipped(both_hands=weapon_file_option_both,
+                                                       main_hand=weapon_file_option_main,
+                                                       off_hand=weapon_file_option_off)
+        if equipped_weapons:
+            Entity.choose_weaponset(entity_id=entity_id, main_hand=weapon_file_option_main,
+                                    off_hand=weapon_file_option_off, both_hands=weapon_file_option_both,
+                                    gameworld=gameworld, game_config=game_config)
 
     @staticmethod
     def choose_weaponset(entity_id, main_hand, off_hand, both_hands, gameworld, game_config):
