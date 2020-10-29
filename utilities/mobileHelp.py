@@ -65,6 +65,9 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def setup_racial_attributes(gameworld, player, selected_race, race_size, bg, race_names):
         MobileUtilities.set_mobile_bg_render_colour(gameworld=gameworld, entity=player, value=bg)
+        # TODO setup proper FG colour for player character
+        MobileUtilities.set_mobile_fg_render_colour(gameworld=gameworld, entity=player, value='green')
+
         race_component = gameworld.component_for_entity(player, mobiles.Race)
         race_component.label = selected_race
         race_component.size = race_size
@@ -443,7 +446,7 @@ class MobileUtilities(numbers.Real, ABC):
     def create_player_character(gameworld, game_config, player_entity):
         player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
                                                                 parameter='AI_LEVEL_PLAYER')
-        MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=player_entity, value='@')
+        MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=player_entity, value='?')
         MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, entity=player_entity)
         MobileUtilities.set_mobile_gender(gameworld=gameworld, entity=player_entity, gender='neutral')
         MobileUtilities.set_mobile_description(gameworld=gameworld, entity=player_entity, value='something')
@@ -520,11 +523,11 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_mobile_fg_render_colour(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.MobileForeColour).fg = colourUtilities.get(value)
+        gameworld.component_for_entity(entity, mobiles.MobileForeColour).fg = value
 
     @staticmethod
     def set_mobile_bg_render_colour(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.MobileBackColour).bg = colourUtilities.get(value)
+        gameworld.component_for_entity(entity, mobiles.MobileBackColour).bg = value
 
     @staticmethod
     def set_mobile_ai_level(gameworld, entity, value):

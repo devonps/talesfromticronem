@@ -6,6 +6,7 @@ from utilities.common import CommonUtils
 from utilities.mobileHelp import MobileUtilities
 from loguru import logger
 
+from utilities.scorekeeper import ScorekeeperUtilities
 from utilities.spellHelp import SpellUtilities
 from utilities.weaponManagement import WeaponUtilities
 
@@ -36,6 +37,12 @@ class CastSpells(esper.Processor):
                 spell_status_effects = [boons_to_apply_list, condis_to_apply_list]
 
                 self.set_spell_cooldown_value(spell_entity=spell_entity)
+
+                # increase meta-event spell casting value
+                spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=spell_entity)
+                updated_spell_name = spell_name.replace(" ", "_")
+                updated_spell_name += "_cast"
+                ScorekeeperUtilities.add_one_to_meta_event_value(gameworld=self.gameworld, event_name=updated_spell_name)
 
                 if spell_type == 'combat':
                     self.process_combat_spells(target_entities=target_entities,

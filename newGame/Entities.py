@@ -158,9 +158,9 @@ class Entity:
                                                                value=npc_desc)
                         MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity_id, value=npc_glyph)
                         MobileUtilities.set_mobile_fg_render_colour(gameworld=gameworld, entity=entity_id,
-                                                                    value=npc_fg.upper())
+                                                                    value=npc_fg)
                         MobileUtilities.set_mobile_bg_render_colour(gameworld=gameworld, entity=entity_id,
-                                                                    value=npc_bg.upper())
+                                                                    value=npc_bg)
                         MobileUtilities.set_mobile_visible(gameworld=gameworld, entity=entity_id)
                         MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx,
                                                             posy=posy)

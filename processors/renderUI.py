@@ -31,54 +31,6 @@ class RenderUI(esper.Processor):
         terminal.bkcolor('black')
         terminal.clear_area(0, 0, terminal.state(terminal.TK_WIDTH), terminal.state(terminal.TK_HEIGHT))
 
-    @staticmethod
-    def render_entity_display_panel(gameworld, game_config, visible_entities):
-
-        # right hand side divider
-        for dy in range(40):
-            terminal.printf(x=63, y=dy, s="[color=red][font=dungeon]▒")
-
-        image_start_x_pos = 64
-        entity_y_draw_pos = 4
-        str_colour_msg = "[color="
-
-        str_to_print = "[color=RENDER_VISIBLE_ENTITIES_LIST] Visible Entities"
-        terminal.printf(x=64, y=1, s=str_to_print)
-
-        for entity in visible_entities:
-            glyph = MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=entity)
-            fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=entity)
-            bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=entity)
-            list_of_conditions = MobileUtilities.get_current_condis_applied_to_mobile(
-                gameworld=gameworld, entity=entity)
-            list_of_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld,
-                                                                                entity=entity)
-            current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=entity)
-            maximum_health = MobileUtilities.get_mobile_derived_maximum_health(gameworld=gameworld, entity=entity)
-
-            display_percentage = formulas.calculate_percentage(low_number=current_health, max_number=maximum_health)
-
-            str_to_print = str_colour_msg + fg + "][font=dungeon][bkcolor=" + bg + "]" + glyph + ' '
-            str_colour = "red"
-            if display_percentage > 89:
-                str_colour = "green"
-            elif 90 > display_percentage > 30:
-                str_colour = "orange"
-            str_to_print += str_colour_msg + str_colour + "]H:" + str(display_percentage) + "% "
-            if len(list_of_boons) > 0:
-                str_to_print += "[color=green]b:[/color]"
-                for boon in list_of_boons:
-                    str_colour += boon['displayChar']
-                str_to_print += " [/color]"
-
-            if len(list_of_conditions) > 0:
-                str_to_print += "[color=red]c:"
-                for condition in list_of_conditions:
-                    str_to_print += condition['displayChar']
-                str_to_print += "[/color]"
-
-            terminal.printf(x=image_start_x_pos, y=entity_y_draw_pos, s=str_to_print)
-            entity_y_draw_pos += 1
 
     @staticmethod
     def render_map(gameworld, game_config, game_map):
@@ -268,5 +220,6 @@ class RenderUI(esper.Processor):
 
         str_to_print = "[color=" + str(fg) + "][font=dungeon][bkcolor=" + str(bg) + "]" + glyph
         if flag == 'talk_to_me':
+            logger.warning(str_to_print)
             str_to_print += "[offset=0, -8][+][color=red]^[/color]"
         terminal.printf(x=posx, y=posy, s=str_to_print)
