@@ -4,6 +4,7 @@ from loguru import logger
 
 from components import items
 from newGame.CreateSpells import AsEntities
+from newGame.Entities import Entity
 from newGame.Items import ItemManager
 from utilities.itemsHelp import ItemUtilities
 from utilities.randomNumberGenerator import PCG32Generator
@@ -18,6 +19,8 @@ def create_world():
     setup_gameworld(game_config=gameconfig)
     AsEntities.generate(gameworld=gameworld)
     create_jewellery_entities(gameworld=gameworld)
+    # create the scorekeeper
+    Entity.create_scorekeeper_entity(gameworld=gameworld)
 
     return gameworld
 

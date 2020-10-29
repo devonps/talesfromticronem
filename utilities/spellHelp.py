@@ -11,6 +11,7 @@ from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
+from utilities.scorekeeper import ScorekeeperUtilities
 
 
 class SpellUtilities:

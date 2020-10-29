@@ -26,8 +26,7 @@ class ScorekeeperUtilities:
     # Register meta event to scorekeeper
     @staticmethod
     def register_scorekeeper_meta_event(gameworld, event_name, event_starting_value=0):
-        scorekeeper_existing_meta_events_component = ScorekeeperUtilities.get_scorekeeper_component(gameworld=gameworld)
-        current_meta_events = scorekeeper_existing_meta_events_component.map_of_events
+        current_meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         current_meta_events.update({event_name: event_starting_value})
 
     @staticmethod
@@ -38,15 +37,13 @@ class ScorekeeperUtilities:
 
     @staticmethod
     def get_meta_event_value(gameworld, event_name):
-        scorekeeper_existing_meta_events_component = ScorekeeperUtilities.get_scorekeeper_component(gameworld=gameworld)
-        all_meta_events = scorekeeper_existing_meta_events_component.map_of_events
+        all_meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         meta_event_value = all_meta_events.get(event_name)
         return meta_event_value
 
     @staticmethod
     def add_one_to_meta_event_value(gameworld, event_name):
-        scorekeeper_existing_meta_events_component = ScorekeeperUtilities.get_scorekeeper_component(gameworld=gameworld)
-        all_meta_events = scorekeeper_existing_meta_events_component.map_of_events
+        all_meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         meta_event_value = all_meta_events.get(event_name)
         meta_event_value += 1
         all_meta_events.update({event_name: meta_event_value})
@@ -54,9 +51,8 @@ class ScorekeeperUtilities:
 
     @staticmethod
     def subtract_one_from_meta_event_value(gameworld, event_name):
-        scorekeeper_existing_meta_events_component = ScorekeeperUtilities.get_scorekeeper_component(gameworld=gameworld)
-        all_meta_events = scorekeeper_existing_meta_events_component.map_of_events
+        all_meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         meta_event_value = all_meta_events.get(event_name)
         meta_event_value -= 1
         all_meta_events.update({event_name: meta_event_value})
-        gameworld.component_for_entity(scorekeeper_entity, scorekeeper.MetaEvents).map_of_events = all_meta_events
+        ScorekeeperUtilities.update_scorekeeper_all_meta_events(gameworld=gameworld, meta_events=all_meta_events)

@@ -6,7 +6,7 @@ from loguru import logger
 
 from newGame.Entities import Entity
 from newGame.Items import ItemManager
-from utilities import configUtilities, colourUtilities, namegenUtilities
+from utilities import configUtilities, namegenUtilities
 from utilities.armourManagement import ArmourUtilities
 from utilities.display import pointy_vertical_menu, draw_simple_frame
 from utilities.input_handlers import handle_game_keys
@@ -16,6 +16,7 @@ from newGame.initialiseNewGame import create_world
 from utilities.common import CommonUtils
 
 from ticronem import game_loop
+from utilities.scorekeeper import ScorekeeperUtilities
 from utilities.spellHelp import SpellUtilities
 from utilities.weaponManagement import WeaponUtilities
 
@@ -61,8 +62,6 @@ class CharacterCreation:
         MobileUtilities.set_MessageLog_for_player(gameworld=gameworld, entity=player, logid=messagelog_entity)
         logger.info('Mesage log stored as entity {}', messagelog_entity)
 
-        # create the scorekeeper
-        Entity.create_scorekeeper_entity(gameworld=gameworld)
         game_loop(gameworld=gameworld)
 
     @staticmethod
@@ -409,6 +408,15 @@ class CharacterCreation:
         MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon_entity, hand='both')
         spell_list = SpellUtilities.get_list_of_spells_for_enemy(gameworld=gameworld, weapon_type=weapon_to_be_created,
                                                                  mobile_class=player_class)
+
+        # generate meta events for spell loaded into spell bar
+        for spell_entity in spell_list:
+            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+            updated_spell_name = spell_name.replace(" ", "_")
+            updated_spell_name += "_cast"
+            ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name=updated_spell_name.lower(),
+                                                                 event_starting_value=0)
+
         WeaponUtilities.load_player_spellbar_from_weapons(gameworld=gameworld, weapon_type=weapon_to_be_created, spell_list=spell_list, player_entity=player)
 
 
