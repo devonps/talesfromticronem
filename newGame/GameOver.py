@@ -19,8 +19,6 @@ class GameOver:
         terminal.clear()
         GameOver.display_game_over_screen(game_config=game_config)
 
-        player_died = True
-
         if player_died:
             logger.debug('Player Died - display Game Over Screen')
             GameOver.display_killed_by_information(game_config=game_config, gameworld=gameworld, player_entity=player_entity, visible_panel=visible_panel)
