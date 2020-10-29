@@ -1,10 +1,7 @@
 import textwrap
 
 from bearlibterminal import terminal
-
 from loguru import logger
-
-from newGame.Entities import Entity
 from newGame.Items import ItemManager
 from utilities import configUtilities, namegenUtilities
 from utilities.armourManagement import ArmourUtilities

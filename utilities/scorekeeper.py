@@ -36,6 +36,16 @@ class ScorekeeperUtilities:
         return meta_events
 
     @staticmethod
+    def does_this_meta_event_exist(gameworld, incoming_meta_event_name):
+        meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
+
+        meta_event_found = False
+        for meta_event_name in meta_events.keys():
+            if incoming_meta_event_name == meta_event_name:
+                meta_event_found = True
+        return meta_event_found
+
+    @staticmethod
     def get_meta_event_value(gameworld, event_name):
         all_meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         meta_event_value = all_meta_events.get(event_name)

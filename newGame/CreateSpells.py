@@ -3,8 +3,6 @@ from loguru import logger
 from components import spells, addStatusEffects
 from utilities import configUtilities, world
 from utilities.jsonUtilities import read_json_file
-from utilities.mobileHelp import MobileUtilities
-from utilities.spellHelp import SpellUtilities
 
 
 class AsEntities:
@@ -47,6 +45,10 @@ class AsEntities:
             gameworld.add_component(thisspell, spells.SpellType(myspell['type_of_spell']))
             gameworld.add_component(thisspell, spells.StatusEffect(condis=[], boons=[], controls=[]))
             gameworld.add_component(thisspell, spells.MaxTargets(myspell['max_targets']))
+            gameworld.add_component(thisspell, spells.AreaOfEffect(use_area_of_effect=myspell['aoe']))
+            if myspell['aoe']:
+                gameworld.add_component(thisspell,
+                                        spells.AreaOfEffectShape(area_of_effect_shape=myspell['aoe_shape']))
             spell_range_in_file = myspell['spell_range']
             spell_range = configUtilities.get_config_value_as_integer(configfile=game_config, section='spells',
                                                                       parameter=spell_range_in_file.upper())
@@ -58,10 +60,6 @@ class AsEntities:
                 gameworld.add_component(thisspell, spells.DamageDuration(myspell['damage_duration']))
                 gameworld.add_component(thisspell, spells.DamageCoefficient(myspell['damage_coef']))
                 gameworld.add_component(thisspell, spells.GroundTargeted(myspell['ground_targeted']))
-                gameworld.add_component(thisspell, spells.AreaOfEffect(use_area_of_effect=myspell['aoe']))
-                if myspell['aoe']:
-                    gameworld.add_component(thisspell,
-                                            spells.AreaOfEffectShape(area_of_effect_shape=myspell['aoe_shape']))
 
             if myspell['type_of_spell'] == 'heal':
                 spell_heal_file = myspell['heal_duration']

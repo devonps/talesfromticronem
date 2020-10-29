@@ -8,6 +8,7 @@ from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
 from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.mobileHelp import MobileUtilities
+from utilities.scorekeeper import ScorekeeperUtilities
 from utilities.spellHelp import SpellUtilities
 
 
@@ -122,14 +123,29 @@ def set_spellbar_utility_spells(gameworld, player_entity):
     if pendent_entity > 0:
         sp1 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=pendent_entity)
         SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=6, player_entity=player_entity)
+        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=sp1)
+        updated_spell_name = spell_name.replace(" ", "_")
+        updated_spell_name += "_cast"
+        ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name=updated_spell_name.lower(),
+                                                             event_starting_value=0)
 
     if left_ear_entity > 0:
         sp2 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=left_ear_entity)
         SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=7, player_entity=player_entity)
+        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=sp2)
+        updated_spell_name = spell_name.replace(" ", "_")
+        updated_spell_name += "_cast"
+        ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name=updated_spell_name.lower(),
+                                                             event_starting_value=0)
 
     if right_ear_entity > 0:
         sp3 = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=right_ear_entity)
         SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=8, player_entity=player_entity)
+        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=sp3)
+        updated_spell_name = spell_name.replace(" ", "_")
+        updated_spell_name += "_cast"
+        ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name=updated_spell_name.lower(),
+                                                             event_starting_value=0)
 
 
 def display_jewellery_package(sx, sy, flavour_colour_content, jewellery_package):
