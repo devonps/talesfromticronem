@@ -217,9 +217,7 @@ class RenderUI(esper.Processor):
 
     @staticmethod
     def render_entity(posx, posy, glyph, fg, bg, flag=None):
-
         str_to_print = "[color=" + str(fg) + "][font=dungeon][bkcolor=" + str(bg) + "]" + glyph
         if flag == 'talk_to_me':
-            logger.warning(str_to_print)
             str_to_print += "[offset=0, -8][+][color=red]^[/color]"
         terminal.printf(x=posx, y=posy, s=str_to_print)

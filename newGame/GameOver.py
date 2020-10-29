@@ -25,6 +25,8 @@ class GameOver:
             GameOver.display_end_game_key_statistics(gameworld=gameworld, game_config=game_config)
         else:
             logger.debug('Player Quit - display something else')
+            meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
+            logger.warning('list of meta events:{}', meta_events)
 
         terminal.refresh()
         valid_event = False

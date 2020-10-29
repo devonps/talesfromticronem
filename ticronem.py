@@ -52,8 +52,6 @@ def game_loop(gameworld):
 
     ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name='game_turn', event_starting_value=1)
 
-    meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
-    logger.warning('list of meta events:{}', meta_events)
     while playing_game:
         #
         # scene manager
