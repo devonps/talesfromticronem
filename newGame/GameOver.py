@@ -23,7 +23,9 @@ class GameOver:
 
         if player_died:
             logger.debug('Player Died - display Game Over Screen')
-            GameOver.display_killed_by_information(game_config=game_config, gameworld=gameworld, player_entity=player_entity, visible_panel=visible_panel)
+            GameOver.display_killed_by_information(game_config=game_config)
+            GameOver.display_equipment_panels(gameworld=gameworld, game_config=game_config, visible_panel=visible_panel, player_entity=player_entity)
+            GameOver.display_applied_status_effects(gameworld=gameworld, game_config=game_config, player_entity=player_entity)
         else:
             logger.debug('Player Quit - display something else')
         GameOver.display_end_game_key_statistics(gameworld=gameworld, game_config=game_config)
@@ -40,8 +42,9 @@ class GameOver:
             if event_action == 'W':
                 visible_panel = 2
 
-            GameOver.display_killed_by_information(game_config=game_config, gameworld=gameworld,
-                                                   player_entity=player_entity, visible_panel=visible_panel)
+            GameOver.display_killed_by_information(game_config=game_config)
+            GameOver.display_equipment_panels(gameworld=gameworld, game_config=game_config, visible_panel=visible_panel, player_entity=player_entity)
+            GameOver.display_applied_status_effects(gameworld=gameworld, game_config=game_config, player_entity=player_entity)
             terminal.refresh()
 
     @staticmethod
@@ -75,7 +78,7 @@ class GameOver:
                         s=" ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝   ╚════╝    ╚═╝   ╚══════╝╚═╝  ╚═╝")
 
     @staticmethod
-    def display_killed_by_information(game_config, gameworld, player_entity, visible_panel):
+    def display_killed_by_information(game_config):
         killed_by_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
                                                                   parameter='GO_KILLED_BY_X')
         killed_by_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
@@ -84,6 +87,15 @@ class GameOver:
                                                                   parameter='GO_WHEN_DIED_X')
         died_when_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
                                                                   parameter='GO_WHEN_DIED_Y')
+
+        # the thing that killed the player
+        terminal.printf(x=killed_by_x, y=killed_by_y, s='You died of poisoning!')
+
+        # at the time of your death
+        terminal.printf(x=died_when_x, y=died_when_y, s='At the time of your death...')
+
+    @staticmethod
+    def display_applied_status_effects(gameworld, game_config, player_entity):
         condi_print_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
                                                                   parameter='GO_CONDI_X')
         condi_print_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
@@ -92,75 +104,6 @@ class GameOver:
                                                                   parameter='GO_BOON_X')
         boon_print_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
                                                                   parameter='GO_BOON_Y')
-
-        unicode_string_to_print = '[font=dungeon][color=MSGPANEL_FRAME_COLOUR]['
-        ascii_prefix = 'ASCII_SINGLE_'
-        equipment_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                          section='gameOver',
-                                                                          parameter='GO_EQUIP_PANEL_WIDTH')
-        equipment_panel_depth = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                          section='gameOver',
-                                                                          parameter='GO_EQUIP_PANEL_DEPTH')
-
-        equipment_panel_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                            section='gameOver',
-                                                                            parameter='GO_EQUIP_PANEL_START_X')
-
-        equipment_panel_start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                            section='gameOver',
-                                                                            parameter='GO_EQUIP_PANEL_START_Y')
-
-        equipment_panel_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                         parameter=ascii_prefix + 'TOP_LEFT')
-
-        equipment_panel_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                            parameter=ascii_prefix + 'BOTTOM_LEFT')
-
-        equipment_panel_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                          parameter=ascii_prefix + 'TOP_RIGHT')
-
-        equipment_panel_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                             parameter=ascii_prefix + 'BOTTOM_RIGHT')
-
-        equipment_panel_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                    parameter=ascii_prefix + 'HORIZONTAL')
-        equipment_panel_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                  parameter=ascii_prefix + 'VERTICAL')
-        equipment_panel_left_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                       parameter=ascii_prefix + 'LEFT_T_JUNCTION')
-        equipment_panel_right_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                        parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
-        equipment_panel_top_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                      parameter=ascii_prefix + 'TOP_T_JUNCTION')
-        equipment_panel_bottom_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                         parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
-        tabs_to_display = configUtilities.get_config_value_as_list(configfile=game_config, section='gameOver',
-                                                                   parameter='GO_EQUIP_PANEL_TABS')
-
-        equipment_panel_item_x = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                            section='gameOver',
-                                                                            parameter='GO_EQUIP_ITEM_X')
-        equipment_panel_item_y = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                            section='gameOver',
-                                                                            parameter='GO_EQUIP_ITEM_Y')
-
-        tab_pos_x = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                            section='gameOver',
-                                                                            parameter='GO_EQUIP_TAB_X')
-
-        tab_length = configUtilities.get_config_value_as_integer(configfile=game_config,
-                                                                            section='gameOver',
-                                                                            parameter='GO_EQUIP_TAB_WIDTH')
-
-        equipped_armour = MobileUtilities.get_full_armourset_ids_from_entity(gameworld=gameworld, entity=player_entity)
-        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=player_entity)
-        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
-
-        # the thing that killed the player
-        terminal.printf(x=killed_by_x, y=killed_by_y, s='You died of poisoning!')
-
-        # at the time of your death
-        terminal.printf(x=died_when_x, y=died_when_y, s='At the time of your death...')
 
         # condis attached
         condi_string = GameOver.format_condi_string(gameworld=gameworld, player_entity=player_entity)
@@ -171,7 +114,70 @@ class GameOver:
 
         terminal.printf(x=boon_print_x, y=boon_print_y, s=boon_string)
 
-        # when you died
+    @staticmethod
+    def display_equipment_panels(gameworld, game_config, visible_panel, player_entity):
+        unicode_string_to_print = '[font=dungeon][color=MSGPANEL_FRAME_COLOUR]['
+        ascii_prefix = 'ASCII_SINGLE_'
+        equipment_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                            section='gameOver',
+                                                                            parameter='GO_EQUIP_PANEL_WIDTH')
+        equipment_panel_depth = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                            section='gameOver',
+                                                                            parameter='GO_EQUIP_PANEL_DEPTH')
+
+        equipment_panel_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                              section='gameOver',
+                                                                              parameter='GO_EQUIP_PANEL_START_X')
+
+        equipment_panel_start_y = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                              section='gameOver',
+                                                                              parameter='GO_EQUIP_PANEL_START_Y')
+
+        equipment_panel_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                           parameter=ascii_prefix + 'TOP_LEFT')
+
+        equipment_panel_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                              parameter=ascii_prefix + 'BOTTOM_LEFT')
+
+        equipment_panel_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                            parameter=ascii_prefix + 'TOP_RIGHT')
+
+        equipment_panel_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                               parameter=ascii_prefix + 'BOTTOM_RIGHT')
+
+        equipment_panel_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                      parameter=ascii_prefix + 'HORIZONTAL')
+        equipment_panel_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                    parameter=ascii_prefix + 'VERTICAL')
+        equipment_panel_left_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                         parameter=ascii_prefix + 'LEFT_T_JUNCTION')
+        equipment_panel_right_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                          parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
+        equipment_panel_top_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                        parameter=ascii_prefix + 'TOP_T_JUNCTION')
+        equipment_panel_bottom_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                           parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
+        tabs_to_display = configUtilities.get_config_value_as_list(configfile=game_config, section='gameOver',
+                                                                   parameter='GO_EQUIP_PANEL_TABS')
+
+        equipment_panel_item_x = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                             section='gameOver',
+                                                                             parameter='GO_EQUIP_ITEM_X')
+        equipment_panel_item_y = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                             section='gameOver',
+                                                                             parameter='GO_EQUIP_ITEM_Y')
+
+        tab_pos_x = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                section='gameOver',
+                                                                parameter='GO_EQUIP_TAB_X')
+
+        tab_length = configUtilities.get_config_value_as_integer(configfile=game_config,
+                                                                 section='gameOver',
+                                                                 parameter='GO_EQUIP_TAB_WIDTH')
+
+        equipped_armour = MobileUtilities.get_full_armourset_ids_from_entity(gameworld=gameworld, entity=player_entity)
+        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=player_entity)
+        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
 
         # Armour / Jewellery / Weapons panel
 
@@ -182,7 +188,8 @@ class GameOver:
 
         # horizontals
         for z in range(equipment_panel_start_x + 1, (equipment_panel_start_x + equipment_panel_width)):
-            terminal.printf(x=z, y=equipment_panel_start_y, s=unicode_string_to_print + equipment_panel_horizontal + ']')
+            terminal.printf(x=z, y=equipment_panel_start_y,
+                            s=unicode_string_to_print + equipment_panel_horizontal + ']')
             terminal.printf(x=z, y=equipment_panel_start_y + 2,
                             s=unicode_string_to_print + equipment_panel_horizontal + ']')
             terminal.printf(x=z, y=(equipment_panel_start_y + equipment_panel_depth),
@@ -193,7 +200,8 @@ class GameOver:
 
         # verticals
         for z in range(equipment_panel_depth):
-            terminal.printf(x=equipment_panel_start_x, y=(equipment_panel_start_y + z )+ 1, s=unicode_string_to_print + equipment_panel_vertical + ']')
+            terminal.printf(x=equipment_panel_start_x, y=(equipment_panel_start_y + z) + 1,
+                            s=unicode_string_to_print + equipment_panel_vertical + ']')
             terminal.printf(x=equipment_panel_start_x + equipment_panel_width, y=(equipment_panel_start_y + z) + 1,
                             s=unicode_string_to_print + equipment_panel_vertical + ']')
 
@@ -210,7 +218,8 @@ class GameOver:
                         s=unicode_string_to_print + equipment_panel_bottom_left_corner + ']')
 
         # bottom right
-        terminal.printf(x=equipment_panel_start_x + equipment_panel_width, y=(equipment_panel_start_y + equipment_panel_depth),
+        terminal.printf(x=equipment_panel_start_x + equipment_panel_width,
+                        y=(equipment_panel_start_y + equipment_panel_depth),
                         s=unicode_string_to_print + equipment_panel_bottom_right_corner + ']')
 
         # build the tabs
@@ -238,11 +247,16 @@ class GameOver:
                         s=unicode_string_to_print + equipment_panel_top_junction + ']')
         terminal.printf(x=tab_pos_x - 1, y=equipment_panel_start_y + 2,
                         s=unicode_string_to_print + equipment_panel_bottom_junction + ']')
-        GameOver.ep_tab_display(visible_panel=visible_panel, unicode_string_to_print=unicode_string_to_print, message_panel_vertical=equipment_panel_vertical, message_panel_bottom_left_corner=equipment_panel_bottom_left_corner, message_panel_bottom_right_corner=equipment_panel_bottom_right_corner)
+        GameOver.ep_tab_display(visible_panel=visible_panel, unicode_string_to_print=unicode_string_to_print,
+                                message_panel_vertical=equipment_panel_vertical,
+                                message_panel_bottom_left_corner=equipment_panel_bottom_left_corner,
+                                message_panel_bottom_right_corner=equipment_panel_bottom_right_corner)
 
         # display items
-        GameOver.display_equipment(visible_panel=visible_panel, equipment_panel_item_x=equipment_panel_item_x, equipment_panel_item_y=equipment_panel_item_y, equipped_armour=equipped_armour, equipped_jewellery=equipped_jewellery, equipped_weapons=equipped_weapons, gameworld=gameworld)
-
+        GameOver.display_equipment(visible_panel=visible_panel, equipment_panel_item_x=equipment_panel_item_x,
+                                   equipment_panel_item_y=equipment_panel_item_y, equipped_armour=equipped_armour,
+                                   equipped_jewellery=equipped_jewellery, equipped_weapons=equipped_weapons,
+                                   gameworld=gameworld)
 
     @staticmethod
     def format_condi_string(gameworld, player_entity):
@@ -341,6 +355,3 @@ class GameOver:
             terminal.printf(x=56, y=22, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')
 
 
-    @staticmethod
-    def calculate_end_game_stats():
-        
