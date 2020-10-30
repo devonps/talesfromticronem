@@ -30,16 +30,8 @@ class CharacterCreation:
         # it's a brave new world
         gameworld = create_world()
         # setup base player entity
-        logger.debug('Creating the player character entity')
         player = MobileUtilities.get_next_entity_id(gameworld=gameworld)
         MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player)
-        equipped_armour = MobileUtilities.get_full_armourset_ids_from_entity(gameworld=gameworld, entity=player)
-        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=player)
-        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player)
-        logger.warning('Jewellery Equipped is {}', equipped_jewellery)
-        logger.warning('Weapons Equipped is {}', equipped_weapons)
-        logger.warning('Armour Equipped is {}', equipped_armour)
-
         MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config,
                                                 player_entity=player)
         logger.info('Player character stored as entity {}', player)

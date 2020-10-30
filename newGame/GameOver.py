@@ -20,14 +20,9 @@ class GameOver:
         meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         logger.warning('list of meta events:{}', meta_events)
         GameOver.display_game_over_screen(game_config=game_config)
-
-        if player_died:
-            logger.debug('Player Died - display Game Over Screen')
-            GameOver.display_killed_by_information(game_config=game_config)
-            GameOver.display_equipment_panels(gameworld=gameworld, game_config=game_config, visible_panel=visible_panel, player_entity=player_entity)
-            GameOver.display_applied_status_effects(gameworld=gameworld, game_config=game_config, player_entity=player_entity)
-        else:
-            logger.debug('Player Quit - display something else')
+        GameOver.display_killed_by_information(game_config=game_config, death_status=player_died)
+        GameOver.display_equipment_panels(gameworld=gameworld, game_config=game_config, visible_panel=visible_panel, player_entity=player_entity)
+        GameOver.display_applied_status_effects(gameworld=gameworld, game_config=game_config, player_entity=player_entity)
         GameOver.display_end_game_key_statistics(gameworld=gameworld, game_config=game_config)
         terminal.refresh()
         valid_event = False
@@ -42,20 +37,25 @@ class GameOver:
             if event_action == 'W':
                 visible_panel = 2
 
-            GameOver.display_killed_by_information(game_config=game_config)
             GameOver.display_equipment_panels(gameworld=gameworld, game_config=game_config, visible_panel=visible_panel, player_entity=player_entity)
-            GameOver.display_applied_status_effects(gameworld=gameworld, game_config=game_config, player_entity=player_entity)
             terminal.refresh()
 
     @staticmethod
     def display_end_game_key_statistics(gameworld, game_config):
-        turn_killed_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
+        stat_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
                                                                   parameter='GO_STATS_POS_X')
-        turn_killed_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
+        stat_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
                                                                   parameter='GO_STATS_POS_Y')
 
         current_turn = ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
-        terminal.print_(x=turn_killed_x, y=turn_killed_y, s='You died on turn ' + str(current_turn))
+        terminal.print_(x=stat_x, y=stat_y, s='=== STAT SUMMARY ===')
+        terminal.print_(x=stat_x, y=stat_y + 2, s='Turns Completed')
+        terminal.print_(x=stat_x, y=stat_y + 3, s='Total Enemies Killed')
+        terminal.print_(x=stat_x, y=stat_y + 4, s='Total Spells Cast')
+        terminal.print_(x=stat_x, y=stat_y + 5, s='Highest Spell Damage')
+        terminal.print_(x=stat_x, y=stat_y + 6, s='Total Damage Inflicted')
+        terminal.print_(x=stat_x, y=stat_y + 7, s='Total Damage Received')
+        terminal.print_(x=stat_x, y=stat_y + 8, s='Dungeons Visited')
 
     @staticmethod
     def display_game_over_screen(game_config):
@@ -78,7 +78,7 @@ class GameOver:
                         s=" ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝   ╚════╝    ╚═╝   ╚══════╝╚═╝  ╚═╝")
 
     @staticmethod
-    def display_killed_by_information(game_config):
+    def display_killed_by_information(game_config, death_status):
         killed_by_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
                                                                   parameter='GO_KILLED_BY_X')
         killed_by_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
@@ -89,7 +89,10 @@ class GameOver:
                                                                   parameter='GO_WHEN_DIED_Y')
 
         # the thing that killed the player
-        terminal.printf(x=killed_by_x, y=killed_by_y, s='You died of poisoning!')
+        if death_status:
+            terminal.printf(x=killed_by_x, y=killed_by_y, s='You died of poisoning!')
+        else:
+            terminal.printf(x=killed_by_x, y=killed_by_y, s='You quit.')
 
         # at the time of your death
         terminal.printf(x=died_when_x, y=died_when_y, s='At the time of your death...')
@@ -305,7 +308,7 @@ class GameOver:
 
     @staticmethod
     def display_equipped_armour(posx, posy, equipped_armour, gameworld):
-        if len(equipped_armour) > 0:
+        if equipped_armour.count(0) != 5:
             for armour_entity in range(len(equipped_armour)):
                 armour_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=equipped_armour[armour_entity])
                 terminal.print_(x=posx, y=posy, s=armour_piece_name)
@@ -315,7 +318,7 @@ class GameOver:
 
     @staticmethod
     def display_equipped_jewellery(posx, posy, equipped_jewellery, gameworld):
-        if len(equipped_jewellery) > 0:
+        if equipped_jewellery.count(0) != 5:
             for jewellery_entity in range(len(equipped_jewellery)):
                 jewellery_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld,
                                                                        entity=equipped_jewellery[jewellery_entity])
@@ -326,7 +329,7 @@ class GameOver:
 
     @staticmethod
     def display_equipped_weapons(posx, posy, equipped_weapons, gameworld):
-        if len(equipped_weapons) > 0:
+        if equipped_weapons.count(0) != 3:
             for weapon_entity in range(len(equipped_weapons)):
                 if equipped_weapons[weapon_entity] > 0:
                     weapon_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld,
@@ -340,18 +343,18 @@ class GameOver:
     @staticmethod
     def ep_tab_display(visible_panel, unicode_string_to_print, message_panel_vertical, message_panel_bottom_left_corner, message_panel_bottom_right_corner):
         if visible_panel == 0:
-            terminal.clear_area(21, 22, 11, 1)
-            terminal.printf(x=20, y=22, s=unicode_string_to_print + message_panel_vertical + ']')
-            terminal.printf(x=32, y=22, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')
+            terminal.clear_area(3, 22, 14, 1)
+            terminal.printf(x=3, y=22, s=unicode_string_to_print + message_panel_vertical + ']')
+            terminal.printf(x=16, y=22, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')
 
         if visible_panel == 1:
-            terminal.clear_area(33, 22, 11, 1)
-            terminal.printf(x=32, y=22, s=unicode_string_to_print + message_panel_bottom_right_corner + ']')
-            terminal.printf(x=44, y=22, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')
+            terminal.clear_area(17, 22, 12, 1)
+            terminal.printf(x=16, y=22, s=unicode_string_to_print + message_panel_bottom_right_corner + ']')
+            terminal.printf(x=28, y=22, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')
 
         if visible_panel == 2:
-            terminal.clear_area(45, 22, 11, 1)
-            terminal.printf(x=44, y=22, s=unicode_string_to_print + message_panel_bottom_right_corner + ']')
-            terminal.printf(x=56, y=22, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')
+            terminal.clear_area(29, 22, 12, 1)
+            terminal.printf(x=28, y=22, s=unicode_string_to_print + message_panel_bottom_right_corner + ']')
+            terminal.printf(x=40, y=22, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')
 
 

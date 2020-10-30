@@ -4,7 +4,7 @@ from components import mobiles, items
 from loguru import logger
 from mapRelated.fov import FieldOfView
 from utilities import world
-from utilities import configUtilities, colourUtilities
+from utilities import configUtilities
 
 import numbers
 
@@ -636,30 +636,15 @@ class MobileUtilities(numbers.Real, ABC):
         equipped = []
 
         lear = gameworld.component_for_entity(mobile, mobiles.Jewellery).left_ear
-        if lear > 0:
-            equipped.append(lear)
-        else:
-            equipped.append(0)
+        equipped.append(lear)
         rear = gameworld.component_for_entity(mobile, mobiles.Jewellery).right_ear
-        if rear > 0:
-            equipped.append(rear)
-        else:
-            equipped.append(0)
+        equipped.append(rear)
         lhand = gameworld.component_for_entity(mobile, mobiles.Jewellery).left_hand
-        if lhand > 0:
-            equipped.append(lhand)
-        else:
-            equipped.append(0)
+        equipped.append(lhand)
         rhand = gameworld.component_for_entity(mobile, mobiles.Jewellery).right_hand
-        if rhand > 0:
-            equipped.append(rhand)
-        else:
-            equipped.append(0)
+        equipped.append(rhand)
         neck = gameworld.component_for_entity(mobile, mobiles.Jewellery).neck
-        if neck > 0:
-            equipped.append(neck)
-        else:
-            equipped.append(0)
+        equipped.append(neck)
 
         return equipped
 
@@ -775,20 +760,11 @@ class MobileUtilities(numbers.Real, ABC):
         feet = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=entity)
         hands = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity)
 
-        if chest != 0:
-            armour_equipped.append(chest)
-
-        if head != 0:
-            armour_equipped.append(head)
-
-        if legs != 0:
-            armour_equipped.append(legs)
-
-        if feet != 0:
-            armour_equipped.append(feet)
-
-        if hands != 0:
-            armour_equipped.append(hands)
+        armour_equipped.append(chest)
+        armour_equipped.append(head)
+        armour_equipped.append(legs)
+        armour_equipped.append(feet)
+        armour_equipped.append(hands)
 
         return armour_equipped
 

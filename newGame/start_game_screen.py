@@ -1,6 +1,4 @@
 from loguru import logger
-
-from newGame.Entities import Entity
 from utilities import configUtilities
 from utilities.display import draw_colourful_frame, pointy_vertical_menu
 from utilities.input_handlers import handle_game_keys

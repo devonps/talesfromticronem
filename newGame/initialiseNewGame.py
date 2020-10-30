@@ -9,7 +9,7 @@ from newGame.Items import ItemManager
 from utilities.itemsHelp import ItemUtilities
 from utilities.randomNumberGenerator import PCG32Generator
 from utilities.externalfileutilities import Externalfiles
-from utilities import configUtilities, jsonUtilities, world, colourUtilities
+from utilities import configUtilities, jsonUtilities, world
 
 
 def create_world():
