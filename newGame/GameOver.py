@@ -3,6 +3,7 @@ from loguru import logger
 
 from utilities import configUtilities
 from utilities.common import CommonUtils
+from utilities.display import draw_simple_frame
 from utilities.input_handlers import handle_game_keys
 from utilities.itemsHelp import ItemUtilities
 from utilities.mobileHelp import MobileUtilities
@@ -47,15 +48,33 @@ class GameOver:
         stat_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
                                                                   parameter='GO_STATS_POS_Y')
 
+        stat_value_x = stat_x + 30
+        stats_text_colour = '[font=dungeon][color=GO_STATS_TEXT_COLOUR]'
+        stats_text_info = '[font=dungeon][color=GO_STATS_TEXT_INFO]'
+        stats_text_controls = '[font=dungeon][color=GO_STATS_TEXT_CONTROLS]'
+        stats_text_controls_keys= '[font=dungeon][color=GO_STATS_TAB_SELECTED]'
+
+        draw_simple_frame(start_panel_frame_x=stat_x - 5, start_panel_frame_y=stat_y - 3, start_panel_frame_width=43, start_panel_frame_height=23, title='[[ Stats Summary ]]')
+
         current_turn = ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
-        terminal.print_(x=stat_x, y=stat_y, s='=== STAT SUMMARY ===')
-        terminal.print_(x=stat_x, y=stat_y + 2, s='Turns Completed')
-        terminal.print_(x=stat_x, y=stat_y + 3, s='Total Enemies Killed')
-        terminal.print_(x=stat_x, y=stat_y + 4, s='Total Spells Cast')
-        terminal.print_(x=stat_x, y=stat_y + 5, s='Highest Spell Damage')
-        terminal.print_(x=stat_x, y=stat_y + 6, s='Total Damage Inflicted')
-        terminal.print_(x=stat_x, y=stat_y + 7, s='Total Damage Received')
-        terminal.print_(x=stat_x, y=stat_y + 8, s='Dungeons Visited')
+        terminal.print_(x=stat_x, y=stat_y + 2, s=stats_text_colour + 'Turns Completed')
+        terminal.print_(x=stat_value_x, y=stat_y + 2, s=str(current_turn))
+        terminal.print_(x=stat_x, y=stat_y + 3, s=stats_text_colour + 'Total Enemies Killed')
+        terminal.print_(x=stat_value_x, y=stat_y + 3, s=str(current_turn))
+        terminal.print_(x=stat_x, y=stat_y + 4, s=stats_text_colour + 'Total Spells Cast')
+        terminal.print_(x=stat_value_x, y=stat_y + 4, s=str(current_turn))
+        terminal.print_(x=stat_x, y=stat_y + 5, s=stats_text_colour + 'Highest Spell Damage')
+        terminal.print_(x=stat_value_x, y=stat_y + 5, s=str(current_turn))
+        terminal.print_(x=stat_x, y=stat_y + 6, s=stats_text_colour + 'Total Damage Inflicted')
+        terminal.print_(x=stat_value_x, y=stat_y + 6, s=str(current_turn))
+        terminal.print_(x=stat_x, y=stat_y + 7, s=stats_text_colour + 'Total Damage Received')
+        terminal.print_(x=stat_value_x, y=stat_y + 7, s=str(current_turn))
+        terminal.print_(x=stat_x, y=stat_y + 8, s=stats_text_colour + 'Dungeons Visited')
+        terminal.print_(x=stat_value_x, y=stat_y + 8, s=str(current_turn))
+
+        # further direction for the player
+        terminal.print_(x=stat_x, y=stat_y + 12, s=stats_text_controls + 'QUIT GAME ' + stats_text_controls_keys + '[[ESCAPE]] ' + stats_text_controls + 'NEW GAME ' + stats_text_controls_keys + '[[ENTER]]')
+        terminal.print_(x=stat_x, y=stat_y + 15, s=stats_text_info + 'Full stats can be found in /scores')
 
     @staticmethod
     def display_game_over_screen(game_config):
@@ -226,8 +245,8 @@ class GameOver:
                         s=unicode_string_to_print + equipment_panel_bottom_right_corner + ']')
 
         # build the tabs
-        not_selected_tab_colour = '[color=white]'
-        selected_tab_color = '[color=blue]'
+        not_selected_tab_colour = '[font=dungeon][color=GO_STATS_TAB_NOT_SELECTED]'
+        selected_tab_color = '[font=dungeon][color=GO_STATS_TAB_SELECTED]'
         for tab in range(len(tabs_to_display)):
             if tab != visible_panel:
                 str_to_print = not_selected_tab_colour + tabs_to_display[tab]
