@@ -17,17 +17,16 @@ class GameOver:
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         visible_panel = 0
         terminal.clear()
+        meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
+        logger.warning('list of meta events:{}', meta_events)
         GameOver.display_game_over_screen(game_config=game_config)
 
         if player_died:
             logger.debug('Player Died - display Game Over Screen')
             GameOver.display_killed_by_information(game_config=game_config, gameworld=gameworld, player_entity=player_entity, visible_panel=visible_panel)
-            GameOver.display_end_game_key_statistics(gameworld=gameworld, game_config=game_config)
         else:
             logger.debug('Player Quit - display something else')
-            meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
-            logger.warning('list of meta events:{}', meta_events)
-
+        GameOver.display_end_game_key_statistics(gameworld=gameworld, game_config=game_config)
         terminal.refresh()
         valid_event = False
         while not valid_event:
@@ -342,3 +341,6 @@ class GameOver:
             terminal.printf(x=56, y=22, s=unicode_string_to_print + message_panel_bottom_left_corner + ']')
 
 
+    @staticmethod
+    def calculate_end_game_stats():
+        
