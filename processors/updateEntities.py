@@ -31,8 +31,6 @@ class UpdateEntitiesProcessor(esper.Processor):
 
                     entity_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
 
-                    logger.info('{}/s current health is {}', entity_names[0], current_health)
-
                     if current_health < 0:
                         self.entity_is_dead(dead_entity_id=ent)
                     else:

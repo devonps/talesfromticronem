@@ -42,7 +42,8 @@ class CastSpells(esper.Processor):
                 spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=spell_entity)
                 updated_spell_name = spell_name.replace(" ", "_")
                 updated_spell_name += "_cast"
-                ScorekeeperUtilities.add_one_to_meta_event_value(gameworld=self.gameworld, event_name=updated_spell_name.lower())
+                lower_spell_name = updated_spell_name.lower()
+                ScorekeeperUtilities.add_one_to_meta_event_value(gameworld=self.gameworld, event_name=lower_spell_name)
 
                 if spell_type == 'combat':
                     self.process_combat_spells(target_entities=target_entities,

@@ -3,9 +3,11 @@ from loguru import logger
 
 from components import spells
 from utilities import configUtilities
+from utilities.armourManagement import ArmourUtilities
 from utilities.common import CommonUtils
 from utilities.input_handlers import handle_game_keys
 from utilities.jewelleryManagement import JewelleryUtilities
+from utilities.scorekeeper import ScorekeeperUtilities
 from utilities.spellHelp import SpellUtilities
 
 
@@ -113,6 +115,11 @@ def swap_the_spell(gameworld, pos, sort_spells_list, utility_slot_to_be_swapped_
             SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=ent,
                                              slot=utility_slot_to_be_swapped_out,
                                              player_entity=player_entity)
+            updated_spell_name = name.label.replace(" ", "_")
+            updated_spell_name += "_cast"
+            meta_event_already_exist = ScorekeeperUtilities.does_this_meta_event_exist(gameworld=gameworld, incoming_meta_event_name=updated_spell_name.lower())
+            if not meta_event_already_exist:
+                ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name=updated_spell_name.lower(), event_starting_value=0)
 
 
 def remove_already_equipped_utility_spells(gameworld, player_entity, utility_spells_list):

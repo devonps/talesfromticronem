@@ -1,7 +1,5 @@
 import esper
 from bearlibterminal import terminal
-from loguru import logger
-
 from utilities import configUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.common import CommonUtils
@@ -81,7 +79,6 @@ class RenderMessageLog(esper.Processor):
 
         # build the tabs
         visible_log = CommonUtils.get_current_log_id(gameworld=self.gameworld, log_entity=message_log_entity)
-        logger.info('Visible log is {}', visible_log)
 
         tabs_to_display = configUtilities.get_config_value_as_list(configfile=game_config, section='messagePanel', parameter='MSG_PANEL_TABS')
         not_selected_tab_colour = '[color=white]'
