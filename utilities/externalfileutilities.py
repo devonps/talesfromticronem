@@ -8,7 +8,6 @@ class Externalfiles:
 
     @staticmethod
     def write_meta_events_to_pickle(filename, meta_events):
-
         output = open(filename, 'wb')
         pickle.dump(meta_events, output)
         output.close()

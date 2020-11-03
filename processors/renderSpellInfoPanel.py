@@ -1,15 +1,7 @@
 import random
-
 import esper
 from bearlibterminal import terminal
-
-from utilities import configUtilities, formulas
-from utilities.common import CommonUtils
-from utilities.display import set_jewellery_left_ear_string, set_jewellery_right_ear_string, \
-    set_jewellery_left_hand_string, set_jewellery_right_hand_string, set_jewellery_neck_string, get_head_armour_details, \
-    get_chest_armour_details, get_hands_armour_details, get_legs_armour_details, get_feet_armour_details
-from utilities.mobileHelp import MobileUtilities
-from utilities.spellHelp import SpellUtilities
+from utilities import configUtilities, formulas, common, display, mobileHelp, spellHelp
 
 
 class RenderSpellInfoPanel(esper.Processor):
@@ -41,8 +33,8 @@ class RenderSpellInfoPanel(esper.Processor):
         self.render_health()
 
     def render_boons(self):
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
-        list_of_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=self.gameworld,
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        list_of_boons = mobileHelp.MobileUtilities.get_current_boons_applied_to_mobile(gameworld=self.gameworld,
                                                                            entity=player_entity)
         boon_start_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                        parameter='STATUS_EFFECTS_START_X')
@@ -63,9 +55,9 @@ class RenderSpellInfoPanel(esper.Processor):
 
     def render_conditions(self):
 
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
 
-        list_of_conditions = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
+        list_of_conditions = mobileHelp.MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
                                                                                  entity=player_entity)
         condition_start_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='STATUS_EFFECTS_START_X')
@@ -84,22 +76,22 @@ class RenderSpellInfoPanel(esper.Processor):
         terminal.printf(x=condition_start_x, y=condition_start_y, s=unicode_condition_string + condition_string)
 
     def render_spell_info_outer_frame(self):
-        CommonUtils.render_ui_framework(game_config=self.game_config)
+        common.CommonUtils.render_ui_framework(game_config=self.game_config)
 
     def render_equipped_weapons(self):
 
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
 
         this_row = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='START_LIST_Y')
 
-        this_row, this_letter = SpellUtilities.render_main_hand_spells(gameworld=self.gameworld, game_config=self.game_config, this_row=this_row, player_entity=player_entity)
+        this_row, this_letter = spellHelp.SpellUtilities.render_main_hand_spells(gameworld=self.gameworld, game_config=self.game_config, this_row=this_row, player_entity=player_entity)
 
-        SpellUtilities.render_off_hand_spells(gameworld=self.gameworld, game_config=self.game_config, this_row=this_row, player_entity=player_entity)
+        spellHelp.SpellUtilities.render_off_hand_spells(gameworld=self.gameworld, game_config=self.game_config, this_row=this_row, player_entity=player_entity)
 
     def render_equipped_jewellery(self):
 
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
 
         start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='START_LIST_X')
@@ -119,13 +111,13 @@ class RenderSpellInfoPanel(esper.Processor):
         right_hand = 'nothing'
         neck = 'nothing'
 
-        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=self.gameworld, mobile=player_entity)
+        equipped_jewellery = mobileHelp.MobileUtilities.get_jewellery_already_equipped(gameworld=self.gameworld, mobile=player_entity)
         if len(equipped_jewellery) > 0:
-            left_ear = set_jewellery_left_ear_string(gameworld=self.gameworld, left_ear=equipped_jewellery[0])
-            right_ear = set_jewellery_right_ear_string(gameworld=self.gameworld, right_ear=equipped_jewellery[1])
-            left_hand = set_jewellery_left_hand_string(gameworld=self.gameworld, left_hand=equipped_jewellery[2])
-            right_hand = set_jewellery_right_hand_string(gameworld=self.gameworld, right_hand=equipped_jewellery[3])
-            neck = set_jewellery_neck_string(gameworld=self.gameworld, neck=equipped_jewellery[4])
+            left_ear = display.set_jewellery_left_ear_string(gameworld=self.gameworld, left_ear=equipped_jewellery[0])
+            right_ear = display.set_jewellery_right_ear_string(gameworld=self.gameworld, right_ear=equipped_jewellery[1])
+            left_hand = display.set_jewellery_left_hand_string(gameworld=self.gameworld, left_hand=equipped_jewellery[2])
+            right_hand = display.set_jewellery_right_hand_string(gameworld=self.gameworld, right_hand=equipped_jewellery[3])
+            neck = display.set_jewellery_neck_string(gameworld=self.gameworld, neck=equipped_jewellery[4])
 
         terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + left_ear)
         this_row += 1
@@ -142,7 +134,7 @@ class RenderSpellInfoPanel(esper.Processor):
         terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + neck)
 
     def render_health(self):
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
         health_start_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                             parameter='ENERGY_BARS_START_X')
 
@@ -154,14 +146,14 @@ class RenderSpellInfoPanel(esper.Processor):
 
         ascii_prefix = 'ASCII_SINGLE_'
 
-        health_lost_fill = CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_LOST')
-        health_remiaing_fill = CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_REMAINING')
+        health_lost_fill = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_LOST')
+        health_remiaing_fill = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_REMAINING')
 
         unicode_mechanic_health_lost = '[font=dungeon][color=ENERGY_HEALTH_LOST]['
         unicode_mechanic_health_remaining = '[font=dungeon][color=ENERGY_HEALTH_REMAINING]['
 
-        current_health_value = MobileUtilities.get_mobile_derived_current_health(gameworld=self.gameworld, entity=player_entity)
-        max_health_value = MobileUtilities.get_mobile_derived_maximum_health(gameworld=self.gameworld, entity=player_entity)
+        current_health_value = mobileHelp.MobileUtilities.get_mobile_derived_current_health(gameworld=self.gameworld, entity=player_entity)
+        max_health_value = mobileHelp.MobileUtilities.get_mobile_derived_maximum_health(gameworld=self.gameworld, entity=player_entity)
 
         health_split = formulas.calculate_percentage(low_number=current_health_value, max_number=max_health_value)
 
@@ -177,8 +169,8 @@ class RenderSpellInfoPanel(esper.Processor):
                             s=unicode_mechanic_health_remaining + health_remiaing_fill + ']')
 
         if debug_mode:
-            px = MobileUtilities.get_mobile_x_position(gameworld=self.gameworld, entity=player_entity)
-            py = MobileUtilities.get_mobile_y_position(gameworld=self.gameworld, entity=player_entity)
+            px = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=self.gameworld, entity=player_entity)
+            py = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=self.gameworld, entity=player_entity)
 
             terminal.printf(x=health_start_x, y=health_start_y + 2,
                             s='map x:' + str(px) + ' map y:' + str(py))
@@ -202,29 +194,29 @@ class RenderSpellInfoPanel(esper.Processor):
 
         ascii_prefix = 'ASCII_SINGLE_'
 
-        mechanic_left_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
+        mechanic_left_t_junction_char = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                 parameter=ascii_prefix + 'LEFT_T_JUNCTION')
-        mechanic_right_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
+        mechanic_right_t_junction_char = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                  parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
 
-        mechanic_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
+        mechanic_info_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                       parameter=ascii_prefix + 'TOP_LEFT')
 
-        mechanic_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
+        mechanic_info_bottom_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                          parameter=ascii_prefix + 'BOTTOM_LEFT')
 
-        mechanic_info_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
+        mechanic_info_top_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                        parameter=ascii_prefix + 'TOP_RIGHT')
 
-        mechanic_info_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
+        mechanic_info_bottom_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                           parameter=ascii_prefix + 'BOTTOM_RIGHT')
 
-        mechanic_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
+        mechanic_info_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                  parameter=ascii_prefix + 'HORIZONTAL')
-        mechanic_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
+        mechanic_info_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
                                                                parameter=ascii_prefix + 'VERTICAL')
 
-        mechanic_background_fill = CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'MECHANIC_FILL')
+        mechanic_background_fill = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'MECHANIC_FILL')
 
         mechanic_depth = 10
         mechanic_width = 1
@@ -286,7 +278,7 @@ class RenderSpellInfoPanel(esper.Processor):
             this_row = start_here
 
     def render_equipped_armour(self):
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
 
         start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='START_LIST_X')
@@ -302,7 +294,7 @@ class RenderSpellInfoPanel(esper.Processor):
         this_row += 2
 
         # head armour
-        items = get_head_armour_details(gameworld=self.gameworld, entity_id=player_entity)
+        items = display.get_head_armour_details(gameworld=self.gameworld, entity_id=player_entity)
         if len(items) == 1:
             str_to_print = items[0]
         else:
@@ -313,7 +305,7 @@ class RenderSpellInfoPanel(esper.Processor):
         this_letter += 1
 
         # chest armour
-        items = get_chest_armour_details(gameworld=self.gameworld, entity_id=player_entity)
+        items = display.get_chest_armour_details(gameworld=self.gameworld, entity_id=player_entity)
         if len(items) == 1:
             str_to_print = items[0]
         else:
@@ -324,7 +316,7 @@ class RenderSpellInfoPanel(esper.Processor):
         this_letter += 1
 
         # hands armour
-        items = get_hands_armour_details(gameworld=self.gameworld, entity_id=player_entity)
+        items = display.get_hands_armour_details(gameworld=self.gameworld, entity_id=player_entity)
         if len(items) == 1:
             str_to_print = items[0]
         else:
@@ -335,7 +327,7 @@ class RenderSpellInfoPanel(esper.Processor):
         this_letter += 1
 
         # legs armour
-        items = get_legs_armour_details(gameworld=self.gameworld, entity_id=player_entity)
+        items = display.get_legs_armour_details(gameworld=self.gameworld, entity_id=player_entity)
         if len(items) == 1:
             str_to_print = items[0]
         else:
@@ -345,7 +337,7 @@ class RenderSpellInfoPanel(esper.Processor):
         this_letter += 1
 
         # feet armour
-        items = get_feet_armour_details(gameworld=self.gameworld, entity_id=player_entity)
+        items = display.get_feet_armour_details(gameworld=self.gameworld, entity_id=player_entity)
         if len(items) == 1:
             str_to_print = items[0]
         else:
@@ -353,7 +345,7 @@ class RenderSpellInfoPanel(esper.Processor):
         terminal.print_(x=start_list_x, y=this_row, s=chr(this_letter) + ' ' + str_to_print)
 
     def render_utility_spells(self):
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
         start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='START_LIST_X')
 
@@ -374,11 +366,11 @@ class RenderSpellInfoPanel(esper.Processor):
         slot = 6
         for _ in range(3):
             name_string = unicode_cooldown_disabled + 'nothing selected'
-            slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slot,
+            slot_spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=slot,
                                                                                        player_entity=player_entity)
             if slot_spell_entity > 0:
 
-                spell_name, spell_range, spell_cooldown_value = SpellUtilities.get_spell_info_details(
+                spell_name, spell_range, spell_cooldown_value = spellHelp.SpellUtilities.get_spell_info_details(
                     gameworld=self.gameworld, spell_entity=slot_spell_entity)
 
                 if spell_cooldown_value > 0:
@@ -398,7 +390,7 @@ class RenderSpellInfoPanel(esper.Processor):
             slot += 1
 
     def render_healing_spell(self):
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=self.game_config)
         start_list_x = configUtilities.get_config_value_as_integer(configfile=self.game_config, section='spellinfo',
                                                                    parameter='START_LIST_X')
 
@@ -417,17 +409,17 @@ class RenderSpellInfoPanel(esper.Processor):
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + 'Healing ')
         this_row += 1
         # spell name
-        slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=5,
+        slot_spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=self.gameworld, slot=5,
                                                                                player_entity=player_entity)
 
         if slot_spell_entity > 0:
-            spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=slot_spell_entity)
+            spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=slot_spell_entity)
 
             # spell cooldown
-            spell_is_on_cooldown = SpellUtilities.get_spell_cooldown_status(gameworld=self.gameworld,
+            spell_is_on_cooldown = spellHelp.SpellUtilities.get_spell_cooldown_status(gameworld=self.gameworld,
                                                                             spell_entity=slot_spell_entity)
             if spell_is_on_cooldown:
-                spell_cooldown_value = SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld,
+                spell_cooldown_value = spellHelp.SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld,
                                                                               spell_entity=slot_spell_entity)
                 cooldown_colur = unicode_cooldown_enabled
             else:

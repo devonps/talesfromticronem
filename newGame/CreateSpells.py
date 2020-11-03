@@ -1,8 +1,7 @@
 from loguru import logger
 
 from components import spells, addStatusEffects
-from utilities import configUtilities, world
-from utilities.jsonUtilities import read_json_file
+from utilities import configUtilities, world, jsonUtilities
 
 
 class AsEntities:
@@ -15,7 +14,7 @@ class AsEntities:
         all_classes_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='CLASSESFILE')
 
-        class_file = read_json_file(all_classes_file)
+        class_file = jsonUtilities.read_json_file(all_classes_file)
 
         for available_class in class_file['classes']:
             _ = AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config,
@@ -28,7 +27,7 @@ class AsEntities:
 
         spell_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                      parameter=spellsfile)
-        spell_file = read_json_file(spell_file_path)
+        spell_file = jsonUtilities.read_json_file(spell_file_path)
 
         logger.debug('Creating spells as entities for {}', playable_class)
         thisspell = - 1

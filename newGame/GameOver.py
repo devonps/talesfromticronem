@@ -1,12 +1,7 @@
 from bearlibterminal import terminal
 from loguru import logger
 
-from utilities import configUtilities
-from utilities.common import CommonUtils
-from utilities.display import draw_simple_frame
-from utilities.input_handlers import handle_game_keys
-from utilities.itemsHelp import ItemUtilities
-from utilities.mobileHelp import MobileUtilities
+from utilities import configUtilities, common, display, input_handlers, itemsHelp, mobileHelp, scorekeeper
 from utilities.scorekeeper import ScorekeeperUtilities
 
 
@@ -15,10 +10,10 @@ class GameOver:
     @staticmethod
     def process_game_over(player_died, gameworld):
         game_config = configUtilities.load_config()
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         visible_panel = 0
         terminal.clear()
-        meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
+        meta_events = scorekeeper.ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         logger.warning('list of meta events:{}', meta_events)
         GameOver.display_game_over_screen(game_config=game_config)
         GameOver.display_killed_by_information(game_config=game_config, death_status=player_died)
@@ -28,7 +23,7 @@ class GameOver:
         terminal.refresh()
         valid_event = False
         while not valid_event:
-            event_to_be_processed, event_action = handle_game_keys()
+            event_to_be_processed, event_action = input_handlers.handle_game_keys()
             if event_action == 'quit':
                 valid_event = True
             if event_action == 'A':
@@ -54,9 +49,9 @@ class GameOver:
         stats_text_controls = '[font=dungeon][color=GO_STATS_TEXT_CONTROLS]'
         stats_text_controls_keys= '[font=dungeon][color=GO_STATS_TAB_SELECTED]'
 
-        draw_simple_frame(start_panel_frame_x=stat_x - 5, start_panel_frame_y=stat_y - 3, start_panel_frame_width=43, start_panel_frame_height=23, title='[[ Stats Summary ]]')
+        display.draw_simple_frame(start_panel_frame_x=stat_x - 5, start_panel_frame_y=stat_y - 3, start_panel_frame_width=43, start_panel_frame_height=23, title='[[ Stats Summary ]]')
 
-        current_turn = ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
+        current_turn = scorekeeper.ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
         terminal.print_(x=stat_x, y=stat_y + 2, s=stats_text_colour + 'Turns Completed')
         terminal.print_(x=stat_value_x, y=stat_y + 2, s=str(current_turn))
         terminal.print_(x=stat_x, y=stat_y + 3, s=stats_text_colour + 'Total Enemies Killed')
@@ -155,29 +150,29 @@ class GameOver:
                                                                               section='gameOver',
                                                                               parameter='GO_EQUIP_PANEL_START_Y')
 
-        equipment_panel_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        equipment_panel_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                            parameter=ascii_prefix + 'TOP_LEFT')
 
-        equipment_panel_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        equipment_panel_bottom_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                               parameter=ascii_prefix + 'BOTTOM_LEFT')
 
-        equipment_panel_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        equipment_panel_top_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                             parameter=ascii_prefix + 'TOP_RIGHT')
 
-        equipment_panel_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        equipment_panel_bottom_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                                parameter=ascii_prefix + 'BOTTOM_RIGHT')
 
-        equipment_panel_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        equipment_panel_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                       parameter=ascii_prefix + 'HORIZONTAL')
-        equipment_panel_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        equipment_panel_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                     parameter=ascii_prefix + 'VERTICAL')
-        equipment_panel_left_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        equipment_panel_left_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                          parameter=ascii_prefix + 'LEFT_T_JUNCTION')
-        equipment_panel_right_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        equipment_panel_right_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                           parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
-        equipment_panel_top_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        equipment_panel_top_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                         parameter=ascii_prefix + 'TOP_T_JUNCTION')
-        equipment_panel_bottom_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        equipment_panel_bottom_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                            parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
         tabs_to_display = configUtilities.get_config_value_as_list(configfile=game_config, section='gameOver',
                                                                    parameter='GO_EQUIP_PANEL_TABS')
@@ -197,9 +192,9 @@ class GameOver:
                                                                  section='gameOver',
                                                                  parameter='GO_EQUIP_TAB_WIDTH')
 
-        equipped_armour = MobileUtilities.get_full_armourset_ids_from_entity(gameworld=gameworld, entity=player_entity)
-        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=player_entity)
-        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
+        equipped_armour = mobileHelp.MobileUtilities.get_full_armourset_ids_from_entity(gameworld=gameworld, entity=player_entity)
+        equipped_jewellery = mobileHelp.MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=player_entity)
+        equipped_weapons = mobileHelp.MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
 
         # Armour / Jewellery / Weapons panel
 
@@ -282,7 +277,7 @@ class GameOver:
 
     @staticmethod
     def format_condi_string(gameworld, player_entity):
-        current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=player_entity)
+        current_condis = mobileHelp.MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=player_entity)
         condi_string = 'You were suffering from '
         if len(current_condis) > 0:
             for condi in range(len(current_condis)):
@@ -297,7 +292,7 @@ class GameOver:
 
     @staticmethod
     def format_boon_string(gameworld, player_entity):
-        current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=player_entity)
+        current_boons = mobileHelp.MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=player_entity)
         boon_string = 'You benefited from '
         if len(current_boons) > 0:
             for boon in range(len(current_boons)):
@@ -329,7 +324,7 @@ class GameOver:
     def display_equipped_armour(posx, posy, equipped_armour, gameworld):
         if equipped_armour.count(0) != 5:
             for armour_entity in range(len(equipped_armour)):
-                armour_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=equipped_armour[armour_entity])
+                armour_piece_name = itemsHelp.ItemUtilities.get_item_displayname(gameworld=gameworld, entity=equipped_armour[armour_entity])
                 terminal.print_(x=posx, y=posy, s=armour_piece_name)
                 posy += 1
         else:
@@ -339,7 +334,7 @@ class GameOver:
     def display_equipped_jewellery(posx, posy, equipped_jewellery, gameworld):
         if equipped_jewellery.count(0) != 5:
             for jewellery_entity in range(len(equipped_jewellery)):
-                jewellery_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld,
+                jewellery_piece_name = itemsHelp.ItemUtilities.get_item_displayname(gameworld=gameworld,
                                                                        entity=equipped_jewellery[jewellery_entity])
                 terminal.print_(x=posx, y=posy, s=jewellery_piece_name)
                 posy += 1
@@ -351,7 +346,7 @@ class GameOver:
         if equipped_weapons.count(0) != 3:
             for weapon_entity in range(len(equipped_weapons)):
                 if equipped_weapons[weapon_entity] > 0:
-                    weapon_piece_name = ItemUtilities.get_item_displayname(gameworld=gameworld,
+                    weapon_piece_name = itemsHelp.ItemUtilities.get_item_displayname(gameworld=gameworld,
                                                                            entity=equipped_weapons[weapon_entity])
 
                     terminal.print_(x=posx, y=posy, s=weapon_piece_name)

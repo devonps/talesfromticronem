@@ -1,7 +1,4 @@
-
-
-from utilities.externalfileutilities import Externalfiles
-from utilities import configUtilities
+from utilities import configUtilities, externalfileutilities
 
 
 class ReplayGame:
@@ -12,7 +9,7 @@ class ReplayGame:
                                                                  parameter='GAME_ACTIONS_FILE')
 
         # game_actions should be created as a list
-        game_actions = Externalfiles.load_existing_file(action_file)
+        game_actions = externalfileutilities.Externalfiles.load_existing_file(action_file)
 
         return game_actions
 
@@ -20,4 +17,4 @@ class ReplayGame:
     def update_game_replay_file(game_config, value):
         game_replay_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files', parameter='GAME_ACTIONS_FILE')
 
-        Externalfiles.write_to_existing_file(game_replay_file, value)
+        externalfileutilities.Externalfiles.write_to_existing_file(game_replay_file, value)

@@ -1,9 +1,6 @@
 from loguru import logger
-from utilities import configUtilities
-from utilities.display import draw_colourful_frame, pointy_vertical_menu
-from utilities.input_handlers import handle_game_keys
+from utilities import configUtilities, display, input_handlers
 from newGame.CharacterCreation import CharacterCreation
-
 from bearlibterminal import terminal
 
 
@@ -34,7 +31,7 @@ class StartGame:
 
         while show_game_start_screen:
 
-            draw_colourful_frame(title=game_title, title_decorator=True, title_loc='centre', corner_decorator='', msg=0)
+            display.draw_colourful_frame(title=game_title, title_decorator=True, title_loc='centre', corner_decorator='', msg=0)
 
             # place game version message
             string_to_print = '[color=light grey]' + game_version
@@ -44,13 +41,13 @@ class StartGame:
             string_to_print = '[color=white]' + game_copyright + ' [color=yellow]' + game_author
             terminal.printf(x=copyright_x, y=copyright_y, s=string_to_print)
 
-            pointy_vertical_menu(header='', menu_options=['New Game', 'Quit'], menu_start_x=menu_start_x,
+            display.pointy_vertical_menu(header='', menu_options=['New Game', 'Quit'], menu_start_x=menu_start_x,
                                  menu_start_y=menu_start_y, blank_line=True, selected_option=selected_menu_option)
 
             # blit changes to terminal
             terminal.refresh()
 
-            event_to_be_processed, event_action = handle_game_keys()
+            event_to_be_processed, event_action = input_handlers.handle_game_keys()
 
             if event_to_be_processed != '':
                 if event_action == 'quit':

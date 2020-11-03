@@ -1,14 +1,7 @@
 from bearlibterminal import terminal
 from loguru import logger
-
 from components import spells
-from utilities import configUtilities
-from utilities.armourManagement import ArmourUtilities
-from utilities.common import CommonUtils
-from utilities.input_handlers import handle_game_keys
-from utilities.jewelleryManagement import JewelleryUtilities
-from utilities.scorekeeper import ScorekeeperUtilities
-from utilities.spellHelp import SpellUtilities
+from utilities import configUtilities, armourManagement, common, input_handlers, jewelleryManagement, scorekeeper, spellHelp
 
 
 def swap_spells(gameworld, player_entity, key_pressed):
@@ -17,7 +10,7 @@ def swap_spells(gameworld, player_entity, key_pressed):
         # I need to limit this swap based on what the player has access to...
         # I need to check both armour and jewellery equipped
         # from that I can build a list of available spells to swap out
-        utility_spells_list = JewelleryUtilities.get_list_of_spell_entities_for_equpped_jewellery(gameworld=gameworld,
+        utility_spells_list = jewelleryManagement.JewelleryUtilities.get_list_of_spell_entities_for_equpped_jewellery(gameworld=gameworld,
                                                                                                   player_entity=player_entity)
 
         if len(utility_spells_list) > 0:
@@ -27,11 +20,11 @@ def swap_spells(gameworld, player_entity, key_pressed):
 
         spell_entities = []
         for a in ['head', 'chest', 'hands', 'legs', 'feet']:
-            entity_id = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld,
+            entity_id = armourManagement.ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld,
                                                                              entity=player_entity, bodylocation=a)
 
             if entity_id > 0:
-                spell_id = ArmourUtilities.get_spell_entity_from_armour_piece(gameworld=gameworld,
+                spell_id = armourManagement.ArmourUtilities.get_spell_entity_from_armour_piece(gameworld=gameworld,
                                                                               armour_entity=entity_id)
                 spell_entities.append((spell_id))
 
@@ -70,7 +63,7 @@ def swap_utility_spells(gameworld, spells_to_choose_from, key_pressed, player_en
 
         # now work with only those spells not equipped in slots 6,7,8
         for a in range(len(utility_spells_list)):
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=utility_spells_list[a])
+            spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=utility_spells_list[a])
             swap_spells_list.append(chr(start_char) + ' ' + spell_name)
             sort_spells_list.append(spell_name)
             valid_keys.append(chr(start_char))
@@ -82,7 +75,7 @@ def swap_utility_spells(gameworld, spells_to_choose_from, key_pressed, player_en
         armour_spells_list = remove_already_equipped_armour_spells(gameworld=gameworld, player_entity=player_entity,
                                                                    armour_spells_list=armour_spells_list)
         for a in range(len(armour_spells_list)):
-            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=armour_spells_list[a])
+            spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=armour_spells_list[a])
             swap_spells_list.append(chr(start_char) + ' ' + spell_name)
             sort_spells_list.append(spell_name)
             valid_keys.append(chr(start_char))
@@ -97,7 +90,7 @@ def swap_utility_spells(gameworld, spells_to_choose_from, key_pressed, player_en
     terminal.refresh()
 
     while swap_mode_is_active:
-        event_to_be_processed, event_action = handle_game_keys()
+        event_to_be_processed, event_action = input_handlers.handle_game_keys()
         if event_to_be_processed == 'keypress':
             if event_action == 'quit':
                 swap_mode_is_active = False
@@ -112,22 +105,22 @@ def swap_utility_spells(gameworld, spells_to_choose_from, key_pressed, player_en
 def swap_the_spell(gameworld, pos, sort_spells_list, utility_slot_to_be_swapped_out, player_entity):
     for ent, (name, desc) in gameworld.get_components(spells.Name, spells.Description):
         if name.label == sort_spells_list[pos]:
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=ent,
+            spellHelp.SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=ent,
                                              slot=utility_slot_to_be_swapped_out,
                                              player_entity=player_entity)
             updated_spell_name = name.label.replace(" ", "_")
             updated_spell_name += "_cast"
-            meta_event_already_exist = ScorekeeperUtilities.does_this_meta_event_exist(gameworld=gameworld, incoming_meta_event_name=updated_spell_name.lower())
+            meta_event_already_exist = scorekeeper.ScorekeeperUtilities.does_this_meta_event_exist(gameworld=gameworld, incoming_meta_event_name=updated_spell_name.lower())
             if not meta_event_already_exist:
-                ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name=updated_spell_name.lower(), event_starting_value=0)
+                scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name=updated_spell_name.lower(), event_starting_value=0)
 
 
 def remove_already_equipped_utility_spells(gameworld, player_entity, utility_spells_list):
-    slot6_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=6,
+    slot6_spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=6,
                                                                             player_entity=player_entity)
-    slot7_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=7,
+    slot7_spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=7,
                                                                             player_entity=player_entity)
-    slot8_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=8,
+    slot8_spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=8,
                                                                             player_entity=player_entity)
 
     if slot6_spell_entity in utility_spells_list:
@@ -143,11 +136,11 @@ def remove_already_equipped_utility_spells(gameworld, player_entity, utility_spe
 
 
 def remove_already_equipped_armour_spells(gameworld, player_entity, armour_spells_list):
-    slot6_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=6,
+    slot6_spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=6,
                                                                             player_entity=player_entity)
-    slot7_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=7,
+    slot7_spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=7,
                                                                             player_entity=player_entity)
-    slot8_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=8,
+    slot8_spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=8,
                                                                             player_entity=player_entity)
 
     if slot6_spell_entity in armour_spells_list:
@@ -168,18 +161,18 @@ def draw_outer_frame(spell_list):
     frame_colour = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
     ascii_prefix = 'ASCII_SINGLE_'
 
-    spell_swap_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_swap_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                        parameter=ascii_prefix + 'TOP_LEFT')
 
-    spell_swap_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_swap_right_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                       parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
 
-    spell_swap_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_swap_bottom_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                           parameter=ascii_prefix + 'BOTTOM_LEFT')
 
-    spell_swap_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_swap_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                   parameter=ascii_prefix + 'HORIZONTAL')
-    spell_swap_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_swap_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                 parameter=ascii_prefix + 'VERTICAL')
     left_edge_of_spell_info_panel = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                           section='spellSwapPopup',

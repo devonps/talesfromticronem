@@ -1,14 +1,7 @@
 from bearlibterminal import terminal
 from loguru import logger
 
-from utilities import configUtilities
-from utilities.armourManagement import ArmourUtilities
-from utilities.common import CommonUtils
-from utilities.externalfileutilities import Externalfiles
-from utilities.input_handlers import handle_game_keys
-from utilities.itemsHelp import ItemUtilities
-from utilities.jewelleryManagement import JewelleryUtilities
-from utilities.spellHelp import SpellUtilities
+from utilities import configUtilities, armourManagement, common, externalfileutilities, input_handlers, itemsHelp, jewelleryManagement, spellHelp
 
 
 def display_spell_info_popup(menu_selection, gameworld, player_entity):
@@ -89,7 +82,7 @@ def display_spell_info_popup(menu_selection, gameworld, player_entity):
         # wait for escape key
         player_not_pressed_a_key = True
         while player_not_pressed_a_key:
-            event_to_be_processed, event_action = handle_game_keys()
+            event_to_be_processed, event_action = input_handlers.handle_game_keys()
             if event_to_be_processed == 'keypress':
                 logger.info('event action is {}', event_action)
                 if event_action == 'quit':
@@ -158,21 +151,21 @@ def draw_horizontal_line_after_portrait(x, y, w, string_colour, horiz_glyph, lef
 
 def draw_outer_frame(startx, width, starty, frame_colour, game_config, depth):
     ascii_prefix = 'ASCII_SINGLE_'
-    spell_item_info_bottom_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_item_info_bottom_right_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                                parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
 
-    spell_item_info_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_item_info_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                        parameter=ascii_prefix + 'TOP_LEFT')
 
-    spell_item_info_cross_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_item_info_cross_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                       parameter=ascii_prefix + 'CROSS_JUNCTION')
 
-    spell_item_info_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_item_info_bottom_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                           parameter=ascii_prefix + 'BOTTOM_LEFT')
 
-    spell_item_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_item_info_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                   parameter=ascii_prefix + 'HORIZONTAL')
-    spell_item_info_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_item_info_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                 parameter=ascii_prefix + 'VERTICAL')
     # draw top/bottom horizontals
     for z in range(startx, (startx + width)):
@@ -211,7 +204,7 @@ def draw_portrait(startx, starty, game_config, portrait_file):
     filepath = portraits_folder + portrait_file
     font_string = "[font=portrait]"
 
-    file_content = Externalfiles.load_existing_file(filename=filepath)
+    file_content = externalfileutilities.Externalfiles.load_existing_file(filename=filepath)
     posy = starty + 2
     for row in file_content:
         terminal.printf(x=startx + 7, y=posy, s=font_string + row)
@@ -230,13 +223,13 @@ def draw_spell_info(startx, starty, gameworld, spell_entity):
     if spell_entity == 0:
         terminal.printf(x=startx, y=starty + 7, s='No embedded spell')
     else:
-        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-        spell_cooldown = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
+        spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+        spell_cooldown = spellHelp.SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
                                                                            spell_entity=spell_entity)
-        spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
-        spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
+        spell_range = spellHelp.SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
+        spell_condi_effects_list = spellHelp.SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
                                                                            spell_entity=spell_entity)
-        spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld,
+        spell_boon_effects_list = spellHelp.SpellUtilities.get_all_boons_for_spell(gameworld=gameworld,
                                                                          spell_entity=spell_entity)
         terminal.printf(x=startx, y=starty + 7, s=key_colour_string + 'Name:' + value_colour_string + spell_name)
         terminal.printf(x=startx, y=starty + 8, s=key_colour_string + 'Cooldown:' + value_colour_string + str(spell_cooldown))
@@ -274,22 +267,22 @@ def display_spell_information(gameworld, menu_selection, player_entity, game_con
                                                                         section='spellInfoPopup',
                                                                         parameter='SP_WIDTH')
 
-    spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=menu_selection - 1,
+    spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=menu_selection - 1,
                                                                       player_entity=player_entity)
     if spell_entity > 0:
-        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-        spell_cooldown = SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
+        spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+        spell_cooldown = spellHelp.SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
                                                                            spell_entity=spell_entity)
-        spell_type = SpellUtilities.get_spell_type(gameworld=gameworld, spell_entity=spell_entity)
-        spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
-        spell_description = SpellUtilities.get_spell_description(gameworld=gameworld, spell_entity=spell_entity)
-        spell_condi_effects_list = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
+        spell_type = spellHelp.SpellUtilities.get_spell_type(gameworld=gameworld, spell_entity=spell_entity)
+        spell_range = spellHelp.SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
+        spell_description = spellHelp.SpellUtilities.get_spell_description(gameworld=gameworld, spell_entity=spell_entity)
+        spell_condi_effects_list = spellHelp.SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
                                                                            spell_entity=spell_entity)
-        spell_boon_effects_list = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=spell_entity)
+        spell_boon_effects_list = spellHelp.SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=spell_entity)
 
-        spell_resources_list = SpellUtilities.get_all_resources_for_spell(gameworld=gameworld,
+        spell_resources_list = spellHelp.SpellUtilities.get_all_resources_for_spell(gameworld=gameworld,
                                                                           spell_entity=spell_entity)
-        spell_no_targets = SpellUtilities.get_spell_max_targets(gameworld=gameworld, spell_entity=spell_entity)
+        spell_no_targets = spellHelp.SpellUtilities.get_spell_max_targets(gameworld=gameworld, spell_entity=spell_entity)
 
         y_pos = spell_item_info_start_y + 1
 
@@ -350,25 +343,25 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
     armour_armourset_string = armour_key_colour_string + 'Armourset:' + armour_value_colour_string
     armour_quality_string = armour_key_colour_string + 'Quality:' + armour_value_colour_string
 
-    item_coords = CommonUtils.get_item_ui_common_coords()
+    item_coords = common.CommonUtils.get_item_ui_common_coords()
 
     spell_item_info_item_imp_text = item_coords[4] + 2
 
-    spell_item_info_left_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_item_info_left_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                        parameter=armour_ascii_prefix + 'LEFT_T_JUNCTION')
 
-    spell_item_info_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_item_info_right_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                         parameter=armour_ascii_prefix + 'RIGHT_T_JUNCTION')
 
-    spell_item_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_item_info_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                   parameter=armour_ascii_prefix + 'HORIZONTAL')
 
-    item_entity = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity,
+    item_entity = armourManagement.ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity,
                                                                      bodylocation=bodylocation)
     if item_entity > 0:
         logger.debug('Armour entity is {}', item_entity)
         # draw portrait
-        item_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=item_entity)
+        item_displayname = itemsHelp.ItemUtilities.get_item_displayname(gameworld=gameworld, entity=item_entity)
         portrait_file = item_displayname + '.txt'
         draw_portrait(startx=item_coords[0], starty=item_coords[2], game_config=game_config,
                       portrait_file=portrait_file)
@@ -381,11 +374,11 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
                                             right_t_glyph=spell_item_info_right_t_junction)
 
         # draw armour stuff
-        defense_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=item_entity)
-        armourset_value = ArmourUtilities.get_armour_set_name(gameworld=gameworld, entity=item_entity)
-        quality_value = ItemUtilities.get_item_quality(gameworld=gameworld, entity=item_entity)
-        spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
-        armour_description_value = ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
+        defense_value = armourManagement.ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=item_entity)
+        armourset_value = armourManagement.ArmourUtilities.get_armour_set_name(gameworld=gameworld, entity=item_entity)
+        quality_value = itemsHelp.ItemUtilities.get_item_quality(gameworld=gameworld, entity=item_entity)
+        spell_entity = itemsHelp.ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
+        armour_description_value = itemsHelp.ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
 
         terminal.printf(x=item_coords[0], y=spell_item_info_item_imp_text + 1,
                         s=armour_defense_string + str(defense_value))
@@ -415,25 +408,25 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
     jewellery_attribute_string = jewellery_key_colour_string + 'Attribute type:' + jewellery_value_colour_string
     jewellery_att_bonus_string = jewellery_key_colour_string + 'Bonus:' + jewellery_value_colour_string
 
-    item_coords = CommonUtils.get_item_ui_common_coords()
+    item_coords = common.CommonUtils.get_item_ui_common_coords()
 
     spell_item_info_item_imp_text = item_coords[4] + 2
 
-    spell_item_info_left_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_item_info_left_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                        parameter=jewellery_ascii_prefix + 'LEFT_T_JUNCTION')
 
-    spell_item_info_right_t_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_item_info_right_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                         parameter=jewellery_ascii_prefix + 'RIGHT_T_JUNCTION')
 
-    spell_item_info_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+    spell_item_info_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                   parameter=jewellery_ascii_prefix + 'HORIZONTAL')
 
-    item_entity = JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
+    item_entity = jewelleryManagement.JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
                                                                         entity=player_entity,
                                                                         bodylocation=bodylocation)
     if item_entity > 0:
         # draw portrait
-        item_displayname = ItemUtilities.get_item_name(gameworld=gameworld, entity=item_entity)
+        item_displayname = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=item_entity)
         portrait_file = item_displayname + '.txt'
         draw_portrait(startx=item_coords[0], starty=item_coords[2], game_config=game_config,
                       portrait_file=portrait_file)
@@ -446,10 +439,10 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
                                             right_t_glyph=spell_item_info_right_t_junction)
 
         # draw important text
-        jewellery_statbonus = JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
+        jewellery_statbonus = jewelleryManagement.JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
                                                                      jewellery_entity=item_entity)
-        spell_entity = ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
-        jewellery_description = ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
+        spell_entity = itemsHelp.ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
+        jewellery_description = itemsHelp.ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
 
         # draw jewellery stuff
         terminal.printf(x=item_coords[0], y=spell_item_info_item_imp_text + 1,

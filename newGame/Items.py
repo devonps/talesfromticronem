@@ -1,8 +1,5 @@
 from components import items
-from utilities import world, jsonUtilities
-from utilities.itemsHelp import ItemUtilities
-from utilities.mobileHelp import MobileUtilities
-from utilities import configUtilities, colourUtilities
+from utilities import jsonUtilities, itemsHelp, configUtilities, world
 
 
 class ItemManager:
@@ -16,7 +13,7 @@ class ItemManager:
 
     @staticmethod
     def create_base_item(gameworld):
-        this_item_id = MobileUtilities.get_next_entity_id(gameworld=gameworld)
+        this_item_id = world.get_next_entity_id(gameworld=gameworld)
         gameworld.add_component(this_item_id, items.TypeOfItem())
         gameworld.add_component(this_item_id, items.Material())
         gameworld.add_component(this_item_id, items.Name())
@@ -48,14 +45,14 @@ class ItemManager:
             if weapon['name'] == weapon_type:
                 myweapon = ItemManager.create_base_item(gameworld=gameworld)
                 # generate common item components
-                ItemUtilities.set_type_of_item(gameworld=gameworld, entity_id=myweapon, value='weapon')
+                itemsHelp.ItemUtilities.set_type_of_item(gameworld=gameworld, entity_id=myweapon, value='weapon')
                 gameworld.add_component(myweapon, items.Material(texture='wooden'))
-                ItemUtilities.set_item_name(gameworld=gameworld, entity_id=myweapon, value=weapon['name'])
-                ItemUtilities.set_item_description(gameworld=gameworld, entity_id=myweapon, value=weapon['description'])
-                ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=myweapon, value=weapon['glyph'])
-                ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=myweapon, value=item_fg)
-                ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=myweapon, value=item_bg)
-                ItemUtilities.set_item_displayname(gameworld=gameworld, entity_id=myweapon, value=weapon['display_name'])
+                itemsHelp.ItemUtilities.set_item_name(gameworld=gameworld, entity_id=myweapon, value=weapon['name'])
+                itemsHelp.ItemUtilities.set_item_description(gameworld=gameworld, entity_id=myweapon, value=weapon['description'])
+                itemsHelp.ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=myweapon, value=weapon['glyph'])
+                itemsHelp.ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=myweapon, value=item_fg)
+                itemsHelp.ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=myweapon, value=item_bg)
+                itemsHelp.ItemUtilities.set_item_displayname(gameworld=gameworld, entity_id=myweapon, value=weapon['display_name'])
 
                 gameworld.add_component(myweapon, items.RenderItem(istrue=True))
                 gameworld.add_component(myweapon, items.Quality(level=weapon['quality_level']))

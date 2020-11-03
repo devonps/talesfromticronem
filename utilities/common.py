@@ -1,12 +1,7 @@
 from bearlibterminal import terminal
 from loguru import logger
-
-from components.messages import Message
-from utilities import configUtilities, jsonUtilities
+from utilities import configUtilities, jsonUtilities, scorekeeper, mobileHelp, display
 from components import messages
-from utilities.display import draw_simple_frame
-from utilities.mobileHelp import MobileUtilities
-from utilities.scorekeeper import ScorekeeperUtilities
 
 
 class CommonUtils:
@@ -14,7 +9,7 @@ class CommonUtils:
     @staticmethod
     def check_if_entity_has_boon_applied(gameworld, target_entity, boon_being_checked):
         found_boon = False
-        current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=target_entity)
+        current_boons = mobileHelp.MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=target_entity)
         for boon in current_boons:
             boon_name = boon['name']
             if boon_name == boon_being_checked:
@@ -26,7 +21,7 @@ class CommonUtils:
     def check_if_entity_has_condi_applied(gameworld, target_entity, condi_being_checked):
         found_condi = False
         condi_count = 0
-        current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
+        current_condis = mobileHelp.MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
                                                                               entity=target_entity)
         for condi in current_condis:
             condi_name = condi['name']
@@ -88,9 +83,9 @@ class CommonUtils:
         :param kwargs: see method definition
         """
         game_config = configUtilities.load_config()
-        player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        message_log_entity = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
-        current_turn = ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
+        player = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        message_log_entity = mobileHelp.MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+        current_turn = scorekeeper.ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
         formatted_turn_number = CommonUtils.format_number_as_string(base_number=current_turn, base_string='00000')
 
         new_string = ''
@@ -181,25 +176,25 @@ class CommonUtils:
             n = 0
             for _ in event_classes:
                 if event_classes[n] == 'all':
-                    msg = Message(text=new_string, msgclass=0, fg=foreground_colour, bg=background_colour,
+                    msg = messages.Message(text=new_string, msgclass=0, fg=foreground_colour, bg=background_colour,
                                   fnt="")
                     log_message = new_string
                     CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
                                             message_for_export=log_message)
                 elif event_classes[n] == 'combat':
-                    msg = Message(text=new_string, msgclass=1, fg=foreground_colour, bg=background_colour,
+                    msg = messages.Message(text=new_string, msgclass=1, fg=foreground_colour, bg=background_colour,
                                   fnt="")
                     log_message = new_string
                     CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
                                             message_for_export=log_message)
                 elif event_classes[n] == 'story':
-                    msg = Message(text=new_string, msgclass=2, fg=foreground_colour, bg=background_colour,
+                    msg = messages.Message(text=new_string, msgclass=2, fg=foreground_colour, bg=background_colour,
                                   fnt="")
                     log_message = new_string
                     CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
                                             message_for_export=log_message)
                 else:
-                    msg = Message(text=new_string, msgclass=3, fg=foreground_colour, bg=background_colour,
+                    msg = messages.Message(text=new_string, msgclass=3, fg=foreground_colour, bg=background_colour,
                                   fnt="")
                     log_message = new_string
                     CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
@@ -313,9 +308,9 @@ class CommonUtils:
     @staticmethod
     def view_message_log(gameworld, player, log_to_be_displayed):
         logs = log_to_be_displayed.split('_')
-        msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+        msglog = mobileHelp.MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
         CommonUtils.set_visible_log(gameworld=gameworld, log_entity=msglog, log_to_display=logs[2])
-        MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=True)
+        mobileHelp.MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=True)
 
     @staticmethod
     def replace_value_in_event(event_string, **kwargs):
@@ -416,7 +411,7 @@ class CommonUtils:
 
         terminal.clear_area(vp_x_offset + 1, vp_y_offset + 1, 26, height)
 
-        draw_simple_frame(start_panel_frame_x=vp_x_offset, start_panel_frame_y=vp_y_offset, start_panel_frame_width=26,
+        display.draw_simple_frame(start_panel_frame_x=vp_x_offset, start_panel_frame_y=vp_y_offset, start_panel_frame_width=26,
                           start_panel_frame_height=height, title='| Valid Targets |')
 
         lft = vp_x_offset + 1
@@ -431,9 +426,9 @@ class CommonUtils:
             terminal.printf(x=vp_x_offset + 3, y=entity_tag, s=str_to_print)
         else:
             for x in valid_targets:
-                entity_name = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=x)
-                entity_fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=x)
-                entity_bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=x)
+                entity_name = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=x)
+                entity_fg = mobileHelp.MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=x)
+                entity_bg = mobileHelp.MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=x)
 
                 str_to_print = base_str_to_print + chr(
                     97 + xx) + ") [color=" + entity_fg + "][bkcolor=" + entity_bg + "]" + "@" + ' ' + entity_name[0]
@@ -541,7 +536,7 @@ class CommonUtils:
         # [7] = right_t_junction_char
 
         unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
-        entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_speaking)
+        entity_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_speaking)
         frame_components_list = CommonUtils.get_ui_frame_components()
 
         dialog_frame_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,

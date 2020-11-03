@@ -2,20 +2,9 @@ import textwrap
 
 from bearlibterminal import terminal
 from loguru import logger
-from newGame.Items import ItemManager
-from utilities import configUtilities, namegenUtilities
-from utilities.armourManagement import ArmourUtilities
-from utilities.display import pointy_vertical_menu, draw_simple_frame
-from utilities.input_handlers import handle_game_keys
-from utilities.jsonUtilities import read_json_file
-from utilities.mobileHelp import MobileUtilities
-from newGame.initialiseNewGame import create_world
-from utilities.common import CommonUtils
-
+from newGame import Items, initialiseNewGame
+from utilities import configUtilities, namegenUtilities, armourManagement, display, input_handlers, jsonUtilities, mobileHelp, common, spellHelp, weaponManagement
 from ticronem import game_loop
-from utilities.scorekeeper import ScorekeeperUtilities
-from utilities.spellHelp import SpellUtilities
-from utilities.weaponManagement import WeaponUtilities
 
 
 class CharacterCreation:
@@ -28,27 +17,27 @@ class CharacterCreation:
         game_config = configUtilities.load_config()
 
         # it's a brave new world
-        gameworld = create_world()
+        gameworld = initialiseNewGame.create_world()
         # setup base player entity
-        player = MobileUtilities.get_next_entity_id(gameworld=gameworld)
-        MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player)
-        MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config,
+        player = mobileHelp.MobileUtilities.get_next_entity_id(gameworld=gameworld)
+        mobileHelp.MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player)
+        mobileHelp.MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config,
                                                 player_entity=player)
         logger.info('Player character stored as entity {}', player)
 
         # setup racial stuff race_name_selected, race_size, race_bg_colour, race_name_desc
-        MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=player, selected_race=race_name_selected,
+        mobileHelp.MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=player, selected_race=race_name_selected,
             race_size=race_size, bg=race_bg_colour, race_names=race_name_desc)
 
         # create class
-        MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player, selected_class=class_selected,
+        mobileHelp.MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player, selected_class=class_selected,
                                                health=class_health, spellfile=class_spell_file)
 
         CharacterCreation.generate_player_character_from_choices(gameworld=gameworld)
 
-        messagelog_entity = MobileUtilities.get_next_entity_id(gameworld=gameworld)
-        CommonUtils.create_message_log_as_entity(gameworld=gameworld, log_entity=messagelog_entity)
-        MobileUtilities.set_MessageLog_for_player(gameworld=gameworld, entity=player, logid=messagelog_entity)
+        messagelog_entity = mobileHelp.MobileUtilities.get_next_entity_id(gameworld=gameworld)
+        common.CommonUtils.create_message_log_as_entity(gameworld=gameworld, log_entity=messagelog_entity)
+        mobileHelp.MobileUtilities.set_MessageLog_for_player(gameworld=gameworld, entity=player, logid=messagelog_entity)
         logger.info('Mesage log stored as entity {}', messagelog_entity)
 
         game_loop(gameworld=gameworld)
@@ -90,7 +79,7 @@ class CharacterCreation:
 
         while show_character_options:
             this_row = start_row
-            CommonUtils.render_ui_framework(game_config=game_config)
+            common.CommonUtils.render_ui_framework(game_config=game_config)
             terminal.printf(x=start_list_x, y=this_row, s='Your Choices')
             this_row += 2
             terminal.printf(x=start_list_x, y=this_row, s='Race ' + selected_race)
@@ -100,7 +89,7 @@ class CharacterCreation:
             terminal.printf(x=start_list_x, y=this_row, s='Gender')
 
             # display race options
-            pointy_vertical_menu(header='', menu_options=race_name, menu_start_x=menu_start_x, menu_start_y=menu_start_y,
+            display.pointy_vertical_menu(header='', menu_options=race_name, menu_start_x=menu_start_x, menu_start_y=menu_start_y,
                                  blank_line=True, selected_option=selected_menu_option)
 
             # racial flavour text
@@ -115,7 +104,7 @@ class CharacterCreation:
             race_benefits_y = flavour_text_length + original_race_flavour_y + 2
             CharacterCreation.render_race_benefits(game_config=game_config, race_benefits=race_benefits, selected_menu_option=selected_menu_option, race_benefits_y=race_benefits_y)
             terminal.refresh()
-            event_to_be_processed, event_action = handle_game_keys()
+            event_to_be_processed, event_action = input_handlers.handle_game_keys()
             if event_to_be_processed != '':
                 if event_action == 'quit':
                     show_character_options = False
@@ -182,7 +171,7 @@ class CharacterCreation:
         while show_character_options:
             terminal.clear()
             this_row = start_row
-            CommonUtils.render_ui_framework(game_config=game_config)
+            common.CommonUtils.render_ui_framework(game_config=game_config)
             terminal.printf(x=start_list_x, y=this_row, s='Your Choices')
             this_row += 2
             terminal.printf(x=start_list_x, y=this_row, s='Race ' + selected_race)
@@ -198,7 +187,7 @@ class CharacterCreation:
                                                       game_config=game_config,
                                                       character_class_flavour=character_class_flavour)
             terminal.refresh()
-            event_to_be_processed, event_action = handle_game_keys()
+            event_to_be_processed, event_action = input_handlers.handle_game_keys()
             if event_to_be_processed != '':
                 if event_action == 'quit':
                     show_character_options = False
@@ -224,7 +213,7 @@ class CharacterCreation:
     def read_playable_classes(game_config):
         player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='CLASSESFILE')
-        class_file = read_json_file(player_class_file)
+        class_file = jsonUtilities.read_json_file(player_class_file)
 
         character_class_name = []
         character_class_flavour = []
@@ -271,7 +260,7 @@ class CharacterCreation:
         height = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                            section='newCharacter',
                                                                            parameter='NC_DEPTH')
-        pointy_vertical_menu(header='', menu_options=character_class_name, menu_start_x=menu_start_x, menu_start_y=menu_start_y,
+        display.pointy_vertical_menu(header='', menu_options=character_class_name, menu_start_x=menu_start_x, menu_start_y=menu_start_y,
                              blank_line=True, selected_option=selected_menu_option)
         # class flavour text
         strings_list = textwrap.wrap(character_class_flavour[selected_menu_option], width=33)
@@ -287,7 +276,7 @@ class CharacterCreation:
 
         attribute_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                     parameter='ATTRIBUTES')
-        attribute_file = read_json_file(attribute_file)
+        attribute_file = jsonUtilities.read_json_file(attribute_file)
 
         attribute_name = []
         attribute_flavour = []
@@ -302,7 +291,7 @@ class CharacterCreation:
     def read_playable_races(game_config):
         player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                       parameter='RACESFILE')
-        race_file = read_json_file(player_race_file)
+        race_file = jsonUtilities.read_json_file(player_race_file)
 
         race_name = []
         race_flavour = []
@@ -342,64 +331,64 @@ class CharacterCreation:
         game_config = configUtilities.load_config()
 
         # get player entity
-        player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
         # get race details for character
-        racial_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
+        racial_details = mobileHelp.MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
         player_race = racial_details[0]
 
         # create racial bonuses
         if player_race.lower() == 'dilga':
 
-            MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=player, value=1)
-            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player, value=1)
-            MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player, value=1)
+            mobileHelp.MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=player, value=1)
+            mobileHelp.MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player, value=1)
+            mobileHelp.MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player, value=1)
 
         if player_race.lower() == 'eskeri':
-            MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=player, value=1)
-            MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player, value=1)
+            mobileHelp.MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=player, value=1)
+            mobileHelp.MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player, value=1)
 
         if player_race.lower() == 'jogah':
-            MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=player, value=1)
-            MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player, value=1)
-            MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player, value=1)
+            mobileHelp.MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=player, value=1)
+            mobileHelp.MobileUtilities.set_mobile_secondary_concentration(gameworld=gameworld, entity=player, value=1)
+            mobileHelp.MobileUtilities.set_mobile_secondary_ferocity(gameworld=gameworld, entity=player, value=1)
 
         if player_race.lower() == 'oshun':
-            MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=player, value=1)
-            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player, value=1)
+            mobileHelp.MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=player, value=1)
+            mobileHelp.MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=player, value=1)
 
         # generate an empty spell bar
-        SpellUtilities.setup_mobile_empty_spellbar(gameworld=gameworld, player_entity=player)
+        spellHelp.SpellUtilities.setup_mobile_empty_spellbar(gameworld=gameworld, player_entity=player)
 
         # add heal spell to spellbar
-        heal_spell_entity = SpellUtilities.get_class_heal_spell(gameworld=gameworld, player_entity=player)
-        SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=heal_spell_entity, slot=5, player_entity=player)
+        heal_spell_entity = spellHelp.SpellUtilities.get_class_heal_spell(gameworld=gameworld, player_entity=player)
+        spellHelp.SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=heal_spell_entity, slot=5, player_entity=player)
 
         # calculate derived stats
-        ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=gameworld, entity=player)
-        MobileUtilities.set_mobile_derived_attributes(gameworld=gameworld, entity=player)
+        armourManagement.ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=gameworld, entity=player)
+        mobileHelp.MobileUtilities.set_mobile_derived_attributes(gameworld=gameworld, entity=player)
 
         # name the character
         CharacterCreation.character_naming(gameworld=gameworld, game_config=game_config)
 
         # assign male gender to character
-        MobileUtilities.set_mobile_gender(gameworld=gameworld, entity=player, gender='male')
+        mobileHelp.MobileUtilities.set_mobile_gender(gameworld=gameworld, entity=player, gender='male')
 
         # give the player a 2-handed staff with spells fully loaded
-        player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player)
+        player_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=player)
 
         weapon_to_be_created = 'staff'
         if player_class == 'illusionist':
             weapon_to_be_created = 'sword'
 
-        created_weapon_entity = ItemManager.create_weapon(gameworld=gameworld, weapon_type=weapon_to_be_created,
+        created_weapon_entity = Items.ItemManager.create_weapon(gameworld=gameworld, weapon_type=weapon_to_be_created,
                                                           game_config=game_config)
-        MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon_entity, hand='both')
-        spell_list = SpellUtilities.get_list_of_spells_for_enemy(gameworld=gameworld, weapon_type=weapon_to_be_created,
+        mobileHelp.MobileUtilities.equip_weapon(gameworld=gameworld, entity=player, weapon=created_weapon_entity, hand='both')
+        spell_list = spellHelp.SpellUtilities.get_list_of_spells_for_enemy(gameworld=gameworld, weapon_type=weapon_to_be_created,
                                                                  mobile_class=player_class)
 
         # load spellbar with spells from weapon(s)
-        WeaponUtilities.load_player_spellbar_from_weapons(gameworld=gameworld, weapon_type=weapon_to_be_created,
+        weaponManagement.WeaponUtilities.load_player_spellbar_from_weapons(gameworld=gameworld, weapon_type=weapon_to_be_created,
                                                           spell_list=spell_list, player_entity=player)
 
     @staticmethod
@@ -424,16 +413,16 @@ class CharacterCreation:
         unicode_help_messages = dungeon_font + '[color=NAME_CHAR_HELP_MESSAGE]'
         unicode_name_letters_left = dungeon_font + '[color=NAME_CHAR_LETTERS_LEFT]'
 
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         terminal.clear()
-        draw_simple_frame(start_panel_frame_x=txt_panel_write_x, start_panel_frame_y=txt_panel_write_y, start_panel_frame_width=35, start_panel_frame_height=6, title='Name Your Character')
+        display.draw_simple_frame(start_panel_frame_x=txt_panel_write_x, start_panel_frame_y=txt_panel_write_y, start_panel_frame_width=35, start_panel_frame_height=6, title='Name Your Character')
         terminal.printf(x=txt_panel_write_x + 1, y=txt_panel_write_y + 4, s=unicode_help_messages + 'valid chars:A-Z and a-z')
         terminal.printf(x=txt_panel_write_x + 1, y=txt_panel_write_y + 5, s=unicode_help_messages + 'leave blank for random name')
 
         while character_not_named:
             terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=txt_panel_cursor)
             terminal.refresh()
-            event_to_be_processed, event_action = handle_game_keys()
+            event_to_be_processed, event_action = input_handlers.handle_game_keys()
             if event_to_be_processed == 'keypress' and (letter_count < max_letters):
                 if event_action == 'quit':
                     character_not_named = False
@@ -471,16 +460,16 @@ class CharacterCreation:
     @staticmethod
     def assign_name_to_character(gameworld, player_entity, selected_name):
         if selected_name != '':
-            MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
+            mobileHelp.MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity,
                                                   name=selected_name)
         else:
             random_name = CharacterCreation.generate_random_name_based_on_race(gameworld=gameworld, player_entity=player_entity)
-            MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity, name=random_name)
+            mobileHelp.MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=player_entity, name=random_name)
 
     @staticmethod
     def generate_random_name_based_on_race(gameworld, player_entity):
         # get race details for character
-        racial_details = MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player_entity)
+        racial_details = mobileHelp.MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player_entity)
         player_race = racial_details[0]
         name_file = player_race.upper() + 'NAMESFILE'
         game_config = configUtilities.load_config()

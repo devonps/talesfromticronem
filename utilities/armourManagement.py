@@ -2,10 +2,7 @@ from loguru import logger
 
 from components import items, mobiles, spells
 from newGame.Items import ItemManager
-from utilities import configUtilities, jsonUtilities
-from utilities.itemsHelp import ItemUtilities
-from utilities.jsonUtilities import read_json_file
-from utilities.mobileHelp import MobileUtilities
+from utilities import configUtilities, jsonUtilities, spellHelp, scorekeeper, itemsHelp, mobileHelp
 
 
 class ArmourUtilities:
@@ -34,7 +31,7 @@ class ArmourUtilities:
     @staticmethod
     def apply_major_attribute_bonus_to_full_armourset(gameworld, player_entity, attribute_name, attribute_bonus):
 
-        if MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player_entity):
+        if mobileHelp.MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=player_entity):
             armour_entity = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld,
                                                                                  entity=player_entity,
                                                                                  bodylocation='head')
@@ -42,14 +39,14 @@ class ArmourUtilities:
                                                                          armour_entity=armour_entity,
                                                                          attribute_name=attribute_name,
                                                                          attribute_bonus=attribute_bonus)
-            MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
+            mobileHelp.MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
                                                 armour_modifier=attribute_name, px_bonus=attribute_bonus)
 
             attribute_bonus_list = ArmourUtilities.get_armour_major_attributes(gameworld=gameworld,
                                                                                entity=armour_entity)
             logger.debug('head: Attribute bonus list {}', attribute_bonus_list)
 
-        if MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=player_entity):
+        if mobileHelp.MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=player_entity):
             armour_entity = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld,
                                                                                  entity=player_entity,
                                                                                  bodylocation='chest')
@@ -58,14 +55,14 @@ class ArmourUtilities:
                                                                          armour_entity=armour_entity,
                                                                          attribute_name=attribute_name,
                                                                          attribute_bonus=attribute_bonus)
-            MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
+            mobileHelp.MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
                                                 armour_modifier=attribute_name, px_bonus=attribute_bonus)
 
             attribute_bonus_list = ArmourUtilities.get_armour_major_attributes(gameworld=gameworld,
                                                                                entity=armour_entity)
             logger.debug('chest: Attribute bonus list {}', attribute_bonus_list)
 
-        if MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=player_entity):
+        if mobileHelp.MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=player_entity):
             armour_entity = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld,
                                                                                  entity=player_entity,
                                                                                  bodylocation='hands')
@@ -74,14 +71,14 @@ class ArmourUtilities:
                                                                          armour_entity=armour_entity,
                                                                          attribute_name=attribute_name,
                                                                          attribute_bonus=attribute_bonus)
-            MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
+            mobileHelp.MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
                                                 armour_modifier=attribute_name, px_bonus=attribute_bonus)
 
             attribute_bonus_list = ArmourUtilities.get_armour_major_attributes(gameworld=gameworld,
                                                                                entity=armour_entity)
             logger.debug('hands: Attribute bonus list {}', attribute_bonus_list)
 
-        if MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player_entity):
+        if mobileHelp.MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=player_entity):
             armour_entity = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld,
                                                                                  entity=player_entity,
                                                                                  bodylocation='legs')
@@ -90,14 +87,14 @@ class ArmourUtilities:
                                                                          armour_entity=armour_entity,
                                                                          attribute_name=attribute_name,
                                                                          attribute_bonus=attribute_bonus)
-            MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
+            mobileHelp.MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
                                                 armour_modifier=attribute_name, px_bonus=attribute_bonus)
 
             attribute_bonus_list = ArmourUtilities.get_armour_major_attributes(gameworld=gameworld,
                                                                                entity=armour_entity)
             logger.debug('legs: Attribute bonus list {}', attribute_bonus_list)
 
-        if MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=player_entity):
+        if mobileHelp.MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=player_entity):
             armour_entity = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld,
                                                                                  entity=player_entity,
                                                                                  bodylocation='feet')
@@ -106,7 +103,7 @@ class ArmourUtilities:
                                                                          armour_entity=armour_entity,
                                                                          attribute_name=attribute_name,
                                                                          attribute_bonus=attribute_bonus)
-            MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
+            mobileHelp.MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
                                                 armour_modifier=attribute_name, px_bonus=attribute_bonus)
 
             attribute_bonus_list = ArmourUtilities.get_armour_major_attributes(gameworld=gameworld,
@@ -147,14 +144,30 @@ class ArmourUtilities:
 
         if armourset[0] > 0:
             ArmourUtilities.equip_piece_of_armour(gameworld, entity, armourset[0], 'head')
+            ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[0])
         if armourset[1] > 0:
             ArmourUtilities.equip_piece_of_armour(gameworld, entity, armourset[1], 'chest')
+            ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[1])
         if armourset[2] > 0:
             ArmourUtilities.equip_piece_of_armour(gameworld, entity, armourset[2], 'hands')
+            ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[2])
         if armourset[3] > 0:
             ArmourUtilities.equip_piece_of_armour(gameworld, entity, armourset[3], 'legs')
+            ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[3])
         if armourset[4] > 0:
             ArmourUtilities.equip_piece_of_armour(gameworld, entity, armourset[4], 'feet')
+            ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[4])
+
+    @staticmethod
+    def register_meta_event_for_armour_piece(gameworld, armour_entity):
+        this_spell_entity = ArmourUtilities.get_spell_entity_from_armour_piece(gameworld=gameworld,
+                                                                               armour_entity=armour_entity)
+        spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=this_spell_entity)
+        updated_spell_name = spell_name.replace(" ", "_")
+        updated_spell_name += "_cast"
+        scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
+                                                                         event_name=updated_spell_name.lower(),
+                                                                         event_starting_value=0)
 
     @staticmethod
     def add_spell_to_armour_piece(gameworld, armour_entity, spell_entity):
@@ -170,7 +183,7 @@ class ArmourUtilities:
     def get_all_armour_modifiers(game_config):
         armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                     parameter='ARMOURSETFILE')
-        armour_file = read_json_file(armourset_file)
+        armour_file = jsonUtilities.read_json_file(armourset_file)
 
         pxstring = 'prefix'
         attvaluestring = 'attributebonus'
@@ -209,11 +222,11 @@ class ArmourUtilities:
     @staticmethod
     def get_current_armour_based_defense_value(gameworld, entity):
 
-        head = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=entity)
-        chest = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=entity)
-        legs = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=entity)
-        feet = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=entity)
-        hands = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity)
+        head = mobileHelp.MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=entity)
+        chest = mobileHelp.MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=entity)
+        legs = mobileHelp.MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=entity)
+        feet = mobileHelp.MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=entity)
+        hands = mobileHelp.MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity)
 
         if chest != 0:
             def_chest_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest)
@@ -255,7 +268,7 @@ class ArmourUtilities:
         :return: None
         """
         # get toughness value from primary attributes
-        toughness_value = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld, entity=entity)
+        toughness_value = mobileHelp.MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld, entity=entity)
         # get defense values based on equipped pieces of armour
         defense_value = ArmourUtilities.get_current_armour_based_defense_value(gameworld=gameworld, entity=entity)
         armour_value = defense_value + toughness_value
@@ -349,7 +362,7 @@ class ArmourUtilities:
 
         # generate common item components
 
-        ItemUtilities.set_type_of_item(gameworld=gameworld, entity_id=armour_piece, value='armour')
+        itemsHelp.ItemUtilities.set_type_of_item(gameworld=gameworld, entity_id=armour_piece, value='armour')
         gameworld.add_component(armour_piece, items.RenderItem(istrue=True))
         gameworld.add_component(armour_piece, items.Quality(level=as_quality))
         gameworld.add_component(armour_piece, items.ArmourSpell(entity=0, on_cool_down=False))
@@ -369,8 +382,8 @@ class ArmourUtilities:
         gameworld.add_component(armour_piece, items.ArmourBeingWorn(status=False))
 
         # add spell to piece of armour
-        player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        player_class = MobileUtilities.get_character_class(gameworld, player)
+        player = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_class = mobileHelp.MobileUtilities.get_character_class(gameworld, player)
         ArmourUtilities.add_spell_to_piece_of_armour(gameworld=gameworld, bodylocation=bodylocation,
                                                      armour_piece=armour_piece, playable_class=player_class)
         logger.info('Armour piece entity is {}', armour_piece)

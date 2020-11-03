@@ -1,14 +1,8 @@
 import esper
 
 from components import mobiles, spells
-from utilities import formulas
-from utilities.common import CommonUtils
-from utilities.mobileHelp import MobileUtilities
+from utilities import formulas, common, mobileHelp, scorekeeper, spellHelp, weaponManagement
 from loguru import logger
-
-from utilities.scorekeeper import ScorekeeperUtilities
-from utilities.spellHelp import SpellUtilities
-from utilities.weaponManagement import WeaponUtilities
 
 
 class CastSpells(esper.Processor):
@@ -29,21 +23,21 @@ class CastSpells(esper.Processor):
                 spell_entity = mob.spell_entity
                 caster_entity = mob.spell_caster
                 target_entities = mob.spell_target
-                spell_type = SpellUtilities.get_spell_type(gameworld=self.gameworld, spell_entity=spell_entity)
-                condis_to_apply_list = SpellUtilities.get_all_condis_for_spell(gameworld=self.gameworld,
+                spell_type = spellHelp.SpellUtilities.get_spell_type(gameworld=self.gameworld, spell_entity=spell_entity)
+                condis_to_apply_list = spellHelp.SpellUtilities.get_all_condis_for_spell(gameworld=self.gameworld,
                                                                                spell_entity=spell_entity)
-                boons_to_apply_list = SpellUtilities.get_all_boons_for_spell(gameworld=self.gameworld,
+                boons_to_apply_list = spellHelp.SpellUtilities.get_all_boons_for_spell(gameworld=self.gameworld,
                                                                              spell_entity=spell_entity)
                 spell_status_effects = [boons_to_apply_list, condis_to_apply_list]
 
                 self.set_spell_cooldown_value(spell_entity=spell_entity)
 
                 # increase meta-event spell casting value
-                spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=spell_entity)
+                spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=spell_entity)
                 updated_spell_name = spell_name.replace(" ", "_")
                 updated_spell_name += "_cast"
                 lower_spell_name = updated_spell_name.lower()
-                ScorekeeperUtilities.add_one_to_meta_event_value(gameworld=self.gameworld, event_name=lower_spell_name)
+                scorekeeper.ScorekeeperUtilities.add_one_to_meta_event_value(gameworld=self.gameworld, event_name=lower_spell_name)
 
                 if spell_type == 'combat':
                     self.process_combat_spells(target_entities=target_entities,
@@ -52,22 +46,22 @@ class CastSpells(esper.Processor):
                 if spell_type == 'heal':
                     self.process_healing_spell(spell_type=spell_type)
 
-                MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=ent)
+                mobileHelp.MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=ent)
 
     def set_spell_cooldown_value(self, spell_entity):
-        SpellUtilities.set_spell_cooldown_true(gameworld=self.gameworld, spell_entity=spell_entity)
-        number_of_turns = SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld,
+        spellHelp.SpellUtilities.set_spell_cooldown_true(gameworld=self.gameworld, spell_entity=spell_entity)
+        number_of_turns = spellHelp.SpellUtilities.get_spell_cooldown_time(gameworld=self.gameworld,
                                                                  spell_entity=spell_entity)
 
-        SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld,
+        spellHelp.SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld,
                                                           spell_entity=spell_entity, value=number_of_turns - 1)
 
     def process_combat_spells(self, target_entities, caster_entity, spell_entity, spell_status_effects):
         boons_to_apply = spell_status_effects[0]
         condis_to_apply = spell_status_effects[1]
 
-        target_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=target_entities[0])
-        spell_blocked = SpellUtilities.check_for_effects_stopping_spell_being_cast(gameworld=self.gameworld, target_name=target_names[0], target_entity=caster_entity)
+        target_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=target_entities[0])
+        spell_blocked = spellHelp.SpellUtilities.check_for_effects_stopping_spell_being_cast(gameworld=self.gameworld, target_name=target_names[0], target_entity=caster_entity)
 
         if not spell_blocked:
             if target_entities[0] > 0:
@@ -75,14 +69,14 @@ class CastSpells(esper.Processor):
                 for target_entity in range(len(target_entities)):
                     self.apply_damage_to_target(caster_entity=caster_entity, target_entity=target_entities[target_entity],
                                                 spell_entity=spell_entity)
-                    MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=target_entities[target_entity])
-                    MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=caster_entity)
+                    mobileHelp.MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=target_entities[target_entity])
+                    mobileHelp.MobileUtilities.set_combat_status_to_true(gameworld=self.gameworld, entity=caster_entity)
                     self.apply_spell_effects(caster_entity=caster_entity, target_entity=target_entities[target_entity],
                                              condis_to_apply=condis_to_apply, boons_to_apply=boons_to_apply)
             else:
                 # no target entity
                 # this is where ground based spells come into force
-                this_spell_is_ground_based = SpellUtilities.get_spell_ground_targeted_status(gameworld=self.gameworld, spell_entity=spell_entity)
+                this_spell_is_ground_based = spellHelp.SpellUtilities.get_spell_ground_targeted_status(gameworld=self.gameworld, spell_entity=spell_entity)
                 if this_spell_is_ground_based:
                     logger.info('Spell {} uses ground based targeting - fix it', spell_entity)
                 else:
@@ -92,21 +86,21 @@ class CastSpells(esper.Processor):
     def apply_spell_effects(self, caster_entity, target_entity, condis_to_apply, boons_to_apply):
         # Are there any conditions to apply to the target - regardless of damage caused
         if len(condis_to_apply) != 0:
-            SpellUtilities.apply_condis_to_target(gameworld=self.gameworld, target_entity=target_entity,
+            spellHelp.SpellUtilities.apply_condis_to_target(gameworld=self.gameworld, target_entity=target_entity,
                                                   list_of_condis=condis_to_apply)
 
         # are there any boons to apply to the spell caster - regardless of damage caused
         if len(boons_to_apply) != 0:
-            SpellUtilities.apply_boons_to_target(gameworld=self.gameworld, target_entity=target_entity,
+            spellHelp.SpellUtilities.apply_boons_to_target(gameworld=self.gameworld, target_entity=target_entity,
                                                  list_of_boons=boons_to_apply, spell_caster=caster_entity)
 
     def apply_damage_to_target(self, caster_entity, target_entity, spell_entity):
-        spell_name = SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=spell_entity)
-        target_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld,
+        spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=spell_entity)
+        target_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=self.gameworld,
                                                                entity=target_entity)
-        caster_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=caster_entity)
+        caster_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=caster_entity)
 
-        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=caster_entity)
+        equipped_weapons = mobileHelp.MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=caster_entity)
         main_weapon = equipped_weapons[0]
         off_weapon = equipped_weapons[1]
         both_weapons = equipped_weapons[2]
@@ -122,18 +116,18 @@ class CastSpells(esper.Processor):
                                                        spell_target=target_entity, weapon_used=current_weapon)
         if damage_done_to_target > 0:
             # apply damage to target --> current health is used when in combat
-            MobileUtilities.set_current_health_during_combat(gameworld=self.gameworld, entity=target_entity,
+            mobileHelp.MobileUtilities.set_current_health_during_combat(gameworld=self.gameworld, entity=target_entity,
                                                              damage_to_apply=damage_done_to_target)
 
-            CommonUtils.fire_event("spell-causes-damage", gameworld=self.gameworld, caster=caster_names[0],
+            common.CommonUtils.fire_event("spell-causes-damage", gameworld=self.gameworld, caster=caster_names[0],
                                    target=target_names[0], damage=str(damage_done_to_target), spell_name=spell_name)
 
         if damage_applied_to_caster > 0:
             # apply damage to caster due to status effect --> current health is used when in combat
-            MobileUtilities.set_current_health_during_combat(gameworld=self.gameworld, entity=caster_entity,
+            mobileHelp.MobileUtilities.set_current_health_during_combat(gameworld=self.gameworld, entity=caster_entity,
                                                              damage_to_apply=damage_applied_to_caster)
 
-            CommonUtils.fire_event("spell-causes-damage", gameworld=self.gameworld, caster=caster_names[0],
+            common.CommonUtils.fire_event("spell-causes-damage", gameworld=self.gameworld, caster=caster_names[0],
                                    target=caster_names[0], damage=str(damage_applied_to_caster), spell_name=spell_name)
 
     def process_healing_spell(self, spell_type):
@@ -146,13 +140,13 @@ class CastSpells(esper.Processor):
             cd_turns = int(cool_down.remaining_turns)
             if cd_turns > 0:
                 cd_turns -= 1
-                SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld, spell_entity=spell_entity,
+                spellHelp.SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=self.gameworld, spell_entity=spell_entity,
                                                                   value=cd_turns)
             else:
-                SpellUtilities.set_spell_cooldown_false(gameworld=self.gameworld, spell_entity=spell_entity)
+                spellHelp.SpellUtilities.set_spell_cooldown_false(gameworld=self.gameworld, spell_entity=spell_entity)
 
     def get_weapon_damage_used_in_casting(self, spell_caster, weapon_used):
-        equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=spell_caster)
+        equipped_weapons = mobileHelp.MobileUtilities.get_weapons_equipped(gameworld=self.gameworld, entity=spell_caster)
         if equipped_weapons[2] != 0:
             weapon = equipped_weapons[2]
         else:
@@ -161,16 +155,16 @@ class CastSpells(esper.Processor):
             else:
                 weapon = equipped_weapons[1]
 
-        weapon_strength = WeaponUtilities.calculate_weapon_strength(gameworld=self.gameworld, weapon=weapon)
+        weapon_strength = weaponManagement.WeaponUtilities.calculate_weapon_strength(gameworld=self.gameworld, weapon=weapon)
 
         return weapon_strength
 
     def cast_combat_spell(self, spell_caster, spell, spell_target, weapon_used):
-        caster_power = MobileUtilities.get_mobile_primary_power(gameworld=self.gameworld, entity=spell_caster)
-        spell_coeff = float(SpellUtilities.get_spell_damage_coeff(gameworld=self.gameworld, spell_entity=spell))
+        caster_power = mobileHelp.MobileUtilities.get_mobile_primary_power(gameworld=self.gameworld, entity=spell_caster)
+        spell_coeff = float(spellHelp.SpellUtilities.get_spell_damage_coeff(gameworld=self.gameworld, spell_entity=spell))
 
         weapon_strength = self.get_weapon_damage_used_in_casting(spell_caster=spell_caster, weapon_used=weapon_used)
-        weapon_level = WeaponUtilities.get_weapon_experience_values(gameworld=self.gameworld, entity=weapon_used)
+        weapon_level = weaponManagement.WeaponUtilities.get_weapon_experience_values(gameworld=self.gameworld, entity=weapon_used)
         current_weapon_level = weapon_level[0]
 
         outgoing_base_damage = formulas.outgoing_base_damage(weapon_strength=weapon_strength, power=caster_power,
@@ -182,7 +176,7 @@ class CastSpells(esper.Processor):
         logger.debug('spell coeff {}', spell_coeff)
         logger.debug('outgoing base damage {} [{} * {} * {}]', outgoing_base_damage, weapon_strength, caster_power, spell_coeff)
 
-        target_defense = MobileUtilities.get_mobile_derived_armour_value(gameworld=self.gameworld, entity=spell_target)
+        target_defense = mobileHelp.MobileUtilities.get_mobile_derived_armour_value(gameworld=self.gameworld, entity=spell_target)
         logger.debug('target current defense rating {}', target_defense)
 
         damage_done_before_modification = int(outgoing_base_damage / target_defense)
@@ -191,7 +185,7 @@ class CastSpells(esper.Processor):
         damage_applied_to_caster = 0
 
         # 'vulnerability' is applied to the target - increases damage by 1% per stack
-        spell_target_is_vulnerable, condi_stack_count = CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
+        spell_target_is_vulnerable, condi_stack_count = common.CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
                                                                                     target_entity=spell_target,
                                                                                     condi_being_checked='vulnerability')
         if spell_target_is_vulnerable:
@@ -201,7 +195,7 @@ class CastSpells(esper.Processor):
             logger.debug('Incoming damage to the target has been increased to {}', current_damage)
 
         # 'confusion' is applied to the caster - cannot be mitigated
-        spell_caster_is_confused, condi_stack_count = CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
+        spell_caster_is_confused, condi_stack_count = common.CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
                                                                                     target_entity=spell_caster,
                                                                                     condi_being_checked='confusion')
         if spell_caster_is_confused:
@@ -210,7 +204,7 @@ class CastSpells(esper.Processor):
             damage_applied_to_caster = damage_to_add
 
         # now check for critical damage
-        critical_hit_chance = MobileUtilities.get_mobile_derived_critical_hit_chance(gameworld=self.gameworld, entity=spell_caster)
+        critical_hit_chance = mobileHelp.MobileUtilities.get_mobile_derived_critical_hit_chance(gameworld=self.gameworld, entity=spell_caster)
         if critical_hit_chance >= 100:
             apply_critical_hit = True
         else:
@@ -223,7 +217,7 @@ class CastSpells(esper.Processor):
             current_damage += critical_damage_to_be_applied
 
         # 'weakness' applied to the caster - each attack deals 50% less damage
-        spell_caster_is_weak, condi_count = CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
+        spell_caster_is_weak, condi_count = common.CommonUtils.check_if_entity_has_condi_applied(gameworld=self.gameworld,
                                                                                     target_entity=spell_caster,
                                                                                     condi_being_checked='weakness')
         if spell_caster_is_weak:
@@ -231,7 +225,7 @@ class CastSpells(esper.Processor):
             logger.debug('Spell caster is weak, outgoing damage has been reduced to {}', current_damage)
 
         # 'protection' is applied to the target - reduces incoming damage by 33%
-        target_is_protected = CommonUtils.check_if_entity_has_boon_applied(gameworld=self.gameworld, target_entity=spell_target, boon_being_checked='protection')
+        target_is_protected = common.CommonUtils.check_if_entity_has_boon_applied(gameworld=self.gameworld, target_entity=spell_target, boon_being_checked='protection')
         if target_is_protected:
             percentage_of_damage_to_remove = 33
             damage_to_be_removed = formulas.calculate_percentage(low_number=percentage_of_damage_to_remove, max_number=current_damage)

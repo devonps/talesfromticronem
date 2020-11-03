@@ -1,12 +1,7 @@
 import random
-
 from loguru import logger
-
 from components import items
-from utilities import configUtilities
-from utilities.itemsHelp import ItemUtilities
-from utilities.jsonUtilities import read_json_file
-from utilities.spellHelp import SpellUtilities
+from utilities import configUtilities, jsonUtilities, spellHelp
 
 
 class WeaponUtilities:
@@ -15,7 +10,7 @@ class WeaponUtilities:
     def get_available_weapons_for_class(selected_class, game_config):
         player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='CLASSESFILE')
-        class_file = read_json_file(player_class_file)
+        class_file = jsonUtilities.read_json_file(player_class_file)
         available_weapons = []
 
         for option in class_file['classes']:
@@ -36,7 +31,7 @@ class WeaponUtilities:
     def get_weapon_flavour_info(game_config, available_weapons):
         weapon_flavour_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='WEAPONSFILE')
-        weapon_file = read_json_file(weapon_flavour_file)
+        weapon_file = jsonUtilities.read_json_file(weapon_flavour_file)
         weapon_description = []
         weapon_wielded = []
         weapon_damage_ranges = []
@@ -121,11 +116,11 @@ class WeaponUtilities:
     @staticmethod
     def load_player_spellbar_from_weapons(weapon_type, spell_list, gameworld, player_entity):
         if weapon_type in ['sword', 'staff']:
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[0], slot=0, player_entity=player_entity)
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[1], slot=1, player_entity=player_entity)
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[2], slot=2, player_entity=player_entity)
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[3], slot=3, player_entity=player_entity)
-            SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[4], slot=4, player_entity=player_entity)
+            spellHelp.SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[0], slot=0, player_entity=player_entity)
+            spellHelp.SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[1], slot=1, player_entity=player_entity)
+            spellHelp.SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[2], slot=2, player_entity=player_entity)
+            spellHelp.SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[3], slot=3, player_entity=player_entity)
+            spellHelp.SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=spell_list[4], slot=4, player_entity=player_entity)
 
     @staticmethod
     def load_enemy_weapon_with_spells(gameworld, enemy_id, spell_list, weapon_entity_id, weapon_type):

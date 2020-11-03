@@ -2,15 +2,8 @@ import random
 
 from bearlibterminal import terminal
 from loguru import logger
-
 from components import spells, items, mobiles
-from utilities import configUtilities, formulas
-from utilities.common import CommonUtils
-from utilities.gamemap import GameMapUtilities
-from utilities.input_handlers import handle_game_keys
-from utilities.itemsHelp import ItemUtilities
-from utilities.jsonUtilities import read_json_file
-from utilities.mobileHelp import MobileUtilities
+from utilities import configUtilities, formulas, gamemap, input_handlers, itemsHelp, jsonUtilities, mobileHelp, common
 
 
 class SpellUtilities:
@@ -80,9 +73,9 @@ class SpellUtilities:
         remaining_spells = None
         weapon_type = ''
 
-        weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=entity_id)
+        weapons_equipped = mobileHelp.MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=entity_id)
         if len(weapons_equipped) != weapons_equipped.count(weapons_equipped[0]):
-            weapon_type = ItemUtilities.get_equipped_weapon_for_enemy(gameworld=gameworld,
+            weapon_type = itemsHelp.ItemUtilities.get_equipped_weapon_for_enemy(gameworld=gameworld,
                                                                       weapons_equipped=weapons_equipped)
 
             # get list of spells to choose from
@@ -184,7 +177,7 @@ class SpellUtilities:
 
         if spell_is_on_cooldown:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-            CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
+            common.CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
         else:
             # spell targeting
             spell_target_list, spell_cast_at = SpellUtilities.spell_targeting(gameworld=gameworld, game_map=game_map,
@@ -201,7 +194,7 @@ class SpellUtilities:
             else:
                 # fire message log for no entity to target
                 spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-                CommonUtils.fire_event("spell-notarget", gameworld=gameworld, spell_name=spell_name)
+                common.CommonUtils.fire_event("spell-notarget", gameworld=gameworld, spell_name=spell_name)
 
     @staticmethod
     def get_spell_aoe_shape(gameworld, spell_entity):
@@ -213,8 +206,8 @@ class SpellUtilities:
         game_config = configUtilities.load_config()
         targeting_a_spell = True
         move_target_cursor = ['left', 'right', 'up', 'down']
-        targeting_cursor_centre_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player)
-        targeting_cursor_centre_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player)
+        targeting_cursor_centre_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player)
+        targeting_cursor_centre_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player)
         caster_map_x = targeting_cursor_centre_x
         caster_map_y = targeting_cursor_centre_y
         spell_has_aoe = SpellUtilities.get_spell_aoe_status(gameworld=gameworld, spell_entity=spell_entity)
@@ -229,7 +222,7 @@ class SpellUtilities:
             cursor_info.append(cursor_shape)
 
         while targeting_a_spell:
-            entity_at_targeting_cursor_position = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
+            entity_at_targeting_cursor_position = gamemap.GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
                                                                                                       x=targeting_cursor_centre_x,
                                                                                                       y=targeting_cursor_centre_y)
             oldx = targeting_cursor_centre_x
@@ -246,7 +239,7 @@ class SpellUtilities:
             terminal.refresh()
 
             # get keyboard command
-            event_to_be_processed, event_action = handle_game_keys()
+            event_to_be_processed, event_action = input_handlers.handle_game_keys()
             if event_action == 'quit':
                 targeting_a_spell = False
             if event_action in move_target_cursor:
@@ -290,7 +283,7 @@ class SpellUtilities:
                 enemy_list.append(0)
         else:
 
-            enemy_list.append(GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
+            enemy_list.append(gamemap.GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
                                                                                   x=target_x,
                                                                                   y=target_y))
         logger.debug('List of enemies to attack {}', enemy_list)
@@ -319,8 +312,8 @@ class SpellUtilities:
         else:
             target_entity = target_list[0]
 
-            dest_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
-            dest_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
+            dest_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
+            dest_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
             distance_to_target = int(
                 formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=player_entity,
                                                       to_entity=target_entity))
@@ -406,7 +399,7 @@ class SpellUtilities:
             cury = target_y + outer_loop
             for inner_loop in range(-cursor_width, cursor_width + 1):
                 curx = target_x + inner_loop
-                enemy_entity = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=curx, y=cury)
+                enemy_entity = gamemap.GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=curx, y=cury)
                 if enemy_entity > 0:
                     enemies_list.append(enemy_entity)
         return enemies_list
@@ -419,7 +412,7 @@ class SpellUtilities:
         cursor_width = 0
         cursor_height = 0
         cursor_shape = []
-        cursors_file = read_json_file(aoe_cursors_file)
+        cursors_file = jsonUtilities.read_json_file(aoe_cursors_file)
         for aoe_cursor in cursors_file['aoe_cursors']:
             if aoe_cursor['id'] == aoe_shape:
                 cursor_dimensions = aoe_cursor['dimensions']
@@ -460,7 +453,7 @@ class SpellUtilities:
             for inner_loop in range(-cursor_width, cursor_width + 1):
                 posx = (screen_offset_x + oldx) + inner_loop
                 terminal.printf(x=posx, y=posy, s=colour_code + this_row[row_slice])
-                entity_id = GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
+                entity_id = gamemap.GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
                                                                                 x=(oldx + inner_loop),
                                                                                 y=(oldy + outer_loop))
                 if entity_id > 0:
@@ -480,8 +473,8 @@ class SpellUtilities:
             ent_id = entities_found[a][0]
             ent_x = entities_found[a][1]
             ent_y = entities_found[a][2]
-            ent_glyph = MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=ent_id)
-            ent_fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=ent_id)
+            ent_glyph = mobileHelp.MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=ent_id)
+            ent_fg = mobileHelp.get_mobile_fg_render_colour(gameworld=gameworld, entity=ent_id)
             glyph_colour_string = '[font=dungeon][color=' + ent_fg + ']'
             terminal.printf(x=ent_x, y=ent_y, s=glyph_colour_string + ent_glyph)
 
@@ -491,7 +484,7 @@ class SpellUtilities:
         colour_choice = ['[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]',
                          '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]']
         colour_code = colour_choice[mode_flag]
-        targeting_cursor = CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        targeting_cursor = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                             parameter='ASCII_SPELL_TARGETING_CURSOR')
         screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='SCREEN_OFFSET_X')
@@ -518,18 +511,18 @@ class SpellUtilities:
                                                                       parameter='TILE_TYPE_FLOOR')
         string_to_print = ''
         if target_entity > 0:
-            char_to_display = MobileUtilities.get_mobile_glyph(gameworld=gameworld,
+            char_to_display = mobileHelp.MobileUtilities.get_mobile_glyph(gameworld=gameworld,
                                                                entity=target_entity)
-            fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld,
+            fg = mobileHelp.MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld,
                                                              entity=target_entity)
-            bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld,
+            bg = mobileHelp.MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld,
                                                              entity=target_entity)
             string_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + char_to_display
 
         else:
             tile = game_map.tiles[oldx][oldy].type_of_tile
             if tile == tile_type_floor:
-                char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
+                char_to_display = common.CommonUtils.get_unicode_ascii_char(game_config=game_config,
                                                                      config_prefix=config_prefix_floor,
                                                                      tile_assignment=0)
                 colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
@@ -566,13 +559,13 @@ class SpellUtilities:
 
     @staticmethod
     def check_for_blocked_movement(game_map, newx, newy):
-        return GameMapUtilities.is_tile_blocked(game_map, newx, newy)
+        return gamemap.GameMapUtilities.is_tile_blocked(game_map, newx, newy)
 
     @staticmethod
     def get_valid_targets_for_spell(gameworld, casting_entity, spell_entity):
         # get game map x/y position of spell casting entity
-        spell_caster_x_pos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=casting_entity)
-        spell_caster_y_pos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=casting_entity)
+        spell_caster_x_pos = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=casting_entity)
+        spell_caster_y_pos = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=casting_entity)
 
         spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
 
@@ -586,9 +579,9 @@ class SpellUtilities:
 
             if (pos.x in range(from_x, to_x) and pos.y in range(from_y, to_y)) and ent != casting_entity:
                 # is this a valid target for the spell?
-                display_char = MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=ent)
-                fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=ent)
-                bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=ent)
+                display_char = mobileHelp.MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=ent)
+                fg = mobileHelp.MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=ent)
+                bg = mobileHelp.MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=ent)
                 valid_targets.append((ent, name.first, display_char, fg, bg))
 
         return valid_targets
@@ -597,13 +590,13 @@ class SpellUtilities:
     def check_for_effects_stopping_spell_being_cast(gameworld, target_name, target_entity):
         spell_blocked = False
         caster_is_blind = False
-        condi_is_attached_to_player, condi_count = CommonUtils.check_if_entity_has_condi_applied(gameworld=gameworld, target_entity=target_entity, condi_being_checked='blinded')
+        condi_is_attached_to_player, condi_count = common.CommonUtils.check_if_entity_has_condi_applied(gameworld=gameworld, target_entity=target_entity, condi_being_checked='blinded')
 
         if condi_is_attached_to_player:
             caster_is_blind = True
 
         if caster_is_blind:
-            CommonUtils.fire_event("spell-fizzle", gameworld=gameworld, target=target_name)
+            common.CommonUtils.fire_event("spell-fizzle", gameworld=gameworld, target=target_name)
             spell_blocked = True
 
         return spell_blocked
@@ -661,14 +654,14 @@ class SpellUtilities:
 
     @staticmethod
     def setup_mobile_empty_spellbar(gameworld, player_entity):
-        spell_bar = MobileUtilities.get_next_entity_id(gameworld=gameworld)
+        spell_bar = mobileHelp.MobileUtilities.get_next_entity_id(gameworld=gameworld)
 
-        MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spell_bar)
+        mobileHelp.MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spell_bar)
 
     @staticmethod
     def get_class_heal_spell(gameworld, player_entity):
         spell_entity = 0
-        player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
+        player_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
         for ent, (cl, typ) in gameworld.get_components(spells.ClassName, spells.SpellType):
             if typ.label == 'heal' and cl.label == player_class:
                 spell_entity = ent
@@ -678,10 +671,10 @@ class SpellUtilities:
     @staticmethod
     def populate_spell_bar_initially(gameworld, player_entity):
 
-        spellbar = MobileUtilities.get_next_entity_id(gameworld=gameworld)
+        spellbar = mobileHelp.MobileUtilities.get_next_entity_id(gameworld=gameworld)
 
-        MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spellbar)
-        weapons_equipped = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
+        mobileHelp.MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spellbar)
+        weapons_equipped = mobileHelp.MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
 
         if len(weapons_equipped) != 0:
             main_hand_weapon = weapons_equipped[0]
@@ -697,7 +690,7 @@ class SpellUtilities:
             logger.warning('no weapons equipped')
 
         # now get the heal skill
-        player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
+        player_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
         for ent, (cl, typ) in gameworld.get_components(spells.ClassName, spells.SpellType):
             if typ.label == 'heal' and cl.label == player_class:
                 SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
@@ -860,14 +853,14 @@ class SpellUtilities:
 
         game_config = configUtilities.load_config()
 
-        current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=target_entity)
-        target_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=target_entity)
-        target_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=target_entity)
+        current_condis = mobileHelp.MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=target_entity)
+        target_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=target_entity)
+        target_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=target_entity)
 
         # read the conditions.json file
         conditions_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                           parameter='CONDITIONSFILE')
-        conditions_file = read_json_file(conditions_file_path)
+        conditions_file = jsonUtilities.read_json_file(conditions_file_path)
 
         for condi in list_of_condis:
 
@@ -881,7 +874,7 @@ class SpellUtilities:
                          'displayChar': condition['char'], 'shortcode': condi[:4]}
 
                     # add dialog for condition damage to message log
-                    CommonUtils.fire_event("condi-applied", gameworld=gameworld, target=target_names[0],
+                    common.CommonUtils.fire_event("condi-applied", gameworld=gameworld, target=target_names[0],
                                            effect_dialogue=condition['dialogue_options'][0][
                                                target_class])
 
@@ -898,14 +891,14 @@ class SpellUtilities:
 
         game_config = configUtilities.load_config()
 
-        current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=target_entity)
-        target_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=target_entity)
-        target_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=target_entity)
+        current_boons = mobileHelp.MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=target_entity)
+        target_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=target_entity)
+        target_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=target_entity)
 
         # read the boons.json file
         boons_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                      parameter='BOONSFILE')
-        boons_file = read_json_file(boons_file_path)
+        boons_file = jsonUtilities.read_json_file(boons_file_path)
 
         for boon in list_of_boons:
 
@@ -918,11 +911,11 @@ class SpellUtilities:
                         b['improvement'] = 'crit_chance_increased'
                         b['increased_by'] = file_boon['crit_chance_improved']
                         target_entity = spell_caster
-                        current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld,
+                        current_boons = mobileHelp.MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld,
                                                                                             entity=target_entity)
 
                     # add dialog for boon effect to message log
-                    CommonUtils.fire_event("boon-applied", gameworld=gameworld, target=target_names[0],
+                    common.CommonUtils.fire_event("boon-applied", gameworld=gameworld, target=target_names[0],
                                            effect_dialogue=file_boon['dialogue_options'][0][target_class])
 
                     # current_boons is a map
@@ -992,11 +985,11 @@ class SpellUtilities:
         else:
             weapon_name = ''
             # List of items equipped in main, off, and both hands
-            equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
+            equipped_weapons = mobileHelp.MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
             if equipped_weapons[1] > 0:
-                weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[1])
+                weapon_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[1])
             if equipped_weapons[2] > 0:
-                weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[2])
+                weapon_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[2])
             off_hand_weapon = 'Off Hand (' + weapon_name + ')'
         this_row += 1
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + off_hand_weapon)
@@ -1063,11 +1056,11 @@ class SpellUtilities:
         else:
             weapon_name = ''
             # List of items equipped in main, off, and both hands
-            equipped_weapons = MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
+            equipped_weapons = mobileHelp.MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
             if equipped_weapons[0] > 0:
-                weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[0])
+                weapon_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[0])
             if equipped_weapons[2] > 0:
-                weapon_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[2])
+                weapon_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=equipped_weapons[2])
             main_hand_weapon = 'Main Hand (' + weapon_name + ')'
         this_row += 2
         terminal.printf(x=start_list_x, y=this_row, s=unicode_section_headers + main_hand_weapon)
@@ -1085,7 +1078,7 @@ class SpellUtilities:
     @staticmethod
     def get_list_of_utility_spells_for_player(gameworld, player_entity):
         utility_spells_list = []
-        player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
+        player_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
         for ent, (cl, typ) in gameworld.get_components(spells.ClassName, spells.SpellType):
             if typ.label == 'utility' and cl.label == player_class:
                 utility_spells_list.append(ent)
@@ -1094,7 +1087,7 @@ class SpellUtilities:
     @staticmethod
     def get_list_of_weapon_spells_for_player(gameworld, player_entity, weapon_type):
         utility_spells_list = []
-        player_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
+        player_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
         for ent, (cl, typ, weapon) in gameworld.get_components(spells.ClassName, spells.SpellType, spells.WeaponType):
             if typ.label == 'combat' and cl.label == player_class and weapon.label == weapon_type:
                 utility_spells_list.append(ent)

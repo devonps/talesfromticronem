@@ -1,14 +1,9 @@
-from utilities import configUtilities, colourUtilities
 from loguru import logger
 from bearlibterminal import terminal
-
-from utilities.armourManagement import ArmourUtilities
-from utilities.itemsHelp import ItemUtilities
+from utilities import configUtilities, colourUtilities, armourManagement, itemsHelp, jewelleryManagement, mobileHelp
 
 # the selected option is the choice from list_options that will be highlighted
 # so if list_options were  [apple, orange, grape] and selected_option were 'grape' then grape would be highlighted
-from utilities.jewelleryManagement import JewelleryUtilities
-from utilities.mobileHelp import MobileUtilities
 
 
 def coloured_list(list_options, list_x, list_y, selected_option, blank_line, fg):
@@ -277,7 +272,7 @@ def set_both_hands_weapon_string_es(both_weapon, gameworld):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]Both  : [/color]"
     both_hands_weapon_name = no_item_string
     if both_weapon > 0:
-        both_hands_weapon_name = item_string + ItemUtilities.get_item_name(gameworld=gameworld, entity=both_weapon)
+        both_hands_weapon_name = item_string + itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=both_weapon)
     return both_hands_weapon_name
 
 
@@ -286,7 +281,7 @@ def set_main_hand_weapon_string_es(main_weapon, gameworld):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]M/Hand: [/color]"
     main_hand_weapon_name = no_item_string
     if main_weapon > 0:
-        main_hand_weapon_name = item_string + ItemUtilities.get_item_name(gameworld=gameworld, entity=main_weapon)
+        main_hand_weapon_name = item_string + itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=main_weapon)
     return main_hand_weapon_name
 
 
@@ -295,7 +290,7 @@ def set_off_hand_weapon_string_es(off_weapon, gameworld):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]O/Hand: [/color]"
     off_hand_weapon_name = no_item_string
     if off_weapon > 0:
-        off_hand_weapon_name = item_string + ItemUtilities.get_item_name(gameworld=gameworld, entity=off_weapon)
+        off_hand_weapon_name = item_string + itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=off_weapon)
     return off_hand_weapon_name
 
 
@@ -304,8 +299,8 @@ def set_jewellery_left_ear_string(gameworld, left_ear):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]Earring :[/color]"
     left_ear_string = no_item_string
     if left_ear != 0:
-        activator = JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=left_ear)
-        item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=left_ear)
+        activator = jewelleryManagement.JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=left_ear)
+        item_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=left_ear)
         left_ear_string = item_string + activator + ' ' + item_name
     return left_ear_string
 
@@ -315,8 +310,8 @@ def set_jewellery_right_ear_string(gameworld, right_ear):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]Earring :[/color]"
     right_ear_string = no_item_string
     if right_ear != 0:
-        activator = JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=right_ear)
-        item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=right_ear)
+        activator = jewelleryManagement.JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=right_ear)
+        item_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=right_ear)
         right_ear_string = item_string + activator + ' ' + item_name
     return right_ear_string
 
@@ -326,8 +321,8 @@ def set_jewellery_left_hand_string(gameworld, left_hand):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]L/Hand:[/color]"
     left_hand_string = no_item_string
     if left_hand != 0:
-        activator = JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=left_hand)
-        item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=left_hand)
+        activator = jewelleryManagement.JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=left_hand)
+        item_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=left_hand)
         left_hand_string = item_string + activator + ' ' + item_name
     return left_hand_string
 
@@ -337,8 +332,8 @@ def set_jewellery_right_hand_string(gameworld, right_hand):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]R/Hand:[/color]"
     right_hand_string = no_item_string
     if right_hand != 0:
-        activator = JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=right_hand)
-        item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=right_hand)
+        activator = jewelleryManagement.JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=right_hand)
+        item_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=right_hand)
         right_hand_string = item_string + activator + ' ' + item_name
     return right_hand_string
 
@@ -348,8 +343,8 @@ def set_jewellery_neck_string(gameworld, neck):
     item_string = "[color=DISPLAY_ITEM_EQUIPPED]Neck  :[/color]"
     neck_string = no_item_string
     if neck != 0:
-        activator = JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=neck)
-        item_name = ItemUtilities.get_item_name(gameworld=gameworld, entity=neck)
+        activator = jewelleryManagement.JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=neck)
+        item_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=neck)
         neck_string = item_string + activator + ' ' + item_name
     return neck_string
 
@@ -358,11 +353,11 @@ def get_head_armour_details(gameworld, entity_id):
     no_item = "[color=DISPLAY_NO_ITEM_EQUIPPED]Head :None[/color]"
     item = "[color=DISPLAY_ITEM_EQUIPPED]Head :[/color]"
     item_list = [no_item]
-    head_armour_id = MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=entity_id)
+    head_armour_id = mobileHelp.MobileUtilities.is_entity_wearing_head_armour(gameworld=gameworld, entity=entity_id)
     if head_armour_id > 0:
-        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=head_armour_id)
-        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=head_armour_id)
-        def_head_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=head_armour_id)
+        armour_material = itemsHelp.ItemUtilities.get_item_material(gameworld=gameworld, entity=head_armour_id)
+        armour_displayname = itemsHelp.ItemUtilities.get_item_displayname(gameworld=gameworld, entity=head_armour_id)
+        def_head_value = armourManagement.ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=head_armour_id)
 
         item_list = [item, armour_material, armour_displayname, str(def_head_value)]
     return item_list
@@ -372,11 +367,11 @@ def get_chest_armour_details(gameworld, entity_id):
     no_item = "[color=DISPLAY_NO_ITEM_EQUIPPED]Chest:None[/color]"
     item = "[color=DISPLAY_ITEM_EQUIPPED]Chest:[/color]"
     item_list = [no_item]
-    chest_armour_id = MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=entity_id)
+    chest_armour_id = mobileHelp.MobileUtilities.is_entity_wearing_chest_armour(gameworld=gameworld, entity=entity_id)
     if chest_armour_id > 0:
-        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=chest_armour_id)
-        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=chest_armour_id)
-        def_chest_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest_armour_id)
+        armour_material = itemsHelp.ItemUtilities.get_item_material(gameworld=gameworld, entity=chest_armour_id)
+        armour_displayname = itemsHelp.ItemUtilities.get_item_displayname(gameworld=gameworld, entity=chest_armour_id)
+        def_chest_value = armourManagement.ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=chest_armour_id)
 
         item_list = [item, armour_material, armour_displayname, str(def_chest_value)]
 
@@ -387,11 +382,11 @@ def get_hands_armour_details(gameworld, entity_id):
     no_item = "[color=DISPLAY_NO_ITEM_EQUIPPED]Hands:None[/color]"
     item = "[color=DISPLAY_ITEM_EQUIPPED]Hands:[/color]"
     item_list = [no_item]
-    hands_armour_id = MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity_id)
+    hands_armour_id = mobileHelp.MobileUtilities.is_entity_wearing_hands_armour(gameworld=gameworld, entity=entity_id)
     if hands_armour_id > 0:
-        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=hands_armour_id)
-        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=hands_armour_id)
-        def_hands_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands_armour_id)
+        armour_material = itemsHelp.ItemUtilities.get_item_material(gameworld=gameworld, entity=hands_armour_id)
+        armour_displayname = itemsHelp.ItemUtilities.get_item_displayname(gameworld=gameworld, entity=hands_armour_id)
+        def_hands_value = armourManagement.ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=hands_armour_id)
 
         item_list = [item, armour_material, armour_displayname, str(def_hands_value)]
 
@@ -402,11 +397,11 @@ def get_legs_armour_details(gameworld, entity_id):
     no_item = "[color=DISPLAY_NO_ITEM_EQUIPPED]Legs :None[/color]"
     item = "[color=DISPLAY_ITEM_EQUIPPED]Legs :[/color]"
     item_list = [no_item]
-    legs_armour_id = MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=entity_id)
+    legs_armour_id = mobileHelp.MobileUtilities.is_entity_wearing_legs_armour(gameworld=gameworld, entity=entity_id)
     if legs_armour_id > 0:
-        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=legs_armour_id)
-        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=legs_armour_id)
-        def_legs_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs_armour_id)
+        armour_material = itemsHelp.ItemUtilities.get_item_material(gameworld=gameworld, entity=legs_armour_id)
+        armour_displayname = itemsHelp.ItemUtilities.get_item_displayname(gameworld=gameworld, entity=legs_armour_id)
+        def_legs_value = armourManagement.ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=legs_armour_id)
 
         item_list = [item, armour_material, armour_displayname, str(def_legs_value)]
 
@@ -417,11 +412,11 @@ def get_feet_armour_details(gameworld, entity_id):
     no_item = "[color=DISPLAY_NO_ITEM_EQUIPPED]Feet :None[/color]"
     item = "[color=DISPLAY_ITEM_EQUIPPED]Feet :[/color]"
     item_list = [no_item]
-    feet_armour_id = MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=entity_id)
+    feet_armour_id = mobileHelp.MobileUtilities.is_entity_wearing_feet_armour(gameworld=gameworld, entity=entity_id)
     if feet_armour_id > 0:
-        armour_material = ItemUtilities.get_item_material(gameworld=gameworld, entity=feet_armour_id)
-        armour_displayname = ItemUtilities.get_item_displayname(gameworld=gameworld, entity=feet_armour_id)
-        def_feet_value = ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet_armour_id)
+        armour_material = itemsHelp.ItemUtilities.get_item_material(gameworld=gameworld, entity=feet_armour_id)
+        armour_displayname = itemsHelp.ItemUtilities.get_item_displayname(gameworld=gameworld, entity=feet_armour_id)
+        def_feet_value = armourManagement.ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=feet_armour_id)
 
         item_list = [item, armour_material, armour_displayname, str(def_feet_value)]
 

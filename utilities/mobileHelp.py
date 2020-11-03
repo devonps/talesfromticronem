@@ -2,9 +2,8 @@ from abc import ABC
 
 from components import mobiles, items
 from loguru import logger
-from mapRelated.fov import FieldOfView
-from utilities import world
-from utilities import configUtilities
+from mapRelated import fov
+from utilities import world, configUtilities
 
 import numbers
 
@@ -23,7 +22,7 @@ class MobileUtilities(numbers.Real, ABC):
         to_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=to_entity)
         to_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=to_entity)
 
-        cells_in_line = FieldOfView.get_line((from_x, from_y), (to_x, to_y))
+        cells_in_line = fov.FieldOfView.get_line((from_x, from_y), (to_x, to_y))
 
         for cell in cells_in_line:
             if game_map.tiles[cell[0]][cell[1]].blocked:

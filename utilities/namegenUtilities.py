@@ -1,12 +1,10 @@
 import random
 
-from loguru import logger
-from utilities.jsonUtilities import read_json_file
-from utilities.randomNumberGenerator import PCG32Generator
+from utilities import jsonUtilities, randomNumberGenerator
 
 
 def read_name_file(file_to_read):
-    return read_json_file(filename=file_to_read)
+    return jsonUtilities.read_json_file(filename=file_to_read)
 
 
 def process_name_file(name_file):
@@ -43,7 +41,7 @@ def generate_name(name_components):
     # TEMP SOLUTION TO USE SAFE PRNG
     prng_seed = random.randrange(1, 100)
     stream = 1
-    random_range = PCG32Generator(prng_seed, stream)
+    random_range = randomNumberGenerator.PCG32Generator(prng_seed, stream)
 
     for rule in rules:
         if rule == 's':

@@ -1,11 +1,7 @@
 import esper
 from loguru import logger
-
 from components import mobiles
-from utilities import formulas, world
-from utilities.armourManagement import ArmourUtilities
-from utilities.common import CommonUtils
-from utilities.mobileHelp import MobileUtilities
+from utilities import formulas, world, armourManagement, common, mobileHelp
 
 
 class UpdateEntitiesProcessor(esper.Processor):
@@ -19,17 +15,17 @@ class UpdateEntitiesProcessor(esper.Processor):
 
     def process(self, game_config, advance_game_turn):
         if advance_game_turn:
-            player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
-            message_log_just_viewed = MobileUtilities.get_view_message_log_value(gameworld=self.gameworld,
+            player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+            message_log_just_viewed = mobileHelp.MobileUtilities.get_view_message_log_value(gameworld=self.gameworld,
                                                                                  entity=player_entity)
 
             if not message_log_just_viewed:
-                message_log_id = MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
+                message_log_id = mobileHelp.MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
 
                 for ent, ai in self.gameworld.get_component(mobiles.AI):
-                    current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=self.gameworld, entity=ent)
+                    current_health = mobileHelp.MobileUtilities.get_mobile_derived_current_health(gameworld=self.gameworld, entity=ent)
 
-                    entity_names = MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
+                    entity_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
 
                     if current_health < 0:
                         self.entity_is_dead(dead_entity_id=ent)
@@ -43,10 +39,10 @@ class UpdateEntitiesProcessor(esper.Processor):
                         self.check_for_combat(entity_id=ent)
 
     def check_for_combat(self, entity_id):
-        in_combat = MobileUtilities.get_combat_status(self.gameworld, entity=entity_id)
+        in_combat = mobileHelp.MobileUtilities.get_combat_status(self.gameworld, entity=entity_id)
         if not in_combat:
-            ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=self.gameworld, entity=entity_id)
-            MobileUtilities.set_mobile_derived_attributes(self.gameworld, entity=entity_id)
+            armourManagement.ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=self.gameworld, entity=entity_id)
+            mobileHelp.MobileUtilities.set_mobile_derived_attributes(self.gameworld, entity=entity_id)
 
     def entity_is_dead(self, dead_entity_id):
 
@@ -59,13 +55,13 @@ class UpdateEntitiesProcessor(esper.Processor):
         world.delete_entity(gameworld=self.gameworld, entity=dead_entity_id)
 
     def apply_conditions(self, entity_names, player_entity, message_log_id, target_entity):
-        current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
+        current_condis = mobileHelp.MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
                                                                               entity=target_entity)
         if len(current_condis) != 0:
             logger.warning('Current entity name being processed is {} who has {} applied', entity_names[0],
                            current_condis)
 
-            condition_damage_stat_value = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=self.gameworld,
+            condition_damage_stat_value = mobileHelp.MobileUtilities.get_mobile_secondary_condition_damage(gameworld=self.gameworld,
                                                                                                 entity=player_entity)
             ps = 0
             for condi in current_condis:
@@ -84,7 +80,7 @@ class UpdateEntitiesProcessor(esper.Processor):
                                                                       weapon_level=1)
 
                 # add message to combat log showing how much damage has been applied to the target
-                CommonUtils.fire_event("condi-damage", gameworld=self.gameworld, target=entity_names[0],
+                common.CommonUtils.fire_event("condi-damage", gameworld=self.gameworld, target=entity_names[0],
                                        damage=str(damage_applied_this_turn), condi_name=condi_name)
 
                 if duration <= 0:
@@ -97,7 +93,7 @@ class UpdateEntitiesProcessor(esper.Processor):
                 ps += 1
 
     def apply_boons(self, entity_names, player_entity, message_log_id, target_entity):
-        current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=self.gameworld, entity=target_entity)
+        current_boons = mobileHelp.MobileUtilities.get_current_boons_applied_to_mobile(gameworld=self.gameworld, entity=target_entity)
         if len(current_boons) != 0:
             ps = 0
             for boon in current_boons:
@@ -112,14 +108,14 @@ class UpdateEntitiesProcessor(esper.Processor):
                     msg_stat = boon['improvement']
 
                 # add message to combat log showing effect
-                CommonUtils.fire_event("boon-benefit", gameworld=self.gameworld, target=entity_names[0],
+                common.CommonUtils.fire_event("boon-benefit", gameworld=self.gameworld, target=entity_names[0],
                                        benefit=str(msg_stat), boon_name=boon_name)
                 if duration <= 0:
                     self.remove_boon(entity_name=entity_names[0], current_boons=current_boons, ps=ps, boon_name=boon_name)
                 else:
                     status_effects_component = self.gameworld.component_for_entity(target_entity, mobiles.StatusEffects)
                     status_effects_component.boons = current_boons
-                    current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=self.gameworld,
+                    current_boons = mobileHelp.MobileUtilities.get_current_boons_applied_to_mobile(gameworld=self.gameworld,
                                                                                         entity=target_entity)
                 ps += 1
 
@@ -127,10 +123,10 @@ class UpdateEntitiesProcessor(esper.Processor):
         del current_boons[ps]
 
         # add message to combat log showing loss of effect
-        CommonUtils.fire_event("boon-removal", gameworld=self.gameworld, target=entity_name, boon_name=boon_name)
+        common.CommonUtils.fire_event("boon-removal", gameworld=self.gameworld, target=entity_name, boon_name=boon_name)
 
     def remove_condition(self, entity_name, current_condis, ps, condi_name):
         del current_condis[ps]
 
         # add message to combat log showing loss of effect
-        CommonUtils.fire_event("condi-removal", gameworld=self.gameworld, target=entity_name, condi_name=condi_name)
+        common.CommonUtils.fire_event("condi-removal", gameworld=self.gameworld, target=entity_name, condi_name=condi_name)

@@ -1,16 +1,8 @@
 from mapRelated.gameMap import GameMap
 from newGame.Entities import Entity
-from processors.castSpells import CastSpells
-from processors.move_entities import MoveEntities
-from processors.renderUI import RenderUI
-from processors.updateEntities import UpdateEntitiesProcessor
-from processors.renderMessageLog import RenderMessageLog
-from processors.renderSpellInfoPanel import RenderSpellInfoPanel
-from utilities import configUtilities
+from processors import castSpells, move_entities, renderUI, updateEntities, renderMessageLog, renderSpellInfoPanel
+from utilities import configUtilities, externalfileutilities, jsonUtilities, mobileHelp
 from loguru import logger
-from utilities.externalfileutilities import Externalfiles
-from utilities.jsonUtilities import read_json_file
-from utilities.mobileHelp import MobileUtilities
 
 
 class SceneManager:
@@ -48,7 +40,7 @@ class SceneManager:
         if scene_found:
             map_area_file = ''
             scene_file = 'new_scenes.json'
-            scene_file = read_json_file('static/scenes/' + scene_file)
+            scene_file = jsonUtilities.read_json_file('static/scenes/' + scene_file)
             for scene_key in scene_file['scenes']:
                 if scene_key['name'] == this_scene:
                     scene_name = scene_key['name']
@@ -76,12 +68,12 @@ class SceneManager:
     @staticmethod
     def create_ecs_systems_yes_no(gameworld, currentscene, game_map):
         if currentscene == 1:
-            update_entities_processor = UpdateEntitiesProcessor(gameworld=gameworld, game_map=game_map)
-            move_entities_processor = MoveEntities(gameworld=gameworld, game_map=game_map)
-            cast_spells_processor = CastSpells(gameworld=gameworld, game_map=game_map)
-            render_ui_processor = RenderUI(game_map=game_map, gameworld=gameworld)
-            render_message_log_processor = RenderMessageLog(gameworld=gameworld)
-            spell_info_processor = RenderSpellInfoPanel(gameworld=gameworld, game_map=game_map)
+            update_entities_processor = updateEntities.UpdateEntitiesProcessor(gameworld=gameworld, game_map=game_map)
+            move_entities_processor = move_entities.MoveEntities(gameworld=gameworld, game_map=game_map)
+            cast_spells_processor = castSpells.CastSpells(gameworld=gameworld, game_map=game_map)
+            render_ui_processor = renderUI.RenderUI(game_map=game_map, gameworld=gameworld)
+            render_message_log_processor = renderMessageLog.RenderMessageLog(gameworld=gameworld)
+            spell_info_processor = renderSpellInfoPanel.RenderSpellInfoPanel(gameworld=gameworld, game_map=game_map)
             gameworld.add_processor(move_entities_processor, priority=80)
             gameworld.add_processor(cast_spells_processor, priority=100)
             gameworld.add_processor(update_entities_processor, priority=90)
@@ -111,7 +103,7 @@ class SceneManager:
         # now load the game_map from the external file/csv
         filepath = prefab_folder + map_area_file + '.txt'
 
-        file_content = Externalfiles.load_existing_file(filename=filepath)
+        file_content = externalfileutilities.Externalfiles.load_existing_file(filename=filepath)
         posy = 0
         for row in file_content:
             posx = 0
@@ -128,7 +120,7 @@ class SceneManager:
 
                 if player_placed:
                     SceneManager.setup_viewport(gameworld=gameworld, posx=posx, posy=posy)
-                    game_map.tiles[posx][posy].entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+                    game_map.tiles[posx][posy].entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
                     # add named NPCs to scene
                 if cell in 'ABCDEFG':
@@ -185,6 +177,6 @@ class SceneManager:
     @staticmethod
     def setup_viewport(gameworld, posx, posy):
         game_config = configUtilities.load_config()
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        MobileUtilities.set_mobile_position(gameworld=gameworld, entity=player_entity, posx=posx, posy=posy)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        mobileHelp.MobileUtilities.set_mobile_position(gameworld=gameworld, entity=player_entity, posx=posx, posy=posy)
 

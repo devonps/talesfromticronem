@@ -1,9 +1,6 @@
 import esper
-
 from components import mobiles
-from utilities.gamemap import GameMapUtilities
-from utilities.mobileHelp import MobileUtilities
-from utilities.replayGame import ReplayGame
+from utilities import gamemap, mobileHelp, replayGame
 from loguru import logger
 
 
@@ -26,9 +23,9 @@ class MoveEntities(esper.Processor):
 
     def process(self, game_config, advance_game_turn):
         if advance_game_turn:
-            player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+            player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
 
-            message_log_just_viewed = MobileUtilities.get_view_message_log_value(gameworld=self.gameworld, entity=player_entity)
+            message_log_just_viewed = mobileHelp.MobileUtilities.get_view_message_log_value(gameworld=self.gameworld, entity=player_entity)
             if not message_log_just_viewed:
                 self.attempt_to_move_entities(game_config=game_config)
 
@@ -50,17 +47,17 @@ class MoveEntities(esper.Processor):
                     svy = '0'
 
                     # remove mobile from current game map position
-                    GameMapUtilities.remove_mobile_from_map_position(game_map=self.game_map, px=px, py=py)
+                    gamemap.GameMapUtilities.remove_mobile_from_map_position(game_map=self.game_map, px=px, py=py)
 
                     # add mobile entity to new game map position
-                    GameMapUtilities.add_mobile_to_map_position(game_map=self.game_map, px=position.x, py=position.y,
+                    gamemap.GameMapUtilities.add_mobile_to_map_position(game_map=self.game_map, px=position.x, py=position.y,
                                                                 entity=ent)
 
                     svx, svy = check_velocity(velocity=velocity, cvx=svx, cvy=svy)
 
-                    MobileUtilities.set_mobile_has_moved(self.gameworld, ent, True)
+                    mobileHelp.MobileUtilities.set_mobile_has_moved(self.gameworld, ent, True)
                     value = 'move:' + str(ent) + ':' + svx + ':' + svy
-                    ReplayGame.update_game_replay_file(game_config, value)
+                    replayGame.ReplayGame.update_game_replay_file(game_config, value)
             else:
                 logger.debug(' cannot move to x/y {}/{}', position.x + velocity.dx, position.y + velocity.dy)
             # regardless of making the move - reduce the velocity to zero
@@ -69,4 +66,4 @@ class MoveEntities(esper.Processor):
 
     # check if new position would cause a collision with a blockable tile
     def check_for_blocked_movement(self, newx, newy):
-        return GameMapUtilities.is_tile_blocked(self.game_map, newx, newy)
+        return gamemap.GameMapUtilities.is_tile_blocked(self.game_map, newx, newy)

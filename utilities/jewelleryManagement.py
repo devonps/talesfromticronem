@@ -1,11 +1,8 @@
 from loguru import logger
 
 from components import items, mobiles, spells
-from newGame.Items import ItemManager
-from utilities import configUtilities, jsonUtilities, colourUtilities
-from utilities.itemsHelp import ItemUtilities
-from utilities.jsonUtilities import read_json_file
-from utilities.mobileHelp import MobileUtilities
+from newGame import Items
+from utilities import configUtilities, jsonUtilities, colourUtilities, itemsHelp, mobileHelp
 
 
 class JewelleryUtilities:
@@ -13,7 +10,7 @@ class JewelleryUtilities:
     @staticmethod
     def create_and_equip_jewellery_for_npc(gameworld, entity_id, jewellery_set, npc_class_file):
         class_file = jsonUtilities.read_json_file(npc_class_file)
-        entity_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
+        entity_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
 
         for entityclass in class_file['classes']:
             if entityclass['name'] == entity_class:
@@ -62,7 +59,7 @@ class JewelleryUtilities:
         game_config = configUtilities.load_config()
         playable_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                     parameter='GEMSTONESFILE')
-        gemstone_file = read_json_file(playable_class_file)
+        gemstone_file = jsonUtilities.read_json_file(playable_class_file)
 
         gem_details = []
 
@@ -80,7 +77,7 @@ class JewelleryUtilities:
     def load_jewellery_package_based_on_class(playable_class, game_config):
         playable_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                     parameter='CLASSESFILE')
-        class_file = read_json_file(playable_class_file)
+        class_file = jsonUtilities.read_json_file(playable_class_file)
 
         balanced = []
         defensive = []
@@ -176,22 +173,22 @@ class JewelleryUtilities:
         benefit = statbonus[1]
 
         if stat.lower() == 'condition damage':
-            MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=entity, value=benefit)
+            mobileHelp.MobileUtilities.set_mobile_secondary_condition_damage(gameworld=gameworld, entity=entity, value=benefit)
 
         if stat.lower() == 'power':
-            MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=entity, value=benefit)
+            mobileHelp.MobileUtilities.set_mobile_primary_power(gameworld=gameworld, entity=entity, value=benefit)
 
         if stat.lower() == 'vitality':
-            MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=entity, value=benefit)
+            mobileHelp.MobileUtilities.set_mobile_primary_vitality(gameworld=gameworld, entity=entity, value=benefit)
 
         if stat.lower() == 'toughness':
-            MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=entity, value=benefit)
+            mobileHelp.MobileUtilities.set_mobile_primary_toughness(gameworld=gameworld, entity=entity, value=benefit)
 
         if stat.lower() == 'healing power':
-            MobileUtilities.set_mobile_secondary_healing_power(gameworld=gameworld, entity=entity, value=benefit)
+            mobileHelp.MobileUtilities.set_mobile_secondary_healing_power(gameworld=gameworld, entity=entity, value=benefit)
 
         if stat.lower() == 'precision':
-            MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=entity, value=benefit)
+            mobileHelp.MobileUtilities.set_mobile_primary_precision(gameworld=gameworld, entity=entity, value=benefit)
 
     @staticmethod
     def add_spell_to_jewellery(gameworld, piece_of_jewellery, spell_entity):
@@ -209,10 +206,10 @@ class JewelleryUtilities:
 
         npc_class_file = configUtilities.get_config_value_as_string(configfile=game_config,
                                                                     section='files', parameter='CLASSESFILE')
-        entity_id = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        entity_id = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
         class_file = jsonUtilities.read_json_file(npc_class_file)
-        entity_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
+        entity_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
 
         for entityclass in class_file['classes']:
             if entityclass['name'] == entity_class:
@@ -304,9 +301,9 @@ class JewelleryUtilities:
             file_gemstone = gemstone['Stone'].lower()
             if file_gemstone == trinket_activator:
                 bdl = JewelleryUtilities.define_jewellery_bodylocation_string(bodylocation=bodylocation)
-                piece_of_jewellery = ItemManager.create_base_item(gameworld=gameworld)
+                piece_of_jewellery = Items.ItemManager.create_base_item(gameworld=gameworld)
                 # generate common item components
-                ItemUtilities.set_type_of_item(gameworld=gameworld, entity_id=piece_of_jewellery, value='jewellery')
+                itemsHelp.ItemUtilities.set_type_of_item(gameworld=gameworld, entity_id=piece_of_jewellery, value='jewellery')
                 gameworld.add_component(piece_of_jewellery, items.Material(texture=trinket_setting))
                 gameworld.add_component(piece_of_jewellery, items.RenderItem(istrue=True))
                 gameworld.add_component(piece_of_jewellery, items.Quality(level='common'))
@@ -382,12 +379,12 @@ class JewelleryUtilities:
 
     @staticmethod
     def common_jewellery_create_method(gameworld,piece_of_jewellery, nm, desc, trinket_activator):
-        ItemUtilities.set_item_name(gameworld=gameworld, entity_id=piece_of_jewellery, value=nm)
-        ItemUtilities.set_item_description(gameworld=gameworld, entity_id=piece_of_jewellery, value=desc)
-        ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=piece_of_jewellery, value='*')
-        ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
+        itemsHelp.ItemUtilities.set_item_name(gameworld=gameworld, entity_id=piece_of_jewellery, value=nm)
+        itemsHelp.ItemUtilities.set_item_description(gameworld=gameworld, entity_id=piece_of_jewellery, value=desc)
+        itemsHelp.ItemUtilities.set_item_glyph(gameworld=gameworld, entity_id=piece_of_jewellery, value='*')
+        itemsHelp.ItemUtilities.set_item_foreground_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
                                                  value=colourUtilities.get('BLUE'))
-        ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
+        itemsHelp.ItemUtilities.set_item_background_colour(gameworld=gameworld, entity_id=piece_of_jewellery,
                                                  value=colourUtilities.get('BLACK'))
-        ItemUtilities.set_item_displayname(gameworld=gameworld, entity_id=piece_of_jewellery,
+        itemsHelp.ItemUtilities.set_item_displayname(gameworld=gameworld, entity_id=piece_of_jewellery,
                                            value=trinket_activator + ' ' + nm)

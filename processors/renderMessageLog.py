@@ -1,8 +1,6 @@
 import esper
 from bearlibterminal import terminal
-from utilities import configUtilities
-from utilities.mobileHelp import MobileUtilities
-from utilities.common import CommonUtils
+from utilities import configUtilities, mobileHelp, common
 
 
 class RenderMessageLog(esper.Processor):
@@ -19,7 +17,7 @@ class RenderMessageLog(esper.Processor):
         ascii_prefix = 'ASCII_SINGLE_'
 
         # get message log entity id
-        player_entity = MobileUtilities.get_player_entity(self.gameworld, game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(self.gameworld, game_config)
         message_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
                                                                             parameter='MSG_PANEL_WIDTH')
         message_panel_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
@@ -31,20 +29,20 @@ class RenderMessageLog(esper.Processor):
         message_panel_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
                                                                             parameter='MSG_PANEL_START_Y')
 
-        message_panel_top_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'TOP_LEFT')
+        message_panel_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'TOP_LEFT')
 
-        message_panel_bottom_left_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'BOTTOM_LEFT')
+        message_panel_bottom_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'BOTTOM_LEFT')
 
-        message_panel_top_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'TOP_RIGHT')
+        message_panel_top_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'TOP_RIGHT')
 
-        message_panel_bottom_right_corner = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'BOTTOM_RIGHT')
+        message_panel_bottom_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'BOTTOM_RIGHT')
 
-        message_panel_horizontal = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'HORIZONTAL')
-        message_panel_vertical = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'VERTICAL')
-        message_panel_left_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'LEFT_T_JUNCTION')
-        message_panel_right_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
-        message_panel_top_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'TOP_T_JUNCTION')
-        message_panel_bottom_junction = CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
+        message_panel_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'HORIZONTAL')
+        message_panel_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'VERTICAL')
+        message_panel_left_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'LEFT_T_JUNCTION')
+        message_panel_right_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
+        message_panel_top_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'TOP_T_JUNCTION')
+        message_panel_bottom_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config, parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
 
         # draw message panel boundary
         # top left
@@ -75,10 +73,10 @@ class RenderMessageLog(esper.Processor):
         # bottom right
         terminal.printf(x=message_panel_start_x + message_panel_width, y=(message_panel_start_y + message_panel_depth), s=unicode_string_to_print + message_panel_bottom_right_corner + ']')
 
-        message_log_entity = MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
+        message_log_entity = mobileHelp.MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
 
         # build the tabs
-        visible_log = CommonUtils.get_current_log_id(gameworld=self.gameworld, log_entity=message_log_entity)
+        visible_log = common.CommonUtils.get_current_log_id(gameworld=self.gameworld, log_entity=message_log_entity)
 
         tabs_to_display = configUtilities.get_config_value_as_list(configfile=game_config, section='messagePanel', parameter='MSG_PANEL_TABS')
         not_selected_tab_colour = '[color=white]'
@@ -105,13 +103,13 @@ class RenderMessageLog(esper.Processor):
         RenderMessageLog.log_tab_display(visible_log=visible_log, unicode_string_to_print=unicode_string_to_print, message_panel_vertical=message_panel_vertical, message_panel_bottom_left_corner=message_panel_bottom_left_corner, message_panel_bottom_right_corner=message_panel_bottom_right_corner)
 
         # now show the messages
-        visible_messages, display_messages_from, display_messages_to, display_messages_count = CommonUtils.get_messages_for_visible_message_log(gameworld=self.gameworld, log_entity=message_log_entity)
+        visible_messages, display_messages_from, display_messages_to, display_messages_count = common.CommonUtils.get_messages_for_visible_message_log(gameworld=self.gameworld, log_entity=message_log_entity)
         display_line = 3
         msg_log_display_x = 1
         if display_messages_count > 0:
             for msg in range(display_messages_from, display_messages_to):
                 message = visible_messages[msg]
-                str_to_print = CommonUtils.build_message_to_be_displayed(gameworld=self.gameworld, log_entity=message_log_entity, message=message)
+                str_to_print = common.CommonUtils.build_message_to_be_displayed(gameworld=self.gameworld, log_entity=message_log_entity, message=message)
                 if str_to_print != "":
                     terminal.printf(x=msg_log_display_x, y=message_panel_start_y + display_line, s=str_to_print)
                     display_line += 1
