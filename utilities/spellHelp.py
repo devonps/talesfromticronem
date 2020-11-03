@@ -474,7 +474,7 @@ class SpellUtilities:
             ent_x = entities_found[a][1]
             ent_y = entities_found[a][2]
             ent_glyph = mobileHelp.MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=ent_id)
-            ent_fg = mobileHelp.get_mobile_fg_render_colour(gameworld=gameworld, entity=ent_id)
+            ent_fg = mobileHelp.MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=ent_id)
             glyph_colour_string = '[font=dungeon][color=' + ent_fg + ']'
             terminal.printf(x=ent_x, y=ent_y, s=glyph_colour_string + ent_glyph)
 

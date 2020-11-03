@@ -3,7 +3,8 @@ import random
 from components import mobiles, scorekeeper
 from newGame.CreateSpells import AsEntities
 from newGame.Items import ItemManager
-from utilities import configUtilities, armourManagement, itemsHelp, jewelleryManagement, mobileHelp, jsonUtilities, spellHelp, weaponManagement
+from utilities import configUtilities, armourManagement, itemsHelp, jewelleryManagement, mobileHelp, jsonUtilities, \
+    spellHelp, weaponManagement, world
 from loguru import logger
 
 
@@ -26,13 +27,8 @@ class Entity:
                                          enemy_role=enemy_role)
 
     @staticmethod
-    def create_new_entity(gameworld):
-        entity_id = mobileHelp.MobileUtilities.get_next_entity_id(gameworld)
-        return entity_id
-
-    @staticmethod
     def create_named_mobile(npcs_for_scene, posx, posy, cellid, gameworld, game_config):
-        entity_id = Entity.create_new_entity(gameworld=gameworld)
+        entity_id = world.get_next_entity_id(gameworld=gameworld)
 
         for npc in npcs_for_scene:
             identifer = npc['identifier']
@@ -210,7 +206,7 @@ class Entity:
 
     @staticmethod
     def create_enemy_role(gameworld, game_config, posx, posy, enemy_role):
-        entity_id = Entity.create_new_entity(gameworld=gameworld)
+        entity_id = world.get_next_entity_id(gameworld=gameworld)
         mobileHelp.MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=entity_id)
         mobileHelp.MobileUtilities.add_enemy_components(gameworld=gameworld, entity_id=entity_id)
 
@@ -692,10 +688,12 @@ class Entity:
 
     @staticmethod
     def create_scorekeeper_entity(gameworld):
-        scorekeeper_entity = Entity.create_new_entity(gameworld=gameworld)
+
+        scorekeeper_entity = world.get_next_entity_id(gameworld=gameworld)
 
         logger.debug('===----- Creating scorekeeper -----===')
         logger.debug('Scorekeeper entity id {}', scorekeeper_entity)
         gameworld.add_component(scorekeeper_entity, scorekeeper.ScoreKeeperFlag(sc_flag=True))
         gameworld.add_component(scorekeeper_entity, scorekeeper.MetaEvents())
+        gameworld.add_component(scorekeeper_entity, scorekeeper.CurrentArea())
         logger.debug('===----- Scorekeeper: now created-----===')

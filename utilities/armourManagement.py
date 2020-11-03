@@ -144,27 +144,28 @@ class ArmourUtilities:
 
         if armourset[0] > 0:
             ArmourUtilities.equip_piece_of_armour(gameworld, entity, armourset[0], 'head')
-            ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[0])
+            # ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[0])
         if armourset[1] > 0:
             ArmourUtilities.equip_piece_of_armour(gameworld, entity, armourset[1], 'chest')
-            ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[1])
+            # ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[1])
         if armourset[2] > 0:
             ArmourUtilities.equip_piece_of_armour(gameworld, entity, armourset[2], 'hands')
-            ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[2])
+            # ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[2])
         if armourset[3] > 0:
             ArmourUtilities.equip_piece_of_armour(gameworld, entity, armourset[3], 'legs')
-            ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[3])
+            # ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[3])
         if armourset[4] > 0:
             ArmourUtilities.equip_piece_of_armour(gameworld, entity, armourset[4], 'feet')
-            ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[4])
+            # ArmourUtilities.register_meta_event_for_armour_piece(gameworld=gameworld, armour_entity=armourset[4])
 
     @staticmethod
     def register_meta_event_for_armour_piece(gameworld, armour_entity):
+        current_area_tag = scorekeeper.ScorekeeperUtilities.get_current_area_tag(gameworld=gameworld)
         this_spell_entity = ArmourUtilities.get_spell_entity_from_armour_piece(gameworld=gameworld,
                                                                                armour_entity=armour_entity)
         spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=this_spell_entity)
         updated_spell_name = spell_name.replace(" ", "_")
-        updated_spell_name += "_cast"
+        updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
         scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
                                                                          event_name=updated_spell_name.lower(),
                                                                          event_starting_value=0)

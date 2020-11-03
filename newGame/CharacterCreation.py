@@ -3,7 +3,8 @@ import textwrap
 from bearlibterminal import terminal
 from loguru import logger
 from newGame import Items, initialiseNewGame
-from utilities import configUtilities, namegenUtilities, armourManagement, display, input_handlers, jsonUtilities, mobileHelp, common, spellHelp, weaponManagement
+from utilities import configUtilities, namegenUtilities, armourManagement, display, input_handlers, jsonUtilities, \
+    mobileHelp, common, spellHelp, weaponManagement, world
 from ticronem import game_loop
 
 
@@ -19,7 +20,7 @@ class CharacterCreation:
         # it's a brave new world
         gameworld = initialiseNewGame.create_world()
         # setup base player entity
-        player = mobileHelp.MobileUtilities.get_next_entity_id(gameworld=gameworld)
+        player = world.get_next_entity_id(gameworld=gameworld)
         mobileHelp.MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player)
         mobileHelp.MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config,
                                                 player_entity=player)

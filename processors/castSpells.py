@@ -18,6 +18,7 @@ class CastSpells(esper.Processor):
             self.check_for_spells_to_be_cast_this_turn()
 
     def check_for_spells_to_be_cast_this_turn(self):
+        current_area_tag = scorekeeper.ScorekeeperUtilities.get_current_area_tag(gameworld=self.gameworld)
         for ent, mob in self.gameworld.get_component(mobiles.SpellCast):
             if mob.has_cast_a_spell:
                 spell_entity = mob.spell_entity
@@ -35,7 +36,7 @@ class CastSpells(esper.Processor):
                 # increase meta-event spell casting value
                 spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=spell_entity)
                 updated_spell_name = spell_name.replace(" ", "_")
-                updated_spell_name += "_cast"
+                updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
                 lower_spell_name = updated_spell_name.lower()
                 scorekeeper.ScorekeeperUtilities.add_one_to_meta_event_value(gameworld=self.gameworld, event_name=lower_spell_name)
 

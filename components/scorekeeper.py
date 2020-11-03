@@ -8,3 +8,8 @@ class MetaEvents:
         if map_of_events is None:
             map_of_events = {}
         self.map_of_events = map_of_events
+
+
+class CurrentArea:
+    def __init__(self, label=''):
+        self.label = label
