@@ -2,7 +2,7 @@ from loguru import logger
 
 from components import items, mobiles, spells
 from newGame.Items import ItemManager
-from utilities import configUtilities, jsonUtilities, world, colourUtilities
+from utilities import configUtilities, jsonUtilities
 from utilities.itemsHelp import ItemUtilities
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
@@ -38,7 +38,6 @@ class ArmourUtilities:
             armour_entity = ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld,
                                                                                  entity=player_entity,
                                                                                  bodylocation='head')
-
             ArmourUtilities.add_major_attribute_bonus_to_piece_of_armour(gameworld=gameworld,
                                                                          armour_entity=armour_entity,
                                                                          attribute_name=attribute_name,
@@ -374,7 +373,7 @@ class ArmourUtilities:
         player_class = MobileUtilities.get_character_class(gameworld, player)
         ArmourUtilities.add_spell_to_piece_of_armour(gameworld=gameworld, bodylocation=bodylocation,
                                                      armour_piece=armour_piece, playable_class=player_class)
-
+        logger.info('Armour piece entity is {}', armour_piece)
         return armour_piece
 
     @staticmethod

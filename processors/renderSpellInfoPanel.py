@@ -3,7 +3,7 @@ import random
 import esper
 from bearlibterminal import terminal
 
-from utilities import configUtilities, formulas, world
+from utilities import configUtilities, formulas
 from utilities.common import CommonUtils
 from utilities.display import set_jewellery_left_ear_string, set_jewellery_right_ear_string, \
     set_jewellery_left_hand_string, set_jewellery_right_hand_string, set_jewellery_neck_string, get_head_armour_details, \

@@ -2,7 +2,7 @@ from bearlibterminal import terminal
 from loguru import logger
 
 from components.messages import Message
-from utilities import configUtilities, jsonUtilities, colourUtilities
+from utilities import configUtilities, jsonUtilities
 from components import messages
 from utilities.display import draw_simple_frame
 from utilities.mobileHelp import MobileUtilities

@@ -1,7 +1,7 @@
 from bearlibterminal import terminal
 from loguru import logger
 
-from utilities import colourUtilities, configUtilities
+from utilities import configUtilities
 from utilities.armourManagement import ArmourUtilities
 from utilities.common import CommonUtils
 from utilities.display import coloured_list, pointy_vertical_menu

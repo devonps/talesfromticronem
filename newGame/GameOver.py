@@ -73,7 +73,7 @@ class GameOver:
         terminal.print_(x=stat_value_x, y=stat_y + 8, s=str(current_turn))
 
         # further direction for the player
-        terminal.print_(x=stat_x, y=stat_y + 12, s=stats_text_controls + 'QUIT GAME ' + stats_text_controls_keys + '[[ESCAPE]] ' + stats_text_controls + 'NEW GAME ' + stats_text_controls_keys + '[[ENTER]]')
+        terminal.print_(x=stat_x, y=stat_y + 12, s=stats_text_controls_keys + '[[ESCAPE]] ' + stats_text_controls + 'TO QUIT ' + stats_text_controls_keys + '[[ENTER]] ' + stats_text_controls + 'FOR NEW GAME')
         terminal.print_(x=stat_x, y=stat_y + 15, s=stats_text_info + 'Full stats can be found in /scores')
 
     @staticmethod

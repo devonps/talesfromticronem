@@ -9,7 +9,7 @@ from utilities.display import pointy_vertical_menu
 from utilities.input_handlers import handle_game_keys
 from utilities.jsonUtilities import read_json_file
 from utilities.mobileHelp import MobileUtilities
-from utilities import formulas, configUtilities, colourUtilities
+from utilities import formulas, configUtilities
 
 
 def initiate_dialog(gameworld, game_config):

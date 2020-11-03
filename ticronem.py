@@ -45,6 +45,19 @@ def game_loop(gameworld):
     game_map = SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)
     scene_change = False
     advance_game_turn = False
+
+    spell_list2 = SpellUtilities.get_current_spellbar_spells(gameworld=gameworld, player_entity=player)
+
+    # generate meta events for spells loaded into spell bar - at this point it is weapons + class health spell
+    for spell_entity in spell_list2:
+        if spell_entity > 0:
+            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+            updated_spell_name = spell_name.replace(" ", "_")
+            updated_spell_name += "_cast"
+            ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
+                                                                 event_name=updated_spell_name.lower(),
+                                                                 event_starting_value=0)
+
     # process all intended actions
     gameworld.process(game_config, advance_game_turn)
     # blit the console

@@ -1,7 +1,6 @@
 from bearlibterminal import terminal
-from loguru import logger
 
-from utilities import configUtilities, colourUtilities
+from utilities import configUtilities
 from utilities.common import CommonUtils
 from utilities.display import pointy_horizontal_menu
 from utilities.input_handlers import handle_game_keys
