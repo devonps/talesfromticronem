@@ -11,19 +11,24 @@ class ScorekeeperUtilities:
         all_areas_list = scorekeeper_component.all_areas
         # one off check for start of game
         if len(all_areas_list) == 0:
-            scorekeeper_component.current_area = current_area_tag
-            scorekeeper_component.all_areas = current_area_tag
+            all_areas_list.append(current_area_tag)
         else:
-            scorekeeper_component.current_area = current_area_tag
             all_areas_list.append(current_area)
-            scorekeeper_component.all_areas = all_areas_list
 
+        scorekeeper_component.current_area = current_area_tag
+        scorekeeper_component.all_areas = all_areas_list
 
     @staticmethod
     def get_current_area(gameworld):
         scorekeeper_entity = ScorekeeperUtilities.get_scorekeeper_entity(gameworld=gameworld)
         scorekeeper_component = gameworld.component_for_entity(scorekeeper_entity, scorekeeper.AreasVisited)
         return scorekeeper_component.current_area
+
+    @staticmethod
+    def get_all_areas_visited(gameworld):
+        scorekeeper_entity = ScorekeeperUtilities.get_scorekeeper_entity(gameworld=gameworld)
+        scorekeeper_component = gameworld.component_for_entity(scorekeeper_entity, scorekeeper.AreasVisited)
+        return scorekeeper_component.all_areas
 
     # Get scorekeeper entity id
     @staticmethod
@@ -42,7 +47,8 @@ class ScorekeeperUtilities:
     @staticmethod
     def get_scorekeeper_component(gameworld):
         scorekeeper_entity = ScorekeeperUtilities.get_scorekeeper_entity(gameworld=gameworld)
-        scorekeeper_existing_meta_events_component = gameworld.component_for_entity(scorekeeper_entity, scorekeeper.MetaEvents)
+        scorekeeper_existing_meta_events_component = gameworld.component_for_entity(scorekeeper_entity,
+                                                                                    scorekeeper.MetaEvents)
         return scorekeeper_existing_meta_events_component
 
     # Register meta event to scorekeeper
