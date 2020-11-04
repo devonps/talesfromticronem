@@ -103,14 +103,13 @@ def swap_utility_spells(gameworld, spells_to_choose_from, key_pressed, player_en
 
 
 def swap_the_spell(gameworld, pos, sort_spells_list, utility_slot_to_be_swapped_out, player_entity):
-    current_area_tag = scorekeeper.ScorekeeperUtilities.get_current_area_tag(gameworld=gameworld)
     for ent, (name, desc) in gameworld.get_components(spells.Name, spells.Description):
         if name.label == sort_spells_list[pos]:
             spellHelp.SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=ent,
                                              slot=utility_slot_to_be_swapped_out,
                                              player_entity=player_entity)
             updated_spell_name = name.label.replace(" ", "_")
-            updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
+            updated_spell_name += "_cast"
             meta_event_already_exist = scorekeeper.ScorekeeperUtilities.does_this_meta_event_exist(gameworld=gameworld, incoming_meta_event_name=updated_spell_name.lower())
             if not meta_event_already_exist:
                 scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name=updated_spell_name.lower(), event_starting_value=0)
