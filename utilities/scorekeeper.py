@@ -4,6 +4,28 @@ from components import scorekeeper
 class ScorekeeperUtilities:
 
     @staticmethod
+    def unpack_meta_events_to_list(gameworld):
+        areas_visited = ScorekeeperUtilities.get_all_areas_visited(gameworld=gameworld)
+        all_meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
+
+        meta_events_per_area_list = {}
+        for area in areas_visited:
+            these_events = {}
+            for meta_key, meta_value in all_meta_events.items():
+                if meta_key.startswith(area):
+                    new_event = ScorekeeperUtilities.strip_area_tag_from_meta_event(meta_event=meta_key)
+                    these_events.update({new_event: meta_value})
+            meta_events_per_area_list.update({area: these_events})
+            meta_events_per_area_list.update({'boo': {'spell 1': 500}})
+        return meta_events_per_area_list
+
+    @staticmethod
+    def strip_area_tag_from_meta_event(meta_event):
+        new_string = meta_event[4:]
+        return new_string
+
+
+    @staticmethod
     def set_current_area(gameworld, current_area_tag):
         scorekeeper_entity = ScorekeeperUtilities.get_scorekeeper_entity(gameworld=gameworld)
         scorekeeper_component = gameworld.component_for_entity(scorekeeper_entity, scorekeeper.AreasVisited)
