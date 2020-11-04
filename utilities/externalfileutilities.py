@@ -64,3 +64,10 @@ class Externalfiles:
     @staticmethod
     def delete_existing_file(filename):
         os.remove(filename)
+
+    @staticmethod
+    def create_new_directory(directory_name):
+        default_path = './'
+        if not Externalfiles.does_file_exist(directory_name):
+            path = os.path.join(default_path, directory_name)
+            os.mkdir(path=path)

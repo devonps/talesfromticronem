@@ -1,8 +1,7 @@
 from bearlibterminal import terminal
 from loguru import logger
 
-from utilities import configUtilities, common, display, input_handlers, itemsHelp, mobileHelp, scorekeeper
-from utilities.scorekeeper import ScorekeeperUtilities
+from utilities import configUtilities, common, display, input_handlers, itemsHelp, mobileHelp, scorekeeper, externalfileutilities
 
 
 class GameOver:
@@ -15,6 +14,7 @@ class GameOver:
         terminal.clear()
         meta_events = scorekeeper.ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         logger.warning('list of meta events:{}', meta_events)
+        externalfileutilities.Externalfiles.create_new_directory(directory_name='scores')
         GameOver.display_game_over_screen(game_config=game_config)
         GameOver.display_killed_by_information(game_config=game_config, death_status=player_died)
         GameOver.display_equipment_panels(gameworld=gameworld, game_config=game_config, visible_panel=visible_panel, player_entity=player_entity)

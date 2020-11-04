@@ -3,7 +3,7 @@
     {
       "name": "academy",
       "loadMap": "startArea",
-      "area_tag": "ac",
+      "area_tag": "acc",
       "mapx": "100",
       "mapy": "100",
       "npcs": [
