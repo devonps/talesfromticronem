@@ -10,6 +10,9 @@ class MetaEvents:
         self.map_of_events = map_of_events
 
 
-class CurrentArea:
-    def __init__(self, label=''):
-        self.label = label
+class AreasVisited:
+    def __init__(self, current_area='', all_areas=None):
+        self.current_area = current_area
+        if all_areas is None:
+            all_areas = []
+        self.all_areas = all_areas

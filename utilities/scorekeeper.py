@@ -3,6 +3,28 @@ from components import scorekeeper
 
 class ScorekeeperUtilities:
 
+    @staticmethod
+    def set_current_area(gameworld, current_area_tag):
+        scorekeeper_entity = ScorekeeperUtilities.get_scorekeeper_entity(gameworld=gameworld)
+        scorekeeper_component = gameworld.component_for_entity(scorekeeper_entity, scorekeeper.AreasVisited)
+        current_area = scorekeeper_component.current_area
+        all_areas_list = scorekeeper_component.all_areas
+        # one off check for start of game
+        if len(all_areas_list) == 0:
+            scorekeeper_component.current_area = current_area_tag
+            scorekeeper_component.all_areas = current_area_tag
+        else:
+            scorekeeper_component.current_area = current_area_tag
+            all_areas_list.append(current_area)
+            scorekeeper_component.all_areas = all_areas_list
+
+
+    @staticmethod
+    def get_current_area(gameworld):
+        scorekeeper_entity = ScorekeeperUtilities.get_scorekeeper_entity(gameworld=gameworld)
+        scorekeeper_component = gameworld.component_for_entity(scorekeeper_entity, scorekeeper.AreasVisited)
+        return scorekeeper_component.current_area
+
     # Get scorekeeper entity id
     @staticmethod
     def get_scorekeeper_entity(gameworld):

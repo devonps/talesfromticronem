@@ -14,6 +14,8 @@ class GameOver:
         terminal.clear()
         meta_events = scorekeeper.ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         logger.warning('list of meta events:{}', meta_events)
+        current_area = scorekeeper.ScorekeeperUtilities.get_current_area(gameworld=gameworld)
+        logger.warning('Current game area is {}', current_area)
         externalfileutilities.Externalfiles.create_new_directory(directory_name='scores')
         GameOver.display_game_over_screen(game_config=game_config)
         GameOver.display_killed_by_information(game_config=game_config, death_status=player_died)

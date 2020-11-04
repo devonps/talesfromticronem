@@ -36,7 +36,7 @@ class SceneManager:
         map_area_max_y = 0
         game_map = []
         scene_found, this_scene = SceneManager.get_current_scene(currentscene=currentscene)
-
+        current_area_tag = ''
         if scene_found:
             map_area_file = ''
             scene_file = 'new_scenes.json'
@@ -45,6 +45,7 @@ class SceneManager:
                 if scene_key['name'] == this_scene:
                     scene_name = scene_key['name']
                     scene_exits = scene_key['sceneExits']
+                    current_area_tag = scene_key['area_tag']
                     logger.debug('The {} scene exits to the {}', scene_name, scene_exits)
                     if 'loadMap' in scene_key:
                         # load game_map from external file - setup variables
@@ -60,6 +61,7 @@ class SceneManager:
                     else:
                         # generate random map
                         pass
+            scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag=current_area_tag)
         SceneManager.create_ecs_systems_yes_no(gameworld=gameworld, currentscene=currentscene, game_map=game_map)
 
         return game_map, map_area_max_x - 1, map_area_max_y - 1

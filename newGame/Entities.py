@@ -695,5 +695,5 @@ class Entity:
         logger.debug('Scorekeeper entity id {}', scorekeeper_entity)
         gameworld.add_component(scorekeeper_entity, scorekeeper.ScoreKeeperFlag(sc_flag=True))
         gameworld.add_component(scorekeeper_entity, scorekeeper.MetaEvents())
-        gameworld.add_component(scorekeeper_entity, scorekeeper.CurrentArea())
+        gameworld.add_component(scorekeeper_entity, scorekeeper.AreasVisited())
         logger.debug('===----- Scorekeeper: now created-----===')
