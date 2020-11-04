@@ -111,13 +111,12 @@ def set_spellbar_utility_spells(gameworld, player_entity):
                                                                                   entity=player_entity,
                                                                                   bodylocation='rear')
 
-    current_area_tag = scorekeeper.ScorekeeperUtilities.get_current_area_tag(gameworld=gameworld)
     if pendent_entity > 0:
         sp1 = itemsHelp.ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=pendent_entity)
         spellHelp.SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp1, slot=6, player_entity=player_entity)
         spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=sp1)
         updated_spell_name = spell_name.replace(" ", "_")
-        updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
+        updated_spell_name += "_cast"
         scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name=updated_spell_name.lower(),
                                                              event_starting_value=0)
 
@@ -126,7 +125,7 @@ def set_spellbar_utility_spells(gameworld, player_entity):
         spellHelp.SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp2, slot=7, player_entity=player_entity)
         spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=sp2)
         updated_spell_name = spell_name.replace(" ", "_")
-        updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
+        updated_spell_name += "_cast"
         scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name=updated_spell_name.lower(),
                                                              event_starting_value=0)
 
@@ -135,7 +134,7 @@ def set_spellbar_utility_spells(gameworld, player_entity):
         spellHelp.SpellUtilities.set_spellbar_slot(gameworld=gameworld, spell_entity=sp3, slot=8, player_entity=player_entity)
         spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=sp3)
         updated_spell_name = spell_name.replace(" ", "_")
-        updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
+        updated_spell_name += "_cast"
         scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name=updated_spell_name.lower(),
                                                              event_starting_value=0)
 
