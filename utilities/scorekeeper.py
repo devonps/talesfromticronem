@@ -1,6 +1,7 @@
 from components import scorekeeper
-from utilities import externalfileutilities
+from utilities import externalfileutilities, configUtilities
 import datetime
+
 
 class ScorekeeperUtilities:
 
@@ -34,6 +35,29 @@ class ScorekeeperUtilities:
         scorecard_filename = formatted_time_as_string + '_scorecard.txt'
 
         externalfileutilities.Externalfiles.create_new_scorecard_file(filename=scorecard_filename)
+
+        return scorecard_filename
+
+    @staticmethod
+    def add_last_run_information(filename, game_config):
+        start_date_time_of_run = datetime.datetime.now()
+        start_date_time_of_run_formatted = str(start_date_time_of_run.strftime("%x%X"))
+        end_date_time_of_run = datetime.datetime.now()
+        end_date_time_of_run_formatted = str(start_date_time_of_run.strftime("%x%X"))
+        game_version = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                  parameter='VERSION')
+        blank_line_string = ' '
+        game_title_string = 'Tales From Ticronem Scorecard'
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=game_title_string)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        game_version_string = 'Game Version is ' + game_version
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=game_version_string)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        run_start_time_string = 'This run started on ' + start_date_time_of_run_formatted + ' and ended on ' + end_date_time_of_run_formatted
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=run_start_time_string)
+        # run_end_time_string = 'This run ended on ' + end_date_time_of_run_formatted
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+
 
     # areas of the game
     @staticmethod
