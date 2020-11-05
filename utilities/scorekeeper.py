@@ -1,5 +1,7 @@
+from loguru import logger
+
 from components import scorekeeper
-from utilities import externalfileutilities, configUtilities
+from utilities import externalfileutilities
 import datetime
 
 
@@ -39,25 +41,52 @@ class ScorekeeperUtilities:
         return scorecard_filename
 
     @staticmethod
-    def add_last_run_information(filename, game_config):
+    def add_last_run_information(filename, game_version):
         start_date_time_of_run = datetime.datetime.now()
-        start_date_time_of_run_formatted = str(start_date_time_of_run.strftime("%x%X"))
+        start_date_time_of_run_formatted = str(start_date_time_of_run.strftime("%x at %X"))
         end_date_time_of_run = datetime.datetime.now()
-        end_date_time_of_run_formatted = str(end_date_time_of_run.strftime("%x%X"))
-        game_version = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
-                                                                  parameter='VERSION')
-        blank_line_string = ' '
+        end_date_time_of_run_formatted = str(end_date_time_of_run.strftime("%x at %X"))
+        blank_line_string = '\n'
         game_title_string = 'Tales From Ticronem Scorecard'
+        game_version_string = 'Game Version is ' + game_version
+        run_start_time_string = 'This run started on ' + start_date_time_of_run_formatted + ' and ended on ' + end_date_time_of_run_formatted
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=game_title_string)
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
-        game_version_string = 'Game Version is ' + game_version
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=game_version_string)
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
-        run_start_time_string = 'This run started on ' + start_date_time_of_run_formatted + ' and ended on ' + end_date_time_of_run_formatted
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=run_start_time_string)
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
 
+    @staticmethod
+    def add_spells_cast_information(gameworld, filename):
+        all_areas_visited = ScorekeeperUtilities.get_all_areas_visited(gameworld=gameworld)
+        events_split_by_area = ScorekeeperUtilities.unpack_meta_events_to_list(gameworld=gameworld)
+        blank_line_string = '\n'
+        total_count_of_spells_cast = 0
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
 
+        for area in all_areas_visited:
+            area_string = "Areas ".ljust(30) + area
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=area_string)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+
+        for area in all_areas_visited:
+            area_events = events_split_by_area[area]
+            for key, value in area_events.items():
+                if key.endswith('_cast'):
+                    raw_spell_name = key[:-5]
+                    spell_cast_count = value
+                    spell_name = raw_spell_name.replace("_", " ")
+                    logger.info('spell name is {} and it has been cast {} times', spell_name, spell_cast_count)
+                    spell_cast_count_string = str(spell_cast_count)
+                    total_count_of_spells_cast += spell_cast_count
+                    spell_cast_string = spell_name.ljust(30) + spell_cast_count_string.zfill(5 - len(spell_cast_count_string))
+                    externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=spell_cast_string)
+                    externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+            spells_cast_count_string = str(total_count_of_spells_cast)
+            total_spells_cast_string = 'Total Spell Cast:'.ljust(29) + spells_cast_count_string.zfill(6 - len(spells_cast_count_string))
+            externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+            externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=total_spells_cast_string)
     # areas of the game
     @staticmethod
     def set_current_area(gameworld, current_area_tag):

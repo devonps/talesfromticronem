@@ -33,7 +33,7 @@ class Externalfiles:
     @staticmethod
     def write_to_existing_file(filename, value):
         with open(filename, 'a') as file:
-            file.write(value + '\n')
+            file.write(value)
 
     @staticmethod
     def close_existing_file(fileobject):

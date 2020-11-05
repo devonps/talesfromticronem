@@ -10,6 +10,8 @@ class GameOver:
     def process_game_over(player_died, gameworld):
         game_config = configUtilities.load_config()
         player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        game_version = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
+                                                                  parameter='VERSION')
         visible_panel = 0
         terminal.clear()
         meta_events = scorekeeper.ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
@@ -23,7 +25,8 @@ class GameOver:
         logger.warning('Meta events related to boo area {}', events_for_current_area['boo'])
         externalfileutilities.Externalfiles.create_new_directory(directory_name='scores')
         score_card_file = scorekeeper.ScorekeeperUtilities.create_scorecard_file()
-        scorekeeper.ScorekeeperUtilities.add_last_run_information(filename=score_card_file, game_config=game_config)
+        scorekeeper.ScorekeeperUtilities.add_last_run_information(filename=score_card_file, game_version=game_version)
+        scorekeeper.ScorekeeperUtilities.add_spells_cast_information(gameworld=gameworld, filename=score_card_file)
         GameOver.display_game_over_screen(game_config=game_config)
         GameOver.display_killed_by_information(game_config=game_config, death_status=player_died)
         GameOver.display_equipment_panels(gameworld=gameworld, game_config=game_config, visible_panel=visible_panel, player_entity=player_entity)

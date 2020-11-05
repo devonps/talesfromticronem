@@ -17,4 +17,4 @@ class ReplayGame:
     def update_game_replay_file(game_config, value):
         game_replay_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files', parameter='GAME_ACTIONS_FILE')
 
-        externalfileutilities.Externalfiles.write_to_existing_file(game_replay_file, value)
+        externalfileutilities.Externalfiles.write_to_existing_file(game_replay_file, value + '\n')
