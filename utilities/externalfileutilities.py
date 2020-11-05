@@ -71,3 +71,8 @@ class Externalfiles:
         if not Externalfiles.does_file_exist(directory_name):
             path = os.path.join(default_path, directory_name)
             os.mkdir(path=path)
+
+    @staticmethod
+    def create_new_scorecard_file(filename):
+        os.chdir('./scores')
+        Externalfiles.new_file(filename=filename)

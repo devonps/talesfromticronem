@@ -1,5 +1,6 @@
 from components import scorekeeper
-
+from utilities import externalfileutilities
+import datetime
 
 class ScorekeeperUtilities:
 
@@ -24,7 +25,17 @@ class ScorekeeperUtilities:
         new_string = meta_event[4:]
         return new_string
 
+    # scorecard methods
+    @staticmethod
+    def create_scorecard_file():
+        current_date_time = datetime.datetime.now()
+        formatted_date_time = current_date_time.strftime("%d%m%y%H%M%S")
+        formatted_time_as_string = str(formatted_date_time)
+        scorecard_filename = formatted_time_as_string + '_scorecard.txt'
 
+        externalfileutilities.Externalfiles.create_new_scorecard_file(filename=scorecard_filename)
+
+    # areas of the game
     @staticmethod
     def set_current_area(gameworld, current_area_tag):
         scorekeeper_entity = ScorekeeperUtilities.get_scorekeeper_entity(gameworld=gameworld)
@@ -52,7 +63,7 @@ class ScorekeeperUtilities:
         scorekeeper_component = gameworld.component_for_entity(scorekeeper_entity, scorekeeper.AreasVisited)
         return scorekeeper_component.all_areas
 
-    # Get scorekeeper entity id
+    # Get scorekeeper entity methods
     @staticmethod
     def get_scorekeeper_entity(gameworld):
         scorekeeper_entity = 0
@@ -95,6 +106,7 @@ class ScorekeeperUtilities:
                 meta_event_found = True
         return meta_event_found
 
+    # meta event value transformations
     @staticmethod
     def get_meta_event_value(gameworld, event_name):
         all_meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)

@@ -22,6 +22,7 @@ class GameOver:
         logger.warning('Meta events related to current area {}', events_for_current_area[current_area])
         logger.warning('Meta events related to boo area {}', events_for_current_area['boo'])
         externalfileutilities.Externalfiles.create_new_directory(directory_name='scores')
+        scorekeeper.ScorekeeperUtilities.create_scorecard_file()
         GameOver.display_game_over_screen(game_config=game_config)
         GameOver.display_killed_by_information(game_config=game_config, death_status=player_died)
         GameOver.display_equipment_panels(gameworld=gameworld, game_config=game_config, visible_panel=visible_panel, player_entity=player_entity)
