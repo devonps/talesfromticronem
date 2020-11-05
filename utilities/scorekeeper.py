@@ -43,7 +43,7 @@ class ScorekeeperUtilities:
         start_date_time_of_run = datetime.datetime.now()
         start_date_time_of_run_formatted = str(start_date_time_of_run.strftime("%x%X"))
         end_date_time_of_run = datetime.datetime.now()
-        end_date_time_of_run_formatted = str(start_date_time_of_run.strftime("%x%X"))
+        end_date_time_of_run_formatted = str(end_date_time_of_run.strftime("%x%X"))
         game_version = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                   parameter='VERSION')
         blank_line_string = ' '
@@ -55,7 +55,6 @@ class ScorekeeperUtilities:
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
         run_start_time_string = 'This run started on ' + start_date_time_of_run_formatted + ' and ended on ' + end_date_time_of_run_formatted
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=run_start_time_string)
-        # run_end_time_string = 'This run ended on ' + end_date_time_of_run_formatted
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
 
 
