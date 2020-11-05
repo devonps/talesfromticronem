@@ -10,23 +10,19 @@ class GameOver:
     def process_game_over(player_died, gameworld):
         game_config = configUtilities.load_config()
         player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
         game_version = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                   parameter='VERSION')
         visible_panel = 0
         terminal.clear()
-        meta_events = scorekeeper.ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
-        logger.warning('list of meta events:{}', meta_events)
-        current_area = scorekeeper.ScorekeeperUtilities.get_current_area(gameworld=gameworld)
-        all_areas_visited = scorekeeper.ScorekeeperUtilities.get_all_areas_visited(gameworld=gameworld)
-        events_for_current_area = scorekeeper.ScorekeeperUtilities.unpack_meta_events_to_list(gameworld=gameworld)
-        logger.warning('Current game area is {}', current_area)
-        logger.warning('ALL game areas visited {}', all_areas_visited)
-        logger.warning('Meta events related to current area {}', events_for_current_area[current_area])
-        logger.warning('Meta events related to boo area {}', events_for_current_area['boo'])
-        externalfileutilities.Externalfiles.create_new_directory(directory_name='scores')
-        score_card_file = scorekeeper.ScorekeeperUtilities.create_scorecard_file()
-        scorekeeper.ScorekeeperUtilities.add_last_run_information(filename=score_card_file, game_version=game_version)
-        scorekeeper.ScorekeeperUtilities.add_spells_cast_information(gameworld=gameworld, filename=score_card_file)
+
+        # temporary code to generate test data
+        scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag='dg1')
+        scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag='dg2')
+        scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag='dg3')
+
+        scorekeeper.ScorekeeperUtilities.build_scorecard(gameworld=gameworld, game_version=game_version, player_class=player_class)
+
         GameOver.display_game_over_screen(game_config=game_config)
         GameOver.display_killed_by_information(game_config=game_config, death_status=player_died)
         GameOver.display_equipment_panels(gameworld=gameworld, game_config=game_config, visible_panel=visible_panel, player_entity=player_entity)

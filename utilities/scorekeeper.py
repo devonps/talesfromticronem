@@ -20,7 +20,7 @@ class ScorekeeperUtilities:
                     new_event = ScorekeeperUtilities.strip_area_tag_from_meta_event(meta_event=meta_key)
                     these_events.update({new_event: meta_value})
             meta_events_per_area_list.update({area: these_events})
-            meta_events_per_area_list.update({'boo': {'spell 1': 500}})
+
         return meta_events_per_area_list
 
     @staticmethod
@@ -58,47 +58,109 @@ class ScorekeeperUtilities:
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
 
     @staticmethod
-    def add_spells_cast_information(gameworld, filename):
+    def add_player_info(filename, player_class):
+        blank_line_string = '\n'
+        string_to_print = 'You played this game as a ' + player_class
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=string_to_print)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+
+    @staticmethod
+    def add_game_turns_info(filename, gameworld):
+        game_turns = ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
+        blank_line_string = '\n'
+        string_to_print = 'You took ' + str(game_turns) + ' turns, see below for highlights.'
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=string_to_print)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+
+    @staticmethod
+    def build_scorecard(gameworld, game_version, player_class):
         all_areas_visited = ScorekeeperUtilities.get_all_areas_visited(gameworld=gameworld)
-        events_split_by_area = ScorekeeperUtilities.unpack_meta_events_to_list(gameworld=gameworld)
+
+        externalfileutilities.Externalfiles.create_new_directory(directory_name='scores')
+        score_card_file = ScorekeeperUtilities.create_scorecard_file()
+
+        ScorekeeperUtilities.add_last_run_information(filename=score_card_file, game_version=game_version)
+        ScorekeeperUtilities.add_player_info(filename=score_card_file, player_class=player_class)
+        ScorekeeperUtilities.add_game_turns_info(filename=score_card_file, gameworld=gameworld)
+
+        for area in all_areas_visited:
+            # print area information - might be just their name
+            ScorekeeperUtilities.add_game_area_info(filename=score_card_file, area_name=area)
+            # print out spell cast information
+            ScorekeeperUtilities.add_spells_cast_information(gameworld=gameworld, filename=score_card_file, visited_area=area)
+            # print out different damage types
+            ScorekeeperUtilities.add_types_of_damage_per_area(gameworld=gameworld, filename=score_card_file, visited_area=area)
+            # print out enemy kills
+
+    @staticmethod
+    def add_game_area_info(filename, area_name):
+        blank_line_string = '\n'
+        string_to_print = area_name
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=string_to_print)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+
+    @staticmethod
+    def add_spells_cast_information(gameworld, filename, visited_area):
+        events_split_to_list_by_area = ScorekeeperUtilities.unpack_meta_events_to_list(gameworld=gameworld)
+        event_list = events_split_to_list_by_area[visited_area]
         blank_line_string = '\n'
         total_count_of_spells_cast = 0
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value='Spells Cast')
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
 
-        for area in all_areas_visited:
-            area_string = "Areas ".ljust(30) + area
-        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=area_string)
+        # gather spells cast per area within a list
+        spells_cast = []
+        for key, value in event_list.items():
+            if key.endswith('_cast'):
+                raw_spell_name = key[:-5]
+                spell_cast_count = value
+                spell_name = raw_spell_name.replace("_", " ")
+                if len(spells_cast) == 0:
+                    spells_cast.append(spell_name)
+                else:
+                    spell_added = ScorekeeperUtilities.has_spell_name_already_been_added(spell_name=spell_name, spell_list=spells_cast)
+                    if not spell_added:
+                        spells_cast.append(spell_name)
+
+                logger.info('spell name is {} and it has been cast {} times', spell_name, spell_cast_count)
+                spell_cast_count_string = str(spell_cast_count)
+                total_count_of_spells_cast += spell_cast_count
+                spell_cast_string = ' '.ljust(5) + spell_name.ljust(30) + spell_cast_count_string.zfill(5 - len(spell_cast_count_string))
+                externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=spell_cast_string)
+                externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        # total spells for this area
+        spells_cast_count_string = str(total_count_of_spells_cast)
+        total_spells_cast_string = ' '.ljust(5) + 'Total Spells Cast:'.ljust(29) + spells_cast_count_string.zfill(6 - len(spells_cast_count_string))
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=total_spells_cast_string)
+
+    @staticmethod
+    def has_spell_name_already_been_added(spell_name, spell_list):
+        spell_found = False
+        for spell in spell_list:
+            if spell == spell_name:
+                spell_found = True
+        return spell_found
+
+    @staticmethod
+    def add_types_of_damage_per_area(gameworld, filename, visited_area):
+        events_split_to_list_by_area = ScorekeeperUtilities.unpack_meta_events_to_list(gameworld=gameworld)
+        event_list = events_split_to_list_by_area[visited_area]
+        blank_line_string = '\n'
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value='Types of Damage Inflicted')
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
 
-        for area in all_areas_visited:
-            area_events = events_split_by_area[area]
-            for key, value in area_events.items():
-                if key.endswith('_cast'):
-                    raw_spell_name = key[:-5]
-                    spell_cast_count = value
-                    spell_name = raw_spell_name.replace("_", " ")
-                    logger.info('spell name is {} and it has been cast {} times', spell_name, spell_cast_count)
-                    spell_cast_count_string = str(spell_cast_count)
-                    total_count_of_spells_cast += spell_cast_count
-                    spell_cast_string = spell_name.ljust(30) + spell_cast_count_string.zfill(5 - len(spell_cast_count_string))
-                    externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=spell_cast_string)
-                    externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
-            spells_cast_count_string = str(total_count_of_spells_cast)
-            total_spells_cast_string = 'Total Spell Cast:'.ljust(29) + spells_cast_count_string.zfill(6 - len(spells_cast_count_string))
-            externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
-            externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=total_spells_cast_string)
+
     # areas of the game
     @staticmethod
     def set_current_area(gameworld, current_area_tag):
         scorekeeper_entity = ScorekeeperUtilities.get_scorekeeper_entity(gameworld=gameworld)
         scorekeeper_component = gameworld.component_for_entity(scorekeeper_entity, scorekeeper.AreasVisited)
-        current_area = scorekeeper_component.current_area
         all_areas_list = scorekeeper_component.all_areas
-        # one off check for start of game
-        if len(all_areas_list) == 0:
-            all_areas_list.append(current_area_tag)
-        else:
-            all_areas_list.append(current_area)
+        all_areas_list.append(current_area_tag)
 
         scorekeeper_component.current_area = current_area_tag
         scorekeeper_component.all_areas = all_areas_list
@@ -146,6 +208,13 @@ class ScorekeeperUtilities:
     def get_list_of_meta_events(gameworld):
         scorekeeper_existing_meta_events_component = ScorekeeperUtilities.get_scorekeeper_component(gameworld=gameworld)
         meta_events = scorekeeper_existing_meta_events_component.map_of_events
+        # hack for testing purposes
+        meta_events.update({'dg1_necrotic_grasp_cast': 0})
+        meta_events.update({'dg1_mark_of_blood_cast': 0})
+        meta_events.update({'dg2_life_blood_cast': 0})
+        meta_events.update({'dg2_putrid_mark_cast': 0})
+        meta_events.update({"dg3_reaper's_mark_cast": 0})
+        meta_events.update({'dg3_your_soul_is_mine_cast': 0})
         return meta_events
 
     @staticmethod
