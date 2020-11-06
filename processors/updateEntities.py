@@ -1,7 +1,7 @@
 import esper
 from loguru import logger
 from components import mobiles
-from utilities import formulas, world, armourManagement, common, mobileHelp
+from utilities import formulas, world, armourManagement, common, mobileHelp, scorekeeper
 
 
 class UpdateEntitiesProcessor(esper.Processor):
@@ -82,6 +82,13 @@ class UpdateEntitiesProcessor(esper.Processor):
                 # add message to combat log showing how much damage has been applied to the target
                 common.CommonUtils.fire_event("condi-damage", gameworld=self.gameworld, target=entity_names[0],
                                        damage=str(damage_applied_this_turn), condi_name=condi_name)
+
+                # update scorekeeper with condi damage
+                current_area_tag = scorekeeper.ScorekeeperUtilities.get_current_area(gameworld=self.gameworld)
+                updated_condi_name = condi_name.replace(" ", "_")
+                updated_condi_name = current_area_tag + '_' + updated_condi_name + "_damage"
+                lower_condi_name = updated_condi_name.lower()
+                scorekeeper.ScorekeeperUtilities.increase_meta_event_value(gameworld=self.gameworld, event_name=lower_condi_name, value=damage_applied_this_turn)
 
                 if duration <= 0:
                     self.remove_condition(entity_name=entity_names[0], current_condis=current_condis, ps=ps, condi_name=condi_name)

@@ -47,7 +47,8 @@ def game_loop(gameworld):
             scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
                                                                  event_name=updated_spell_name.lower(),
                                                                  event_starting_value=0)
-
+    # register damage types for this area
+    scorekeeper.ScorekeeperUtilities.register_damage_types_for_current_area(gameworld=gameworld, current_area_tag=current_area_tag)
     # process all intended actions
     gameworld.process(game_config, advance_game_turn)
     # blit the console
@@ -120,7 +121,7 @@ def game_loop(gameworld):
             #
             StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player,
                                      game_map=game_map)
-            scorekeeper.ScorekeeperUtilities.add_one_to_meta_event_value(gameworld=gameworld, event_name='game_turn')
+            scorekeeper.ScorekeeperUtilities.increase_meta_event_value(gameworld=gameworld, event_name='game_turn', value=1)
 
         current_health = mobileHelp.MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=player)
         if current_health <= 0:

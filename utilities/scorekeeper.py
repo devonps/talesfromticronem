@@ -88,9 +88,11 @@ class ScorekeeperUtilities:
             # print area information - might be just their name
             ScorekeeperUtilities.add_game_area_info(filename=score_card_file, area_name=area)
             # print out spell cast information
-            ScorekeeperUtilities.add_spells_cast_information(gameworld=gameworld, filename=score_card_file, visited_area=area)
+            ScorekeeperUtilities.add_spells_cast_information(gameworld=gameworld, filename=score_card_file,
+                                                             visited_area=area)
             # print out different damage types
-            ScorekeeperUtilities.add_types_of_damage_per_area(gameworld=gameworld, filename=score_card_file, visited_area=area)
+            ScorekeeperUtilities.add_types_of_damage_per_area(gameworld=gameworld, filename=score_card_file,
+                                                              visited_area=area)
             # print out enemy kills
 
     @staticmethod
@@ -108,7 +110,8 @@ class ScorekeeperUtilities:
         event_list = events_split_to_list_by_area[visited_area]
         blank_line_string = '\n'
         total_count_of_spells_cast = 0
-        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value='Spells Cast')
+        string_to_print = ' '.ljust(5) + 'Spells Cast'.ljust(34) + 'Count'
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=string_to_print)
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
 
         # gather spells cast per area within a list
@@ -118,22 +121,18 @@ class ScorekeeperUtilities:
                 raw_spell_name = key[:-5]
                 spell_cast_count = value
                 spell_name = raw_spell_name.replace("_", " ")
-                if len(spells_cast) == 0:
-                    spells_cast.append(spell_name)
-                else:
-                    spell_added = ScorekeeperUtilities.has_spell_name_already_been_added(spell_name=spell_name, spell_list=spells_cast)
-                    if not spell_added:
-                        spells_cast.append(spell_name)
-
-                logger.info('spell name is {} and it has been cast {} times', spell_name, spell_cast_count)
+                spell_added = ScorekeeperUtilities.has_spell_name_already_been_added(spell_name=spell_name,
+                                                                                     spell_list=spells_cast)
+                # if not spell_added:
+                #     spells_cast.append(spell_name)
                 spell_cast_count_string = str(spell_cast_count)
                 total_count_of_spells_cast += spell_cast_count
-                spell_cast_string = ' '.ljust(5) + spell_name.ljust(30) + spell_cast_count_string.zfill(5 - len(spell_cast_count_string))
+                spell_cast_string = ' '.ljust(10) + spell_name.ljust(30) + spell_cast_count_string.zfill(4)
                 externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=spell_cast_string)
                 externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
         # total spells for this area
         spells_cast_count_string = str(total_count_of_spells_cast)
-        total_spells_cast_string = ' '.ljust(5) + 'Total Spells Cast:'.ljust(29) + spells_cast_count_string.zfill(6 - len(spells_cast_count_string))
+        total_spells_cast_string = ' '.ljust(10) + 'Total Spells Cast:'.ljust(29) + spells_cast_count_string.zfill(5)
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=total_spells_cast_string)
 
     @staticmethod
@@ -149,10 +148,27 @@ class ScorekeeperUtilities:
         events_split_to_list_by_area = ScorekeeperUtilities.unpack_meta_events_to_list(gameworld=gameworld)
         event_list = events_split_to_list_by_area[visited_area]
         blank_line_string = '\n'
+        total_damage_caused = 0
+        string_to_print = ' '.ljust(5) + 'Types of Damage Inflicted'.ljust(34) + 'Total'
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
-        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value='Types of Damage Inflicted')
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
-
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=string_to_print)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        for key, value in event_list.items():
+            if key.endswith('_damage'):
+                total_damage_caused += int(value)
+                raw_damage_name = key[:-7]
+                damage_total_count = int(value)
+                damage_total_count_string = str(damage_total_count)
+                final_damage_string = damage_total_count_string.zfill(4)
+                damage_name = raw_damage_name.replace("_", " ")
+                damage_cast_string = ' '.ljust(10) + damage_name.ljust(30) + final_damage_string
+                externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=damage_cast_string)
+                externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        # total damage for this area
+        total_damage_string = str(total_damage_caused)
+        total_damage_caused_string = ' '.ljust(10) + 'Total Damage Caused:'.ljust(29) + total_damage_string.zfill(5)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=total_damage_caused_string)
 
     # areas of the game
     @staticmethod
@@ -235,17 +251,44 @@ class ScorekeeperUtilities:
         return meta_event_value
 
     @staticmethod
-    def add_one_to_meta_event_value(gameworld, event_name):
+    def increase_meta_event_value(gameworld, event_name, value):
         all_meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         meta_event_value = all_meta_events.get(event_name)
-        meta_event_value += 1
+        meta_event_value += value
         all_meta_events.update({event_name: meta_event_value})
         ScorekeeperUtilities.update_scorekeeper_all_meta_events(gameworld=gameworld, meta_events=all_meta_events)
 
     @staticmethod
-    def subtract_one_from_meta_event_value(gameworld, event_name):
+    def decrease_meta_event_value(gameworld, event_name, value):
         all_meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         meta_event_value = all_meta_events.get(event_name)
-        meta_event_value -= 1
+        meta_event_value -= value
+        if meta_event_value < 0:
+            meta_event_value = 0
         all_meta_events.update({event_name: meta_event_value})
         ScorekeeperUtilities.update_scorekeeper_all_meta_events(gameworld=gameworld, meta_events=all_meta_events)
+
+    @staticmethod
+    def register_damage_types_for_current_area(current_area_tag, gameworld):
+        ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
+                                                             event_name=current_area_tag + '_bleeding_damage',
+                                                             event_starting_value=0)
+        ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
+                                                             event_name=current_area_tag + '_burning_damage',
+                                                             event_starting_value=0)
+
+        ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
+                                                             event_name=current_area_tag + '_confusion_damage',
+                                                             event_starting_value=0)
+
+        ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
+                                                             event_name=current_area_tag + '_poison_damage',
+                                                             event_starting_value=0)
+
+        ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
+                                                             event_name=current_area_tag + '_torment_damage',
+                                                             event_starting_value=0)
+
+        ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
+                                                             event_name=current_area_tag + '_direct_damage',
+                                                             event_starting_value=0)
