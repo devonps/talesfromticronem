@@ -115,16 +115,11 @@ class ScorekeeperUtilities:
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
 
         # gather spells cast per area within a list
-        spells_cast = []
         for key, value in event_list.items():
             if key.endswith('_cast'):
                 raw_spell_name = key[:-5]
                 spell_cast_count = value
                 spell_name = raw_spell_name.replace("_", " ")
-                spell_added = ScorekeeperUtilities.has_spell_name_already_been_added(spell_name=spell_name,
-                                                                                     spell_list=spells_cast)
-                # if not spell_added:
-                #     spells_cast.append(spell_name)
                 spell_cast_count_string = str(spell_cast_count)
                 total_count_of_spells_cast += spell_cast_count
                 spell_cast_string = ' '.ljust(10) + spell_name.ljust(30) + spell_cast_count_string.zfill(4)
