@@ -14,6 +14,16 @@ class MobileUtilities(numbers.Real, ABC):
     #
 
     @staticmethod
+    def get_mobile_type(gameworld, entity):
+        mobile_component = gameworld.component_for_entity(entity, mobiles.MobileType)
+        return mobile_component.label
+
+    @staticmethod
+    def set_mobile_type(gameworld, entity, value):
+        mobile_component = gameworld.component_for_entity(entity, mobiles.MobileType)
+        mobile_component.label=value
+
+    @staticmethod
     def can_i_see_the_other_entity(gameworld, game_map, from_entity, to_entity):
         can_i_see_the_entity = True
         from_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=from_entity)
@@ -234,44 +244,14 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def get_mobile_personality_title(gameworld, entity):
-        describeable_component = gameworld.component_for_entity(entity, mobiles.Personality)
-        return describeable_component.label
+        return 'Diplomatic'
 
     @staticmethod
     def set_mobile_derived_personality(gameworld, entity):
         player_entity = entity
 
         player_current_personality_component = gameworld.component_for_entity(player_entity, mobiles.Personality)
-
-        player_personality = player_current_personality_component.label
-
-        # get current personality trait values
-        charm_level = player_current_personality_component.charm_level
-        dignity_level = player_current_personality_component.dignity_level
-        ferocity_level = player_current_personality_component.ferocity_level
-
-        if charm_level == 12.5 and dignity_level == 75 and ferocity_level == 12.5:
-            player_personality = 'Noble'
-        if charm_level == 75 and dignity_level == 12.5 and ferocity_level == 12.5:
-            player_personality = 'Captivating'
-        if charm_level == 12.5 and dignity_level == 12.5 and ferocity_level == 175:
-            player_personality = 'Barbaric'
-        if charm_level == 45 and dignity_level == 45 and ferocity_level == 10:
-            player_personality = 'Diplomatic'
-        if charm_level == 10 and dignity_level == 45 and ferocity_level == 45:
-            player_personality = 'Militant'
-        if charm_level == 45 and dignity_level == 10 and ferocity_level == 45:
-            player_personality = 'Scoundrel'
-        if charm_level == 33 and dignity_level == 33 and ferocity_level == 33:
-            player_personality = 'Unpredictable'
-        if charm_level == 50 and dignity_level == 25 and ferocity_level == 25:
-            player_personality = 'Charming'
-        if charm_level == 25 and dignity_level == 50 and ferocity_level == 25:
-            player_personality = 'Honourable'
-        if charm_level == 25 and dignity_level == 25 and ferocity_level == 50:
-            player_personality = 'Brute'
-
-        player_current_personality_component.label = player_personality
+        player_current_personality_component.label = 'Diplomatic'
 
     # check ALL hand combos: main, off, and both hands
     @staticmethod
@@ -362,6 +342,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.VisibleEntities())
         gameworld.add_component(entity_id, mobiles.DialogFlags())
         gameworld.add_component(entity_id, mobiles.NpcType())
+        gameworld.add_component(entity_id, mobiles.MobileType())
 
     @staticmethod
     def is_mobile_a_shopkeeper(gameworld, target_entity):
@@ -440,6 +421,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMinRange(value=0))
         gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMaxRange(value=0))
         gameworld.add_component(entity_id, mobiles.EnemyCombatRole(value='none'))
+        gameworld.add_component(entity_id, mobiles.MobileType(label='enemy'))
 
     @staticmethod
     def create_player_character(gameworld, game_config, player_entity):
@@ -457,6 +439,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(player_entity, mobiles.SpellBar(entity_id=0))
         gameworld.add_component(player_entity, mobiles.Viewport())
         gameworld.add_component(player_entity, mobiles.SpellCast())
+        gameworld.add_component(player_entity, mobiles.MobileType(label='player'))
 
     @staticmethod
     def set_enemy_preferred_min_distance_from_target(gameworld, entity, value):

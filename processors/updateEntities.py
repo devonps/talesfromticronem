@@ -49,7 +49,22 @@ class UpdateEntitiesProcessor(esper.Processor):
         # gather equipped items
 
         # pick some random equipment to drop on to the game map
-        logger.warning('An entity is dead')
+        logger.warning('Entity {} is dead', dead_entity_id)
+
+        # add kill event
+        npc_type = mobileHelp.MobileUtilities.get_mobile_type(gameworld=self.gameworld, entity=dead_entity_id)
+        current_area_tag = scorekeeper.ScorekeeperUtilities.get_current_area(gameworld=self.gameworld)
+        event_to_add = current_area_tag + '_' + npc_type + '_kill'
+        # check if event type already exists
+        event_already_exists = scorekeeper.ScorekeeperUtilities.has_event_already_been_added(gameworld=self.gameworld,
+                                                                                             event_name=event_to_add)
+        if not event_already_exists:
+            scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=self.gameworld,
+                                                                             event_name=event_to_add,
+                                                                             event_starting_value=1)
+        else:
+            scorekeeper.ScorekeeperUtilities.increase_meta_event_value(gameworld=self.gameworld,
+                                                                       event_name=event_to_add, value=1)
 
         # And finally delete the entity + ALL associated components
         world.delete_entity(gameworld=self.gameworld, entity=dead_entity_id)

@@ -103,7 +103,7 @@ class SlotSize:
 #
 ####################################################
 class Experience:
-    def __init__(self, current_level=1):
+    def __init__(self, current_level=10):
         self.current_level = current_level
         self.max_level = 10
 

@@ -70,7 +70,7 @@ class ItemManager:
                     hands=weapon['wielded_hands'],
                     true_or_false=True))
 
-                gameworld.add_component(myweapon, items.Experience(current_level=1))
+                gameworld.add_component(myweapon, items.Experience(current_level=11))
 
                 gameworld.add_component(myweapon, items.Hallmarks(
                     hallmark_slot_one='00',

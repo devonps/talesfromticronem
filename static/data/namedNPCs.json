@@ -2,6 +2,7 @@
   "npc": [
     {
       "name": "Joe",
+      "mobile_type": "npc",
       "race": "Dilga",
       "class": "druid",
       "description": "The academy master.",
@@ -21,6 +22,7 @@
     },
      {
       "name": "Barry",
+      "mobile_type": "npc",
       "race": "RANDOM",
       "class": "witchdoctor",
       "description": "Weapons trader",
@@ -40,6 +42,7 @@
       },
      {
       "name": "Charles",
+      "mobile_type": "npc",
       "race": "eskeri",
       "class": "illusionist",
       "description": "Do you want armour",
@@ -59,6 +62,7 @@
       },
      {
       "name": "David",
+      "mobile_type": "npc",
       "race": "eskeri",
       "class": "elementalist",
       "description": "Do you like jewellery",
@@ -78,6 +82,7 @@
       },
      {
       "name": "Arnie",
+      "mobile_type": "npc",
       "race": "eskeri",
       "class": "chronomancer",
       "description": "You wanna fight",

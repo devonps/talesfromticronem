@@ -94,6 +94,7 @@ class ScorekeeperUtilities:
             ScorekeeperUtilities.add_types_of_damage_per_area(gameworld=gameworld, filename=score_card_file,
                                                               visited_area=area)
             # print out enemy kills
+            ScorekeeperUtilities.add_enemy_kills_per_area(gameworld=gameworld, filename=score_card_file, visited_area=area)
 
     @staticmethod
     def add_game_area_info(filename, area_name):
@@ -131,12 +132,12 @@ class ScorekeeperUtilities:
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=total_spells_cast_string)
 
     @staticmethod
-    def has_spell_name_already_been_added(spell_name, spell_list):
-        spell_found = False
-        for spell in spell_list:
-            if spell == spell_name:
-                spell_found = True
-        return spell_found
+    def has_event_already_been_added(gameworld, event_name):
+        event_dict = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
+        event_found = False
+        if event_name in event_dict:
+            event_found = True
+        return event_found
 
     @staticmethod
     def add_types_of_damage_per_area(gameworld, filename, visited_area):
@@ -164,6 +165,34 @@ class ScorekeeperUtilities:
         total_damage_string = str(total_damage_caused)
         total_damage_caused_string = ' '.ljust(10) + 'Total Damage Caused:'.ljust(29) + total_damage_string.zfill(5)
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=total_damage_caused_string)
+
+
+    @staticmethod
+    def add_enemy_kills_per_area(gameworld, filename, visited_area):
+        events_split_to_list_by_area = ScorekeeperUtilities.unpack_meta_events_to_list(gameworld=gameworld)
+        event_list = events_split_to_list_by_area[visited_area]
+        blank_line_string = '\n'
+        total_enemies_killed = 0
+        string_to_print = ' '.ljust(5) + 'Enemy Types Killed'.ljust(34) + 'Total'
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=string_to_print)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        for key, value in event_list.items():
+            if key.endswith('_kill'):
+                total_enemies_killed += value
+                raw_enemy_type_name = key[:-5]
+                enemy_type_total_count = int(value)
+                enemy_total_count_string = str(enemy_type_total_count)
+                final_enemy_string = enemy_total_count_string.zfill(4)
+                enemy_type_name = raw_enemy_type_name.replace("_", " ")
+                enemy_type_string = ' '.ljust(10) + enemy_type_name.ljust(30) + final_enemy_string
+                externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=enemy_type_string)
+                externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
+        # total enemies killed for this area
+        total_enemy_string = str(total_enemies_killed)
+        total_enemy_type_string = ' '.ljust(10) + 'Total Enemies Killed:'.ljust(29) + total_enemy_string.zfill(5)
+        externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=total_enemy_type_string)
 
     # areas of the game
     @staticmethod

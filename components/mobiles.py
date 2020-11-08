@@ -1,6 +1,3 @@
-from utilities import colourUtilities
-
-
 class Viewport:
     def __init__(self, posx=0, posy=0):
         self.posx = posx
@@ -76,6 +73,11 @@ class MobileDescription:
 class MobileGlyph:
     def __init__(self, glyph=''):
         self.glyph = glyph
+
+
+class MobileType:
+    def __init__(self, label=''):
+        self.label = label
 
 
 class MobileForeColour:

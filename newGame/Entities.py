@@ -55,6 +55,7 @@ class Entity:
                         weapon_file_option_main = npc['weapons-main']
                         weapon_file_option_off = npc['weapons-off']
                         weapon_file_option_both = npc['weapons-both']
+                        npc_type = npc['mobile_type']
 
                         logger.warning('--- CREATING NEW MOBILE ---')
                         # -------------------------------------
@@ -154,6 +155,8 @@ class Entity:
                         mobileHelp.MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx,
                                                             posy=posy)
                         mobileHelp.MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, entity=entity_id)
+                        mobileHelp.MobileUtilities.set_mobile_type(gameworld=gameworld, entity=entity_id, value=npc_type)
+
                         # calculate derived stats
                         armourManagement.ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=gameworld, entity=entity_id)
                         mobileHelp.MobileUtilities.set_mobile_derived_attributes(gameworld=gameworld, entity=entity_id)
