@@ -25,7 +25,6 @@ class SceneManager:
     def new_scene(currentscene, gameworld):
 
         gm, mx, my = SceneManager.load_scene_card(currentscene=currentscene, gameworld=gameworld)
-        SceneManager.generate_game_map()
 
         return gm
 
@@ -60,7 +59,7 @@ class SceneManager:
                         GameMap.assign_tiles(game_map=game_map)
                     else:
                         # generate random map
-                        pass
+                        SceneManager.generate_game_map(game_map=game_map)
             scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag=current_area_tag)
         SceneManager.create_ecs_systems_yes_no(gameworld=gameworld, currentscene=currentscene, game_map=game_map)
 
@@ -84,7 +83,7 @@ class SceneManager:
 
     @staticmethod
     # haven't created the proc-gen routines for this
-    def generate_game_map():
+    def generate_game_map(game_map):
         pass
 
     @staticmethod

@@ -11,6 +11,8 @@ class JewelleryUtilities:
     def create_and_equip_jewellery_for_npc(gameworld, entity_id, jewellery_set, npc_class_file):
         class_file = jsonUtilities.read_json_file(npc_class_file)
         entity_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
+        left_ear_string = 'left ear'
+        right_ear_string = 'right ear'
 
         for entityclass in class_file['classes']:
             if entityclass['name'] == entity_class:
@@ -32,9 +34,9 @@ class JewelleryUtilities:
                 # equip jewellery entity to player character
                 JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='neck',
                                                    trinket=pendant)
-                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left ear',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation=left_ear_string,
                                                    trinket=left_ear)
-                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right ear',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation=right_ear_string,
                                                    trinket=right_ear)
 
                 # apply gemstone benefits
