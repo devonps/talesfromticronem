@@ -427,7 +427,7 @@ class MobileUtilities(numbers.Real, ABC):
     def create_player_character(gameworld, game_config, player_entity):
         player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
                                                                 parameter='AI_LEVEL_PLAYER')
-        MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=player_entity, value='?')
+        MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=player_entity, value='@')
         MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, entity=player_entity)
         MobileUtilities.set_mobile_gender(gameworld=gameworld, entity=player_entity, gender='neutral')
         MobileUtilities.set_mobile_description(gameworld=gameworld, entity=player_entity, value='something')

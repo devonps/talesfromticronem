@@ -30,7 +30,7 @@ class ScorekeeperUtilities:
 
     # scorecard methods
     @staticmethod
-    def create_scorecard_file():
+    def report_create_scorecard_file():
         current_date_time = datetime.datetime.now()
         formatted_date_time = current_date_time.strftime("%d%m%y%H%M%S")
         formatted_time_as_string = str(formatted_date_time)
@@ -41,7 +41,7 @@ class ScorekeeperUtilities:
         return scorecard_filename
 
     @staticmethod
-    def add_last_run_information(filename, game_version):
+    def report_add_last_run_information(filename, game_version):
         start_date_time_of_run = datetime.datetime.now()
         start_date_time_of_run_formatted = str(start_date_time_of_run.strftime("%x at %X"))
         end_date_time_of_run = datetime.datetime.now()
@@ -58,7 +58,7 @@ class ScorekeeperUtilities:
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
 
     @staticmethod
-    def add_player_info(filename, player_class):
+    def report_add_player_info(filename, player_class):
         blank_line_string = '\n'
         string_to_print = 'You played this game as a ' + player_class
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
@@ -66,7 +66,7 @@ class ScorekeeperUtilities:
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
 
     @staticmethod
-    def add_game_turns_info(filename, gameworld):
+    def report_add_game_turns_info(filename, gameworld):
         game_turns = ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
         blank_line_string = '\n'
         string_to_print = 'You took ' + str(game_turns) + ' turns, see below for highlights.'
@@ -78,26 +78,26 @@ class ScorekeeperUtilities:
         all_areas_visited = ScorekeeperUtilities.get_all_areas_visited(gameworld=gameworld)
 
         externalfileutilities.Externalfiles.create_new_directory(directory_name='scores')
-        score_card_file = ScorekeeperUtilities.create_scorecard_file()
+        score_card_file = ScorekeeperUtilities.report_create_scorecard_file()
 
-        ScorekeeperUtilities.add_last_run_information(filename=score_card_file, game_version=game_version)
-        ScorekeeperUtilities.add_player_info(filename=score_card_file, player_class=player_class)
-        ScorekeeperUtilities.add_game_turns_info(filename=score_card_file, gameworld=gameworld)
+        ScorekeeperUtilities.report_add_last_run_information(filename=score_card_file, game_version=game_version)
+        ScorekeeperUtilities.report_add_player_info(filename=score_card_file, player_class=player_class)
+        ScorekeeperUtilities.report_add_game_turns_info(filename=score_card_file, gameworld=gameworld)
 
         for area in all_areas_visited:
             # print area information - might be just their name
-            ScorekeeperUtilities.add_game_area_info(filename=score_card_file, area_name=area)
+            ScorekeeperUtilities.report_add_game_area_info(filename=score_card_file, area_name=area)
             # print out spell cast information
-            ScorekeeperUtilities.add_spells_cast_information(gameworld=gameworld, filename=score_card_file,
-                                                             visited_area=area)
+            ScorekeeperUtilities.report_add_spells_cast_information(gameworld=gameworld, filename=score_card_file,
+                                                                    visited_area=area)
             # print out different damage types
-            ScorekeeperUtilities.add_types_of_damage_per_area(gameworld=gameworld, filename=score_card_file,
-                                                              visited_area=area)
+            ScorekeeperUtilities.report_add_types_of_damage_per_area(gameworld=gameworld, filename=score_card_file,
+                                                                     visited_area=area)
             # print out enemy kills
-            ScorekeeperUtilities.add_enemy_kills_per_area(gameworld=gameworld, filename=score_card_file, visited_area=area)
+            ScorekeeperUtilities.report_add_enemy_kills_per_area(gameworld=gameworld, filename=score_card_file, visited_area=area)
 
     @staticmethod
-    def add_game_area_info(filename, area_name):
+    def report_add_game_area_info(filename, area_name):
         blank_line_string = '\n'
         string_to_print = area_name
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
@@ -106,7 +106,7 @@ class ScorekeeperUtilities:
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
 
     @staticmethod
-    def add_spells_cast_information(gameworld, filename, visited_area):
+    def report_add_spells_cast_information(gameworld, filename, visited_area):
         events_split_to_list_by_area = ScorekeeperUtilities.unpack_meta_events_to_list(gameworld=gameworld)
         event_list = events_split_to_list_by_area[visited_area]
         blank_line_string = '\n'
@@ -140,7 +140,7 @@ class ScorekeeperUtilities:
         return event_found
 
     @staticmethod
-    def add_types_of_damage_per_area(gameworld, filename, visited_area):
+    def report_add_types_of_damage_per_area(gameworld, filename, visited_area):
         events_split_to_list_by_area = ScorekeeperUtilities.unpack_meta_events_to_list(gameworld=gameworld)
         event_list = events_split_to_list_by_area[visited_area]
         blank_line_string = '\n'
@@ -168,7 +168,7 @@ class ScorekeeperUtilities:
 
 
     @staticmethod
-    def add_enemy_kills_per_area(gameworld, filename, visited_area):
+    def report_add_enemy_kills_per_area(gameworld, filename, visited_area):
         events_split_to_list_by_area = ScorekeeperUtilities.unpack_meta_events_to_list(gameworld=gameworld)
         event_list = events_split_to_list_by_area[visited_area]
         blank_line_string = '\n'
