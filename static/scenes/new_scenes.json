@@ -91,6 +91,98 @@
         }
       ],
       "sceneExits": "enemyCamp"
+    },
+    {
+      "name": "enemyCamp",
+      "loadMap": "enemy_camp",
+      "area_tag": "enc",
+      "mapx": "50",
+      "mapy": "50",
+      "npcs": [
+        {
+          "displayName": "Joe",
+          "internalName": "academyMaster",
+          "identifier": "A"
+        },
+        {
+          "displayName": "Barry",
+          "internalName": "",
+          "identifier": "B"
+        },
+        {
+          "displayName": "Charles",
+          "internalName": "",
+          "identifier": "C"
+        },
+        {
+          "displayName": "David",
+          "internalName": "",
+          "identifier": "D"
+        },
+        {
+          "displayName": "Arnie",
+          "internalName": "",
+          "identifier": "E"
+        }
+        ],
+      "wizard": [
+        {
+          "class": "necromancer",
+          "race": "dliga",
+          "armour": [
+            {
+              "material": "cloth",
+              "modifier": "malign"
+            }
+          ],
+          "jewellery-package": "aggressive",
+          "weapon": "staff",
+          "races": [
+            {
+              "Handeg": false,
+              "Ulro": false,
+              "Launturo": true,
+              "Dugonc": false,
+              "Durinde": true,
+              "Kana": false,
+              "Caron": false,
+              "Koror": true,
+              "Turiard": true,
+              "dilga": false,
+              "eskeri": false,
+              "jogah": false,
+              "oshun": false
+            }
+          ],
+          "population": [
+            {
+              "maximum": 100,
+              "minimum": 50,
+              "spawn": 300
+            }
+          ]
+        }
+      ],
+      "theme": "dungeon",
+      "diggers": [
+        {
+          "bsp": true,
+          "cellula": false
+        }
+      ],
+      "prefabs": [
+        {
+          "throne_room": 23,
+          "width": 25,
+          "height": 15
+        },
+        {
+          "exit": 32,
+          "width": 12,
+          "height": 10
+        }
+      ],
+      "sceneExits": ""
     }
   ]
 }

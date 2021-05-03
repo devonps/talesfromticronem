@@ -1,5 +1,5 @@
 from mapRelated.gameMap import GameMap
-from newGame.Entities import Entity
+from newGame.Entities import Entity, NewEntity
 from processors import castSpells, move_entities, renderUI, updateEntities, renderMessageLog, renderSpellInfoPanel
 from utilities import configUtilities, externalfileutilities, jsonUtilities, mobileHelp, scorekeeper
 from loguru import logger
@@ -124,9 +124,15 @@ class SceneManager:
 
                     # add named NPCs to scene
                 if cell in 'ABCDEFG':
-                    entity_created = Entity.create_named_mobile(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell, gameworld=gameworld, game_config=game_config)
+                    new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config, npc_glyph='X', posx=posx, posy=posy)
+                    NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity)
+                    NewEntity.set_base_types_for_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity)
+                    NewEntity.equip_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity)
+                    game_map.tiles[posx][posy].entity = new_entity
+
+                    # entity_created = Entity.create_named_mobile(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell, gameworld=gameworld, game_config=game_config)
                     game_map.tiles[posx][posy].type_of_tile = tile_type_floor
-                    game_map.tiles[posx][posy].entity = entity_created
+                    # game_map.tiles[posx][posy].entity = entity_created
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor, game_map=game_map)
                 posx += 1
             posy += 1
