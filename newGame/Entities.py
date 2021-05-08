@@ -11,9 +11,9 @@ from loguru import logger
 class NewEntity:
 
     @staticmethod
-    def create_base_entity(gameworld, game_config, npc_glyph, posx, posy):
-        npc_fg = 'white'
-        npc_bg = 'black'
+    def create_base_entity(gameworld, game_config, npc_glyph, posx, posy, this_entity):
+        npc_fg = this_entity['fg']
+        npc_bg = this_entity['bg']
         entity_id = world.get_next_entity_id(gameworld=gameworld)
         mobileHelp.MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=entity_id)
         mobileHelp.MobileUtilities.set_mobile_description(gameworld=gameworld, entity=entity_id, value='nothing to say')
@@ -34,27 +34,36 @@ class NewEntity:
     @staticmethod
     def add_enemy_components_to_entity(gameworld, entity_id):
         mobileHelp.MobileUtilities.add_enemy_components(gameworld=gameworld, entity_id=entity_id)
-        mobileHelp.MobileUtilities.set_enemy_combat_role(entity=entity_id, gameworld=gameworld, value='RANDOM')
+        # if enemy type is combat then do the following
+        # mobileHelp.MobileUtilities.set_enemy_combat_role(entity=entity_id, gameworld=gameworld, value='RANDOM')
 
     @staticmethod
-    def set_base_types_for_entity(gameworld, entity_id, game_config):
-        Entity.choose_race_for_mobile(race_choice='RANDOM', entity_id=entity_id, gameworld=gameworld,
+    def set_base_types_for_entity(gameworld, entity_id, game_config, this_entity):
+        npc_race = this_entity['race']
+        npc_class = this_entity['class']
+        npc_name = this_entity['name']
+        Entity.choose_race_for_mobile(race_choice=npc_race, entity_id=entity_id, gameworld=gameworld,
                                       game_config=game_config)
 
-        Entity.choose_class_for_mobile(class_choice='RANDOM', entity_id=entity_id, gameworld=gameworld,
+        Entity.choose_class_for_mobile(class_choice=npc_class, entity_id=entity_id, gameworld=gameworld,
                                        game_config=game_config)
 
-        Entity.choose_name_for_mobile(name_choice='RANDOM', entity_id=entity_id, gameworld=gameworld)
+        Entity.choose_name_for_mobile(name_choice=npc_name, entity_id=entity_id, gameworld=gameworld)
 
     @staticmethod
-    def equip_entity(gameworld, entity_id, game_config):
-        Entity.choose_armourset_for_mobile(armour_file_option='none', entity_id=entity_id,
+    def equip_entity(gameworld, entity_id, game_config, this_entity):
+        npc_armourset = this_entity['armourset']
+        npc_jeweleryset = this_entity['jeweleryset']
+        npc_weapons_both = this_entity['weapons-both']
+        npc_weapons_main = this_entity['weapons-main']
+        npc_weapons_off = this_entity['weapons-off']
+        Entity.choose_armourset_for_mobile(armour_file_option=npc_armourset, entity_id=entity_id,
                                            gameworld=gameworld, game_config=game_config)
-        Entity.choose_jewellery_package(jewellery_file_option='none', entity_id=entity_id,
+        Entity.choose_jewellery_package(jewellery_file_option=npc_jeweleryset, entity_id=entity_id,
                                         game_config=game_config, gameworld=gameworld)
 
-        Entity.choose_weapons(weapon_file_option_both='RANDOM', weapon_file_option_main='',
-                              weapon_file_option_off='', entity_id=entity_id,
+        Entity.choose_weapons(weapon_file_option_both=npc_weapons_both, weapon_file_option_main=npc_weapons_main,
+                              weapon_file_option_off=npc_weapons_off, entity_id=entity_id,
                               gameworld=gameworld, game_config=game_config)
 
         spellHelp.SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=entity_id)
@@ -282,7 +291,7 @@ class Entity:
         mobileHelp.MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=entity_id)
         mobileHelp.MobileUtilities.add_enemy_components(gameworld=gameworld, entity_id=entity_id)
 
-        npc_name = 'RANDOM'
+        npc_name = 'random'
         npc_fg = 'white'
         npc_bg = 'black'
 
@@ -409,7 +418,7 @@ class Entity:
     def choose_name_for_mobile(name_choice, gameworld, entity_id):
         first_name = name_choice
         mobileHelp.MobileUtilities.set_mobile_gender(gameworld=gameworld, entity=entity_id, gender='male')
-        if name_choice == 'RANDOM':
+        if name_choice == 'random':
             # need to create random name generator here
             random_suffix = str(random.randint(3, 100))
 
@@ -444,7 +453,7 @@ class Entity:
             race_size.append(option['size'])
             race_name_desc.append(option['singular_plural_adjective'])
 
-        if race_choice == 'RANDOM':
+        if race_choice == 'random':
 
             selected_race_id = random.randint(0, len(race_name) - 1)
 
@@ -486,7 +495,7 @@ class Entity:
             class_health.append(option['health'])
             class_spell_file.append(option['spellfile'])
 
-        if class_choice == 'RANDOM':
+        if class_choice == 'random':
             selected_class_id = random.randint(0, len(class_name) - 1)
         else:
             for n in range(len(class_name)):
@@ -566,7 +575,7 @@ class Entity:
     @staticmethod
     def choose_armour_modifier(armour_file_option, as_prefix_list):
         armour_modifier = ''
-        if armour_file_option == 'RANDOM':
+        if armour_file_option == 'random':
             # generate them procedurally
             # choose random armour modifier taken from as_prefix_list-armour_modifier = random.choice(as_prefix_list)
             armour_modifier = 'malign'
@@ -583,7 +592,7 @@ class Entity:
 
             npc_class_file = configUtilities.get_config_value_as_string(configfile=game_config,
                                                                         section='files', parameter='CLASSESFILE')
-            if jewellery_file_option == 'RANDOM':
+            if jewellery_file_option == 'random':
                 jewellery_set = random.choice(jewellery_packages)
             else:
                 jewellery_set = jewellery_file_option.lower()
@@ -677,7 +686,7 @@ class Entity:
         weapon_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='WEAPONSFILE')
 
-        if main_hand == 'RANDOM':
+        if main_hand == 'random':
             available_weapons = Entity.build_available_weapons(selected_class=selected_class, game_config=game_config)
             logger.info('weapons available {}', available_weapons)
             weapon_file = jsonUtilities.read_json_file(weapon_class_file)
@@ -700,7 +709,7 @@ class Entity:
         weapon_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='WEAPONSFILE')
 
-        if off_hand == 'RANDOM':
+        if off_hand == 'random':
             available_weapons = Entity.build_available_weapons(selected_class=selected_class, game_config=game_config)
             weapon_file = jsonUtilities.read_json_file(weapon_class_file)
             for weapon in available_weapons:
@@ -723,7 +732,7 @@ class Entity:
         weapon_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                        parameter='WEAPONSFILE')
 
-        if both_hands == 'RANDOM':
+        if both_hands == 'random':
             available_weapons = Entity.build_available_weapons(selected_class=selected_class, game_config=game_config)
             weapon_file = jsonUtilities.read_json_file(weapon_class_file)
             for weapon in available_weapons:

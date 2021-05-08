@@ -45,6 +45,7 @@ class SceneManager:
                     scene_name = scene_key['name']
                     scene_exits = scene_key['sceneExits']
                     current_area_tag = scene_key['area_tag']
+                    significant_npcs = scene_key['npcs']
                     logger.debug('The {} scene exits to the {}', scene_name, scene_exits)
                     if 'loadMap' in scene_key:
                         # load game_map from external file - setup variables
@@ -55,7 +56,7 @@ class SceneManager:
 
                     if map_area_file != '':
                         SceneManager.build_static_scene(gameworld=gameworld, game_map=game_map,
-                                                        map_area_file=map_area_file, scene_key=scene_key)
+                                                        map_area_file=map_area_file, main_npcs=significant_npcs)
                         GameMap.assign_tiles(game_map=game_map)
                     else:
                         # generate random map
@@ -87,7 +88,7 @@ class SceneManager:
         pass
 
     @staticmethod
-    def build_static_scene(gameworld, game_map, map_area_file, scene_key):
+    def build_static_scene(gameworld, game_map, map_area_file, main_npcs):
         # get config items
         game_config = configUtilities.load_config()
         prefab_folder = configUtilities.get_config_value_as_string(game_config, 'files', 'PREFABFOLDER')
@@ -122,17 +123,17 @@ class SceneManager:
                     SceneManager.setup_viewport(gameworld=gameworld, posx=posx, posy=posy)
                     game_map.tiles[posx][posy].entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
-                    # add named NPCs to scene
-                if cell in 'ABCDEFG':
-                    new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config, npc_glyph='X', posx=posx, posy=posy)
+                # add named NPCs to scene
+                npc_list_ids = "ABCEDFG"
+                if cell.upper() in npc_list_ids:
+                    cc = cell.upper()
+                    idx = npc_list_ids.index(cc)
+                    this_npc = main_npcs[idx]
+                    new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config, npc_glyph=cell, posx=posx, posy=posy, this_entity=this_npc)
                     NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity)
-                    NewEntity.set_base_types_for_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity)
-                    NewEntity.equip_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity)
+                    NewEntity.set_base_types_for_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity, this_entity=this_npc)
+                    NewEntity.equip_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity, this_entity=this_npc)
                     game_map.tiles[posx][posy].entity = new_entity
-
-                    # entity_created = Entity.create_named_mobile(npcs_for_scene=scene_key['npcs'], posx=posx, posy=posy, cellid=cell, gameworld=gameworld, game_config=game_config)
-                    game_map.tiles[posx][posy].type_of_tile = tile_type_floor
-                    # game_map.tiles[posx][posy].entity = entity_created
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor, game_map=game_map)
                 posx += 1
             posy += 1
