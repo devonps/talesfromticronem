@@ -60,11 +60,11 @@ class ItemManager:
                 # generate weapon specific components
                 gameworld.add_component(myweapon, items.WeaponType(label=weapon_type))
                 gameworld.add_component(myweapon, items.Spells(
-                    slot_one='00',
-                    slot_two='00',
-                    slot_three='00',
-                    slot_four='00',
-                    slot_five='00'))
+                    slot_one=0,
+                    slot_two=0,
+                    slot_three=0,
+                    slot_four=0,
+                    slot_five=0))
 
                 gameworld.add_component(myweapon, items.Wielded(
                     hands=weapon['wielded_hands'],
