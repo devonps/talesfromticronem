@@ -34,8 +34,6 @@ class NewEntity:
     @staticmethod
     def add_enemy_components_to_entity(gameworld, entity_id):
         mobileHelp.MobileUtilities.add_enemy_components(gameworld=gameworld, entity_id=entity_id)
-        # if enemy type is combat then do the following
-        # mobileHelp.MobileUtilities.set_enemy_combat_role(entity=entity_id, gameworld=gameworld, value='RANDOM')
 
     @staticmethod
     def set_base_types_for_entity(gameworld, entity_id, game_config, this_entity):
@@ -75,6 +73,26 @@ class NewEntity:
         mobileHelp.MobileUtilities.set_mobile_ai_level(gameworld=gameworld, entity=entity_id, value=int(entity_ai))
         mobileHelp.MobileUtilities.set_mobile_ai_description(gameworld=gameworld, entity=entity_id, value='monster')
 
+    @staticmethod
+    def is_entity_a_shopkeeper(gameworld, entity_id, this_entity):
+        npc_shopkeeper = this_entity['shopkeeper']
+        shopkeeper_type = this_entity['type_of_shopkeeper']
+        if npc_shopkeeper == 'True':
+            mobileHelp.MobileUtilities.set_type_of_shopkeeper(gameworld=gameworld, target_entity=entity_id,
+                                                              shopkeeper_type=shopkeeper_type)
+
+    @staticmethod
+    def is_entity_a_tutor(gameworld, entity_id, this_entity):
+        tutor_type = ['type_of_tutor']
+        npc_tutor = this_entity['tutor']
+        if npc_tutor == 'True':
+            mobileHelp.MobileUtilities.set_type_of_tutor(gameworld=gameworld, target_entity=entity_id,
+                                                         tutor_type=tutor_type)
+
+    @staticmethod
+    def create_empty_spell_bar(gameworld, entity_id):
+        spellHelp.SpellUtilities.setup_mobile_empty_spellbar(gameworld=gameworld,
+                                                             player_entity=entity_id)
 
 class Entity:
 
@@ -602,8 +620,6 @@ class Entity:
                                                                                       entity_id=entity_id,
                                                                                       jewellery_set=jewellery_set,
                                                                                       npc_class_file=npc_class_file)
-            # ItemManager.create_and_equip_jewellery_for_npc(gameworld=gameworld, entity_id=entity_id,
-            #                                                jewellery_set=jewellery_set, npc_class_file=npc_class_file)
         else:
             logger.info('They are wearing no jewellery')
 
@@ -643,9 +659,6 @@ class Entity:
 
     @staticmethod
     def choose_weaponset(entity_id, main_hand, off_hand, both_hands, gameworld, game_config):
-
-        weapon_to_create = ''
-        which_hand = ''
         created_weapon_entity = 0
 
         selected_class = mobileHelp.MobileUtilities.get_character_class(gameworld, entity=entity_id)

@@ -133,6 +133,11 @@ class SceneManager:
                     NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity)
                     NewEntity.set_base_types_for_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity, this_entity=this_npc)
                     NewEntity.equip_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity, this_entity=this_npc)
+                    NewEntity.set_entity_ai_level(game_config=game_config, gameworld=gameworld, entity_id=new_entity)
+                    NewEntity.is_entity_a_shopkeeper(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
+                    NewEntity.is_entity_a_tutor(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
+                    NewEntity.create_empty_spell_bar(gameworld=gameworld, entity_id=new_entity)
+
                     game_map.tiles[posx][posy].entity = new_entity
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor, game_map=game_map)
                 posx += 1
