@@ -671,9 +671,9 @@ class SpellUtilities:
     @staticmethod
     def populate_spell_bar_initially(gameworld, player_entity):
 
-        spellbar = mobileHelp.MobileUtilities.get_next_entity_id(gameworld=gameworld)
-
-        mobileHelp.MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spellbar)
+        # spellbar = mobileHelp.MobileUtilities.get_next_entity_id(gameworld=gameworld)
+        #
+        # mobileHelp.MobileUtilities.set_spellbar_for_entity(gameworld=gameworld, entity=player_entity, spellbar_entity=spellbar)
         weapons_equipped = mobileHelp.MobileUtilities.get_weapons_equipped(gameworld=gameworld, entity=player_entity)
 
         if len(weapons_equipped) != 0:

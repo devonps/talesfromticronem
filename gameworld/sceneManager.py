@@ -1,7 +1,7 @@
 from mapRelated.gameMap import GameMap
 from newGame.Entities import Entity, NewEntity
 from processors import castSpells, move_entities, renderUI, updateEntities, renderMessageLog, renderSpellInfoPanel
-from utilities import configUtilities, externalfileutilities, jsonUtilities, mobileHelp, scorekeeper
+from utilities import configUtilities, externalfileutilities, jsonUtilities, mobileHelp, scorekeeper, spellHelp
 from loguru import logger
 
 
@@ -137,6 +137,13 @@ class SceneManager:
                     NewEntity.is_entity_a_shopkeeper(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
                     NewEntity.is_entity_a_tutor(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
                     NewEntity.create_empty_spell_bar(gameworld=gameworld, entity_id=new_entity)
+
+                    # --- ADD JEWELLERY SPELLS TO SPELLBAR -
+                    NewEntity.add_spells_to_spell_bar_based_on_equipped_jewellery(gameworld=gameworld,
+                                                                                  entity_id=new_entity)
+                    # --- CHOOSE SPELLS AND LOAD TO WEAPON -
+                    spellHelp.SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=new_entity)
+                    # --- add heal spell to spellbar     ---
 
                     game_map.tiles[posx][posy].entity = new_entity
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor, game_map=game_map)
