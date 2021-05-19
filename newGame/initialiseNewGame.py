@@ -15,7 +15,7 @@ def create_world():
     CreateSpells.AsEntities.generate(gameworld=gameworld)
     create_jewellery_entities(gameworld=gameworld)
     # create the scorekeeper
-    Entities.Entity.create_scorekeeper_entity(gameworld=gameworld)
+    Entities.NewEntity.create_scorekeeper_entity(gameworld=gameworld)
 
     return gameworld
 

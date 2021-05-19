@@ -1,5 +1,5 @@
 from mapRelated.gameMap import GameMap
-from newGame.Entities import Entity, NewEntity
+from newGame.Entities import NewEntity
 from processors import castSpells, move_entities, renderUI, updateEntities, renderMessageLog, renderSpellInfoPanel
 from utilities import configUtilities, externalfileutilities, jsonUtilities, mobileHelp, scorekeeper, spellHelp
 from loguru import logger
