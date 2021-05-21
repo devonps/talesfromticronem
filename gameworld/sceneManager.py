@@ -115,13 +115,16 @@ class SceneManager:
                                                     tile_type=tile_type_door)
                 SceneManager.place_wall_tile_yes_no(cell=cell, game_map=game_map, posx=posx, posy=posy,
                                                     tile_type=tile_type_wall)
-                SceneManager.place_empty_tile_yes_no(cell=cell, game_map=game_map, posx=posx, posy=posy, tile_type=tile_type_empty)
-                player_placed = SceneManager.place_player_tile_yes_no(cell=cell, game_map=game_map, posx=posx, posy=posy,
-                                                      tile_type=tile_type_floor)
+                SceneManager.place_empty_tile_yes_no(cell=cell, game_map=game_map, posx=posx, posy=posy,
+                                                     tile_type=tile_type_empty)
+                player_placed = SceneManager.place_player_tile_yes_no(cell=cell, game_map=game_map, posx=posx,
+                                                                      posy=posy,
+                                                                      tile_type=tile_type_floor)
 
                 if player_placed:
                     SceneManager.setup_viewport(gameworld=gameworld, posx=posx, posy=posy)
-                    game_map.tiles[posx][posy].entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+                    game_map.tiles[posx][posy].entity = mobileHelp.MobileUtilities.get_player_entity(
+                        gameworld=gameworld, game_config=game_config)
 
                 # add named NPCs to scene
                 npc_list_ids = "ABCEDFG"
@@ -129,10 +132,14 @@ class SceneManager:
                     cc = cell.upper()
                     idx = npc_list_ids.index(cc)
                     this_npc = main_npcs[idx]
-                    new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config, npc_glyph=cell, posx=posx, posy=posy, this_entity=this_npc)
+                    new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
+                                                              npc_glyph=cell, posx=posx, posy=posy,
+                                                              this_entity=this_npc)
                     NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity)
-                    NewEntity.set_base_types_for_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity, this_entity=this_npc)
-                    NewEntity.equip_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity, this_entity=this_npc)
+                    NewEntity.set_base_types_for_entity(gameworld=gameworld, game_config=game_config,
+                                                        entity_id=new_entity, this_entity=this_npc)
+                    NewEntity.equip_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity,
+                                           this_entity=this_npc)
                     NewEntity.set_entity_ai_level(game_config=game_config, gameworld=gameworld, entity_id=new_entity)
                     NewEntity.is_entity_a_shopkeeper(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
                     NewEntity.is_entity_a_tutor(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
@@ -141,12 +148,13 @@ class SceneManager:
                     # --- ADD JEWELLERY SPELLS TO SPELLBAR -
                     NewEntity.add_spells_to_spell_bar_based_on_equipped_jewellery(gameworld=gameworld,
                                                                                   entity_id=new_entity)
-                    # --- CHOOSE SPELLS AND LOAD TO WEAPON -
+                    # --- POPULATE SPELL BAR BASED ON EQUIPMENT -
                     spellHelp.SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=new_entity)
-                    # --- add heal spell to spellbar     ---
 
+                    # --- PLACE NEW ENTITY ON TO GAME MAP -
                     game_map.tiles[posx][posy].entity = new_entity
-                    SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor, game_map=game_map)
+                    SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor,
+                                                         game_map=game_map)
                 posx += 1
             posy += 1
 
@@ -198,4 +206,3 @@ class SceneManager:
         game_config = configUtilities.load_config()
         player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         mobileHelp.MobileUtilities.set_mobile_position(gameworld=gameworld, entity=player_entity, posx=posx, posy=posy)
-
