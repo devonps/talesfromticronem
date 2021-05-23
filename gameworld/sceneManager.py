@@ -145,11 +145,12 @@ class SceneManager:
                     NewEntity.is_entity_a_tutor(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
                     NewEntity.create_empty_spell_bar(gameworld=gameworld, entity_id=new_entity)
 
+                    # --- POPULATE SPELL BAR BASED ON EQUIPMENT -
+                    spellHelp.SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=new_entity)
+
                     # --- ADD JEWELLERY SPELLS TO SPELLBAR -
                     NewEntity.add_spells_to_spell_bar_based_on_equipped_jewellery(gameworld=gameworld,
                                                                                   entity_id=new_entity)
-                    # --- POPULATE SPELL BAR BASED ON EQUIPMENT -
-                    spellHelp.SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=new_entity)
 
                     # --- PLACE NEW ENTITY ON TO GAME MAP -
                     game_map.tiles[posx][posy].entity = new_entity

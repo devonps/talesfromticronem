@@ -685,48 +685,52 @@ class SpellUtilities:
         else:
             logger.warning('no weapons equipped')
 
-        # now get the heal skill
-        player_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
-        for ent, (cl, typ) in gameworld.get_components(spells.ClassName, spells.SpellType):
-            if typ.label == 'heal' and cl.label == player_class:
-                SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
-                                                 spell_entity=ent, slot=6)
+        # now set the heal skill based on the entities class
+        spell_entity = SpellUtilities.get_class_heal_spell(gameworld=gameworld, player_entity=player_entity)
+        SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
+                                         spell_entity=spell_entity, slot=5)
 
     @staticmethod
     def helper_both_hands_weapon(gameworld, player_entity, both_hands_weapon):
         if both_hands_weapon > 0:
-            slotid = 1
+            weapon_slotid = 1
+            spell_slotid = 0
             for _ in range(5):
                 this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
                                                                                    weapon_equipped=both_hands_weapon,
-                                                                                   slotid=slotid)
+                                                                                   slotid=weapon_slotid)
                 SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
-                                                 spell_entity=this_spell_entity, slot=slotid)
-                slotid += 1
+                                                 spell_entity=this_spell_entity, slot=spell_slotid)
+                spell_slotid += 1
+                weapon_slotid += 1
 
     @staticmethod
     def helper_main_hand_weapon(gameworld, player_entity, main_hand_weapon):
         if main_hand_weapon > 0:
-            slotid = 1
+            weapon_slotid = 1
+            spell_slotid = 0
             for _ in range(3):
                 this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
                                                                                    weapon_equipped=main_hand_weapon,
-                                                                                   slotid=slotid)
+                                                                                   slotid=weapon_slotid)
                 SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
-                                                 spell_entity=this_spell_entity, slot=slotid)
-                slotid += 1
+                                                 spell_entity=this_spell_entity, slot=spell_slotid)
+                spell_slotid += 1
+                weapon_slotid += 1
 
     @staticmethod
     def helper_off_hand_weapon(gameworld, player_entity, off_hand_weapon):
         if off_hand_weapon > 0:
-            slotid = 4
+            weapon_slotid = 3
+            spell_slotid = 2
             for _ in range(2):
                 this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
                                                                                    weapon_equipped=off_hand_weapon,
-                                                                                   slotid=slotid)
+                                                                                   slotid=weapon_slotid)
                 SpellUtilities.set_spellbar_slot(gameworld=gameworld, player_entity=player_entity,
-                                                 spell_entity=this_spell_entity, slot=slotid)
-                slotid += 1
+                                                 spell_entity=this_spell_entity, slot=spell_slotid)
+                spell_slotid += 1
+                weapon_slotid += 1
 
     @staticmethod
     def get_spell_name(gameworld, spell_entity):

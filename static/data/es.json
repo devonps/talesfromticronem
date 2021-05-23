@@ -29,23 +29,23 @@
       "heading": "Jewellery Worn",
       "lines": 6,
       "width": 27,
-      "posx": 28,
-      "posy": 13
+      "posx": 7,
+      "posy": 21
     },
     {
       "title": "spellbarcombat",
       "heading": "Spellbar Weapons",
       "lines": 6,
       "width": 32,
-      "posx": 7,
-      "posy": 22
+      "posx": 42,
+      "posy": 13
     },
     {
       "title": "spellbarutils",
       "heading": "Spellbar Utilities",
       "lines": 6,
       "width": 31,
-      "posx": 41,
+      "posx": 42,
       "posy": 22
     },
     {
@@ -53,8 +53,8 @@
       "heading": "Energy",
       "lines": 4,
       "width": 20,
-      "posx": 57,
-      "posy": 13
+      "posx": 62,
+      "posy": 5
     },
     {
       "title": "monster",
@@ -70,7 +70,7 @@
       "lines": 8,
       "width": 34,
       "posx": 7,
-      "posy": 25
+      "posy": 30
     },
     {
       "title": "primary",

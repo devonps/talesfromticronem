@@ -477,7 +477,7 @@ class NewEntity:
 
         left_ear = jewellery_list[0]
         right_ear = jewellery_list[1]
-        neck_entity = jewellery_list[2]
+        neck_entity = jewellery_list[4]
 
         # get spell entity from that piece of jewellery
         if neck_entity > 0:
