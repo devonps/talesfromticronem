@@ -1,6 +1,13 @@
 {
   "es": [
     {
+      "title": "frame",
+      "height": 42,
+      "width": 72,
+      "posx": 5,
+      "posy": 2
+    },
+    {
       "title": "racial",
       "heading": "Personal",
       "lines": 4,

@@ -18,12 +18,13 @@ class Debug:
         section_posy = []
 
         for section in entity_spy_file['es']:
-            section_title.append(section['title'])
-            section_heading.append(section['heading'])
-            section_lines.append(section['lines'])
-            section_width.append(section['width'])
-            section_posx.append(section['posx'])
-            section_posy.append(section['posy'])
+            if section['title'] != 'frame':
+                section_title.append(section['title'])
+                section_heading.append(section['heading'])
+                section_lines.append(section['lines'])
+                section_width.append(section['width'])
+                section_posx.append(section['posx'])
+                section_posy.append(section['posy'])
 
         return section_title, section_heading, section_lines, section_width, section_posx, section_posy
 
@@ -31,19 +32,16 @@ class Debug:
     def generate_es_click_zones(entity_spy_file):
         click_zones = []
         for section in entity_spy_file['es']:
-            click_zones.append((section['posx'], section['posy'], section['width'], section['lines']))
+            if section['title'] != 'frame':
+                click_zones.append((section['posx'], section['posy'], section['width'], section['lines']))
         return click_zones
 
     @staticmethod
-    def clear_terminal_area_es(game_config):
-        start_panel_frame_x = configUtilities.get_config_value_as_integer(game_config, 'newgame',
-                                                                          'START_PANEL_FRAME_X')
-        start_panel_frame_y = configUtilities.get_config_value_as_integer(game_config, 'newgame',
-                                                                          'START_PANEL_FRAME_Y')
-        start_panel_frame_width = configUtilities.get_config_value_as_integer(game_config, 'newgame',
-                                                                              'START_PANEL_FRAME_WIDTH')
-        start_panel_frame_height = configUtilities.get_config_value_as_integer(game_config, 'newgame',
-                                                                               'START_PANEL_FRAME_HEIGHT')
+    def clear_terminal_area_es(coords):
+        start_panel_frame_x = coords[0]
+        start_panel_frame_y = coords[1]
+        start_panel_frame_width = coords[2]
+        start_panel_frame_height = coords[3]
 
         terminal.clear_area(start_panel_frame_x, start_panel_frame_y, start_panel_frame_width + 1,
                             start_panel_frame_height)
@@ -92,9 +90,20 @@ class Debug:
         entity_id = gamemap.GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=posx, y=posy)
 
         if entity_id > 0:
+            # get outerframe coords from json file
+            es_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
+                                                                 parameter='ENTITYSPYFILE')
+            entity_spy_file = jsonUtilities.read_json_file(es_file)
+            frame_coords_list = []
+            for section in entity_spy_file['es']:
+                if section['title'] == 'frame':
+                    frame_coords_list.append(section['posx'])
+                    frame_coords_list.append(section['posy'])
+                    frame_coords_list.append(section['width'])
+                    frame_coords_list.append(section['height'])
 
             # clear the underlying terminal
-            Debug.clear_terminal_area_es(game_config=game_config)
+            Debug.clear_terminal_area_es(coords=frame_coords_list)
 
             # draw a frame around the components
             display.draw_colourful_frame(title=' Entity Spy ', title_decorator=True, title_loc='centre',
@@ -105,9 +114,6 @@ class Debug:
             Debug.display_page_one_entity_spy(gameworld=gameworld, entity_id=entity_id, game_config=game_config)
 
             # generate entity spy click zones
-            es_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                 parameter='ENTITYSPYFILE')
-            entity_spy_file = jsonUtilities.read_json_file(es_file)
             click_zones = Debug.generate_es_click_zones(entity_spy_file=entity_spy_file)
 
             # display instructions
@@ -123,7 +129,7 @@ class Debug:
                 event_to_be_processed, event_action = input_handlers.handle_game_keys()
                 player_not_pressed_quit, page_to_display = Debug.es_process_keyboard_actions(
                     event_to_be_processed=event_to_be_processed, event_action=event_action, game_config=game_config,
-                    gameworld=gameworld, entity_id=entity_id, page_to_display=page_to_display)
+                    gameworld=gameworld, entity_id=entity_id, page_to_display=page_to_display, coords=frame_coords_list)
 
                 # display instructions
                 Debug.display_es_instructions(page=page_to_display)
@@ -137,13 +143,13 @@ class Debug:
 
     @staticmethod
     def es_process_keyboard_actions(event_to_be_processed, event_action, game_config, gameworld, entity_id,
-                                    page_to_display):
+                                    page_to_display, coords):
         player_not_pressed_quit = True
         if event_to_be_processed == 'keypress':
             if event_action == 'quit':
                 player_not_pressed_quit = False
             if event_action == 'tab':
-                Debug.clear_terminal_area_es(game_config=game_config)
+                Debug.clear_terminal_area_es(coords=coords)
                 page_to_display = Debug.display_entity_spy_page(gameworld=gameworld, entity_id=entity_id,
                                                                 game_config=game_config,
                                                                 page_to_display=page_to_display)
