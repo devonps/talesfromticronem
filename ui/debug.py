@@ -9,7 +9,7 @@ from utilities import configUtilities, common, display, gamemap, input_handlers,
 class Debug:
 
     @staticmethod
-    def populate_es_lists(entity_spy_file):
+    def helper_populate_es_lists(entity_spy_file):
         section_title = []
         section_heading = []
         section_lines = []
@@ -29,7 +29,7 @@ class Debug:
         return section_title, section_heading, section_lines, section_width, section_posx, section_posy
 
     @staticmethod
-    def generate_es_click_zones(entity_spy_file):
+    def helper_generate_es_click_zones(entity_spy_file):
         click_zones = []
         for section in entity_spy_file['es']:
             if section['title'] != 'frame':
@@ -37,7 +37,7 @@ class Debug:
         return click_zones
 
     @staticmethod
-    def clear_terminal_area_es(coords):
+    def helper_clear_terminal_area_es(coords):
         start_panel_frame_x = coords[0]
         start_panel_frame_y = coords[1]
         start_panel_frame_width = coords[2]
@@ -47,7 +47,7 @@ class Debug:
                             start_panel_frame_height)
 
     @staticmethod
-    def get_entity_map_position(gameworld, game_config, game_map, coords_clicked):
+    def helper_get_entity_map_position(gameworld, game_config, game_map, coords_clicked):
         player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld, game_config)
         player_map_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         player_map_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
@@ -73,7 +73,7 @@ class Debug:
         return posx, posy
 
     @staticmethod
-    def get_entity_type(gameworld, entity_id):
+    def helper_get_entity_type(gameworld, entity_id):
         entity_type = 'undefined'
         if gameworld.has_component(entity_id, mobiles.Name):
             entity_type = 'mobile'
@@ -85,8 +85,8 @@ class Debug:
     @staticmethod
     def entity_spy(gameworld, game_config, coords_clicked, game_map):
 
-        posx, posy = Debug.get_entity_map_position(gameworld=gameworld, game_config=game_config, game_map=game_map,
-                                                   coords_clicked=coords_clicked)
+        posx, posy = Debug.helper_get_entity_map_position(gameworld=gameworld, game_config=game_config, game_map=game_map,
+                                                          coords_clicked=coords_clicked)
         entity_id = gamemap.GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=posx, y=posy)
 
         if entity_id > 0:
@@ -103,7 +103,7 @@ class Debug:
                     frame_coords_list.append(section['height'])
 
             # clear the underlying terminal
-            Debug.clear_terminal_area_es(coords=frame_coords_list)
+            Debug.helper_clear_terminal_area_es(coords=frame_coords_list)
 
             # draw a frame around the components
             display.draw_colourful_frame(title=' Entity Spy ', title_decorator=True, title_loc='centre',
@@ -114,7 +114,7 @@ class Debug:
             Debug.display_page_one_entity_spy(gameworld=gameworld, entity_id=entity_id, game_config=game_config)
 
             # generate entity spy click zones
-            click_zones = Debug.generate_es_click_zones(entity_spy_file=entity_spy_file)
+            click_zones = Debug.helper_generate_es_click_zones(entity_spy_file=entity_spy_file)
 
             # display instructions
             page_to_display = 1
@@ -149,16 +149,16 @@ class Debug:
             if event_action == 'quit':
                 player_not_pressed_quit = False
             if event_action == 'tab':
-                Debug.clear_terminal_area_es(coords=coords)
-                page_to_display = Debug.display_entity_spy_page(gameworld=gameworld, entity_id=entity_id,
-                                                                game_config=game_config,
-                                                                page_to_display=page_to_display)
+                Debug.helper_clear_terminal_area_es(coords=coords)
+                page_to_display = Debug.helper_display_entity_spy_page(gameworld=gameworld, entity_id=entity_id,
+                                                                       game_config=game_config,
+                                                                       page_to_display=page_to_display)
         return player_not_pressed_quit, page_to_display
 
     @staticmethod
     def es_process_mouse_actions(event_to_be_processed, event_action, click_zones, page_to_display):
         if event_to_be_processed == 'mouseleftbutton':
-            zone_clicked, item_selected = Debug.get_zone_clicked(event_action, click_zones, page_to_display)
+            zone_clicked, item_selected = Debug.helper_get_zone_clicked(event_action, click_zones, page_to_display)
             Debug.process_zone_action(zone_clicked=zone_clicked, line_item=item_selected)
 
     @staticmethod
@@ -228,7 +228,7 @@ class Debug:
         switcher.get(zone_clicked, default)(line=line_item)
 
     @staticmethod
-    def display_entity_spy_page(gameworld, page_to_display, entity_id, game_config):
+    def helper_display_entity_spy_page(gameworld, page_to_display, entity_id, game_config):
         page_to_display += 1
         if page_to_display > 2:
             page_to_display = 1
@@ -240,7 +240,7 @@ class Debug:
         return page_to_display
 
     @staticmethod
-    def get_zone_clicked(event_action, click_zones, page_to_display):
+    def helper_get_zone_clicked(event_action, click_zones, page_to_display):
         mx = event_action[0]
         my = event_action[1]
 
@@ -261,12 +261,12 @@ class Debug:
 
         for zone in range(zone_min, zone_max):
 
-            mx_in_range = Debug.check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_left],
-                                            check_point=mx,
-                                            click_zone_two=click_zones[zone][click_zone_left] + click_zones[zone][
+            mx_in_range = Debug.helper_check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_left],
+                                                   check_point=mx,
+                                                   click_zone_two=click_zones[zone][click_zone_left] + click_zones[zone][
                                                 click_zone_width])
-            my_in_range = Debug.check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_top], check_point=my,
-                                            click_zone_two=click_zones[zone][click_zone_top] + click_zones[zone][
+            my_in_range = Debug.helper_check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_top], check_point=my,
+                                                   click_zone_two=click_zones[zone][click_zone_top] + click_zones[zone][
                                                 click_zone_depth])
 
             if mx_in_range and my_in_range:
@@ -275,7 +275,7 @@ class Debug:
         return zone_clicked, item_selected
 
     @staticmethod
-    def check_zones(zone, click_zone_one, check_point, click_zone_two):
+    def helper_check_zones(zone, click_zone_one, check_point, click_zone_two):
         check_point_in_range = False
         if click_zone_one <= check_point <= click_zone_two:
             check_point_in_range = True
@@ -283,11 +283,10 @@ class Debug:
 
     @staticmethod
     def display_es_instructions(page):
-        instruction_start_string = "[color=ENTITY_SPY_INSTRUCTIONS]"
-        string_to_print = instruction_start_string + "Press tab for next page"
+        string_to_print = "[color=ENTITY_SPY_INSTRUCTIONS]Press tab for next page"
         terminal.print_(x=6, y=3, s=string_to_print)
 
-        string_to_print = instruction_start_string + "Page:" + str(page) + "/2"
+        string_to_print = "[color=ENTITY_SPY_INSTRUCTIONS]Page:" + str(page) + "/2"
         terminal.print_(x=70, y=3, s=string_to_print)
 
     @staticmethod
@@ -297,7 +296,7 @@ class Debug:
                                                              parameter='ENTITYSPYFILE')
         entity_spy_file = jsonUtilities.read_json_file(es_file)
 
-        section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.populate_es_lists(
+        section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.helper_populate_es_lists(
             entity_spy_file)
 
         #
@@ -526,7 +525,7 @@ class Debug:
                                                              parameter='ENTITYSPYFILE')
         entity_spy_file = jsonUtilities.read_json_file(es_file)
 
-        section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.populate_es_lists(
+        section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.helper_populate_es_lists(
             entity_spy_file)
 
         # display primary attributes
