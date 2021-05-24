@@ -85,7 +85,8 @@ class Debug:
     @staticmethod
     def entity_spy(gameworld, game_config, coords_clicked, game_map):
 
-        posx, posy = Debug.helper_get_entity_map_position(gameworld=gameworld, game_config=game_config, game_map=game_map,
+        posx, posy = Debug.helper_get_entity_map_position(gameworld=gameworld, game_config=game_config,
+                                                          game_map=game_map,
                                                           coords_clicked=coords_clicked)
         entity_id = gamemap.GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=posx, y=posy)
 
@@ -229,6 +230,8 @@ class Debug:
 
     @staticmethod
     def helper_display_entity_spy_page(gameworld, page_to_display, entity_id, game_config):
+        display.draw_colourful_frame(title='-Entity Spy-', title_decorator=True, title_loc='centre',
+                                     corner_decorator='', msg=4)
         page_to_display += 1
         if page_to_display > 2:
             page_to_display = 1
@@ -263,11 +266,13 @@ class Debug:
 
             mx_in_range = Debug.helper_check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_left],
                                                    check_point=mx,
-                                                   click_zone_two=click_zones[zone][click_zone_left] + click_zones[zone][
-                                                click_zone_width])
-            my_in_range = Debug.helper_check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_top], check_point=my,
+                                                   click_zone_two=click_zones[zone][click_zone_left] +
+                                                                  click_zones[zone][
+                                                                      click_zone_width])
+            my_in_range = Debug.helper_check_zones(zone=zone, click_zone_one=click_zones[zone][click_zone_top],
+                                                   check_point=my,
                                                    click_zone_two=click_zones[zone][click_zone_top] + click_zones[zone][
-                                                click_zone_depth])
+                                                       click_zone_depth])
 
             if mx_in_range and my_in_range:
                 zone_clicked = zone
@@ -282,15 +287,7 @@ class Debug:
         return check_point_in_range
 
     @staticmethod
-    def display_es_instructions(page):
-        string_to_print = "[color=ENTITY_SPY_INSTRUCTIONS]Press tab for next page"
-        terminal.print_(x=6, y=3, s=string_to_print)
-
-        string_to_print = "[color=ENTITY_SPY_INSTRUCTIONS]Page:" + str(page) + "/2"
-        terminal.print_(x=70, y=3, s=string_to_print)
-
-    @staticmethod
-    def display_page_one_entity_spy(gameworld, game_config, entity_id):
+    def helper_get_section_layout_details(game_config):
         # read Json file for on-screen placement
         es_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                              parameter='ENTITYSPYFILE')
@@ -299,15 +296,27 @@ class Debug:
         section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.helper_populate_es_lists(
             entity_spy_file)
 
-        #
-        # DRAW THE UI
-        #
+        return section_title, section_heading, section_lines, section_width, section_posx, section_posy
+
+    @staticmethod
+    def helper_draw_title():
+        display.draw_colourful_frame(title=" Entity Spy ", title_decorator=True, title_loc='centre',
+                                     corner_decorator='', msg=4)
+
+    @staticmethod
+    def display_es_instructions(page):
+        string_to_print = "[color=ENTITY_SPY_INSTRUCTIONS]Press tab for next page"
+        terminal.print_(x=6, y=3, s=string_to_print)
+
+        string_to_print = "[color=ENTITY_SPY_INSTRUCTIONS]Page:" + str(page) + "/2"
+        terminal.print_(x=70, y=3, s=string_to_print)
+
+
+    @staticmethod
+    def display_personal_details(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
         section = 0
         start_string = "[color=ENTITY_SPY_COMPONENT]"
         end_string = "[/color]"
-
-        display.draw_colourful_frame(title=" Entity Spy ", title_decorator=True, title_loc='centre',
-                                     corner_decorator='', msg=4)
 
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -325,10 +334,11 @@ class Debug:
             gameworld=gameworld, entity=entity_id)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=glyph_print)
 
-        #
-        # ENTITY PERSONAL DETAILS
-        #
+    @staticmethod
+    def display_names_and_ai_level(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
         section = 1
+        start_string = "[color=ENTITY_SPY_COMPONENT]"
+        end_string = "[/color]"
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
                                   start_panel_frame_height=section_lines[section], title=section_heading[section])
@@ -349,9 +359,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=ai_level_string)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=personality_string)
 
-        #
-        # WEAPONS
-        #
+    @staticmethod
+    def display_equipped_weapons(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
         section = 2
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -370,9 +379,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=main_hand)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=off_hand)
 
-        #
-        # JEWELLERY
-        #
+    @staticmethod
+    def display_equipped_jewellery(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
         section = 3
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -396,11 +404,9 @@ class Debug:
             neck = display.set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
             terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6, s=neck)
 
-        # display armour
+    @staticmethod
+    def display_equipped_armour(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
         section = 8
-
-        display.draw_colourful_frame(title='-Entity Spy-', title_decorator=True, title_loc='centre',
-                                     corner_decorator='', msg=4)
 
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -446,9 +452,8 @@ class Debug:
             str_to_print = item_head[0] + item_head[1] + '/' + item_head[2] + '/' + item_head[3]
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 8, s=str_to_print)
 
-        #
-        # SPELL BAR COMBAT
-        #
+    @staticmethod
+    def display_spellbar_combat(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
         section = 4
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -466,9 +471,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=slot_four)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6, s=slot_five)
 
-        #
-        # SPELL BAR UTILITIES
-        #
+    @staticmethod
+    def display_spellbar_utilities(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
         section = 5
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -484,10 +488,11 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=slot_eight)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=slot_nine)
 
-        #
-        # ENERGY BARS
-        #
+    @staticmethod
+    def display_energy_bars(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
         section = 6
+        start_string = "[color=ENTITY_SPY_COMPONENT]"
+        end_string = "[/color]"
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
                                   start_panel_frame_height=section_lines[section], title=section_heading[section])
@@ -508,27 +513,33 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=health_string)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=f1_string)
 
-        #
-        # MONSTER SPECIFICS
-        #
-        # section = 7
-        # Debug.draw_monster_specific_components(gameworld=gameworld, entity_id=entity_id, sx=section_posx[section],
-        #                                        sy=section_posy[section],
-        #                                        sw=section_width[section], sl=section_lines[section],
-        #                                        sh=section_heading[section])
+    @staticmethod
+    def display_monster_specific_items(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+        section = 7
+        Debug.draw_monster_specific_components(gameworld=gameworld, entity_id=entity_id, sx=section_posx[section],
+                                               sy=section_posy[section],
+                                               sw=section_width[section], sl=section_lines[section],
+                                               sh=section_heading[section])
 
     @staticmethod
-    def display_page_two_entity_spy(gameworld, entity_id, game_config):
+    def display_page_one_entity_spy(gameworld, game_config, entity_id):
 
-        # read Json file for on-screen placement
-        es_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                             parameter='ENTITYSPYFILE')
-        entity_spy_file = jsonUtilities.read_json_file(es_file)
+        section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.helper_get_section_layout_details(
+            game_config=game_config)
 
-        section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.helper_populate_es_lists(
-            entity_spy_file)
+        Debug.display_personal_details(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_names_and_ai_level(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_energy_bars(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_equipped_armour(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_equipped_weapons(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_equipped_jewellery(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_spellbar_combat(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_spellbar_utilities(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        # Debug.display_monster_specific_items(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
 
-        # display primary attributes
+
+    @staticmethod
+    def display_primary_attributes(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
         section = 9
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -550,7 +561,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5,
                         s="[color=ENTITY_SPY_COMPONENT]Vitality:[/color]" + str(entity_vitality))
 
-        # display secondary attributes
+    @staticmethod
+    def display_secondary_attributes(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
         section = 10
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -578,7 +590,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6,
                         s="[color=ENTITY_SPY_COMPONENT]Healing Power:[/color]" + str(entity_healing_power))
 
-        # display derived attributes
+    @staticmethod
+    def display_derived_attributes(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
         section = 11
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -606,7 +619,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6,
                         s="[color=ENTITY_SPY_COMPONENT]Defense:[/color]" + str(total_armour))
 
-        # display applied status effects
+    @staticmethod
+    def display_applied_status_effects(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
         section = 12
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -624,6 +638,18 @@ class Debug:
                         s="[color=ENTITY_SPY_COMPONENT]Boons:[/color]" + boons_to_print)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3,
                         s="[color=ENTITY_SPY_COMPONENT]Conditions:[/color]" + condis_to_print)
+
+    @staticmethod
+    def display_page_two_entity_spy(gameworld, entity_id, game_config):
+
+        section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.helper_get_section_layout_details(
+            game_config=game_config)
+
+        Debug.display_primary_attributes(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_secondary_attributes(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_derived_attributes(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_applied_status_effects(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+
 
     @staticmethod
     def set_boons_to_print(applied_boons):
