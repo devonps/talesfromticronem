@@ -22,6 +22,16 @@ class StatelessAI:
             stand-still --> what should I do here?
             cast-spell-against-target --> pick a random one
 
+    re-thinking 24th May 2021
+    Think big - start small!!
+    Have the monster look around: what can it see or hear
+    update monster memory based on senses
+    What is the physical state of the monster: low health, is it wounded
+    Update monster health flags
+
+    Based on the above information, what does the monster want to do?
+
+
 
     """
 
@@ -33,7 +43,7 @@ class StatelessAI:
 
         current_turn = scorekeeper.ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
 
-        for ent, ai in gameworld.get_component(mobiles.AI):
+        for ent, ai in gameworld.get_component(mobiles.AILevel):
             entity_ai = mobileHelp.MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=ent)
             if entity_ai == mobile_ai_level:
                 entity_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=ent)

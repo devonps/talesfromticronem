@@ -115,10 +115,25 @@ class CharacterClass:
         self.spellfile = spellfile
 
 
-class AI:
+class AILevel:
     def __init__(self, ailevel=0, description='none'):
-        self.ailevel = ailevel
+        self.label = ailevel
         self.description = description
+
+
+class Senses:
+    def __init__(self, vision=10):
+        self.vision_range = vision
+
+
+class AIMemory:
+    def __init__(self):
+        self.visible_entities = []
+
+
+class PhysicalState:
+    def __init__(self, am_i_hurt = False):
+        self.am_i_hurt = am_i_hurt
 
 
 class NpcType:

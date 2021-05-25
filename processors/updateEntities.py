@@ -22,7 +22,7 @@ class UpdateEntitiesProcessor(esper.Processor):
             if not message_log_just_viewed:
                 message_log_id = mobileHelp.MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
 
-                for ent, ai in self.gameworld.get_component(mobiles.AI):
+                for ent, ai in self.gameworld.get_component(mobiles.AILevel):
                     current_health = mobileHelp.MobileUtilities.get_mobile_derived_current_health(gameworld=self.gameworld, entity=ent)
 
                     entity_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)

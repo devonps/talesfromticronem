@@ -56,68 +56,68 @@ def test_add_empty_inventory_component_to_entity(world):
 
 def test_add_ai_level_to_entity(world):
     mobile = world.create_entity()
-    world.add_component(mobile, mobiles.AI())
-    mobile_ai_component = world.component_for_entity(mobile, mobiles.AI)
+    world.add_component(mobile, mobiles.AILevel())
+    mobile_ai_component = world.component_for_entity(mobile, mobiles.AILevel)
 
-    assert mobile_ai_component.ailevel == 0
+    assert mobile_ai_component.label == 0
 
 
 def test_add_ai_player_level_to_entity(world, mobile_ai_level_player):
     mobile = world.create_entity()
-    world.add_component(mobile, mobiles.AI())
-    mobile_ai_component = world.component_for_entity(mobile, mobiles.AI)
+    world.add_component(mobile, mobiles.AILevel())
+    mobile_ai_component = world.component_for_entity(mobile, mobiles.AILevel)
 
-    world.component_for_entity(mobile, mobiles.AI).ailevel = mobile_ai_level_player
+    world.component_for_entity(mobile, mobiles.AILevel).label = mobile_ai_level_player
 
-    assert mobile_ai_component.ailevel == 1
+    assert mobile_ai_component.label == 1
 
 
 def test_add_ai_demon_level_to_entity(world, mobile_ai_level_demon):
     mobile = world.create_entity()
-    world.add_component(mobile, mobiles.AI())
-    mobile_ai_component = world.component_for_entity(mobile, mobiles.AI)
+    world.add_component(mobile, mobiles.AILevel())
+    mobile_ai_component = world.component_for_entity(mobile, mobiles.AILevel)
 
-    world.component_for_entity(mobile, mobiles.AI).ailevel = mobile_ai_level_demon
+    world.component_for_entity(mobile, mobiles.AILevel).label = mobile_ai_level_demon
 
-    assert mobile_ai_component.ailevel == 3
+    assert mobile_ai_component.label == 3
 
 
 def test_add_ai_wizard_level_to_entity(world, mobile_ai_level_wizard):
     mobile = world.create_entity()
-    world.add_component(mobile, mobiles.AI())
-    mobile_ai_component = world.component_for_entity(mobile, mobiles.AI)
+    world.add_component(mobile, mobiles.AILevel())
+    mobile_ai_component = world.component_for_entity(mobile, mobiles.AILevel)
 
-    world.component_for_entity(mobile, mobiles.AI).ailevel = mobile_ai_level_wizard
+    world.component_for_entity(mobile, mobiles.AILevel).label = mobile_ai_level_wizard
 
-    assert mobile_ai_component.ailevel == 2
+    assert mobile_ai_component.label == 2
 
 
 def test_add_ai_monster_level_to_entity(world, mobile_ai_level_monster):
     mobile = world.create_entity()
-    world.add_component(mobile, mobiles.AI())
-    mobile_ai_component = world.component_for_entity(mobile, mobiles.AI)
+    world.add_component(mobile, mobiles.AILevel())
+    mobile_ai_component = world.component_for_entity(mobile, mobiles.AILevel)
 
-    world.component_for_entity(mobile, mobiles.AI).ailevel = mobile_ai_level_monster
+    world.component_for_entity(mobile, mobiles.AILevel).label = mobile_ai_level_monster
 
-    assert mobile_ai_component.ailevel == 4
+    assert mobile_ai_component.label == 4
 
 
 def test_add_ai_npc_level_to_entity(world, mobile_ai_level_npc):
     mobile = world.create_entity()
-    world.add_component(mobile, mobiles.AI())
-    mobile_ai_component = world.component_for_entity(mobile, mobiles.AI)
+    world.add_component(mobile, mobiles.AILevel())
+    mobile_ai_component = world.component_for_entity(mobile, mobiles.AILevel)
 
-    world.component_for_entity(mobile, mobiles.AI).ailevel = mobile_ai_level_npc
+    world.component_for_entity(mobile, mobiles.AILevel).label = mobile_ai_level_npc
 
-    assert mobile_ai_component.ailevel == 5
+    assert mobile_ai_component.label == 5
 
 
 def test_add_ai_master_level_to_entity(world, mobile_ai_level_master):
     mobile = world.create_entity()
-    world.add_component(mobile, mobiles.AI())
-    mobile_ai_component = world.component_for_entity(mobile, mobiles.AI)
+    world.add_component(mobile, mobiles.AILevel())
+    mobile_ai_component = world.component_for_entity(mobile, mobiles.AILevel)
 
-    world.component_for_entity(mobile, mobiles.AI).ailevel = mobile_ai_level_master
+    world.component_for_entity(mobile, mobiles.AILevel).label = mobile_ai_level_master
 
-    assert mobile_ai_component.ailevel == 99
+    assert mobile_ai_component.label == 99
 

@@ -97,19 +97,19 @@ class MobileUtilities(numbers.Real, ABC):
                                                                 parameter='AI_LEVEL_PLAYER')
 
         player = 0
-        for ent, ai in gameworld.get_component(mobiles.AI):
-            if ai.ailevel == player_ai:
+        for ent, ai in gameworld.get_component(mobiles.AILevel):
+            if ai.label == player_ai:
                 player = ent
 
         return player
 
     @staticmethod
     def get_mobile_ai_level(gameworld, entity_id):
-        return gameworld.component_for_entity(entity_id, mobiles.AI).ailevel
+        return gameworld.component_for_entity(entity_id, mobiles.AILevel).label
 
     @staticmethod
     def get_mobile_ai_description(gameworld, entity_id):
-        return gameworld.component_for_entity(entity_id, mobiles.AI).description
+        return gameworld.component_for_entity(entity_id, mobiles.AILevel).description
 
     @staticmethod
     def get_number_as_a_percentage(lower_value, maximum_value):
@@ -321,7 +321,7 @@ class MobileUtilities(numbers.Real, ABC):
         MobileUtilities.set_mobile_description(gameworld=gameworld, entity=entity_id, value='something')
         gameworld.add_component(entity_id,
                                 mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
-        gameworld.add_component(entity_id, mobiles.AI(ailevel=ai, description='none'))
+        gameworld.add_component(entity_id, mobiles.AILevel(ailevel=ai, description='none'))
         gameworld.add_component(entity_id, mobiles.Inventory())
         gameworld.add_component(entity_id, mobiles.Armour())
         gameworld.add_component(entity_id, mobiles.Jewellery())
@@ -435,7 +435,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(player_entity,
                                 mobiles.CharacterClass(label='', base_health=0, style='balanced', spellfile=''))
         gameworld.add_component(player_entity, mobiles.Name(first='', suffix=''))
-        gameworld.add_component(player_entity, mobiles.AI(ailevel=player_ai, description='player'))
+        gameworld.add_component(player_entity, mobiles.AILevel(ailevel=player_ai, description='player'))
         gameworld.add_component(player_entity, mobiles.SpellBar(entity_id=0))
         gameworld.add_component(player_entity, mobiles.Viewport())
         gameworld.add_component(player_entity, mobiles.SpellCast())
@@ -513,11 +513,39 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_mobile_ai_level(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.AI).ailevel = value
+        gameworld.component_for_entity(entity, mobiles.AILevel).label = value
 
     @staticmethod
     def set_mobile_ai_description(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.AI).description = value
+        gameworld.component_for_entity(entity, mobiles.AILevel).description = value
+
+    @staticmethod
+    def set_mobile_senses_vision_range(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.Senses).vision_range = value
+
+    @staticmethod
+    def get_mobile_senses_vision_range(gameworld, entity):
+        senses_component = gameworld.component_for_entity(entity, mobiles.Senses)
+
+        return senses_component.vision_range
+
+    @staticmethod
+    def set_mobile_ai_visible_entities(gameworld, entity, value):
+        gameworld.component_for_entity(entity, mobiles.AIMemory).visible_entities = value
+
+    @staticmethod
+    def get_mobile_ai_visible_entities(gameworld, entity):
+        ai_visible_component = gameworld.component_for_entity(entity, mobiles.AIMemory)
+
+        return ai_visible_component.visible_entities
+    
+    @staticmethod
+    def set_mobile_physical_hurt_state_to_true(gameworld, entity):
+        gameworld.component_for_entity(entity, mobiles.PhysicalState).am_i_hurt = True
+
+    @staticmethod
+    def set_mobile_physical_hurt_state_to_false(gameworld, entity):
+        gameworld.component_for_entity(entity, mobiles.PhysicalState).am_i_hurt = False
 
     @staticmethod
     def set_spellbar_for_entity(gameworld, entity, spellbar_entity):
