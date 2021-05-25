@@ -424,26 +424,28 @@ class CharacterCreation:
             terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=txt_panel_cursor)
             terminal.refresh()
             event_to_be_processed, event_action = input_handlers.handle_game_keys()
-            if event_to_be_processed == 'keypress' and (letter_count < max_letters):
-                if event_action == 'quit':
-                    character_not_named = False
-                    terminal.clear_area(x=txt_panel_cursor_x, y=txt_panel_cursor_y, width=35,
-                                        height=1)
-                elif event_action == 'delete' and letter_count > 0:
-                    terminal.put(x=(txt_panel_cursor_x + letter_count) - 1, y=txt_panel_cursor_y, c=32)
-                    terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=32)
-                    my_word = my_word[:-1]
-                    letter_count -= 1
+            if event_to_be_processed != '':
+                if event_to_be_processed == 'keypress' and (letter_count < max_letters):
+                    if event_action == 'quit':
+                        character_not_named = False
+                        terminal.clear_area(x=txt_panel_cursor_x, y=txt_panel_cursor_y, width=35,
+                                            height=1)
+                    elif event_action == 'delete' and letter_count > 0:
+                        terminal.put(x=(txt_panel_cursor_x + letter_count) - 1, y=txt_panel_cursor_y, c=32)
+                        terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=32)
+                        my_word = my_word[:-1]
+                        letter_count -= 1
 
-                elif event_action == 'enter':
-                    character_not_named = False
-                    terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=32)
-                    terminal.clear_area(x=txt_panel_letters_x, y=txt_panel_write_y, width=18,
-                                        height=1)
-                    CharacterCreation.assign_name_to_character(gameworld=gameworld, player_entity=player_entity, selected_name=my_word)
-                else:
-                    key_pressed = 65 + event_action
-                    my_word, letter_count = CharacterCreation.add_letter_to_word(key_pressed=key_pressed, txt_panel_cursor_x=txt_panel_cursor_x, letter_count=letter_count, txt_panel_cursor_y=txt_panel_cursor_y, my_word=my_word)
+                    elif event_action == 'enter':
+                        character_not_named = False
+                        terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=32)
+                        terminal.clear_area(x=txt_panel_letters_x, y=txt_panel_write_y, width=18,
+                                            height=1)
+                        CharacterCreation.assign_name_to_character(gameworld=gameworld, player_entity=player_entity, selected_name=my_word)
+                    else:
+                        logger.debug('Letter pressed:{}', event_action)
+                        key_pressed = event_action
+                        my_word, letter_count = CharacterCreation.add_letter_to_word(key_pressed=key_pressed, txt_panel_cursor_x=txt_panel_cursor_x, letter_count=letter_count, txt_panel_cursor_y=txt_panel_cursor_y, my_word=my_word)
 
             # display letters remaining
             letters_remaining = max_letters - letter_count

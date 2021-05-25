@@ -119,8 +119,8 @@ def game_loop(gameworld):
             #
             # get monsters intended action
             #
-            StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player,
-                                     game_map=game_map)
+            # StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player,
+            #                          game_map=game_map)
             scorekeeper.ScorekeeperUtilities.increase_meta_event_value(gameworld=gameworld, event_name='game_turn', value=1)
 
         current_health = mobileHelp.MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=player)

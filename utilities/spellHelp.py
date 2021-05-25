@@ -15,34 +15,27 @@ class SpellUtilities:
     @staticmethod
     def get_spell_list_for_enemy_by_weapon_type(gameworld, weapons_equipped, weapon_type):
         spells_to_choose_from = []
+        main_hand = weapons_equipped[0]
+        off_hand = weapons_equipped[1]
+        both_hands = weapons_equipped[2]
 
         spell_bar = 0
 
         if weapon_type in ['sword', 'staff']:
-            spells_to_choose_from.append(
-                SpellUtilities.get_spell_entity_from_slot_one(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(
-                SpellUtilities.get_spell_entity_from_slot_two(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(
-                SpellUtilities.get_spell_entity_from_slot_three(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(
-                SpellUtilities.get_spell_entity_from_slot_four(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(
-                SpellUtilities.get_spell_entity_from_slot_five(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=both_hands, slotid=1))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=both_hands, slotid=2))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=both_hands, slotid=3))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=both_hands, slotid=4))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=both_hands, slotid=5))
 
         if weapon_type in ['wand', 'scepter', 'dagger']:
-            spells_to_choose_from.append(
-                SpellUtilities.get_spell_entity_from_slot_one(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(
-                SpellUtilities.get_spell_entity_from_slot_two(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(
-                SpellUtilities.get_spell_entity_from_slot_three(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=main_hand, slotid=1))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=main_hand, slotid=2))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=main_hand, slotid=3))
 
         if weapon_type in ['rod', 'focus']:
-            spells_to_choose_from.append(
-                SpellUtilities.get_spell_entity_from_slot_four(gameworld=gameworld, spellbar=spell_bar))
-            spells_to_choose_from.append(
-                SpellUtilities.get_spell_entity_from_slot_five(gameworld=gameworld, spellbar=spell_bar))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=off_hand, slotid=4))
+            spells_to_choose_from.append(SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=off_hand, slotid=5))
 
         return spells_to_choose_from
 

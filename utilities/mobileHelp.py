@@ -343,6 +343,9 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.DialogFlags())
         gameworld.add_component(entity_id, mobiles.NpcType())
         gameworld.add_component(entity_id, mobiles.MobileType())
+        gameworld.add_component(entity_id, mobiles.Senses())
+        gameworld.add_component(entity_id, mobiles.AIMemory())
+        gameworld.add_component(entity_id, mobiles.PhysicalState())
 
     @staticmethod
     def is_mobile_a_shopkeeper(gameworld, target_entity):
@@ -538,7 +541,7 @@ class MobileUtilities(numbers.Real, ABC):
         ai_visible_component = gameworld.component_for_entity(entity, mobiles.AIMemory)
 
         return ai_visible_component.visible_entities
-    
+
     @staticmethod
     def set_mobile_physical_hurt_state_to_true(gameworld, entity):
         gameworld.component_for_entity(entity, mobiles.PhysicalState).am_i_hurt = True
