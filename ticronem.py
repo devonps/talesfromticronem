@@ -20,7 +20,7 @@ def game_loop(gameworld):
     current_scene = 1
     player_died = False
 
-    spell_bar_keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+    spell_bar_keys = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     movement_actions = ['left', 'right', 'up', 'down']
     mobileHelp.MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=False)
 
@@ -74,8 +74,8 @@ def game_loop(gameworld):
 
         valid_event = False
         advance_game_turn = False
-        event_to_be_processed = ''
-        event_action = ''
+        event_to_be_processed = None
+        event_action = None
         while not valid_event:
             event_to_be_processed, event_action = input_handlers.handle_game_keys()
             if event_to_be_processed not in ('mousemove', None):

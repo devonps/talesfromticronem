@@ -424,7 +424,7 @@ class CharacterCreation:
             terminal.put(x=txt_panel_cursor_x + letter_count, y=txt_panel_cursor_y, c=txt_panel_cursor)
             terminal.refresh()
             event_to_be_processed, event_action = input_handlers.handle_game_keys()
-            if event_to_be_processed != '':
+            if event_to_be_processed is not None:
                 if event_to_be_processed == 'keypress' and (letter_count < max_letters):
                     if event_action == 'quit':
                         character_not_named = False
@@ -443,7 +443,6 @@ class CharacterCreation:
                                             height=1)
                         CharacterCreation.assign_name_to_character(gameworld=gameworld, player_entity=player_entity, selected_name=my_word)
                     else:
-                        logger.debug('Letter pressed:{}', event_action)
                         key_pressed = event_action
                         my_word, letter_count = CharacterCreation.add_letter_to_word(key_pressed=key_pressed, txt_panel_cursor_x=txt_panel_cursor_x, letter_count=letter_count, txt_panel_cursor_y=txt_panel_cursor_y, my_word=my_word)
 

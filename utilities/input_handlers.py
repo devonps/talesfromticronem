@@ -76,76 +76,51 @@ def handle_game_keys():
         else:
             myevent = 'keypress'
         action = 9
-    if key == terminal.TK_A:
-        if terminal.check(terminal.TK_SHIFT):
-            myevent = 'infopopup'
-        else:
-            myevent = 'keypress'
+    if terminal.check(terminal.TK_SHIFT) and key == terminal.TK_A:
+        myevent = 'infopopup'
         action = 'A'
-    if key == terminal.TK_B:
-        if terminal.check(terminal.TK_SHIFT):
-            myevent = 'infopopup'
-        else:
-            myevent = 'keypress'
+
+    if terminal.check(terminal.TK_SHIFT) and key == terminal.TK_B:
+        myevent = 'infopopup'
         action = 'B'
-    if key == terminal.TK_C:
-        if terminal.check(terminal.TK_SHIFT):
-            myevent = 'infopopup'
-        else:
-            myevent = 'keypress'
+
+    if terminal.check(terminal.TK_SHIFT) and key == terminal.TK_C:
+        myevent = 'infopopup'
         action = 'C'
-    if key == terminal.TK_D:
-        if terminal.check(terminal.TK_SHIFT):
-            myevent = 'infopopup'
-        else:
-            myevent = 'keypress'
+
+    if terminal.check(terminal.TK_SHIFT) and key == terminal.TK_D:
+        myevent = 'infopopup'
         action = 'D'
-    if key == terminal.TK_E:
-        if terminal.check(terminal.TK_SHIFT):
-            myevent = 'infopopup'
-        else:
-            myevent = 'keypress'
+
+    if terminal.check(terminal.TK_SHIFT) and key == terminal.TK_E:
+        myevent = 'infopopup'
         action = 'E'
-    if key == terminal.TK_F:
-        if terminal.check(terminal.TK_SHIFT):
-            myevent = 'infopopup'
-        else:
-            myevent = 'keypress'
+
+    if terminal.check(terminal.TK_SHIFT) and key == terminal.TK_F:
+        myevent = 'infopopup'
         action = 'F'
-    if key == terminal.TK_G:
-        if terminal.check(terminal.TK_SHIFT):
-            myevent = 'infopopup'
-        else:
-            myevent = 'keypress'
+
+    if terminal.check(terminal.TK_SHIFT) and key == terminal.TK_G:
+        myevent = 'infopopup'
         action = 'G'
-    if key == terminal.TK_H:
-        if terminal.check(terminal.TK_SHIFT):
-            myevent = 'infopopup'
-        else:
-            myevent = 'keypress'
+
+    if terminal.check(terminal.TK_SHIFT) and key == terminal.TK_H:
+        myevent = 'infopopup'
         action = 'H'
-    if key == terminal.TK_I:
-        if terminal.check(terminal.TK_SHIFT):
-            myevent = 'infopopup'
-        else:
-            myevent = 'keypress'
+
+    if terminal.check(terminal.TK_SHIFT) and key == terminal.TK_I:
+        myevent = 'infopopup'
         action = 'I'
-    if key == terminal.TK_J:
-        if terminal.check(terminal.TK_SHIFT):
-            myevent = 'infopopup'
-        else:
-            myevent = 'keypress'
+
+    if terminal.check(terminal.TK_SHIFT) and key == terminal.TK_J:
+        myevent = 'infopopup'
         action = 'J'
 
-    if key == terminal.TK_T:
+    if terminal.check(terminal.TK_SHIFT) and key == terminal.TK_T:
         myevent = 'chat'
         action = 'T'
 
-    if key == terminal.TK_W:
-        myevent = 'keypress'
-        action = 'W'
-
-    if key == terminal.TK_Z:
+    if terminal.check(terminal.TK_SHIFT) and key == terminal.TK_Z:
         myevent = 'death'
         action = 'Z'
 
@@ -200,7 +175,7 @@ def handle_game_keys():
     # general keyboard
     #
     if myevent is None:
-        index = terminal.state(terminal.TK_CHAR) - ord('A')
+        index = terminal.state(terminal.TK_CHAR)
         if index >= 0:
             myevent = 'keypress'
             action = index
