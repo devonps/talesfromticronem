@@ -931,7 +931,6 @@ class SpellUtilities:
     @staticmethod
     def set_spellbar_slot(gameworld, spell_entity, slot, player_entity):
         current_spells = SpellUtilities.get_current_spellbar_spells(gameworld=gameworld, player_entity=player_entity)
-        logger.debug('current spells in spell bar are {}', current_spells)
         if len(current_spells) > 0:
             current_spells[slot] = spell_entity
         else:

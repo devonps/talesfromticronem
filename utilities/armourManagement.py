@@ -382,7 +382,6 @@ class ArmourUtilities:
         player_class = mobileHelp.MobileUtilities.get_character_class(gameworld, player)
         ArmourUtilities.add_spell_to_piece_of_armour(gameworld=gameworld, bodylocation=bodylocation,
                                                      armour_piece=armour_piece, playable_class=player_class)
-        logger.info('Armour piece entity is {}', armour_piece)
         return armour_piece
 
     @staticmethod

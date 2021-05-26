@@ -34,7 +34,6 @@ class AsEntities:
         for spell in spell_file:
             thisspell = world.get_next_entity_id(gameworld=gameworld)
             myspell = spell
-            logger.debug("myspell is:{}", myspell)
             gameworld.add_component(thisspell, spells.Name(myspell['name']))
             gameworld.add_component(thisspell, spells.Description(myspell['description']))
             gameworld.add_component(thisspell, spells.ShortDescription(myspell['short_description']))
