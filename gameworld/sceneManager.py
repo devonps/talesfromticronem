@@ -191,20 +191,23 @@ class SceneManager:
                         if role['id'] == enemy_roles[role_id]:
                             npc_class = role['class']
                             npc_glyph = role['glyph']
-                            armour_file_option = role['armourset']
-                            jewellery_file_option = role['jewellery']
-                            weapon_main_hand = role['main-hand-weapon']
-                            weapon_off_hand = role['off-hand-weapon']
-                            weapon_both_hands = role['both-hands-weapon']
+                            this_npc.update({'armourset': role['armourset']})
+                            this_npc.update({'jeweleryset': role['jewellery']})
+                            this_npc.update({'weapons-main': role['main-hand-weapon']})
+                            this_npc.update({'weapons-off': role['off-hand-weapon']})
+                            this_npc.update({'weapons-both': role['both-hands-weapon']})
                             min_range = role['min-range']
                             max_range = role['max-range']
 
                             logger.warning('--- CREATING ENEMY ROLE {} ---', enemy_roles[role_id])
-
                     NewEntity.set_base_types_for_entity(gameworld=gameworld, game_config=game_config,
                                                         entity_id=new_entity, this_entity=this_npc)
                     logger.info('enemy npc created')
-
+                    # equip enemy
+                    NewEntity.equip_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity,
+                                           this_entity=this_npc)
+                    # set enemy AI
+                    NewEntity.set_entity_ai_level(game_config=game_config, gameworld=gameworld, entity_id=new_entity)
                     # --- PLACE NEW ENTITY ON TO GAME MAP -
                     game_map.tiles[posx][posy].entity = new_entity
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor,
