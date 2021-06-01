@@ -40,9 +40,9 @@ class AIUtilities:
         max_health = MobileUtilities.set_mobile_derived_max_health(gameworld=gameworld, entity=source_entity)
 
         if current_health != max_health:
-            return True
+            MobileUtilities.set_mobile_physical_hurt_state_to_true(gameworld=gameworld, entity=source_entity)
         else:
-            return False
+            MobileUtilities.set_mobile_physical_hurt_state_to_false(gameworld=gameworld, entity=source_entity)
 
 
     @staticmethod

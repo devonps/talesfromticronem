@@ -11,17 +11,11 @@ from loguru import logger
 class NewEntity:
 
     @staticmethod
-    def create_base_entity(gameworld, game_config, npc_glyph, posx, posy, this_entity):
-        npc_fg = this_entity['fg']
-        npc_bg = this_entity['bg']
+    def create_base_entity(gameworld, game_config, npc_glyph, posx, posy):
         entity_id = world.get_next_entity_id(gameworld=gameworld)
         mobileHelp.MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=entity_id)
         mobileHelp.MobileUtilities.set_mobile_description(gameworld=gameworld, entity=entity_id, value='nothing to say')
         mobileHelp.MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity_id, value=npc_glyph)
-        mobileHelp.MobileUtilities.set_mobile_fg_render_colour(gameworld=gameworld, entity=entity_id,
-                                                               value=npc_fg.upper())
-        mobileHelp.MobileUtilities.set_mobile_bg_render_colour(gameworld=gameworld, entity=entity_id,
-                                                               value=npc_bg.upper())
         mobileHelp.MobileUtilities.set_mobile_visible(gameworld=gameworld, entity=entity_id)
 
         mobileHelp.MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx, posy=posy)

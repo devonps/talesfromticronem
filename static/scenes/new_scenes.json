@@ -36,16 +36,16 @@
           "internalName": "",
           "name": "Barry",
           "mobile_type": "npc",
-          "race":"random",
+          "race": "random",
           "class": "witchdoctor",
           "description": "Weapons trader",
           "ai": "master",
           "glyph": "w",
           "fg": "blue",
           "bg": "black",
-          "armourset":"random",
-          "jeweleryset":"random",
-          "weapons-main":"random",
+          "armourset": "random",
+          "jeweleryset": "random",
+          "weapons-main": "random",
           "weapons-off": "",
           "weapons-both": "",
           "shopkeeper": "True",
@@ -66,16 +66,15 @@
           "glyph": "c",
           "fg": "red",
           "bg": "black",
-          "armourset":"random",
+          "armourset": "random",
           "jeweleryset": "defensive",
           "weapons-main": "",
           "weapons-off": "",
-          "weapons-both":"random",
+          "weapons-both": "random",
           "shopkeeper": "True",
           "type_of_shopkeeper": "armour",
           "tutor": "False",
           "type_of_tutor": ""
-
         },
         {
           "identifier": "D",
@@ -90,16 +89,15 @@
           "glyph": "d",
           "fg": "green",
           "bg": "black",
-          "armourset":"random",
+          "armourset": "random",
           "jeweleryset": "defensive",
           "weapons-main": "",
           "weapons-off": "",
-          "weapons-both":"random",
+          "weapons-both": "random",
           "shopkeeper": "True",
           "type_of_shopkeeper": "jewellery",
           "tutor": "False",
           "type_of_tutor": ""
-
         },
         {
           "identifier": "E",
@@ -114,18 +112,17 @@
           "glyph": "z",
           "fg": "orange",
           "bg": "black",
-          "armourset":"random",
+          "armourset": "random",
           "jeweleryset": "defensive",
           "weapons-main": "",
           "weapons-off": "",
-          "weapons-both":"random",
+          "weapons-both": "random",
           "shopkeeper": "False",
           "type_of_shopkeeper": "",
           "tutor": "True",
           "type_of_tutor": "combat"
-
         }
-        ],
+      ],
       "wizard": [
         {
           "class": "necromancer",
@@ -137,31 +134,68 @@
             }
           ],
           "jewellery-package": "aggressive",
-          "weapon": "staff",
-          "races": [
-            {
-              "Handeg": false,
-              "Ulro": false,
-              "Launturo": true,
-              "Dugonc": false,
-              "Durinde": true,
-              "Kana": false,
-              "Caron": false,
-              "Koror": true,
-              "Turiard": true,
-              "dilga": false,
-              "eskeri": false,
-              "jogah": false,
-              "oshun": false
-            }
-          ],
-          "population": [
-            {
-              "maximum": 100,
-              "minimum": 50,
-              "spawn": 300
-            }
-          ]
+          "weapon": "staff"
+        }
+      ],
+      "races": [
+        {
+          "available": "false",
+          "name": "Handeg"
+        },
+        {
+          "available": "false",
+          "name": "Ulro"
+        },
+        {
+          "available": "true",
+          "name": "Launturo"
+        },
+        {
+          "available": "false",
+          "name": "Dugonc"
+        },
+        {
+          "available": "true",
+          "name": "Durinde"
+        },
+        {
+          "available": "false",
+          "name": "Kana"
+        },
+        {
+          "available": "false",
+          "name": "Caron"
+        },
+        {
+          "available": "true",
+          "name": "Koror"
+        },
+        {
+          "available": "true",
+          "name": "Turiard"
+        },
+        {
+          "available": "false",
+          "name": "dilga"
+        },
+        {
+          "available": "false",
+          "name": "eskeri"
+        },
+        {
+          "available": "false",
+          "name": "jogah"
+        },
+        {
+          "available": "false",
+          "name": "oshun"
+        }
+      ],
+      "population": [
+        {
+          "maximum": 100,
+          "minimum": 50,
+          "spawn": 300
         }
       ],
       "theme": "dungeon",
@@ -221,16 +255,16 @@
           "internalName": "",
           "name": "Barry",
           "mobile_type": "npc",
-          "race":"random",
+          "race": "random",
           "class": "witchdoctor",
           "description": "Weapons trader",
           "ai": "master",
           "glyph": "w",
           "fg": "blue",
           "bg": "black",
-          "armourset":"random",
-          "jeweleryset":"random",
-          "weapons-main":"random",
+          "armourset": "random",
+          "jeweleryset": "random",
+          "weapons-main": "random",
           "weapons-off": "",
           "weapons-both": "",
           "shopkeeper": "True",
@@ -251,16 +285,15 @@
           "glyph": "c",
           "fg": "red",
           "bg": "black",
-          "armourset":"random",
+          "armourset": "random",
           "jeweleryset": "defensive",
           "weapons-main": "",
           "weapons-off": "",
-          "weapons-both":"random",
+          "weapons-both": "random",
           "shopkeeper": "True",
           "type_of_shopkeeper": "armour",
           "tutor": "False",
           "type_of_tutor": ""
-
         },
         {
           "identifier": "D",
@@ -275,16 +308,15 @@
           "glyph": "d",
           "fg": "green",
           "bg": "black",
-          "armourset":"random",
+          "armourset": "random",
           "jeweleryset": "defensive",
           "weapons-main": "",
           "weapons-off": "",
-          "weapons-both":"random",
+          "weapons-both": "random",
           "shopkeeper": "True",
           "type_of_shopkeeper": "jewellery",
           "tutor": "False",
           "type_of_tutor": ""
-
         },
         {
           "identifier": "E",
@@ -299,18 +331,17 @@
           "glyph": "z",
           "fg": "orange",
           "bg": "black",
-          "armourset":"random",
+          "armourset": "random",
           "jeweleryset": "defensive",
           "weapons-main": "",
           "weapons-off": "",
-          "weapons-both":"random",
+          "weapons-both": "random",
           "shopkeeper": "False",
           "type_of_shopkeeper": "",
           "tutor": "True",
           "type_of_tutor": "combat"
-
         }
-        ],
+      ],
       "wizard": [
         {
           "class": "necromancer",
@@ -322,31 +353,68 @@
             }
           ],
           "jewellery-package": "aggressive",
-          "weapon": "staff",
-          "races": [
-            {
-              "Handeg": false,
-              "Ulro": false,
-              "Launturo": true,
-              "Dugonc": false,
-              "Durinde": true,
-              "Kana": false,
-              "Caron": false,
-              "Koror": true,
-              "Turiard": true,
-              "dilga": false,
-              "eskeri": false,
-              "jogah": false,
-              "oshun": false
-            }
-          ],
-          "population": [
-            {
-              "maximum": 100,
-              "minimum": 50,
-              "spawn": 300
-            }
-          ]
+          "weapon": "staff"
+        }
+      ],
+      "races": [
+        {
+          "available": "false",
+          "name": "Handeg"
+        },
+        {
+          "available": "false",
+          "name": "Ulro"
+        },
+        {
+          "available": "true",
+          "name": "Launturo"
+        },
+        {
+          "available": "false",
+          "name": "Dugonc"
+        },
+        {
+          "available": "true",
+          "name": "Durinde"
+        },
+        {
+          "available": "false",
+          "name": "Kana"
+        },
+        {
+          "available": "false",
+          "name": "Caron"
+        },
+        {
+          "available": "true",
+          "name": "Koror"
+        },
+        {
+          "available": "true",
+          "name": "Turiard"
+        },
+        {
+          "available": "false",
+          "name": "dilga"
+        },
+        {
+          "available": "false",
+          "name": "eskeri"
+        },
+        {
+          "available": "false",
+          "name": "jogah"
+        },
+        {
+          "available": "false",
+          "name": "oshun"
+        }
+      ],
+      "population": [
+        {
+          "maximum": 100,
+          "minimum": 50,
+          "spawn": 300
         }
       ],
       "theme": "dungeon",

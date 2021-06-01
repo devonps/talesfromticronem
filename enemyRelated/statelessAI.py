@@ -1,7 +1,7 @@
 from loguru import logger
 
 from components import mobiles
-from utilities import configUtilities, formulas, common, gamemap, mobileHelp, scorekeeper, spellHelp
+from utilities import configUtilities, mobileHelp
 from utilities.ai_utilities import AIUtilities
 
 
@@ -36,14 +36,20 @@ class StatelessAI:
     """
 
     @staticmethod
-    def gather_surrounding_information(gameworld, game_map, entity):
+    def update_entity_with_local_information(gameworld, game_map, entity):
         # what can I see
         AIUtilities.what_can_i_see_around_me(gameworld=gameworld, source_entity=entity, game_map=game_map)
         # what's my physical state
-        am_i_injured = AIUtilities.have_i_taken_damage(gameworld=gameworld, source_entity=entity)
+        AIUtilities.have_i_taken_damage(gameworld=gameworld, source_entity=entity)
 
     @staticmethod
     def do_something(gameworld, game_config, player_entity, game_map):
-        StatelessAI.gather_surrounding_information(gameworld=gameworld, game_map=game_map, entity=player_entity)
+        mobile_ai_level = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
+                                                                      parameter='AI_LEVEL_MONSTER')
+        for entity, ai in gameworld.get_component(mobiles.AILevel):
+            entity_ai = mobileHelp.MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=entity)
+            if entity_ai == mobile_ai_level:
+                StatelessAI.update_entity_with_local_information(gameworld=gameworld, entity=entity, game_map=game_map)
+
 
 

@@ -132,7 +132,7 @@ class AIMemory:
 
 
 class PhysicalState:
-    def __init__(self, am_i_hurt = False):
+    def __init__(self, am_i_hurt=False):
         self.am_i_hurt = am_i_hurt
 
 

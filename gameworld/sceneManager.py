@@ -1,3 +1,5 @@
+import random
+
 from mapRelated.gameMap import GameMap
 from newGame.Entities import NewEntity
 from processors import castSpells, move_entities, renderUI, updateEntities, renderMessageLog, renderSpellInfoPanel
@@ -45,7 +47,6 @@ class SceneManager:
                     scene_name = scene_key['name']
                     scene_exits = scene_key['sceneExits']
                     current_area_tag = scene_key['area_tag']
-                    significant_npcs = scene_key['npcs']
                     logger.debug('The {} scene exits to the {}', scene_name, scene_exits)
                     if 'loadMap' in scene_key:
                         # load game_map from external file - setup variables
@@ -56,7 +57,7 @@ class SceneManager:
 
                     if map_area_file != '':
                         SceneManager.build_static_scene(gameworld=gameworld, game_map=game_map,
-                                                        map_area_file=map_area_file, main_npcs=significant_npcs)
+                                                        map_area_file=map_area_file, this_scene=scene_key)
                         GameMap.assign_tiles(game_map=game_map)
                     else:
                         # generate random map
@@ -88,8 +89,10 @@ class SceneManager:
         pass
 
     @staticmethod
-    def build_static_scene(gameworld, game_map, map_area_file, main_npcs):
+    def build_static_scene(gameworld, game_map, map_area_file, this_scene):
         # get config items
+        significant_npcs = this_scene['npcs']
+        all_races = this_scene['races']
         game_config = configUtilities.load_config()
         prefab_folder = configUtilities.get_config_value_as_string(game_config, 'files', 'PREFABFOLDER')
         tile_type_wall = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
@@ -131,10 +134,9 @@ class SceneManager:
                 if cell.upper() in npc_list_ids:
                     cc = cell.upper()
                     idx = npc_list_ids.index(cc)
-                    this_npc = main_npcs[idx]
+                    this_npc = significant_npcs[idx]
                     new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
-                                                              npc_glyph=cell, posx=posx, posy=posy,
-                                                              this_entity=this_npc)
+                                                              npc_glyph=cell, posx=posx, posy=posy)
                     NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity)
                     NewEntity.set_base_types_for_entity(gameworld=gameworld, game_config=game_config,
                                                         entity_id=new_entity, this_entity=this_npc)
@@ -156,6 +158,58 @@ class SceneManager:
                     game_map.tiles[posx][posy].entity = new_entity
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor,
                                                          game_map=game_map)
+                    # create random enemy
+                if cell.upper() == 'X':
+                    new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
+                                                              npc_glyph=cell, posx=posx, posy=posy)
+                    NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity)
+                    this_npc = {}
+                    # set enemy race
+                    allowed_races = []
+
+                    for rc in all_races:
+                        if rc['available'] == 'true':
+                            allowed_races.append(rc['name'])
+                    if len(allowed_races) > 0:
+                        random_race_chosen = True
+                        chosen_race_id = random.randrange(len(allowed_races))
+                        chosen_race_name = allowed_races[chosen_race_id]
+                        this_npc.update({'race': chosen_race_name})
+                    else:
+                        logger.warning('NO AVAILABLE RACES FOR THIS SCENE')
+                        random_race_chosen = False
+                    # set enemy class
+                    this_npc.update({'class': 'random'})
+                    # set enemy name
+                    this_npc.update({'name': 'random'})
+
+                    # choose an enemy role
+                    enemy_roles = ['bomber', 'squealer', 'bully', 'sniper']
+                    role_id = random.randrange(len(enemy_roles))
+                    role_file = jsonUtilities.read_json_file('static/data/roles.json')
+                    for role in role_file['roles']:
+                        if role['id'] == enemy_roles[role_id]:
+                            npc_class = role['class']
+                            npc_glyph = role['glyph']
+                            armour_file_option = role['armourset']
+                            jewellery_file_option = role['jewellery']
+                            weapon_main_hand = role['main-hand-weapon']
+                            weapon_off_hand = role['off-hand-weapon']
+                            weapon_both_hands = role['both-hands-weapon']
+                            min_range = role['min-range']
+                            max_range = role['max-range']
+
+                            logger.warning('--- CREATING ENEMY ROLE {} ---', enemy_roles[role_id])
+
+                    NewEntity.set_base_types_for_entity(gameworld=gameworld, game_config=game_config,
+                                                        entity_id=new_entity, this_entity=this_npc)
+                    logger.info('enemy npc created')
+
+                    # --- PLACE NEW ENTITY ON TO GAME MAP -
+                    game_map.tiles[posx][posy].entity = new_entity
+                    SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor,
+                                                         game_map=game_map)
+
                 posx += 1
             posy += 1
 
