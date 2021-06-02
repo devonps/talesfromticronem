@@ -13,14 +13,10 @@ class RenderUI(esper.Processor):
         self.gameworld = gameworld
 
     def process(self, game_config, advance_game_turn):
-        start_time = time.perf_counter()
         # render the game map
         fov_map = self.render_map(self.gameworld, game_config, self.game_map)
         # self.render_items(game_config, self.gameworld)
         self.render_mobiles(gameworld=self.gameworld, game_config=game_config, game_map=self.game_map, fov_map=fov_map)
-
-        end_time = time.perf_counter()
-        logger.info('Time taken to render game display {}', (end_time - start_time))
 
     @staticmethod
     def clear_map_layer():

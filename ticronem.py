@@ -80,7 +80,6 @@ def game_loop(gameworld):
             event_to_be_processed, event_action = input_handlers.handle_game_keys()
             if event_to_be_processed not in ('mousemove', None):
                 valid_event = True
-        logger.debug('Event captured is {} and the value is {}', event_to_be_processed, event_action)
         if event_to_be_processed == 'keypress':
             if event_action == 'quit':
                 value = 'exit:true'

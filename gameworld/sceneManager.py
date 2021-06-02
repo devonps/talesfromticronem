@@ -187,9 +187,9 @@ class SceneManager:
                     enemy_roles = ['bomber', 'squealer', 'bully', 'sniper']
                     armourset = 'none'
                     jeweleryset = 'none'
-                    weapons_main = 'none'
-                    weapons_off = 'none'
-                    weapons_both = 'none'
+                    weapons_main = ''
+                    weapons_off = ''
+                    weapons_both = ''
                     npc_race = chosen_race_name
                     npc_class = ''
                     npc_name = 'random'
