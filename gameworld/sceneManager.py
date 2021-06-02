@@ -185,29 +185,61 @@ class SceneManager:
 
                     # choose an enemy role
                     enemy_roles = ['bomber', 'squealer', 'bully', 'sniper']
+                    armourset = 'none'
+                    jeweleryset = 'none'
+                    weapons_main = 'none'
+                    weapons_off = 'none'
+                    weapons_both = 'none'
+                    npc_race = chosen_race_name
+                    npc_class = ''
+                    npc_name = 'random'
                     role_id = random.randrange(len(enemy_roles))
                     role_file = jsonUtilities.read_json_file('static/data/roles.json')
                     for role in role_file['roles']:
                         if role['id'] == enemy_roles[role_id]:
                             npc_class = role['class']
                             npc_glyph = role['glyph']
-                            this_npc.update({'armourset': role['armourset']})
-                            this_npc.update({'jeweleryset': role['jewellery']})
-                            this_npc.update({'weapons-main': role['main-hand-weapon']})
-                            this_npc.update({'weapons-off': role['off-hand-weapon']})
-                            this_npc.update({'weapons-both': role['both-hands-weapon']})
+                            armourset = role['armourset']
+                            jeweleryset = role['jewellery']
+                            weapons_main = role['main-hand-weapon']
+                            weapons_off = role['off-hand-weapon']
+                            weapons_both = role['both-hands-weapon']
                             min_range = role['min-range']
                             max_range = role['max-range']
 
                             logger.warning('--- CREATING ENEMY ROLE {} ---', enemy_roles[role_id])
-                    NewEntity.set_base_types_for_entity(gameworld=gameworld, game_config=game_config,
-                                                        entity_id=new_entity, this_entity=this_npc)
-                    logger.info('enemy npc created')
-                    # equip enemy
-                    NewEntity.equip_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity,
-                                           this_entity=this_npc)
+                    # set race for enemy
+                    NewEntity.choose_race_for_mobile(race_choice=npc_race, entity_id=new_entity, gameworld=gameworld,
+                                                     game_config=game_config)
+                    # set class for enemy
+                    NewEntity.choose_class_for_mobile(class_choice=npc_class, entity_id=new_entity, gameworld=gameworld,
+                                                      game_config=game_config)
+                    # choose a name for the enemy
+                    NewEntity.choose_name_for_mobile(name_choice=npc_name, entity_id=new_entity, gameworld=gameworld)
+
+                    # NewEntity.set_base_types_for_entity(gameworld=gameworld, game_config=game_config,
+                    #                                     entity_id=new_entity, this_entity=this_npc)
+                    # equip enemy with armourset
+                    NewEntity.choose_armourset_for_mobile(armour_file_option=armourset, entity_id=new_entity,
+                                                          gameworld=gameworld, game_config=game_config)
+
+                    # equip enemy with jewelery
+                    NewEntity.choose_jewellery_package(jewellery_file_option=jeweleryset, entity_id=new_entity,
+                                                       game_config=game_config, gameworld=gameworld)
+
+                    # equip enemy with weapons
+                    NewEntity.choose_weapons(weapon_file_option_both=weapons_both,
+                                             weapon_file_option_main=weapons_main,
+                                             weapon_file_option_off=weapons_off, entity_id=new_entity,
+                                             gameworld=gameworld, game_config=game_config)
+
+                    # NewEntity.equip_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity,
+                    #                        this_entity=this_npc)
                     # set enemy AI
                     NewEntity.set_entity_ai_level(game_config=game_config, gameworld=gameworld, entity_id=new_entity)
+
+                    logger.info('enemy npc created')
+
                     # --- PLACE NEW ENTITY ON TO GAME MAP -
                     game_map.tiles[posx][posy].entity = new_entity
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor,
