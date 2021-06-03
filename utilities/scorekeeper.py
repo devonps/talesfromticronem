@@ -94,7 +94,8 @@ class ScorekeeperUtilities:
             ScorekeeperUtilities.report_add_types_of_damage_per_area(gameworld=gameworld, filename=score_card_file,
                                                                      visited_area=area)
             # print out enemy kills
-            ScorekeeperUtilities.report_add_enemy_kills_per_area(gameworld=gameworld, filename=score_card_file, visited_area=area)
+            ScorekeeperUtilities.report_add_enemy_kills_per_area(gameworld=gameworld, filename=score_card_file,
+                                                                 visited_area=area)
 
     @staticmethod
     def report_add_game_area_info(filename, area_name):
@@ -165,7 +166,6 @@ class ScorekeeperUtilities:
         total_damage_string = str(total_damage_caused)
         total_damage_caused_string = ' '.ljust(10) + 'Total Damage Caused:'.ljust(29) + total_damage_string.zfill(5)
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=total_damage_caused_string)
-
 
     @staticmethod
     def report_add_enemy_kills_per_area(gameworld, filename, visited_area):

@@ -714,8 +714,8 @@ class SpellUtilities:
     @staticmethod
     def helper_off_hand_weapon(gameworld, player_entity, off_hand_weapon):
         if off_hand_weapon > 0:
-            weapon_slotid = 3
-            spell_slotid = 2
+            weapon_slotid = 4
+            spell_slotid = 3
             for _ in range(2):
                 this_spell_entity = SpellUtilities.get_spell_entity_at_weapon_slot(gameworld,
                                                                                    weapon_equipped=off_hand_weapon,

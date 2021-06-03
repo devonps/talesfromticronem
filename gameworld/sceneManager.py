@@ -135,6 +135,7 @@ class SceneManager:
                     cc = cell.upper()
                     idx = npc_list_ids.index(cc)
                     this_npc = significant_npcs[idx]
+                    logger.info('--------- CREATING NEW MOBILE ---------')
                     new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
                                                               npc_glyph=cell, posx=posx, posy=posy)
                     NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity)
@@ -158,6 +159,9 @@ class SceneManager:
                     game_map.tiles[posx][posy].entity = new_entity
                     SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor,
                                                          game_map=game_map)
+
+                    logger.info('--------- MOBILE HAS BEEN CREATED ---------')
+
                     # create random enemy
                 if cell.upper() == 'X':
                     new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
@@ -237,7 +241,15 @@ class SceneManager:
                     #                        this_entity=this_npc)
                     # set enemy AI
                     NewEntity.set_entity_ai_level(game_config=game_config, gameworld=gameworld, entity_id=new_entity)
+                    # create spellbar for enemy
+                    NewEntity.create_empty_spell_bar(gameworld=gameworld, entity_id=new_entity)
 
+                    # --- POPULATE SPELL BAR BASED ON EQUIPMENT -
+                    spellHelp.SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=new_entity)
+
+                    # --- ADD JEWELLERY SPELLS TO SPELLBAR -
+                    NewEntity.add_spells_to_spell_bar_based_on_equipped_jewellery(gameworld=gameworld,
+                                                                                  entity_id=new_entity)
                     logger.info('enemy npc created')
 
                     # --- PLACE NEW ENTITY ON TO GAME MAP -
