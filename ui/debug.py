@@ -661,8 +661,15 @@ class Debug:
     @staticmethod
     def set_condis_to_print(applied_condis):
         condis_to_print = '[color=ENTITY_SPY_NO_COMPONENT]none[/color]'
+
         if len(applied_condis) > 0:
-            condis_to_print = "".join(applied_condis)
+            condis_to_print = '[color=ENTITY_SPY_COMPONENT]'
+            for a in range(len(applied_condis)):
+                this_condi = applied_condis[a]
+                name = this_condi['name']
+                condis_to_print += name + ', '
+            condis_to_print = condis_to_print[:-2]
+            condis_to_print += '[/color]'
         return condis_to_print
 
     @staticmethod
