@@ -543,6 +543,11 @@ class MobileUtilities(numbers.Real, ABC):
         return ai_visible_component.visible_entities
 
     @staticmethod
+    def get_mobile_physical_hurt_status(gameworld, entity):
+        physical_component = gameworld.component_for_entity(entity, mobiles.PhysicalState)
+        return physical_component.am_i_hurt
+
+    @staticmethod
     def set_mobile_physical_hurt_state_to_true(gameworld, entity):
         gameworld.component_for_entity(entity, mobiles.PhysicalState).am_i_hurt = True
 

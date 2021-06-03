@@ -1,8 +1,9 @@
 from loguru import logger
 
 from components import mobiles
-from utilities import configUtilities, mobileHelp
+from utilities import configUtilities
 from utilities.ai_utilities import AIUtilities
+from utilities.mobileHelp import MobileUtilities
 
 
 class StatelessAI:
@@ -46,10 +47,27 @@ class StatelessAI:
     def do_something(gameworld, game_config, player_entity, game_map):
         mobile_ai_level = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
                                                                       parameter='AI_LEVEL_MONSTER')
+        ai_debug = True
         for entity, ai in gameworld.get_component(mobiles.AILevel):
-            entity_ai = mobileHelp.MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=entity)
+            entity_ai = MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=entity)
             if entity_ai == mobile_ai_level:
+                entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity)
+                mobile_first_name = entity_names[0]
                 StatelessAI.update_entity_with_local_information(gameworld=gameworld, entity=entity, game_map=game_map)
+                have_i_taken_damage = MobileUtilities.get_mobile_physical_hurt_status(gameworld=gameworld, entity=entity)
+                what_entities_can_i_see_around_me = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=entity)
+                if ai_debug:
+                    logger.info('=== AI Debugging information ===')
+                    logger.info('mobile name: {}', mobile_first_name)
+                    logger.info('mobile intrinsic information')
+                    if have_i_taken_damage:
+                        logger.debug('Has mobile taken damage: {}', have_i_taken_damage)
+                    else:
+                        logger.info('Has mobile taken damage: {}', have_i_taken_damage)
+                    logger.info('What can the mobile see around them')
+                    logger.info('list of entities: {}', what_entities_can_i_see_around_me)
+
+
 
 
 

@@ -37,7 +37,7 @@ class AIUtilities:
     def have_i_taken_damage(gameworld, source_entity):
 
         current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=source_entity)
-        max_health = MobileUtilities.set_mobile_derived_max_health(gameworld=gameworld, entity=source_entity)
+        max_health = MobileUtilities.get_mobile_derived_maximum_health(gameworld=gameworld, entity=source_entity)
 
         if current_health != max_health:
             MobileUtilities.set_mobile_physical_hurt_state_to_true(gameworld=gameworld, entity=source_entity)
