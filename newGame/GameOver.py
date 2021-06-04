@@ -13,17 +13,23 @@ class GameOver:
         player_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)
         game_version = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
                                                                   parameter='VERSION')
+        dump_meta_data = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
+                                                                  parameter='GO_DUMP_META_DATA')
+
+        dump_scores = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
+                                                                  parameter='GO_DUMP_SCORES')
         visible_panel = 0
         terminal.clear()
 
         # temporary code to generate test data
-        scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag='dg1')
-        scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag='dg2')
-        scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag='dg3')
-        meta_events = scorekeeper.ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
-        logger.warning('list of meta events:{}', meta_events)
+        if dump_meta_data == 1:
+            scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag='dg1')
+            scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag='dg2')
+            scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag='dg3')
+            meta_events = scorekeeper.ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
+            logger.warning('list of meta events:{}', meta_events)
 
-        scorekeeper.ScorekeeperUtilities.build_scorecard(gameworld=gameworld, game_version=game_version, player_class=player_class)
+        scorekeeper.ScorekeeperUtilities.build_scorecard(gameworld=gameworld, game_version=game_version, player_class=player_class, dump_scores=dump_scores)
 
         GameOver.display_game_over_screen(game_config=game_config)
         GameOver.display_killed_by_information(game_config=game_config, death_status=player_died)

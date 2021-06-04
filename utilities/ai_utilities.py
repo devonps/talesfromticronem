@@ -28,7 +28,7 @@ class AIUtilities:
         for across in range(min_x_range, max_x_range):
             for down in range(min_y_range, max_y_range):
                 entity_id = game_map.tiles[across][down].entity
-                if entity_id > 0:
+                if entity_id > 0 and entity_id != source_entity:
                     visible_entities.append(entity_id)
         MobileUtilities.set_visible_entities(gameworld=gameworld, target_entity=source_entity, visible_entities=visible_entities)
 

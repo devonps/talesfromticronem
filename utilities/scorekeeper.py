@@ -74,15 +74,16 @@ class ScorekeeperUtilities:
         externalfileutilities.Externalfiles.write_to_existing_file(filename=filename, value=blank_line_string)
 
     @staticmethod
-    def build_scorecard(gameworld, game_version, player_class):
+    def build_scorecard(gameworld, game_version, player_class, dump_scores):
         all_areas_visited = ScorekeeperUtilities.get_all_areas_visited(gameworld=gameworld)
 
-        externalfileutilities.Externalfiles.create_new_directory(directory_name='scores')
-        score_card_file = ScorekeeperUtilities.report_create_scorecard_file()
+        if dump_scores == 1:
+            externalfileutilities.Externalfiles.create_new_directory(directory_name='scores')
+            score_card_file = ScorekeeperUtilities.report_create_scorecard_file()
 
-        ScorekeeperUtilities.report_add_last_run_information(filename=score_card_file, game_version=game_version)
-        ScorekeeperUtilities.report_add_player_info(filename=score_card_file, player_class=player_class)
-        ScorekeeperUtilities.report_add_game_turns_info(filename=score_card_file, gameworld=gameworld)
+            ScorekeeperUtilities.report_add_last_run_information(filename=score_card_file, game_version=game_version)
+            ScorekeeperUtilities.report_add_player_info(filename=score_card_file, player_class=player_class)
+            ScorekeeperUtilities.report_add_game_turns_info(filename=score_card_file, gameworld=gameworld)
 
         for area in all_areas_visited:
             # print area information - might be just their name
