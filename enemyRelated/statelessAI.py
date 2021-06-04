@@ -56,27 +56,31 @@ class StatelessAI:
                 StatelessAI.update_entity_with_local_information(gameworld=gameworld, entity=entity, game_map=game_map)
                 have_i_taken_damage = MobileUtilities.get_mobile_physical_hurt_status(gameworld=gameworld, entity=entity)
                 what_entities_can_i_see_around_me = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=entity)
-                visible_entity_names = []
                 if ai_debug:
-                    if len(what_entities_can_i_see_around_me) > 0:
-                        for a in range(len(what_entities_can_i_see_around_me)):
-                            entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=what_entities_can_i_see_around_me[a])
-                            mobile_first_name = entity_names[0]
-                            visible_entity_names.append(mobile_first_name)
+                    StatelessAI.dump_ai_debugging_information(gameworld=gameworld, ai_debugging_first_name=ai_debugging_first_name, what_entities_can_i_see_around_me=what_entities_can_i_see_around_me, have_i_taken_damage=have_i_taken_damage)
+                # what next?
 
-                    logger.debug('=== AI Debugging information ===')
-                    logger.info('mobile AI name: {}', ai_debugging_first_name)
-                    logger.info('mobile intrinsic information')
-                    damage_string = 'Has mobile taken damage:'
-                    if have_i_taken_damage:
-                        damage_status = ' yes'
-                    else:
-                        damage_status = ' no'
-                    logger.info(damage_string + damage_status)
-                    logger.info('What can the mobile see around them')
-                    logger.info('list of entities: {}', visible_entity_names)
+    @staticmethod
+    def dump_ai_debugging_information(gameworld, ai_debugging_first_name, what_entities_can_i_see_around_me, have_i_taken_damage):
+        visible_entity_names = []
+        if len(what_entities_can_i_see_around_me) > 0:
+            for a in range(len(what_entities_can_i_see_around_me)):
+                entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld,
+                                                                       entity=what_entities_can_i_see_around_me[a])
+                mobile_first_name = entity_names[0]
+                visible_entity_names.append(mobile_first_name)
 
-
+        logger.debug('=== AI Debugging information ===')
+        logger.info('mobile AI name: {}', ai_debugging_first_name)
+        logger.info('mobile intrinsic information')
+        damage_string = 'Has mobile taken damage:'
+        if have_i_taken_damage:
+            damage_status = ' yes'
+        else:
+            damage_status = ' no'
+        logger.info(damage_string + damage_status)
+        logger.info('What can the mobile see around them')
+        logger.info('list of entities: {}', visible_entity_names)
 
 
 
