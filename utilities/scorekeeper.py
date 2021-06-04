@@ -85,18 +85,18 @@ class ScorekeeperUtilities:
             ScorekeeperUtilities.report_add_player_info(filename=score_card_file, player_class=player_class)
             ScorekeeperUtilities.report_add_game_turns_info(filename=score_card_file, gameworld=gameworld)
 
-        for area in all_areas_visited:
-            # print area information - might be just their name
-            ScorekeeperUtilities.report_add_game_area_info(filename=score_card_file, area_name=area)
-            # print out spell cast information
-            ScorekeeperUtilities.report_add_spells_cast_information(gameworld=gameworld, filename=score_card_file,
-                                                                    visited_area=area)
-            # print out different damage types
-            ScorekeeperUtilities.report_add_types_of_damage_per_area(gameworld=gameworld, filename=score_card_file,
+            for area in all_areas_visited:
+                # print area information - might be just their name
+                ScorekeeperUtilities.report_add_game_area_info(filename=score_card_file, area_name=area)
+                # print out spell cast information
+                ScorekeeperUtilities.report_add_spells_cast_information(gameworld=gameworld, filename=score_card_file,
+                                                                        visited_area=area)
+                # print out different damage types
+                ScorekeeperUtilities.report_add_types_of_damage_per_area(gameworld=gameworld, filename=score_card_file,
+                                                                         visited_area=area)
+                # print out enemy kills
+                ScorekeeperUtilities.report_add_enemy_kills_per_area(gameworld=gameworld, filename=score_card_file,
                                                                      visited_area=area)
-            # print out enemy kills
-            ScorekeeperUtilities.report_add_enemy_kills_per_area(gameworld=gameworld, filename=score_card_file,
-                                                                 visited_area=area)
 
     @staticmethod
     def report_add_game_area_info(filename, area_name):
