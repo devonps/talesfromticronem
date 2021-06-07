@@ -74,7 +74,6 @@ class StatelessAI:
                         StatelessAI.perform_ai_for_bully(entity=entity)
                     else:
                         StatelessAI.perform_ai_for_sniper(entity=entity)
-                # I want to assess what the options are for this entity
 
     @staticmethod
     def dump_ai_debugging_information(gameworld, ai_debugging_first_name, what_entities_can_i_see_around_me,
