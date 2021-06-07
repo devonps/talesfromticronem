@@ -3,9 +3,11 @@ import random
 from components import mobiles, scorekeeper
 from newGame.CreateSpells import AsEntities
 from newGame.Items import ItemManager
-from utilities import configUtilities, armourManagement, itemsHelp, jewelleryManagement, mobileHelp, jsonUtilities, \
+from utilities import configUtilities, armourManagement, itemsHelp, jewelleryManagement, jsonUtilities, \
     spellHelp, weaponManagement, world
 from loguru import logger
+
+from utilities.mobileHelp import MobileUtilities
 
 
 class NewEntity:
@@ -13,17 +15,20 @@ class NewEntity:
     @staticmethod
     def create_base_entity(gameworld, game_config, npc_glyph, posx, posy):
         entity_id = world.get_next_entity_id(gameworld=gameworld)
-        mobileHelp.MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=entity_id)
-        mobileHelp.MobileUtilities.set_mobile_description(gameworld=gameworld, entity=entity_id, value='nothing to say')
-        mobileHelp.MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity_id, value=npc_glyph)
-        mobileHelp.MobileUtilities.set_mobile_visible(gameworld=gameworld, entity=entity_id)
-
-        mobileHelp.MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx, posy=posy)
+        MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=entity_id)
+        MobileUtilities.set_mobile_description(gameworld=gameworld, entity=entity_id, value='nothing to say')
+        MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity_id, value=npc_glyph)
+        MobileUtilities.set_mobile_visible(gameworld=gameworld, entity=entity_id)
+        MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx, posy=posy)
         NewEntity.set_min_max_preferred_ranges(entity_id=entity_id, min_range='medium', max_range='long',
                                                gameworld=gameworld, game_config=game_config)
-        mobileHelp.MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, entity=entity_id)
+        MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, entity=entity_id)
 
         return entity_id
+
+    @staticmethod
+    def set_enemy_combat_role(gameworld, entity, combat_role):
+        MobileUtilities.set_enemy_combat_role(gameworld=gameworld, entity=entity, value=combat_role)
 
     @staticmethod
     def set_min_max_preferred_ranges(entity_id, min_range, max_range, game_config, gameworld):
@@ -45,14 +50,14 @@ class NewEntity:
         else:
             logger.debug('ENTITY PREFERRED MAX RANGE SET TO {}', maximum_range)
 
-        mobileHelp.MobileUtilities.set_enemy_preferred_max_distance_from_target(gameworld=gameworld, entity=entity_id,
+        MobileUtilities.set_enemy_preferred_max_distance_from_target(gameworld=gameworld, entity=entity_id,
                                                                                 value=maximum_range)
-        mobileHelp.MobileUtilities.set_enemy_preferred_min_distance_from_target(gameworld=gameworld, entity=entity_id,
+        MobileUtilities.set_enemy_preferred_min_distance_from_target(gameworld=gameworld, entity=entity_id,
                                                                                 value=minimum_range)
 
     @staticmethod
     def add_enemy_components_to_entity(gameworld, entity_id):
-        mobileHelp.MobileUtilities.add_enemy_components(gameworld=gameworld, entity_id=entity_id)
+        MobileUtilities.add_enemy_components(gameworld=gameworld, entity_id=entity_id)
 
     @staticmethod
     def set_base_types_for_entity(gameworld, entity_id, game_config, this_entity):
@@ -70,7 +75,7 @@ class NewEntity:
     @staticmethod
     def choose_name_for_mobile(name_choice, gameworld, entity_id):
         first_name = name_choice
-        mobileHelp.MobileUtilities.set_mobile_gender(gameworld=gameworld, entity=entity_id, gender='male')
+        MobileUtilities.set_mobile_gender(gameworld=gameworld, entity=entity_id, gender='male')
         if name_choice == 'random':
             # need to create random name generator here
             random_suffix = str(random.randint(3, 100))
@@ -78,11 +83,11 @@ class NewEntity:
             first_name = 'not-tcod-' + random_suffix
 
         logger.info('Their name is {}', first_name)
-        mobileHelp.MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=entity_id, name=first_name)
+        MobileUtilities.set_mobile_first_name(gameworld=gameworld, entity=entity_id, name=first_name)
 
         if name_choice == 'Joe':
             gameworld.add_component(entity_id, mobiles.DialogFlags(welcome=True))
-            mobileHelp.MobileUtilities.set_talk_to_me_flag(gameworld=gameworld, target_entity=entity_id)
+            MobileUtilities.set_talk_to_me_flag(gameworld=gameworld, target_entity=entity_id)
 
     @staticmethod
     def choose_race_for_mobile(race_choice, entity_id, game_config, gameworld):
@@ -125,7 +130,7 @@ class NewEntity:
                     selected_race_names = race_name_desc[rcount]
                 rcount += 1
 
-        mobileHelp.MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=entity_id,
+        MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=entity_id,
                                                            selected_race=selected_race,
                                                            race_size=selected_race_size, bg=selected_bg_colour,
                                                            race_names=selected_race_names)
@@ -159,7 +164,7 @@ class NewEntity:
         selected_class_health = class_health[selected_class_id]
         selected_cass_spellfile = class_spell_file[selected_class_id]
 
-        mobileHelp.MobileUtilities.setup_class_attributes(gameworld=gameworld, player=entity_id,
+        MobileUtilities.setup_class_attributes(gameworld=gameworld, player=entity_id,
                                                           selected_class=selected_class_name,
                                                           health=int(selected_class_health),
                                                           spellfile=selected_cass_spellfile)
@@ -210,7 +215,7 @@ class NewEntity:
     def choose_weaponset(entity_id, main_hand, off_hand, both_hands, gameworld, game_config):
         created_weapon_entity = 0
 
-        selected_class = mobileHelp.MobileUtilities.get_character_class(gameworld, entity=entity_id)
+        selected_class = MobileUtilities.get_character_class(gameworld, entity=entity_id)
         # gather list of available weapons for the player class
 
         if main_hand != '':
@@ -248,7 +253,7 @@ class NewEntity:
     @staticmethod
     def generate_sample_spells_to_be_loaded(created_weapon_entity, entity_id, gameworld, game_config):
 
-        enemy_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
+        enemy_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
         weapon_type = weaponManagement.WeaponUtilities.get_weapon_type(gameworld, created_weapon_entity)
 
         AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config,
@@ -368,7 +373,7 @@ class NewEntity:
         if enemy_class == '':
             logger.warning('Spell file name not set')
         # equip player with newly created starting weapon
-        mobileHelp.MobileUtilities.equip_weapon(gameworld=gameworld, entity=entity_id, weapon=created_weapon_entity,
+        MobileUtilities.equip_weapon(gameworld=gameworld, entity=entity_id, weapon=created_weapon_entity,
                                                 hand=hand_to_wield)
         return created_weapon_entity
 
@@ -421,7 +426,7 @@ class NewEntity:
             logger.info('Their armour modifier is {}', armour_modifier)
             armour_mod_index = as_prefix_list.index(armour_modifier)
             px_bonus = int(px_att_bonus[armour_mod_index])
-            mobileHelp.MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=entity_id,
+            MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=entity_id,
                                                            armour_modifier=armour_modifier, px_bonus=px_bonus)
             armourManagement.ArmourUtilities.create_and_equip_armourset_for_npc(gameworld=gameworld,
                                                                                 as_display_name=as_display_name,
@@ -466,7 +471,7 @@ class NewEntity:
     @staticmethod
     def add_spells_to_spell_bar_based_on_equipped_jewellery(gameworld, entity_id):
         # get list of equipped jewellery
-        jewellery_list = mobileHelp.MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld,
+        jewellery_list = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld,
                                                                                    mobile=entity_id)
 
         left_ear = jewellery_list[0]
@@ -491,15 +496,15 @@ class NewEntity:
     def set_entity_ai_level(game_config, gameworld, entity_id):
         entity_ai = configUtilities.get_config_value_as_string(configfile=game_config, section='game',
                                                                parameter='AI_LEVEL_MONSTER')
-        mobileHelp.MobileUtilities.set_mobile_ai_level(gameworld=gameworld, entity=entity_id, value=int(entity_ai))
-        mobileHelp.MobileUtilities.set_mobile_ai_description(gameworld=gameworld, entity=entity_id, value='monster')
+        MobileUtilities.set_mobile_ai_level(gameworld=gameworld, entity=entity_id, value=int(entity_ai))
+        MobileUtilities.set_mobile_ai_description(gameworld=gameworld, entity=entity_id, value='monster')
 
     @staticmethod
     def is_entity_a_shopkeeper(gameworld, entity_id, this_entity):
         npc_shopkeeper = this_entity['shopkeeper']
         shopkeeper_type = this_entity['type_of_shopkeeper']
         if npc_shopkeeper == 'True':
-            mobileHelp.MobileUtilities.set_type_of_shopkeeper(gameworld=gameworld, target_entity=entity_id,
+            MobileUtilities.set_type_of_shopkeeper(gameworld=gameworld, target_entity=entity_id,
                                                               shopkeeper_type=shopkeeper_type)
 
     @staticmethod
@@ -507,7 +512,7 @@ class NewEntity:
         tutor_type = ['type_of_tutor']
         npc_tutor = this_entity['tutor']
         if npc_tutor == 'True':
-            mobileHelp.MobileUtilities.set_type_of_tutor(gameworld=gameworld, target_entity=entity_id,
+            MobileUtilities.set_type_of_tutor(gameworld=gameworld, target_entity=entity_id,
                                                          tutor_type=tutor_type)
 
     @staticmethod

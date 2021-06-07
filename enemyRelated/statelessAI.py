@@ -54,14 +54,31 @@ class StatelessAI:
                 entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity)
                 ai_debugging_first_name = entity_names[0]
                 StatelessAI.update_entity_with_local_information(gameworld=gameworld, entity=entity, game_map=game_map)
-                have_i_taken_damage = MobileUtilities.get_mobile_physical_hurt_status(gameworld=gameworld, entity=entity)
-                what_entities_can_i_see_around_me = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=entity)
+                have_i_taken_damage = MobileUtilities.get_mobile_physical_hurt_status(gameworld=gameworld,
+                                                                                      entity=entity)
+                what_entities_can_i_see_around_me = MobileUtilities.get_visible_entities(gameworld=gameworld,
+                                                                                         target_entity=entity)
+                entity_combat_role = MobileUtilities.get_enemy_combat_role(gameworld=gameworld, entity=entity)
                 if ai_debug:
-                    StatelessAI.dump_ai_debugging_information(gameworld=gameworld, ai_debugging_first_name=ai_debugging_first_name, what_entities_can_i_see_around_me=what_entities_can_i_see_around_me, have_i_taken_damage=have_i_taken_damage)
+                    StatelessAI.dump_ai_debugging_information(gameworld=gameworld,
+                                                              ai_debugging_first_name=ai_debugging_first_name,
+                                                              what_entities_can_i_see_around_me=what_entities_can_i_see_around_me,
+                                                              have_i_taken_damage=have_i_taken_damage, entity_combat_role=entity_combat_role)
                 # what next?
+                if entity_combat_role != 'none':
+                    if entity_combat_role == 'squealer':
+                        StatelessAI.perform_ai_for_squealer(entity=entity)
+                    elif entity_combat_role == 'bomber':
+                        StatelessAI.perform_ai_for_bomber(entity=entity)
+                    elif entity_combat_role == 'bully':
+                        StatelessAI.perform_ai_for_bully(entity=entity)
+                    else:
+                        StatelessAI.perform_ai_for_sniper(entity=entity)
+                # I want to assess what the options are for this entity
 
     @staticmethod
-    def dump_ai_debugging_information(gameworld, ai_debugging_first_name, what_entities_can_i_see_around_me, have_i_taken_damage):
+    def dump_ai_debugging_information(gameworld, ai_debugging_first_name, what_entities_can_i_see_around_me,
+                                      have_i_taken_damage, entity_combat_role):
         visible_entity_names = []
         if len(what_entities_can_i_see_around_me) > 0:
             for a in range(len(what_entities_can_i_see_around_me)):
@@ -72,6 +89,7 @@ class StatelessAI:
 
         logger.debug('=== AI Debugging information ===')
         logger.info('mobile AI name: {}', ai_debugging_first_name)
+        logger.info('mobile AI combat role: {}', entity_combat_role)
         logger.info('mobile intrinsic information')
         damage_string = 'Has mobile taken damage:'
         if have_i_taken_damage:
@@ -82,5 +100,30 @@ class StatelessAI:
         logger.info('What can the mobile see around them')
         logger.info('list of entities: {}', visible_entity_names)
 
+    @staticmethod
+    def perform_ai_for_squealer(entity):
+        # a squealer will always run away from the player and their allies
+        # additionally it will alert other enemies of the player
+        logger.warning('ALL the way from stateless AI: Squealer role')
+        logger.debug('Entity id {}', entity)
 
+    @staticmethod
+    def perform_ai_for_bomber(entity):
+        # the bomber will use long range AoE spells to attack the player or their allies
+        # It will always try to use the heavy damage spells first
+        logger.warning('ALL the way from stateless AI: Bomber role')
+        logger.debug('Entity id {}', entity)
 
+    @staticmethod
+    def perform_ai_for_bully(entity):
+        # the bully will got toe-to-toe with the player then retreat once damage reaches a threshold
+        # to heal and then go back into battle
+        logger.warning('ALL the way from stateless AI: Bully role')
+        logger.debug('Entity id {}', entity)
+
+    @staticmethod
+    def perform_ai_for_sniper(entity):
+        # the sniper stays at a maximum range at all times
+        # they will always target the player first
+        logger.warning('ALL the way from stateless AI: Sniper role')
+        logger.debug('Entity id {}', entity)

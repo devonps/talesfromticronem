@@ -215,6 +215,8 @@ class SceneManager:
                     # set race for enemy
                     NewEntity.choose_race_for_mobile(race_choice=npc_race, entity_id=new_entity, gameworld=gameworld,
                                                      game_config=game_config)
+                    # set enemy role id
+                    NewEntity.set_enemy_combat_role(gameworld=gameworld, entity=new_entity, combat_role=role['id'])
                     # set class for enemy
                     NewEntity.choose_class_for_mobile(class_choice=npc_class, entity_id=new_entity, gameworld=gameworld,
                                                       game_config=game_config)
