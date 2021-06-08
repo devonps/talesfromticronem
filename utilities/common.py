@@ -578,3 +578,53 @@ class CommonUtils:
 
         # npc/speaker name
         terminal.printf(x=dialog_frame_start_x + 3, y=dialog_frame_start_y, s="[[ " + entity_names[0] + " ]]")
+
+    @staticmethod
+    def camera_to_game_map_position(caster_screen_coords, game_config, gameworld, coords_to_check):
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld, game_config)
+        player_map_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        player_map_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
+
+        dist_x = abs(caster_screen_coords[0] - coords_to_check[0])
+        dist_y = abs(caster_screen_coords[1] - coords_to_check[1])
+
+        if caster_screen_coords[0] > coords_to_check[0]:
+            posx = player_map_x - dist_x
+        elif caster_screen_coords[0] < coords_to_check[0]:
+            posx = player_map_x + dist_x
+        else:
+            posx = player_map_x
+
+        if caster_screen_coords[1] > coords_to_check[1]:
+            posy = player_map_y - dist_y
+        elif caster_screen_coords[1] < coords_to_check[1]:
+            posy = player_map_y + dist_y
+        else:
+            posy = player_map_y
+
+        return posx, posy
+
+    @staticmethod
+    def to_camera_coordinates(game_config, game_map, x, y, gameworld):
+
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld, game_config)
+        player_map_pos_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        player_map_pos_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
+
+        camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                   parameter='VIEWPORT_WIDTH')
+        camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='VIEWPORT_HEIGHT')
+
+        camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width,
+                                                                          camera_height=camera_height,
+                                                                          player_map_pos_x=player_map_pos_x,
+                                                                          player_map_pos_y=player_map_pos_y,
+                                                                          game_map=game_map)
+
+        (x, y) = (x - camera_x, y - camera_y)
+
+        if x < 0 or y < 0 or x >= camera_width or y >= camera_height:
+            return -99, -99  # if it's outside the view, return nothing
+
+        return int(x), int(y)
