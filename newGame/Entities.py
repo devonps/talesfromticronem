@@ -27,6 +27,10 @@ class NewEntity:
         return entity_id
 
     @staticmethod
+    def set_entity_glyph(gameworld, entity, glyph):
+        MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity, value=glyph)
+
+    @staticmethod
     def set_enemy_combat_role(gameworld, entity, combat_role):
         MobileUtilities.set_enemy_combat_role(gameworld=gameworld, entity=entity, value=combat_role)
 

@@ -345,7 +345,12 @@ class Debug:
                                   start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         entity_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_id)
-        first_name_string = start_string + "First Name:" + end_string + entity_names[0]
+
+        # TEMPORARY DEBUGGING LINES
+        dest_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=entity_id)
+        dest_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=entity_id)
+
+        first_name_string = start_string + "First Name:" + end_string + entity_names[0] + " map:" + str(dest_x) + "/" + str(dest_y)
         gender_string = start_string + "Gender:" + end_string + mobileHelp.MobileUtilities.get_mobile_gender(
             gameworld=gameworld, entity=entity_id)
 

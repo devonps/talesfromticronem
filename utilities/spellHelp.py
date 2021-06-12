@@ -280,6 +280,7 @@ class SpellUtilities:
 
                 # get map position of target
                 map_x, map_y = CommonUtils.camera_to_game_map_position(caster_screen_coords=(caster_screen_x, caster_screen_y), gameworld=gameworld, game_config=game_config, coords_to_check=(targeting_cursor_centre_x, targeting_cursor_centre_y))
+                logger.debug('Caster map position is {} / {}', map_x, map_y)
 
                 # get list of enemies at map target location
                 enemy_list = SpellUtilities.get_targets_for_this_spell(game_map=game_map, spell_has_aoe=spell_has_aoe,
@@ -290,7 +291,7 @@ class SpellUtilities:
                                                                  target_coords=[targeting_cursor_centre_x,
                                                                                 targeting_cursor_centre_y],
                                                                  target_list=enemy_list, player_entity=player,
-                                                                 spell_has_aoe=spell_has_aoe)
+                                                                 spell_has_aoe=spell_has_aoe, game_map=game_map)
                 targeting_a_spell = False
 
         return enemy_list, [targeting_cursor_centre_x, targeting_cursor_centre_y]
@@ -315,7 +316,7 @@ class SpellUtilities:
 
     @staticmethod
     def draw_spell_casting_visual_effects(gameworld, game_config, caster_coords, target_coords, player_entity,
-                                          target_list, spell_has_aoe):
+                                          target_list, spell_has_aoe, game_map):
         # this draws 'something' from the caster to the centre point of where the spell was targeted
         spell_casting_visual = 'O'
         screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
@@ -325,8 +326,12 @@ class SpellUtilities:
         caster_x = caster_coords[0]
         caster_y = caster_coords[1]
 
-        sx = caster_x + screen_offset_x
-        sy = caster_y + screen_offset_y
+        # these hold the screen coords
+        (sx, sy) = CommonUtils.to_camera_coordinates(
+            game_config=game_config, game_map=game_map, x=caster_x, y=caster_y, gameworld=gameworld)
+
+        sx += screen_offset_x
+        sy += screen_offset_y
 
         if target_list[0] == 0:
             dest_x = target_coords[0]
@@ -342,8 +347,12 @@ class SpellUtilities:
                 formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=player_entity,
                                                       to_entity=target_entity))
 
-        dx = dest_x + screen_offset_x
-        dy = dest_y + screen_offset_y
+        # these hold the screen coords
+        (dx, dy) = CommonUtils.to_camera_coordinates(
+            game_config=game_config, game_map=game_map, x=dest_x, y=dest_y, gameworld=gameworld)
+
+        dx += screen_offset_x
+        dy += screen_offset_y
 
         glyph_colour_string = '[font=dungeon]'
 
@@ -367,6 +376,9 @@ class SpellUtilities:
 
             terminal.refresh()
 
+        expl_x = sx
+        expl_y = sy
+
         # and now we've arrived at the target...what happens?
 
         # this array tells the explosion how many tiles to travel in a given direction
@@ -381,8 +393,11 @@ class SpellUtilities:
             dx = random.randrange(-1, 2)
             dy = random.randrange(-1, 2)
             blast_char = random.randrange(0, 9)
-            terminal.printf(x=(dest_x + screen_offset_x) + dx, y=(dest_y + screen_offset_y) + dy,
+            terminal.printf(x=expl_x + dx, y=expl_y + dy,
                             s=glyph_colour_string + xplosion_string[blast_char])
+            #
+            # terminal.printf(x=(dest_x + screen_offset_x) + dx, y=(dest_y + screen_offset_y) + dy,
+            #                 s=glyph_colour_string + xplosion_string[blast_char])
             terminal.refresh()
 
     @staticmethod

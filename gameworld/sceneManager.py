@@ -187,13 +187,7 @@ class SceneManager:
 
                     # choose an enemy role
                     enemy_roles = ['bomber', 'squealer', 'bully', 'sniper']
-                    armourset = 'none'
-                    jeweleryset = 'none'
-                    weapons_main = ''
-                    weapons_off = ''
-                    weapons_both = ''
                     npc_race = chosen_race_name
-                    npc_class = ''
                     npc_name = 'random'
                     # commented out whilst building/testing stateless AI
                     # role_id = random.randrange(len(enemy_roles))
@@ -217,6 +211,8 @@ class SceneManager:
                             NewEntity.set_enemy_combat_role(gameworld=gameworld, entity=new_entity,
                                                             combat_role=combat_role)
 
+                            # set enemy glyph
+                            NewEntity.set_entity_glyph(gameworld=gameworld, entity=new_entity, glyph=npc_glyph)
                             # set race for enemy
                             NewEntity.choose_race_for_mobile(race_choice=npc_race, entity_id=new_entity, gameworld=gameworld,
                                                              game_config=game_config)
