@@ -2,6 +2,18 @@ from loguru import logger
 from bearlibterminal import terminal
 from utilities import configUtilities, colourUtilities, armourManagement, itemsHelp, jewelleryManagement, mobileHelp
 
+
+def draw_entities_inside_aoe(gameworld, entities_found):
+    for a in range(len(entities_found)):
+        ent_id = entities_found[a][0]
+        ent_x = entities_found[a][1]
+        ent_y = entities_found[a][2]
+        ent_glyph = mobileHelp.MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=ent_id)
+        ent_fg = mobileHelp.MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=ent_id)
+        glyph_colour_string = '[font=dungeon][color=' + ent_fg + ']'
+        terminal.printf(x=ent_x, y=ent_y, s=glyph_colour_string + ent_glyph)
+
+
 # the selected option is the choice from list_options that will be highlighted
 # so if list_options were  [apple, orange, grape] and selected_option were 'grape' then grape would be highlighted
 
