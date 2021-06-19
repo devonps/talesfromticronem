@@ -139,10 +139,25 @@ class SceneManager:
                     new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
                                                               npc_glyph=cell, posx=posx, posy=posy)
                     NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity)
-                    NewEntity.set_base_types_for_entity(gameworld=gameworld, game_config=game_config,
-                                                        entity_id=new_entity, this_entity=this_npc)
-                    NewEntity.equip_entity(gameworld=gameworld, game_config=game_config, entity_id=new_entity,
-                                           this_entity=this_npc)
+
+                    NewEntity.choose_race_for_mobile(race_choice=this_npc['race'], entity_id=new_entity, gameworld=gameworld,
+                                                     game_config=game_config)
+
+                    NewEntity.choose_class_for_mobile(class_choice=this_npc['class'], entity_id=new_entity, gameworld=gameworld,
+                                                      game_config=game_config)
+
+                    NewEntity.choose_name_for_mobile(name_choice=this_npc['name'], entity_id=new_entity, gameworld=gameworld)
+
+                    NewEntity.choose_armourset_for_mobile(armour_file_option=this_npc['armourset'], entity_id=new_entity,
+                                                          gameworld=gameworld, game_config=game_config)
+                    NewEntity.choose_jewellery_package(jewellery_file_option=this_npc['jeweleryset'], entity_id=new_entity,
+                                                       game_config=game_config, gameworld=gameworld)
+
+                    NewEntity.choose_weapons(weapon_file_option_both=this_npc['weapons-both'],
+                                             weapon_file_option_main=this_npc['weapons-main'],
+                                             weapon_file_option_off=this_npc['weapons-off'], entity_id=new_entity,
+                                             gameworld=gameworld, game_config=game_config)
+
                     NewEntity.set_entity_ai_level(game_config=game_config, gameworld=gameworld, entity_id=new_entity)
                     NewEntity.is_entity_a_shopkeeper(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
                     NewEntity.is_entity_a_tutor(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
@@ -196,13 +211,15 @@ class SceneManager:
                     for role in role_file['roles']:
                         if role['id'] == enemy_roles[role_id]:
                             combat_role = enemy_roles[role_id]
-                            npc_class = role['class']
-                            npc_glyph = role['glyph']
-                            armourset = role['armourset']
-                            jeweleryset = role['jewellery']
-                            weapons_main = role['main-hand-weapon']
-                            weapons_off = role['off-hand-weapon']
-                            weapons_both = role['both-hands-weapon']
+                            npc_class = 'undefined'
+                            npc_glyph = '?'
+                            armourset = 'random'
+                            jeweleryset = 'random'
+                            weapons_main = ''
+                            weapons_off = ''
+                            weapons_both = 'staff'
+                            combat_kits = role['kits']
+                            available_spells = role['spells']
                             min_range = role['min-range']
                             max_range = role['max-range']
 
@@ -210,6 +227,8 @@ class SceneManager:
                             # set enemy role id
                             NewEntity.set_enemy_combat_role(gameworld=gameworld, entity=new_entity,
                                                             combat_role=combat_role)
+                            # load combat kit
+
 
                             # set enemy glyph
                             NewEntity.set_entity_glyph(gameworld=gameworld, entity=new_entity, glyph=npc_glyph)

@@ -2,63 +2,36 @@
   "roles": [
     {
       "id": "bomber",
-      "race": "RANDOM",
-      "class": "RANDOM",
-      "glyph": "b",
-      "armourset": "random",
-      "armour-modifier": "none",
-      "jewellery": "none",
-      "main-hand-weapon": "",
-      "off-hand-weapon": "",
-      "both-hands-weapon": "random",
+      "race": "random",
+      "kits": "light-bomber,medium-bomber,heavy-bomber",
       "min-range": "medium",
       "max-range": "long",
-      "aoe": true
+      "spells": [
+        {
+          "available": "Fireball,Lava Font,Flame Burst,Meteor Shower,Stoning,Eruption,Shock Wave,Chain Lightning,Lightning Surge,Static Field,Ice Spike,Necrotic Grasp,Mark of Blood,Life Blood,Putrid Mark,Reaper's Mark,Grasping Dead,Deathly Swarm,Spinal Shivers,Oppressive Collapse,Rending Claws,Ghastly Claws,Blood Curse,Reaper's Touch"
+        }
+        ]
     },
     {
       "id": "squealer",
-      "race": "RANDOM",
-      "class": "RANDOM",
-      "glyph": "s",
-      "armourset": "random",
-      "armour-modifier": "none",
-      "jewellery": "random",
-      "main-hand-weapon": "",
-      "off-hand-weapon": "random",
-      "both-hands-weapon": "",
+      "race": "random",
+      "kits": "squealer",
       "min-range": "nearby",
-      "max-range": "in_the_area",
-      "aoe": false
+      "max-range": "in_the_area"
     },
     {
       "id": "bully",
-      "race": "RANDOM",
-      "class": "RANDOM",
-      "glyph": "u",
-      "armourset": "random",
-      "armour-modifier": "none",
-      "jewellery": "random",
-      "main-hand-weapon": "random",
-      "off-hand-weapon": "",
-      "both-hands-weapon": "",
+      "race": "random",
+      "kits": "bully",
       "min-range": "up_close",
-      "max-range": "medium",
-      "aoe": false
+      "max-range": "medium"
     },
     {
       "id": "sniper",
-      "race": "RANDOM",
-      "class": "RANDOM",
-      "glyph": "p",
-      "armourset": "random",
-      "armour-modifier": "none",
-      "jewellery": "random",
-      "main-hand-weapon": "random",
-      "off-hand-weapon": "",
-      "both-hands-weapon": "",
+      "race": "random",
+      "kits": "sniper",
       "min-range": "long",
-      "max-range": "extreme",
-      "aoe": false
+      "max-range": "extreme"
     }
   ]
 }
