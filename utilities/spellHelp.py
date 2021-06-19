@@ -3,7 +3,7 @@ import random
 from bearlibterminal import terminal
 from loguru import logger
 from components import spells, items, mobiles
-from utilities import configUtilities, formulas, gamemap, input_handlers, itemsHelp, jsonUtilities, mobileHelp, common
+from utilities import configUtilities, formulas, gamemap, input_handlers, itemsHelp, jsonUtilities, mobileHelp, display
 from utilities.common import CommonUtils
 
 
@@ -189,7 +189,7 @@ class SpellUtilities:
 
         if spell_is_on_cooldown:
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-            common.CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
+            CommonUtils.fire_event("spell-cooldown", gameworld=gameworld, spell_name=spell_name)
         else:
             # spell targeting
             spell_target_list, spell_cast_at = SpellUtilities.spell_targeting(gameworld=gameworld, game_map=game_map,
@@ -206,7 +206,7 @@ class SpellUtilities:
             else:
                 # fire message log for no entity to target
                 spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
-                common.CommonUtils.fire_event("spell-notarget", gameworld=gameworld, spell_name=spell_name)
+                CommonUtils.fire_event("spell-notarget", gameworld=gameworld, spell_name=spell_name)
 
     @staticmethod
     def get_spell_aoe_shape(gameworld, spell_entity):
@@ -503,20 +503,9 @@ class SpellUtilities:
             idx += 1
 
         if entities_found is not None:
-            SpellUtilities.draw_entities_inside_aoe(gameworld=gameworld, entities_found=entities_found)
+            display.draw_entities_inside_aoe(gameworld=gameworld, entities_found=entities_found)
 
         return entities_found
-
-    @staticmethod
-    def draw_entities_inside_aoe(gameworld, entities_found):
-        for a in range(len(entities_found)):
-            ent_id = entities_found[a][0]
-            ent_x = entities_found[a][1]
-            ent_y = entities_found[a][2]
-            ent_glyph = mobileHelp.MobileUtilities.get_mobile_glyph(gameworld=gameworld, entity=ent_id)
-            ent_fg = mobileHelp.MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=ent_id)
-            glyph_colour_string = '[font=dungeon][color=' + ent_fg + ']'
-            terminal.printf(x=ent_x, y=ent_y, s=glyph_colour_string + ent_glyph)
 
     @staticmethod
     def render_spell_targeting_cursor(gameworld, game_map, target_x, target_y, mode_flag, entity_at_cursor):
@@ -524,7 +513,7 @@ class SpellUtilities:
         colour_choice = ['[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]',
                          '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]']
         colour_code = colour_choice[mode_flag]
-        targeting_cursor = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
+        targeting_cursor = CommonUtils.get_ascii_to_unicode(game_config=game_config,
                                                                    parameter='ASCII_SPELL_TARGETING_CURSOR')
         screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='SCREEN_OFFSET_X')
@@ -562,7 +551,7 @@ class SpellUtilities:
         else:
             tile = game_map.tiles[oldx][oldy].type_of_tile
             if tile == tile_type_floor:
-                char_to_display = common.CommonUtils.get_unicode_ascii_char(game_config=game_config,
+                char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
                                                                             config_prefix=config_prefix_floor,
                                                                             tile_assignment=0)
                 colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
@@ -632,14 +621,14 @@ class SpellUtilities:
     def check_for_effects_stopping_spell_being_cast(gameworld, target_name, target_entity):
         spell_blocked = False
         caster_is_blind = False
-        condi_is_attached_to_player, condi_count = common.CommonUtils.check_if_entity_has_condi_applied(
+        condi_is_attached_to_player, condi_count = CommonUtils.check_if_entity_has_condi_applied(
             gameworld=gameworld, target_entity=target_entity, condi_being_checked='blinded')
 
         if condi_is_attached_to_player:
             caster_is_blind = True
 
         if caster_is_blind:
-            common.CommonUtils.fire_event("spell-fizzle", gameworld=gameworld, target=target_name)
+            CommonUtils.fire_event("spell-fizzle", gameworld=gameworld, target=target_name)
             spell_blocked = True
 
         return spell_blocked
@@ -919,7 +908,7 @@ class SpellUtilities:
                          'displayChar': condition['char'], 'shortcode': condi[:4]}
 
                     # add dialog for condition damage to message log
-                    common.CommonUtils.fire_event("condi-applied", gameworld=gameworld, target=target_names[0],
+                    CommonUtils.fire_event("condi-applied", gameworld=gameworld, target=target_names[0],
                                                   effect_dialogue=condition['dialogue_options'][0][
                                                       target_class])
 
@@ -962,7 +951,7 @@ class SpellUtilities:
                             entity=target_entity)
 
                     # add dialog for boon effect to message log
-                    common.CommonUtils.fire_event("boon-applied", gameworld=gameworld, target=target_names[0],
+                    CommonUtils.fire_event("boon-applied", gameworld=gameworld, target=target_names[0],
                                                   effect_dialogue=file_boon['dialogue_options'][0][target_class])
 
                     # current_boons is a map
