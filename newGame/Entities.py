@@ -64,19 +64,6 @@ class NewEntity:
         MobileUtilities.add_enemy_components(gameworld=gameworld, entity_id=entity_id)
 
     @staticmethod
-    def set_base_types_for_entity(gameworld, entity_id, game_config, this_entity):
-        npc_race = this_entity['race']
-        npc_class = this_entity['class']
-        npc_name = this_entity['name']
-        NewEntity.choose_race_for_mobile(race_choice=npc_race, entity_id=entity_id, gameworld=gameworld,
-                                         game_config=game_config)
-
-        NewEntity.choose_class_for_mobile(class_choice=npc_class, entity_id=entity_id, gameworld=gameworld,
-                                          game_config=game_config)
-
-        NewEntity.choose_name_for_mobile(name_choice=npc_name, entity_id=entity_id, gameworld=gameworld)
-
-    @staticmethod
     def choose_name_for_mobile(name_choice, gameworld, entity_id):
         first_name = name_choice
         MobileUtilities.set_mobile_gender(gameworld=gameworld, entity=entity_id, gender='male')

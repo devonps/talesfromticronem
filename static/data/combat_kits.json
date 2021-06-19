@@ -1,0 +1,253 @@
+{
+  "kits": [
+    {
+      "title": "light-bomber",
+      "glyph-colour": "light-blue",
+      "glyph": "b",
+      "armour": [
+        {
+          "name": "apprentice"
+        },
+        {
+          "name": "sheepskin"
+        },
+        {
+          "name": "acolyte"
+        }
+      ],
+      "armour_modifiers": [
+        {
+          "name": "knight"
+        },
+        {
+          "name": "nomad"
+        },
+        {
+          "name": "settler"
+        }
+      ],
+      "weapons": [
+        {
+          "name": "staff"
+        }
+      ],
+      "jewellery": [
+        {
+          "pendent": "pearl",
+          "ring1": "malachite",
+          "ring2": "malachite",
+          "earring1": "turquoise",
+          "earring2": "turquoise"
+        }
+      ]
+    },
+    {
+      "title": "medium-bomber",
+      "glyph-colour": "blue",
+      "glyph": "b",
+      "armour": [
+        {
+          "name": "studded"
+        },
+        {
+          "name": "outlaw"
+        },
+        {
+          "name": "rawhide"
+        }
+      ],
+      "armour_modifiers": [
+        {
+          "name": "knight"
+        },
+        {
+          "name": "nomad"
+        },
+        {
+          "name": "sentinel"
+        }
+      ],
+      "weapons": [
+        {
+          "name": "wand"
+        },
+        {
+          "name": "rod"
+        }
+      ],
+      "jewellery": [
+        {
+          "pendent": "malachite",
+          "ring1": "turquoise",
+          "ring2": "turquoise",
+          "earring1": "garnet",
+          "earring2": "garnet"
+        }
+      ]
+    },
+    {
+      "title": "heavy-bomber",
+      "glyph-colour": "dark-blue",
+      "glyph": "b",
+      "armour": [
+        {
+          "name": "chainmail"
+        },
+        {
+          "name": "commander"
+        },
+        {
+          "name": "scale"
+        }
+      ],
+      "armour_modifiers": [
+        {
+          "name": "knight"
+        },
+        {
+          "name": "nomad"
+        },
+        {
+          "name": "settler"
+        }
+      ],
+      "weapons": [
+        {
+          "name": "staff"
+        }
+      ],
+      "jewellery": [
+        {
+          "pendent": "turquoise",
+          "ring1": "garnet",
+          "ring2": "garnet",
+          "earring1": "peridot",
+          "earring2": "peridot"
+        }
+      ]
+    },
+    {
+      "title": "squealer",
+      "glyph-colour": "",
+      "glyph": "s",
+      "armour": [
+        {
+          "name": ""
+        },
+        {
+          "name": ""
+        },
+        {
+          "name": ""
+        }
+      ],
+      "armour_modifiers": [
+        {
+          "name": ""
+        },
+        {
+          "name": ""
+        },
+        {
+          "name": ""
+        }
+      ],
+      "weapons": [
+        {
+          "name": ""
+        }
+      ],
+      "jewellery": [
+        {
+          "pendent": "",
+          "ring1": "",
+          "ring2": "",
+          "earring1": "",
+          "earring2": ""
+        }
+      ]
+    },
+    {
+      "title": "bully",
+      "glyph-colour": "",
+      "glyph": "u",
+      "armour": [
+        {
+          "name": ""
+        },
+        {
+          "name": ""
+        },
+        {
+          "name": ""
+        }
+      ],
+      "armour_modifiers": [
+        {
+          "name": ""
+        },
+        {
+          "name": ""
+        },
+        {
+          "name": ""
+        }
+      ],
+      "weapons": [
+        {
+          "name": ""
+        }
+      ],
+      "jewellery": [
+        {
+          "pendent": "",
+          "ring1": "",
+          "ring2": "",
+          "earring1": "",
+          "earring2": ""
+        }
+      ]
+    },
+    {
+      "title": "sniper",
+      "glyph-colour": "",
+      "glyph": "p",
+      "armour": [
+        {
+          "name": ""
+        },
+        {
+          "name": ""
+        },
+        {
+          "name": ""
+        }
+      ],
+      "armour_modifiers": [
+        {
+          "name": ""
+        },
+        {
+          "name": ""
+        },
+        {
+          "name": ""
+        }
+      ],
+      "weapons": [
+        {
+          "name": ""
+        }
+      ],
+      "jewellery": [
+        {
+          "pendent": "",
+          "ring1": "",
+          "ring2": "",
+          "earring1": "",
+          "earring2": ""
+        }
+      ]
+    }
+  ]
+}
