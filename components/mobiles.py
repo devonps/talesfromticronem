@@ -46,6 +46,20 @@ class EnemyCombatRole:
         self.value = value
 
 
+class CombatKit:
+    def __init__(self, title='', glyph='', armourset='', armour_mod='', weapons='', pendent='', ring1='', ring2='', ear1='', ear2=''):
+        self.title = title
+        self.glyph = glyph
+        self.armourset = armourset
+        self.armour_mod = armour_mod
+        self.weapons = weapons
+        self.pendent = pendent
+        self.ring1 = ring1
+        self.ring2 = ring2
+        self.ear1 = ear1
+        self.ear2 = ear2
+
+
 # ----------------------------------------------
 # describe the mobile components
 # ----------------------------------------------

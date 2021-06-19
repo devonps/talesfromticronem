@@ -6,6 +6,8 @@ from processors import castSpells, move_entities, renderUI, updateEntities, rend
 from utilities import configUtilities, externalfileutilities, jsonUtilities, mobileHelp, scorekeeper, spellHelp
 from loguru import logger
 
+from utilities.mobileHelp import MobileUtilities
+
 
 class SceneManager:
 
@@ -182,6 +184,10 @@ class SceneManager:
                     new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
                                                               npc_glyph=cell, posx=posx, posy=posy)
                     NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity)
+                    ai_roles_file_path = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                                 section='files', parameter='NPCROLES')
+                    combat_kits_file_path = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                                 section='files', parameter='COMBATKITS')
                     this_npc = {}
                     # set enemy race
                     allowed_races = []
@@ -207,7 +213,7 @@ class SceneManager:
                     # commented out whilst building/testing stateless AI
                     # role_id = random.randrange(len(enemy_roles))
                     role_id = 0
-                    role_file = jsonUtilities.read_json_file('static/data/roles.json')
+                    role_file = jsonUtilities.read_json_file(ai_roles_file_path)
                     for role in role_file['roles']:
                         if role['id'] == enemy_roles[role_id]:
                             combat_role = enemy_roles[role_id]
@@ -227,11 +233,33 @@ class SceneManager:
                             # set enemy role id
                             NewEntity.set_enemy_combat_role(gameworld=gameworld, entity=new_entity,
                                                             combat_role=combat_role)
-                            # load combat kit
+                            # load combat kits
+                            available_kits = []
+                            combat_kit_count = 0
+                            combat_kit_file = jsonUtilities.read_json_file(combat_kits_file_path)
+                            for kit in combat_kit_file['kits']:
+                                if kit['title'] in combat_kits:
+                                    available_kits.append(kit)
+                                    combat_kit_count += 1
 
+                            kit_index = 0
+
+                            if len(available_kits) > 1:
+                                kit_index = random.randrange(0, combat_kit_count)
+                            combat_kit_chosen = available_kits[kit_index]
+                            a_armour = combat_kit_chosen['armour']
+                            a_arm_mods = combat_kit_chosen['armour_modifiers']
+                            a_weapons = combat_kit_chosen['weapons']
+                            a_jewellery = combat_kit_chosen['jewellery']
+                            available_armour = a_armour.split(',')
+                            available_weapons = a_weapons.split(',')
+                            available_arm_mods = a_arm_mods.split(',')
+
+                            logger.debug('Random combat kit chosen is {}', combat_kit_chosen['title'])
+                            MobileUtilities.set_combat_kit_title(gameworld=gameworld, entity=new_entity, title_string=combat_kit_chosen['title'])
 
                             # set enemy glyph
-                            NewEntity.set_entity_glyph(gameworld=gameworld, entity=new_entity, glyph=npc_glyph)
+                            NewEntity.set_entity_glyph(gameworld=gameworld, entity=new_entity, glyph=combat_kit_chosen['glyph'])
                             # set race for enemy
                             NewEntity.choose_race_for_mobile(race_choice=npc_race, entity_id=new_entity, gameworld=gameworld,
                                                              game_config=game_config)
@@ -242,6 +270,11 @@ class SceneManager:
                             NewEntity.choose_name_for_mobile(name_choice=npc_name, entity_id=new_entity, gameworld=gameworld)
 
                             # equip enemy with armourset
+
+                            armour_index = random.randrange(0, len(available_armour))
+                            npc_armourset = available_armour[armour_index]
+                            logger.debug('Random armourset chosen is {}', npc_armourset)
+
                             NewEntity.choose_armourset_for_mobile(armour_file_option=armourset, entity_id=new_entity,
                                                                   gameworld=gameworld, game_config=game_config)
 
