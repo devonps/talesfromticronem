@@ -425,6 +425,7 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMaxRange(value=0))
         gameworld.add_component(entity_id, mobiles.EnemyCombatRole(value='none'))
         gameworld.add_component(entity_id, mobiles.MobileType(label='enemy'))
+        gameworld.add_component(entity_id, mobiles.CombatKit(title='', glyph='', armourset='', armour_mod='', weapons='', pendent='', ring1='', ring2='', ear1='', ear2=''))
 
     @staticmethod
     def create_player_character(gameworld, game_config, player_entity):
@@ -982,3 +983,42 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def get_current_controls_applied_to_mobile(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.StatusEffects).controls
+
+    #
+    # COMBAT KITS
+    #
+    @staticmethod
+    def set_combat_kit_title(gameworld, entity, title_string):
+        combat_kit_component = gameworld.component_for_entity(entity, mobiles.CombatKit)
+        combat_kit_component.title = title_string
+
+    @staticmethod
+    def get_combat_kit_title(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.CombatKit).title
+
+    @staticmethod
+    def set_combat_kit_glyph(gameworld, entity, glyph):
+        combat_kit_component = gameworld.component_for_entity(entity, mobiles.CombatKit)
+        combat_kit_component.glyph = glyph
+
+    @staticmethod
+    def get_combat_kit_glyph(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.CombatKit).glyph
+
+    @staticmethod
+    def set_combat_kit_ear1(gameworld, entity, ear1):
+        combat_kit_component = gameworld.component_for_entity(entity, mobiles.CombatKit)
+        combat_kit_component.ear1 = ear1
+
+    @staticmethod
+    def get_combat_kit_ear1(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.CombatKit).ear1
+
+    @staticmethod
+    def set_combat_kit_ear2(gameworld, entity, ear2):
+        combat_kit_component = gameworld.component_for_entity(entity, mobiles.CombatKit)
+        combat_kit_component.ear2 = ear2
+
+    @staticmethod
+    def get_combat_kit_ear2(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.CombatKit).ear2

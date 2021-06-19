@@ -4,33 +4,9 @@
       "title": "light-bomber",
       "glyph-colour": "light-blue",
       "glyph": "b",
-      "armour": [
-        {
-          "name": "apprentice"
-        },
-        {
-          "name": "sheepskin"
-        },
-        {
-          "name": "acolyte"
-        }
-      ],
-      "armour_modifiers": [
-        {
-          "name": "knight"
-        },
-        {
-          "name": "nomad"
-        },
-        {
-          "name": "settler"
-        }
-      ],
-      "weapons": [
-        {
-          "name": "staff"
-        }
-      ],
+      "armour": "apprentice,sheepskin,acolyte",
+      "armour_modifiers": "knight,nomad,settler",
+      "weapons": "staff",
       "jewellery": [
         {
           "pendent": "pearl",
@@ -45,36 +21,9 @@
       "title": "medium-bomber",
       "glyph-colour": "blue",
       "glyph": "b",
-      "armour": [
-        {
-          "name": "studded"
-        },
-        {
-          "name": "outlaw"
-        },
-        {
-          "name": "rawhide"
-        }
-      ],
-      "armour_modifiers": [
-        {
-          "name": "knight"
-        },
-        {
-          "name": "nomad"
-        },
-        {
-          "name": "sentinel"
-        }
-      ],
-      "weapons": [
-        {
-          "name": "wand"
-        },
-        {
-          "name": "rod"
-        }
-      ],
+      "armour": "studded,outlaw,rawhide",
+      "armour_modifiers": "knight,nomad,sentinel",
+      "weapons": "wand,rod",
       "jewellery": [
         {
           "pendent": "malachite",
@@ -89,33 +38,9 @@
       "title": "heavy-bomber",
       "glyph-colour": "dark-blue",
       "glyph": "b",
-      "armour": [
-        {
-          "name": "chainmail"
-        },
-        {
-          "name": "commander"
-        },
-        {
-          "name": "scale"
-        }
-      ],
-      "armour_modifiers": [
-        {
-          "name": "knight"
-        },
-        {
-          "name": "nomad"
-        },
-        {
-          "name": "settler"
-        }
-      ],
-      "weapons": [
-        {
-          "name": "staff"
-        }
-      ],
+      "armour": "chainmail,commander,scale",
+      "armour_modifiers": "knight,nomad,settler",
+      "weapons": "staff",
       "jewellery": [
         {
           "pendent": "turquoise",
@@ -130,33 +55,9 @@
       "title": "squealer",
       "glyph-colour": "",
       "glyph": "s",
-      "armour": [
-        {
-          "name": ""
-        },
-        {
-          "name": ""
-        },
-        {
-          "name": ""
-        }
-      ],
-      "armour_modifiers": [
-        {
-          "name": ""
-        },
-        {
-          "name": ""
-        },
-        {
-          "name": ""
-        }
-      ],
-      "weapons": [
-        {
-          "name": ""
-        }
-      ],
+      "armour": "",
+      "armour_modifiers": "",
+      "weapons": "",
       "jewellery": [
         {
           "pendent": "",
@@ -171,33 +72,9 @@
       "title": "bully",
       "glyph-colour": "",
       "glyph": "u",
-      "armour": [
-        {
-          "name": ""
-        },
-        {
-          "name": ""
-        },
-        {
-          "name": ""
-        }
-      ],
-      "armour_modifiers": [
-        {
-          "name": ""
-        },
-        {
-          "name": ""
-        },
-        {
-          "name": ""
-        }
-      ],
-      "weapons": [
-        {
-          "name": ""
-        }
-      ],
+      "armour": "",
+      "armour_modifiers": "",
+      "weapons": "",
       "jewellery": [
         {
           "pendent": "",
@@ -212,33 +89,9 @@
       "title": "sniper",
       "glyph-colour": "",
       "glyph": "p",
-      "armour": [
-        {
-          "name": ""
-        },
-        {
-          "name": ""
-        },
-        {
-          "name": ""
-        }
-      ],
-      "armour_modifiers": [
-        {
-          "name": ""
-        },
-        {
-          "name": ""
-        },
-        {
-          "name": ""
-        }
-      ],
-      "weapons": [
-        {
-          "name": ""
-        }
-      ],
+      "armour": "",
+      "armour_modifiers": "",
+      "weapons": "",
       "jewellery": [
         {
           "pendent": "",
