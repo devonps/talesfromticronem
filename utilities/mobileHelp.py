@@ -1022,3 +1022,12 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def get_combat_kit_ear2(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.CombatKit).ear2
+
+    @staticmethod
+    def set_combat_kit_weapons(gameworld, entity, weapons):
+        combat_kit_component = gameworld.component_for_entity(entity, mobiles.CombatKit)
+        combat_kit_component.weapons = weapons
+
+    @staticmethod
+    def get_combat_kit_weapons(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.CombatKit).weapons

@@ -252,7 +252,12 @@ class SceneManager:
                             a_weapons = combat_kit_chosen['weapons']
                             a_jewellery = combat_kit_chosen['jewellery']
                             available_armour = a_armour.split(',')
-                            available_weapons = a_weapons.split(',')
+                            res = sum(1 for i in range(len(a_weapons))
+                                      if a_weapons.startswith(",", i))
+                            if res > 0:
+                                available_weapons = a_weapons.split(',')
+                            else:
+                                available_weapons = a_weapons
                             available_arm_mods = a_arm_mods.split(',')
 
                             logger.debug('Random combat kit chosen is {}', combat_kit_chosen['title'])
@@ -260,6 +265,7 @@ class SceneManager:
 
                             # set enemy glyph
                             NewEntity.set_entity_glyph(gameworld=gameworld, entity=new_entity, glyph=combat_kit_chosen['glyph'])
+                            MobileUtilities.set_combat_kit_glyph(gameworld=gameworld, entity=new_entity, glyph=combat_kit_chosen['glyph'])
                             # set race for enemy
                             NewEntity.choose_race_for_mobile(race_choice=npc_race, entity_id=new_entity, gameworld=gameworld,
                                                              game_config=game_config)
@@ -287,6 +293,7 @@ class SceneManager:
                                                      weapon_file_option_main=weapons_main,
                                                      weapon_file_option_off=weapons_off, entity_id=new_entity,
                                                      gameworld=gameworld, game_config=game_config)
+                            MobileUtilities.set_combat_kit_weapons(gameworld=gameworld, entity=new_entity, weapons=available_weapons)
 
                             # set enemy AI
                             NewEntity.set_entity_ai_level(game_config=game_config, gameworld=gameworld, entity_id=new_entity)

@@ -558,10 +558,16 @@ class Debug:
                                   start_panel_frame_width=section_width[section],
                                   start_panel_frame_height=section_lines[section], title=section_heading[section])
         entity_combat_kit_title = MobileUtilities.get_combat_kit_title(gameworld=gameworld, entity=entity_id)
-        entity_combat_kit_glyph = ''
+        entity_combat_kit_glyph = MobileUtilities.get_combat_kit_glyph(gameworld=gameworld, entity=entity_id)
         entity_combat_kit_armour = ''
         entity_combat_kit_armour_mod = ''
-        entity_combat_kit_weapons = ''
+        get_wps = MobileUtilities.get_combat_kit_weapons(gameworld=gameworld, entity=entity_id)
+        if type(get_wps) == list:
+            wp_string = ','
+            wp_display = wp_string.join(get_wps)
+        else:
+            wp_display = get_wps
+        entity_combat_kit_weapons = wp_display
         entity_combat_kit_pendent = ''
         entity_combat_kit_ring1 = ''
         entity_combat_kit_ring2 = ''
