@@ -559,8 +559,9 @@ class Debug:
                                   start_panel_frame_height=section_lines[section], title=section_heading[section])
         entity_combat_kit_title = MobileUtilities.get_combat_kit_title(gameworld=gameworld, entity=entity_id)
         entity_combat_kit_glyph = MobileUtilities.get_combat_kit_glyph(gameworld=gameworld, entity=entity_id)
-        entity_combat_kit_armour = ''
-        entity_combat_kit_armour_mod = ''
+        entity_combat_kit_armour = MobileUtilities.get_combat_kit_armourset(gameworld=gameworld, entity=entity_id)
+        arm_mod = MobileUtilities.get_combat_kit_armour_mod(gameworld=gameworld, entity=entity_id)
+        entity_combat_kit_armour_mod = arm_mod[0]
         get_wps = MobileUtilities.get_combat_kit_weapons(gameworld=gameworld, entity=entity_id)
         if type(get_wps) == list:
             wp_string = ','
@@ -568,11 +569,21 @@ class Debug:
         else:
             wp_display = get_wps
         entity_combat_kit_weapons = wp_display
-        entity_combat_kit_pendent = ''
-        entity_combat_kit_ring1 = ''
-        entity_combat_kit_ring2 = ''
-        entity_combat_kit_ear1 = ''
-        entity_combat_kit_ear2 = ''
+        pendent_entity = MobileUtilities.get_combat_kit_pendent(gameworld=gameworld, entity=entity_id)
+        pendent_string = display.set_jewellery_neck_string(gameworld=gameworld, neck=pendent_entity)
+        entity_combat_kit_pendent = pendent_string
+        left_ring_entity = MobileUtilities.get_combat_kit_ring1(gameworld=gameworld, entity=entity_id)
+        left_ring_string = display.set_jewellery_left_hand_string(gameworld=gameworld, left_hand=left_ring_entity)
+        entity_combat_kit_ring1 = left_ring_string
+        right_ring_entity = MobileUtilities.get_combat_kit_ring1(gameworld=gameworld, entity=entity_id)
+        right_ring_string = display.set_jewellery_right_hand_string(gameworld=gameworld, right_hand=right_ring_entity)
+        entity_combat_kit_ring2 = right_ring_string
+        left_ear_entity = MobileUtilities.get_combat_kit_ear1(gameworld=gameworld, entity=entity_id)
+        left_ear_string = display.set_jewellery_left_ear_string(gameworld=gameworld, left_ear=left_ear_entity)
+        entity_combat_kit_ear1 = left_ear_string
+        right_ear_entity = MobileUtilities.get_combat_kit_ear1(gameworld=gameworld, entity=entity_id)
+        right_ear_string = display.set_jewellery_right_ear_string(gameworld=gameworld, right_ear=right_ear_entity)
+        entity_combat_kit_ear2 = right_ear_string
 
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2,
                         s="[color=ENTITY_SPY_COMPONENT]Title:[/color]" + entity_combat_kit_title)
