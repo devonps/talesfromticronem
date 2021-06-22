@@ -281,12 +281,30 @@ class SceneManager:
                             npc_armourset = available_armour[armour_index]
                             logger.debug('Random armourset chosen is {}', npc_armourset)
 
+                            MobileUtilities.set_combat_kit_armourset(gameworld=gameworld, entity=new_entity, armourset=npc_armourset)
+                            MobileUtilities.set_combat_kit_armour_mod(gameworld=gameworld, entity=new_entity, armour_mod=available_arm_mods)
+
                             NewEntity.choose_armourset_for_mobile(armour_file_option=armourset, entity_id=new_entity,
                                                                   gameworld=gameworld, game_config=game_config)
 
                             # equip enemy with jewelery
                             NewEntity.choose_jewellery_package(jewellery_file_option=jeweleryset, entity_id=new_entity,
                                                                game_config=game_config, gameworld=gameworld)
+                            jewellery_list = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld,
+                                                                                            mobile=new_entity)
+
+                            left_ear = jewellery_list[0]
+                            right_ear = jewellery_list[1]
+                            ring1 = jewellery_list[1]
+                            ring2 = jewellery_list[1]
+                            neck_entity = jewellery_list[4]
+
+                            MobileUtilities.set_combat_kit_ring1(gameworld=gameworld, entity=new_entity, ring1=ring1)
+                            MobileUtilities.set_combat_kit_ring2(gameworld=gameworld, entity=new_entity, ring2=ring2)
+                            MobileUtilities.set_combat_kit_ear1(gameworld=gameworld, entity=new_entity, ear1=left_ear)
+                            MobileUtilities.set_combat_kit_ear2(gameworld=gameworld, entity=new_entity, ear2=right_ear)
+                            MobileUtilities.set_combat_kit_pendant(gameworld=gameworld, entity=new_entity,
+                                                                   pendent=neck_entity)
 
                             # equip enemy with weapons
                             NewEntity.choose_weapons(weapon_file_option_both=weapons_both,
@@ -306,6 +324,7 @@ class SceneManager:
                             # --- ADD JEWELLERY SPELLS TO SPELLBAR -
                             NewEntity.add_spells_to_spell_bar_based_on_equipped_jewellery(gameworld=gameworld,
                                                                                           entity_id=new_entity)
+
                             logger.info('enemy npc created')
 
                             # --- PLACE NEW ENTITY ON TO GAME MAP -

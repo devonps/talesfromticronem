@@ -21,7 +21,7 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def set_mobile_type(gameworld, entity, value):
         mobile_component = gameworld.component_for_entity(entity, mobiles.MobileType)
-        mobile_component.label=value
+        mobile_component.label = value
 
     @staticmethod
     def can_i_see_the_other_entity(gameworld, game_map, from_entity, to_entity):
@@ -425,7 +425,9 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMaxRange(value=0))
         gameworld.add_component(entity_id, mobiles.EnemyCombatRole(value='none'))
         gameworld.add_component(entity_id, mobiles.MobileType(label='enemy'))
-        gameworld.add_component(entity_id, mobiles.CombatKit(title='', glyph='', armourset='', armour_mod='', weapons='', pendent='', ring1='', ring2='', ear1='', ear2=''))
+        gameworld.add_component(entity_id,
+                                mobiles.CombatKit(title='', glyph='', armourset='', armour_mod='', weapons='',
+                                                  pendent='', ring1='', ring2='', ear1='', ear2=''))
 
     @staticmethod
     def create_player_character(gameworld, game_config, player_entity):
@@ -1031,3 +1033,58 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def get_combat_kit_weapons(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.CombatKit).weapons
+
+    @staticmethod
+    def set_combat_kit_armourset(gameworld, entity, armourset):
+        combat_kit_component = gameworld.component_for_entity(entity, mobiles.CombatKit)
+        combat_kit_component.armourset = armourset
+
+    @staticmethod
+    def get_combat_kit_armourset(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.CombatKit).armourset
+
+    @staticmethod
+    def set_combat_kit_armour_mod(gameworld, entity, armour_mod):
+        combat_kit_component = gameworld.component_for_entity(entity, mobiles.CombatKit)
+        combat_kit_component.armour_mod = armour_mod
+
+    @staticmethod
+    def get_combat_kit_armour_mod(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.CombatKit).armour_mod
+
+    @staticmethod
+    def set_combat_kit_ring1(gameworld, entity, ring1):
+        combat_kit_component = gameworld.component_for_entity(entity, mobiles.CombatKit)
+        combat_kit_component.ring1 = ring1
+
+    @staticmethod
+    def get_combat_kit_ring1(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.CombatKit).ring1
+
+    @staticmethod
+    def set_combat_kit_ring2(gameworld, entity, ring2):
+        combat_kit_component = gameworld.component_for_entity(entity, mobiles.CombatKit)
+        combat_kit_component.ring2 = ring2
+
+    @staticmethod
+    def get_combat_kit_ring2(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.CombatKit).ring2
+
+    @staticmethod
+    def set_combat_kit_pendant(gameworld, entity, pendent):
+        combat_kit_component = gameworld.component_for_entity(entity, mobiles.CombatKit)
+        combat_kit_component.pendent = pendent
+
+    @staticmethod
+    def get_combat_kit_pendent(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.CombatKit).pendent
+
+    @staticmethod
+    def set_combat_kit_jewelleryset(gameworld, entity, jewelleryset):
+        combat_kit_component = gameworld.component_for_entity(entity, mobiles.CombatKit)
+        combat_kit_component.jewelleryset = jewelleryset
+
+    @staticmethod
+    def get_combat_kit_jewelleryset(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.CombatKit).jewelleryset
+
