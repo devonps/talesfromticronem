@@ -47,7 +47,6 @@ class StatelessAI:
     def do_something(gameworld, game_config, player_entity, game_map):
         mobile_ai_level = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
                                                                       parameter='AI_LEVEL_MONSTER')
-        ai_debug = True
         for entity, ai in gameworld.get_component(mobiles.AILevel):
             entity_ai = MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=entity)
             if entity_ai == mobile_ai_level:
@@ -59,11 +58,10 @@ class StatelessAI:
                 what_entities_can_i_see_around_me = MobileUtilities.get_visible_entities(gameworld=gameworld,
                                                                                          target_entity=entity)
                 entity_combat_role = MobileUtilities.get_enemy_combat_role(gameworld=gameworld, entity=entity)
-                if ai_debug:
-                    StatelessAI.dump_ai_debugging_information(gameworld=gameworld,
-                                                              ai_debugging_first_name=ai_debugging_first_name,
-                                                              what_entities_can_i_see_around_me=what_entities_can_i_see_around_me,
-                                                              have_i_taken_damage=have_i_taken_damage, entity_combat_role=entity_combat_role)
+                StatelessAI.dump_ai_debugging_information(gameworld=gameworld,
+                                                          ai_debugging_first_name=ai_debugging_first_name,
+                                                          what_entities_can_i_see_around_me=what_entities_can_i_see_around_me,
+                                                          have_i_taken_damage=have_i_taken_damage, entity_combat_role=entity_combat_role)
                 # what next?
                 if entity_combat_role != 'none':
                     if entity_combat_role == 'squealer':

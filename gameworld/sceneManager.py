@@ -219,16 +219,11 @@ class SceneManager:
                         if role['id'] == enemy_roles[role_id]:
                             combat_role = enemy_roles[role_id]
                             npc_class = 'undefined'
-                            npc_glyph = '?'
                             armourset = 'random'
-                            jeweleryset = 'random'
                             weapons_main = ''
                             weapons_off = ''
                             weapons_both = 'staff'
                             combat_kits = role['kits']
-                            available_spells = role['spells']
-                            min_range = role['min-range']
-                            max_range = role['max-range']
 
                             logger.warning('--- CREATING ENEMY ROLE {} ---', combat_role)
                             # set enemy role id
