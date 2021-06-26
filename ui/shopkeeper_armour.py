@@ -80,7 +80,7 @@ def shopkeeper_armour(gameworld, shopkeeper_id):
             logger.debug('Attribute to be modified is {}', px_att_name[selected_menu_option])
             logger.debug('Attribute bonus is {}', px_att_bonus[selected_menu_option])
 
-            armour_set = armourManagement.ArmourUtilities.create_full_armour_set(gameworld=gameworld, game_config=game_config, prefix=as_prefix_list[selected_menu_option],
+            armour_set = armourManagement.ArmourUtilities.create_full_armour_set(gameworld=gameworld, prefix=as_prefix_list[selected_menu_option],
                                                                 armourset='Embroided')
             armourManagement.ArmourUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=player_entity, armourset=armour_set)
 

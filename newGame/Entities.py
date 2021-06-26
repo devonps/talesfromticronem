@@ -55,9 +55,9 @@ class NewEntity:
             logger.debug('ENTITY PREFERRED MAX RANGE SET TO {}', maximum_range)
 
         MobileUtilities.set_enemy_preferred_max_distance_from_target(gameworld=gameworld, entity=entity_id,
-                                                                                value=maximum_range)
+                                                                     value=maximum_range)
         MobileUtilities.set_enemy_preferred_min_distance_from_target(gameworld=gameworld, entity=entity_id,
-                                                                                value=minimum_range)
+                                                                     value=minimum_range)
 
     @staticmethod
     def add_enemy_components_to_entity(gameworld, entity_id):
@@ -121,10 +121,9 @@ class NewEntity:
                     selected_race_names = race_name_desc[rcount]
                 rcount += 1
 
-        MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=entity_id,
-                                                           selected_race=selected_race,
-                                                           race_size=selected_race_size, bg=selected_bg_colour,
-                                                           race_names=selected_race_names)
+        MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=entity_id, selected_race=selected_race,
+                                                race_size=selected_race_size, bg=selected_bg_colour,
+                                                race_names=selected_race_names)
 
         return selected_race
 
@@ -156,9 +155,9 @@ class NewEntity:
         selected_cass_spellfile = class_spell_file[selected_class_id]
 
         MobileUtilities.setup_class_attributes(gameworld=gameworld, player=entity_id,
-                                                          selected_class=selected_class_name,
-                                                          health=int(selected_class_health),
-                                                          spellfile=selected_cass_spellfile)
+                                               selected_class=selected_class_name,
+                                               health=int(selected_class_health),
+                                               spellfile=selected_cass_spellfile)
 
         logger.info('Their class is {}', selected_class_name)
         logger.info('Their class health is {}', selected_class_health)
@@ -365,7 +364,7 @@ class NewEntity:
             logger.warning('Spell file name not set')
         # equip player with newly created starting weapon
         MobileUtilities.equip_weapon(gameworld=gameworld, entity=entity_id, weapon=created_weapon_entity,
-                                                hand=hand_to_wield)
+                                     hand=hand_to_wield)
         return created_weapon_entity
 
     @staticmethod
@@ -418,7 +417,7 @@ class NewEntity:
             armour_mod_index = as_prefix_list.index(armour_modifier)
             px_bonus = int(px_att_bonus[armour_mod_index])
             MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=entity_id,
-                                                           armour_modifier=armour_modifier, px_bonus=px_bonus)
+                                                armour_modifier=armour_modifier, px_bonus=px_bonus)
             armourManagement.ArmourUtilities.create_and_equip_armourset_for_npc(gameworld=gameworld,
                                                                                 as_display_name=as_display_name,
                                                                                 armour_modifier=armour_modifier,
@@ -462,8 +461,7 @@ class NewEntity:
     @staticmethod
     def add_spells_to_spell_bar_based_on_equipped_jewellery(gameworld, entity_id):
         # get list of equipped jewellery
-        jewellery_list = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld,
-                                                                                   mobile=entity_id)
+        jewellery_list = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=entity_id)
 
         left_ear = jewellery_list[0]
         right_ear = jewellery_list[1]
@@ -496,7 +494,7 @@ class NewEntity:
         shopkeeper_type = this_entity['type_of_shopkeeper']
         if npc_shopkeeper == 'True':
             MobileUtilities.set_type_of_shopkeeper(gameworld=gameworld, target_entity=entity_id,
-                                                              shopkeeper_type=shopkeeper_type)
+                                                   shopkeeper_type=shopkeeper_type)
 
     @staticmethod
     def is_entity_a_tutor(gameworld, entity_id, this_entity):
@@ -504,7 +502,7 @@ class NewEntity:
         npc_tutor = this_entity['tutor']
         if npc_tutor == 'True':
             MobileUtilities.set_type_of_tutor(gameworld=gameworld, target_entity=entity_id,
-                                                         tutor_type=tutor_type)
+                                              tutor_type=tutor_type)
 
     @staticmethod
     def create_empty_spell_bar(gameworld, entity_id):

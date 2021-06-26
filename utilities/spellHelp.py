@@ -20,8 +20,6 @@ class SpellUtilities:
         off_hand = weapons_equipped[1]
         both_hands = weapons_equipped[2]
 
-        spell_bar = 0
-
         if weapon_type in ['sword', 'staff']:
             spells_to_choose_from.append(
                 SpellUtilities.get_spell_entity_at_weapon_slot(gameworld=gameworld, weapon_equipped=both_hands,

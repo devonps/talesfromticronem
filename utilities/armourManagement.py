@@ -40,7 +40,7 @@ class ArmourUtilities:
                                                                          attribute_name=attribute_name,
                                                                          attribute_bonus=attribute_bonus)
             mobileHelp.MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
-                                                armour_modifier=attribute_name, px_bonus=attribute_bonus)
+                                                           armour_modifier=attribute_name, px_bonus=attribute_bonus)
 
             attribute_bonus_list = ArmourUtilities.get_armour_major_attributes(gameworld=gameworld,
                                                                                entity=armour_entity)
@@ -56,7 +56,7 @@ class ArmourUtilities:
                                                                          attribute_name=attribute_name,
                                                                          attribute_bonus=attribute_bonus)
             mobileHelp.MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
-                                                armour_modifier=attribute_name, px_bonus=attribute_bonus)
+                                                           armour_modifier=attribute_name, px_bonus=attribute_bonus)
 
             attribute_bonus_list = ArmourUtilities.get_armour_major_attributes(gameworld=gameworld,
                                                                                entity=armour_entity)
@@ -72,7 +72,7 @@ class ArmourUtilities:
                                                                          attribute_name=attribute_name,
                                                                          attribute_bonus=attribute_bonus)
             mobileHelp.MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
-                                                armour_modifier=attribute_name, px_bonus=attribute_bonus)
+                                                           armour_modifier=attribute_name, px_bonus=attribute_bonus)
 
             attribute_bonus_list = ArmourUtilities.get_armour_major_attributes(gameworld=gameworld,
                                                                                entity=armour_entity)
@@ -88,7 +88,7 @@ class ArmourUtilities:
                                                                          attribute_name=attribute_name,
                                                                          attribute_bonus=attribute_bonus)
             mobileHelp.MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
-                                                armour_modifier=attribute_name, px_bonus=attribute_bonus)
+                                                           armour_modifier=attribute_name, px_bonus=attribute_bonus)
 
             attribute_bonus_list = ArmourUtilities.get_armour_major_attributes(gameworld=gameworld,
                                                                                entity=armour_entity)
@@ -104,7 +104,7 @@ class ArmourUtilities:
                                                                          attribute_name=attribute_name,
                                                                          attribute_bonus=attribute_bonus)
             mobileHelp.MobileUtilities.add_armour_modifier(gameworld=gameworld, entity_id=player_entity,
-                                                armour_modifier=attribute_name, px_bonus=attribute_bonus)
+                                                           armour_modifier=attribute_name, px_bonus=attribute_bonus)
 
             attribute_bonus_list = ArmourUtilities.get_armour_major_attributes(gameworld=gameworld,
                                                                                entity=armour_entity)
@@ -168,7 +168,6 @@ class ArmourUtilities:
     @staticmethod
     def add_spell_to_armour_piece(gameworld, armour_entity, spell_entity):
         gameworld.add_component(armour_entity, items.ArmourSpell(entity=spell_entity))
-
 
     @staticmethod
     def get_spell_entity_from_armour_piece(gameworld, armour_entity):
@@ -273,14 +272,13 @@ class ArmourUtilities:
 
     @staticmethod
     def create_and_equip_armourset_for_npc(gameworld, as_display_name, armour_modifier, entity_id):
-        game_config = configUtilities.load_config()
         this_armourset = ArmourUtilities.create_full_armour_set(gameworld=gameworld, armourset=as_display_name,
-                                                                prefix=armour_modifier, game_config=game_config)
+                                                                prefix=armour_modifier)
 
         ArmourUtilities.equip_full_set_of_armour(gameworld=gameworld, entity=entity_id, armourset=this_armourset)
 
     @staticmethod
-    def create_full_armour_set(gameworld, armourset, prefix, game_config):
+    def create_full_armour_set(gameworld, armourset, prefix):
         """
         This method creates a full set of armour (as game entities), it calls the method create_piece_of_armour
         to create the actual piece of armour.
@@ -295,31 +293,27 @@ class ArmourUtilities:
         """
         full_armour_set = []
 
-        head_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
-                                                             setname=armourset, prefix=prefix, bodylocation='head')
+        head_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix,
+                                                             bodylocation='head')
         full_armour_set.append(head_armour)
 
-        chest_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
-                                                              setname=armourset, prefix=prefix, bodylocation='chest')
+        chest_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix, bodylocation='chest')
         full_armour_set.append(chest_armour)
 
-        hands_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
-                                                              setname=armourset, prefix=prefix, bodylocation='hands')
+        hands_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix, bodylocation='hands')
         full_armour_set.append(hands_armour)
 
-        legs_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
-                                                             setname=armourset, prefix=prefix, bodylocation='legs')
+        legs_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix, bodylocation='legs')
         full_armour_set.append(legs_armour)
 
-        feet_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, game_config=game_config,
-                                                             setname=armourset, prefix=prefix, bodylocation='feet')
+        feet_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix, bodylocation='feet')
         full_armour_set.append(feet_armour)
 
         return full_armour_set
 
     @staticmethod
-    def create_piece_of_armour(gameworld, bodylocation, setname, prefix, game_config):
-
+    def create_piece_of_armour(gameworld, bodylocation, setname, prefix):
+        game_config = configUtilities.load_config()
         armour_set_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
                                                                      parameter='ARMOURSETFILE')
 

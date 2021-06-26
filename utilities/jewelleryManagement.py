@@ -190,16 +190,21 @@ class JewelleryUtilities:
     def equip_jewellery(gameworld, mobile, bodylocation, trinket):
         is_jewellery_equipped = JewelleryUtilities.get_jewellery_already_equipped_status(gameworld,
                                                                                          jewellery_entity=trinket)
+        left_ear = 'left ear'
+        right_ear = 'right ear'
+        left_hand = 'left hand'
+        right_hand = 'right hand'
+        neck = 'neck'
         if not is_jewellery_equipped:
-            if bodylocation == 'left ear':
+            if bodylocation == left_ear:
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).left_ear = trinket
-            if bodylocation == 'right ear':
+            if bodylocation == right_ear:
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).right_ear = trinket
-            if bodylocation == 'left hand':
+            if bodylocation == left_hand:
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).left_hand = trinket
-            if bodylocation == 'right hand':
+            if bodylocation == right_hand:
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).right_hand = trinket
-            if bodylocation == 'neck':
+            if bodylocation == neck:
                 gameworld.component_for_entity(mobile, mobiles.Jewellery).neck = trinket
 
             JewelleryUtilities.set_jewellery_equipped_status_to_true(gameworld, jewellery_entity=trinket)
@@ -242,6 +247,12 @@ class JewelleryUtilities:
     @staticmethod
     def create_jewellery_for_utility_spells(gameworld, game_config, jewellery_set):
 
+        left_ear = 'left ear'
+        right_ear = 'right ear'
+        left_hand = 'left hand'
+        right_hand = 'right hand'
+        neck = 'neck'
+
         npc_class_file = configUtilities.get_config_value_as_string(configfile=game_config,
                                                                     section='files', parameter='CLASSESFILE')
         entity_id = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
@@ -257,7 +268,7 @@ class JewelleryUtilities:
                 ring1_gemstone = entityclass[jewellery_set]['ring1']
                 ring2_gemstone = entityclass[jewellery_set]['ring2']
                 # create jewellery entity
-                pendant = JewelleryUtilities.create_jewellery_with_spell(gameworld=gameworld, bodylocation='neck',
+                pendant = JewelleryUtilities.create_jewellery_with_spell(gameworld=gameworld, bodylocation=neck,
                                                                          e_setting='copper', e_hook='copper',
                                                                          e_activator=neck_gemstone,
                                                                          playable_class=entity_class)
@@ -283,17 +294,17 @@ class JewelleryUtilities:
                                                                             playable_class=entity_class)
 
                 # equip jewellery entity to player character
-                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='neck',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation=neck,
                                                    trinket=pendant)
-                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left ear',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation=left_ear,
                                                    trinket=left_ear)
-                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right ear',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation=right_ear,
                                                    trinket=right_ear)
 
-                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='left hand',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation=left_hand,
                                                    trinket=left_hand)
 
-                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation='right hand',
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation=right_hand,
                                                    trinket=right_hand)
 
                 # apply gemstone benefits
