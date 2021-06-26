@@ -280,84 +280,76 @@ def draw_clear_text_box(posx, posy, width, height, text, fg, bg):
 
 
 def set_both_hands_weapon_string_es(both_weapon, gameworld):
-    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]Both  : none[/color]"
-    item_string = "[color=DISPLAY_ITEM_EQUIPPED]Both  : [/color]"
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]none[/color]"
     both_hands_weapon_name = no_item_string
     if both_weapon > 0:
-        both_hands_weapon_name = item_string + itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=both_weapon)
+        both_hands_weapon_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=both_weapon)
     return both_hands_weapon_name
 
 
 def set_main_hand_weapon_string_es(main_weapon, gameworld):
-    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]M/Hand: none[/color]"
-    item_string = "[color=DISPLAY_ITEM_EQUIPPED]M/Hand: [/color]"
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]none[/color]"
     main_hand_weapon_name = no_item_string
     if main_weapon > 0:
-        main_hand_weapon_name = item_string + itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=main_weapon)
+        main_hand_weapon_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=main_weapon)
     return main_hand_weapon_name
 
 
 def set_off_hand_weapon_string_es(off_weapon, gameworld):
-    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]O/Hand: none[/color]"
-    item_string = "[color=DISPLAY_ITEM_EQUIPPED]O/Hand: [/color]"
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]none[/color]"
     off_hand_weapon_name = no_item_string
     if off_weapon > 0:
-        off_hand_weapon_name = item_string + itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=off_weapon)
+        off_hand_weapon_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=off_weapon)
     return off_hand_weapon_name
 
 
 def set_jewellery_left_ear_string(gameworld, left_ear):
-    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]Earring :None[/color]"
-    item_string = "[color=DISPLAY_ITEM_EQUIPPED]Earring :[/color]"
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]None[/color]"
     left_ear_string = no_item_string
     if left_ear != 0:
         activator = jewelleryManagement.JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=left_ear)
         item_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=left_ear)
-        left_ear_string = item_string + activator + ' ' + item_name
+        left_ear_string = activator + ' ' + item_name
     return left_ear_string
 
 
 def set_jewellery_right_ear_string(gameworld, right_ear):
-    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]Earring :None[/color]"
-    item_string = "[color=DISPLAY_ITEM_EQUIPPED]Earring :[/color]"
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]None[/color]"
     right_ear_string = no_item_string
     if right_ear != 0:
         activator = jewelleryManagement.JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=right_ear)
         item_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=right_ear)
-        right_ear_string = item_string + activator + ' ' + item_name
+        right_ear_string = activator + ' ' + item_name
     return right_ear_string
 
 
 def set_jewellery_left_hand_string(gameworld, left_hand):
-    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]L/Hand:None[/color]"
-    item_string = "[color=DISPLAY_ITEM_EQUIPPED]L/Hand:[/color]"
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]None[/color]"
     left_hand_string = no_item_string
     if left_hand != 0:
         activator = jewelleryManagement.JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=left_hand)
         item_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=left_hand)
-        left_hand_string = item_string + activator + ' ' + item_name
+        left_hand_string = activator + ' ' + item_name
     return left_hand_string
 
 
 def set_jewellery_right_hand_string(gameworld, right_hand):
-    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]R/Hand:None[/color]"
-    item_string = "[color=DISPLAY_ITEM_EQUIPPED]R/Hand:[/color]"
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]None[/color]"
     right_hand_string = no_item_string
     if right_hand != 0:
         activator = jewelleryManagement.JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=right_hand)
         item_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=right_hand)
-        right_hand_string = item_string + activator + ' ' + item_name
+        right_hand_string = activator + ' ' + item_name
     return right_hand_string
 
 
 def set_jewellery_neck_string(gameworld, neck):
-    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]Neck  :None[/color]"
-    item_string = "[color=DISPLAY_ITEM_EQUIPPED]Neck  :[/color]"
+    no_item_string = "[color=DISPLAY_NO_ITEM_EQUIPPED]None[/color]"
     neck_string = no_item_string
     if neck != 0:
         activator = jewelleryManagement.JewelleryUtilities.get_jewellery_activator(gameworld=gameworld, jewellery_entity=neck)
         item_name = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=neck)
-        neck_string = item_string + activator + ' ' + item_name
+        neck_string = activator + ' ' + item_name
     return neck_string
 
 
