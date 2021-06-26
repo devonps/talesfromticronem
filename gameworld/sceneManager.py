@@ -6,6 +6,7 @@ from processors import castSpells, move_entities, renderUI, updateEntities, rend
 from utilities import configUtilities, externalfileutilities, jsonUtilities, mobileHelp, scorekeeper, spellHelp
 from loguru import logger
 
+from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.mobileHelp import MobileUtilities
 
 
@@ -288,15 +289,14 @@ class SceneManager:
                                                                   gameworld=gameworld, game_config=game_config)
 
                             # equip enemy with jewelery
-                            NewEntity.choose_jewellery_package(jewellery_file_option=jeweleryset, entity_id=new_entity,
-                                                               game_config=game_config, gameworld=gameworld)
+                            JewelleryUtilities.create_jewellery_from_combat_kit(gameworld=gameworld, gemstones=a_jewellery, entity_id=new_entity)
                             jewellery_list = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld,
                                                                                             mobile=new_entity)
 
                             left_ear = jewellery_list[0]
                             right_ear = jewellery_list[1]
-                            ring1 = jewellery_list[1]
-                            ring2 = jewellery_list[1]
+                            ring1 = jewellery_list[2]
+                            ring2 = jewellery_list[3]
                             neck_entity = jewellery_list[4]
 
                             MobileUtilities.set_combat_kit_ring1(gameworld=gameworld, entity=new_entity, ring1=ring1)
@@ -320,10 +320,6 @@ class SceneManager:
 
                             # --- POPULATE SPELL BAR BASED ON EQUIPMENT -
                             spellHelp.SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=new_entity)
-
-                            # --- ADD JEWELLERY SPELLS TO SPELLBAR -
-                            NewEntity.add_spells_to_spell_bar_based_on_equipped_jewellery(gameworld=gameworld,
-                                                                                          entity_id=new_entity)
 
                             logger.info('enemy npc created')
 

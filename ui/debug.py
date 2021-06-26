@@ -572,15 +572,19 @@ class Debug:
         pendent_entity = MobileUtilities.get_combat_kit_pendent(gameworld=gameworld, entity=entity_id)
         pendent_string = display.set_jewellery_neck_string(gameworld=gameworld, neck=pendent_entity)
         entity_combat_kit_pendent = pendent_string
+
         left_ring_entity = MobileUtilities.get_combat_kit_ring1(gameworld=gameworld, entity=entity_id)
         left_ring_string = display.set_jewellery_left_hand_string(gameworld=gameworld, left_hand=left_ring_entity)
         entity_combat_kit_ring1 = left_ring_string
+
         right_ring_entity = MobileUtilities.get_combat_kit_ring1(gameworld=gameworld, entity=entity_id)
         right_ring_string = display.set_jewellery_right_hand_string(gameworld=gameworld, right_hand=right_ring_entity)
         entity_combat_kit_ring2 = right_ring_string
+
         left_ear_entity = MobileUtilities.get_combat_kit_ear1(gameworld=gameworld, entity=entity_id)
         left_ear_string = display.set_jewellery_left_ear_string(gameworld=gameworld, left_ear=left_ear_entity)
         entity_combat_kit_ear1 = left_ear_string
+
         right_ear_entity = MobileUtilities.get_combat_kit_ear1(gameworld=gameworld, entity=entity_id)
         right_ear_string = display.set_jewellery_right_ear_string(gameworld=gameworld, right_ear=right_ear_entity)
         entity_combat_kit_ear2 = right_ear_string
