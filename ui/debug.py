@@ -383,9 +383,9 @@ class Debug:
         main_hand = display.set_main_hand_weapon_string_es(main_weapon=main_weapon, gameworld=gameworld)
         off_hand = display.set_off_hand_weapon_string_es(off_weapon=off_weapon, gameworld=gameworld)
 
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=both_hands)
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=main_hand)
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=off_hand)
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s="[color=ENTITY_SPY_COMPONENT]Both  :[/color]" + both_hands)
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s="[color=ENTITY_SPY_COMPONENT]M/Hand:[/color]" + main_hand)
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s="[color=ENTITY_SPY_COMPONENT]O/Hand:[/color]" + off_hand)
 
     @staticmethod
     def display_equipped_jewellery(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
@@ -394,23 +394,27 @@ class Debug:
                                   start_panel_frame_width=section_width[section],
                                   start_panel_frame_height=section_lines[section], title=section_heading[section])
 
-        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld,
-                                                                                       mobile=entity_id)
+        equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=entity_id)
+        jewel_pos_y = section_posy[section] + 2
         if equipped_jewellery[0] > 0:
-            left_ear = display.set_jewellery_left_ear_string(gameworld=gameworld, left_ear=equipped_jewellery[0])
-            terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s=left_ear)
+            left_ear = "[color=ENTITY_SPY_COMPONENT]left ear:[/color] " + display.set_jewellery_left_ear_string(gameworld=gameworld, left_ear=equipped_jewellery[0])
+            terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=left_ear)
+            jewel_pos_y += 1
         if equipped_jewellery[1] > 0:
-            right_ear = display.set_jewellery_right_ear_string(gameworld=gameworld, right_ear=equipped_jewellery[1])
-            terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s=right_ear)
+            right_ear = "[color=ENTITY_SPY_COMPONENT]right ear:[/color] " + display.set_jewellery_right_ear_string(gameworld=gameworld, right_ear=equipped_jewellery[1])
+            terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=right_ear)
+            jewel_pos_y += 1
         if equipped_jewellery[2] > 0:
-            left_hand = display.set_jewellery_left_hand_string(gameworld=gameworld, left_hand=equipped_jewellery[2])
-            terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=left_hand)
+            left_hand = "[color=ENTITY_SPY_COMPONENT]left hand:[/color] " + display.set_jewellery_left_hand_string(gameworld=gameworld, left_hand=equipped_jewellery[2])
+            terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=left_hand)
+            jewel_pos_y += 1
         if equipped_jewellery[3] > 0:
-            right_hand = display.set_jewellery_right_hand_string(gameworld=gameworld, right_hand=equipped_jewellery[3])
-            terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=right_hand)
+            right_hand = "[color=ENTITY_SPY_COMPONENT]right hand:[/color] " + display.set_jewellery_right_hand_string(gameworld=gameworld, right_hand=equipped_jewellery[3])
+            terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=right_hand)
+            jewel_pos_y += 1
         if equipped_jewellery[4] > 0:
-            neck = display.set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
-            terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6, s=neck)
+            neck = "[color=ENTITY_SPY_COMPONENT]neck:[/color] " + display.set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
+            terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=neck)
 
     @staticmethod
     def display_equipped_armour(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
