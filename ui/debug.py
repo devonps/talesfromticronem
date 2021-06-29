@@ -396,13 +396,9 @@ class Debug:
 
         equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=entity_id)
         jewel_pos_y = section_posy[section] + 2
-        if equipped_jewellery[0] > 0:
-            left_ear = "[color=ENTITY_SPY_COMPONENT]left ear:[/color] " + display.set_jewellery_left_ear_string(gameworld=gameworld, left_ear=equipped_jewellery[0])
-            terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=left_ear)
-            jewel_pos_y += 1
-        if equipped_jewellery[1] > 0:
-            right_ear = "[color=ENTITY_SPY_COMPONENT]right ear:[/color] " + display.set_jewellery_right_ear_string(gameworld=gameworld, right_ear=equipped_jewellery[1])
-            terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=right_ear)
+        if equipped_jewellery[4] > 0:
+            neck = "[color=ENTITY_SPY_COMPONENT]neck:[/color] " + display.set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
+            terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=neck)
             jewel_pos_y += 1
         if equipped_jewellery[2] > 0:
             left_hand = "[color=ENTITY_SPY_COMPONENT]left hand:[/color] " + display.set_jewellery_left_hand_string(gameworld=gameworld, left_hand=equipped_jewellery[2])
@@ -412,9 +408,14 @@ class Debug:
             right_hand = "[color=ENTITY_SPY_COMPONENT]right hand:[/color] " + display.set_jewellery_right_hand_string(gameworld=gameworld, right_hand=equipped_jewellery[3])
             terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=right_hand)
             jewel_pos_y += 1
-        if equipped_jewellery[4] > 0:
-            neck = "[color=ENTITY_SPY_COMPONENT]neck:[/color] " + display.set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
-            terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=neck)
+        if equipped_jewellery[0] > 0:
+            left_ear = "[color=ENTITY_SPY_COMPONENT]left ear:[/color] " + display.set_jewellery_left_ear_string(gameworld=gameworld, left_ear=equipped_jewellery[0])
+            terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=left_ear)
+            jewel_pos_y += 1
+        if equipped_jewellery[1] > 0:
+            right_ear = "[color=ENTITY_SPY_COMPONENT]right ear:[/color] " + display.set_jewellery_right_ear_string(gameworld=gameworld, right_ear=equipped_jewellery[1])
+            terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=right_ear)
+            jewel_pos_y += 1
 
     @staticmethod
     def display_equipped_armour(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
@@ -606,13 +607,13 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 7,
                         s="[color=ENTITY_SPY_COMPONENT]Pendent:[/color]" + entity_combat_kit_pendent)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 8,
-                        s="[color=ENTITY_SPY_COMPONENT]Ring 1:[/color]" + entity_combat_kit_ring1)
+                        s="[color=ENTITY_SPY_COMPONENT]Left Hand:[/color]" + entity_combat_kit_ring1)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 9,
-                        s="[color=ENTITY_SPY_COMPONENT]Ring 2:[/color]" + entity_combat_kit_ring2)
+                        s="[color=ENTITY_SPY_COMPONENT]Right Hand:[/color]" + entity_combat_kit_ring2)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 10,
-                        s="[color=ENTITY_SPY_COMPONENT]Ear 1:[/color]" + entity_combat_kit_ear1)
+                        s="[color=ENTITY_SPY_COMPONENT]Left Ear:[/color]" + entity_combat_kit_ear1)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 11,
-                        s="[color=ENTITY_SPY_COMPONENT]Ear 2:[/color]" + entity_combat_kit_ear2)
+                        s="[color=ENTITY_SPY_COMPONENT]Right Ear:[/color]" + entity_combat_kit_ear2)
 
     @staticmethod
     def display_primary_attributes(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
