@@ -336,7 +336,7 @@ class ArmourUtilities:
                 as_quality = armourset['quality']
                 prefix_count = armourset['prefixcount']
                 attribute_bonus_count = armourset['attributebonuscount']
-                piece_of_armour, defense = ArmourUtilities.process_armour_bodylocation(gameworld=gameworld,
+                _, defense = ArmourUtilities.process_armour_bodylocation(gameworld=gameworld,
                                                                                        bodylocation=bodylocation,
                                                                                        armour_piece=armour_piece,
                                                                                        armourset=armourset)
