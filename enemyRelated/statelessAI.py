@@ -116,8 +116,9 @@ class StatelessAI:
         visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=entity)
         if player_entity in visible_entities:
             common.CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog='I can see the player.')
-        #
-        #
+
+        if monster_hurt_status:
+            common.CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog='I hurt!')
 
     @staticmethod
     def perform_ai_for_bully(entity):
