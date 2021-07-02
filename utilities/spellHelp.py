@@ -1127,3 +1127,15 @@ class SpellUtilities:
             if typ.label == 'combat' and cl.label == player_class and weapon.label == weapon_type:
                 utility_spells_list.append(ent)
         return utility_spells_list
+
+    # @staticmethod
+    # def register_meta_event_for_armour_piece(gameworld, armour_entity):
+    #     current_area_tag = scorekeeper.ScorekeeperUtilities.get_current_area(gameworld=gameworld)
+    #     this_spell_entity = ArmourUtilities.get_spell_entity_from_armour_piece(gameworld=gameworld,
+    #                                                                            armour_entity=armour_entity)
+    #     spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=this_spell_entity)
+    #     updated_spell_name = spell_name.replace(" ", "_")
+    #     updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
+    #     scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
+    #                                                                      event_name=updated_spell_name.lower(),
+    #                                                                      event_starting_value=0)

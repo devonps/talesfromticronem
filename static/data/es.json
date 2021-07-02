@@ -111,13 +111,21 @@
       "posx": 7,
       "posy": 15
     },
-        {
+    {
       "title": "combatkit",
       "heading": "[[ -Combat Kit- ]]",
       "lines": 12,
       "width": 50,
       "posx": 7,
       "posy": 5
+    },
+    {
+      "title": "ai",
+      "heading": "** AI  **",
+      "lines": 12,
+      "width": 50,
+      "posx": 7,
+      "posy": 19
     }
     ]
 }

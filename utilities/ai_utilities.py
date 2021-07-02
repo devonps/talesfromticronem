@@ -1,4 +1,4 @@
-from utilities import mobileHelp
+from utilities import common
 from utilities.mobileHelp import MobileUtilities
 
 
@@ -7,7 +7,7 @@ class AIUtilities:
     @staticmethod
     def can_i_move(gameworld, source_entity):
         list_of_conditions = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
-                                                                                             entity=source_entity)
+                                                                                  entity=source_entity)
         if ['crippled', 'immobilize', 'stunned', 'dazed'] in list_of_conditions:
             return False
         else:
@@ -30,8 +30,8 @@ class AIUtilities:
                 entity_id = game_map.tiles[across][down].entity
                 if entity_id > 0 and entity_id != source_entity:
                     visible_entities.append(entity_id)
-        MobileUtilities.set_visible_entities(gameworld=gameworld, target_entity=source_entity, visible_entities=visible_entities)
-
+        MobileUtilities.set_visible_entities(gameworld=gameworld, target_entity=source_entity,
+                                             visible_entities=visible_entities)
 
     @staticmethod
     def have_i_taken_damage(gameworld, source_entity):
@@ -44,7 +44,6 @@ class AIUtilities:
         else:
             MobileUtilities.set_mobile_physical_hurt_state_to_false(gameworld=gameworld, entity=source_entity)
 
-
     @staticmethod
     def can_i_cast_a_spell(gameworld, source_entity):
         # pending
@@ -54,3 +53,7 @@ class AIUtilities:
     def can_i_see_my_target(gameworld, from_entity, to_entity, game_map):
         # pending
         pass
+
+    @staticmethod
+    def let_me_say():
+        common.CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog='I can see the player.')

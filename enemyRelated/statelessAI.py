@@ -1,7 +1,7 @@
 from loguru import logger
 
 from components import mobiles
-from utilities import configUtilities
+from utilities import configUtilities, common
 from utilities.ai_utilities import AIUtilities
 from utilities.mobileHelp import MobileUtilities
 
@@ -9,7 +9,7 @@ from utilities.mobileHelp import MobileUtilities
 class StatelessAI:
     """
     The AI I'm looking to build out here in pseudo code is:
-        Intrnsic pointers (things the enemy knows about itself)
+        Intrinsic pointers (things the enemy knows about itself)
             damage taken --> do I need to refine this further?
             morale --> hardcoded so they won't naturally retreat
         Questions it needs to answer:
@@ -53,34 +53,32 @@ class StatelessAI:
                 entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity)
                 ai_debugging_first_name = entity_names[0]
                 StatelessAI.update_entity_with_local_information(gameworld=gameworld, entity=entity, game_map=game_map)
-                have_i_taken_damage = MobileUtilities.get_mobile_physical_hurt_status(gameworld=gameworld,
-                                                                                      entity=entity)
-                what_entities_can_i_see_around_me = MobileUtilities.get_visible_entities(gameworld=gameworld,
-                                                                                         target_entity=entity)
                 entity_combat_role = MobileUtilities.get_enemy_combat_role(gameworld=gameworld, entity=entity)
                 StatelessAI.dump_ai_debugging_information(gameworld=gameworld,
                                                           ai_debugging_first_name=ai_debugging_first_name,
-                                                          what_entities_can_i_see_around_me=what_entities_can_i_see_around_me,
-                                                          have_i_taken_damage=have_i_taken_damage, entity_combat_role=entity_combat_role)
+                                                          target_entity=entity,
+                                                          entity_combat_role=entity_combat_role)
                 # what next?
                 if entity_combat_role != 'none':
                     if entity_combat_role == 'squealer':
                         StatelessAI.perform_ai_for_squealer(entity=entity)
                     elif entity_combat_role == 'bomber':
-                        StatelessAI.perform_ai_for_bomber(entity=entity)
+                        StatelessAI.perform_ai_for_bomber(entity=entity, game_config=game_config, gameworld=gameworld, game_map=game_map)
                     elif entity_combat_role == 'bully':
                         StatelessAI.perform_ai_for_bully(entity=entity)
                     else:
                         StatelessAI.perform_ai_for_sniper(entity=entity)
 
     @staticmethod
-    def dump_ai_debugging_information(gameworld, ai_debugging_first_name, what_entities_can_i_see_around_me,
-                                      have_i_taken_damage, entity_combat_role):
+    def dump_ai_debugging_information(gameworld, ai_debugging_first_name, target_entity, entity_combat_role):
+        visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=target_entity)
+        vision_range = MobileUtilities.get_mobile_senses_vision_range(gameworld=gameworld, entity=target_entity)
+
         visible_entity_names = []
-        if len(what_entities_can_i_see_around_me) > 0:
-            for a in range(len(what_entities_can_i_see_around_me)):
+        if len(visible_entities) > 0:
+            for a in range(len(visible_entities)):
                 entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld,
-                                                                       entity=what_entities_can_i_see_around_me[a])
+                                                                       entity=visible_entities[a])
                 mobile_first_name = entity_names[0]
                 visible_entity_names.append(mobile_first_name)
 
@@ -89,11 +87,9 @@ class StatelessAI:
         logger.info('mobile AI combat role: {}', entity_combat_role)
         logger.info('mobile intrinsic information')
         damage_string = 'Has mobile taken damage:'
-        if have_i_taken_damage:
-            damage_status = ' yes'
-        else:
-            damage_status = ' no'
+        damage_status = ' no'
         logger.info(damage_string + damage_status)
+        logger.info('mobile vision range: {}', vision_range)
         logger.info('What can the mobile see around them')
         logger.info('list of entities: {}', visible_entity_names)
 
@@ -105,11 +101,23 @@ class StatelessAI:
         logger.debug('Entity id {}', entity)
 
     @staticmethod
-    def perform_ai_for_bomber(entity):
+    def perform_ai_for_bomber(gameworld, entity, game_config, game_map):
         # the bomber will use long range AoE spells to attack the player or their allies
         # It will always try to use the heavy damage spells first
         logger.warning('ALL the way from stateless AI: Bomber role')
         logger.debug('Entity id {}', entity)
+        # ACTION LIST
+        # Get information
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        monster_hurt_status = MobileUtilities.get_mobile_physical_hurt_status(gameworld=gameworld, entity=entity)
+
+        AIUtilities.what_can_i_see_around_me(gameworld=gameworld, source_entity=entity, game_map=game_map)
+
+        visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=entity)
+        if player_entity in visible_entities:
+            common.CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog='I can see the player.')
+        #
+        #
 
     @staticmethod
     def perform_ai_for_bully(entity):

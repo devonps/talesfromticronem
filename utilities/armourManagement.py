@@ -2,7 +2,8 @@ from loguru import logger
 
 from components import items, mobiles, spells
 from newGame.Items import ItemManager
-from utilities import configUtilities, jsonUtilities, spellHelp, scorekeeper, itemsHelp, mobileHelp
+# from utilities import configUtilities, jsonUtilities, spellHelp, scorekeeper, itemsHelp, mobileHelp
+from utilities import configUtilities, jsonUtilities, itemsHelp, mobileHelp
 
 
 class ArmourUtilities:
@@ -153,17 +154,18 @@ class ArmourUtilities:
         if armourset[4] > 0:
             ArmourUtilities.equip_piece_of_armour(gameworld, entity, armourset[4], 'feet')
 
-    @staticmethod
-    def register_meta_event_for_armour_piece(gameworld, armour_entity):
-        current_area_tag = scorekeeper.ScorekeeperUtilities.get_current_area(gameworld=gameworld)
-        this_spell_entity = ArmourUtilities.get_spell_entity_from_armour_piece(gameworld=gameworld,
-                                                                               armour_entity=armour_entity)
-        spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=this_spell_entity)
-        updated_spell_name = spell_name.replace(" ", "_")
-        updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
-        scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
-                                                                         event_name=updated_spell_name.lower(),
-                                                                         event_starting_value=0)
+    # @staticmethod
+    # def register_meta_event_for_armour_piece(gameworld, armour_entity):
+    #     current_area_tag = scorekeeper.ScorekeeperUtilities.get_current_area(gameworld=gameworld)
+    #     this_spell_entity = ArmourUtilities.get_spell_entity_from_armour_piece(gameworld=gameworld,
+    #                                                                            armour_entity=armour_entity)
+    #
+    #     spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=this_spell_entity)
+    #     updated_spell_name = spell_name.replace(" ", "_")
+    #     updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
+    #     scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
+    #                                                                      event_name=updated_spell_name.lower(),
+    #                                                                      event_starting_value=0)
 
     @staticmethod
     def add_spell_to_armour_piece(gameworld, armour_entity, spell_entity):

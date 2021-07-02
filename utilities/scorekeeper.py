@@ -1,5 +1,3 @@
-from loguru import logger
-
 from components import scorekeeper
 from utilities import externalfileutilities
 import datetime

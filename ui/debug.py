@@ -555,6 +555,7 @@ class Debug:
         section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.helper_get_section_layout_details(
             game_config=game_config)
         Debug.display_combat_kit(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_ai(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
 
     @staticmethod
     def display_combat_kit(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
@@ -614,6 +615,21 @@ class Debug:
                         s="[color=ENTITY_SPY_COMPONENT]Left Ear:[/color]" + entity_combat_kit_ear1)
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 11,
                         s="[color=ENTITY_SPY_COMPONENT]Right Ear:[/color]" + entity_combat_kit_ear2)
+
+    @staticmethod
+    def display_ai(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+        section = 14
+        start_string = "[color=ENTITY_SPY_COMPONENT]"
+        end_string = "[/color]"
+        display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
+                                  start_panel_frame_width=section_width[section],
+                                  start_panel_frame_height=section_lines[section], title=section_heading[section])
+
+        ai_description = MobileUtilities.get_mobile_ai_description(gameworld=gameworld, entity_id=entity_id)
+
+        ai_level_string = start_string + "AI level:" + end_string + ai_description
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 1, s=ai_level_string)
+
 
     @staticmethod
     def display_primary_attributes(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):

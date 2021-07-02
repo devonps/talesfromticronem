@@ -1,7 +1,10 @@
 from bearlibterminal import terminal
 from loguru import logger
-from utilities import configUtilities, jsonUtilities, scorekeeper, mobileHelp, display
+from utilities import configUtilities, jsonUtilities
+from utilities.mobileHelp import MobileUtilities
+from utilities.scorekeeper import ScorekeeperUtilities
 from components import messages
+from utilities.display import draw_simple_frame
 
 
 class CommonUtils:
@@ -9,7 +12,7 @@ class CommonUtils:
     @staticmethod
     def check_if_entity_has_boon_applied(gameworld, target_entity, boon_being_checked):
         found_boon = False
-        current_boons = mobileHelp.MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=target_entity)
+        current_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld, entity=target_entity)
         for boon in current_boons:
             boon_name = boon['name']
             if boon_name == boon_being_checked:
@@ -21,7 +24,7 @@ class CommonUtils:
     def check_if_entity_has_condi_applied(gameworld, target_entity, condi_being_checked):
         found_condi = False
         condi_count = 0
-        current_condis = mobileHelp.MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
+        current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
                                                                               entity=target_entity)
         for condi in current_condis:
             condi_name = condi['name']
@@ -83,9 +86,10 @@ class CommonUtils:
         :param kwargs: see method definition
         """
         game_config = configUtilities.load_config()
-        player = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        message_log_entity = mobileHelp.MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
-        current_turn = scorekeeper.ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld, event_name='game_turn')
+        player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        message_log_entity = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+        current_turn = ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld,
+                                                                 event_name='game_turn')
         formatted_turn_number = CommonUtils.format_number_as_string(base_number=current_turn, base_string='00000')
 
         new_string = ''
@@ -177,31 +181,29 @@ class CommonUtils:
             for _ in event_classes:
                 if event_classes[n] == 'all':
                     msg = messages.Message(text=new_string, msgclass=0, fg=foreground_colour, bg=background_colour,
-                                  fnt="")
+                                           fnt="")
                     log_message = new_string
                     CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
                                             message_for_export=log_message)
                 elif event_classes[n] == 'combat':
                     msg = messages.Message(text=new_string, msgclass=1, fg=foreground_colour, bg=background_colour,
-                                  fnt="")
+                                           fnt="")
                     log_message = new_string
                     CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
                                             message_for_export=log_message)
                 elif event_classes[n] == 'story':
                     msg = messages.Message(text=new_string, msgclass=2, fg=foreground_colour, bg=background_colour,
-                                  fnt="")
+                                           fnt="")
                     log_message = new_string
                     CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
                                             message_for_export=log_message)
                 else:
                     msg = messages.Message(text=new_string, msgclass=3, fg=foreground_colour, bg=background_colour,
-                                  fnt="")
+                                           fnt="")
                     log_message = new_string
                     CommonUtils.add_message(gameworld=gameworld, message=msg, log_entity=message_log_entity,
                                             message_for_export=log_message)
                 n += 1
-
-
 
     @staticmethod
     def convert_string_to_list(the_string):
@@ -308,9 +310,9 @@ class CommonUtils:
     @staticmethod
     def view_message_log(gameworld, player, log_to_be_displayed):
         logs = log_to_be_displayed.split('_')
-        msglog = mobileHelp.MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
+        msglog = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
         CommonUtils.set_visible_log(gameworld=gameworld, log_entity=msglog, log_to_display=logs[2])
-        mobileHelp.MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=True)
+        MobileUtilities.set_view_message_log(gameworld=gameworld, entity=player, view_value=True)
 
     @staticmethod
     def replace_value_in_event(event_string, **kwargs):
@@ -411,8 +413,8 @@ class CommonUtils:
 
         terminal.clear_area(vp_x_offset + 1, vp_y_offset + 1, 26, height)
 
-        display.draw_simple_frame(start_panel_frame_x=vp_x_offset, start_panel_frame_y=vp_y_offset, start_panel_frame_width=26,
-                          start_panel_frame_height=height, title='| Valid Targets |')
+        draw_simple_frame(start_panel_frame_x=vp_x_offset, start_panel_frame_y=vp_y_offset,
+                          start_panel_frame_width=26, start_panel_frame_height=height, title='| Valid Targets |')
 
         lft = vp_x_offset + 1
 
@@ -426,9 +428,9 @@ class CommonUtils:
             terminal.printf(x=vp_x_offset + 3, y=entity_tag, s=str_to_print)
         else:
             for x in valid_targets:
-                entity_name = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=x)
-                entity_fg = mobileHelp.MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=x)
-                entity_bg = mobileHelp.MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=x)
+                entity_name = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=x)
+                entity_fg = MobileUtilities.get_mobile_fg_render_colour(gameworld=gameworld, entity=x)
+                entity_bg = MobileUtilities.get_mobile_bg_render_colour(gameworld=gameworld, entity=x)
 
                 str_to_print = base_str_to_print + chr(
                     97 + xx) + ") [color=" + entity_fg + "][bkcolor=" + entity_bg + "]" + "@" + ' ' + entity_name[0]
@@ -468,7 +470,8 @@ class CommonUtils:
                                                                  parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
 
         frame_components = [top_left_corner_char, bottom_left_corner_char, top_right_corner_char,
-                            bottom_right_corner_char, horizontal_char, vertical_char, left_t_junction_char, right_t_junction_char]
+                            bottom_right_corner_char, horizontal_char, vertical_char, left_t_junction_char,
+                            right_t_junction_char]
 
         return frame_components
 
@@ -492,7 +495,8 @@ class CommonUtils:
                                                                                 section='spellInfoPopup',
                                                                                 parameter='SP_PORTRAIT_BAR')
 
-        common_coords = [spell_item_info_item_imp_text_x, spell_item_info_start_x, spell_item_info_start_y, spell_item_info_width, spell_item_info_item_horz]
+        common_coords = [spell_item_info_item_imp_text_x, spell_item_info_start_x, spell_item_info_start_y,
+                         spell_item_info_width, spell_item_info_item_horz]
 
         return common_coords
 
@@ -508,7 +512,6 @@ class CommonUtils:
                 selected_menu_option = 0
         return selected_menu_option
 
-
     # the next 2 methods are used by dialogutilities to draw the scripted dialog box
     @staticmethod
     def draw_horiz_row_of_characters(start_x, start_y, width, height, glyph):
@@ -521,7 +524,6 @@ class CommonUtils:
         for z in range(start_y, (start_y + height) - 1):
             terminal.printf(x=start_x, y=z + 1, s=glyph)
             terminal.printf(x=(start_x + width), y=z + 1, s=glyph)
-
 
     @staticmethod
     def draw_dialog_ui(gameworld, game_config, entity_speaking):
@@ -536,7 +538,7 @@ class CommonUtils:
         # [7] = right_t_junction_char
 
         unicode_string_to_print = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
-        entity_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_speaking)
+        entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_speaking)
         frame_components_list = CommonUtils.get_ui_frame_components()
 
         dialog_frame_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
@@ -581,9 +583,9 @@ class CommonUtils:
 
     @staticmethod
     def camera_to_game_map_position(caster_screen_coords, game_config, gameworld, coords_to_check):
-        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld, game_config)
-        player_map_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
-        player_map_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
+        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        player_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        player_map_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
 
         dist_x = abs(caster_screen_coords[0] - coords_to_check[0])
         dist_y = abs(caster_screen_coords[1] - coords_to_check[1])
@@ -607,9 +609,9 @@ class CommonUtils:
     @staticmethod
     def to_camera_coordinates(game_config, game_map, x, y, gameworld):
 
-        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld, game_config)
-        player_map_pos_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
-        player_map_pos_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
+        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        player_map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        player_map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
 
         camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                    parameter='VIEWPORT_WIDTH')
@@ -617,10 +619,10 @@ class CommonUtils:
                                                                     parameter='VIEWPORT_HEIGHT')
 
         camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                          camera_height=camera_height,
-                                                                          player_map_pos_x=player_map_pos_x,
-                                                                          player_map_pos_y=player_map_pos_y,
-                                                                          game_map=game_map)
+                                                                   camera_height=camera_height,
+                                                                   player_map_pos_x=player_map_pos_x,
+                                                                   player_map_pos_y=player_map_pos_y,
+                                                                   game_map=game_map)
 
         (x, y) = (x - camera_x, y - camera_y)
 
