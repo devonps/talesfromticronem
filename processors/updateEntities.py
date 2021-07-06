@@ -28,7 +28,7 @@ class UpdateEntitiesProcessor(esper.Processor):
                     entity_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
                     if not player_dead:
                         if current_health < 0:
-                            self.entity_is_dead(dead_entity_id=ent)
+                            self.entity_is_dead(dead_entity_id=ent, player_entity=player_entity)
                             if ent == player_entity:
                                 player_dead = True
                         else:
@@ -46,7 +46,7 @@ class UpdateEntitiesProcessor(esper.Processor):
             armourManagement.ArmourUtilities.set_mobile_derived_armour_attribute(gameworld=self.gameworld, entity=entity_id)
             mobileHelp.MobileUtilities.set_mobile_derived_attributes(self.gameworld, entity=entity_id)
 
-    def entity_is_dead(self, dead_entity_id):
+    def entity_is_dead(self, dead_entity_id, player_entity):
 
         # gather equipped items
 
@@ -72,7 +72,8 @@ class UpdateEntitiesProcessor(esper.Processor):
                                                                        event_name=event_to_add, value=1)
 
         # And finally delete the entity + ALL associated components
-        world.delete_entity(gameworld=self.gameworld, entity=dead_entity_id)
+        if dead_entity_id != player_entity:
+            world.delete_entity(gameworld=self.gameworld, entity=dead_entity_id)
 
     def apply_conditions(self, entity_names, player_entity, message_log_id, target_entity):
         current_condis = mobileHelp.MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,

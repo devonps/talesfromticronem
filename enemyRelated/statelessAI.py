@@ -116,7 +116,6 @@ class StatelessAI:
         visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=entity)
         if player_entity in visible_entities:
             AIUtilities.let_me_say(gameworld=gameworld, message='I can see the player.')
-            distance_to_target = AIUtilities.can_i_see_my_target(gameworld=gameworld, from_entity=entity, to_entity=player_entity)
             i_can_cast_a_spell, remaining_spells, weapon_type = AIUtilities.can_i_cast_a_spell(gameworld=gameworld, entity_id=entity, target_entity=player_entity)
             if i_can_cast_a_spell:
                 spell_to_cast = AIUtilities.pick_a_spell_to_cast(gameworld=gameworld, entity_id=entity, remaining_spells=remaining_spells, player_entity=player_entity)
