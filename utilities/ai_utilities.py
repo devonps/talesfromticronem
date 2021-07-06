@@ -1,8 +1,40 @@
+import random
+
 from utilities import common
+from utilities.formulas import calculate_distance_to_target
 from utilities.mobileHelp import MobileUtilities
+from utilities.spellHelp import SpellUtilities
 
 
 class AIUtilities:
+
+    @staticmethod
+    def pick_a_spell_to_cast(gameworld, entity_id, remaining_spells, player_entity):
+        if len(remaining_spells) == 1:
+            # cast the spell
+            spell_to_cast = remaining_spells[0]
+            index_to_cast = 0
+        else:
+            # choose a random spell to cast
+            number_of_spells = len(remaining_spells)
+            index_to_cast = random.randrange(0, number_of_spells)
+            spell_to_cast = remaining_spells[index_to_cast]
+
+        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_to_cast)
+
+        target_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        target_map_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
+
+        spell_cast_at = [target_map_x, target_map_y]
+
+        SpellUtilities.set_spell_to_cast_this_turn(gameworld=gameworld, mobile_entity=entity_id,
+                                                   spell_entity=spell_to_cast,
+                                                   spell_target_entity=[player_entity], slot=index_to_cast,
+                                                   map_coords_list=spell_cast_at)
+
+        return spell_name
+
+
 
     @staticmethod
     def can_i_move(gameworld, source_entity):
@@ -45,15 +77,16 @@ class AIUtilities:
             MobileUtilities.set_mobile_physical_hurt_state_to_false(gameworld=gameworld, entity=source_entity)
 
     @staticmethod
-    def can_i_cast_a_spell(gameworld, source_entity):
-        # pending
-        pass
+    def can_i_cast_a_spell(gameworld, entity_id, target_entity):
+        can_cast_a_spell, remaining_spells, weapon_type = SpellUtilities.can_mobile_cast_a_spell(gameworld, entity_id, target_entity)
+
+        return can_cast_a_spell, remaining_spells, weapon_type
 
     @staticmethod
-    def can_i_see_my_target(gameworld, from_entity, to_entity, game_map):
-        # pending
-        pass
+    def can_i_see_my_target(gameworld, from_entity, to_entity):
+        tile_distance = calculate_distance_to_target(gameworld, from_entity, to_entity)
+        return int(tile_distance)
 
     @staticmethod
-    def let_me_say():
-        common.CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog='I can see the player.')
+    def let_me_say(gameworld, message):
+        common.CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog=message)

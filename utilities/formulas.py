@@ -2,13 +2,13 @@ import math
 import random
 
 from loguru import logger
-from utilities import mobileHelp
+from utilities.mobileHelp import MobileUtilities
 
 
 def calculate_condi_confusion_damage(gameworld, caster_entity, current_weapon_level):
-    condi_damage = mobileHelp.MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=caster_entity)
+    condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld, entity=caster_entity)
 
-    current_condis = mobileHelp.MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
+    current_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
                                                                           entity=caster_entity)
 
     confusion_damage = 0
@@ -31,10 +31,10 @@ def calculate_percentage(low_number, max_number):
 
 
 def calculate_distance_to_target(gameworld, from_entity, to_entity):
-    from_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=from_entity)
-    from_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=from_entity)
-    to_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=to_entity)
-    to_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=to_entity)
+    from_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=from_entity)
+    from_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=from_entity)
+    to_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=to_entity)
+    to_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=to_entity)
 
     dx = to_x - from_x
     dy = to_y - from_y

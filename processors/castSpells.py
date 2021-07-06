@@ -4,6 +4,8 @@ from components import mobiles, spells
 from utilities import formulas, common, mobileHelp, scorekeeper, spellHelp, weaponManagement
 from loguru import logger
 
+from utilities.mobileHelp import MobileUtilities
+
 
 class CastSpells(esper.Processor):
     def __init__(self, gameworld, game_map):
@@ -15,10 +17,11 @@ class CastSpells(esper.Processor):
             # method to reduce spell cooldowns
             self.reduce_spell_cool_downs()
             # method to check if any spells should be cast this turn
-            self.check_for_spells_to_be_cast_this_turn()
+            self.check_for_spells_to_be_cast_this_turn(game_config=game_config)
 
-    def check_for_spells_to_be_cast_this_turn(self):
+    def check_for_spells_to_be_cast_this_turn(self, game_config):
         current_area_tag = scorekeeper.ScorekeeperUtilities.get_current_area(gameworld=self.gameworld)
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
         for ent, mob in self.gameworld.get_component(mobiles.SpellCast):
             if mob.has_cast_a_spell:
                 spell_entity = mob.spell_entity
@@ -34,11 +37,12 @@ class CastSpells(esper.Processor):
                 self.set_spell_cooldown_value(spell_entity=spell_entity)
 
                 # increase meta-event spell casting value
-                spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=spell_entity)
-                updated_spell_name = spell_name.replace(" ", "_")
-                updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
-                lower_spell_name = updated_spell_name.lower()
-                scorekeeper.ScorekeeperUtilities.increase_meta_event_value(gameworld=self.gameworld, event_name=lower_spell_name, value=1)
+                if ent == player_entity:
+                    spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=spell_entity)
+                    updated_spell_name = spell_name.replace(" ", "_")
+                    updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
+                    lower_spell_name = updated_spell_name.lower()
+                    scorekeeper.ScorekeeperUtilities.increase_meta_event_value(gameworld=self.gameworld, event_name=lower_spell_name, value=1)
 
                 if spell_type == 'combat':
                     self.process_combat_spells(target_entities=target_entities,
@@ -179,8 +183,10 @@ class CastSpells(esper.Processor):
 
         target_defense = mobileHelp.MobileUtilities.get_mobile_derived_armour_value(gameworld=self.gameworld, entity=spell_target)
         logger.debug('target current defense rating {}', target_defense)
-
-        damage_done_before_modification = int(outgoing_base_damage / target_defense)
+        if target_defense > 0:
+            damage_done_before_modification = int(outgoing_base_damage / target_defense)
+        else:
+            damage_done_before_modification = outgoing_base_damage
         logger.debug('base damage before status effects modification {} [{} / {}]', damage_done_before_modification, outgoing_base_damage, target_defense)
         current_damage = damage_done_before_modification
         damage_applied_to_caster = 0

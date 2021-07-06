@@ -21,22 +21,24 @@ class UpdateEntitiesProcessor(esper.Processor):
 
             if not message_log_just_viewed:
                 message_log_id = mobileHelp.MobileUtilities.get_MessageLog_id(gameworld=self.gameworld, entity=player_entity)
-
+                player_dead = False
                 for ent, ai in self.gameworld.get_component(mobiles.AILevel):
                     current_health = mobileHelp.MobileUtilities.get_mobile_derived_current_health(gameworld=self.gameworld, entity=ent)
 
                     entity_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=self.gameworld, entity=ent)
-
-                    if current_health < 0:
-                        self.entity_is_dead(dead_entity_id=ent)
-                    else:
-                        self.apply_conditions(entity_names=entity_names, player_entity=player_entity,
-                                              message_log_id=message_log_id, target_entity=ent)
-                        self.apply_boons(entity_names=entity_names, player_entity=player_entity, message_log_id=message_log_id,
-                                         target_entity=ent)
-                        # apply controls
-                        # gain resources from spells
-                        self.check_for_combat(entity_id=ent)
+                    if not player_dead:
+                        if current_health < 0:
+                            self.entity_is_dead(dead_entity_id=ent)
+                            if ent == player_entity:
+                                player_dead = True
+                        else:
+                            self.apply_conditions(entity_names=entity_names, player_entity=player_entity,
+                                                  message_log_id=message_log_id, target_entity=ent)
+                            self.apply_boons(entity_names=entity_names, player_entity=player_entity, message_log_id=message_log_id,
+                                             target_entity=ent)
+                            # apply controls
+                            # gain resources from spells
+                            self.check_for_combat(entity_id=ent)
 
     def check_for_combat(self, entity_id):
         in_combat = mobileHelp.MobileUtilities.get_combat_status(self.gameworld, entity=entity_id)
@@ -49,7 +51,10 @@ class UpdateEntitiesProcessor(esper.Processor):
         # gather equipped items
 
         # pick some random equipment to drop on to the game map
+
+        health = mobileHelp.MobileUtilities.get_mobile_derived_current_health(gameworld=self.gameworld, entity=dead_entity_id)
         logger.warning('Entity {} is dead', dead_entity_id)
+        logger.warning('Entity health at death {}', health)
 
         # add kill event
         npc_type = mobileHelp.MobileUtilities.get_mobile_type(gameworld=self.gameworld, entity=dead_entity_id)

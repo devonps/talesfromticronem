@@ -225,7 +225,7 @@
       "ground_targeted": "False",
       "aoe": false,
       "damage_duration": "instant",
-      "damage_coef": "0",
+      "damage_coef": "1.1",
       "effects": [
         {
           "name": "random",
