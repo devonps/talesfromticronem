@@ -59,7 +59,8 @@ class NewEntity:
         MobileUtilities.set_enemy_preferred_min_distance_from_target(gameworld=gameworld, entity=entity_id,
                                                                      value=minimum_range)
 
-        MobileUtilities.set_mobile_senses_vision_range(gameworld=gameworld, entity=entity_id, value=10)
+        # this is the one that sets the vision range of the mobile
+        MobileUtilities.set_mobile_senses_vision_range(gameworld=gameworld, entity=entity_id, value=20)
 
     @staticmethod
     def add_enemy_components_to_entity(gameworld, entity_id):

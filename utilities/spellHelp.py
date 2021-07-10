@@ -393,9 +393,6 @@ class SpellUtilities:
             blast_char = random.randrange(0, 9)
             terminal.printf(x=expl_x + dx, y=expl_y + dy,
                             s=glyph_colour_string + xplosion_string[blast_char])
-            #
-            # terminal.printf(x=(dest_x + screen_offset_x) + dx, y=(dest_y + screen_offset_y) + dy,
-            #                 s=glyph_colour_string + xplosion_string[blast_char])
             terminal.refresh()
 
     @staticmethod

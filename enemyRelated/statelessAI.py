@@ -50,14 +50,9 @@ class StatelessAI:
         for entity, ai in gameworld.get_component(mobiles.AILevel):
             entity_ai = MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=entity)
             if entity_ai == mobile_ai_level:
-                entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity)
-                ai_debugging_first_name = entity_names[0]
                 StatelessAI.update_entity_with_local_information(gameworld=gameworld, entity=entity, game_map=game_map)
                 entity_combat_role = MobileUtilities.get_enemy_combat_role(gameworld=gameworld, entity=entity)
-                StatelessAI.dump_ai_debugging_information(gameworld=gameworld,
-                                                          ai_debugging_first_name=ai_debugging_first_name,
-                                                          target_entity=entity,
-                                                          entity_combat_role=entity_combat_role)
+
                 # what next?
                 if entity_combat_role != 'none':
                     if entity_combat_role == 'squealer':
@@ -104,25 +99,61 @@ class StatelessAI:
     def perform_ai_for_bomber(gameworld, entity, game_config, game_map):
         # the bomber will use long range AoE spells to attack the player or their allies
         # It will always try to use the heavy damage spells first
+        # PSEUDO AI - version 1
+        #             If too-close-to-player AND can-move-away-from-player:
+        #                 move-away-from-player
+        #             elif: can-attack-player
+        #                 attack-player
+        #             else:
+        #                 stand-still
+        # entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity)
+        # ai_debugging_first_name = entity_names[0]
+        # StatelessAI.dump_ai_debugging_information(gameworld=gameworld,
+        #                                           ai_debugging_first_name=ai_debugging_first_name,
+        #                                           target_entity=entity,
+        #                                           entity_combat_role='bomber')
         logger.warning('ALL the way from stateless AI: Bomber role')
-        logger.debug('Entity id {}', entity)
-        # ACTION LIST
         # Get information
+        too_close_to_player = False
+        can_move_away_from_player = False
+        can_attack_player = False
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         monster_hurt_status = MobileUtilities.get_mobile_physical_hurt_status(gameworld=gameworld, entity=entity)
-
+        i_can_move = AIUtilities.can_i_move(gameworld=gameworld, source_entity=entity)
+        # generates a list of entities the monster can see, based on their range
         AIUtilities.what_can_i_see_around_me(gameworld=gameworld, source_entity=entity, game_map=game_map)
-
+        # gets a list of entities the monster can see around them
         visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=entity)
         if player_entity in visible_entities:
-            AIUtilities.let_me_say(gameworld=gameworld, message='I can see the player.')
-            i_can_cast_a_spell, remaining_spells, weapon_type = AIUtilities.can_i_cast_a_spell(gameworld=gameworld, entity_id=entity, target_entity=player_entity)
-            if i_can_cast_a_spell:
-                spell_to_cast = AIUtilities.pick_a_spell_to_cast(gameworld=gameworld, entity_id=entity, remaining_spells=remaining_spells, player_entity=player_entity)
-                cast_spell_message = 'I will cast ' + spell_to_cast
-                AIUtilities.let_me_say(gameworld=gameworld, message=cast_spell_message)
-        if monster_hurt_status:
-            common.CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog='I hurt!')
+            i_can_see_the_player = True
+        else:
+            i_can_see_the_player = False
+        if i_can_see_the_player:
+            dist_to_target = AIUtilities.can_i_see_my_target(gameworld=gameworld, from_entity=entity,
+                                                             to_entity=player_entity)
+            # based on the distance to the target what should the bomber do?
+            if dist_to_target < 6:
+                too_close_to_player = True
+
+            if too_close_to_player and i_can_move:
+                AIUtilities.move_away_from_target(gameworld=gameworld, target_entity=player_entity, source_entity=entity)
+                common.CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog='Too close for me, time to back off')
+            elif not too_close_to_player:
+
+                i_can_cast_a_combat_spell, remaining_spells, _ = AIUtilities.can_i_cast_a_spell(gameworld=gameworld,
+                                                                                                entity_id=entity,
+                                                                                                target_entity=player_entity)
+                if i_can_cast_a_combat_spell:
+                    spell_to_cast = AIUtilities.pick_a_spell_to_cast(gameworld=gameworld, entity_id=entity,
+                                                                     remaining_spells=remaining_spells, player_entity=player_entity)
+                    if spell_to_cast != 'no spell':
+                        spell_cast_message = 'I will cast ' + spell_to_cast
+                        AIUtilities.cast_a_spell(gameworld=gameworld, game_config=game_config, enemy_list=[player_entity], player_entity=player_entity, game_map=game_map, spell_has_aoe=False)
+                        AIUtilities.let_me_say(gameworld=gameworld, message=spell_cast_message)
+                else:
+                    # there's no combat spell to cast - but can I / do I need to cast my heal spell
+                    AIUtilities.let_me_say(gameworld=gameworld, message='I can see the player but have no combat spells available.')
+                    logger.warning('There is no spell to cast, remaining {}', remaining_spells)
 
     @staticmethod
     def perform_ai_for_bully(entity):

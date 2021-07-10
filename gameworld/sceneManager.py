@@ -199,13 +199,8 @@ class SceneManager:
                     if len(allowed_races) > 0:
                         chosen_race_id = random.randrange(len(allowed_races))
                         chosen_race_name = allowed_races[chosen_race_id]
-                        this_npc.update({'race': chosen_race_name})
                     else:
                         logger.warning('NO AVAILABLE RACES FOR THIS SCENE')
-                    # set enemy class
-                    this_npc.update({'class': 'random'})
-                    # set enemy name
-                    this_npc.update({'name': 'random'})
 
                     # choose an enemy role
                     enemy_roles = ['bomber', 'squealer', 'bully', 'sniper']
@@ -224,6 +219,8 @@ class SceneManager:
                             weapons_off = ''
                             weapons_both = 'staff'
                             combat_kits = role['kits']
+                            attack_min = role['min-range']
+                            attack_max = role['max-range']
 
                             logger.warning('--- CREATING ENEMY ROLE {} ---', combat_role)
                             # set enemy role id
