@@ -39,9 +39,7 @@ class StatelessAI:
     """
 
     @staticmethod
-    def update_entity_with_local_information(gameworld, game_map, entity):
-        # what can I see
-        # AIUtilities.what_can_i_see_around_me(gameworld=gameworld, source_entity=entity, game_map=game_map)
+    def update_entity_with_local_information(gameworld, entity):
         # what's my physical state
         AIUtilities.have_i_taken_damage(gameworld=gameworld, source_entity=entity)
 
@@ -52,7 +50,7 @@ class StatelessAI:
         for entity, ai in gameworld.get_component(mobiles.AILevel):
             entity_ai = MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=entity)
             if entity_ai == mobile_ai_level:
-                StatelessAI.update_entity_with_local_information(gameworld=gameworld, entity=entity, game_map=game_map)
+                StatelessAI.update_entity_with_local_information(gameworld=gameworld, entity=entity)
                 entity_combat_role = MobileUtilities.get_enemy_combat_role(gameworld=gameworld, entity=entity)
 
                 # what next?
@@ -104,23 +102,6 @@ class StatelessAI:
         # the bomber will use long range AoE spells to attack the player or their allies
         # It will always try to use the heavy damage spells first
         # PSEUDO AI - version 2
-        #     If bomber is out of range to attack
-        #         if bomber can move
-        #             move towards player
-        #         else
-        #             do something non-combat here
-        #     if bomber is too close to the target
-        #         if bomber can move
-        #             move away from target
-        #         else
-        #             cast a spell
-        #
-        #     if bomber is in the middle ground of distance to the target
-        #         random.chance('attack', 'move')
-        #         if random.chance('attack')
-        #             cast a combat spell
-        #         else
-        #             move away from play
         # entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity)
         # ai_debugging_first_name = entity_names[0]
         # StatelessAI.dump_ai_debugging_information(gameworld=gameworld,
@@ -228,6 +209,8 @@ class StatelessAI:
                                                      enemy_list=[player_entity], player_entity=player_entity,
                                                      game_map=game_map, spell_has_aoe=False)
                             AIUtilities.let_me_say(gameworld=gameworld, message='I will cast ' + spell_to_cast)
+                        else:
+                            AIUtilities.let_me_say(gameworld=gameworld, message='coin flip said cast a spell but could not')
                     else:
                         # there's no combat spell to cast - but can I / do I need to cast my heal spell
                         AIUtilities.let_me_say(gameworld=gameworld,
@@ -235,12 +218,14 @@ class StatelessAI:
                         logger.warning('I am out of spells')
                         if monster_is_hurt:
                             AIUtilities.let_me_say(gameworld=gameworld, message='Medic!')
+                        else:
+                            AIUtilities.let_me_say(gameworld=gameworld, message='Perfect distance, coin flip says attack, not hurt')
 
                 else:
                     # move away from play
                     AIUtilities.move_away_from_target(gameworld=gameworld, target_entity=player_entity,
                                                       source_entity=monster_entity)
-                    AIUtilities.let_me_say(gameworld=gameworld, message='Taking a step back, this time!')
+                    AIUtilities.let_me_say(gameworld=gameworld, message='coin flip says move away from the player!')
 
     @staticmethod
     def perform_ai_for_bully(entity):

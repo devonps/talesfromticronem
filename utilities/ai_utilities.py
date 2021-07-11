@@ -32,7 +32,7 @@ class AIUtilities:
                                                                       spell_entity=remaining_spells[a])
                 dist_to_target = AIUtilities.can_i_see_my_target(gameworld=gameworld, from_entity=entity_id,
                                                                  to_entity=player_entity)
-                if this_spell_range <= dist_to_target:
+                if this_spell_range >= dist_to_target:
                     index_to_cast = random.randrange(0, number_of_spells)
                     spell_to_cast = remaining_spells[index_to_cast]
                     cast_spell = True

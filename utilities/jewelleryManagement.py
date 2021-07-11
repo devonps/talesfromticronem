@@ -284,7 +284,7 @@ class JewelleryUtilities:
                                                                             playable_class=entity_class)
 
                 # equip jewellery entity to player character
-                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation=constants.JEWELER_NECK,
+                JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation=constants.JEWELERY_NECK,
                                                    trinket=pendant)
                 JewelleryUtilities.equip_jewellery(gameworld=gameworld, mobile=entity_id, bodylocation=constants.JEWELERY_LEFT_EAR,
                                                    trinket=left_ear)
