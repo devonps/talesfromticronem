@@ -141,7 +141,7 @@ class SceneManager:
                     logger.info('--------- CREATING NEW MOBILE ---------')
                     new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
                                                               npc_glyph=cell, posx=posx, posy=posy)
-                    NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity)
+                    NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity, max_attack='long', min_attack='medium', game_config=game_config)
 
                     NewEntity.choose_race_for_mobile(race_choice=this_npc['race'], entity_id=new_entity, gameworld=gameworld,
                                                      game_config=game_config)
@@ -182,9 +182,6 @@ class SceneManager:
 
                     # create random enemy
                 if cell.upper() == 'X':
-                    new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
-                                                              npc_glyph=cell, posx=posx, posy=posy)
-                    NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity)
                     ai_roles_file_path = configUtilities.get_config_value_as_string(configfile=game_config,
                                                                                  section='files', parameter='NPCROLES')
                     combat_kits_file_path = configUtilities.get_config_value_as_string(configfile=game_config,
@@ -223,6 +220,9 @@ class SceneManager:
                             attack_max = role['max-range']
 
                             logger.warning('--- CREATING ENEMY ROLE {} ---', combat_role)
+                            new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
+                                                                      npc_glyph=cell, posx=posx, posy=posy, min_range=attack_min, max_range=attack_max)
+                            NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity, min_attack=attack_min, max_attack=attack_max, game_config=game_config)
                             # set enemy role id
                             NewEntity.set_enemy_combat_role(gameworld=gameworld, entity=new_entity,
                                                             combat_role=combat_role)

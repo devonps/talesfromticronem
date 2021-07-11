@@ -134,3 +134,9 @@ class AIUtilities:
     def move_away_from_target(gameworld, target_entity, source_entity):
         pass
         # this will find the next tile away from the target
+
+    @staticmethod
+    def move_towards_target(gameworld, target_entity, source_entity):
+        pass
+        # not yet implemented
+

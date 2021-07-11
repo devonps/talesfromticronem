@@ -1,3 +1,5 @@
+import random
+
 from loguru import logger
 
 from components import mobiles
@@ -39,7 +41,7 @@ class StatelessAI:
     @staticmethod
     def update_entity_with_local_information(gameworld, game_map, entity):
         # what can I see
-        AIUtilities.what_can_i_see_around_me(gameworld=gameworld, source_entity=entity, game_map=game_map)
+        # AIUtilities.what_can_i_see_around_me(gameworld=gameworld, source_entity=entity, game_map=game_map)
         # what's my physical state
         AIUtilities.have_i_taken_damage(gameworld=gameworld, source_entity=entity)
 
@@ -58,7 +60,9 @@ class StatelessAI:
                     if entity_combat_role == 'squealer':
                         StatelessAI.perform_ai_for_squealer(entity=entity)
                     elif entity_combat_role == 'bomber':
-                        StatelessAI.perform_ai_for_bomber(entity=entity, game_config=game_config, gameworld=gameworld, game_map=game_map)
+                        StatelessAI.perform_ai_for_bomber(monster_entity=entity, game_config=game_config,
+                                                          gameworld=gameworld, game_map=game_map,
+                                                          player_entity=player_entity)
                     elif entity_combat_role == 'bully':
                         StatelessAI.perform_ai_for_bully(entity=entity)
                     else:
@@ -96,16 +100,27 @@ class StatelessAI:
         logger.debug('Entity id {}', entity)
 
     @staticmethod
-    def perform_ai_for_bomber(gameworld, entity, game_config, game_map):
+    def perform_ai_for_bomber(gameworld, monster_entity, game_config, game_map, player_entity):
         # the bomber will use long range AoE spells to attack the player or their allies
         # It will always try to use the heavy damage spells first
-        # PSEUDO AI - version 1
-        #             If too-close-to-player AND can-move-away-from-player:
-        #                 move-away-from-player
-        #             elif: can-attack-player
-        #                 attack-player
-        #             else:
-        #                 stand-still
+        # PSEUDO AI - version 2
+        #     If bomber is out of range to attack
+        #         if bomber can move
+        #             move towards player
+        #         else
+        #             do something non-combat here
+        #     if bomber is too close to the target
+        #         if bomber can move
+        #             move away from target
+        #         else
+        #             cast a spell
+        #
+        #     if bomber is in the middle ground of distance to the target
+        #         random.chance('attack', 'move')
+        #         if random.chance('attack')
+        #             cast a combat spell
+        #         else
+        #             move away from play
         # entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity)
         # ai_debugging_first_name = entity_names[0]
         # StatelessAI.dump_ai_debugging_information(gameworld=gameworld,
@@ -114,46 +129,118 @@ class StatelessAI:
         #                                           entity_combat_role='bomber')
         logger.warning('ALL the way from stateless AI: Bomber role')
         # Get information
-        too_close_to_player = False
-        can_move_away_from_player = False
-        can_attack_player = False
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
-        monster_hurt_status = MobileUtilities.get_mobile_physical_hurt_status(gameworld=gameworld, entity=entity)
-        i_can_move = AIUtilities.can_i_move(gameworld=gameworld, source_entity=entity)
-        # generates a list of entities the monster can see, based on their range
-        AIUtilities.what_can_i_see_around_me(gameworld=gameworld, source_entity=entity, game_map=game_map)
+        i_can_move = AIUtilities.can_i_move(gameworld=gameworld, source_entity=monster_entity)
+        min_attack_range = MobileUtilities.get_enemy_preferred_min_range(gameworld=gameworld, entity=monster_entity)
+        max_attack_range = MobileUtilities.get_enemy_preferred_max_range(gameworld=gameworld, entity=monster_entity)
+        monster_is_hurt = MobileUtilities.get_mobile_physical_hurt_status(gameworld=gameworld, entity=monster_entity)
+
+        # set some AI flags
+        i_can_cast_a_combat_spell, remaining_spells, _ = AIUtilities.can_i_cast_a_spell(gameworld=gameworld,
+                                                                                        entity_id=monster_entity,
+                                                                                        target_entity=player_entity)
         # gets a list of entities the monster can see around them
-        visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=entity)
+        visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=monster_entity)
+        # is the player (hardcoded target) visible?
         if player_entity in visible_entities:
             i_can_see_the_player = True
         else:
             i_can_see_the_player = False
+
         if i_can_see_the_player:
-            dist_to_target = AIUtilities.can_i_see_my_target(gameworld=gameworld, from_entity=entity,
+            dist_to_target = AIUtilities.can_i_see_my_target(gameworld=gameworld, from_entity=monster_entity,
                                                              to_entity=player_entity)
+
             # based on the distance to the target what should the bomber do?
-            if dist_to_target < 6:
+            if dist_to_target < min_attack_range:
                 too_close_to_player = True
+            else:
+                too_close_to_player = False
 
-            if too_close_to_player and i_can_move:
-                AIUtilities.move_away_from_target(gameworld=gameworld, target_entity=player_entity, source_entity=entity)
-                common.CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog='Too close for me, time to back off')
-            elif not too_close_to_player:
+            if dist_to_target > max_attack_range:
+                too_far_from_player = True
+            else:
+                too_far_from_player = False
 
-                i_can_cast_a_combat_spell, remaining_spells, _ = AIUtilities.can_i_cast_a_spell(gameworld=gameworld,
-                                                                                                entity_id=entity,
-                                                                                                target_entity=player_entity)
-                if i_can_cast_a_combat_spell:
-                    spell_to_cast = AIUtilities.pick_a_spell_to_cast(gameworld=gameworld, entity_id=entity,
-                                                                     remaining_spells=remaining_spells, player_entity=player_entity)
-                    if spell_to_cast != 'no spell':
-                        spell_cast_message = 'I will cast ' + spell_to_cast
-                        AIUtilities.cast_a_spell(gameworld=gameworld, game_config=game_config, enemy_list=[player_entity], player_entity=player_entity, game_map=game_map, spell_has_aoe=False)
-                        AIUtilities.let_me_say(gameworld=gameworld, message=spell_cast_message)
+            #
+            # if bomber is too close to the target
+            #
+            if too_close_to_player:
+                # if bomber can move
+                # move away from target
+                if i_can_move:
+                    AIUtilities.move_away_from_target(gameworld=gameworld, target_entity=player_entity,
+                                                      source_entity=monster_entity)
+                    common.CommonUtils.fire_event('dialog-general', gameworld=gameworld,
+                                                  dialog='Too close for me, time to back off')
                 else:
-                    # there's no combat spell to cast - but can I / do I need to cast my heal spell
-                    AIUtilities.let_me_say(gameworld=gameworld, message='I can see the player but have no combat spells available.')
-                    logger.warning('There is no spell to cast, remaining {}', remaining_spells)
+                    # can I cast a spell
+                    if i_can_cast_a_combat_spell:
+                        spell_to_cast = AIUtilities.pick_a_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,
+                                                                         remaining_spells=remaining_spells,
+                                                                         player_entity=player_entity)
+                        if spell_to_cast != 'no spell':
+                            spell_cast_message = 'I will cast ' + spell_to_cast
+                            AIUtilities.cast_a_spell(gameworld=gameworld, game_config=game_config,
+                                                     enemy_list=[player_entity], player_entity=player_entity,
+                                                     game_map=game_map, spell_has_aoe=False)
+                            AIUtilities.let_me_say(gameworld=gameworld, message=spell_cast_message)
+                    else:
+                        # there's no combat spell to cast - but can I / do I need to cast my heal spell
+                        AIUtilities.let_me_say(gameworld=gameworld,
+                                               message='I can see the player but have no combat spells available.')
+                        logger.warning('There is no spell to cast, remaining {}', remaining_spells)
+                        if monster_is_hurt:
+                            AIUtilities.let_me_say(gameworld=gameworld, message='I am hurting, medic!')
+
+            #
+            # If bomber is out of range to attack
+            #
+            if too_far_from_player:
+                #  if bomber can move
+                if i_can_move:
+                    # move towards player
+                    AIUtilities.move_towards_target(gameworld=gameworld, target_entity=player_entity,
+                                                    source_entity=monster_entity)
+                    AIUtilities.let_me_say(gameworld=gameworld, message='Time to get hustling.')
+                # else
+                else:
+                    # do something non-combat here
+                    if monster_is_hurt:
+                        AIUtilities.let_me_say(gameworld=gameworld, message='I am hurting, medic!')
+                    else:
+                        AIUtilities.let_me_say(gameworld=gameworld, message='I feel good!')
+
+            #
+            # if bomber is in the middle ground of distance to the target
+            #
+            if not too_close_to_player and not too_far_from_player:
+                # random.chance('attack', 'move')
+                coin_flip = random.randint(0, 1)
+                if coin_flip < 0.5:
+                    # if random.chance('attack')
+                    # cast a combat spell
+                    if i_can_cast_a_combat_spell:
+                        spell_to_cast = AIUtilities.pick_a_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,
+                                                                         remaining_spells=remaining_spells,
+                                                                         player_entity=player_entity)
+                        if spell_to_cast != 'no spell':
+                            AIUtilities.cast_a_spell(gameworld=gameworld, game_config=game_config,
+                                                     enemy_list=[player_entity], player_entity=player_entity,
+                                                     game_map=game_map, spell_has_aoe=False)
+                            AIUtilities.let_me_say(gameworld=gameworld, message='I will cast ' + spell_to_cast)
+                    else:
+                        # there's no combat spell to cast - but can I / do I need to cast my heal spell
+                        AIUtilities.let_me_say(gameworld=gameworld,
+                                               message='I can see the player but have no combat spells available.')
+                        logger.warning('I am out of spells')
+                        if monster_is_hurt:
+                            AIUtilities.let_me_say(gameworld=gameworld, message='Medic!')
+
+                else:
+                    # move away from play
+                    AIUtilities.move_away_from_target(gameworld=gameworld, target_entity=player_entity,
+                                                      source_entity=monster_entity)
+                    AIUtilities.let_me_say(gameworld=gameworld, message='Taking a step back, this time!')
 
     @staticmethod
     def perform_ai_for_bully(entity):

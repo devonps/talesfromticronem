@@ -27,12 +27,12 @@ class DialogFlags:
 # mobile combat components
 # ----------------------------------------------
 class EnemyPreferredAttackMinRange:
-    def __init__(self, value=0):
+    def __init__(self, value):
         self.value = value
 
 
 class EnemyPreferredAttackMaxRange:
-    def __init__(self, value=0):
+    def __init__(self, value):
         self.value = value
 
 

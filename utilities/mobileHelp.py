@@ -420,14 +420,38 @@ class MobileUtilities(numbers.Real, ABC):
         return visible_entities_component.list
 
     @staticmethod
-    def add_enemy_components(gameworld, entity_id):
-        gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMinRange(value=0))
-        gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMaxRange(value=0))
+    def add_enemy_components(gameworld, game_config, entity_id, min_range, max_range):
+
+        min_text = 'SPELL_DIST_' + min_range
+        max_text = 'SPELL_DIST_' + max_range
+        minimum_range = configUtilities.get_config_value_as_integer(configfile=game_config, section='spells',
+                                                                    parameter=min_text)
+        maximum_range = configUtilities.get_config_value_as_integer(configfile=game_config, section='spells',
+                                                                    parameter=max_text)
+
+        if minimum_range == 0:
+            logger.warning('ENTITY PREFERRED MIN RANGE SET TO ZERO')
+        else:
+            logger.debug('ENTITY PREFERRED MIN RANGE SET TO {}', minimum_range)
+
+        if maximum_range == 0:
+            logger.warning('ENTITY PREFERRED MAX RANGE SET TO ZERO')
+        else:
+            logger.debug('ENTITY PREFERRED MAX RANGE SET TO {}', maximum_range)
+
+        gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMinRange(value=minimum_range))
+        gameworld.add_component(entity_id, mobiles.EnemyPreferredAttackMaxRange(value=maximum_range))
         gameworld.add_component(entity_id, mobiles.EnemyCombatRole(value='none'))
         gameworld.add_component(entity_id, mobiles.MobileType(label='enemy'))
         gameworld.add_component(entity_id,
                                 mobiles.CombatKit(title='', glyph='', armourset='', armour_mod='', weapons='',
                                                   pendent='', ring1='', ring2='', ear1='', ear2=''))
+
+        # MobileUtilities.set_enemy_preferred_max_distance_from_target(gameworld=gameworld, entity=entity_id,
+        #                                                              value=maximum_range)
+        # MobileUtilities.set_enemy_preferred_min_distance_from_target(gameworld=gameworld, entity=entity_id,
+        #                                                              value=minimum_range)
+
 
     @staticmethod
     def create_player_character(gameworld, game_config, player_entity):

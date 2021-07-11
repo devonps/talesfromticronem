@@ -4,8 +4,8 @@
       "id": "bomber",
       "race": "random",
       "kits": "light-bomber,medium-bomber,heavy-bomber",
-      "min-range": "medium",
-      "max-range": "long",
+      "min-range": "EARSHOT",
+      "max-range": "LONG",
       "spells": [
         {
           "available": "Fireball,Lava Font,Flame Burst,Meteor Shower,Stoning,Eruption,Shock Wave,Chain Lightning,Lightning Surge,Static Field,Ice Spike,Necrotic Grasp,Mark of Blood,Life Blood,Putrid Mark,Reaper's Mark,Grasping Dead,Deathly Swarm,Spinal Shivers,Oppressive Collapse,Rending Claws,Ghastly Claws,Blood Curse,Reaper's Touch"

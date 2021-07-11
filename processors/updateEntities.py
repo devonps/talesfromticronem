@@ -2,6 +2,7 @@ import esper
 from loguru import logger
 from components import mobiles
 from utilities import formulas, world, armourManagement, common, mobileHelp, scorekeeper
+from utilities.mobileHelp import MobileUtilities
 
 
 class UpdateEntitiesProcessor(esper.Processor):
@@ -39,6 +40,25 @@ class UpdateEntitiesProcessor(esper.Processor):
                             # apply controls
                             # gain resources from spells
                             self.check_for_combat(entity_id=ent)
+                            # what/who can the entity see around them
+                            range_of_vision = MobileUtilities.get_mobile_senses_vision_range(gameworld=self.gameworld,
+                                                                                             entity=ent)
+                            from_x = MobileUtilities.get_mobile_x_position(gameworld=self.gameworld, entity=ent)
+                            from_y = MobileUtilities.get_mobile_y_position(gameworld=self.gameworld, entity=ent)
+
+                            min_x_range = max(1, (from_x - range_of_vision))
+                            max_x_range = min(self.game_map.width, (from_x + self.game_map.width))
+                            min_y_range = max(1, (from_y - range_of_vision))
+                            max_y_range = min(self.game_map.height, (from_y + self.game_map.height))
+                            visible_entities = []
+
+                            for across in range(min_x_range, max_x_range):
+                                for down in range(min_y_range, max_y_range):
+                                    entity_id = self.game_map.tiles[across][down].entity
+                                    if entity_id > 0 and entity_id != ent:
+                                        visible_entities.append(entity_id)
+                            MobileUtilities.set_visible_entities(gameworld=self.gameworld, target_entity=ent,
+                                                                 visible_entities=visible_entities)
 
     def check_for_combat(self, entity_id):
         in_combat = mobileHelp.MobileUtilities.get_combat_status(self.gameworld, entity=entity_id)

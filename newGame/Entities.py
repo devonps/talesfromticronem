@@ -13,14 +13,14 @@ from utilities.mobileHelp import MobileUtilities
 class NewEntity:
 
     @staticmethod
-    def create_base_entity(gameworld, game_config, npc_glyph, posx, posy):
+    def create_base_entity(gameworld, game_config, npc_glyph, posx, posy, min_range='earshot', max_range='long'):
         entity_id = world.get_next_entity_id(gameworld=gameworld)
         MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=entity_id)
         MobileUtilities.set_mobile_description(gameworld=gameworld, entity=entity_id, value='nothing to say')
         MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity_id, value=npc_glyph)
         MobileUtilities.set_mobile_visible(gameworld=gameworld, entity=entity_id)
         MobileUtilities.set_mobile_position(gameworld=gameworld, entity=entity_id, posx=posx, posy=posy)
-        NewEntity.set_min_max_preferred_ranges(entity_id=entity_id, min_range='medium', max_range='long',
+        NewEntity.set_min_max_preferred_ranges(entity_id=entity_id, min_range=min_range, max_range=max_range,
                                                gameworld=gameworld, game_config=game_config)
         MobileUtilities.set_mobile_derived_personality(gameworld=gameworld, entity=entity_id)
 
@@ -63,8 +63,8 @@ class NewEntity:
         MobileUtilities.set_mobile_senses_vision_range(gameworld=gameworld, entity=entity_id, value=20)
 
     @staticmethod
-    def add_enemy_components_to_entity(gameworld, entity_id):
-        MobileUtilities.add_enemy_components(gameworld=gameworld, entity_id=entity_id)
+    def add_enemy_components_to_entity(gameworld, entity_id, max_attack, min_attack, game_config):
+        MobileUtilities.add_enemy_components(gameworld=gameworld, entity_id=entity_id, max_range=max_attack, min_range=min_attack, game_config=game_config)
 
     @staticmethod
     def choose_name_for_mobile(name_choice, gameworld, entity_id):
