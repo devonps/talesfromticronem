@@ -212,13 +212,10 @@ class SceneManager:
                             combat_role = enemy_roles[role_id]
                             npc_class = 'undefined'
                             armourset = 'random'
-                            weapons_main = ''
-                            weapons_off = ''
-                            weapons_both = 'staff'
                             combat_kits = role['kits']
                             attack_min = role['min-range']
                             attack_max = role['max-range']
-
+                            a_spells = role['spells']
                             logger.warning('--- CREATING ENEMY ROLE {} ---', combat_role)
                             new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
                                                                       npc_glyph=cell, posx=posx, posy=posy, min_range=attack_min, max_range=attack_max)
@@ -245,6 +242,7 @@ class SceneManager:
                             a_weapons = combat_kit_chosen['weapons']
                             a_jewellery = combat_kit_chosen['jewellery']
                             available_armour = a_armour.split(',')
+                            weapons_both, weapons_main, weapons_off = SceneManager.sort_out_weapons(all_weapons=a_weapons)
                             res = sum(1 for i in range(len(a_weapons))
                                       if a_weapons.startswith(",", i))
                             if res > 0:
@@ -255,6 +253,8 @@ class SceneManager:
 
                             logger.debug('Random combat kit chosen is {}', combat_kit_chosen['title'])
                             MobileUtilities.set_combat_kit_title(gameworld=gameworld, entity=new_entity, title_string=combat_kit_chosen['title'])
+
+                            chosen_spells = NewEntity.set_spells_from_combat_role(gameworld=gameworld, available_spells=a_spells)
 
                             # set enemy glyph
                             NewEntity.set_entity_glyph(gameworld=gameworld, entity=new_entity, glyph=combat_kit_chosen['glyph'])
@@ -302,7 +302,7 @@ class SceneManager:
                             NewEntity.choose_weapons(weapon_file_option_both=weapons_both,
                                                      weapon_file_option_main=weapons_main,
                                                      weapon_file_option_off=weapons_off, entity_id=new_entity,
-                                                     gameworld=gameworld, game_config=game_config)
+                                                     gameworld=gameworld, game_config=game_config, spell_list=chosen_spells)
                             MobileUtilities.set_combat_kit_weapons(gameworld=gameworld, entity=new_entity, weapons=available_weapons)
 
                             # set enemy AI
@@ -311,6 +311,7 @@ class SceneManager:
                             NewEntity.create_empty_spell_bar(gameworld=gameworld, entity_id=new_entity)
 
                             # --- POPULATE SPELL BAR BASED ON EQUIPMENT -
+
                             spellHelp.SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=new_entity)
 
                             logger.info('enemy npc created')
@@ -322,6 +323,23 @@ class SceneManager:
 
                 posx += 1
             posy += 1
+
+    @staticmethod
+    def sort_out_weapons(all_weapons):
+        both_hands = ''
+        main_hand = ''
+        off_hand = ''
+        weapons_list = all_weapons.split(',')
+        if len(weapons_list) == 1:
+            if weapons_list[0] in ['sword', 'staff']:
+                both_hands = weapons_list[0]
+            else:
+                logger.warning('Illegal weapon found: {}', weapons_list)
+        else:
+            pass
+        return both_hands, main_hand, off_hand
+
+
 
     @staticmethod
     def place_empty_tile_yes_no(cell, game_map, posx, posy, tile_type):

@@ -167,6 +167,7 @@ class CastSpells(esper.Processor):
     def cast_combat_spell(self, spell_caster, spell, spell_target, weapon_used):
         caster_power = mobileHelp.MobileUtilities.get_mobile_primary_power(gameworld=self.gameworld, entity=spell_caster)
         spell_coeff = float(spellHelp.SpellUtilities.get_spell_damage_coeff(gameworld=self.gameworld, spell_entity=spell))
+        spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=self.gameworld, spell_entity=spell)
 
         weapon_strength = self.get_weapon_damage_used_in_casting(spell_caster=spell_caster, weapon_used=weapon_used)
         weapon_level = weaponManagement.WeaponUtilities.get_weapon_experience_values(gameworld=self.gameworld, entity=weapon_used)
@@ -175,6 +176,7 @@ class CastSpells(esper.Processor):
         outgoing_base_damage = formulas.outgoing_base_damage(weapon_strength=weapon_strength, power=caster_power,
                                                              spell_coefficient=spell_coeff)
         logger.warning('------ STARTING COMBAT SPELL DAMAGE CALCULATIONS -------')
+        logger.debug('Casting spell {}', spell_name)
         logger.debug('caster power {}', caster_power)
         logger.debug('weapon strength {}', weapon_strength)
         logger.debug('weapon level {}', current_weapon_level)

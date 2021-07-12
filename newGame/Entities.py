@@ -1,6 +1,6 @@
 import random
 
-from components import mobiles, scorekeeper
+from components import mobiles, scorekeeper, items
 from newGame.CreateSpells import AsEntities
 from newGame.Items import ItemManager
 from utilities import configUtilities, armourManagement, itemsHelp, jewelleryManagement, jsonUtilities, \
@@ -145,45 +145,52 @@ class NewEntity:
             class_name.append(option['name'])
             class_health.append(option['health'])
             class_spell_file.append(option['spellfile'])
+        if class_choice != 'undefined':
+            if class_choice == 'random':
+                selected_class_id = random.randint(0, len(class_name) - 1)
+            else:
+                for n in range(len(class_name)):
+                    if class_name[n] == class_choice:
+                        selected_class_id = n
 
-        if class_choice == 'random':
-            selected_class_id = random.randint(0, len(class_name) - 1)
+            selected_class_name = class_name[selected_class_id]
+            selected_class_health = class_health[selected_class_id]
+            selected_cass_spellfile = class_spell_file[selected_class_id]
+
+            MobileUtilities.setup_class_attributes(gameworld=gameworld, player=entity_id,
+                                                   selected_class=selected_class_name,
+                                                   health=int(selected_class_health),
+                                                   spellfile=selected_cass_spellfile)
+
+            logger.info('Their class is {}', selected_class_name)
+            logger.info('Their class health is {}', selected_class_health)
         else:
-            for n in range(len(class_name)):
-                if class_name[n] == class_choice:
-                    selected_class_id = n
-
-        selected_class_name = class_name[selected_class_id]
-        selected_class_health = class_health[selected_class_id]
-        selected_cass_spellfile = class_spell_file[selected_class_id]
-
-        MobileUtilities.setup_class_attributes(gameworld=gameworld, player=entity_id,
-                                               selected_class=selected_class_name,
-                                               health=int(selected_class_health),
-                                               spellfile=selected_cass_spellfile)
-
-        logger.info('Their class is {}', selected_class_name)
-        logger.info('Their class health is {}', selected_class_health)
+            logger.info('Their class is UNDEFINED')
 
     @staticmethod
-    def equip_entity(gameworld, entity_id, game_config, this_entity):
-        npc_armourset = this_entity['armourset']
-        npc_jeweleryset = this_entity['jeweleryset']
-        npc_weapons_both = this_entity['weapons-both']
-        npc_weapons_main = this_entity['weapons-main']
-        npc_weapons_off = this_entity['weapons-off']
-        NewEntity.choose_armourset_for_mobile(armour_file_option=npc_armourset, entity_id=entity_id,
-                                              gameworld=gameworld, game_config=game_config)
-        NewEntity.choose_jewellery_package(jewellery_file_option=npc_jeweleryset, entity_id=entity_id,
-                                           game_config=game_config, gameworld=gameworld)
+    def set_spells_from_combat_role(gameworld, available_spells):
+        chosen_spells = NewEntity.pick_random_spells_for_combat_role(available_spells=available_spells)
+        for spell_entity in chosen_spells:
+            spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+            logger.info('Spell chosen: {}, id is {}', spell_name, spell_entity)
 
-        NewEntity.choose_weapons(weapon_file_option_both=npc_weapons_both, weapon_file_option_main=npc_weapons_main,
-                                 weapon_file_option_off=npc_weapons_off, entity_id=entity_id,
-                                 gameworld=gameworld, game_config=game_config)
+        return chosen_spells
+
+
+    @staticmethod
+    def pick_random_spells_for_combat_role(available_spells):
+        spells_list = available_spells.split()
+        chosen_spells = []
+        count_of_spells = len(spells_list)
+        for _ in range(5):
+            spell_id = random.randrange(0, count_of_spells)
+            chosen_spells.append(spell_id)
+        return chosen_spells
+
 
     @staticmethod
     def choose_weapons(weapon_file_option_both, weapon_file_option_main, weapon_file_option_off, entity_id, gameworld,
-                       game_config):
+                       game_config, spell_list=None):
         equipped_weapons = NewEntity.are_weapons_equipped(both_hands=weapon_file_option_both,
                                                           main_hand=weapon_file_option_main,
                                                           off_hand=weapon_file_option_off)
@@ -193,9 +200,21 @@ class NewEntity:
                                                                both_hands=weapon_file_option_both,
                                                                gameworld=gameworld, game_config=game_config)
 
-            NewEntity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
-                                                          entity_id=entity_id, gameworld=gameworld,
-                                                          game_config=game_config)
+            if spell_list is not None:
+                weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                weapon_slot_component.slot_one = spell_list[0]
+                weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                weapon_slot_component.slot_two = spell_list[1]
+                weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                weapon_slot_component.slot_three = spell_list[2]
+                weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                weapon_slot_component.slot_four = spell_list[3]
+                weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                weapon_slot_component.slot_five = spell_list[4]
+            else:
+                NewEntity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
+                                                              entity_id=entity_id, gameworld=gameworld,
+                                                              game_config=game_config)
 
     @staticmethod
     def are_weapons_equipped(both_hands, main_hand, off_hand):
