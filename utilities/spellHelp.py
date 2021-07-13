@@ -891,6 +891,9 @@ class SpellUtilities:
                                                                           parameter='CONDITIONSFILE')
         conditions_file = jsonUtilities.read_json_file(conditions_file_path)
 
+        if target_class == '':
+            target_class = 'default'
+
         for condi in list_of_condis:
 
             for condition in conditions_file['conditions']:
@@ -930,6 +933,9 @@ class SpellUtilities:
                                                                      parameter='BOONSFILE')
         boons_file = jsonUtilities.read_json_file(boons_file_path)
 
+        if target_class == '':
+            target_class = 'default'
+            
         for boon in list_of_boons:
 
             for file_boon in boons_file['boons']:
