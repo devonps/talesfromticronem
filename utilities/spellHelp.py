@@ -688,6 +688,15 @@ class SpellUtilities:
                                                            spellbar_entity=spell_bar)
 
     @staticmethod
+    def get_spell_entity_from_spell_name(gameworld, spell_name):
+        for ent, (name) in gameworld.get_components(spells.Name):
+            spell_entity_name = name[0].label.lower()
+            if spell_entity_name == spell_name.lower():
+                return ent
+        return 0
+
+
+    @staticmethod
     def get_class_heal_spell(gameworld, player_entity):
         spell_entity = 0
         player_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=player_entity)

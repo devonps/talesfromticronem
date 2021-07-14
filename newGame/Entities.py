@@ -170,10 +170,12 @@ class NewEntity:
     @staticmethod
     def set_spells_from_combat_role(gameworld, available_spells):
         chosen_spells = NewEntity.pick_random_spells_for_combat_role(available_spells=available_spells)
-        for spell_entity in chosen_spells:
-            spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+        spell_entities = []
+        for spell_name in chosen_spells:
+            spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spell_name(gameworld=gameworld, spell_name=spell_name)
             logger.info('Spell chosen: {}, id is {}', spell_name, spell_entity)
-        return chosen_spells
+            spell_entities.append(spell_entity)
+        return spell_entities
 
 
     @staticmethod
