@@ -159,8 +159,9 @@ class SpellUtilities:
         logger.info('available spells {}', spells_to_choose_from)
         for spell in spells_to_choose_from:
             spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell)
+            spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell)
             if distance_to_target > spell_range:
-                logger.debug('spell popped off due to range {}', spell)
+                logger.debug('spell {} popped off due, spell range is {}, distance to target is {}', spell_name, spell_range, distance_to_target)
                 idx = spells_to_choose_from.index(spell)
                 spells_to_choose_from[idx] = 0
         logger.info('spells left to cast {}', spells_to_choose_from)
@@ -935,7 +936,7 @@ class SpellUtilities:
 
         if target_class == '':
             target_class = 'default'
-            
+
         for boon in list_of_boons:
 
             for file_boon in boons_file['boons']:

@@ -161,7 +161,7 @@ class StatelessAI:
                                                                          player_entity=player_entity)
                         if spell_to_cast != 'no spell':
                             spell_cast_message = 'I will cast ' + spell_to_cast
-                            AIUtilities.cast_a_spell(gameworld=gameworld, game_config=game_config,
+                            AIUtilities.cast_a_spell(gameworld=gameworld, game_config=game_config, caster_entity=monster_entity,
                                                      enemy_list=[player_entity], player_entity=player_entity,
                                                      game_map=game_map, spell_has_aoe=False)
                             AIUtilities.let_me_say(gameworld=gameworld, message=spell_cast_message)
@@ -205,7 +205,7 @@ class StatelessAI:
                                                                          remaining_spells=remaining_spells,
                                                                          player_entity=player_entity)
                         if spell_to_cast != 'no spell':
-                            AIUtilities.cast_a_spell(gameworld=gameworld, game_config=game_config,
+                            AIUtilities.cast_a_spell(gameworld=gameworld, game_config=game_config, caster_entity=monster_entity,
                                                      enemy_list=[player_entity], player_entity=player_entity,
                                                      game_map=game_map, spell_has_aoe=False)
                             AIUtilities.let_me_say(gameworld=gameworld, message='I will cast ' + spell_to_cast)

@@ -38,7 +38,7 @@ def calculate_distance_to_target(gameworld, from_entity, to_entity):
 
     dx = to_x - from_x
     dy = to_y - from_y
-    return math.sqrt(dx ** 2 + dy ** 2)
+    return int(math.sqrt(dx ** 2 + dy ** 2))
 
 
 def distance_between_two_tiles(from_coords, to_coords):

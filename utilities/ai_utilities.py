@@ -108,15 +108,21 @@ class AIUtilities:
         common.CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog=message)
 
     @staticmethod
-    def cast_a_spell(gameworld, game_config, enemy_list, player_entity, game_map, spell_has_aoe):
+    def cast_a_spell(gameworld, game_config, enemy_list, player_entity, caster_entity, game_map, spell_has_aoe):
         # Spell to cast has already been decided upon, based on current AI values/settings
 
-        # draw graphics of spell being cast
+        # get list of enemies at map target location
+        # do spell casting visual effects at screen coords
+
+        # get map position of target
         tg_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         tg_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
 
-        caster_map_x = tg_x
-        caster_map_y = tg_y
+        # get caster map position
+        cg_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=caster_entity)
+        cg_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=caster_entity)
+        caster_map_x = cg_x
+        caster_map_y = cg_y
 
         # these hold the screen coords
         (targeting_cursor_centre_x, targeting_cursor_centre_y) = common.CommonUtils.to_camera_coordinates(

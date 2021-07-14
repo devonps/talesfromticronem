@@ -300,7 +300,7 @@ class GameOver:
                 if (condi + 1) < len(current_condis):
                     condi_string += current_condis['name'] + ', '
                 else:
-                    condi_string += 'and ' + current_condis[condi] + '.'
+                    condi_string += 'and ' + current_condis['name'] + '.'
         else:
             condi_string += 'no conditions, lucky you!'
 

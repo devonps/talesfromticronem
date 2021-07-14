@@ -173,18 +173,17 @@ class NewEntity:
         for spell_entity in chosen_spells:
             spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
             logger.info('Spell chosen: {}, id is {}', spell_name, spell_entity)
-
         return chosen_spells
 
 
     @staticmethod
     def pick_random_spells_for_combat_role(available_spells):
-        spells_list = available_spells.split()
+        spells_list = available_spells.split(',')
         chosen_spells = []
         count_of_spells = len(spells_list)
         for _ in range(5):
             spell_id = random.randrange(0, count_of_spells)
-            chosen_spells.append(spell_id)
+            chosen_spells.append(spells_list[spell_id])
         return chosen_spells
 
 
