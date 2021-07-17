@@ -147,7 +147,7 @@ class StatelessAI:
             #
             if too_close_to_player:
                 # if bomber can move
-                # move away from target
+                #  Currently set to ALWAYS move away from target
                 if i_can_move:
                     AIUtilities.move_away_from_target(gameworld=gameworld, target_entity=player_entity,
                                                       source_entity=monster_entity)
@@ -161,9 +161,9 @@ class StatelessAI:
                                                                          player_entity=player_entity)
                         if spell_to_cast != 'no spell':
                             spell_cast_message = 'I will cast ' + spell_to_cast
-                            AIUtilities.cast_a_spell(gameworld=gameworld, game_config=game_config, caster_entity=monster_entity,
-                                                     enemy_list=[player_entity], player_entity=player_entity,
-                                                     game_map=game_map, spell_has_aoe=False)
+                            AIUtilities.draw_spell_targeting_effects(gameworld=gameworld, game_config=game_config, caster_entity=monster_entity,
+                                                                     enemy_list=[player_entity], player_entity=player_entity,
+                                                                     game_map=game_map, spell_has_aoe=False)
                             AIUtilities.let_me_say(gameworld=gameworld, message=spell_cast_message)
                     else:
                         # there's no combat spell to cast - but can I / do I need to cast my heal spell
@@ -179,7 +179,7 @@ class StatelessAI:
             if too_far_from_player:
                 #  if bomber can move
                 if i_can_move:
-                    # move towards player
+                    # Currently set to ALWAYS move towards player
                     AIUtilities.move_towards_target(gameworld=gameworld, target_entity=player_entity,
                                                     source_entity=monster_entity)
                     AIUtilities.let_me_say(gameworld=gameworld, message='Time to get hustling.')
@@ -205,9 +205,9 @@ class StatelessAI:
                                                                          remaining_spells=remaining_spells,
                                                                          player_entity=player_entity)
                         if spell_to_cast != 'no spell':
-                            AIUtilities.cast_a_spell(gameworld=gameworld, game_config=game_config, caster_entity=monster_entity,
-                                                     enemy_list=[player_entity], player_entity=player_entity,
-                                                     game_map=game_map, spell_has_aoe=False)
+                            AIUtilities.draw_spell_targeting_effects(gameworld=gameworld, game_config=game_config, caster_entity=monster_entity,
+                                                                     enemy_list=[player_entity], player_entity=player_entity,
+                                                                     game_map=game_map, spell_has_aoe=False)
                             AIUtilities.let_me_say(gameworld=gameworld, message='I will cast ' + spell_to_cast)
                         else:
                             AIUtilities.let_me_say(gameworld=gameworld, message='coin flip said cast a spell but could not')

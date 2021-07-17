@@ -108,7 +108,7 @@ class AIUtilities:
         common.CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog=message)
 
     @staticmethod
-    def cast_a_spell(gameworld, game_config, enemy_list, player_entity, caster_entity, game_map, spell_has_aoe):
+    def draw_spell_targeting_effects(gameworld, game_config, enemy_list, player_entity, caster_entity, game_map, spell_has_aoe):
         # Spell to cast has already been decided upon, based on current AI values/settings
 
         # get list of enemies at map target location
@@ -138,11 +138,83 @@ class AIUtilities:
 
     @staticmethod
     def move_away_from_target(gameworld, target_entity, source_entity):
-        pass
-        # this will find the next tile away from the target
+        # movement options
+        # where is the target in relation to me (the source entity)
+        from_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=source_entity)
+        from_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=source_entity)
+        to_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
+        to_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
+
+        target_is_north_of_me = False
+        target_is_south_of_me = False
+        target_is_west_of_me = False
+        target_is_east_of_me = False
+        i_have_moved = False
+
+        if from_x > to_x:
+            target_is_west_of_me = True
+        elif from_x < to_x:
+            target_is_east_of_me = True
+
+        if from_y > to_y:
+            target_is_north_of_me = True
+        elif from_y < to_y:
+            target_is_south_of_me = True
+
+        # do the reverse of move towards the target to move away from the target
+        if target_is_north_of_me:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='down', speed=1)
+            i_have_moved = True
+
+        if target_is_east_of_me and not i_have_moved:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='right', speed=1)
+            i_have_moved = True
+
+        if target_is_south_of_me and not i_have_moved:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='up', speed=1)
+            i_have_moved = True
+
+        if target_is_west_of_me and not i_have_moved:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='left', speed=1)
 
     @staticmethod
     def move_towards_target(gameworld, target_entity, source_entity):
-        pass
-        # not yet implemented
+
+        # movement options
+        # where is the target in relation to me (the source entity)
+        from_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=source_entity)
+        from_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=source_entity)
+        to_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
+        to_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
+
+        target_is_north_of_me = False
+        target_is_south_of_me = False
+        target_is_west_of_me = False
+        target_is_east_of_me = False
+        i_have_moved = False
+
+        if from_x > to_x:
+            target_is_east_of_me = True
+        elif from_x < to_x:
+            target_is_west_of_me = True
+
+        if from_y > to_y:
+            target_is_north_of_me = True
+        elif from_y < to_y:
+            target_is_south_of_me = True
+
+        if target_is_north_of_me:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='up', speed=1)
+            i_have_moved = True
+
+        if target_is_east_of_me and not i_have_moved:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='left', speed=1)
+            i_have_moved = True
+
+        if target_is_south_of_me and not i_have_moved:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='down', speed=1)
+            i_have_moved = True
+
+        if target_is_west_of_me and not i_have_moved:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='right', speed=1)
 

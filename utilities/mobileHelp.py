@@ -185,7 +185,7 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_mobile_velocity(gameworld, entity, direction, speed):
-        player_velocity_component = gameworld.component_for_entity(entity, mobiles.Velocity)
+        mobile_velocity_component = gameworld.component_for_entity(entity, mobiles.Velocity)
         dx = 0
         dy = 0
         if direction == 'left':
@@ -201,8 +201,8 @@ class MobileUtilities(numbers.Real, ABC):
             dx = 0
             dy = speed
 
-        player_velocity_component.dx = dx
-        player_velocity_component.dy = dy
+        mobile_velocity_component.dx = dx
+        mobile_velocity_component.dy = dy
 
     @staticmethod
     def get_mobile_velocity(gameworld, entity):
@@ -273,7 +273,6 @@ class MobileUtilities(numbers.Real, ABC):
 
         return equipped
 
-    # equip a weapon into a hand (main, off, both)
     @staticmethod
     def equip_weapon(gameworld, entity, weapon, hand):
 

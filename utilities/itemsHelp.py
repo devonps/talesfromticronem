@@ -33,21 +33,8 @@ class ItemUtilities:
         gameworld.add_component(entity_id, items.ItemDisplayName(label=value))
 
     @staticmethod
-    def get_equipped_weapon_for_enemy(gameworld, weapons_equipped):
-        weapon_id = 0
-
-        if len(weapons_equipped) == 0:
-            logger.warning('NO WEAPONS EQUIPPED')
-            return weapon_id
-        if weapons_equipped[0] > 0:
-            weapon_id = weapons_equipped[0]
-        elif weapons_equipped[1] > 0:
-            weapon_id = weapons_equipped[1]
-        else:
-            weapon_id = weapons_equipped[2]
-
-        weapon_type = ItemUtilities.get_item_name(gameworld=gameworld, entity=weapon_id)
-
+    def get_equipped_weapon_type_for_enemy(gameworld, weapons_equipped):
+        weapon_type = ItemUtilities.get_item_name(gameworld=gameworld, entity=weapons_equipped)
         return weapon_type
 
     @staticmethod
