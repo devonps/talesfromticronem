@@ -7,10 +7,187 @@ from utilities import configUtilities, armourManagement, itemsHelp, jewelleryMan
     spellHelp, weaponManagement, world
 from loguru import logger
 
+from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.mobileHelp import MobileUtilities
 
 
 class NewEntity:
+
+    @staticmethod
+    def build_named_npc(gameworld, cell, this_npc, game_config, posx, posy):
+
+        logger.info('--------- CREATING NAMED MOBILE ---------')
+        new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
+                                                  npc_glyph=cell, posx=posx, posy=posy)
+        NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity, max_attack='long',
+                                                 min_attack='medium', game_config=game_config)
+
+        NewEntity.choose_race_for_mobile(race_choice=this_npc['race'], entity_id=new_entity, gameworld=gameworld,
+                                         game_config=game_config)
+
+        NewEntity.choose_class_for_mobile(class_choice=this_npc['class'], entity_id=new_entity, gameworld=gameworld,
+                                          game_config=game_config)
+
+        NewEntity.choose_name_for_mobile(name_choice=this_npc['name'], entity_id=new_entity, gameworld=gameworld)
+
+        NewEntity.choose_armourset_for_mobile(armour_file_option=this_npc['armourset'], entity_id=new_entity,
+                                              gameworld=gameworld, game_config=game_config)
+        NewEntity.choose_jewellery_package(jewellery_file_option=this_npc['jeweleryset'], entity_id=new_entity,
+                                           game_config=game_config, gameworld=gameworld)
+
+        NewEntity.choose_weapons(weapon_file_option_both=this_npc['weapons-both'],
+                                 weapon_file_option_main=this_npc['weapons-main'],
+                                 weapon_file_option_off=this_npc['weapons-off'], entity_id=new_entity,
+                                 gameworld=gameworld, game_config=game_config)
+
+        NewEntity.set_entity_ai_level(game_config=game_config, gameworld=gameworld, entity_id=new_entity)
+        NewEntity.is_entity_a_shopkeeper(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
+        NewEntity.is_entity_a_tutor(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
+        NewEntity.create_empty_spell_bar(gameworld=gameworld, entity_id=new_entity)
+
+        # --- POPULATE SPELL BAR BASED ON EQUIPMENT -
+        spellHelp.SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=new_entity)
+
+        # --- ADD JEWELLERY SPELLS TO SPELLBAR -
+        NewEntity.add_spells_to_spell_bar_based_on_equipped_jewellery(gameworld=gameworld,
+                                                                      entity_id=new_entity)
+        logger.info('--------- MOBILE HAS BEEN CREATED ---------')
+
+        return new_entity
+
+    @staticmethod
+    def build_random_enemy(gameworld, cell, game_config, posx, posy, chosen_race_name):
+        ai_roles_file_path = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                        section='files', parameter='NPCROLES')
+        combat_kits_file_path = configUtilities.get_config_value_as_string(configfile=game_config,
+                                                                           section='files', parameter='COMBATKITS')
+        # choose an enemy role
+        enemy_roles = ['bomber', 'squealer', 'bully', 'sniper']
+        npc_race = chosen_race_name
+        npc_name = 'random'
+        new_entity = 0
+        # commented out whilst building/testing stateless AI
+        # role_id = random.randrange(len(enemy_roles))
+        role_id = 0
+        role_file = jsonUtilities.read_json_file(ai_roles_file_path)
+        for role in role_file['roles']:
+            if role['id'] == enemy_roles[role_id]:
+                combat_role = enemy_roles[role_id]
+                npc_class = 'undefined'
+                armourset = 'random'
+                combat_kits = role['kits']
+                attack_min = role['min-range']
+                attack_max = role['max-range']
+                a_spells = role['spells']
+                logger.warning('--- CREATING ENEMY ROLE {} ---', combat_role)
+                new_entity = NewEntity.create_base_entity(gameworld=gameworld, game_config=game_config,
+                                                          npc_glyph=cell, posx=posx, posy=posy, min_range=attack_min,
+                                                          max_range=attack_max)
+                NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity,
+                                                         min_attack=attack_min, max_attack=attack_max,
+                                                         game_config=game_config)
+                # set enemy role id
+                NewEntity.set_enemy_combat_role(gameworld=gameworld, entity=new_entity,
+                                                combat_role=combat_role)
+                # load combat kits
+                available_kits = []
+                combat_kit_count = 0
+                combat_kit_file = jsonUtilities.read_json_file(combat_kits_file_path)
+                for kit in combat_kit_file['kits']:
+                    if kit['title'] in combat_kits:
+                        available_kits.append(kit)
+                        combat_kit_count += 1
+
+                kit_index = 0
+
+                if len(available_kits) > 1:
+                    kit_index = random.randrange(0, combat_kit_count)
+                combat_kit_chosen = available_kits[kit_index]
+                a_armour = combat_kit_chosen['armour']
+                a_arm_mods = combat_kit_chosen['armour_modifiers']
+                a_weapons = combat_kit_chosen['weapons']
+                a_jewellery = combat_kit_chosen['jewellery']
+                available_armour = a_armour.split(',')
+                weapons_both, weapons_main, weapons_off = NewEntity.sort_out_weapons(all_weapons=a_weapons)
+                res = sum(1 for i in range(len(a_weapons))
+                          if a_weapons.startswith(",", i))
+                if res > 0:
+                    available_weapons = a_weapons.split(',')
+                else:
+                    available_weapons = a_weapons
+                available_arm_mods = a_arm_mods.split(',')
+
+                logger.debug('Random combat kit chosen is {}', combat_kit_chosen['title'])
+                MobileUtilities.set_combat_kit_title(gameworld=gameworld, entity=new_entity,
+                                                     title_string=combat_kit_chosen['title'])
+
+                chosen_spells = NewEntity.set_spells_from_combat_role(gameworld=gameworld, available_spells=a_spells)
+
+                # set enemy glyph
+                NewEntity.set_entity_glyph(gameworld=gameworld, entity=new_entity, glyph=combat_kit_chosen['glyph'])
+                MobileUtilities.set_combat_kit_glyph(gameworld=gameworld, entity=new_entity,
+                                                     glyph=combat_kit_chosen['glyph'])
+                # set race for enemy
+                NewEntity.choose_race_for_mobile(race_choice=npc_race, entity_id=new_entity, gameworld=gameworld,
+                                                 game_config=game_config)
+                # set class for enemy
+                NewEntity.choose_class_for_mobile(class_choice=npc_class, entity_id=new_entity, gameworld=gameworld,
+                                                  game_config=game_config)
+                # choose a name for the enemy
+                NewEntity.choose_name_for_mobile(name_choice=npc_name, entity_id=new_entity, gameworld=gameworld)
+
+                # equip enemy with armourset
+
+                armour_index = random.randrange(0, len(available_armour))
+                npc_armourset = available_armour[armour_index]
+                logger.debug('Random armourset chosen is {}', npc_armourset)
+
+                MobileUtilities.set_combat_kit_armourset(gameworld=gameworld, entity=new_entity,
+                                                         armourset=npc_armourset)
+                MobileUtilities.set_combat_kit_armour_mod(gameworld=gameworld, entity=new_entity,
+                                                          armour_mod=available_arm_mods)
+
+                NewEntity.choose_armourset_for_mobile(armour_file_option=armourset, entity_id=new_entity,
+                                                      gameworld=gameworld, game_config=game_config)
+
+                # equip enemy with jewelery
+                JewelleryUtilities.create_jewellery_from_combat_kit(gameworld=gameworld, gemstones=a_jewellery,
+                                                                    entity_id=new_entity)
+                jewellery_list = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld,
+                                                                                mobile=new_entity)
+
+                left_ear = jewellery_list[0]
+                right_ear = jewellery_list[1]
+                ring1 = jewellery_list[2]
+                ring2 = jewellery_list[3]
+                neck_entity = jewellery_list[4]
+
+                MobileUtilities.set_combat_kit_ring1(gameworld=gameworld, entity=new_entity, ring1=ring1)
+                MobileUtilities.set_combat_kit_ring2(gameworld=gameworld, entity=new_entity, ring2=ring2)
+                MobileUtilities.set_combat_kit_ear1(gameworld=gameworld, entity=new_entity, ear1=left_ear)
+                MobileUtilities.set_combat_kit_ear2(gameworld=gameworld, entity=new_entity, ear2=right_ear)
+                MobileUtilities.set_combat_kit_pendant(gameworld=gameworld, entity=new_entity,
+                                                       pendent=neck_entity)
+
+                # equip enemy with weapons
+                NewEntity.choose_weapons(weapon_file_option_both=weapons_both,
+                                         weapon_file_option_main=weapons_main,
+                                         weapon_file_option_off=weapons_off, entity_id=new_entity,
+                                         gameworld=gameworld, game_config=game_config, spell_list=chosen_spells)
+                MobileUtilities.set_combat_kit_weapons(gameworld=gameworld, entity=new_entity,
+                                                       weapons=available_weapons)
+
+                # set enemy AI
+                NewEntity.set_entity_ai_level(game_config=game_config, gameworld=gameworld, entity_id=new_entity)
+                # create spellbar for enemy
+                NewEntity.create_empty_spell_bar(gameworld=gameworld, entity_id=new_entity)
+
+                # --- POPULATE SPELL BAR BASED ON EQUIPMENT -
+
+                spellHelp.SpellUtilities.populate_spell_bar_initially(gameworld=gameworld, player_entity=new_entity)
+
+                logger.info('enemy npc created')
+        return new_entity
 
     @staticmethod
     def create_base_entity(gameworld, game_config, npc_glyph, posx, posy, min_range='earshot', max_range='long'):
@@ -575,3 +752,19 @@ class NewEntity:
         gameworld.add_component(scorekeeper_entity, scorekeeper.MetaEvents())
         gameworld.add_component(scorekeeper_entity, scorekeeper.AreasVisited())
         logger.debug('===----- Scorekeeper: now created-----===')
+
+    @staticmethod
+    def sort_out_weapons(all_weapons):
+        both_hands = ''
+        main_hand = ''
+        off_hand = ''
+        weapons_list = all_weapons.split(',')
+        if len(weapons_list) == 1:
+            if weapons_list[0] in ['sword', 'staff']:
+                both_hands = weapons_list[0]
+            else:
+                logger.warning('Illegal weapon found: {}', weapons_list)
+        else:
+            main_hand = weapons_list[0]
+            off_hand = weapons_list[1]
+        return both_hands, main_hand, off_hand
