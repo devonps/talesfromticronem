@@ -199,7 +199,7 @@ class StatelessAI:
             #
             if not too_close_to_player and not too_far_from_player:
                 # random.chance('attack', 'move')
-                coin_flip = random.randint(0, 1)
+                coin_flip = random.randrange(0, 1)
                 if coin_flip < 0.5:
                     # if random.chance('attack')
                     # cast a combat spell
