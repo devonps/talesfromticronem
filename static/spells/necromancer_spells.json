@@ -127,7 +127,7 @@
       ]
     },
     {
-      "name": "reaper's mark",
+      "name": "reapers mark",
       "description": "Inscribe a mark that causes fear when foes trigger it.",
       "short_description": "Inscribe a mark that causes fear when foes trigger it.",
       "type_of_spell": "combat",
@@ -182,7 +182,7 @@
       ]
     },
     {
-      "name": "reaper's touch",
+      "name": "reapers touch",
       "description": "Send out a scythe that bounces between your foes, causing vulnerability.",
       "short_description": "Send out a scythe that bounces between your foes, causing vulnerability.",
       "type_of_spell": "combat",
@@ -600,7 +600,7 @@
       ]
     },
     {
-      "name": "Spectre's Hand",
+      "name": "Spectres Hand",
       "description": "Pull target foe and all nearby foes to you, fear them, and gain life force.",
       "short_description": "Pull foes and gain life force.",
       "type_of_spell": "utility",

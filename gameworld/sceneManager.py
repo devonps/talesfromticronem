@@ -336,7 +336,8 @@ class SceneManager:
             else:
                 logger.warning('Illegal weapon found: {}', weapons_list)
         else:
-            pass
+            main_hand = weapons_list[0]
+            off_hand = weapons_list[1]
         return both_hands, main_hand, off_hand
 
 

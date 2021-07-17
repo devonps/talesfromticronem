@@ -44,22 +44,12 @@ class NewEntity:
         maximum_range = configUtilities.get_config_value_as_integer(configfile=game_config, section='spells',
                                                                     parameter=max_text)
 
-        if minimum_range == 0:
-            logger.warning('ENTITY PREFERRED MIN RANGE SET TO ZERO')
-        else:
-            logger.debug('ENTITY PREFERRED MIN RANGE SET TO {}', minimum_range)
-
-        if maximum_range == 0:
-            logger.warning('ENTITY PREFERRED MAX RANGE SET TO ZERO')
-        else:
-            logger.debug('ENTITY PREFERRED MAX RANGE SET TO {}', maximum_range)
-
         MobileUtilities.set_enemy_preferred_max_distance_from_target(gameworld=gameworld, entity=entity_id,
                                                                      value=maximum_range)
         MobileUtilities.set_enemy_preferred_min_distance_from_target(gameworld=gameworld, entity=entity_id,
                                                                      value=minimum_range)
 
-        # this is the one that sets the vision range of the mobile
+        # this is the one that sets the vision range of the mobile - default range is 20 tiles
         MobileUtilities.set_mobile_senses_vision_range(gameworld=gameworld, entity=entity_id, value=20)
 
     @staticmethod
@@ -192,30 +182,72 @@ class NewEntity:
     @staticmethod
     def choose_weapons(weapon_file_option_both, weapon_file_option_main, weapon_file_option_off, entity_id, gameworld,
                        game_config, spell_list=None):
-        equipped_weapons = NewEntity.are_weapons_equipped(both_hands=weapon_file_option_both,
-                                                          main_hand=weapon_file_option_main,
-                                                          off_hand=weapon_file_option_off)
-        if equipped_weapons:
-            created_weapon_entity = NewEntity.choose_weaponset(entity_id=entity_id, main_hand=weapon_file_option_main,
-                                                               off_hand=weapon_file_option_off,
-                                                               both_hands=weapon_file_option_both,
-                                                               gameworld=gameworld, game_config=game_config)
 
-            if spell_list is not None:
-                weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
-                weapon_slot_component.slot_one = spell_list[0]
-                weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
-                weapon_slot_component.slot_two = spell_list[1]
-                weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
-                weapon_slot_component.slot_three = spell_list[2]
-                weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
-                weapon_slot_component.slot_four = spell_list[3]
-                weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
-                weapon_slot_component.slot_five = spell_list[4]
-            else:
-                NewEntity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
-                                                              entity_id=entity_id, gameworld=gameworld,
-                                                              game_config=game_config)
+        if weapon_file_option_both != '':
+            equipped_weapons = NewEntity.are_weapons_equipped(both_hands=weapon_file_option_both,
+                                                              main_hand=weapon_file_option_main,
+                                                              off_hand=weapon_file_option_off)
+            if equipped_weapons:
+                created_weapon_entity = NewEntity.choose_weaponset(entity_id=entity_id, main_hand='', off_hand='',
+                                                                   both_hands=weapon_file_option_both,
+                                                                   gameworld=gameworld, game_config=game_config)
+
+                if spell_list is not None:
+                    weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                    weapon_slot_component.slot_one = spell_list[0]
+                    weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                    weapon_slot_component.slot_two = spell_list[1]
+                    weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                    weapon_slot_component.slot_three = spell_list[2]
+                    weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                    weapon_slot_component.slot_four = spell_list[3]
+                    weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                    weapon_slot_component.slot_five = spell_list[4]
+                else:
+                    NewEntity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
+                                                                  entity_id=entity_id, gameworld=gameworld,
+                                                                  game_config=game_config)
+        if weapon_file_option_main != '':
+            equipped_weapons = NewEntity.are_weapons_equipped(both_hands=weapon_file_option_both,
+                                                              main_hand=weapon_file_option_main,
+                                                              off_hand=weapon_file_option_off)
+            if equipped_weapons:
+                created_weapon_entity = NewEntity.choose_weaponset(entity_id=entity_id,
+                                                                   main_hand=weapon_file_option_main,
+                                                                   off_hand='', both_hands='',
+                                                                   gameworld=gameworld, game_config=game_config)
+
+                if spell_list is not None:
+                    weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                    weapon_slot_component.slot_one = spell_list[0]
+                    weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                    weapon_slot_component.slot_two = spell_list[1]
+                    weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                    weapon_slot_component.slot_three = spell_list[2]
+                else:
+                    NewEntity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
+                                                                  entity_id=entity_id, gameworld=gameworld,
+                                                                  game_config=game_config)
+
+        if weapon_file_option_off != '':
+            equipped_weapons = NewEntity.are_weapons_equipped(both_hands=weapon_file_option_both,
+                                                              main_hand=weapon_file_option_main,
+                                                              off_hand=weapon_file_option_off)
+            if equipped_weapons:
+                created_weapon_entity = NewEntity.choose_weaponset(entity_id=entity_id, main_hand='',
+                                                                   off_hand=weapon_file_option_off,  both_hands='',
+                                                                   gameworld=gameworld, game_config=game_config)
+
+                if spell_list is not None:
+                    weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                    weapon_slot_component.slot_four = spell_list[3]
+                    weapon_slot_component = gameworld.component_for_entity(created_weapon_entity, items.Spells)
+                    weapon_slot_component.slot_five = spell_list[4]
+                else:
+                    NewEntity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
+                                                                  entity_id=entity_id, gameworld=gameworld,
+                                                                  game_config=game_config)
+
 
     @staticmethod
     def are_weapons_equipped(both_hands, main_hand, off_hand):

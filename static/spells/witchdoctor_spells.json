@@ -206,7 +206,7 @@
         ]
     },
     {
-      "name": "oppresive collapse",
+      "name": "oppressive collapse",
       "description": "Corrupt the ground under your target, grant might to allies based on number of conditions they have.",
       "short_description": "Corrupt the ground under your target and grant might to your allies.",
       "type_of_spell": "combat",
