@@ -108,7 +108,6 @@ class StatelessAI:
         #                                           ai_debugging_first_name=ai_debugging_first_name,
         #                                           target_entity=entity,
         #                                           entity_combat_role='bomber')
-        logger.warning('ALL the way from stateless AI: Bomber role')
         # Get information
         i_can_move = AIUtilities.can_i_move(gameworld=gameworld, source_entity=monster_entity)
         min_attack_range = MobileUtilities.get_enemy_preferred_min_range(gameworld=gameworld, entity=monster_entity)
@@ -180,9 +179,13 @@ class StatelessAI:
                 #  if bomber can move
                 if i_can_move:
                     # Currently set to ALWAYS move towards player
-                    AIUtilities.move_towards_target(gameworld=gameworld, target_entity=player_entity,
-                                                    source_entity=monster_entity)
-                    AIUtilities.let_me_say(gameworld=gameworld, message='Time to get hustling.')
+                    r = random.randrange(0, 100)
+                    if r < 30:
+                        AIUtilities.move_towards_target(gameworld=gameworld, target_entity=player_entity,
+                                                        source_entity=monster_entity)
+                        AIUtilities.let_me_say(gameworld=gameworld, message='Time to get hustling.')
+                    else:
+                        AIUtilities.let_me_say(gameworld=gameworld, message='I choose not to move.')
                 # else
                 else:
                     # do something non-combat here
