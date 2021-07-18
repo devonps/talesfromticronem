@@ -199,9 +199,8 @@ class StatelessAI:
             #
             if not too_close_to_player and not too_far_from_player:
                 # random.chance('attack', 'move')
-                coin_flip = random.randrange(0, 1)
-                if coin_flip < 0.5:
-                    # if random.chance('attack')
+                coin_flip = random.randrange(0, 10)
+                if coin_flip < 8:
                     # cast a combat spell
                     if i_can_cast_a_combat_spell:
                         spell_to_cast = AIUtilities.pick_a_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,

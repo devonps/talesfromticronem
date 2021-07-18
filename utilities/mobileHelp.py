@@ -446,12 +446,6 @@ class MobileUtilities(numbers.Real, ABC):
                                 mobiles.CombatKit(title='', glyph='', armourset='', armour_mod='', weapons='',
                                                   pendent='', ring1='', ring2='', ear1='', ear2=''))
 
-        # MobileUtilities.set_enemy_preferred_max_distance_from_target(gameworld=gameworld, entity=entity_id,
-        #                                                              value=maximum_range)
-        # MobileUtilities.set_enemy_preferred_min_distance_from_target(gameworld=gameworld, entity=entity_id,
-        #                                                              value=minimum_range)
-
-
     @staticmethod
     def create_player_character(gameworld, game_config, player_entity):
         player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
@@ -1110,4 +1104,3 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def get_combat_kit_jewelleryset(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.CombatKit).jewelleryset
-
