@@ -2,6 +2,7 @@ from loguru import logger
 
 from components import spells, addStatusEffects
 from utilities import configUtilities, world, jsonUtilities
+from utilities.spellHelp import SpellUtilities
 
 
 class AsEntities:
@@ -74,5 +75,64 @@ class AsEntities:
 
             addStatusEffects.process_status_effect(gameworld=gameworld, spell_entity=thisspell, effects=effects,
                                                    game_config=game_config, ch_class=playable_class)
+
+        return thisspell
+
+    @staticmethod
+    def create_new_spell_entity_from_existing_spell_entity(gameworld, existing_spell_entity, game_config):
+        thisspell = world.get_next_entity_id(gameworld=gameworld)
+        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=existing_spell_entity)
+        gameworld.add_component(thisspell, spells.Name(spell_name))
+        spell_description = SpellUtilities.get_spell_description(gameworld=gameworld, spell_entity=existing_spell_entity)
+        gameworld.add_component(thisspell, spells.Description(spell_description))
+        short_desc = SpellUtilities.get_spell_short_description(gameworld=gameworld, spell_entity=existing_spell_entity)
+        gameworld.add_component(thisspell, spells.ShortDescription(short_desc))
+        turns_to_cast = SpellUtilities.get_spell_cast_time(gameworld=gameworld, spell_entity=existing_spell_entity)
+        gameworld.add_component(thisspell, spells.CastTime(turns_to_cast))
+        cool_down = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=existing_spell_entity)
+        gameworld.add_component(thisspell, spells.CoolDown(cool_down))
+
+        play_class = gameworld.component_for_entity(existing_spell_entity, spells.ClassName)
+        gameworld.add_component(thisspell, spells.ClassName(play_class.label))
+        spell_type = SpellUtilities.get_spell_type(gameworld=gameworld, spell_entity=existing_spell_entity)
+        gameworld.add_component(thisspell, spells.SpellType(spell_type))
+        condi_effects = SpellUtilities.get_all_condis_for_spell(gameworld=gameworld, spell_entity=existing_spell_entity)
+        boon_effects = SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=existing_spell_entity)
+        control_effects = SpellUtilities.get_all_controls_for_spell(gameworld=gameworld, spell_entity=existing_spell_entity)
+        gameworld.add_component(thisspell, spells.StatusEffect(condi_effects, boon_effects, control_effects))
+        max_targets = SpellUtilities.get_spell_max_targets(gameworld=gameworld, spell_entity=existing_spell_entity)
+        gameworld.add_component(thisspell, spells.MaxTargets(max_targets))
+        spell_aoe = SpellUtilities.get_spell_aoe_status(gameworld=gameworld, spell_entity=existing_spell_entity)
+        gameworld.add_component(thisspell, spells.AreaOfEffect(spell_aoe))
+        if spell_aoe:
+            aoe_shape = SpellUtilities.get_spell_aoe_shape(gameworld=gameworld, spell_entity=existing_spell_entity)
+            gameworld.add_component(thisspell,
+                                    spells.AreaOfEffectShape(aoe_shape))
+        spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=existing_spell_entity)
+        gameworld.add_component(thisspell, spells.MaxRange(spell_range))
+
+        if spell_type == 'combat':
+            wpn_type = gameworld.component_for_entity(existing_spell_entity, spells.WeaponType)
+            gameworld.add_component(thisspell, spells.WeaponType(wpn_type.label))
+            wpn_slot = gameworld.component_for_entity(existing_spell_entity, spells.WeaponSlot)
+            gameworld.add_component(thisspell, spells.WeaponSlot(wpn_slot.slot))
+            dmg_dur = gameworld.component_for_entity(existing_spell_entity, spells.DamageDuration)
+            gameworld.add_component(thisspell, spells.DamageDuration(dmg_dur))
+            dmg_coe = SpellUtilities.get_spell_damage_coeff(gameworld=gameworld, spell_entity=existing_spell_entity)
+            gameworld.add_component(thisspell, spells.DamageCoefficient(dmg_coe))
+            grnd = SpellUtilities.get_spell_ground_targeted_status(gameworld=gameworld, spell_entity=existing_spell_entity)
+            gameworld.add_component(thisspell, spells.GroundTargeted(grnd))
+
+            if spell_type == 'heal':
+                heal_dur = gameworld.component_for_entity(existing_spell_entity, spells.HealingDuration)
+                gameworld.add_component(thisspell, spells.HealingDuration(heal_dur))
+                heal_coe = SpellUtilities.get_spell_healing_coeff(gameworld=gameworld, spell_entity=existing_spell_entity)
+                gameworld.add_component(thisspell, spells.HealingCoef(heal_coe))
+
+            if spell_type == 'utility':
+                spell_loc = gameworld.component_for_entity(existing_spell_entity, spells.ItemLocation)
+                gameworld.add_component(thisspell, spells.ItemLocation(spell_loc))
+                item_type = gameworld.component_for_entity(existing_spell_entity, spells.ItemType)
+                gameworld.add_component(thisspell, spells.ItemType(item_type))
 
         return thisspell

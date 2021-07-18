@@ -121,7 +121,7 @@ class NewEntity:
                 MobileUtilities.set_combat_kit_title(gameworld=gameworld, entity=new_entity,
                                                      title_string=combat_kit_chosen['title'])
 
-                chosen_spells = NewEntity.set_spells_from_combat_role(gameworld=gameworld, available_spells=a_spells)
+                chosen_spells = NewEntity.set_spells_from_combat_role(gameworld=gameworld, available_spells=a_spells, game_config=game_config)
 
                 # set enemy glyph
                 NewEntity.set_entity_glyph(gameworld=gameworld, entity=new_entity, glyph=combat_kit_chosen['glyph'])
@@ -335,13 +335,15 @@ class NewEntity:
             logger.info('Their class is UNDEFINED')
 
     @staticmethod
-    def set_spells_from_combat_role(gameworld, available_spells):
+    def set_spells_from_combat_role(gameworld, available_spells, game_config):
         chosen_spells = NewEntity.pick_random_spells_for_combat_role(available_spells=available_spells)
         spell_entities = []
         for spell_name in chosen_spells:
             spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spell_name(gameworld=gameworld, spell_name=spell_name)
-            logger.info('Spell chosen: {}, id is {}', spell_name, spell_entity)
-            spell_entities.append(spell_entity)
+            # now I want to generate a new spell entity from the existing entity
+            new_spell = AsEntities.create_new_spell_entity_from_existing_spell_entity(gameworld=gameworld, existing_spell_entity=spell_entity, game_config=game_config)
+            logger.info('Spell chosen: {}, id is {}', spell_name, new_spell)
+            spell_entities.append(new_spell)
         return spell_entities
 
 
@@ -382,8 +384,7 @@ class NewEntity:
                     weapon_slot_component.slot_five = spell_list[4]
                 else:
                     NewEntity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
-                                                                  entity_id=entity_id, gameworld=gameworld,
-                                                                  game_config=game_config)
+                                                                  entity_id=entity_id, gameworld=gameworld)
         if weapon_file_option_main != '':
             equipped_weapons = NewEntity.are_weapons_equipped(both_hands=weapon_file_option_both,
                                                               main_hand=weapon_file_option_main,
@@ -403,8 +404,7 @@ class NewEntity:
                     weapon_slot_component.slot_three = spell_list[2]
                 else:
                     NewEntity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
-                                                                  entity_id=entity_id, gameworld=gameworld,
-                                                                  game_config=game_config)
+                                                                  entity_id=entity_id, gameworld=gameworld)
 
         if weapon_file_option_off != '':
             equipped_weapons = NewEntity.are_weapons_equipped(both_hands=weapon_file_option_both,
@@ -422,8 +422,7 @@ class NewEntity:
                     weapon_slot_component.slot_five = spell_list[4]
                 else:
                     NewEntity.generate_sample_spells_to_be_loaded(created_weapon_entity=created_weapon_entity,
-                                                                  entity_id=entity_id, gameworld=gameworld,
-                                                                  game_config=game_config)
+                                                                  entity_id=entity_id, gameworld=gameworld)
 
 
     @staticmethod
@@ -473,13 +472,10 @@ class NewEntity:
         return created_weapon_entity
 
     @staticmethod
-    def generate_sample_spells_to_be_loaded(created_weapon_entity, entity_id, gameworld, game_config):
+    def generate_sample_spells_to_be_loaded(created_weapon_entity, entity_id, gameworld):
 
         enemy_class = MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)
         weapon_type = weaponManagement.WeaponUtilities.get_weapon_type(gameworld, created_weapon_entity)
-
-        AsEntities.generate_spells_as_entities_for_class(gameworld=gameworld, game_config=game_config,
-                                                         spell_file=enemy_class, playable_class=enemy_class)
 
         spell_list = spellHelp.SpellUtilities.get_list_of_spells_for_enemy(gameworld=gameworld, weapon_type=weapon_type,
                                                                            mobile_class=enemy_class)
