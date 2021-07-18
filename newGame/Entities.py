@@ -342,7 +342,8 @@ class NewEntity:
             spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spell_name(gameworld=gameworld, spell_name=spell_name)
             # now I want to generate a new spell entity from the existing entity
             new_spell = AsEntities.create_new_spell_entity_from_existing_spell_entity(gameworld=gameworld, existing_spell_entity=spell_entity, game_config=game_config)
-            logger.info('Spell chosen: {}, id is {}', spell_name, new_spell)
+            spell_range = spellHelp.SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=new_spell)
+            logger.info('Spell chosen: {}, id is {} range is {}', spell_name, new_spell, spell_range)
             spell_entities.append(new_spell)
         return spell_entities
 
