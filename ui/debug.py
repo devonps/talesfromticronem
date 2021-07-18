@@ -798,7 +798,11 @@ class Debug:
                                                                                          slot=slotid,
                                                                                          player_entity=entity_id)
         if slot_spell_entity > 0:
+            spell_on_cooldown = spellHelp.SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_spell_entity)
             spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_spell_entity)
-            slot_string = "[color=ENTITY_SPY_COMPONENT]Slot " + str(spell_bar_slot) + ":[/color]" + spell_name
+            spell_cooldown_string = ""
+            if spell_on_cooldown:
+                spell_cooldown_string = "[color=ENTITY_SPY_SPELL_ON_COOLDOWN]"
+            slot_string = "[color=ENTITY_SPY_COMPONENT]Slot " + str(spell_bar_slot) + ":[/color]" + spell_cooldown_string +spell_name
 
         return slot_string
