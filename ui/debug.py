@@ -798,11 +798,24 @@ class Debug:
                                                                                          slot=slotid,
                                                                                          player_entity=entity_id)
         if slot_spell_entity > 0:
-            spell_on_cooldown = spellHelp.SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=slot_spell_entity)
-            spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=slot_spell_entity)
-            spell_cooldown_string = ""
-            if spell_on_cooldown:
-                spell_cooldown_string = "[color=ENTITY_SPY_SPELL_ON_COOLDOWN]"
-            slot_string = "[color=ENTITY_SPY_COMPONENT]Slot " + str(spell_bar_slot) + ":[/color]" + spell_cooldown_string +spell_name
+            cool_down_string = Debug.set_cooldown_string(gameworld=gameworld, spell_entity=slot_spell_entity)
+            slot_string = "[color=ENTITY_SPY_COMPONENT]Slot " + str(spell_bar_slot) + ":[/color]" + cool_down_string
 
         return slot_string
+
+    @staticmethod
+    def set_cooldown_string(gameworld, spell_entity):
+        spell_cooldown_string = ""
+        cooldown_count_string = ""
+
+        spell_on_cooldown = spellHelp.SpellUtilities.get_spell_cooldown_status(gameworld=gameworld,
+                                                                               spell_entity=spell_entity)
+        spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+
+        if spell_on_cooldown:
+            cooldown_count = spellHelp.SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
+                                                                                         spell_entity=spell_entity)
+            cooldown_count_string = " (" + str(cooldown_count) + ")"
+            spell_cooldown_string = "[color=ENTITY_SPY_SPELL_ON_COOLDOWN]"
+
+        return spell_cooldown_string + spell_name + cooldown_count_string
