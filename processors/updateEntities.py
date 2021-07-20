@@ -41,9 +41,9 @@ class UpdateEntitiesProcessor(esper.Processor):
                         # what/who can the entity see around them
                         self.who_can_i_see_around_me(ent=ent)
                         # have i been stopped from moving next turn due to a condition
-                        self.have_been_stopped_from_moving(entity=ent)
+                        self.can_i_still_move(entity=ent)
 
-    def have_been_stopped_from_moving(self, entity):
+    def can_i_still_move(self, entity):
         list_of_conditions = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
                                                                                   entity=entity)
         if ['crippled', 'immobilize', 'stunned', 'dazed'] in list_of_conditions:
