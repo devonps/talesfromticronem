@@ -53,12 +53,7 @@ class AIUtilities:
 
     @staticmethod
     def can_i_move(gameworld, source_entity):
-        list_of_conditions = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
-                                                                                  entity=source_entity)
-        if ['crippled', 'immobilize', 'stunned', 'dazed'] in list_of_conditions:
-            return False
-        else:
-            return True
+        return MobileUtilities.get_movement_status(gameworld=gameworld, entity=source_entity)
 
     @staticmethod
     def what_can_i_see_around_me(gameworld, source_entity, game_map):

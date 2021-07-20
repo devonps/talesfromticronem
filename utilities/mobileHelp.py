@@ -1104,3 +1104,12 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def get_combat_kit_jewelleryset(gameworld, entity):
         return gameworld.component_for_entity(entity, mobiles.CombatKit).jewelleryset
+
+    @staticmethod
+    def set_movement_status(gameworld, entity, status):
+        mobile_component = gameworld.component_for_entity(entity, mobiles.AIMemory)
+        mobile_component.can_i_move = status
+
+    @staticmethod
+    def get_movement_status(gameworld, entity):
+        return gameworld.component_for_entity(entity, mobiles.AIMemory).can_i_move

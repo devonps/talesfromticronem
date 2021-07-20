@@ -180,13 +180,12 @@ class StatelessAI:
                 if i_can_move:
                     # Currently set to ALWAYS move towards player
                     r = random.randrange(0, 100)
-                    if r < 30:
+                    if r < 90:
                         AIUtilities.move_towards_target(gameworld=gameworld, target_entity=player_entity,
                                                         source_entity=monster_entity)
                         AIUtilities.let_me_say(gameworld=gameworld, message='Time to get hustling.')
                     else:
                         AIUtilities.let_me_say(gameworld=gameworld, message='I choose not to move.')
-                # else
                 else:
                     # do something non-combat here
                     if monster_is_hurt:

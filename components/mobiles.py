@@ -143,6 +143,9 @@ class Senses:
 class AIMemory:
     def __init__(self):
         self.visible_entities = []
+        self.have_i_taken_damage = False
+        self.can_i_move = True
+
 
 
 class PhysicalState:
