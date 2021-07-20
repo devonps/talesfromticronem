@@ -56,6 +56,45 @@ class AIUtilities:
         return MobileUtilities.get_movement_status(gameworld=gameworld, entity=source_entity)
 
     @staticmethod
+    def is_the_player_visible(player_entity, visible_entities):
+        if player_entity in visible_entities:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def am_i_too_close_to_the_target(dist_to_target, min_attack_range):
+        if dist_to_target < min_attack_range:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def am_i_too_far_from_the_target(dist_to_target, max_attack_range):
+        if dist_to_target > max_attack_range:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def move_towards_target_or_not(gameworld, player_entity, monster_entity):
+        r = random.randrange(0, 100)
+        if r < 90:
+            AIUtilities.move_towards_target(gameworld=gameworld, target_entity=player_entity,
+                                            source_entity=monster_entity)
+            AIUtilities.let_me_say(gameworld=gameworld, message='Time to get hustling.')
+        else:
+            AIUtilities.let_me_say(gameworld=gameworld, message='I choose not to move.')
+
+    @staticmethod
+    def do_something_non_combat(monster_is_hurt):
+        if monster_is_hurt:
+            AIUtilities.let_me_say(gameworld=gameworld, message='I am hurting, medic!')
+        else:
+            AIUtilities.let_me_say(gameworld=gameworld, message='I feel good!')
+
+
+    @staticmethod
     def have_i_taken_damage(gameworld, source_entity):
 
         current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=source_entity)

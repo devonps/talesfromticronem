@@ -121,25 +121,15 @@ class StatelessAI:
         # gets a list of entities the monster can see around them
         visible_entities = MobileUtilities.get_ai_visible_entities(gameworld=gameworld, target_entity=monster_entity)
         # is the player (hardcoded target) visible?
-        if player_entity in visible_entities:
-            i_can_see_the_player = True
-        else:
-            i_can_see_the_player = False
+        i_can_see_the_player = AIUtilities.is_the_player_visible(player_entity=player_entity, visible_entities=visible_entities)
 
         if i_can_see_the_player:
             dist_to_target = AIUtilities.can_i_see_my_target(gameworld=gameworld, from_entity=monster_entity,
                                                              to_entity=player_entity)
 
             # based on the distance to the target what should the bomber do?
-            if dist_to_target < min_attack_range:
-                too_close_to_player = True
-            else:
-                too_close_to_player = False
-
-            if dist_to_target > max_attack_range:
-                too_far_from_player = True
-            else:
-                too_far_from_player = False
+            too_close_to_player = AIUtilities.am_i_too_close_to_the_target(dist_to_target=dist_to_target, min_attack_range=min_attack_range)
+            too_far_from_player = AIUtilities.am_i_too_far_from_the_target(dist_to_target=dist_to_target, max_attack_range=max_attack_range)
 
             #
             # if bomber is too close to the target
@@ -170,7 +160,7 @@ class StatelessAI:
                                                message='I can see the player but have no combat spells available.')
                         logger.warning('There is no spell to cast, remaining {}', remaining_spells)
                         if monster_is_hurt:
-                            AIUtilities.let_me_say(gameworld=gameworld, message='I am hurting, medic!')
+                            AIUtilities.let_me_say(gameworld=gameworld, message='I hurt, medic!')
 
             #
             # If bomber is out of range to attack
@@ -178,20 +168,10 @@ class StatelessAI:
             if too_far_from_player:
                 #  if bomber can move
                 if i_can_move:
-                    # Currently set to ALWAYS move towards player
-                    r = random.randrange(0, 100)
-                    if r < 90:
-                        AIUtilities.move_towards_target(gameworld=gameworld, target_entity=player_entity,
-                                                        source_entity=monster_entity)
-                        AIUtilities.let_me_say(gameworld=gameworld, message='Time to get hustling.')
-                    else:
-                        AIUtilities.let_me_say(gameworld=gameworld, message='I choose not to move.')
+                    AIUtilities.move_towards_target_or_not(gameworld=gameworld, player_entity=player_entity, monster_entity=monster_entity)
                 else:
                     # do something non-combat here
-                    if monster_is_hurt:
-                        AIUtilities.let_me_say(gameworld=gameworld, message='I am hurting, medic!')
-                    else:
-                        AIUtilities.let_me_say(gameworld=gameworld, message='I feel good!')
+                    AIUtilities.do_something_non_combat(monster_is_hurt=monster_is_hurt)
 
             #
             # if bomber is in the middle ground of distance to the target
