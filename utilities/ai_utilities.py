@@ -56,26 +56,6 @@ class AIUtilities:
         return MobileUtilities.get_movement_status(gameworld=gameworld, entity=source_entity)
 
     @staticmethod
-    def what_can_i_see_around_me(gameworld, source_entity, game_map):
-        range_of_vision = MobileUtilities.get_mobile_senses_vision_range(gameworld=gameworld, entity=source_entity)
-        from_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=source_entity)
-        from_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=source_entity)
-
-        min_x_range = max(1, (from_x - range_of_vision))
-        max_x_range = min(game_map.width, (from_x + game_map.width))
-        min_y_range = max(1, (from_y - range_of_vision))
-        max_y_range = min(game_map.height, (from_y + game_map.height))
-        visible_entities = []
-
-        for across in range(min_x_range, max_x_range):
-            for down in range(min_y_range, max_y_range):
-                entity_id = game_map.tiles[across][down].entity
-                if entity_id > 0 and entity_id != source_entity:
-                    visible_entities.append(entity_id)
-        MobileUtilities.set_visible_entities(gameworld=gameworld, target_entity=source_entity,
-                                             visible_entities=visible_entities)
-
-    @staticmethod
     def have_i_taken_damage(gameworld, source_entity):
 
         current_health = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=source_entity)

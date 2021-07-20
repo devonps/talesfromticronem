@@ -68,8 +68,8 @@ class UpdateEntitiesProcessor(esper.Processor):
                 entity_id = self.game_map.tiles[across][down].entity
                 if entity_id > 0 and entity_id != ent:
                     visible_entities.append(entity_id)
-        MobileUtilities.set_visible_entities(gameworld=self.gameworld, target_entity=ent,
-                                             visible_entities=visible_entities)
+        MobileUtilities.set_ai_visible_entities(gameworld=self.gameworld, target_entity=ent,
+                                                visible_entities=visible_entities)
 
     def check_for_combat(self, entity_id):
         in_combat = mobileHelp.MobileUtilities.get_combat_status(self.gameworld, entity=entity_id)

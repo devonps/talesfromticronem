@@ -68,7 +68,7 @@ class StatelessAI:
 
     @staticmethod
     def dump_ai_debugging_information(gameworld, ai_debugging_first_name, target_entity, entity_combat_role):
-        visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=target_entity)
+        visible_entities = MobileUtilities.get_ai_visible_entities(gameworld=gameworld, target_entity=target_entity)
         vision_range = MobileUtilities.get_mobile_senses_vision_range(gameworld=gameworld, entity=target_entity)
 
         visible_entity_names = []
@@ -119,7 +119,7 @@ class StatelessAI:
                                                                                         entity_id=monster_entity,
                                                                                         target_entity=player_entity)
         # gets a list of entities the monster can see around them
-        visible_entities = MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=monster_entity)
+        visible_entities = MobileUtilities.get_ai_visible_entities(gameworld=gameworld, target_entity=monster_entity)
         # is the player (hardcoded target) visible?
         if player_entity in visible_entities:
             i_can_see_the_player = True

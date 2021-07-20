@@ -189,7 +189,7 @@ def check_for_nearby_valid_mobiles_to_speak_with(gameworld, game_config):
     player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
     # check map surrounding player_entity 1x1 square deep
-    visible_entities_list = mobileHelp.MobileUtilities.get_visible_entities(gameworld=gameworld, target_entity=player_entity)
+    visible_entities_list = mobileHelp.MobileUtilities.get_ai_visible_entities(gameworld=gameworld, target_entity=player_entity)
     target_entity = get_entity_id_to_talk_to(gameworld=gameworld, player_entity=player_entity,
                                              entities_list=visible_entities_list, game_config=game_config)
     if target_entity == 0:

@@ -36,11 +36,6 @@ class EnemyPreferredAttackMaxRange:
         self.value = value
 
 
-class VisibleEntities:
-    def __init__(self):
-        self.list = []
-
-
 class EnemyCombatRole:
     def __init__(self, value='none'):
         self.value = value

@@ -189,8 +189,8 @@ class RenderUI(esper.Processor):
                         if ent != player_entity:
                             visible_entities.append(ent)
 
-        mobileHelp.MobileUtilities.set_visible_entities(gameworld=gameworld, target_entity=player_entity,
-                                             visible_entities=visible_entities)
+        mobileHelp.MobileUtilities.set_ai_visible_entities(gameworld=gameworld, target_entity=player_entity,
+                                                           visible_entities=visible_entities)
 
     @staticmethod
     def render_items(game_config, gameworld):

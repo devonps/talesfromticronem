@@ -338,7 +338,6 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(entity_id, mobiles.Name())
         gameworld.add_component(entity_id, mobiles.ClassSpecific())
         gameworld.add_component(entity_id, mobiles.Personality())
-        gameworld.add_component(entity_id, mobiles.VisibleEntities())
         gameworld.add_component(entity_id, mobiles.DialogFlags())
         gameworld.add_component(entity_id, mobiles.NpcType())
         gameworld.add_component(entity_id, mobiles.MobileType())
@@ -409,14 +408,13 @@ class MobileUtilities(numbers.Real, ABC):
         return dialog_component.spoken_to_before
 
     @staticmethod
-    def set_visible_entities(gameworld, target_entity, visible_entities):
-        visible_entities_component = gameworld.component_for_entity(target_entity, mobiles.VisibleEntities)
-        visible_entities_component.list = visible_entities
+    def set_ai_visible_entities(gameworld, target_entity, visible_entities):
+        gameworld.component_for_entity(target_entity, mobiles.AIMemory).visible_entities = visible_entities
 
     @staticmethod
-    def get_visible_entities(gameworld, target_entity):
-        visible_entities_component = gameworld.component_for_entity(target_entity, mobiles.VisibleEntities)
-        return visible_entities_component.list
+    def get_ai_visible_entities(gameworld, target_entity):
+        ai_visible_component = gameworld.component_for_entity(target_entity, mobiles.AIMemory)
+        return ai_visible_component.visible_entities
 
     @staticmethod
     def add_enemy_components(gameworld, game_config, entity_id, min_range, max_range):
@@ -551,16 +549,6 @@ class MobileUtilities(numbers.Real, ABC):
         senses_component = gameworld.component_for_entity(entity, mobiles.Senses)
 
         return senses_component.vision_range
-
-    @staticmethod
-    def set_mobile_ai_visible_entities(gameworld, entity, value):
-        gameworld.component_for_entity(entity, mobiles.AIMemory).visible_entities = value
-
-    @staticmethod
-    def get_mobile_ai_visible_entities(gameworld, entity):
-        ai_visible_component = gameworld.component_for_entity(entity, mobiles.AIMemory)
-
-        return ai_visible_component.visible_entities
 
     @staticmethod
     def get_mobile_physical_hurt_status(gameworld, entity):
