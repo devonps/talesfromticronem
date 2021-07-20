@@ -295,12 +295,17 @@ class GameOver:
     def format_condi_string(gameworld, player_entity):
         current_condis = mobileHelp.MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld, entity=player_entity)
         condi_string = 'You were suffering from '
-        if len(current_condis) > 0:
-            for condi in range(len(current_condis)):
-                if (condi + 1) < len(current_condis):
-                    condi_string += current_condis['name'] + ', '
-                else:
-                    condi_string += 'and ' + current_condis[condi]['name'] + '.'
+        condi_count = len(current_condis)
+        if condi_count > 0:
+            if condi_count == 1:
+                condi_string += current_condis[0]['name']
+            else:
+                for condi in range(len(current_condis)):
+                    active_condi = current_condis[condi]['name']
+                    if (condi + 1) < len(current_condis):
+                        condi_string += active_condi + ', '
+                    else:
+                        condi_string += 'and ' + active_condi + '.'
         else:
             condi_string += 'no conditions, lucky you!'
 
@@ -312,10 +317,11 @@ class GameOver:
         boon_string = 'You benefited from '
         if len(current_boons) > 0:
             for boon in range(len(current_boons)):
+                active_boon = current_boons['name']
                 if (boon + 1) < len(current_boons):
-                    boon_string += current_boons['name'] + ', '
+                    boon_string += active_boon + ', '
                 else:
-                    boon_string += 'and ' + current_boons[boon] + '.'
+                    boon_string += 'and ' + active_boon + '.'
         else:
             boon_string += 'absolutely nothing.'
 
