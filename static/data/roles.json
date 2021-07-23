@@ -19,8 +19,9 @@
       "id": "bully",
       "race": "random",
       "kits": "bully",
-      "min-range": "up_close",
-      "max-range": "medium"
+      "min-range": "TOUCH",
+      "max-range": "EARSHOT",
+      "spells": ""
     },
     {
       "id": "sniper",
