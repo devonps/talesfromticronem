@@ -21,7 +21,7 @@
       "kits": "bully",
       "min-range": "TOUCH",
       "max-range": "EARSHOT",
-      "spells": ""
+      "spells": "stalkers strike,mind slash,glyph of elemental power,ring of earth,magnetic wave,lightning touch,shocking aura,necrotic bite,fading twilight,gravedigger,desiccate"
     },
     {
       "id": "sniper",

@@ -68,7 +68,7 @@ class NewEntity:
         new_entity = 0
         # commented out whilst building/testing stateless AI
         # role_id = random.randrange(len(enemy_roles))
-        role_id = 0
+        role_id = 2
         role_file = jsonUtilities.read_json_file(ai_roles_file_path)
         for role in role_file['roles']:
             if role['id'] == enemy_roles[role_id]:

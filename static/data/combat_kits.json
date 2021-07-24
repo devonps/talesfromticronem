@@ -70,18 +70,18 @@
     },
     {
       "title": "bully",
-      "glyph-colour": "",
+      "glyph-colour": "red",
       "glyph": "u",
-      "armour": "",
-      "armour_modifiers": "",
-      "weapons": "",
+      "armour": "dreadnaught",
+      "armour_modifiers": "berserker,soldier,nomad",
+      "weapons": "sword",
       "jewellery": [
         {
-          "pendent": "",
-          "ring1": "",
-          "ring2": "",
-          "earring1": "",
-          "earring2": ""
+          "pendent": "turquoise",
+          "ring1": "garnet",
+          "ring2": "malachite",
+          "earring1": "garnet",
+          "earring2": "malachite"
         }
       ]
     },

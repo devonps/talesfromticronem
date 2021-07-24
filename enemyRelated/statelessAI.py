@@ -62,7 +62,7 @@ class StatelessAI:
                                                           gameworld=gameworld, game_map=game_map,
                                                           player_entity=player_entity)
                     elif entity_combat_role == 'bully':
-                        StatelessAI.perform_ai_for_bully(entity=entity)
+                        StatelessAI.perform_ai_for_bully(gameworld=gameworld, monster_entity=entity, game_config=game_config, game_map=game_map, player_entity=player_entity)
                     else:
                         StatelessAI.perform_ai_for_sniper(entity=entity)
 
