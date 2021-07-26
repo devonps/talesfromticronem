@@ -74,8 +74,6 @@ class MobileUtilities(numbers.Real, ABC):
     @staticmethod
     def setup_racial_attributes(gameworld, entity, selected_race, race_size, bg, race_names):
         MobileUtilities.set_mobile_bg_render_colour(gameworld=gameworld, entity=entity, value=bg)
-        # TODO setup proper FG colour for player character
-        MobileUtilities.set_mobile_fg_render_colour(gameworld=gameworld, entity=entity, value='0,0,255')
 
         race_component = gameworld.component_for_entity(entity, mobiles.Race)
         race_component.label = selected_race

@@ -1,6 +1,7 @@
 def get(color_name):
-    color = colors.get(color_name)
-    return color if color else 'white'
+    colour_name = color_name.upper()
+    color = colors.get(colour_name)
+    return color if color else '255,255,255'
 
 
 colors = {
@@ -431,10 +432,10 @@ colors = {
     'PURPLE4': '85,26,139',
     'RASPBERRY': '135,38,87',
     'RAWSIENNA': '199,97,20',
-    'RED1': '255,0,0',
-    'RED2': '238,0,0',
-    'RED3': '205,0,0',
-    'RED4': '139,0,0',
+    'RED': '255,0,0',
+    'RED1': '238,0,0',
+    'RED2': '205,0,0',
+    'RED3': '139,0,0',
     'ROSYBROWN': '188,143,143',
     'ROSYBROWN1': '255,193,193',
     'ROSYBROWN2': '238,180,180',

@@ -4,7 +4,7 @@ from components import mobiles, scorekeeper, items
 from newGame.CreateSpells import AsEntities
 from newGame.Items import ItemManager
 from utilities import configUtilities, armourManagement, itemsHelp, jewelleryManagement, jsonUtilities, \
-    spellHelp, weaponManagement, world
+    spellHelp, weaponManagement, world, colourUtilities
 from loguru import logger
 
 from utilities.jewelleryManagement import JewelleryUtilities
@@ -51,6 +51,10 @@ class NewEntity:
         # --- ADD JEWELLERY SPELLS TO SPELLBAR -
         NewEntity.add_spells_to_spell_bar_based_on_equipped_jewellery(gameworld=gameworld,
                                                                       entity_id=new_entity)
+        this_colour = colourUtilities.get(this_npc['fg'])
+
+        MobileUtilities.set_mobile_fg_render_colour(gameworld=gameworld, entity=new_entity, value=this_colour)
+
         logger.info('--------- MOBILE HAS BEEN CREATED ---------')
 
         return new_entity
@@ -129,6 +133,9 @@ class NewEntity:
                 NewEntity.set_entity_glyph(gameworld=gameworld, entity=new_entity, glyph=combat_kit_chosen['glyph'])
                 MobileUtilities.set_combat_kit_glyph(gameworld=gameworld, entity=new_entity,
                                                      glyph=combat_kit_chosen['glyph'])
+                # set enemy FG colour
+                NewEntity.set_enemy_fg_color(gameworld=gameworld, entity=new_entity, color_string=combat_kit_chosen['glyph-colour'])
+
                 # set race for enemy
                 NewEntity.choose_race_for_mobile(race_choice=npc_race, entity_id=new_entity, gameworld=gameworld,
                                                  game_config=game_config)
@@ -212,6 +219,11 @@ class NewEntity:
     @staticmethod
     def set_enemy_combat_role(gameworld, entity, combat_role):
         MobileUtilities.set_enemy_combat_role(gameworld=gameworld, entity=entity, value=combat_role)
+
+    @staticmethod
+    def set_enemy_fg_color(gameworld, entity, color_string):
+        this_colour = colourUtilities.get(color_string)
+        MobileUtilities.set_mobile_fg_render_colour(gameworld=gameworld, entity=entity, value=this_colour)
 
     @staticmethod
     def set_min_max_preferred_ranges(entity_id, min_range, max_range, game_config, gameworld):

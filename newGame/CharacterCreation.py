@@ -4,7 +4,7 @@ from bearlibterminal import terminal
 from loguru import logger
 from newGame import Items, initialiseNewGame
 from utilities import configUtilities, namegenUtilities, armourManagement, display, input_handlers, jsonUtilities, \
-    mobileHelp, common, spellHelp, weaponManagement, world
+    mobileHelp, common, spellHelp, weaponManagement, world, colourUtilities
 from ticronem import game_loop
 
 
@@ -29,6 +29,10 @@ class CharacterCreation:
         # setup racial stuff race_name_selected, race_size, race_bg_colour, race_name_desc
         mobileHelp.MobileUtilities.setup_racial_attributes(gameworld=gameworld, entity=player, selected_race=race_name_selected,
                                                            race_size=race_size, bg=race_bg_colour, race_names=race_name_desc)
+        # set player FG colour
+        this_colour = colourUtilities.get('white')
+
+        mobileHelp.MobileUtilities.set_mobile_fg_render_colour(gameworld=gameworld, entity=player, value=this_colour)
 
         # create class
         mobileHelp.MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player, selected_class=class_selected,
