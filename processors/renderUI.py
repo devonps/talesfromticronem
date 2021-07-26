@@ -209,6 +209,8 @@ class RenderUI(esper.Processor):
 
     @staticmethod
     def render_entity(posx, posy, glyph, fg, bg, flag=None):
+        if fg == 'blue':
+            logger.warning('found BLUE')
         str_to_print = "[color=" + str(fg) + "][font=dungeon][bkcolor=" + str(bg) + "]" + glyph
         if flag == 'talk_to_me':
             str_to_print += "[offset=0, -8][+][color=red]^[/color]"

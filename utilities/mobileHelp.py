@@ -72,12 +72,12 @@ class MobileUtilities(numbers.Real, ABC):
         return gender
 
     @staticmethod
-    def setup_racial_attributes(gameworld, player, selected_race, race_size, bg, race_names):
-        MobileUtilities.set_mobile_bg_render_colour(gameworld=gameworld, entity=player, value=bg)
+    def setup_racial_attributes(gameworld, entity, selected_race, race_size, bg, race_names):
+        MobileUtilities.set_mobile_bg_render_colour(gameworld=gameworld, entity=entity, value=bg)
         # TODO setup proper FG colour for player character
-        MobileUtilities.set_mobile_fg_render_colour(gameworld=gameworld, entity=player, value='green')
+        MobileUtilities.set_mobile_fg_render_colour(gameworld=gameworld, entity=entity, value='0,0,255')
 
-        race_component = gameworld.component_for_entity(player, mobiles.Race)
+        race_component = gameworld.component_for_entity(entity, mobiles.Race)
         race_component.label = selected_race
         race_component.size = race_size
         race_component.name_singular = race_names[0]

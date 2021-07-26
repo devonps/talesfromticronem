@@ -679,7 +679,7 @@
         ]
     },
     {
-      "name": "Lightning Touch",
+      "name": "lightning touch",
       "description": "Shock a foe and inflict weakness. Gain fury for each foe hit.",
       "short_description": "Shock a foe and inflict weakness. Gain fury for each foe hit.",
       "type_of_spell": "combat",
@@ -708,7 +708,7 @@
         ]
     },
     {
-      "name": "Shocking Aura",
+      "name": "shocking aura",
       "description": "Envelop yourself with electrical energy that stuns nearby foes if they attack you.",
       "short_description": "Envelop yourself with electrical energy that stuns nearby foes if they attack you.",
       "type_of_spell": "combat",
@@ -1200,7 +1200,7 @@
         ]
     },
     {
-      "name": "Glyph of Elemental Power",
+      "name": "glyph of elemental power",
       "description": "Inflict conditions on your next few strikes based on your attunement. Each strike deals increased damage.",
       "short_description": "Inflict conditions on your next few strikes based on your attunement. Each strike deals increased damage.",
       "type_of_spell": "utility",
@@ -1345,7 +1345,7 @@
         ]
     },
     {
-      "name": "Lightning Flash",
+      "name": "lightning flash",
       "description": "Teleport to target area.",
       "short_description": "Teleport to target area.",
       "type_of_spell": "utility",

@@ -18,7 +18,7 @@
           "description": "The academy master.",
           "ai": "master",
           "glyph": "@",
-          "fg": "yellow",
+          "fg": "blue",
           "bg": "black",
           "armourset": "random",
           "jeweleryset": "balanced",

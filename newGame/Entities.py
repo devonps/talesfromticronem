@@ -89,6 +89,8 @@ class NewEntity:
                 # set enemy role id
                 NewEntity.set_enemy_combat_role(gameworld=gameworld, entity=new_entity,
                                                 combat_role=combat_role)
+
+
                 # load combat kits
                 available_kits = []
                 combat_kit_count = 0
@@ -291,7 +293,7 @@ class NewEntity:
                     selected_race_names = race_name_desc[rcount]
                 rcount += 1
 
-        MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=entity_id, selected_race=selected_race,
+        MobileUtilities.setup_racial_attributes(gameworld=gameworld, entity=entity_id, selected_race=selected_race,
                                                 race_size=selected_race_size, bg=selected_bg_colour,
                                                 race_names=selected_race_names)
 

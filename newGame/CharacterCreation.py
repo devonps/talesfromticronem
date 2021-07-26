@@ -27,8 +27,8 @@ class CharacterCreation:
         logger.info('Player character stored as entity {}', player)
 
         # setup racial stuff race_name_selected, race_size, race_bg_colour, race_name_desc
-        mobileHelp.MobileUtilities.setup_racial_attributes(gameworld=gameworld, player=player, selected_race=race_name_selected,
-            race_size=race_size, bg=race_bg_colour, race_names=race_name_desc)
+        mobileHelp.MobileUtilities.setup_racial_attributes(gameworld=gameworld, entity=player, selected_race=race_name_selected,
+                                                           race_size=race_size, bg=race_bg_colour, race_names=race_name_desc)
 
         # create class
         mobileHelp.MobileUtilities.setup_class_attributes(gameworld=gameworld, player=player, selected_class=class_selected,

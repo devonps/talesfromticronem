@@ -82,7 +82,7 @@ class AsEntities:
     def create_new_spell_entity_from_existing_spell_entity(gameworld, existing_spell_entity, game_config):
         thisspell = world.get_next_entity_id(gameworld=gameworld)
         spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=existing_spell_entity)
-        gameworld.add_component(thisspell, spells.Name(spell_name))
+        gameworld.add_component(thisspell, spells.Name(spell_name.lower()))
         spell_description = SpellUtilities.get_spell_description(gameworld=gameworld, spell_entity=existing_spell_entity)
         gameworld.add_component(thisspell, spells.Description(spell_description))
         short_desc = SpellUtilities.get_spell_short_description(gameworld=gameworld, spell_entity=existing_spell_entity)
