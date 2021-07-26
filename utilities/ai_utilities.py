@@ -51,12 +51,15 @@ class AIUtilities:
         else:
             spell_name = 'no spell'
 
-        if spell_to_cast != 'no spell':
+        if spell_name != 'no spell':
+            spell_cast_message = 'I choose to cast ' + spell_name
             AIUtilities.draw_spell_targeting_effects(gameworld=gameworld, game_config=game_config,
                                                      caster_entity=entity_id,
                                                      enemy_list=[player_entity],
                                                      game_map=game_map, spell_has_aoe=False)
-        return spell_name
+            AIUtilities.let_me_say(gameworld=gameworld, message=spell_cast_message)
+        else:
+            AIUtilities.let_me_say(gameworld=gameworld, message='Im not in spell range, time to hustle!')
 
     @staticmethod
     def can_i_move(gameworld, source_entity):
@@ -100,7 +103,6 @@ class AIUtilities:
         else:
             AIUtilities.let_me_say(gameworld=gameworld, message='I feel good!')
 
-
     @staticmethod
     def have_i_taken_damage(gameworld, source_entity):
 
@@ -115,7 +117,7 @@ class AIUtilities:
     @staticmethod
     def can_i_cast_a_spell(gameworld, entity_id, target_entity):
         can_cast_a_spell, remaining_spells = SpellUtilities.can_mobile_cast_a_spell(gameworld, entity_id,
-                                                                                                 target_entity)
+                                                                                    target_entity)
 
         return can_cast_a_spell, remaining_spells
 
@@ -237,4 +239,3 @@ class AIUtilities:
 
         if target_is_west_of_me and not i_have_moved:
             MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='right', speed=1)
-
