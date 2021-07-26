@@ -115,7 +115,7 @@ class StatelessAI:
         monster_is_hurt = MobileUtilities.get_mobile_physical_hurt_status(gameworld=gameworld, entity=monster_entity)
 
         # set some AI flags
-        i_can_cast_a_combat_spell, remaining_spells, _ = AIUtilities.can_i_cast_a_spell(gameworld=gameworld,
+        i_can_cast_a_combat_spell, remaining_spells = AIUtilities.can_i_cast_a_spell(gameworld=gameworld,
                                                                                         entity_id=monster_entity,
                                                                                         target_entity=player_entity)
         # gets a list of entities the monster can see around them
@@ -148,24 +148,20 @@ class StatelessAI:
                 else:
                     # can I cast a spell
                     if i_can_cast_a_combat_spell:
-                        spell_to_cast = AIUtilities.pick_a_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,
-                                                                         remaining_spells=remaining_spells,
-                                                                         player_entity=player_entity)
-                        if spell_to_cast != 'no spell':
-                            spell_cast_message = 'I will cast ' + spell_to_cast
-                            AIUtilities.draw_spell_targeting_effects(gameworld=gameworld, game_config=game_config,
-                                                                     caster_entity=monster_entity,
-                                                                     enemy_list=[player_entity],
-                                                                     player_entity=player_entity,
-                                                                     game_map=game_map, spell_has_aoe=False)
-                            AIUtilities.let_me_say(gameworld=gameworld, message=spell_cast_message)
+                        spell_to_cast = AIUtilities.pick_random_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,
+                                                                              remaining_spells=remaining_spells, game_map=game_map)
+                        # if spell_to_cast != 'no spell':
+                        spell_cast_message = 'I will cast ' + spell_to_cast
+                        #     AIUtilities.draw_spell_targeting_effects(gameworld=gameworld, game_config=game_config,
+                        #                                              caster_entity=monster_entity,
+                        #                                              enemy_list=[player_entity],
+                        #                                              game_map=game_map, spell_has_aoe=False)
+                        AIUtilities.let_me_say(gameworld=gameworld, message=spell_cast_message)
                     else:
                         # there's no combat spell to cast - but can I / do I need to cast my heal spell
                         AIUtilities.let_me_say(gameworld=gameworld,
                                                message='I can see the player but have no combat spells available.')
                         logger.warning('There is no spell to cast, remaining {}', remaining_spells)
-                        if monster_is_hurt:
-                            AIUtilities.let_me_say(gameworld=gameworld, message='I hurt, medic!')
 
             #
             # If bomber is out of range to attack
@@ -188,14 +184,12 @@ class StatelessAI:
                 if coin_flip < 8:
                     # cast a combat spell
                     if i_can_cast_a_combat_spell:
-                        spell_to_cast = AIUtilities.pick_a_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,
-                                                                         remaining_spells=remaining_spells,
-                                                                         player_entity=player_entity)
+                        spell_to_cast = AIUtilities.pick_random_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,
+                                                                              remaining_spells=remaining_spells,game_config=game_config, game_map=game_map)
                         if spell_to_cast != 'no spell':
                             AIUtilities.draw_spell_targeting_effects(gameworld=gameworld, game_config=game_config,
                                                                      caster_entity=monster_entity,
                                                                      enemy_list=[player_entity],
-                                                                     player_entity=player_entity,
                                                                      game_map=game_map, spell_has_aoe=False)
                             AIUtilities.let_me_say(gameworld=gameworld, message='I will cast ' + spell_to_cast)
                         else:
@@ -217,6 +211,9 @@ class StatelessAI:
                     AIUtilities.move_away_from_target(gameworld=gameworld, target_entity=player_entity,
                                                       source_entity=monster_entity)
                     AIUtilities.let_me_say(gameworld=gameworld, message='coin flip says move away from the player!')
+
+            if monster_is_hurt:
+                AIUtilities.let_me_say(gameworld=gameworld, message='I hurt, medic!')
 
     @staticmethod
     def perform_ai_for_bully(gameworld, monster_entity, game_config, game_map, player_entity):
@@ -240,7 +237,7 @@ class StatelessAI:
         too_far_from_player = AIUtilities.am_i_too_far_from_the_target(dist_to_target=dist_to_target,
                                                                        max_attack_range=max_attack_range)
 
-        i_can_cast_a_combat_spell, remaining_spells, _ = AIUtilities.can_i_cast_a_spell(gameworld=gameworld,
+        i_can_cast_a_combat_spell, remaining_spells = AIUtilities.can_i_cast_a_spell(gameworld=gameworld,
                                                                                         entity_id=monster_entity,
                                                                                         target_entity=player_entity)
 
@@ -249,15 +246,13 @@ class StatelessAI:
             # yes I can
             if not too_far_from_player and not too_close_to_player:
                 if i_can_cast_a_combat_spell:
-                    spell_to_cast = AIUtilities.pick_a_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,
-                                                                     remaining_spells=remaining_spells,
-                                                                     player_entity=player_entity)
+                    spell_to_cast = AIUtilities.pick_random_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,
+                                                                          remaining_spells=remaining_spells, game_config=game_config, game_map=game_map)
                     if spell_to_cast != 'no spell':
                         spell_cast_message = 'I choose to cast ' + spell_to_cast
                         AIUtilities.draw_spell_targeting_effects(gameworld=gameworld, game_config=game_config,
                                                                  caster_entity=monster_entity,
                                                                  enemy_list=[player_entity],
-                                                                 player_entity=player_entity,
                                                                  game_map=game_map, spell_has_aoe=False)
                         AIUtilities.let_me_say(gameworld=gameworld, message=spell_cast_message)
                     else:

@@ -9,8 +9,9 @@ from utilities.spellHelp import SpellUtilities
 class AIUtilities:
 
     @staticmethod
-    def pick_a_spell_to_cast(gameworld, entity_id, remaining_spells, player_entity):
+    def pick_random_spell_to_cast(gameworld, entity_id, remaining_spells, game_config, game_map):
 
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         target_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         target_map_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
         cast_spell = False
@@ -49,6 +50,12 @@ class AIUtilities:
 
         else:
             spell_name = 'no spell'
+
+        if spell_to_cast != 'no spell':
+            AIUtilities.draw_spell_targeting_effects(gameworld=gameworld, game_config=game_config,
+                                                     caster_entity=entity_id,
+                                                     enemy_list=[player_entity],
+                                                     game_map=game_map, spell_has_aoe=False)
         return spell_name
 
     @staticmethod
@@ -107,10 +114,10 @@ class AIUtilities:
 
     @staticmethod
     def can_i_cast_a_spell(gameworld, entity_id, target_entity):
-        can_cast_a_spell, remaining_spells, weapon_type = SpellUtilities.can_mobile_cast_a_spell(gameworld, entity_id,
+        can_cast_a_spell, remaining_spells = SpellUtilities.can_mobile_cast_a_spell(gameworld, entity_id,
                                                                                                  target_entity)
 
-        return can_cast_a_spell, remaining_spells, weapon_type
+        return can_cast_a_spell, remaining_spells
 
     @staticmethod
     def can_i_see_my_target(gameworld, from_entity, to_entity):
@@ -122,12 +129,11 @@ class AIUtilities:
         common.CommonUtils.fire_event('dialog-general', gameworld=gameworld, dialog=message)
 
     @staticmethod
-    def draw_spell_targeting_effects(gameworld, game_config, enemy_list, player_entity, caster_entity, game_map, spell_has_aoe):
+    def draw_spell_targeting_effects(gameworld, game_config, enemy_list, caster_entity, game_map, spell_has_aoe):
         # Spell to cast has already been decided upon, based on current AI values/settings
-
         # get list of enemies at map target location
         # do spell casting visual effects at screen coords
-
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
         # get map position of target
         tg_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         tg_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)

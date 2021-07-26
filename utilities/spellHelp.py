@@ -130,7 +130,7 @@ class SpellUtilities:
         else:
             logger.info('No weapons equipped.')
 
-        return can_cast_a_spell, remaining_spells, weapon_type
+        return can_cast_a_spell, remaining_spells
 
     @staticmethod
     def check_for_spells_on_cooldown(gameworld, spells_to_choose_from):
