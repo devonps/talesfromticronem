@@ -9,6 +9,25 @@ from utilities.spellHelp import SpellUtilities
 class AIUtilities:
 
     @staticmethod
+    def attack_the_target(i_can_cast_a_combat_spell, gameworld, monster_entity, remaining_spells, game_map, game_config):
+        if i_can_cast_a_combat_spell:
+            AIUtilities.pick_random_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,
+                                                  remaining_spells=remaining_spells, game_config=game_config,
+                                                  game_map=game_map)
+        else:
+            # I'm in combat range but can't cast a spell because I don't have a weapon or they're all on
+            # cooldown
+            AIUtilities.let_me_say(gameworld=gameworld, message='It is your lucky day punk!')
+
+    @staticmethod
+    def move_towards_or_away_from_target(i_can_move, too_far, too_close, source_entity, target_entity, gameworld):
+        if i_can_move:
+            if too_far:
+                AIUtilities.move_towards_target(gameworld=gameworld, target_entity=target_entity, source_entity=source_entity)
+            if too_close:
+                AIUtilities.move_away_from_target(gameworld=gameworld, target_entity=target_entity, source_entity=source_entity)
+
+    @staticmethod
     def pick_random_spell_to_cast(gameworld, entity_id, remaining_spells, game_config, game_map):
 
         player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)

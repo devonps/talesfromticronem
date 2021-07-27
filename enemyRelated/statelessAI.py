@@ -243,22 +243,9 @@ class StatelessAI:
         if i_can_see_the_player:
             # yes I can
             if ideal_distance_from_target:
-                if i_can_cast_a_combat_spell:
-                    AIUtilities.pick_random_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,
-                                                          remaining_spells=remaining_spells, game_config=game_config,
-                                                          game_map=game_map)
-                else:
-                    # I'm in combat range but can't cast a spell because I don't have a weapon or they're all on
-                    # cooldown
-                    AIUtilities.let_me_say(gameworld=gameworld, message='It is your lucky day punk!')
+                AIUtilities.attack_the_target(i_can_cast_a_combat_spell=i_can_cast_a_combat_spell, gameworld=gameworld, game_map=game_map, game_config=game_config, monster_entity=monster_entity, remaining_spells=remaining_spells)
             else:
-                if i_can_move:
-                    if too_far_from_player:
-                        # move towards the player
-                        pass
-                    if too_close_to_player:
-                        # move away from the player
-                        pass
+                AIUtilities.move_towards_or_away_from_target(i_can_move=i_can_move, too_far=too_far_from_player, too_close=too_close_to_player, gameworld=gameworld, source_entity=monster_entity, target_entity=player_entity)
 
         # no I can't
         # can I move
