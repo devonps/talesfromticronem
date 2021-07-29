@@ -17,15 +17,17 @@ class AIUtilities:
         else:
             # I'm in combat range but can't cast a spell because I don't have a weapon or they're all on
             # cooldown
-            AIUtilities.let_me_say(gameworld=gameworld, message='It is your lucky day punk!')
+            AIUtilities.let_me_say(gameworld=gameworld, message="It's your lucky day punk!")
 
     @staticmethod
     def move_towards_or_away_from_target(i_can_move, too_far, too_close, source_entity, target_entity, gameworld):
         if i_can_move:
             if too_far:
                 AIUtilities.move_towards_target(gameworld=gameworld, target_entity=target_entity, source_entity=source_entity)
+                AIUtilities.let_me_say(gameworld=gameworld, message="I'm coming for you!")
             if too_close:
                 AIUtilities.move_away_from_target(gameworld=gameworld, target_entity=target_entity, source_entity=source_entity)
+                AIUtilities.let_me_say(gameworld=gameworld, message="I need some room.")
 
     @staticmethod
     def pick_random_spell_to_cast(gameworld, entity_id, remaining_spells, game_config, game_map):
