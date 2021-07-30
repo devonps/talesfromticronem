@@ -9,7 +9,13 @@ from utilities.spellHelp import SpellUtilities
 class AIUtilities:
 
     @staticmethod
-    def attack_the_target(i_can_cast_a_combat_spell, gameworld, monster_entity, remaining_spells, game_map, game_config):
+    def attack_the_target(player_entity, gameworld, monster_entity, game_map, game_config):
+        bomber_text = "I can see the player but have no combat spells available."
+        bully_text = "It's your lucky day punk!"
+
+        i_can_cast_a_combat_spell, remaining_spells = AIUtilities.can_i_cast_a_spell(gameworld=gameworld,
+                                                                                     entity_id=monster_entity,
+                                                                                     target_entity=player_entity)
         if i_can_cast_a_combat_spell:
             AIUtilities.pick_random_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,
                                                   remaining_spells=remaining_spells, game_config=game_config,
@@ -17,7 +23,7 @@ class AIUtilities:
         else:
             # I'm in combat range but can't cast a spell because I don't have a weapon or they're all on
             # cooldown
-            AIUtilities.let_me_say(gameworld=gameworld, message="It's your lucky day punk!")
+            AIUtilities.let_me_say(gameworld=gameworld, message=bully_text)
 
     @staticmethod
     def move_towards_or_away_from_target(i_can_move, too_far, too_close, source_entity, target_entity, gameworld):
@@ -118,7 +124,7 @@ class AIUtilities:
             AIUtilities.let_me_say(gameworld=gameworld, message='I choose not to move.')
 
     @staticmethod
-    def do_something_non_combat(monster_is_hurt):
+    def do_something_non_combat(monster_is_hurt, gameworld):
         if monster_is_hurt:
             AIUtilities.let_me_say(gameworld=gameworld, message='I am hurting, medic!')
         else:
