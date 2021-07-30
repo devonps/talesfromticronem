@@ -12,6 +12,7 @@ class AIUtilities:
     def attack_the_target(player_entity, gameworld, monster_entity, game_map, game_config):
         bomber_text = "I can see the player but have no combat spells available."
         bully_text = "It's your lucky day punk!"
+        target_attacked = False
 
         i_can_cast_a_combat_spell, remaining_spells = AIUtilities.can_i_cast_a_spell(gameworld=gameworld,
                                                                                      entity_id=monster_entity,
@@ -20,13 +21,16 @@ class AIUtilities:
             AIUtilities.pick_random_spell_to_cast(gameworld=gameworld, entity_id=monster_entity,
                                                   remaining_spells=remaining_spells, game_config=game_config,
                                                   game_map=game_map)
+            target_attacked = True
         else:
             # I'm in combat range but can't cast a spell because I don't have a weapon or they're all on
             # cooldown
             AIUtilities.let_me_say(gameworld=gameworld, message=bully_text)
+        return target_attacked
 
     @staticmethod
-    def move_towards_or_away_from_target(i_can_move, too_far, too_close, source_entity, target_entity, gameworld):
+    def move_towards_or_away_from_target(too_far, too_close, source_entity, target_entity, gameworld):
+        i_can_move = AIUtilities.can_i_move(gameworld=gameworld, source_entity=source_entity)
         if i_can_move:
             if too_far:
                 AIUtilities.move_towards_target(gameworld=gameworld, target_entity=target_entity, source_entity=source_entity)
@@ -98,6 +102,21 @@ class AIUtilities:
             return True
         else:
             return False
+
+    @staticmethod
+    def distance_to_target(gameworld, source_entity, target_entity):
+        min_attack_range = MobileUtilities.get_enemy_preferred_min_range(gameworld=gameworld, entity=source_entity)
+        max_attack_range = MobileUtilities.get_enemy_preferred_max_range(gameworld=gameworld, entity=source_entity)
+        dist_to_target = AIUtilities.can_i_see_my_target(gameworld=gameworld, from_entity=source_entity,
+                                                         to_entity=target_entity)
+        too_close_to_player = AIUtilities.am_i_too_close_to_the_target(dist_to_target=dist_to_target,
+                                                                       min_attack_range=min_attack_range)
+        too_far_from_player = AIUtilities.am_i_too_far_from_the_target(dist_to_target=dist_to_target,
+                                                                       max_attack_range=max_attack_range)
+
+        ideal_distance_from_target = (not too_far_from_player and not too_close_to_player)
+
+        return too_close_to_player, too_far_from_player, ideal_distance_from_target
 
     @staticmethod
     def am_i_too_close_to_the_target(dist_to_target, min_attack_range):
