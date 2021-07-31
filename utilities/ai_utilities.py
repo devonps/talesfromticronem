@@ -1,5 +1,7 @@
 import random
 
+from loguru import logger
+
 from utilities import common, mobileHelp
 from utilities.formulas import calculate_distance_to_target
 from utilities.mobileHelp import MobileUtilities
@@ -7,6 +9,30 @@ from utilities.spellHelp import SpellUtilities
 
 
 class AIUtilities:
+
+    @staticmethod
+    def dump_ai_debugging_information(gameworld, ai_debugging_first_name, target_entity, entity_combat_role):
+        visible_entities = MobileUtilities.get_ai_visible_entities(gameworld=gameworld, target_entity=target_entity)
+        vision_range = MobileUtilities.get_mobile_senses_vision_range(gameworld=gameworld, entity=target_entity)
+
+        visible_entity_names = []
+        if len(visible_entities) > 0:
+            for a in range(len(visible_entities)):
+                entity_names = MobileUtilities.get_mobile_name_details(gameworld=gameworld,
+                                                                       entity=visible_entities[a])
+                mobile_first_name = entity_names[0]
+                visible_entity_names.append(mobile_first_name)
+
+        logger.debug('=== AI Debugging information ===')
+        logger.info('mobile AI name: {}', ai_debugging_first_name)
+        logger.info('mobile AI combat role: {}', entity_combat_role)
+        logger.info('mobile intrinsic information')
+        damage_string = 'Has mobile taken damage:'
+        damage_status = ' no'
+        logger.info(damage_string + damage_status)
+        logger.info('mobile vision range: {}', vision_range)
+        logger.info('What can the mobile see around them')
+        logger.info('list of entities: {}', visible_entity_names)
 
     @staticmethod
     def attack_the_target(player_entity, gameworld, monster_entity, game_map, game_config):
@@ -143,7 +169,8 @@ class AIUtilities:
             AIUtilities.let_me_say(gameworld=gameworld, message='I choose not to move.')
 
     @staticmethod
-    def do_something_non_combat(monster_is_hurt, gameworld):
+    def do_something_non_combat(gameworld):
+        monster_is_hurt = MobileUtilities.get_mobile_physical_hurt_status(gameworld=gameworld, entity=monster_entity)
         if monster_is_hurt:
             AIUtilities.let_me_say(gameworld=gameworld, message='I am hurting, medic!')
         else:
