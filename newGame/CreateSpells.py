@@ -79,7 +79,7 @@ class AsEntities:
         return thisspell
 
     @staticmethod
-    def create_new_spell_entity_from_existing_spell_entity(gameworld, existing_spell_entity, game_config):
+    def create_new_spell_entity_from_existing_spell_entity(gameworld, existing_spell_entity):
         thisspell = world.get_next_entity_id(gameworld=gameworld)
         spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=existing_spell_entity)
         gameworld.add_component(thisspell, spells.Name(spell_name.lower()))
@@ -89,8 +89,8 @@ class AsEntities:
         gameworld.add_component(thisspell, spells.ShortDescription(short_desc))
         turns_to_cast = SpellUtilities.get_spell_cast_time(gameworld=gameworld, spell_entity=existing_spell_entity)
         gameworld.add_component(thisspell, spells.CastTime(turns_to_cast))
-        cool_down = SpellUtilities.get_spell_cooldown_status(gameworld=gameworld, spell_entity=existing_spell_entity)
-        gameworld.add_component(thisspell, spells.CoolDown(cool_down))
+        cool_down_turns = SpellUtilities.get_spell_cooldown_time(gameworld=gameworld, spell_entity=existing_spell_entity)
+        gameworld.add_component(thisspell, spells.CoolDown(cool_down_turns))
 
         play_class = gameworld.component_for_entity(existing_spell_entity, spells.ClassName)
         gameworld.add_component(thisspell, spells.ClassName(play_class.label))
