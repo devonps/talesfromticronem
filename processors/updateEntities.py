@@ -3,6 +3,7 @@ from loguru import logger
 from components import mobiles
 from utilities import formulas, world, armourManagement, common, mobileHelp, scorekeeper
 from utilities.mobileHelp import MobileUtilities
+from utilities.spellHelp import SpellUtilities
 
 
 class UpdateEntitiesProcessor(esper.Processor):
@@ -112,8 +113,6 @@ class UpdateEntitiesProcessor(esper.Processor):
         current_condis = mobileHelp.MobileUtilities.get_current_condis_applied_to_mobile(gameworld=self.gameworld,
                                                                                          entity=target_entity)
         if len(current_condis) != 0:
-            logger.warning('Current entity name being processed is {} who has {} applied', entity_names[0],
-                           current_condis)
 
             condition_damage_stat_value = mobileHelp.MobileUtilities.get_mobile_secondary_condition_damage(
                 gameworld=self.gameworld,
@@ -151,8 +150,7 @@ class UpdateEntitiesProcessor(esper.Processor):
                     self.remove_condition(entity_name=entity_names[0], current_condis=current_condis, ps=ps,
                                           condi_name=condi_name)
                 else:
-                    status_effects_component = self.gameworld.component_for_entity(target_entity, mobiles.StatusEffects)
-                    status_effects_component.conditions = current_condis
+                    SpellUtilities.apply_condis_to_target(gameworld=self.gameworld, target_entity=target_entity, list_of_condis=current_condis)
 
                 logger.debug('Condis applied to {} is {}', entity_names[0], current_condis)
                 ps += 1

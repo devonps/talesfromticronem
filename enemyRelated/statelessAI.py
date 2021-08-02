@@ -166,18 +166,10 @@ class StatelessAI:
         logger.debug('Entity id {}', monster_entity)
 
         # Get information
-        min_attack_range = MobileUtilities.get_enemy_preferred_min_range(gameworld=gameworld, entity=monster_entity)
-        max_attack_range = MobileUtilities.get_enemy_preferred_max_range(gameworld=gameworld, entity=monster_entity)
-        visible_entities = MobileUtilities.get_ai_visible_entities(gameworld=gameworld, target_entity=monster_entity)
+        too_close_to_player, too_far_from_player, ideal_distance_from_target = AIUtilities.distance_to_target(
+            gameworld=gameworld, source_entity=monster_entity, target_entity=player_entity)
         i_can_see_the_player = AIUtilities.is_the_player_visible(player_entity=player_entity,
                                                                  visible_entities=visible_entities)
-        dist_to_target = AIUtilities.can_i_see_my_target(gameworld=gameworld, from_entity=monster_entity,
-                                                         to_entity=player_entity)
-        too_close_to_player = AIUtilities.am_i_too_close_to_the_target(dist_to_target=dist_to_target,
-                                                                       min_attack_range=min_attack_range)
-        too_far_from_player = AIUtilities.am_i_too_far_from_the_target(dist_to_target=dist_to_target,
-                                                                       max_attack_range=max_attack_range)
-
         ideal_distance_from_target = (not too_far_from_player and not too_close_to_player)
 
         # can I attack the player from this position and player within attack range

@@ -431,7 +431,9 @@ class SpellUtilities:
                                                                         spell_entity=spell_entity)
         SpellUtilities.set_spell_cooldown_remaining_turns(gameworld=gameworld, spell_entity=spell_entity,
                                                           value=game_turns_on_cooldown)
-        logger.debug('Spell entity {} has been put on cooldown', spell_entity)
+        spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
+        logger.debug('Spell entity {} has been put on cooldown', spell_name)
+        logger.debug('For {} turns', game_turns_on_cooldown)
 
     @staticmethod
     def draw_spell_targeting_cursor(gameworld, game_map, spell_has_aoe, spell_centre, entity_id, cursor_info, mode_flag,
