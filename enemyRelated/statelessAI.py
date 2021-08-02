@@ -98,49 +98,19 @@ class StatelessAI:
             #
             # if bomber is too close to the target
             #
+            target_has_been_attacked = False
             if not ideal_distance_from_target:
                 AIUtilities.move_towards_or_away_from_target(too_far=too_far_from_player, too_close=too_close_to_player,
                                                              gameworld=gameworld, source_entity=monster_entity,
                                                              target_entity=player_entity)
             else:
                 # can I cast a combat spell
-                target_has_been_attacked = AIUtilities.attack_the_target(player_entity=player_entity,
-                                                                         gameworld=gameworld,
-                                                                         game_map=game_map,
-                                                                         game_config=game_config,
-                                                                         monster_entity=monster_entity)
-                if not target_has_been_attacked:
-                    # do something non-combat here
-                    AIUtilities.do_something_non_combat(gameworld=gameworld)
-
-            # if too_close_to_player:
-            #     # if bomber can move
-            #     AIUtilities.move_towards_or_away_from_target(too_far=False, too_close=too_close_to_player, gameworld=gameworld, source_entity=monster_entity, target_entity=player_entity)
-            # else:
-            #     # can I cast a spell
-            #     AIUtilities.attack_the_target(player_entity=player_entity, gameworld=gameworld, game_map=game_map,
-            #                                   game_config=game_config, monster_entity=monster_entity)
-            #
-            # #
-            # # If bomber is out of range to attack
-            # #
-            # if too_far_from_player:
-            #     #  if bomber can move
-            #     AIUtilities.move_towards_or_away_from_target(too_far=too_far_from_player, too_close=False, gameworld=gameworld, source_entity=monster_entity, target_entity=player_entity)
-            # else:
-            #     # do something non-combat here
-            #     AIUtilities.do_something_non_combat(gameworld=gameworld)
-
-            #
-            # if bomber is in the middle ground of distance to the target
-            #
-            if ideal_distance_from_target:
                 # random.chance('attack', 'move')
                 coin_flip = random.randrange(0, 10)
                 if coin_flip < 8:
                     # cast a combat spell
                     if i_can_cast_a_combat_spell:
-                        AIUtilities.attack_the_target(player_entity=player_entity, gameworld=gameworld,
+                        target_has_been_attacked = AIUtilities.attack_the_target(player_entity=player_entity, gameworld=gameworld,
                                                       game_map=game_map,
                                                       game_config=game_config, monster_entity=monster_entity)
                     else:
@@ -156,7 +126,9 @@ class StatelessAI:
                                                                  too_close=True, gameworld=gameworld,
                                                                  source_entity=monster_entity,
                                                                  target_entity=player_entity)
-
+                if not target_has_been_attacked:
+                    # do something non-combat here
+                    AIUtilities.do_something_non_combat(gameworld=gameworld)
 
     @staticmethod
     def perform_ai_for_bully(gameworld, monster_entity, game_config, game_map, player_entity):

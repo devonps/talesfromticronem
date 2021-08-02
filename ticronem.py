@@ -11,6 +11,7 @@ from gameworld.sceneManager import SceneManager
 
 def game_loop(gameworld):
     # turn zero setup
+    game_turn = 0
     game_config = configUtilities.load_config()
     player = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
     terminal.clear()
@@ -77,6 +78,7 @@ def game_loop(gameworld):
         event_to_be_processed = None
         event_action = None
         while not valid_event:
+            logger.warning('=== STARTING TURN: {}===', game_turn)
             event_to_be_processed, event_action = input_handlers.handle_game_keys()
             if event_to_be_processed not in ('mousemove', None):
                 valid_event = True
@@ -132,6 +134,7 @@ def game_loop(gameworld):
 
         # blit the console
         terminal.refresh()
+        game_turn += 1
 
     # player has died or quit the game
     GameOver.GameOver.process_game_over(player_died=player_died, gameworld=gameworld)

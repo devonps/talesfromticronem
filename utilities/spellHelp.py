@@ -97,6 +97,7 @@ class SpellUtilities:
                                                                                  weapon_type=weapon_type,
                                                                                  weapons_equipped=weapons_equipped)
             spells_to_choose_from.extend(spells_list)
+            logger.debug('added spells from main hand weapon')
 
         if off_hand_weapon > 0:
             weapon_type = itemsHelp.ItemUtilities.get_equipped_weapon_type_for_enemy(gameworld=gameworld,
@@ -106,6 +107,7 @@ class SpellUtilities:
                                                                                  weapon_type=weapon_type,
                                                                                  weapons_equipped=weapons_equipped)
             spells_to_choose_from.extend(spells_list)
+            logger.debug('added spells from off hand weapon')
 
         if both_hand_weapon > 0:
             weapon_type = itemsHelp.ItemUtilities.get_equipped_weapon_type_for_enemy(gameworld=gameworld,
@@ -115,6 +117,8 @@ class SpellUtilities:
                                                                                  weapon_type=weapon_type,
                                                                                  weapons_equipped=weapons_equipped)
             spells_to_choose_from.extend(spells_list)
+
+            logger.debug('added spells from both hands weapon')
 
         logger.info('Spells enemy can choose from {}', spells_to_choose_from)
         # check for spells on cooldown and check spell range
@@ -179,7 +183,7 @@ class SpellUtilities:
     def check_spells_for_range_to_target(gameworld, spells_to_choose_from, entity_id, target_entity):
         distance_to_target = formulas.calculate_distance_to_target(gameworld=gameworld, from_entity=entity_id,
                                                                    to_entity=target_entity)
-        logger.info('available spells {}', spells_to_choose_from)
+        logger.info('checking for range from available spells {}', spells_to_choose_from)
         for spell in spells_to_choose_from:
             spell_range = SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell)
             spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell)
