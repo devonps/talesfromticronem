@@ -55,9 +55,7 @@ class StatelessAI:
 
                 # what next?
                 if entity_combat_role != 'none':
-                    if entity_combat_role == 'squealer':
-                        StatelessAI.perform_ai_for_squealer(entity=entity)
-                    elif entity_combat_role == 'bomber':
+                    if entity_combat_role == 'bomber':
                         StatelessAI.perform_ai_for_bomber(monster_entity=entity, game_config=game_config,
                                                           gameworld=gameworld, game_map=game_map,
                                                           player_entity=player_entity)
@@ -67,13 +65,6 @@ class StatelessAI:
                                                          player_entity=player_entity)
                     else:
                         StatelessAI.perform_ai_for_sniper(entity=entity)
-
-    @staticmethod
-    def perform_ai_for_squealer(entity):
-        # a squealer will always run away from the player and their allies
-        # additionally it will alert other enemies of the player
-        logger.warning('ALL the way from stateless AI: Squealer role')
-        logger.debug('Entity id {}', entity)
 
     @staticmethod
     def perform_ai_for_bomber(gameworld, monster_entity, game_config, game_map, player_entity):
@@ -115,7 +106,7 @@ class StatelessAI:
                                                       game_config=game_config, monster_entity=monster_entity)
                     else:
                         # there's no combat spell to cast - but can I / do I need to cast my heal spell
-                        AIUtilities.do_something_non_combat(gameworld=gameworld)
+                        AIUtilities.do_something_non_combat(gameworld=gameworld, monster_entity=monster_entity)
                         AIUtilities.let_me_say(gameworld=gameworld,
                                                message='I can see the player but have no combat spells available.')
                         logger.warning('I am out of spells')
@@ -128,7 +119,7 @@ class StatelessAI:
                                                                  target_entity=player_entity)
         if not target_has_been_attacked:
             # do something non-combat here
-            AIUtilities.do_something_non_combat(gameworld=gameworld)
+            AIUtilities.do_something_non_combat(gameworld=gameworld, monster_entity=monster_entity)
 
     @staticmethod
     def perform_ai_for_bully(gameworld, monster_entity, game_config, game_map, player_entity):
@@ -145,16 +136,21 @@ class StatelessAI:
         ideal_distance_from_target = (not too_far_from_player and not too_close_to_player)
 
         # can I attack the player from this position and player within attack range
+        target_has_been_attacked = False
         if i_can_see_the_player:
             if ideal_distance_from_target:
-                AIUtilities.attack_the_target(player_entity=player_entity, gameworld=gameworld, game_map=game_map,
+                target_has_been_attacked = AIUtilities.attack_the_target(player_entity=player_entity, gameworld=gameworld, game_map=game_map,
                                               game_config=game_config, monster_entity=monster_entity)
             else:
                 AIUtilities.move_towards_or_away_from_target(too_far=too_far_from_player, too_close=too_close_to_player,
                                                              gameworld=gameworld, source_entity=monster_entity,
                                                              target_entity=player_entity)
 
-        # no I can't
+        # no I can't see the player
+        if not target_has_been_attacked:
+            # do something non-combat here
+            AIUtilities.do_something_non_combat(gameworld=gameworld, monster_entity=monster_entity)
+
         # can I move
         # how much health do I have
 

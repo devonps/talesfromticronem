@@ -169,7 +169,7 @@ class AIUtilities:
             AIUtilities.let_me_say(gameworld=gameworld, message='I choose not to move.')
 
     @staticmethod
-    def do_something_non_combat(gameworld):
+    def do_something_non_combat(gameworld, monster_entity):
         monster_is_hurt = MobileUtilities.get_mobile_physical_hurt_status(gameworld=gameworld, entity=monster_entity)
         if monster_is_hurt:
             AIUtilities.let_me_say(gameworld=gameworld, message='I am hurting, medic!')

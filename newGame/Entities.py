@@ -66,7 +66,7 @@ class NewEntity:
         combat_kits_file_path = configUtilities.get_config_value_as_string(configfile=game_config,
                                                                            section='files', parameter='COMBATKITS')
         # choose an enemy role
-        enemy_roles = ['bomber', 'squealer', 'bully', 'sniper']
+        enemy_roles = ['bomber', 'bully', 'sniper']
         npc_race = chosen_race_name
         npc_name = 'random'
         new_entity = 0

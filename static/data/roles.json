@@ -9,13 +9,6 @@
       "spells": "fireball,lava font,flame burst,meteor shower,stoning,eruption,shock wave,chain lightning,lightning surge,static field,ice spike,necrotic grasp,mark of blood,life blood,putrid mark,reapers mark,grasping dead,deathly swarm,spinal shivers,oppressive collapse,rending claws,ghastly claws,blood curse,reapers touch"
     },
     {
-      "id": "squealer",
-      "race": "random",
-      "kits": "squealer",
-      "min-range": "nearby",
-      "max-range": "in_the_area"
-    },
-    {
       "id": "bully",
       "race": "random",
       "kits": "bully",
