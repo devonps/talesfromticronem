@@ -94,11 +94,11 @@ class StatelessAI:
         i_can_see_the_player = AIUtilities.is_the_player_visible(player_entity=player_entity,
                                                                  visible_entities=visible_entities)
 
+        target_has_been_attacked = False
         if i_can_see_the_player:
             #
             # if bomber is too close to the target
             #
-            target_has_been_attacked = False
             if not ideal_distance_from_target:
                 AIUtilities.move_towards_or_away_from_target(too_far=too_far_from_player, too_close=too_close_to_player,
                                                              gameworld=gameworld, source_entity=monster_entity,
@@ -126,9 +126,9 @@ class StatelessAI:
                                                                  too_close=True, gameworld=gameworld,
                                                                  source_entity=monster_entity,
                                                                  target_entity=player_entity)
-                if not target_has_been_attacked:
-                    # do something non-combat here
-                    AIUtilities.do_something_non_combat(gameworld=gameworld)
+        if not target_has_been_attacked:
+            # do something non-combat here
+            AIUtilities.do_something_non_combat(gameworld=gameworld)
 
     @staticmethod
     def perform_ai_for_bully(gameworld, monster_entity, game_config, game_map, player_entity):
