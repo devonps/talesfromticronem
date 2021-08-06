@@ -3,7 +3,7 @@ import random
 from loguru import logger
 
 from components import mobiles
-from utilities import configUtilities, common
+from utilities import configUtilities
 from utilities.ai_utilities import AIUtilities
 from utilities.mobileHelp import MobileUtilities
 
@@ -101,9 +101,11 @@ class StatelessAI:
                 if coin_flip < 8:
                     # cast a combat spell
                     if i_can_cast_a_combat_spell:
-                        target_has_been_attacked = AIUtilities.attack_the_target(player_entity=player_entity, gameworld=gameworld,
-                                                      game_map=game_map,
-                                                      game_config=game_config, monster_entity=monster_entity)
+                        target_has_been_attacked = AIUtilities.attack_the_target(player_entity=player_entity,
+                                                                                 gameworld=gameworld,
+                                                                                 game_map=game_map,
+                                                                                 game_config=game_config,
+                                                                                 monster_entity=monster_entity)
                     else:
                         # there's no combat spell to cast - but can I / do I need to cast my heal spell
                         AIUtilities.do_something_non_combat(gameworld=gameworld, monster_entity=monster_entity)
@@ -136,30 +138,33 @@ class StatelessAI:
         ideal_distance_from_target = (not too_far_from_player and not too_close_to_player)
 
         # can I attack the player from this position and player within attack range
-        target_has_been_attacked = False
         if i_can_see_the_player:
             if ideal_distance_from_target:
-                target_has_been_attacked = AIUtilities.attack_the_target(player_entity=player_entity, gameworld=gameworld, game_map=game_map,
-                                              game_config=game_config, monster_entity=monster_entity)
+                target_has_been_attacked = AIUtilities.attack_the_target(player_entity=player_entity,
+                                                                         gameworld=gameworld, game_map=game_map,
+                                                                         game_config=game_config,
+                                                                         monster_entity=monster_entity)
+                if not target_has_been_attacked:
+                    # do something non-combat here
+                    AIUtilities.do_something_non_combat(gameworld=gameworld, monster_entity=monster_entity)
             else:
                 AIUtilities.move_towards_or_away_from_target(too_far=too_far_from_player, too_close=too_close_to_player,
                                                              gameworld=gameworld, source_entity=monster_entity,
                                                              target_entity=player_entity)
 
         # no I can't see the player
-        if not target_has_been_attacked:
-            # do something non-combat here
-            AIUtilities.do_something_non_combat(gameworld=gameworld, monster_entity=monster_entity)
+        else:
+            player_last_known_position = MobileUtilities.get_player_last_known_position(gameworld=gameworld, source_entity=monster_entity)
+            # can I move
+            i_can_move = AIUtilities.can_i_move(gameworld=gameworld, source_entity=source_entity)
+            # how much health do I have
 
-        # can I move
-        # how much health do I have
+            # health is below threshold of 15%
+            # if can move then move away from the player
 
-        # health is below threshold of 15%
-        # if can move then move away from the player
+            # if can't move then call for help and attack the player if in range
 
-        # if can't move then call for help and attack the player if in range
-
-        # health above threshold so move towards player
+            # health above threshold so move towards player
 
     @staticmethod
     def perform_ai_for_sniper(entity):

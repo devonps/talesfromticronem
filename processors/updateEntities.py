@@ -52,9 +52,8 @@ class UpdateEntitiesProcessor(esper.Processor):
         else:
             MobileUtilities.set_movement_status(gameworld=self.gameworld, entity=entity, status=True)
 
-    def who_can_i_see_around_me(self, ent):
-        range_of_vision = MobileUtilities.get_mobile_senses_vision_range(gameworld=self.gameworld,
-                                                                         entity=ent)
+    def who_can_i_see_around_me(self, ent, player_entity):
+        range_of_vision = MobileUtilities.get_mobile_senses_vision_range(gameworld=self.gameworld, entity=ent)
         from_x = MobileUtilities.get_mobile_x_position(gameworld=self.gameworld, entity=ent)
         from_y = MobileUtilities.get_mobile_y_position(gameworld=self.gameworld, entity=ent)
 
@@ -69,6 +68,9 @@ class UpdateEntitiesProcessor(esper.Processor):
                 entity_id = self.game_map.tiles[across][down].entity
                 if entity_id > 0 and entity_id != ent:
                     visible_entities.append(entity_id)
+                if entity_id == player_entity:
+                    MobileUtilities.set_player_last_known_position(gameworld=gameworld, source_entity=ent, map_position=(across, down))
+
         MobileUtilities.set_ai_visible_entities(gameworld=self.gameworld, target_entity=ent,
                                                 visible_entities=visible_entities)
 

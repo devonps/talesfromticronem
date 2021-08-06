@@ -406,6 +406,15 @@ class MobileUtilities(numbers.Real, ABC):
         return dialog_component.spoken_to_before
 
     @staticmethod
+    def set_player_last_known_position(gameworld, map_position, source_entity):
+        gameworld.component_for_entity(source_entity, mobiles.AIMemory).player_last_known_position = map_position
+
+    @staticmethod
+    def get_player_last_known_position(gameworld, source_entity):
+        ai_memory_component = gameworld.component_for_entity(source_entity, mobiles.AIMemory)
+        return ai_memory_component.player_last_known_position
+
+    @staticmethod
     def set_ai_visible_entities(gameworld, target_entity, visible_entities):
         gameworld.component_for_entity(target_entity, mobiles.AIMemory).visible_entities = visible_entities
 

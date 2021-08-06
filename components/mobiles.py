@@ -42,7 +42,8 @@ class EnemyCombatRole:
 
 
 class CombatKit:
-    def __init__(self, title='', glyph='', armourset='', armour_mod='', weapons='', pendent='', ring1='', ring2='', ear1='', ear2=''):
+    def __init__(self, title='', glyph='', armourset='', armour_mod='', weapons='', pendent='', ring1='', ring2='',
+                 ear1='', ear2=''):
         self.title = title
         self.glyph = glyph
         self.armourset = armourset
@@ -140,7 +141,7 @@ class AIMemory:
         self.visible_entities = []
         self.have_i_taken_damage = False
         self.can_i_move = True
-
+        self.player_last_known_position = ()
 
 
 class PhysicalState:
