@@ -40,7 +40,7 @@ class UpdateEntitiesProcessor(esper.Processor):
                         # gain resources from spells
                         self.check_for_combat(entity_id=ent)
                         # what/who can the entity see around them
-                        self.who_can_i_see_around_me(ent=ent)
+                        self.who_can_i_see_around_me(ent=ent, player_entity=player_entity)
                         # have i been stopped from moving next turn due to a condition
                         self.can_i_still_move(entity=ent)
 
