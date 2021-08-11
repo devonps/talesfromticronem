@@ -1,6 +1,6 @@
 [
     {
-      "name": "Fireball",
+      "name": "fireball",
       "description": "Cast a fireball that explodes on impact and hits multiple foes.",
       "short_description": "Cast a fireball that explodes on impact",
       "type_of_spell": "combat",
@@ -278,7 +278,7 @@
         ]
     },
     {
-      "name": "Lightning Surge",
+      "name": "lightning surge",
       "description": "Charge a lightning surge that damages and blinds foes near your target when it discharges.",
       "short_description": "Charge a lightning surge that damages and blinds foes.",
       "type_of_spell": "combat",
@@ -403,7 +403,7 @@
         ]
     },
     {
-      "name": "Ice Spike",
+      "name": "ice spike",
       "description": "Drop a giant ice spike on foes to make them vulnerable.",
       "short_description": "Drop a giant ice spike on foes to make them vulnerable.",
       "type_of_spell": "combat",

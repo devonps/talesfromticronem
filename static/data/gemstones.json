@@ -77,6 +77,19 @@
     "glyph": "*",
     "fg_colour": "white",
     "bg_colour": "black"
+  },
+  {
+    "Stone": "Peridot",
+    "Type": "Pebble",
+    "Attribute": "Ferocity",
+    "shop_display": "Ferocity",
+    "Gem": 3,
+    "Amulet": 15,
+    "Ring": 6,
+    "Earring": 5,
+    "glyph": "*",
+    "fg_colour": "white",
+    "bg_colour": "black"
   }
 ]
 }

@@ -22,7 +22,7 @@
       "kits": "sniper",
       "min-range": "EXTREME",
       "max-range": "REMOTE",
-      "spells": "spatial surge, confusions curse, lightning surge, ice spike, fireball"
+      "spells": "spatial surge,confusions curse,lightning surge,ice spike,fireball"
     }
   ]
 }

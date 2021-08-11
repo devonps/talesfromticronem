@@ -72,7 +72,7 @@ class NewEntity:
         new_entity = 0
         # commented out whilst building/testing stateless AI
         # role_id = random.randrange(len(enemy_roles))
-        role_id = 0
+        role_id = 2
         role_file = jsonUtilities.read_json_file(ai_roles_file_path)
         for role in role_file['roles']:
             if role['id'] == enemy_roles[role_id]:
@@ -770,9 +770,14 @@ class NewEntity:
         main_hand = ''
         off_hand = ''
         weapons_list = all_weapons.split(',')
+
         if len(weapons_list) == 1:
             if weapons_list[0] in ['sword', 'staff']:
                 both_hands = weapons_list[0]
+            elif weapons_list[0] in ['rod', 'focus']:
+                off_hand = weapons_list[0]
+            elif weapons_list[0] in ['scepter', 'dagger', 'wand']:
+                main_hand = weapons_list[0]
             else:
                 logger.warning('Illegal weapon found: {}', weapons_list)
         else:
