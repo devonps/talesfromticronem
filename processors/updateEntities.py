@@ -104,8 +104,8 @@ class UpdateEntitiesProcessor(esper.Processor):
                                                                              event_name=event_to_add,
                                                                              event_starting_value=1)
         else:
-            scorekeeper.ScorekeeperUtilities.increase_meta_event_value(gameworld=self.gameworld,
-                                                                       event_name=event_to_add, value=1)
+            scorekeeper.ScorekeeperUtilities.increase_meta_event_by_value(gameworld=self.gameworld,
+                                                                          event_name=event_to_add, value=1)
 
         # And finally delete the entity + ALL associated components
         if dead_entity_id != player_entity:
@@ -144,9 +144,9 @@ class UpdateEntitiesProcessor(esper.Processor):
                 updated_condi_name = condi_name.replace(" ", "_")
                 updated_condi_name = current_area_tag + '_' + updated_condi_name + "_damage"
                 lower_condi_name = updated_condi_name.lower()
-                scorekeeper.ScorekeeperUtilities.increase_meta_event_value(gameworld=self.gameworld,
-                                                                           event_name=lower_condi_name,
-                                                                           value=damage_applied_this_turn)
+                scorekeeper.ScorekeeperUtilities.increase_meta_event_by_value(gameworld=self.gameworld,
+                                                                              event_name=lower_condi_name,
+                                                                              value=damage_applied_this_turn)
 
                 if duration <= 0:
                     self.remove_condition(entity_name=entity_names[0], current_condis=current_condis, ps=ps,

@@ -274,7 +274,7 @@ class ScorekeeperUtilities:
         return meta_event_value
 
     @staticmethod
-    def increase_meta_event_value(gameworld, event_name, value):
+    def increase_meta_event_by_value(gameworld, event_name, value):
         all_meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         meta_event_value = all_meta_events.get(event_name)
         meta_event_value += value
@@ -282,7 +282,7 @@ class ScorekeeperUtilities:
         ScorekeeperUtilities.update_scorekeeper_all_meta_events(gameworld=gameworld, meta_events=all_meta_events)
 
     @staticmethod
-    def decrease_meta_event_value(gameworld, event_name, value):
+    def decrease_meta_event_by_value(gameworld, event_name, value):
         all_meta_events = ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
         meta_event_value = all_meta_events.get(event_name)
         meta_event_value -= value

@@ -3,7 +3,8 @@ from bearlibterminal import terminal
 from components import mobiles
 from enemyRelated.statelessAI import StatelessAI
 from newGame import initialiseNewGame, GameOver, newGame
-from utilities import mobileHelp, dialogUtilities, replayGame, configUtilities, input_handlers, common, scorekeeper, spellHelp
+from utilities import mobileHelp, dialogUtilities, replayGame, configUtilities, input_handlers, common, scorekeeper, \
+    spellHelp
 from ui import swap_spells_or_items, debug, items_and_spells_info_panel
 from loguru import logger
 from gameworld.sceneManager import SceneManager
@@ -28,8 +29,9 @@ def game_loop(gameworld):
     player_name = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player)
     player_race = mobileHelp.MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
     player_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=player)
-    common.CommonUtils.fire_event("new-game", gameworld=gameworld, player_name=player_name[0], player_class=player_class,
-                           player_race=player_race[3])
+    common.CommonUtils.fire_event("new-game", gameworld=gameworld, player_name=player_name[0],
+                                  player_class=player_class,
+                                  player_race=player_race[3])
 
     # call scene manager
     game_map = SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)
@@ -46,16 +48,18 @@ def game_loop(gameworld):
             updated_spell_name = spell_name.replace(" ", "_")
             updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
             scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
-                                                                 event_name=updated_spell_name.lower(),
-                                                                 event_starting_value=0)
+                                                                             event_name=updated_spell_name.lower(),
+                                                                             event_starting_value=0)
     # register damage types for this area
-    scorekeeper.ScorekeeperUtilities.register_damage_types_for_current_area(gameworld=gameworld, current_area_tag=current_area_tag)
+    scorekeeper.ScorekeeperUtilities.register_damage_types_for_current_area(gameworld=gameworld,
+                                                                            current_area_tag=current_area_tag)
     # process all intended actions
     gameworld.process(game_config, advance_game_turn)
     # blit the console
     terminal.refresh()
 
-    scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name='game_turn', event_starting_value=1)
+    scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name='game_turn',
+                                                                     event_starting_value=1)
     meta_events = scorekeeper.ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
     logger.warning('list of meta events:{}', meta_events)
 
@@ -88,11 +92,14 @@ def game_loop(gameworld):
                 replayGame.ReplayGame.update_game_replay_file(game_config, value)
                 # Externalfiles.write_full_game_log(gameworld=gameworld, log_id=message_log_id)
                 playing_game = False
+                logger.info('Player has quit the game.')
             if event_action in movement_actions:
-                mobileHelp.MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=player, direction=event_action, speed=1)
+                mobileHelp.MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=player,
+                                                               direction=event_action, speed=1)
                 advance_game_turn = True
             if event_action in spell_bar_keys:
-                spellHelp.SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player, game_map=game_map)
+                spellHelp.SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player,
+                                                    game_map=game_map)
                 advance_game_turn = True
             if event_action == 'log':
                 common.CommonUtils.set_current_log(gameworld=gameworld, log_entity=msglog)
@@ -103,14 +110,15 @@ def game_loop(gameworld):
             advance_game_turn = False
         if event_to_be_processed == 'infopopup' and event_action is not None:
             logger.debug('Information needed on item {}', event_action)
-            items_and_spells_info_panel.display_spell_info_popup(menu_selection=event_action, gameworld=gameworld, player_entity=player)
+            items_and_spells_info_panel.display_spell_info_popup(menu_selection=event_action, gameworld=gameworld,
+                                                                 player_entity=player)
             advance_game_turn = False
         if event_to_be_processed == 'swap' and event_action is not None:
             swap_spells_or_items.swap_spells(gameworld=gameworld, player_entity=player, key_pressed=event_action)
             advance_game_turn = True
         if event_to_be_processed == 'mouseleftbutton':
             debug.Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords_clicked=event_action,
-                             game_map=game_map)
+                                   game_map=game_map)
             advance_game_turn = False
         if event_to_be_processed == 'death':
             gameworld.component_for_entity(player, mobiles.DerivedAttributes).current_health = -1
@@ -122,9 +130,11 @@ def game_loop(gameworld):
             #
             StatelessAI.do_something(gameworld=gameworld, game_config=game_config, player_entity=player,
                                      game_map=game_map)
-            scorekeeper.ScorekeeperUtilities.increase_meta_event_value(gameworld=gameworld, event_name='game_turn', value=1)
+            scorekeeper.ScorekeeperUtilities.increase_meta_event_by_value(gameworld=gameworld, event_name='game_turn',
+                                                                          value=1)
 
-        current_health = mobileHelp.MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld, entity=player)
+        current_health = mobileHelp.MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld,
+                                                                                      entity=player)
         if current_health <= 0:
             playing_game = False
             player_died = True
