@@ -36,7 +36,6 @@ class AIUtilities:
 
     @staticmethod
     def attack_the_target(player_entity, gameworld, monster_entity, game_map, game_config):
-        bomber_text = "I can see the player but have no combat spells available."
         bully_text = "It's your lucky day punk!"
         target_attacked = False
 
@@ -59,10 +58,12 @@ class AIUtilities:
         i_can_move = AIUtilities.can_i_move(gameworld=gameworld, source_entity=source_entity)
         if i_can_move:
             if too_far:
-                AIUtilities.move_towards_target(gameworld=gameworld, target_entity=target_entity, source_entity=source_entity)
+                AIUtilities.prep_move_towards_target(gameworld=gameworld, target_entity=target_entity,
+                                                     source_entity=source_entity)
                 AIUtilities.let_me_say(gameworld=gameworld, message="I'm coming for you!")
             if too_close:
-                AIUtilities.move_away_from_target(gameworld=gameworld, target_entity=target_entity, source_entity=source_entity)
+                AIUtilities.move_away_from_target(gameworld=gameworld, target_entity=target_entity,
+                                                  source_entity=source_entity)
                 AIUtilities.let_me_say(gameworld=gameworld, message="I need some room.")
 
     @staticmethod
@@ -162,8 +163,8 @@ class AIUtilities:
     def move_towards_target_or_not(gameworld, player_entity, monster_entity):
         r = random.randrange(0, 100)
         if r < 90:
-            AIUtilities.move_towards_target(gameworld=gameworld, target_entity=player_entity,
-                                            source_entity=monster_entity)
+            AIUtilities.prep_move_towards_target(gameworld=gameworld, target_entity=player_entity,
+                                                 source_entity=monster_entity)
             AIUtilities.let_me_say(gameworld=gameworld, message='Time to get hustling.')
         else:
             AIUtilities.let_me_say(gameworld=gameworld, message='I choose not to move.')
@@ -273,7 +274,7 @@ class AIUtilities:
             MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='left', speed=1)
 
     @staticmethod
-    def move_towards_target(gameworld, target_entity, source_entity):
+    def prep_move_towards_target(gameworld, target_entity, source_entity):
 
         # movement options
         # where is the target in relation to me (the source entity)
@@ -282,44 +283,18 @@ class AIUtilities:
         to_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=target_entity)
         to_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=target_entity)
 
-        target_is_north_of_me = False
-        target_is_south_of_me = False
-        target_is_west_of_me = False
-        target_is_east_of_me = False
-        i_have_moved = False
-
-        if from_x > to_x:
-            target_is_east_of_me = True
-        elif from_x < to_x:
-            target_is_west_of_me = True
-
-        if from_y > to_y:
-            target_is_north_of_me = True
-        elif from_y < to_y:
-            target_is_south_of_me = True
-
-        if target_is_north_of_me:
-            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='up', speed=1)
-            i_have_moved = True
-
-        if target_is_east_of_me and not i_have_moved:
-            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='left', speed=1)
-            i_have_moved = True
-
-        if target_is_south_of_me and not i_have_moved:
-            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='down', speed=1)
-            i_have_moved = True
-
-        if target_is_west_of_me and not i_have_moved:
-            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='right', speed=1)
+        AIUtilities.move_towards_location(gameworld=gameworld, source_entity=source_entity, from_x=from_x, to_x=to_x,
+                                          from_y=from_y, to_y=to_y)
 
     @staticmethod
-    def move_to_specific_location(gameworld, source_entity, px, py):
+    def prep_move_to_specific_location(gameworld, source_entity, px, py):
         from_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=source_entity)
         from_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=source_entity)
-        to_x = px
-        to_y = py
+        AIUtilities.move_towards_location(gameworld=gameworld, source_entity=source_entity, from_x=from_x, to_x=px,
+                                          from_y=from_y, to_y=py)
 
+    @staticmethod
+    def move_towards_location(gameworld, source_entity, from_x, to_x, from_y, to_y):
         target_is_north_of_me = False
         target_is_south_of_me = False
         target_is_west_of_me = False

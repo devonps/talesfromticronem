@@ -161,7 +161,7 @@ class StatelessAI:
             if i_can_move and player_last_known_position != (0, 0):
                 px = player_last_known_position(0)
                 py = player_last_known_position(1)
-                AIUtilities.move_to_specific_location(gameworld=gameworld, source_entity=monster_entity, px=px, py=py)
+                AIUtilities.prep_move_to_specific_location(gameworld=gameworld, source_entity=monster_entity, px=px, py=py)
 
     @staticmethod
     def perform_ai_for_sniper(entity):
