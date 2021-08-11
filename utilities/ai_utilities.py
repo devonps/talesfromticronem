@@ -312,3 +312,41 @@ class AIUtilities:
 
         if target_is_west_of_me and not i_have_moved:
             MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='right', speed=1)
+
+    @staticmethod
+    def move_to_specific_location(gameworld, source_entity, px, py):
+        from_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=source_entity)
+        from_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=source_entity)
+        to_x = px
+        to_y = py
+
+        target_is_north_of_me = False
+        target_is_south_of_me = False
+        target_is_west_of_me = False
+        target_is_east_of_me = False
+        i_have_moved = False
+
+        if from_x > to_x:
+            target_is_east_of_me = True
+        elif from_x < to_x:
+            target_is_west_of_me = True
+
+        if from_y > to_y:
+            target_is_north_of_me = True
+        elif from_y < to_y:
+            target_is_south_of_me = True
+
+        if target_is_north_of_me:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='up', speed=1)
+            i_have_moved = True
+
+        if target_is_east_of_me and not i_have_moved:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='left', speed=1)
+            i_have_moved = True
+
+        if target_is_south_of_me and not i_have_moved:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='down', speed=1)
+            i_have_moved = True
+
+        if target_is_west_of_me and not i_have_moved:
+            MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='right', speed=1)

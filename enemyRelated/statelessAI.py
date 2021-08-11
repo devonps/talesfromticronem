@@ -154,17 +154,14 @@ class StatelessAI:
 
         # no I can't see the player
         else:
-            player_last_known_position = MobileUtilities.get_player_last_known_position(gameworld=gameworld, source_entity=monster_entity)
+            player_last_known_position = MobileUtilities.get_player_last_known_position(gameworld=gameworld,
+                                                                                        source_entity=monster_entity)
             # can I move
             i_can_move = AIUtilities.can_i_move(gameworld=gameworld, source_entity=source_entity)
-            # how much health do I have
-
-            # health is below threshold of 15%
-            # if can move then move away from the player
-
-            # if can't move then call for help and attack the player if in range
-
-            # health above threshold so move towards player
+            if i_can_move and player_last_known_position != (0, 0):
+                px = player_last_known_position(0)
+                py = player_last_known_position(1)
+                AIUtilities.move_to_specific_location(gameworld=gameworld, source_entity=monster_entity, px=px, py=py)
 
     @staticmethod
     def perform_ai_for_sniper(entity):

@@ -70,18 +70,18 @@
     },
     {
       "title": "sniper",
-      "glyph-colour": "",
+      "glyph-colour": "orange",
       "glyph": "p",
-      "armour": "",
-      "armour_modifiers": "",
-      "weapons": "",
+      "armour": "sheepskin,acolyte",
+      "armour_modifiers": "Assassin",
+      "weapons": "rod",
       "jewellery": [
         {
-          "pendent": "",
-          "ring1": "",
-          "ring2": "",
-          "earring1": "",
-          "earring2": ""
+          "pendent": "garnet",
+          "ring1": "peridot",
+          "ring2": "peridot",
+          "earring1": "Tigers eye",
+          "earring2": "Tigers eye"
         }
       ]
     }

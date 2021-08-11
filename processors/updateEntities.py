@@ -69,7 +69,7 @@ class UpdateEntitiesProcessor(esper.Processor):
                 if entity_id > 0 and entity_id != ent:
                     visible_entities.append(entity_id)
                 if entity_id == player_entity:
-                    MobileUtilities.set_player_last_known_position(gameworld=gameworld, source_entity=ent, map_position=(across, down))
+                    MobileUtilities.set_player_last_known_position(gameworld=self.gameworld, source_entity=ent, map_position=(across, down))
 
         MobileUtilities.set_ai_visible_entities(gameworld=self.gameworld, target_entity=ent,
                                                 visible_entities=visible_entities)

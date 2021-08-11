@@ -141,7 +141,7 @@ class AIMemory:
         self.visible_entities = []
         self.have_i_taken_damage = False
         self.can_i_move = True
-        self.player_last_known_position = ()
+        self.player_last_known_position = (0, 0)
 
 
 class PhysicalState:
