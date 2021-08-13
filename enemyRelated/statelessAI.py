@@ -127,12 +127,12 @@ class StatelessAI:
     def perform_ai_for_bully(gameworld, monster_entity, game_config, game_map, player_entity):
         # the bully will go toe-to-toe with the player then retreat once damage reaches a threshold
         # to heal and then go back into battle
-        logger.warning('ALL the way from stateless AI: Bully role')
-        logger.debug('Entity id {}', monster_entity)
 
         # Get information
         too_close_to_player, too_far_from_player, ideal_distance_from_target = AIUtilities.distance_to_target(
             gameworld=gameworld, source_entity=monster_entity, target_entity=player_entity)
+        visible_entities = MobileUtilities.get_ai_visible_entities(gameworld=gameworld, target_entity=monster_entity)
+
         i_can_see_the_player = AIUtilities.is_the_player_visible(player_entity=player_entity,
                                                                  visible_entities=visible_entities)
         ideal_distance_from_target = (not too_far_from_player and not too_close_to_player)
@@ -157,15 +157,49 @@ class StatelessAI:
             player_last_known_position = MobileUtilities.get_player_last_known_position(gameworld=gameworld,
                                                                                         source_entity=monster_entity)
             # can I move
-            i_can_move = AIUtilities.can_i_move(gameworld=gameworld, source_entity=source_entity)
+            i_can_move = AIUtilities.can_i_move(gameworld=gameworld, source_entity=monster_entity)
             if i_can_move and player_last_known_position != (0, 0):
                 px = player_last_known_position(0)
                 py = player_last_known_position(1)
                 AIUtilities.prep_move_to_specific_location(gameworld=gameworld, source_entity=monster_entity, px=px, py=py)
 
     @staticmethod
-    def perform_ai_for_sniper(entity):
+    def perform_ai_for_sniper(gameworld, monster_entity, game_config, game_map, player_entity):
         # the sniper stays at a maximum range at all times
         # they will always target the player first
         logger.warning('ALL the way from stateless AI: Sniper role')
-        logger.debug('Entity id {}', entity)
+        logger.debug('Entity id {}', monster_entity)
+
+        # Get information
+        too_close_to_player, too_far_from_player, ideal_distance_from_target = AIUtilities.distance_to_target(
+            gameworld=gameworld, source_entity=monster_entity, target_entity=player_entity)
+        visible_entities = MobileUtilities.get_ai_visible_entities(gameworld=gameworld, target_entity=monster_entity)
+        i_can_see_the_player = AIUtilities.is_the_player_visible(player_entity=player_entity,
+                                                                 visible_entities=visible_entities)
+        ideal_distance_from_target = (not too_far_from_player and not too_close_to_player)
+
+        # can I attack the player from this position and player within attack range
+        if i_can_see_the_player:
+            if ideal_distance_from_target:
+                target_has_been_attacked = AIUtilities.attack_the_target(player_entity=player_entity,
+                                                                         gameworld=gameworld, game_map=game_map,
+                                                                         game_config=game_config,
+                                                                         monster_entity=monster_entity)
+                if not target_has_been_attacked:
+                    # do something non-combat here
+                    AIUtilities.do_something_non_combat(gameworld=gameworld, monster_entity=monster_entity)
+            else:
+                AIUtilities.move_towards_or_away_from_target(too_far=too_far_from_player, too_close=too_close_to_player,
+                                                             gameworld=gameworld, source_entity=monster_entity,
+                                                             target_entity=player_entity)
+
+        # no I can't see the player
+        else:
+            player_last_known_position = MobileUtilities.get_player_last_known_position(gameworld=gameworld,
+                                                                                        source_entity=monster_entity)
+            # can I move
+            i_can_move = AIUtilities.can_i_move(gameworld=gameworld, source_entity=monster_entity)
+            if i_can_move and player_last_known_position != (0, 0):
+                px = player_last_known_position(0)
+                py = player_last_known_position(1)
+                AIUtilities.prep_move_to_specific_location(gameworld=gameworld, source_entity=monster_entity, px=px, py=py)
