@@ -346,7 +346,7 @@
       "turns_to_cast": "0",
       "cool_down": "0",
       "class": "witchdoctor",
-      "spell_range": "spell_dist_nearby",
+      "spell_range": "spell_dist_touch",
       "weapon_type": "dagger",
       "weapon_slot": "2",
       "max_targets": "3",

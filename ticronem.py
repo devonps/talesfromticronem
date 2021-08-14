@@ -81,8 +81,8 @@ def game_loop(gameworld):
         advance_game_turn = False
         event_to_be_processed = None
         event_action = None
+        logger.warning('=== STARTING TURN: {}===', game_turn)
         while not valid_event:
-            logger.warning('=== STARTING TURN: {}===', game_turn)
             event_to_be_processed, event_action = input_handlers.handle_game_keys()
             if event_to_be_processed not in ('mousemove', None):
                 valid_event = True
@@ -97,10 +97,13 @@ def game_loop(gameworld):
                 mobileHelp.MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=player,
                                                                direction=event_action, speed=1)
                 advance_game_turn = True
+                logger.info('Player moved')
             if event_action in spell_bar_keys:
                 spellHelp.SpellUtilities.cast_spell(slot=event_action, gameworld=gameworld, player=player,
                                                     game_map=game_map)
                 advance_game_turn = True
+                logger.info('Player cast spell')
+
             if event_action == 'log':
                 common.CommonUtils.set_current_log(gameworld=gameworld, log_entity=msglog)
                 advance_game_turn = False
@@ -116,6 +119,8 @@ def game_loop(gameworld):
         if event_to_be_processed == 'swap' and event_action is not None:
             swap_spells_or_items.swap_spells(gameworld=gameworld, player_entity=player, key_pressed=event_action)
             advance_game_turn = True
+            logger.info('Player swapped an item')
+
         if event_to_be_processed == 'mouseleftbutton':
             debug.Debug.entity_spy(gameworld=gameworld, game_config=game_config, coords_clicked=event_action,
                                    game_map=game_map)
@@ -123,6 +128,7 @@ def game_loop(gameworld):
         if event_to_be_processed == 'death':
             gameworld.component_for_entity(player, mobiles.DerivedAttributes).current_health = -1
             advance_game_turn = True
+            logger.info('Player died')
 
         if advance_game_turn:
             #
@@ -132,19 +138,21 @@ def game_loop(gameworld):
                                      game_map=game_map)
             scorekeeper.ScorekeeperUtilities.increase_meta_event_by_value(gameworld=gameworld, event_name='game_turn',
                                                                           value=1)
-
+            game_turn += 1
+        # now check if the player is still alive
         current_health = mobileHelp.MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld,
                                                                                       entity=player)
+        # if the player is dead then end the game
         if current_health <= 0:
             playing_game = False
             player_died = True
         else:
-            # process all intended actions
+            # process all intended actions for player and enemies
             gameworld.process(game_config, advance_game_turn)
 
         # blit the console
         terminal.refresh()
-        game_turn += 1
+        # game_turn += 1
 
     # player has died or quit the game
     GameOver.GameOver.process_game_over(player_died=player_died, gameworld=gameworld)
