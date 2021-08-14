@@ -64,7 +64,7 @@ class StatelessAI:
                                                          game_config=game_config, game_map=game_map,
                                                          player_entity=player_entity)
                     else:
-                        StatelessAI.perform_ai_for_sniper(entity=entity)
+                        StatelessAI.perform_ai_for_sniper(gameworld=gameworld, monster_entity=entity, game_config=game_config, game_map=game_map, player_entity=player_entity)
 
     @staticmethod
     def perform_ai_for_bomber(gameworld, monster_entity, game_config, game_map, player_entity):

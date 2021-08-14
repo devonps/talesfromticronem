@@ -4,9 +4,9 @@
       "id": "bomber",
       "race": "random",
       "kits": "light-bomber,medium-bomber,heavy-bomber",
-      "min-range": "EARSHOT",
-      "max-range": "LONG",
-      "spells": "fireball,lava font,flame burst,meteor shower,stoning,eruption,shock wave,chain lightning,lightning surge,static field,ice spike,necrotic grasp,mark of blood,life blood,putrid mark,reapers mark,grasping dead,deathly swarm,spinal shivers,oppressive collapse,rending claws,ghastly claws,blood curse,reapers touch"
+      "min-range": "MEDIUM",
+      "max-range": "FAR",
+      "spells": "Chilblains,Putrid Mark,Lava Font,Flame Burst,Meteor Shower,Eruption,Static Field,Ice Spike,Mark of Blood,Life Blood,Burning Blood"
     },
     {
       "id": "bully",
@@ -14,7 +14,7 @@
       "kits": "bully",
       "min-range": "TOUCH",
       "max-range": "EARSHOT",
-      "spells": "stalkers strike,mind slash,glyph of elemental power,ring of earth,magnetic wave,lightning touch,shocking aura,necrotic bite,fading twilight,gravedigger,desiccate"
+      "spells": "Mind Slash,Mirror Strikes,Chilling Scythe,Drake's Breath,Impale,Necrotic Slash,Fading Twilight,Gravedigger"
     },
     {
       "id": "sniper",
@@ -22,7 +22,7 @@
       "kits": "sniper",
       "min-range": "EXTREME",
       "max-range": "REMOTE",
-      "spells": "spatial surge,confusions curse,lightning surge,ice spike,fireball"
+      "spells": "Power Spike,Arcane Blast,Blood Is Power,Epidemic"
     }
   ]
 }

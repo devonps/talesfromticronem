@@ -72,7 +72,7 @@ class NewEntity:
         new_entity = 0
         # commented out whilst building/testing stateless AI
         # role_id = random.randrange(len(enemy_roles))
-        role_id = 2
+        role_id = 1
         role_file = jsonUtilities.read_json_file(ai_roles_file_path)
         for role in role_file['roles']:
             if role['id'] == enemy_roles[role_id]:
@@ -127,7 +127,7 @@ class NewEntity:
                 MobileUtilities.set_combat_kit_title(gameworld=gameworld, entity=new_entity,
                                                      title_string=combat_kit_chosen['title'])
 
-                chosen_spells = NewEntity.set_spells_from_combat_role(gameworld=gameworld, available_spells=a_spells, game_config=game_config)
+                chosen_spells = NewEntity.set_spells_from_combat_role(gameworld=gameworld, available_spells=a_spells)
 
                 # set enemy glyph
                 NewEntity.set_entity_glyph(gameworld=gameworld, entity=new_entity, glyph=combat_kit_chosen['glyph'])
@@ -349,13 +349,15 @@ class NewEntity:
             logger.info('Their class is UNDEFINED')
 
     @staticmethod
-    def set_spells_from_combat_role(gameworld, available_spells, game_config):
+    def set_spells_from_combat_role(gameworld, available_spells):
         chosen_spells = NewEntity.pick_random_spells_for_combat_role(available_spells=available_spells)
         spell_entities = []
         for spell_name in chosen_spells:
             spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spell_name(gameworld=gameworld, spell_name=spell_name)
             # now I want to generate a new spell entity from the existing entity
             new_spell = AsEntities.create_new_spell_entity_from_existing_spell_entity(gameworld=gameworld, existing_spell_entity=spell_entity)
+            if new_spell == 0:
+                logger.warning('New Spell: {} was not found', spell_name)
             spell_range = spellHelp.SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=new_spell)
             logger.info('Spell chosen: {}, id is {} range is {}', spell_name, new_spell, spell_range)
             spell_entities.append(new_spell)
@@ -369,7 +371,8 @@ class NewEntity:
         count_of_spells = len(spells_list)
         for _ in range(5):
             spell_id = random.randrange(0, count_of_spells)
-            chosen_spells.append(spells_list[spell_id])
+            this_spell = spells_list[spell_id]
+            chosen_spells.append(this_spell.lower())
         return chosen_spells
 
 
