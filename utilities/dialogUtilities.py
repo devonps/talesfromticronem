@@ -1,8 +1,11 @@
 from bearlibterminal import terminal
 from loguru import logger
 from components import mobiles
+from newGame.CreateSpells import AsEntities
 from ui import shopkeeper_armour, shopkeeper_jewellery
 from utilities import common, display, input_handlers, jsonUtilities, mobileHelp, formulas, configUtilities
+from utilities.mobileHelp import MobileUtilities
+from utilities.spellHelp import SpellUtilities
 
 
 def initiate_dialog(gameworld, game_config):
@@ -122,16 +125,26 @@ def process_dialog_options_after_player_presses_enter(responses, selected_respon
                                                  game_config=game_config, dialog_steps_id=next_step_id)
         selected_response_option = 0
     else:
-        process_end_of_dialog(gameworld=gameworld, dialogue_action=next_step)
+        process_end_of_dialog(gameworld=gameworld, dialogue_action=next_step, entity_just_spoken=speaker_id)
         dialog_chain = ''
 
     return dialog_chain, selected_response_option
 
 
-def process_end_of_dialog(gameworld, dialogue_action):
+def process_end_of_dialog(gameworld, dialogue_action, entity_just_spoken):
     if dialogue_action == 'open_portal_step':
         # set open portal to enemy camp
         common.CommonUtils.fire_event('story-general', gameworld=gameworld, dialog='Open portal not yet implemented')
+        # cast "open portal to new area/scene spell
+        target_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=entity_just_spoken) + 5
+        target_map_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=entity_just_spoken)
+        spell_entity = AsEntities.generate_portal_transition_spell(gameworld=gameworld)
+        spell_cast_at = [target_map_x, target_map_y]
+
+        SpellUtilities.set_spell_to_cast_this_turn(gameworld=gameworld, mobile_entity=entity_just_spoken,
+                                                   spell_entity=spell_entity,
+                                                   spell_target_entity=[entity_just_spoken], slot=0,
+                                                   map_coords_list=spell_cast_at)
 
     if dialogue_action == 'shopkeeper_intro':
         # set shopkeeper mobiles want to talk to player

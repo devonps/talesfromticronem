@@ -152,7 +152,6 @@ def game_loop(gameworld):
 
         # blit the console
         terminal.refresh()
-        # game_turn += 1
 
     # player has died or quit the game
     GameOver.GameOver.process_game_over(player_died=player_died, gameworld=gameworld)

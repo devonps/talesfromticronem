@@ -34,11 +34,11 @@ class CastSpells(esper.Processor):
                 boons_to_apply_list = spellHelp.SpellUtilities.get_all_boons_for_spell(gameworld=self.gameworld,
                                                                                        spell_entity=spell_entity)
                 spell_status_effects = [boons_to_apply_list, condis_to_apply_list]
+                spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=self.gameworld,
+                                                                     spell_entity=spell_entity)
 
                 # increase meta-event spell casting value
                 if ent == player_entity:
-                    spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=self.gameworld,
-                                                                         spell_entity=spell_entity)
                     updated_spell_name = spell_name.replace(" ", "_")
                     updated_spell_name = current_area_tag + '_' + updated_spell_name + "_cast"
                     lower_spell_name = updated_spell_name.lower()
@@ -52,7 +52,16 @@ class CastSpells(esper.Processor):
                 if spell_type == 'heal':
                     self.process_healing_spell(spell_type=spell_type)
 
+                if spell_type == 'utility':
+                    self.process_utility_spells(spell_name=spell_name)
+
                 mobileHelp.MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=ent)
+
+    def process_utility_spells(self, spell_name):
+        if spell_name == 'area portal':
+            logger.debug('++++++++++++++++++++++++++')
+            logger.debug('Area Portal spell has been cast')
+            logger.debug('++++++++++++++++++++++++++')
 
     def process_combat_spells(self, target_entities, caster_entity, spell_entity, spell_status_effects):
         boons_to_apply = spell_status_effects[0]
