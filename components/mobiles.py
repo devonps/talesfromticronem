@@ -10,6 +10,12 @@ class MessageLog:
         self.message_log_change = message_log_change
 
 
+class Scene:
+    def __init__(self, current_scene=0, scene_exit=''):
+        self.current_scene = current_scene
+        self.scene_exit = scene_exit
+
+
 # ----------------------------------------------
 # dialogue components
 # ----------------------------------------------
@@ -188,7 +194,6 @@ class StatusEffects:
 
 
 class SpellCast:
-
     def __init__(self, has_cast_a_spell=False, spell_entity=0, spell_target=0, spell_bar_slot=-99, spell_caster=0,
                  spell_cast_at_x=0, spell_cast_at_y=0):
         self.has_cast_a_spell = has_cast_a_spell

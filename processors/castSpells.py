@@ -63,6 +63,13 @@ class CastSpells(esper.Processor):
             logger.debug('Area Portal spell has been cast')
             logger.debug('++++++++++++++++++++++++++')
 
+            # get current scene id
+            # get exit details
+            # store exit details
+
+        else:
+            pass
+
     def process_combat_spells(self, target_entities, caster_entity, spell_entity, spell_status_effects):
         boons_to_apply = spell_status_effects[0]
         condis_to_apply = spell_status_effects[1]

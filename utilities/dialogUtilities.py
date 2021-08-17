@@ -133,8 +133,6 @@ def process_dialog_options_after_player_presses_enter(responses, selected_respon
 
 def process_end_of_dialog(gameworld, dialogue_action, entity_just_spoken):
     if dialogue_action == 'open_portal_step':
-        # set open portal to enemy camp
-        common.CommonUtils.fire_event('story-general', gameworld=gameworld, dialog='Open portal not yet implemented')
         # cast "open portal to new area/scene spell
         target_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=entity_just_spoken) + 5
         target_map_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=entity_just_spoken)
