@@ -10,10 +10,14 @@ class MessageLog:
         self.message_log_change = message_log_change
 
 
+# -------------------------------------------------------------------------------
+# Is applied to the player only and allows the player to transfer between scenes
+# -------------------------------------------------------------------------------
 class Scene:
-    def __init__(self, current_scene=0, scene_exit=''):
+    def __init__(self, current_scene=0, scene_exit='', scene_change=False):
         self.current_scene = current_scene
         self.scene_exit = scene_exit
+        self.scene_change = scene_change
 
 
 # ----------------------------------------------

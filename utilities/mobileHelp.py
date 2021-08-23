@@ -468,6 +468,34 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.add_component(player_entity, mobiles.Viewport())
         gameworld.add_component(player_entity, mobiles.SpellCast())
         gameworld.add_component(player_entity, mobiles.MobileType(label='player'))
+        gameworld.add_component(player_entity, mobiles.Scene())
+
+    @staticmethod
+    def set_player_current_scene(gameworld, current_scene, player_entity):
+        gameworld.add_component(player_entity, mobiles.Scene(current_scene=current_scene))
+
+    @staticmethod
+    def get_player_current_scene(gameworld, player_entity):
+        player_scene_component = gameworld.component_for_entity(player_entity, mobiles.Scene)
+        return player_scene_component.current_scene
+
+    @staticmethod
+    def set_player_current_scene_exit(gameworld, scene_exit, player_entity):
+        gameworld.add_component(player_entity, mobiles.Scene(scene_exit=scene_exit))
+
+    @staticmethod
+    def get_player_current_scene_exit(gameworld, player_entity):
+        player_scene_component = gameworld.component_for_entity(player_entity, mobiles.Scene)
+        return player_scene_component.scene_exit
+
+    @staticmethod
+    def set_player_scene_change(gameworld, player_entity, value):
+        gameworld.add_component(player_entity, mobiles.Scene(scene_change=value))
+
+    @staticmethod
+    def get_player_scene_change(gameworld, player_entity):
+        player_scene_component = gameworld.component_for_entity(player_entity, mobiles.Scene)
+        return player_scene_component.scene_change
 
     @staticmethod
     def set_enemy_preferred_min_distance_from_target(gameworld, entity, value):

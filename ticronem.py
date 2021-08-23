@@ -34,8 +34,12 @@ def game_loop(gameworld):
                                   player_race=player_race[3])
 
     # call scene manager
-    game_map = SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)
-    scene_change = False
+    game_map, scene_exits = SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)
+    mobileHelp.MobileUtilities.set_player_current_scene(gameworld=gameworld, current_scene=current_scene,
+                                                        player_entity=player)
+    mobileHelp.MobileUtilities.set_player_current_scene_exit(gameworld=gameworld, scene_exit=scene_exits,
+                                                             player_entity=player)
+    mobileHelp.MobileUtilities.set_player_scene_change(gameworld=gameworld, player_entity=player, value=False)
     advance_game_turn = False
 
     spell_list2 = spellHelp.SpellUtilities.get_current_spellbar_spells(gameworld=gameworld, player_entity=player)
@@ -67,10 +71,12 @@ def game_loop(gameworld):
         #
         # scene manager
         #
+        scene_change = mobileHelp.MobileUtilities.get_player_scene_change(gameworld=gameworld, player_entity=player)
         if scene_change:
+            new_scene = mobileHelp.MobileUtilities.get_player_current_scene_exit(gameworld=gameworld, player_entity=player)
             # call scene manager
-            SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)
-            scene_change = False
+            game_map, scene_exits = SceneManager.new_scene(currentscene=new_scene, gameworld=gameworld)
+            mobileHelp.MobileUtilities.set_player_scene_change(gameworld=gameworld, player_entity=player, value=False)
         #
         # get player action aka their intent to do something
         #

@@ -1,5 +1,4 @@
 import esper
-import time
 from bearlibterminal import terminal
 from loguru import logger
 from components import mobiles, items
@@ -17,6 +16,10 @@ class RenderUI(esper.Processor):
         fov_map = self.render_map(self.gameworld, game_config, self.game_map)
         # self.render_items(game_config, self.gameworld)
         self.render_mobiles(gameworld=self.gameworld, game_config=game_config, game_map=self.game_map, fov_map=fov_map)
+
+        # render spell effects that are living on the game map, e.g. AoE effects or necro marks or wells
+        # one idea is that I store the centre of the AoE spell on the game map cell and then use that spell
+        # entity reference to draw out the AoE effects
 
     @staticmethod
     def clear_map_layer():

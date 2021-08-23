@@ -53,20 +53,25 @@ class CastSpells(esper.Processor):
                     self.process_healing_spell(spell_type=spell_type)
 
                 if spell_type == 'utility':
-                    self.process_utility_spells(spell_name=spell_name)
+                    self.process_utility_spells(spell_entity=spell_entity, spell_name=spell_name, player_entity=player_entity, game_config=game_config)
 
                 mobileHelp.MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=ent)
 
-    def process_utility_spells(self, spell_name):
+    def process_utility_spells(self, spell_entity, spell_name, player_entity, game_config):
         if spell_name == 'area portal':
             logger.debug('++++++++++++++++++++++++++')
             logger.debug('Area Portal spell has been cast')
             logger.debug('++++++++++++++++++++++++++')
 
-            # get current scene id
-            # get exit details
-            # store exit details
+            spell_cast_at = spellHelp.SpellUtilities.get_spell_cast_center_coords(gameworld=self.gameworld, mobile_entity=player_entity)
 
+            # draw portal spell
+            spellHelp.SpellUtilities.draw_aoe_spell_visuals(gameworld=self.gameworld, spell_entity=spell_entity, caster_coords=spell_cast_at, game_config=game_config, game_map=self.game_map)
+            # get exit details
+            scene_exit = mobileHelp.MobileUtilities.get_player_current_scene_exit(gameworld=self.gameworld, player_entity=player_entity)
+            # store exit details
+            mobileHelp.MobileUtilities.set_player_current_scene_exit(gameworld=self.gameworld, player_entity=player_entity, scene_exit=scene_exit)
+            mobileHelp.MobileUtilities.set_player_scene_change(gameworld=self.gameworld, player_entity=player_entity, value=True)
         else:
             pass
 

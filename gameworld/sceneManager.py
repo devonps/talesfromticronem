@@ -3,11 +3,8 @@ import random
 from mapRelated.gameMap import GameMap
 from newGame.Entities import NewEntity
 from processors import castSpells, move_entities, renderUI, updateEntities, renderMessageLog, renderSpellInfoPanel
-from utilities import configUtilities, externalfileutilities, jsonUtilities, mobileHelp, scorekeeper, spellHelp
+from utilities import configUtilities, externalfileutilities, jsonUtilities, mobileHelp, scorekeeper
 from loguru import logger
-
-from utilities.jewelleryManagement import JewelleryUtilities
-from utilities.mobileHelp import MobileUtilities
 
 
 class SceneManager:
@@ -29,15 +26,16 @@ class SceneManager:
     @staticmethod
     def new_scene(currentscene, gameworld):
 
-        gm, mx, my = SceneManager.load_scene_card(currentscene=currentscene, gameworld=gameworld)
+        gm, mx, my, scene_exit = SceneManager.load_scene_card(currentscene=currentscene, gameworld=gameworld)
 
-        return gm
+        return gm, scene_exit
 
     @staticmethod
     def load_scene_card(currentscene, gameworld):
         # load scene list into memory
         map_area_max_x = 0
         map_area_max_y = 0
+        scene_exit = 0
         game_map = []
         scene_found, this_scene = SceneManager.get_current_scene(currentscene=currentscene)
         current_area_tag = ''
@@ -47,10 +45,8 @@ class SceneManager:
             scene_file = jsonUtilities.read_json_file('static/scenes/' + scene_file)
             for scene_key in scene_file['scenes']:
                 if scene_key['name'] == this_scene:
-                    scene_name = scene_key['name']
-                    scene_exits = scene_key['sceneExits']
+                    scene_exit = int(scene_key['sceneExits'])
                     current_area_tag = scene_key['area_tag']
-                    logger.debug('The {} scene exits to the {}', scene_name, scene_exits)
                     if 'loadMap' in scene_key:
                         # load game_map from external file - setup variables
                         map_area_file = scene_key['loadMap']
@@ -68,7 +64,7 @@ class SceneManager:
             scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag=current_area_tag)
         SceneManager.create_ecs_systems_yes_no(gameworld=gameworld, currentscene=currentscene, game_map=game_map)
 
-        return game_map, map_area_max_x - 1, map_area_max_y - 1
+        return game_map, map_area_max_x - 1, map_area_max_y - 1, scene_exit
 
     @staticmethod
     def create_ecs_systems_yes_no(gameworld, currentscene, game_map):

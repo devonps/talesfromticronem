@@ -217,7 +217,7 @@
           "height": 10
         }
       ],
-      "sceneExits": "enemyCamp"
+      "sceneExits": "2"
     },
     {
       "name": "enemyCamp",
