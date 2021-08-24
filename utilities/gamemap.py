@@ -11,6 +11,14 @@ class GameMapUtilities:
         return False
 
     @staticmethod
+    def get_aoe_spell_entity_at_this_location(game_map, x, y):
+        return game_map.tiles[x][y].aoe_spell_entity
+
+    @staticmethod
+    def set_spell_entity_at_this_location(game_map, x, y, aoe_entity):
+        game_map.tiles[x][y].aoe_spell_entity = aoe_entity
+
+    @staticmethod
     def get_mobile_entity_at_this_location(game_map, x, y):
         return game_map.tiles[x][y].entity
 

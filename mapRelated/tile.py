@@ -19,4 +19,5 @@ class Tile:
         self.image = 0
         self.assignment = 0
         self.entity = 0
+        self.aoe_spell_entity = 0
 

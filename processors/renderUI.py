@@ -4,6 +4,7 @@ from loguru import logger
 from components import mobiles, items
 from mapRelated import fov
 from utilities import configUtilities, mobileHelp, common
+from utilities.spellHelp import SpellUtilities
 
 
 class RenderUI(esper.Processor):
@@ -20,12 +21,110 @@ class RenderUI(esper.Processor):
         # render spell effects that are living on the game map, e.g. AoE effects or necro marks or wells
         # one idea is that I store the centre of the AoE spell on the game map cell and then use that spell
         # entity reference to draw out the AoE effects
+        self.render_aoe_effects(gameworld=self.gameworld, game_config=game_config, game_map=self.game_map)
 
     @staticmethod
     def clear_map_layer():
         terminal.bkcolor('black')
         terminal.clear_area(0, 0, terminal.state(terminal.TK_WIDTH), terminal.state(terminal.TK_HEIGHT))
 
+    @staticmethod
+    def render_aoe_effects(gameworld, game_config, game_map):
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld, game_config)
+        player_map_pos_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        player_map_pos_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
+        colour_code = "[color=SPELL_AOE_GENERAL_EFFECT]"
+        camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                   parameter='VIEWPORT_WIDTH')
+        camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                    parameter='VIEWPORT_HEIGHT')
+        screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='SCREEN_OFFSET_X')
+        screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
+                                                                      parameter='SCREEN_OFFSET_Y')
+        ascii_prefix = 'ASCII_SINGLE_'
+        aoe_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                      parameter=ascii_prefix + 'TOP_LEFT')
+
+        aoe_bottom_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                         parameter=ascii_prefix + 'BOTTOM_LEFT')
+
+        aoe_top_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                       parameter=ascii_prefix + 'TOP_RIGHT')
+
+        aoe_bottom_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                          parameter=ascii_prefix + 'BOTTOM_RIGHT')
+
+        aoe_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                                 parameter=ascii_prefix + 'HORIZONTAL')
+        aoe_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
+                                                               parameter=ascii_prefix + 'VERTICAL')
+
+        # this holds the start x/y map positions left of the players current position
+        camera_x, camera_y = common.CommonUtils.calculate_camera_position(camera_width=camera_width,
+                                                                          camera_height=camera_height,
+                                                                          player_map_pos_x=player_map_pos_x,
+                                                                          player_map_pos_y=player_map_pos_y,
+                                                                          game_map=game_map)
+
+        for scr_pos_y in range(camera_height):
+            cam_x = camera_x
+            for scr_pos_x in range(camera_width):
+                map_x = cam_x
+                map_y = camera_y
+                spell_entity = game_map.tiles[map_x][map_y].aoe_spell_entity
+                if spell_entity > 0:
+                    logger.debug('Rendering AoE Spell {}', spell_entity)
+                    aoe_shape = SpellUtilities.get_spell_aoe_shape(gameworld=gameworld, spell_entity=spell_entity)
+                    aoe_components = aoe_shape.split('_')
+                    aoe_dims = aoe_components[0]
+                    aoe_shp = aoe_components[1]
+                    aoe_width = int(aoe_dims[0])
+                    aoe_depth = int(aoe_dims[2])
+                    sx = scr_pos_x - aoe_width
+                    ex = scr_pos_x + aoe_width
+                    sy = scr_pos_y - aoe_depth
+                    ey = scr_pos_y - aoe_depth
+                    # top left
+                    RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
+                                                      char_to_display=aoe_top_left_corner,
+                                                      scr_pos_x=sx + screen_offset_x,
+                                                      scr_pos_y=sy + screen_offset_y)
+                    # top middle
+                    RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
+                                                      char_to_display=aoe_horizontal,
+                                                      scr_pos_x=(sx + screen_offset_x) + 1,
+                                                      scr_pos_y=sy + screen_offset_y)
+                    # top right
+                    RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
+                                                      char_to_display=aoe_top_right_corner,
+                                                      scr_pos_x=ex + screen_offset_x,
+                                                      scr_pos_y=sy + screen_offset_y)
+                    # middle left
+                    RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
+                                                      char_to_display=aoe_vertical,
+                                                      scr_pos_x=sx + screen_offset_x,
+                                                      scr_pos_y=(sy + screen_offset_y) + 1)
+                    # middle right
+                    RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
+                                                      char_to_display=aoe_vertical,
+                                                      scr_pos_x=ex + screen_offset_x,
+                                                      scr_pos_y=(sy + screen_offset_y) + 1)
+                    # bottom left
+                    RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
+                                                      char_to_display=aoe_bottom_left_corner,
+                                                      scr_pos_x=sx + screen_offset_x,
+                                                      scr_pos_y=ey + screen_offset_y)
+                    # bottom middle
+                    RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
+                                                      char_to_display=aoe_horizontal,
+                                                      scr_pos_x=(sx + screen_offset_x) + 1,
+                                                      scr_pos_y=ey + screen_offset_y)
+                    # bottom right
+                    RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
+                                                      char_to_display=aoe_bottom_right_corner,
+                                                      scr_pos_x=ex + screen_offset_x,
+                                                      scr_pos_y=ey + screen_offset_y)
 
     @staticmethod
     def render_map(gameworld, game_config, game_map):
@@ -52,9 +151,10 @@ class RenderUI(esper.Processor):
 
         # this holds the start x/y map positions left of the players current position
         camera_x, camera_y = common.CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                   camera_height=camera_height,
-                                                                   player_map_pos_x=player_map_pos_x,
-                                                                   player_map_pos_y=player_map_pos_y, game_map=game_map)
+                                                                          camera_height=camera_height,
+                                                                          player_map_pos_x=player_map_pos_x,
+                                                                          player_map_pos_y=player_map_pos_y,
+                                                                          game_map=game_map)
 
         config_prefix = 'ASCII_'
         config_prefix_wall = config_prefix + 'WALL_'
@@ -62,12 +162,13 @@ class RenderUI(esper.Processor):
         config_prefix_door = config_prefix + 'DOOR_'
         config_prefix_empty = config_prefix + 'EMPTY_'
         original_char_to_display = common.CommonUtils.get_unicode_ascii_char(game_config=game_config,
-                                                                      config_prefix=config_prefix_empty,
-                                                                      tile_assignment=0)
+                                                                             config_prefix=config_prefix_empty,
+                                                                             tile_assignment=0)
         colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
         fov_map = fov.FieldOfView(game_map=game_map)
-        player_fov = fov.FieldOfView.create_fov_from_raycasting(fov_map, startx=player_map_pos_x, starty=player_map_pos_y,
-                                                            game_config=game_config)
+        player_fov = fov.FieldOfView.create_fov_from_raycasting(fov_map, startx=player_map_pos_x,
+                                                                starty=player_map_pos_y,
+                                                                game_config=game_config)
 
         if player_has_moved:
             RenderUI.clear_map_layer()
@@ -88,39 +189,39 @@ class RenderUI(esper.Processor):
                     game_map.tiles[map_x][map_y].explored = True
                     if tile == tile_type_floor:
                         char_to_display = common.CommonUtils.get_unicode_ascii_char(game_config=game_config,
-                                                                             config_prefix=config_prefix_floor,
-                                                                             tile_assignment=0)
+                                                                                    config_prefix=config_prefix_floor,
+                                                                                    tile_assignment=0)
                         colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
                                                                                  section='colorCodes',
                                                                                  parameter='FLOOR_INSIDE_FOV')
 
                     if tile == tile_type_wall:
                         char_to_display = common.CommonUtils.get_unicode_ascii_char(game_config=game_config,
-                                                                             config_prefix=config_prefix_wall,
-                                                                             tile_assignment=tile_assignment)
+                                                                                    config_prefix=config_prefix_wall,
+                                                                                    tile_assignment=tile_assignment)
 
                     if tile == tile_type_door:
                         char_to_display = common.CommonUtils.get_unicode_ascii_char(game_config=game_config,
-                                                                             config_prefix=config_prefix_door,
-                                                                             tile_assignment=0)
+                                                                                    config_prefix=config_prefix_door,
+                                                                                    tile_assignment=0)
                 elif game_map.tiles[map_x][map_y].explored:
                     colour_code = "[color=grey]"
                     print_char = True
                     if tile == tile_type_floor:
                         char_to_display = common.CommonUtils.get_unicode_ascii_char(game_config=game_config,
-                                                                             config_prefix=config_prefix_floor,
-                                                                             tile_assignment=0)
+                                                                                    config_prefix=config_prefix_floor,
+                                                                                    tile_assignment=0)
                         colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
                                                                                  section='colorCodes',
                                                                                  parameter='FLOOR_OUTSIDE_FOV')
                     if tile == tile_type_wall:
                         char_to_display = common.CommonUtils.get_unicode_ascii_char(game_config=game_config,
-                                                                             config_prefix=config_prefix_wall,
-                                                                             tile_assignment=tile_assignment)
+                                                                                    config_prefix=config_prefix_wall,
+                                                                                    tile_assignment=tile_assignment)
                     if tile == tile_type_door:
                         char_to_display = common.CommonUtils.get_unicode_ascii_char(game_config=game_config,
-                                                                             config_prefix=config_prefix_door,
-                                                                             tile_assignment=0)
+                                                                                    config_prefix=config_prefix_door,
+                                                                                    tile_assignment=0)
 
                 RenderUI.print_char_to_the_screen(print_char=print_char, tile=tile, colour_code=colour_code,
                                                   char_to_display=char_to_display,
@@ -150,10 +251,10 @@ class RenderUI(esper.Processor):
                                                                     parameter='VIEWPORT_HEIGHT')
 
         camera_x, camera_y = common.CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                   camera_height=camera_height,
-                                                                   player_map_pos_x=player_map_pos_x,
-                                                                   player_map_pos_y=player_map_pos_y,
-                                                                   game_map=game_map)
+                                                                          camera_height=camera_height,
+                                                                          player_map_pos_x=player_map_pos_x,
+                                                                          player_map_pos_y=player_map_pos_y,
+                                                                          game_map=game_map)
 
         (x, y) = (x - camera_x, y - camera_y)
 
