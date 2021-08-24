@@ -325,3 +325,14 @@ class AIUtilities:
 
         if target_is_west_of_me and not i_have_moved:
             MobileUtilities.set_mobile_velocity(gameworld=gameworld, entity=source_entity, direction='right', speed=1)
+
+    @staticmethod
+    def move_to_player_last_position(gameworld, monster_entity):
+        player_last_known_position = MobileUtilities.get_player_last_known_position(gameworld=gameworld,
+                                                                                    source_entity=monster_entity)
+        # can I move
+        i_can_move = AIUtilities.can_i_move(gameworld=gameworld, source_entity=monster_entity)
+        if i_can_move and player_last_known_position != (0, 0):
+            px = player_last_known_position(0)
+            py = player_last_known_position(1)
+            AIUtilities.prep_move_to_specific_location(gameworld=gameworld, source_entity=monster_entity, px=px, py=py)
