@@ -5,7 +5,7 @@ from components import mobiles, items
 from mapRelated import fov
 from utilities import configUtilities, mobileHelp, common
 from utilities.spellHelp import SpellUtilities
-
+from static.data import constants
 
 class RenderUI(esper.Processor):
     def __init__(self, game_map, gameworld):
@@ -42,23 +42,16 @@ class RenderUI(esper.Processor):
                                                                       parameter='SCREEN_OFFSET_X')
         screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='SCREEN_OFFSET_Y')
-        ascii_prefix = 'ASCII_SINGLE_'
-        aoe_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                      parameter=ascii_prefix + 'TOP_LEFT')
+        aoe_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
 
-        aoe_bottom_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                         parameter=ascii_prefix + 'BOTTOM_LEFT')
+        aoe_bottom_left_corner = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
 
-        aoe_top_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                       parameter=ascii_prefix + 'TOP_RIGHT')
+        aoe_top_right_corner = constants.SPELL_AOE_EDGE_TOP_RIGHT
 
-        aoe_bottom_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                          parameter=ascii_prefix + 'BOTTOM_RIGHT')
+        aoe_bottom_right_corner = constants.SPELL_AOE_EDGE_BOTTOM_RIGHT
 
-        aoe_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                 parameter=ascii_prefix + 'HORIZONTAL')
-        aoe_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                               parameter=ascii_prefix + 'VERTICAL')
+        aoe_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
+        aoe_vertical = constants.SPELL_AOE_EDGE_VERTICAL
 
         # this holds the start x/y map positions left of the players current position
         camera_x, camera_y = common.CommonUtils.calculate_camera_position(camera_width=camera_width,
@@ -78,7 +71,6 @@ class RenderUI(esper.Processor):
                     aoe_shape = SpellUtilities.get_spell_aoe_shape(gameworld=gameworld, spell_entity=spell_entity)
                     aoe_components = aoe_shape.split('_')
                     aoe_dims = aoe_components[0]
-                    aoe_shp = aoe_components[1]
                     aoe_width = int(aoe_dims[0])
                     aoe_depth = int(aoe_dims[2])
                     sx = scr_pos_x - aoe_width
