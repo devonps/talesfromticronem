@@ -2,7 +2,7 @@ import random
 import esper
 from bearlibterminal import terminal
 from utilities import configUtilities, formulas, common, display, mobileHelp, spellHelp
-
+from static.data import constants
 
 class RenderSpellInfoPanel(esper.Processor):
     def __init__(self, gameworld, game_map):
@@ -194,27 +194,14 @@ class RenderSpellInfoPanel(esper.Processor):
 
         ascii_prefix = 'ASCII_SINGLE_'
 
-        mechanic_left_t_junction_char = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
-                                                                parameter=ascii_prefix + 'LEFT_T_JUNCTION')
-        mechanic_right_t_junction_char = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
-                                                                 parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
-
-        mechanic_info_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
-                                                                      parameter=ascii_prefix + 'TOP_LEFT')
-
-        mechanic_info_bottom_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
-                                                                         parameter=ascii_prefix + 'BOTTOM_LEFT')
-
-        mechanic_info_top_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
-                                                                       parameter=ascii_prefix + 'TOP_RIGHT')
-
-        mechanic_info_bottom_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
-                                                                          parameter=ascii_prefix + 'BOTTOM_RIGHT')
-
-        mechanic_info_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
-                                                                 parameter=ascii_prefix + 'HORIZONTAL')
-        mechanic_info_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config,
-                                                               parameter=ascii_prefix + 'VERTICAL')
+        mechanic_left_t_junction_char = constants.ASCII_SINGLE_LEFT_T_JUNCTION
+        mechanic_right_t_junction_char = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
+        mechanic_info_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
+        mechanic_info_bottom_left_corner = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
+        mechanic_info_top_right_corner = constants.SPELL_AOE_EDGE_TOP_RIGHT
+        mechanic_info_bottom_right_corner = constants.SPELL_AOE_EDGE_BOTTOM_RIGHT
+        mechanic_info_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
+        mechanic_info_vertical = constants.SPELL_AOE_EDGE_VERTICAL
 
         mechanic_background_fill = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'MECHANIC_FILL')
 

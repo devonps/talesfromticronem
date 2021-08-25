@@ -7,6 +7,7 @@ from utilities import configUtilities, mobileHelp, common
 from utilities.spellHelp import SpellUtilities
 from static.data import constants
 
+
 class RenderUI(esper.Processor):
     def __init__(self, game_map, gameworld):
         self.game_map = game_map

@@ -5,7 +5,7 @@ from utilities.mobileHelp import MobileUtilities
 from utilities.scorekeeper import ScorekeeperUtilities
 from components import messages
 from utilities.display import draw_simple_frame
-
+from static.data import constants
 
 class CommonUtils:
 
@@ -447,27 +447,19 @@ class CommonUtils:
     def get_ui_frame_components():
         game_config = configUtilities.load_config()
         ascii_prefix = 'ASCII_SINGLE_'
-        top_left_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                parameter=ascii_prefix + 'TOP_LEFT')
+        top_left_corner_char = constants.SPELL_AOE_EDGE_TOP_LEFT
 
-        bottom_left_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                   parameter=ascii_prefix + 'BOTTOM_LEFT')
+        bottom_left_corner_char = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
 
-        top_right_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                 parameter=ascii_prefix + 'TOP_RIGHT')
+        top_right_corner_char = constants.SPELL_AOE_EDGE_TOP_RIGHT
 
-        bottom_right_corner_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                    parameter=ascii_prefix + 'BOTTOM_RIGHT')
+        bottom_right_corner_char = constants.SPELL_AOE_EDGE_BOTTOM_RIGHT
 
-        horizontal_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                           parameter=ascii_prefix + 'HORIZONTAL')
-        vertical_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                         parameter=ascii_prefix + 'VERTICAL')
+        horizontal_char = constants.SPELL_AOE_EDGE_HORIZONTAL
+        vertical_char = constants.SPELL_AOE_EDGE_VERTICAL
 
-        left_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                parameter=ascii_prefix + 'LEFT_T_JUNCTION')
-        right_t_junction_char = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                 parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
+        left_t_junction_char = constants.ASCII_SINGLE_LEFT_T_JUNCTION
+        right_t_junction_char = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
 
         frame_components = [top_left_corner_char, bottom_left_corner_char, top_right_corner_char,
                             bottom_right_corner_char, horizontal_char, vertical_char, left_t_junction_char,
