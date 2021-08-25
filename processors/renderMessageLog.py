@@ -14,7 +14,6 @@ class RenderMessageLog(esper.Processor):
     def render_message_panel(self, game_config):
 
         unicode_string_to_print = '[font=dungeon][color=MSGPANEL_FRAME_COLOUR]['
-        ascii_prefix = 'ASCII_SINGLE_'
 
         # get message log entity id
         player_entity = mobileHelp.MobileUtilities.get_player_entity(self.gameworld, game_config)

@@ -6,7 +6,7 @@ from components import spells, items, mobiles
 from utilities import configUtilities, formulas, gamemap, input_handlers, itemsHelp, jsonUtilities, mobileHelp, display, \
     common
 from utilities.common import CommonUtils
-
+from static.data import constants
 
 class SpellUtilities:
 
@@ -428,67 +428,6 @@ class SpellUtilities:
             terminal.printf(x=expl_x + dx, y=expl_y + dy,
                             s=glyph_colour_string + xplosion_string[blast_char])
             terminal.refresh()
-
-    @staticmethod
-    def draw_aoe_spell_visuals(gameworld, spell_entity, caster_coords, game_config, game_map):
-        caster_x = caster_coords[0]
-        caster_y = caster_coords[1]
-
-        screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='SCREEN_OFFSET_X')
-        screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
-                                                                      parameter='SCREEN_OFFSET_Y')
-
-        aoe_shape = SpellUtilities.get_spell_aoe_shape(gameworld=gameworld, spell_entity=spell_entity)
-        aoe_components = aoe_shape.split('_')
-        aoe_dims = aoe_components[0]
-        aoe_shp = aoe_components[1]
-        aoe_width = int(aoe_dims[0])
-        aoe_depth = int(aoe_dims[2])
-
-
-        # these hold the screen coords
-        (sx, sy) = CommonUtils.to_camera_coordinates(
-            game_config=game_config, game_map=game_map, x=caster_x, y=caster_y, gameworld=gameworld)
-
-        sx += screen_offset_x
-        sy += screen_offset_y
-        unicode_string_to_print = '[font=dungeon][color=MSGPANEL_FRAME_COLOUR]['
-        ascii_prefix = 'ASCII_SINGLE_'
-        aoe_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                      parameter=ascii_prefix + 'TOP_LEFT')
-
-        aoe_bottom_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                         parameter=ascii_prefix + 'BOTTOM_LEFT')
-
-        aoe_top_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                       parameter=ascii_prefix + 'TOP_RIGHT')
-
-        aoe_bottom_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                          parameter=ascii_prefix + 'BOTTOM_RIGHT')
-
-        aoe_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                 parameter=ascii_prefix + 'HORIZONTAL')
-        aoe_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                               parameter=ascii_prefix + 'VERTICAL')
-
-        # draw the AoE effect - the centre of the AoE is defined by caster_x/y, and the width depth
-        # is used as an offset
-        from_x = sx - 1
-        to_x = sx + 2
-        from_y = sy - 1
-        to_y = sy + 2
-
-        terminal.printf(x=from_x, y=from_y, s=unicode_string_to_print + aoe_top_left_corner)
-        terminal.printf(x=sx, y=from_y, s=unicode_string_to_print + aoe_horizontal)
-        terminal.printf(x=to_x, y=from_y, s=unicode_string_to_print + aoe_top_right_corner)
-        # terminal.printf(x=from_x, y=from_y, s=unicode_string_to_print + aoe_top_left_corner)
-        # terminal.printf(x=from_x, y=from_y, s=unicode_string_to_print + aoe_top_left_corner)
-        # terminal.printf(x=from_x, y=from_y, s=unicode_string_to_print + aoe_top_left_corner)
-        # terminal.printf(x=from_x, y=from_y, s=unicode_string_to_print + aoe_top_left_corner)
-        # terminal.printf(x=from_x, y=from_y, s=unicode_string_to_print + aoe_top_left_corner)
-
-        terminal.refresh()
 
     @staticmethod
     def set_spell_cooldown_to_true(gameworld, spell_entity):

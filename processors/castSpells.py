@@ -72,8 +72,6 @@ class CastSpells(esper.Processor):
             # store exit details
             mobileHelp.MobileUtilities.set_player_current_scene_exit(gameworld=self.gameworld, player_entity=player_entity, scene_exit=scene_exit)
             mobileHelp.MobileUtilities.set_player_scene_change(gameworld=self.gameworld, player_entity=player_entity, value=True)
-        else:
-            pass
 
     def process_combat_spells(self, target_entities, caster_entity, spell_entity, spell_status_effects):
         boons_to_apply = spell_status_effects[0]
