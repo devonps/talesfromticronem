@@ -16,6 +16,8 @@ class CastSpells(esper.Processor):
         if advance_game_turn:
             # method to reduce spell cooldowns
             self.reduce_spell_cool_downs()
+            # method to reduce time Spells live for - typically will be AoE spells
+            self.reduce_spell_lives_for_counter()
             # method to check if any spells should be cast this turn
             self.check_for_spells_to_be_cast_this_turn(game_config=game_config)
 
@@ -53,20 +55,18 @@ class CastSpells(esper.Processor):
                     self.process_healing_spell(spell_type=spell_type)
 
                 if spell_type == 'utility':
-                    self.process_utility_spells(spell_entity=spell_entity, spell_name=spell_name, player_entity=player_entity, caster_entity=caster_entity, game_config=game_config)
+                    self.process_utility_spells(spell_entity=spell_entity, spell_name=spell_name, player_entity=player_entity, caster_entity=caster_entity)
 
                 mobileHelp.MobileUtilities.stop_double_casting_same_spell(gameworld=self.gameworld, entity=ent)
 
-    def process_utility_spells(self, spell_entity, spell_name, player_entity, game_config, caster_entity):
+    def process_utility_spells(self, spell_entity, spell_name, player_entity, caster_entity):
         if spell_name == 'area portal':
             logger.debug('++++++++++++++++++++++++++')
             logger.debug('Area Portal spell has been cast')
             logger.debug('++++++++++++++++++++++++++')
 
             spell_cast_at = spellHelp.SpellUtilities.get_spell_cast_center_coords(gameworld=self.gameworld, mobile_entity=caster_entity)
-            self.game_map.tiles[spell_cast_at[0] + 5][spell_cast_at[1]].aoe_spell_entity = spell_entity
-            # draw portal spell
-            # spellHelp.SpellUtilities.draw_aoe_spell_visuals(gameworld=self.gameworld, spell_entity=spell_entity, caster_coords=spell_cast_at, game_config=game_config, game_map=self.game_map)
+            self.game_map.tiles[spell_cast_at[0]][spell_cast_at[1]].aoe_spell_entity = spell_entity
             # get exit details
             scene_exit = mobileHelp.MobileUtilities.get_player_current_scene_exit(gameworld=self.gameworld, player_entity=player_entity)
             # store exit details
@@ -163,6 +163,13 @@ class CastSpells(esper.Processor):
     def process_healing_spell(self, spell_type):
         if spell_type == 'heal':
             self.cast_healing_spell()
+
+    def reduce_spell_lives_for_counter(self):
+        for spell_entity, (lives_for, spell_name) in self.gameworld.get_components(spells.LivesFor, spells.Name):
+            rem_turns = lives_for.number_of_turns
+            if rem_turns > 0:
+                rem_turns -= 1
+                spellHelp.SpellUtilities.set_spell_lives_for_counter(gameworld=self.gameworld, spell_entity=spell_entity, value=rem_turns)
 
     def reduce_spell_cool_downs(self):
         for spell_entity, (cool_down, spell_name) in self.gameworld.get_components(spells.CoolDown, spells.Name):

@@ -3,10 +3,10 @@ import random
 from bearlibterminal import terminal
 from loguru import logger
 from components import spells, items, mobiles
-from utilities import configUtilities, formulas, gamemap, input_handlers, itemsHelp, jsonUtilities, mobileHelp, display, \
-    common
+from utilities import configUtilities, formulas, gamemap, input_handlers, itemsHelp, jsonUtilities, mobileHelp, display
 from utilities.common import CommonUtils
 from static.data import constants
+
 
 class SpellUtilities:
 
@@ -198,6 +198,14 @@ class SpellUtilities:
         spells_to_choose_from = SpellUtilities.remove_not_needed_spells_from_list(spells_to_choose_from)
 
         return spells_to_choose_from
+
+    @staticmethod
+    def set_spell_lives_for_counter(gameworld, spell_entity, value):
+        gameworld.component_for_entity(spell_entity, spells.LivesFor).number_of_turns = value
+
+    @staticmethod
+    def get_spell_lives_for_counter(gameworld, spell_entity):
+        return gameworld.component_for_entity(spell_entity, spells.LivesFor).number_of_turns
 
     @staticmethod
     def get_spell_type(gameworld, spell_entity):

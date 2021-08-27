@@ -150,9 +150,10 @@ class AsEntities:
         gameworld.add_component(thisspell, spells.StatusEffect(condis=[], boons=[], controls=[]))
         gameworld.add_component(thisspell, spells.MaxTargets("0"))
         gameworld.add_component(thisspell, spells.AreaOfEffect(True))
-        gameworld.add_component(thisspell, spells.AreaOfEffectShape(area_of_effect_shape="3x3_square"))
+        gameworld.add_component(thisspell, spells.AreaOfEffectShape(area_of_effect_shape="1x1_square"))
         gameworld.add_component(thisspell, spells.MaxRange(2))
         gameworld.add_component(thisspell, spells.ItemLocation("earring1"))
         gameworld.add_component(thisspell, spells.ItemType("jewellery"))
+        gameworld.add_component(thisspell, spells.LivesFor(number_of_turns=8))
 
         return thisspell

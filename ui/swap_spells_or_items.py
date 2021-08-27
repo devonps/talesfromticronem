@@ -1,8 +1,9 @@
 from bearlibterminal import terminal
 from loguru import logger
 from components import spells
-from utilities import configUtilities, armourManagement, common, input_handlers, jewelleryManagement, scorekeeper, spellHelp
+from utilities import configUtilities, armourManagement, input_handlers, jewelleryManagement, scorekeeper, spellHelp
 from static.data import constants
+
 
 def swap_spells(gameworld, player_entity, key_pressed):
     available_spells_dict = {}

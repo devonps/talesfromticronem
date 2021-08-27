@@ -1,6 +1,6 @@
 from bearlibterminal import terminal
 from loguru import logger
-from utilities import configUtilities, common, display, input_handlers, itemsHelp, mobileHelp, scorekeeper
+from utilities import configUtilities, display, input_handlers, itemsHelp, mobileHelp, scorekeeper
 from static.data import constants
 
 
