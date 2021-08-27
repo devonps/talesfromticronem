@@ -150,7 +150,6 @@ class GameOver:
     @staticmethod
     def display_equipment_panels(gameworld, game_config, visible_panel, player_entity):
         unicode_string_to_print = '[font=dungeon][color=MSGPANEL_FRAME_COLOUR]['
-        ascii_prefix = 'ASCII_SINGLE_'
         equipment_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                             section='gameOver',
                                                                             parameter='GO_EQUIP_PANEL_WIDTH')
@@ -166,12 +165,12 @@ class GameOver:
                                                                               section='gameOver',
                                                                               parameter='GO_EQUIP_PANEL_START_Y')
 
-        equipment_panel_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
-        equipment_panel_bottom_left_corner = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
-        equipment_panel_top_right_corner = constants.SPELL_AOE_EDGE_TOP_RIGHT
-        equipment_panel_bottom_right_corner = constants.SPELL_AOE_EDGE_BOTTOM_RIGHT
-        equipment_panel_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
-        equipment_panel_vertical = constants.SPELL_AOE_EDGE_VERTICAL
+        equipment_panel_top_left_corner = constants.ASCII_SINGLE_TOP_LEFT
+        equipment_panel_bottom_left_corner = constants.ASCII_SINGLE_BOTTOM_LEFT
+        equipment_panel_top_right_corner = constants.ASCII_SINGLE_TOP_RIGHT
+        equipment_panel_bottom_right_corner = constants.ASCII_SINGLE_BOTTOM_RIGHT
+        equipment_panel_horizontal = constants.ASCII_SINGLE_HORIZONTAL
+        equipment_panel_vertical = constants.ASCII_SINGLE_VERTICAL
         equipment_panel_left_junction = constants.ASCII_SINGLE_LEFT_T_JUNCTION
         equipment_panel_right_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
         equipment_panel_top_junction = constants.ASCII_SINGLE_TOP_T_JUNCTION

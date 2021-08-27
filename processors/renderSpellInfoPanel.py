@@ -196,12 +196,12 @@ class RenderSpellInfoPanel(esper.Processor):
 
         mechanic_left_t_junction_char = constants.ASCII_SINGLE_LEFT_T_JUNCTION
         mechanic_right_t_junction_char = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
-        mechanic_info_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
-        mechanic_info_bottom_left_corner = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
-        mechanic_info_top_right_corner = constants.SPELL_AOE_EDGE_TOP_RIGHT
-        mechanic_info_bottom_right_corner = constants.SPELL_AOE_EDGE_BOTTOM_RIGHT
-        mechanic_info_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
-        mechanic_info_vertical = constants.SPELL_AOE_EDGE_VERTICAL
+        mechanic_info_top_left_corner = constants.ASCII_SINGLE_TOP_LEFT
+        mechanic_info_bottom_left_corner = constants.ASCII_SINGLE_BOTTOM_LEFT
+        mechanic_info_top_right_corner = constants.ASCII_SINGLE_TOP_RIGHT
+        mechanic_info_bottom_right_corner = constants.ASCII_SINGLE_BOTTOM_RIGHT
+        mechanic_info_horizontal = constants.ASCII_SINGLE_HORIZONTAL
+        mechanic_info_vertical = constants.ASCII_SINGLE_VERTICAL
 
         mechanic_background_fill = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'MECHANIC_FILL')
 

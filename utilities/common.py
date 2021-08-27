@@ -445,12 +445,12 @@ class CommonUtils:
 
     @staticmethod
     def get_ui_frame_components():
-        top_left_corner_char = constants.SPELL_AOE_EDGE_TOP_LEFT
-        bottom_left_corner_char = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
-        top_right_corner_char = constants.SPELL_AOE_EDGE_TOP_RIGHT
-        bottom_right_corner_char = constants.SPELL_AOE_EDGE_BOTTOM_RIGHT
-        horizontal_char = constants.SPELL_AOE_EDGE_HORIZONTAL
-        vertical_char = constants.SPELL_AOE_EDGE_VERTICAL
+        top_left_corner_char = constants.ASCII_SINGLE_TOP_LEFT
+        bottom_left_corner_char = constants.ASCII_SINGLE_BOTTOM_LEFT
+        top_right_corner_char = constants.ASCII_SINGLE_TOP_RIGHT
+        bottom_right_corner_char = constants.ASCII_SINGLE_BOTTOM_RIGHT
+        horizontal_char = constants.ASCII_SINGLE_HORIZONTAL
+        vertical_char = constants.ASCII_SINGLE_VERTICAL
         left_t_junction_char = constants.ASCII_SINGLE_LEFT_T_JUNCTION
         right_t_junction_char = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
 

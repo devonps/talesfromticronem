@@ -161,11 +161,11 @@ def draw_outer_frame(spell_list):
     # unicode strings of colours
     frame_colour = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
 
-    spell_swap_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
+    spell_swap_top_left_corner = constants.ASCII_SINGLE_TOP_LEFT
     spell_swap_right_t_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
-    spell_swap_bottom_left_corner = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
-    spell_swap_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
-    spell_swap_vertical = constants.SPELL_AOE_EDGE_VERTICAL
+    spell_swap_bottom_left_corner = constants.ASCII_SINGLE_BOTTOM_LEFT
+    spell_swap_horizontal = constants.ASCII_SINGLE_HORIZONTAL
+    spell_swap_vertical = constants.ASCII_SINGLE_VERTICAL
 
     left_edge_of_spell_info_panel = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                           section='spellSwapPopup',

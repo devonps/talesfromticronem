@@ -28,12 +28,12 @@ class RenderMessageLog(esper.Processor):
         message_panel_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
                                                                             parameter='MSG_PANEL_START_Y')
 
-        message_panel_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
-        message_panel_bottom_left_corner = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
-        message_panel_top_right_corner = constants.SPELL_AOE_EDGE_TOP_RIGHT
-        message_panel_bottom_right_corner = constants.SPELL_AOE_EDGE_BOTTOM_RIGHT
-        message_panel_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
-        message_panel_vertical = constants.SPELL_AOE_EDGE_VERTICAL
+        message_panel_top_left_corner = constants.ASCII_SINGLE_TOP_LEFT
+        message_panel_bottom_left_corner = constants.ASCII_SINGLE_BOTTOM_LEFT
+        message_panel_top_right_corner = constants.ASCII_SINGLE_TOP_RIGHT
+        message_panel_bottom_right_corner = constants.ASCII_SINGLE_BOTTOM_RIGHT
+        message_panel_horizontal = constants.ASCII_SINGLE_HORIZONTAL
+        message_panel_vertical = constants.ASCII_SINGLE_VERTICAL
         message_panel_left_junction = constants.ASCII_SINGLE_LEFT_T_JUNCTION
         message_panel_right_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
         message_panel_top_junction = constants.ASCII_SINGLE_TOP_T_JUNCTION

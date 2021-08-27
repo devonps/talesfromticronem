@@ -150,11 +150,11 @@ def draw_horizontal_line_after_portrait(x, y, w, string_colour, horiz_glyph, lef
 
 def draw_outer_frame(startx, width, starty, frame_colour, depth):
     spell_item_info_bottom_right_t_junction = constants.ASCII_SINGLE_BOTTOM_T_JUNCTION
-    spell_item_info_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
+    spell_item_info_top_left_corner = constants.ASCII_SINGLE_TOP_LEFT
     spell_item_info_cross_junction = constants.ASCII_SINGLE_CROSS_JUNCTION
-    spell_item_info_bottom_left_corner = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
-    spell_item_info_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
-    spell_item_info_vertical = constants.SPELL_AOE_EDGE_VERTICAL
+    spell_item_info_bottom_left_corner = constants.ASCII_SINGLE_BOTTOM_LEFT
+    spell_item_info_horizontal = constants.ASCII_SINGLE_HORIZONTAL
+    spell_item_info_vertical = constants.ASCII_SINGLE_VERTICAL
 
     # draw top/bottom horizontals
     for z in range(startx, (startx + width)):
@@ -335,7 +335,7 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
 
     spell_item_info_item_imp_text = item_coords[4] + 2
 
-    spell_item_info_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
+    spell_item_info_horizontal = constants.ASCII_SINGLE_HORIZONTAL
     spell_item_info_left_t_junction = constants.ASCII_SINGLE_LEFT_T_JUNCTION
     spell_item_info_right_t_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
 
@@ -394,7 +394,7 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
 
     spell_item_info_item_imp_text = item_coords[4] + 2
 
-    spell_item_info_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
+    spell_item_info_horizontal = constants.ASCII_SINGLE_HORIZONTAL
     spell_item_info_left_t_junction = constants.ASCII_SINGLE_LEFT_T_JUNCTION
     spell_item_info_right_t_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
 

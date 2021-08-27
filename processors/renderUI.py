@@ -43,16 +43,16 @@ class RenderUI(esper.Processor):
                                                                       parameter='SCREEN_OFFSET_X')
         screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='SCREEN_OFFSET_Y')
-        aoe_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
+        aoe_top_left_corner = constants.ASCII_SINGLE_TOP_LEFT
 
-        aoe_bottom_left_corner = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
+        aoe_bottom_left_corner = constants.ASCII_SINGLE_BOTTOM_LEFT
 
-        aoe_top_right_corner = constants.SPELL_AOE_EDGE_TOP_RIGHT
+        aoe_top_right_corner = constants.ASCII_SINGLE_TOP_RIGHT
 
-        aoe_bottom_right_corner = constants.SPELL_AOE_EDGE_BOTTOM_RIGHT
+        aoe_bottom_right_corner = constants.ASCII_SINGLE_BOTTOM_RIGHT
 
-        aoe_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
-        aoe_vertical = constants.SPELL_AOE_EDGE_VERTICAL
+        aoe_horizontal = constants.ASCII_SINGLE_HORIZONTAL
+        aoe_vertical = constants.ASCII_SINGLE_VERTICAL
 
         # this holds the start x/y map positions left of the players current position
         camera_x, camera_y = common.CommonUtils.calculate_camera_position(camera_width=camera_width,

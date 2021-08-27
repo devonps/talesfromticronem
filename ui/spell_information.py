@@ -19,11 +19,11 @@ def spell_pop_up(game_config, slot, gameworld, player):
 
     spell_popup_left_t_junction = constants.ASCII_SINGLE_LEFT_T_JUNCTION
     spell_popup_right_t_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
-    spell_popup_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
-    spell_popup_top_right_corner = constants.SPELL_AOE_EDGE_TOP_RIGHT
-    spell_popup_bottom_right_corner = constants.SPELL_AOE_EDGE_BOTTOM_RIGHT
-    spell_popup_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
-    spell_popup_vertical = constants.SPELL_AOE_EDGE_VERTICAL
+    spell_popup_top_left_corner = constants.ASCII_SINGLE_TOP_LEFT
+    spell_popup_top_right_corner = constants.ASCII_SINGLE_TOP_RIGHT
+    spell_popup_bottom_right_corner = constants.ASCII_SINGLE_BOTTOM_RIGHT
+    spell_popup_horizontal = constants.ASCII_SINGLE_HORIZONTAL
+    spell_popup_vertical = constants.ASCII_SINGLE_VERTICAL
 
     spell_popup_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellpopup',
                                                                     parameter='SP_WIDTH')
