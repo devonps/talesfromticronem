@@ -4,6 +4,7 @@ from components import mobiles, spells
 from utilities import formulas, common, mobileHelp, scorekeeper, spellHelp, weaponManagement
 from loguru import logger
 
+from utilities.gamemap import GameMapUtilities
 from utilities.mobileHelp import MobileUtilities
 
 
@@ -66,7 +67,7 @@ class CastSpells(esper.Processor):
             logger.debug('++++++++++++++++++++++++++')
 
             spell_cast_at = spellHelp.SpellUtilities.get_spell_cast_center_coords(gameworld=self.gameworld, mobile_entity=caster_entity)
-            self.game_map.tiles[spell_cast_at[0]][spell_cast_at[1]].aoe_spell_entity = spell_entity
+            GameMapUtilities.add_spell_entity_to_this_map_location(game_map=self.game_map, x=spell_cast_at[0], y=spell_cast_at[1], spell_entity=spell_entity)
             # get exit details
             scene_exit = mobileHelp.MobileUtilities.get_player_current_scene_exit(gameworld=self.gameworld, player_entity=player_entity)
             # store exit details

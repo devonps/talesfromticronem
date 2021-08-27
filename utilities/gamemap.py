@@ -11,12 +11,14 @@ class GameMapUtilities:
         return False
 
     @staticmethod
-    def get_aoe_spell_entity_at_this_location(game_map, x, y):
-        return game_map.tiles[x][y].aoe_spell_entity
+    def get_list_of_spells_at_this_map_location(game_map, x, y):
+        return game_map.tiles[x][y].placed_spells
 
     @staticmethod
-    def set_spell_entity_at_this_location(game_map, x, y, aoe_entity):
-        game_map.tiles[x][y].aoe_spell_entity = aoe_entity
+    def add_spell_entity_to_this_map_location(game_map, x, y, spell_entity):
+        existing_spell_list = GameMapUtilities.get_list_of_spells_at_this_map_location(game_map=game_map, x=x, y=y)
+        existing_spell_list.append(spell_entity)
+        game_map.tiles[x][y].placed_spells = existing_spell_list
 
     @staticmethod
     def get_mobile_entity_at_this_location(game_map, x, y):

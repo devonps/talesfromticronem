@@ -144,6 +144,7 @@ def process_end_of_dialog(gameworld, dialogue_action, entity_just_spoken):
                                                    spell_target_entity=[entity_just_spoken], slot=0,
                                                    map_coords_list=spell_cast_at)
 
+
     if dialogue_action == 'shopkeeper_intro':
         # set shopkeeper mobiles want to talk to player
         for ent, (npc, typ) in gameworld.get_components(mobiles.NpcType, mobiles.NpcType):
