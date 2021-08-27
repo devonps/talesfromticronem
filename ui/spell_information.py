@@ -1,11 +1,10 @@
 from bearlibterminal import terminal
 from loguru import logger
-
-from utilities import configUtilities, formulas, common, input_handlers, itemsHelp, mobileHelp, spellHelp
+from utilities import configUtilities, formulas, input_handlers, itemsHelp, mobileHelp, spellHelp
+from static.data import constants
 
 
 def spell_pop_up(game_config, slot, gameworld, player):
-    logger.info('Spell pop up')
 
     spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                       player_entity=player)
@@ -18,31 +17,18 @@ def spell_pop_up(game_config, slot, gameworld, player):
     spell_popup_start_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellpopup',
                                                                       parameter='SP_START_Y')
 
-    ascii_prefix = 'ASCII_SINGLE_'
-
-    spell_popup_left_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                   parameter=ascii_prefix + 'LEFT_T_JUNCTION')
-
-    spell_popup_right_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                    parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
+    spell_popup_left_t_junction = constants.ASCII_SINGLE_LEFT_T_JUNCTION
+    spell_popup_right_t_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
+    spell_popup_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
+    spell_popup_top_right_corner = constants.SPELL_AOE_EDGE_TOP_RIGHT
+    spell_popup_bottom_right_corner = constants.SPELL_AOE_EDGE_BOTTOM_RIGHT
+    spell_popup_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
+    spell_popup_vertical = constants.SPELL_AOE_EDGE_VERTICAL
 
     spell_popup_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellpopup',
                                                                     parameter='SP_WIDTH')
     spell_popup_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='spellpopup',
                                                                      parameter='SP_DEPTH')
-    spell_popup_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                   parameter=ascii_prefix + 'TOP_LEFT')
-
-    spell_popup_top_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                    parameter=ascii_prefix + 'TOP_RIGHT')
-
-    spell_popup_bottom_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                       parameter=ascii_prefix + 'BOTTOM_RIGHT')
-
-    spell_popup_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                              parameter=ascii_prefix + 'HORIZONTAL')
-    spell_popup_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                            parameter=ascii_prefix + 'VERTICAL')
 
     # unicode strings of colours
     unicode_frame_colour = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['

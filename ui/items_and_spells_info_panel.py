@@ -1,8 +1,7 @@
 from bearlibterminal import terminal
 from loguru import logger
-
 from utilities import configUtilities, armourManagement, common, externalfileutilities, input_handlers, itemsHelp, jewelleryManagement, spellHelp
-
+from static.data import constants
 
 def display_spell_info_popup(menu_selection, gameworld, player_entity):
     logger.info('Items and spells info panel accessed')
@@ -47,7 +46,7 @@ def display_spell_info_popup(menu_selection, gameworld, player_entity):
 
     # draw outer frame
 
-    draw_outer_frame(startx=spell_item_info_start_x, starty=spell_item_info_start_y, width=spell_item_info_width, frame_colour=unicode_frame_colour, game_config=game_config, depth=spell_item_info_depth)
+    draw_outer_frame(startx=spell_item_info_start_x, starty=spell_item_info_start_y, width=spell_item_info_width, frame_colour=unicode_frame_colour, depth=spell_item_info_depth)
 
     # display control message
     terminal.printf(x=spell_item_info_start_x + 2, y=(spell_item_info_start_y + spell_item_info_depth) - 2,
@@ -149,24 +148,14 @@ def draw_horizontal_line_after_portrait(x, y, w, string_colour, horiz_glyph, lef
                     s=string_colour + right_t_glyph + ']')
 
 
-def draw_outer_frame(startx, width, starty, frame_colour, game_config, depth):
-    ascii_prefix = 'ASCII_SINGLE_'
-    spell_item_info_bottom_right_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                               parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
+def draw_outer_frame(startx, width, starty, frame_colour, depth):
+    spell_item_info_bottom_right_t_junction = constants.ASCII_SINGLE_BOTTOM_T_JUNCTION
+    spell_item_info_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
+    spell_item_info_cross_junction = constants.ASCII_SINGLE_CROSS_JUNCTION
+    spell_item_info_bottom_left_corner = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
+    spell_item_info_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
+    spell_item_info_vertical = constants.SPELL_AOE_EDGE_VERTICAL
 
-    spell_item_info_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                       parameter=ascii_prefix + 'TOP_LEFT')
-
-    spell_item_info_cross_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                      parameter=ascii_prefix + 'CROSS_JUNCTION')
-
-    spell_item_info_bottom_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                          parameter=ascii_prefix + 'BOTTOM_LEFT')
-
-    spell_item_info_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                  parameter=ascii_prefix + 'HORIZONTAL')
-    spell_item_info_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                parameter=ascii_prefix + 'VERTICAL')
     # draw top/bottom horizontals
     for z in range(startx, (startx + width)):
         terminal.printf(x=z, y=starty, s=frame_colour + spell_item_info_horizontal + ']')
@@ -336,7 +325,6 @@ def display_spell_information(gameworld, menu_selection, player_entity, game_con
 def display_armour_information(gameworld, game_config, player_entity, bodylocation, key_colour, value_colour, frame_colour):
     armour_key_colour_string = key_colour
     armour_value_colour_string = value_colour
-    armour_ascii_prefix = 'ASCII_SINGLE_'
     # unicode strings of colours
     unicode_frame_colour = frame_colour
     armour_defense_string = armour_key_colour_string + 'Defense:' + armour_value_colour_string
@@ -347,14 +335,9 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
 
     spell_item_info_item_imp_text = item_coords[4] + 2
 
-    spell_item_info_left_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                       parameter=armour_ascii_prefix + 'LEFT_T_JUNCTION')
-
-    spell_item_info_right_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                        parameter=armour_ascii_prefix + 'RIGHT_T_JUNCTION')
-
-    spell_item_info_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                  parameter=armour_ascii_prefix + 'HORIZONTAL')
+    spell_item_info_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
+    spell_item_info_left_t_junction = constants.ASCII_SINGLE_LEFT_T_JUNCTION
+    spell_item_info_right_t_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
 
     item_entity = armourManagement.ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity,
                                                                      bodylocation=bodylocation)
@@ -401,7 +384,6 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
 def display_jewellery_information(gameworld, game_config, player_entity, bodylocation, key_colour, value_colour, frame_colour):
     jewellery_key_colour_string = key_colour
     jewellery_value_colour_string = value_colour
-    jewellery_ascii_prefix = 'ASCII_SINGLE_'
     # unicode strings of colours
     unicode_frame_colour = frame_colour
     jewellery_bonus_string = jewellery_key_colour_string + 'Bonus to:' + jewellery_value_colour_string
@@ -412,14 +394,9 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
 
     spell_item_info_item_imp_text = item_coords[4] + 2
 
-    spell_item_info_left_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                       parameter=jewellery_ascii_prefix + 'LEFT_T_JUNCTION')
-
-    spell_item_info_right_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                        parameter=jewellery_ascii_prefix + 'RIGHT_T_JUNCTION')
-
-    spell_item_info_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                  parameter=jewellery_ascii_prefix + 'HORIZONTAL')
+    spell_item_info_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
+    spell_item_info_left_t_junction = constants.ASCII_SINGLE_LEFT_T_JUNCTION
+    spell_item_info_right_t_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
 
     item_entity = jewelleryManagement.JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
                                                                         entity=player_entity,

@@ -2,7 +2,7 @@ from bearlibterminal import terminal
 from loguru import logger
 from components import spells
 from utilities import configUtilities, armourManagement, common, input_handlers, jewelleryManagement, scorekeeper, spellHelp
-
+from static.data import constants
 
 def swap_spells(gameworld, player_entity, key_pressed):
     available_spells_dict = {}
@@ -160,21 +160,13 @@ def draw_outer_frame(spell_list):
     game_config = configUtilities.load_config()
     # unicode strings of colours
     frame_colour = '[font=dungeon][color=SPELLINFO_FRAME_COLOUR]['
-    ascii_prefix = 'ASCII_SINGLE_'
 
-    spell_swap_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                       parameter=ascii_prefix + 'TOP_LEFT')
+    spell_swap_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
+    spell_swap_right_t_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
+    spell_swap_bottom_left_corner = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
+    spell_swap_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
+    spell_swap_vertical = constants.SPELL_AOE_EDGE_VERTICAL
 
-    spell_swap_right_t_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                      parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
-
-    spell_swap_bottom_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                          parameter=ascii_prefix + 'BOTTOM_LEFT')
-
-    spell_swap_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                  parameter=ascii_prefix + 'HORIZONTAL')
-    spell_swap_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                parameter=ascii_prefix + 'VERTICAL')
     left_edge_of_spell_info_panel = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                           section='spellSwapPopup',
                                                                           parameter='SS_STARTX')

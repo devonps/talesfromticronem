@@ -1,7 +1,7 @@
 from bearlibterminal import terminal
 from loguru import logger
-
-from utilities import configUtilities, common, display, input_handlers, itemsHelp, mobileHelp, scorekeeper, externalfileutilities
+from utilities import configUtilities, common, display, input_handlers, itemsHelp, mobileHelp, scorekeeper
+from static.data import constants
 
 
 class GameOver:
@@ -166,30 +166,16 @@ class GameOver:
                                                                               section='gameOver',
                                                                               parameter='GO_EQUIP_PANEL_START_Y')
 
-        equipment_panel_top_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                           parameter=ascii_prefix + 'TOP_LEFT')
-
-        equipment_panel_bottom_left_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                              parameter=ascii_prefix + 'BOTTOM_LEFT')
-
-        equipment_panel_top_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                            parameter=ascii_prefix + 'TOP_RIGHT')
-
-        equipment_panel_bottom_right_corner = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                               parameter=ascii_prefix + 'BOTTOM_RIGHT')
-
-        equipment_panel_horizontal = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                      parameter=ascii_prefix + 'HORIZONTAL')
-        equipment_panel_vertical = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                    parameter=ascii_prefix + 'VERTICAL')
-        equipment_panel_left_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                         parameter=ascii_prefix + 'LEFT_T_JUNCTION')
-        equipment_panel_right_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                          parameter=ascii_prefix + 'RIGHT_T_JUNCTION')
-        equipment_panel_top_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                        parameter=ascii_prefix + 'TOP_T_JUNCTION')
-        equipment_panel_bottom_junction = common.CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                                           parameter=ascii_prefix + 'BOTTOM_T_JUNCTION')
+        equipment_panel_top_left_corner = constants.SPELL_AOE_EDGE_TOP_LEFT
+        equipment_panel_bottom_left_corner = constants.SPELL_AOE_EDGE_BOTTOM_LEFT
+        equipment_panel_top_right_corner = constants.SPELL_AOE_EDGE_TOP_RIGHT
+        equipment_panel_bottom_right_corner = constants.SPELL_AOE_EDGE_BOTTOM_RIGHT
+        equipment_panel_horizontal = constants.SPELL_AOE_EDGE_HORIZONTAL
+        equipment_panel_vertical = constants.SPELL_AOE_EDGE_VERTICAL
+        equipment_panel_left_junction = constants.ASCII_SINGLE_LEFT_T_JUNCTION
+        equipment_panel_right_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
+        equipment_panel_top_junction = constants.ASCII_SINGLE_TOP_T_JUNCTION
+        equipment_panel_bottom_junction = constants.ASCII_SINGLE_BOTTOM_T_JUNCTION
         tabs_to_display = configUtilities.get_config_value_as_list(configfile=game_config, section='gameOver',
                                                                    parameter='GO_EQUIP_PANEL_TABS')
 

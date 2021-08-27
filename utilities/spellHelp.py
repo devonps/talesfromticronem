@@ -566,7 +566,6 @@ class SpellUtilities:
     @staticmethod
     def determine_if_need_to_draw_entity(gameworld, game_map, oldx, oldy, target_entity):
         game_config = configUtilities.load_config()
-        config_prefix_floor = 'ASCII_FLOOR_'
         tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                       parameter='TILE_TYPE_FLOOR')
         string_to_print = ''
@@ -582,9 +581,7 @@ class SpellUtilities:
         else:
             tile = game_map.tiles[oldx][oldy].type_of_tile
             if tile == tile_type_floor:
-                char_to_display = CommonUtils.get_unicode_ascii_char(game_config=game_config,
-                                                                     config_prefix=config_prefix_floor,
-                                                                     tile_assignment=0)
+                char_to_display = constants.DNG_ASCII_FLOOR_0
                 colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
                                                                          section='colorCodes',
                                                                          parameter='FLOOR_INSIDE_FOV')
