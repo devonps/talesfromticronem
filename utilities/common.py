@@ -7,6 +7,7 @@ from components import messages
 from utilities.display import draw_simple_frame
 from static.data import constants
 
+
 class CommonUtils:
 
     @staticmethod
@@ -35,7 +36,10 @@ class CommonUtils:
         return found_condi, condi_count
 
     @staticmethod
-    def calculate_camera_position(camera_width, camera_height, player_map_pos_x, player_map_pos_y, game_map):
+    def calculate_camera_position(gameworld, game_config, camera_width, camera_height, game_map):
+        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        player_map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
+        player_map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
         x = int(player_map_pos_x - (camera_width / 2))
         y = int(player_map_pos_y - (camera_height / 2))
 
@@ -593,20 +597,13 @@ class CommonUtils:
 
     @staticmethod
     def to_camera_coordinates(game_config, game_map, x, y, gameworld):
-
-        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
-        player_map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
-        player_map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
-
         camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                    parameter='VIEWPORT_WIDTH')
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='VIEWPORT_HEIGHT')
 
         camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                   camera_height=camera_height,
-                                                                   player_map_pos_x=player_map_pos_x,
-                                                                   player_map_pos_y=player_map_pos_y,
+                                                                   camera_height=camera_height, gameworld=gameworld, game_config=game_config,
                                                                    game_map=game_map)
 
         (x, y) = (x - camera_x, y - camera_y)

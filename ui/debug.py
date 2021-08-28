@@ -49,9 +49,6 @@ class Debug:
 
     @staticmethod
     def helper_get_entity_map_position(gameworld, game_config, game_map, coords_clicked):
-        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
-        player_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
-        player_map_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
         camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                    parameter='VIEWPORT_WIDTH')
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
@@ -63,10 +60,9 @@ class Debug:
                                                                       parameter='SCREEN_OFFSET_Y')
 
         camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                          camera_height=camera_height,
-                                                                          player_map_pos_x=player_map_x,
-                                                                          player_map_pos_y=player_map_y,
-                                                                          game_map=game_map)
+                                                                   camera_height=camera_height, gameworld=gameworld,
+                                                                   game_config=game_config,
+                                                                   game_map=game_map)
 
         posx = coords_clicked[0] + camera_x - screen_offset_x
         posy = coords_clicked[1] + camera_y - screen_offset_y
@@ -314,9 +310,9 @@ class Debug:
         string_to_print = "[color=ENTITY_SPY_INSTRUCTIONS]Page:" + str(page) + "/3"
         terminal.print_(x=70, y=3, s=string_to_print)
 
-
     @staticmethod
-    def display_personal_details(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_personal_details(section_posx, section_posy, section_width, section_lines, section_heading, gameworld,
+                                 entity_id):
         section = 0
         start_string = "[color=ENTITY_SPY_COMPONENT]"
         end_string = "[/color]"
@@ -338,7 +334,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=glyph_print)
 
     @staticmethod
-    def display_names_and_ai_level(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_names_and_ai_level(section_posx, section_posy, section_width, section_lines, section_heading, gameworld,
+                                   entity_id):
         section = 1
         start_string = "[color=ENTITY_SPY_COMPONENT]"
         end_string = "[/color]"
@@ -352,7 +349,8 @@ class Debug:
         dest_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=entity_id)
         dest_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=entity_id)
 
-        first_name_string = start_string + "First Name:" + end_string + entity_names[0] + " map:" + str(dest_x) + "/" + str(dest_y)
+        first_name_string = start_string + "First Name:" + end_string + entity_names[0] + " map:" + str(
+            dest_x) + "/" + str(dest_y)
         gender_string = start_string + "Gender:" + end_string + MobileUtilities.get_mobile_gender(
             gameworld=gameworld, entity=entity_id)
 
@@ -368,7 +366,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=personality_string)
 
     @staticmethod
-    def display_equipped_weapons(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_equipped_weapons(section_posx, section_posy, section_width, section_lines, section_heading, gameworld,
+                                 entity_id):
         section = 2
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -383,12 +382,16 @@ class Debug:
         main_hand = display.set_main_hand_weapon_string_es(main_weapon=main_weapon, gameworld=gameworld)
         off_hand = display.set_off_hand_weapon_string_es(off_weapon=off_weapon, gameworld=gameworld)
 
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2, s="[color=ENTITY_SPY_COMPONENT]Both  :[/color]" + both_hands)
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3, s="[color=ENTITY_SPY_COMPONENT]M/Hand:[/color]" + main_hand)
-        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s="[color=ENTITY_SPY_COMPONENT]O/Hand:[/color]" + off_hand)
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2,
+                        s="[color=ENTITY_SPY_COMPONENT]Both  :[/color]" + both_hands)
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 3,
+                        s="[color=ENTITY_SPY_COMPONENT]M/Hand:[/color]" + main_hand)
+        terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4,
+                        s="[color=ENTITY_SPY_COMPONENT]O/Hand:[/color]" + off_hand)
 
     @staticmethod
-    def display_equipped_jewellery(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_equipped_jewellery(section_posx, section_posy, section_width, section_lines, section_heading, gameworld,
+                                   entity_id):
         section = 3
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -397,28 +400,36 @@ class Debug:
         equipped_jewellery = MobileUtilities.get_jewellery_already_equipped(gameworld=gameworld, mobile=entity_id)
         jewel_pos_y = section_posy[section] + 2
         if equipped_jewellery[4] > 0:
-            neck = "[color=ENTITY_SPY_COMPONENT]neck:[/color] " + display.set_jewellery_neck_string(gameworld=gameworld, neck=equipped_jewellery[4])
+            neck = "[color=ENTITY_SPY_COMPONENT]neck:[/color] " + display.set_jewellery_neck_string(gameworld=gameworld,
+                                                                                                    neck=
+                                                                                                    equipped_jewellery[
+                                                                                                        4])
             terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=neck)
             jewel_pos_y += 1
         if equipped_jewellery[2] > 0:
-            left_hand = "[color=ENTITY_SPY_COMPONENT]left hand:[/color] " + display.set_jewellery_left_hand_string(gameworld=gameworld, left_hand=equipped_jewellery[2])
+            left_hand = "[color=ENTITY_SPY_COMPONENT]left hand:[/color] " + display.set_jewellery_left_hand_string(
+                gameworld=gameworld, left_hand=equipped_jewellery[2])
             terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=left_hand)
             jewel_pos_y += 1
         if equipped_jewellery[3] > 0:
-            right_hand = "[color=ENTITY_SPY_COMPONENT]right hand:[/color] " + display.set_jewellery_right_hand_string(gameworld=gameworld, right_hand=equipped_jewellery[3])
+            right_hand = "[color=ENTITY_SPY_COMPONENT]right hand:[/color] " + display.set_jewellery_right_hand_string(
+                gameworld=gameworld, right_hand=equipped_jewellery[3])
             terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=right_hand)
             jewel_pos_y += 1
         if equipped_jewellery[0] > 0:
-            left_ear = "[color=ENTITY_SPY_COMPONENT]left ear:[/color] " + display.set_jewellery_left_ear_string(gameworld=gameworld, left_ear=equipped_jewellery[0])
+            left_ear = "[color=ENTITY_SPY_COMPONENT]left ear:[/color] " + display.set_jewellery_left_ear_string(
+                gameworld=gameworld, left_ear=equipped_jewellery[0])
             terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=left_ear)
             jewel_pos_y += 1
         if equipped_jewellery[1] > 0:
-            right_ear = "[color=ENTITY_SPY_COMPONENT]right ear:[/color] " + display.set_jewellery_right_ear_string(gameworld=gameworld, right_ear=equipped_jewellery[1])
+            right_ear = "[color=ENTITY_SPY_COMPONENT]right ear:[/color] " + display.set_jewellery_right_ear_string(
+                gameworld=gameworld, right_ear=equipped_jewellery[1])
             terminal.print_(x=section_posx[section] + 1, y=jewel_pos_y, s=right_ear)
             jewel_pos_y += 1
 
     @staticmethod
-    def display_equipped_armour(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_equipped_armour(section_posx, section_posy, section_width, section_lines, section_heading, gameworld,
+                                entity_id):
         section = 8
 
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
@@ -466,7 +477,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 8, s=str_to_print)
 
     @staticmethod
-    def display_spellbar_combat(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_spellbar_combat(section_posx, section_posy, section_width, section_lines, section_heading, gameworld,
+                                entity_id):
         section = 4
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -485,7 +497,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 6, s=slot_five)
 
     @staticmethod
-    def display_spellbar_utilities(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_spellbar_utilities(section_posx, section_posy, section_width, section_lines, section_heading, gameworld,
+                                   entity_id):
         section = 5
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -502,7 +515,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 5, s=slot_nine)
 
     @staticmethod
-    def display_energy_bars(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_energy_bars(section_posx, section_posy, section_width, section_lines, section_heading, gameworld,
+                            entity_id):
         section = 6
         start_string = "[color=ENTITY_SPY_COMPONENT]"
         end_string = "[/color]"
@@ -510,14 +524,14 @@ class Debug:
                                   start_panel_frame_width=section_width[section],
                                   start_panel_frame_height=section_lines[section], title=section_heading[section])
         current_health_value = MobileUtilities.get_mobile_derived_current_health(gameworld=gameworld,
-                                                                                            entity=entity_id)
+                                                                                 entity=entity_id)
         max_health_value = MobileUtilities.get_mobile_derived_maximum_health(gameworld=gameworld,
-                                                                                        entity=entity_id)
+                                                                             entity=entity_id)
 
         current_f1_value = MobileUtilities.get_mobile_derived_special_bar_current_value(gameworld=gameworld,
-                                                                                                   entity=entity_id)
+                                                                                        entity=entity_id)
         max_f1_value = MobileUtilities.get_mobile_derived_special_bar_max_value(gameworld=gameworld,
-                                                                                           entity=entity_id)
+                                                                                entity=entity_id)
 
         health_string = start_string + "Health:" + end_string + str(current_health_value) + " of " + str(
             max_health_value)
@@ -527,7 +541,8 @@ class Debug:
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 4, s=f1_string)
 
     @staticmethod
-    def display_monster_specific_items(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_monster_specific_items(section_posx, section_posy, section_width, section_lines, section_heading,
+                                       gameworld, entity_id):
         section = 7
         Debug.draw_monster_specific_components(gameworld=gameworld, entity_id=entity_id, sx=section_posx[section],
                                                sy=section_posy[section],
@@ -540,25 +555,46 @@ class Debug:
         section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.helper_get_section_layout_details(
             game_config=game_config)
 
-        Debug.display_personal_details(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
-        Debug.display_names_and_ai_level(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
-        Debug.display_energy_bars(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
-        Debug.display_equipped_armour(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
-        Debug.display_equipped_weapons(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
-        Debug.display_equipped_jewellery(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
-        Debug.display_spellbar_combat(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
-        Debug.display_spellbar_utilities(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_personal_details(section_posx=section_posx, section_posy=section_posy,
+                                       section_width=section_width, section_lines=section_lines,
+                                       section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_names_and_ai_level(section_posx=section_posx, section_posy=section_posy,
+                                         section_width=section_width, section_lines=section_lines,
+                                         section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_energy_bars(section_posx=section_posx, section_posy=section_posy, section_width=section_width,
+                                  section_lines=section_lines, section_heading=section_heading, gameworld=gameworld,
+                                  entity_id=entity_id)
+        Debug.display_equipped_armour(section_posx=section_posx, section_posy=section_posy, section_width=section_width,
+                                      section_lines=section_lines, section_heading=section_heading, gameworld=gameworld,
+                                      entity_id=entity_id)
+        Debug.display_equipped_weapons(section_posx=section_posx, section_posy=section_posy,
+                                       section_width=section_width, section_lines=section_lines,
+                                       section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_equipped_jewellery(section_posx=section_posx, section_posy=section_posy,
+                                         section_width=section_width, section_lines=section_lines,
+                                         section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_spellbar_combat(section_posx=section_posx, section_posy=section_posy, section_width=section_width,
+                                      section_lines=section_lines, section_heading=section_heading, gameworld=gameworld,
+                                      entity_id=entity_id)
+        Debug.display_spellbar_utilities(section_posx=section_posx, section_posy=section_posy,
+                                         section_width=section_width, section_lines=section_lines,
+                                         section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
         # Debug.display_monster_specific_items(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
 
     @staticmethod
     def display_page_three_entity_spy(gameworld, game_config, entity_id):
         section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.helper_get_section_layout_details(
             game_config=game_config)
-        Debug.display_combat_kit(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
-        Debug.display_ai(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_combat_kit(section_posx=section_posx, section_posy=section_posy, section_width=section_width,
+                                 section_lines=section_lines, section_heading=section_heading, gameworld=gameworld,
+                                 entity_id=entity_id)
+        Debug.display_ai(section_posx=section_posx, section_posy=section_posy, section_width=section_width,
+                         section_lines=section_lines, section_heading=section_heading, gameworld=gameworld,
+                         entity_id=entity_id)
 
     @staticmethod
-    def display_combat_kit(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_combat_kit(section_posx, section_posy, section_width, section_lines, section_heading, gameworld,
+                           entity_id):
         section = 13
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -630,9 +666,9 @@ class Debug:
         ai_level_string = start_string + "AI level:" + end_string + ai_description
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 1, s=ai_level_string)
 
-
     @staticmethod
-    def display_primary_attributes(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_primary_attributes(section_posx, section_posy, section_width, section_lines, section_heading, gameworld,
+                                   entity_id):
         section = 9
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
@@ -640,9 +676,9 @@ class Debug:
 
         entity_power = MobileUtilities.get_mobile_primary_power(gameworld=gameworld, entity=entity_id)
         entity_precision = MobileUtilities.get_mobile_primary_precision(gameworld=gameworld,
-                                                                                   entity=entity_id)
+                                                                        entity=entity_id)
         entity_toughness = MobileUtilities.get_mobile_primary_toughness(gameworld=gameworld,
-                                                                                   entity=entity_id)
+                                                                        entity=entity_id)
         entity_vitality = MobileUtilities.get_mobile_primary_vitality(gameworld=gameworld, entity=entity_id)
 
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2,
@@ -655,22 +691,23 @@ class Debug:
                         s="[color=ENTITY_SPY_COMPONENT]Vitality:[/color]" + str(entity_vitality))
 
     @staticmethod
-    def display_secondary_attributes(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_secondary_attributes(section_posx, section_posy, section_width, section_lines, section_heading,
+                                     gameworld, entity_id):
         section = 10
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
                                   start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         entity_concentration = MobileUtilities.get_mobile_secondary_concentration(gameworld=gameworld,
-                                                                                             entity=entity_id)
+                                                                                  entity=entity_id)
         entity_condi_damage = MobileUtilities.get_mobile_secondary_condition_damage(gameworld=gameworld,
-                                                                                               entity=entity_id)
+                                                                                    entity=entity_id)
         entity_expertise = MobileUtilities.get_mobile_secondary_expertise(gameworld=gameworld,
-                                                                                     entity=entity_id)
+                                                                          entity=entity_id)
         entity_ferocity = MobileUtilities.get_mobile_secondary_ferocity(gameworld=gameworld,
-                                                                                   entity=entity_id)
+                                                                        entity=entity_id)
         entity_healing_power = MobileUtilities.get_mobile_secondary_healing_power(gameworld=gameworld,
-                                                                                             entity=entity_id)
+                                                                                  entity=entity_id)
 
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2,
                         s="[color=ENTITY_SPY_COMPONENT]Concentration:[/color]" + str(entity_concentration))
@@ -684,21 +721,22 @@ class Debug:
                         s="[color=ENTITY_SPY_COMPONENT]Healing Power:[/color]" + str(entity_healing_power))
 
     @staticmethod
-    def display_derived_attributes(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_derived_attributes(section_posx, section_posy, section_width, section_lines, section_heading, gameworld,
+                                   entity_id):
         section = 11
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
                                   start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         entity_boon_duration = MobileUtilities.get_mobile_derived_boon_duration(gameworld=gameworld,
-                                                                                           entity=entity_id)
+                                                                                entity=entity_id)
 
         entity_critical_chance = MobileUtilities.get_mobile_derived_critical_hit_chance(gameworld=gameworld,
-                                                                                                   entity=entity_id)
+                                                                                        entity=entity_id)
         entity_critical_damage = MobileUtilities.get_mobile_derived_critical_damage(gameworld=gameworld,
-                                                                                               entity=entity_id)
+                                                                                    entity=entity_id)
         entity_condi_duration = MobileUtilities.get_mobile_derived_condition_duration(gameworld=gameworld,
-                                                                                                 entity=entity_id)
+                                                                                      entity=entity_id)
         total_armour = MobileUtilities.get_mobile_derived_armour_value(gameworld=gameworld, entity=entity_id)
 
         terminal.print_(x=section_posx[section] + 1, y=section_posy[section] + 2,
@@ -713,16 +751,17 @@ class Debug:
                         s="[color=ENTITY_SPY_COMPONENT]Defense:[/color]" + str(total_armour))
 
     @staticmethod
-    def display_applied_status_effects(section_posx, section_posy, section_width, section_lines, section_heading, gameworld, entity_id):
+    def display_applied_status_effects(section_posx, section_posy, section_width, section_lines, section_heading,
+                                       gameworld, entity_id):
         section = 12
         display.draw_simple_frame(start_panel_frame_x=section_posx[section], start_panel_frame_y=section_posy[section],
                                   start_panel_frame_width=section_width[section],
                                   start_panel_frame_height=section_lines[section], title=section_heading[section])
 
         applied_boons = MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld,
-                                                                                       entity=entity_id)
+                                                                            entity=entity_id)
         applied_condis = MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
-                                                                                         entity=entity_id)
+                                                                              entity=entity_id)
 
         boons_to_print = Debug.set_boons_to_print(applied_boons=applied_boons)
         condis_to_print = Debug.set_condis_to_print(applied_condis=applied_condis)
@@ -738,11 +777,18 @@ class Debug:
         section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.helper_get_section_layout_details(
             game_config=game_config)
 
-        Debug.display_primary_attributes(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
-        Debug.display_secondary_attributes(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
-        Debug.display_derived_attributes(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
-        Debug.display_applied_status_effects(section_posx=section_posx, section_posy=section_posy, section_width=section_width, section_lines=section_lines, section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
-
+        Debug.display_primary_attributes(section_posx=section_posx, section_posy=section_posy,
+                                         section_width=section_width, section_lines=section_lines,
+                                         section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_secondary_attributes(section_posx=section_posx, section_posy=section_posy,
+                                           section_width=section_width, section_lines=section_lines,
+                                           section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_derived_attributes(section_posx=section_posx, section_posy=section_posy,
+                                         section_width=section_width, section_lines=section_lines,
+                                         section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
+        Debug.display_applied_status_effects(section_posx=section_posx, section_posy=section_posy,
+                                             section_width=section_width, section_lines=section_lines,
+                                             section_heading=section_heading, gameworld=gameworld, entity_id=entity_id)
 
     @staticmethod
     def set_boons_to_print(applied_boons):
@@ -777,9 +823,9 @@ class Debug:
                                       start_panel_frame_height=sl, title=sh)
 
             pref_min_attack_range = MobileUtilities.get_enemy_preferred_min_range(gameworld=gameworld,
-                                                                                             entity=entity_id)
+                                                                                  entity=entity_id)
             pre_max_attack_range = MobileUtilities.get_enemy_preferred_max_range(gameworld=gameworld,
-                                                                                            entity=entity_id)
+                                                                                 entity=entity_id)
             combat_role = MobileUtilities.get_enemy_combat_role(gameworld=gameworld, entity=entity_id)
 
             min_range_string = start_string + "Pref min attack range:" + end_string + str(pref_min_attack_range)

@@ -32,9 +32,6 @@ class RenderUI(esper.Processor):
 
     @staticmethod
     def render_aoe_effects(gameworld, game_config, game_map):
-        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld, game_config)
-        player_map_pos_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
-        player_map_pos_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
         colour_code = "[color=SPELL_AOE_GENERAL_EFFECT]"
         camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                    parameter='VIEWPORT_WIDTH')
@@ -53,9 +50,7 @@ class RenderUI(esper.Processor):
 
         # this holds the start x/y map positions left of the players current position
         camera_x, camera_y = common.CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                          camera_height=camera_height,
-                                                                          player_map_pos_x=player_map_pos_x,
-                                                                          player_map_pos_y=player_map_pos_y,
+                                                                          camera_height=camera_height, gameworld=gameworld, game_config=game_config,
                                                                           game_map=game_map)
 
         for scr_pos_y in range(camera_height):
@@ -63,7 +58,6 @@ class RenderUI(esper.Processor):
             for scr_pos_x in range(camera_width):
                 map_x = cam_x
                 map_y = camera_y
-                # spell_entity_list = game_map.tiles[map_x][map_y].aoe_spell_entity
                 spell_entity_list = GameMapUtilities.get_list_of_spells_at_this_map_location(game_map=game_map, x=map_x, y=map_y)
                 if len(spell_entity_list) > 0:
                     for spell_entity in spell_entity_list:
@@ -149,9 +143,7 @@ class RenderUI(esper.Processor):
 
         # this holds the start x/y map positions left of the players current position
         camera_x, camera_y = common.CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                          camera_height=camera_height,
-                                                                          player_map_pos_x=player_map_pos_x,
-                                                                          player_map_pos_y=player_map_pos_y,
+                                                                          camera_height=camera_height, gameworld=gameworld, game_config=game_config,
                                                                           game_map=game_map)
 
         config_prefix = 'ASCII_'
@@ -159,8 +151,7 @@ class RenderUI(esper.Processor):
         original_char_to_display = constants.DNG_ASCII_EMPTY_0
         colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
         fov_map = fov.FieldOfView(game_map=game_map)
-        player_fov = fov.FieldOfView.create_fov_from_raycasting(fov_map, startx=player_map_pos_x,
-                                                                starty=player_map_pos_y,
+        player_fov = fov.FieldOfView.create_fov_from_raycasting(fov_map, startx=player_map_pos_x, starty=player_map_pos_y,
                                                                 game_config=game_config)
 
         if player_has_moved:
@@ -226,19 +217,13 @@ class RenderUI(esper.Processor):
     @staticmethod
     def to_camera_coordinates(game_config, game_map, x, y, gameworld):
 
-        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld, game_config)
-        player_map_pos_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
-        player_map_pos_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
-
         camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                    parameter='VIEWPORT_WIDTH')
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='VIEWPORT_HEIGHT')
 
         camera_x, camera_y = common.CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                          camera_height=camera_height,
-                                                                          player_map_pos_x=player_map_pos_x,
-                                                                          player_map_pos_y=player_map_pos_y,
+                                                                          camera_height=camera_height, gameworld=gameworld, game_config=game_config,
                                                                           game_map=game_map)
 
         (x, y) = (x - camera_x, y - camera_y)
