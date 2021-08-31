@@ -2,6 +2,7 @@ from loguru import logger
 from utilities import configUtilities, display, input_handlers
 from newGame.CharacterCreation import CharacterCreation
 from bearlibterminal import terminal
+from static.data import constants
 
 
 class StartGame:
@@ -11,14 +12,10 @@ class StartGame:
         logger.info('Game Start Screen')
         game_config = configUtilities.load_config()
 
-        game_title = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
-                                                                parameter='GAME_TITLE')
-        game_version = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
-                                                                  parameter='VERSION')
-        game_copyright = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
-                                                                    parameter='COPYRIGHT')
-        game_author = configUtilities.get_config_value_as_string(configfile=game_config, section='default',
-                                                                 parameter='AUTHOR')
+        game_title = constants.GAME_TITLE
+        game_version = constants.GAME_VERSION
+        game_copyright = constants.GAME_COPYRIGHT
+        game_author = constants.GAME_AUTHOR
         version_y = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'VERSION_Y')
         version_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'VERSION_X')
         copyright_x = configUtilities.get_config_value_as_integer(game_config, 'newgame', 'COPYRIGHT_X')

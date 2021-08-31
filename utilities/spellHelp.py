@@ -590,7 +590,7 @@ class SpellUtilities:
         else:
             tile = GameMapUtilities.get_type_of_tile(game_map=game_map, x=oldx, y=oldy)
             if tile == tile_type_floor:
-                char_to_display = constants.DNG_ASCII_FLOOR_0
+                char_to_display = constants.ASCII_DNG_FLOOR_0
                 colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
                                                                          section='colorCodes',
                                                                          parameter='FLOOR_INSIDE_FOV')

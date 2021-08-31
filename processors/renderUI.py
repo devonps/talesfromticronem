@@ -148,7 +148,7 @@ class RenderUI(esper.Processor):
 
         config_prefix = 'ASCII_'
         config_prefix_wall = config_prefix + 'WALL_'
-        original_char_to_display = constants.DNG_ASCII_EMPTY_0
+        original_char_to_display = constants.ASCII_DNG_EMPTY_0
         colour_code = "[color=RENDER_VISIBLE_ENTITIES_LIST]"
         fov_map = fov.FieldOfView(game_map=game_map)
         player_fov = fov.FieldOfView.create_fov_from_raycasting(fov_map, startx=player_map_pos_x, starty=player_map_pos_y,
@@ -172,7 +172,7 @@ class RenderUI(esper.Processor):
                     print_char = True
                     game_map.tiles[map_x][map_y].explored = True
                     if tile == tile_type_floor:
-                        char_to_display = constants.DNG_ASCII_FLOOR_0
+                        char_to_display = constants.ASCII_DNG_FLOOR_0
                         colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
                                                                                  section='colorCodes',
                                                                                  parameter='FLOOR_INSIDE_FOV')
@@ -183,12 +183,12 @@ class RenderUI(esper.Processor):
                                                                                     tile_assignment=tile_assignment)
 
                     if tile == tile_type_door:
-                        char_to_display = constants.DNG_ASCII_DOOR_0
+                        char_to_display = constants.ASCII_DNG_DOOR_0
                 elif game_map.tiles[map_x][map_y].explored:
                     colour_code = "[color=grey]"
                     print_char = True
                     if tile == tile_type_floor:
-                        char_to_display = constants.DNG_ASCII_FLOOR_0
+                        char_to_display = constants.ASCII_DNG_FLOOR_0
                         colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
                                                                                  section='colorCodes',
                                                                                  parameter='FLOOR_OUTSIDE_FOV')
@@ -197,7 +197,7 @@ class RenderUI(esper.Processor):
                                                                                     config_prefix=config_prefix_wall,
                                                                                     tile_assignment=tile_assignment)
                     if tile == tile_type_door:
-                        char_to_display = constants.DNG_ASCII_DOOR_0
+                        char_to_display = constants.ASCII_DNG_DOOR_0
 
                 RenderUI.print_char_to_the_screen(print_char=print_char, tile=tile, colour_code=colour_code,
                                                   char_to_display=char_to_display,
