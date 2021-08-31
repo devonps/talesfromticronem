@@ -35,7 +35,7 @@ class GameMapUtilities:
 
     # remove mobile from current game map position
     @staticmethod
-    def remove_mobile_from_map_position(game_map, px, py):
+    def remove_entity_from_map_position(game_map, px, py):
         game_map.tiles[px][py].entity = 0
 
     # add mobile entity to new game map position

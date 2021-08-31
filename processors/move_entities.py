@@ -49,7 +49,7 @@ class MoveEntities(esper.Processor):
                     svy = '0'
 
                     # remove mobile from current game map position
-                    gamemap.GameMapUtilities.remove_mobile_from_map_position(game_map=self.game_map, px=px, py=py)
+                    gamemap.GameMapUtilities.remove_entity_from_map_position(game_map=self.game_map, px=px, py=py)
 
                     # add mobile entity to new game map position
                     gamemap.GameMapUtilities.set_entity_at_this_map_location(game_map=self.game_map, x=position.x,
