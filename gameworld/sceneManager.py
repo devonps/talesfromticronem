@@ -6,6 +6,8 @@ from processors import castSpells, move_entities, renderUI, updateEntities, rend
 from utilities import configUtilities, externalfileutilities, jsonUtilities, mobileHelp, scorekeeper
 from loguru import logger
 
+from utilities.gamemap import GameMapUtilities
+
 
 class SceneManager:
 
@@ -125,8 +127,9 @@ class SceneManager:
 
                 if player_placed:
                     SceneManager.setup_viewport(gameworld=gameworld, posx=posx, posy=posy)
-                    game_map.tiles[posx][posy].entity = mobileHelp.MobileUtilities.get_player_entity(
-                        gameworld=gameworld, game_config=game_config)
+
+                    player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+                    GameMapUtilities.set_entity_at_this_map_location(game_map=game_map, x=posx, y=posy, entity=player_entity)
 
                 # add named NPCs to scene
                 npc_list_ids = "ABCEDFG"
@@ -137,7 +140,8 @@ class SceneManager:
                     new_entity = NewEntity.build_named_npc(gameworld=gameworld, game_config=game_config, posx=posx, posy=posy, this_npc=this_npc, cell=cell)
                     # --- PLACE NEW ENTITY ON TO GAME MAP -
                     if new_entity > 0:
-                        game_map.tiles[posx][posy].entity = new_entity
+                        GameMapUtilities.set_entity_at_this_map_location(game_map=game_map, x=posx, y=posy,
+                                                                         entity=new_entity)
                         SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor,
                                                              game_map=game_map)
 
@@ -158,7 +162,8 @@ class SceneManager:
                     new_entity = NewEntity.build_random_enemy(gameworld=gameworld, cell=cell, game_config=game_config, posx=posx, posy=posy, chosen_race_name=chosen_race_name)
                     # --- PLACE NEW ENTITY ON TO GAME MAP -
                     if new_entity > 0:
-                        game_map.tiles[posx][posy].entity = new_entity
+                        GameMapUtilities.set_entity_at_this_map_location(game_map=game_map, x=posx, y=posy,
+                                                                         entity=new_entity)
                         SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor,
                                                              game_map=game_map)
                 posx += 1

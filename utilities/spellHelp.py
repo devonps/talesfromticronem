@@ -6,6 +6,7 @@ from components import spells, items, mobiles
 from utilities import configUtilities, formulas, gamemap, input_handlers, itemsHelp, jsonUtilities, mobileHelp, display
 from utilities.common import CommonUtils
 from static.data import constants
+from utilities.gamemap import GameMapUtilities
 
 
 class SpellUtilities:
@@ -280,7 +281,7 @@ class SpellUtilities:
 
         while targeting_a_spell:
             # this wants map coords
-            entity_at_targeting_cursor_position = gamemap.GameMapUtilities.get_mobile_entity_at_this_location(
+            entity_at_targeting_cursor_position = gamemap.GameMapUtilities.get_entity_at_this_location(
                 game_map=game_map, x=targeting_cursor_centre_x, y=targeting_cursor_centre_y)
             oldx = targeting_cursor_centre_x
             oldy = targeting_cursor_centre_y
@@ -348,9 +349,9 @@ class SpellUtilities:
                 enemy_list.append(0)
         else:
 
-            enemy_list.append(gamemap.GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
-                                                                                          x=target_x,
-                                                                                          y=target_y))
+            enemy_list.append(gamemap.GameMapUtilities.get_entity_at_this_location(game_map=game_map,
+                                                                                   x=target_x,
+                                                                                   y=target_y))
         logger.debug('List of enemies to attack {}', enemy_list)
         return enemy_list
 
@@ -477,8 +478,8 @@ class SpellUtilities:
             cury = target_y + outer_loop
             for inner_loop in range(-cursor_width, cursor_width + 1):
                 curx = target_x + inner_loop
-                enemy_entity = gamemap.GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=curx,
-                                                                                           y=cury)
+                enemy_entity = gamemap.GameMapUtilities.get_entity_at_this_location(game_map=game_map, x=curx,
+                                                                                    y=cury)
                 if enemy_entity > 0:
                     enemies_list.append(enemy_entity)
         return enemies_list
@@ -532,9 +533,9 @@ class SpellUtilities:
             for inner_loop in range(-cursor_width, cursor_width + 1):
                 posx = (screen_offset_x + oldx) + inner_loop
                 terminal.printf(x=posx, y=posy, s=colour_code + this_row[row_slice])
-                entity_id = gamemap.GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map,
-                                                                                        x=(oldx + inner_loop),
-                                                                                        y=(oldy + outer_loop))
+                entity_id = gamemap.GameMapUtilities.get_entity_at_this_location(game_map=game_map,
+                                                                                 x=(oldx + inner_loop),
+                                                                                 y=(oldy + outer_loop))
                 if entity_id > 0:
                     entities_found.append([entity_id, posx, posy])
                 row_slice += 1
@@ -587,7 +588,7 @@ class SpellUtilities:
             string_to_print = "[color=" + fg + "][font=dungeon][bkcolor=" + bg + "]" + char_to_display
 
         else:
-            tile = game_map.tiles[oldx][oldy].type_of_tile
+            tile = GameMapUtilities.get_type_of_tile(game_map=game_map, x=oldx, y=oldy)
             if tile == tile_type_floor:
                 char_to_display = constants.DNG_ASCII_FLOOR_0
                 colour_code = configUtilities.get_config_value_as_string(configfile=game_config,

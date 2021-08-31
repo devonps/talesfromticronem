@@ -5,6 +5,14 @@ class GameMapUtilities:
         return game_map.tiles[x][y].type_of_tile
 
     @staticmethod
+    def get_tile_assignment(game_map, x, y):
+        return game_map.tiles[x][y].assignment
+
+    @staticmethod
+    def set_tile_assignment(game_map, x, y, value):
+        game_map.tiles[x][y].assignment = value
+
+    @staticmethod
     def is_tile_blocked(game_map, x, y):
         if game_map.tiles[x][y].blocked:
             return True
@@ -20,8 +28,9 @@ class GameMapUtilities:
         existing_spell_list.append(spell_entity)
         game_map.tiles[x][y].placed_spells = existing_spell_list
 
+    # get entity at this location
     @staticmethod
-    def get_mobile_entity_at_this_location(game_map, x, y):
+    def get_entity_at_this_location(game_map, x, y):
         return game_map.tiles[x][y].entity
 
     # remove mobile from current game map position
@@ -31,5 +40,5 @@ class GameMapUtilities:
 
     # add mobile entity to new game map position
     @staticmethod
-    def add_mobile_to_map_position(game_map, px, py, entity):
-        game_map.tiles[px][py].entity = entity
+    def set_entity_at_this_map_location(game_map, x, y, entity):
+        game_map.tiles[x][y].entity = entity

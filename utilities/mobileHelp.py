@@ -7,6 +7,8 @@ from utilities import world, configUtilities
 
 import numbers
 
+from utilities.gamemap import GameMapUtilities
+
 
 class MobileUtilities(numbers.Real, ABC):
     #
@@ -35,7 +37,8 @@ class MobileUtilities(numbers.Real, ABC):
         cells_in_line = fov.FieldOfView.get_line((from_x, from_y), (to_x, to_y))
 
         for cell in cells_in_line:
-            if game_map.tiles[cell[0]][cell[1]].blocked:
+            tile_is_blocked = GameMapUtilities.is_tile_blocked(game_map=game_map, x=cell[0], y=cell[1])
+            if tile_is_blocked:
                 can_i_see_the_entity = False
 
         return can_i_see_the_entity

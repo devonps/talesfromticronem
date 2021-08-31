@@ -2,6 +2,7 @@ import esper
 from loguru import logger
 from components import mobiles
 from utilities import formulas, world, armourManagement, common, mobileHelp, scorekeeper
+from utilities.gamemap import GameMapUtilities
 from utilities.mobileHelp import MobileUtilities
 from utilities.spellHelp import SpellUtilities
 
@@ -65,7 +66,7 @@ class UpdateEntitiesProcessor(esper.Processor):
 
         for across in range(min_x_range, max_x_range):
             for down in range(min_y_range, max_y_range):
-                entity_id = self.game_map.tiles[across][down].entity
+                entity_id = GameMapUtilities.get_entity_at_this_location(game_map=self.game_map, x=across, y=down)
                 if entity_id > 0 and entity_id != ent:
                     visible_entities.append(entity_id)
                 if entity_id == player_entity:

@@ -85,7 +85,7 @@ class Debug:
         posx, posy = Debug.helper_get_entity_map_position(gameworld=gameworld, game_config=game_config,
                                                           game_map=game_map,
                                                           coords_clicked=coords_clicked)
-        entity_id = gamemap.GameMapUtilities.get_mobile_entity_at_this_location(game_map=game_map, x=posx, y=posy)
+        entity_id = gamemap.GameMapUtilities.get_entity_at_this_location(game_map=game_map, x=posx, y=posy)
 
         if entity_id > 0:
             # get outerframe coords from json file

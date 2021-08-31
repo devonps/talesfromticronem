@@ -164,7 +164,7 @@ class RenderUI(esper.Processor):
                 map_x = cam_x
                 map_y = camera_y
                 print_char = False
-                tile = game_map.tiles[map_x][map_y].type_of_tile
+                tile = GameMapUtilities.get_type_of_tile(game_map=game_map, x=map_x, y=map_y)
                 tile_assignment = game_map.tiles[map_x][map_y].assignment
                 visible = fov.FieldOfView.get_fov_map_point(player_fov, map_x, map_y)
                 if visible:

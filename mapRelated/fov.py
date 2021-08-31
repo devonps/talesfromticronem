@@ -1,4 +1,5 @@
 from utilities import configUtilities
+from utilities.gamemap import GameMapUtilities
 
 
 class FieldOfView:
@@ -163,7 +164,7 @@ class FieldOfView:
                 xx = int(round(x))
                 yy = int(round(y))
                 fov_map[xx][yy] = True  # Make tile visible
-                tile = self.game_map.tiles[int(round(x))][int(round(y))].type_of_tile
+                tile = GameMapUtilities.get_type_of_tile(game_map=self.game_map, x=int(round(x)), y=int(round(y)))
 
                 if tile == tile_type_door or tile == tile_type_wall:  # Stop ray if it hits
                     break  # a wall or a door.

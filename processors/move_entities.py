@@ -23,9 +23,11 @@ class MoveEntities(esper.Processor):
 
     def process(self, game_config, advance_game_turn):
         if advance_game_turn:
-            player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+            player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld,
+                                                                         game_config=game_config)
 
-            message_log_just_viewed = mobileHelp.MobileUtilities.get_view_message_log_value(gameworld=self.gameworld, entity=player_entity)
+            message_log_just_viewed = mobileHelp.MobileUtilities.get_view_message_log_value(gameworld=self.gameworld,
+                                                                                            entity=player_entity)
             if not message_log_just_viewed:
                 self.attempt_to_move_entities(game_config=game_config)
 
@@ -50,8 +52,9 @@ class MoveEntities(esper.Processor):
                     gamemap.GameMapUtilities.remove_mobile_from_map_position(game_map=self.game_map, px=px, py=py)
 
                     # add mobile entity to new game map position
-                    gamemap.GameMapUtilities.add_mobile_to_map_position(game_map=self.game_map, px=position.x, py=position.y,
-                                                                entity=ent)
+                    gamemap.GameMapUtilities.set_entity_at_this_map_location(game_map=self.game_map, x=position.x,
+                                                                             y=position.y,
+                                                                             entity=ent)
 
                     svx, svy = check_velocity(velocity=velocity, cvx=svx, cvy=svy)
 

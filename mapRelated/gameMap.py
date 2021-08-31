@@ -1,5 +1,6 @@
 from mapRelated import tile
 from utilities import gamemap
+from utilities.gamemap import GameMapUtilities
 
 
 class GameMap:
@@ -24,7 +25,7 @@ class GameMap:
                     tile_assigned += GameMap.check_if_east_tile_is_blocked(game_map=game_map, posx=x, posy=y)
                     tile_assigned += GameMap.check_if_south_tile_is_blocked(game_map=game_map, posx=x, posy=y)
                     tile_assigned += GameMap.check_if_west_tile_is_blocked(game_map=game_map, posx=x, posy=y)
-                    game_map.tiles[x][y].assignment = tile_assigned
+                    GameMapUtilities.set_tile_assignment(game_map=game_map, x=x, y=y, value=tile_assigned)
 
     @staticmethod
     def check_if_north_tile_is_blocked(game_map, posx, posy):
