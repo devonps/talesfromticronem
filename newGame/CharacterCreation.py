@@ -23,8 +23,7 @@ class CharacterCreation:
         # setup base player entity
         player = world.get_next_entity_id(gameworld=gameworld)
         mobileHelp.MobileUtilities.create_base_mobile(gameworld=gameworld, entity_id=player)
-        mobileHelp.MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config,
-                                                player_entity=player)
+        mobileHelp.MobileUtilities.create_player_character(gameworld=gameworld, player_entity=player)
         logger.info('Player character stored as entity {}', player)
 
         # setup racial stuff race_name_selected, race_size, race_bg_colour, race_name_desc

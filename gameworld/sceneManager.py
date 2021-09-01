@@ -215,6 +215,5 @@ class SceneManager:
 
     @staticmethod
     def setup_viewport(gameworld, posx, posy):
-        game_config = configUtilities.load_config()
         player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
         mobileHelp.MobileUtilities.set_mobile_position(gameworld=gameworld, entity=player_entity, posx=posx, posy=posy)

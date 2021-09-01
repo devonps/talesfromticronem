@@ -5,6 +5,7 @@ from newGame.Items import ItemManager
 from utilities import configUtilities, jsonUtilities, itemsHelp, mobileHelp
 from static.data import constants
 
+
 class ArmourUtilities:
 
     @staticmethod
@@ -284,23 +285,26 @@ class ArmourUtilities:
                                                              bodylocation='head')
         full_armour_set.append(head_armour)
 
-        chest_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix, bodylocation='chest')
+        chest_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix,
+                                                              bodylocation='chest')
         full_armour_set.append(chest_armour)
 
-        hands_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix, bodylocation='hands')
+        hands_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix,
+                                                              bodylocation='hands')
         full_armour_set.append(hands_armour)
 
-        legs_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix, bodylocation='legs')
+        legs_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix,
+                                                             bodylocation='legs')
         full_armour_set.append(legs_armour)
 
-        feet_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix, bodylocation='feet')
+        feet_armour = ArmourUtilities.create_piece_of_armour(gameworld=gameworld, setname=armourset, prefix=prefix,
+                                                             bodylocation='feet')
         full_armour_set.append(feet_armour)
 
         return full_armour_set
 
     @staticmethod
     def create_piece_of_armour(gameworld, bodylocation, setname, prefix):
-        game_config = configUtilities.load_config()
         armour_set_path = constants.FILE_ARMOURSETFILE
 
         armour_set_file = jsonUtilities.read_json_file(armour_set_path)
@@ -323,9 +327,9 @@ class ArmourUtilities:
                 prefix_count = armourset['prefixcount']
                 attribute_bonus_count = armourset['attributebonuscount']
                 _, defense = ArmourUtilities.process_armour_bodylocation(gameworld=gameworld,
-                                                                                       bodylocation=bodylocation,
-                                                                                       armour_piece=armour_piece,
-                                                                                       armourset=armourset)
+                                                                         bodylocation=bodylocation,
+                                                                         armour_piece=armour_piece,
+                                                                         armourset=armourset)
 
                 for px in range(1, prefix_count + 1):
                     prefix_string = pxstring + str(px)

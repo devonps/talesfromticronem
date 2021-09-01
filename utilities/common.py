@@ -89,7 +89,6 @@ class CommonUtils:
         :param gameworld:
         :param kwargs: see method definition
         """
-        game_config = configUtilities.load_config()
         player = MobileUtilities.get_player_entity(gameworld=gameworld)
         message_log_entity = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
         current_turn = ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld,
