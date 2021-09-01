@@ -100,8 +100,7 @@ class CommonUtils:
         foreground_colour = kwargs.get('fg', 'white')
         background_colour = kwargs.get('bg', 'black')
         event_classes = []
-        events_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                      parameter='EVENTSFILE')
+        events_file_path = constants.FILE_EVENTSFILE
         # load file as a dictionary
         events = jsonUtilities.read_json_file(events_file_path)
         for event in events['events']:

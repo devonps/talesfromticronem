@@ -185,10 +185,9 @@ def is_tile_string_plural(spell_range):
     return tile_string
 
 
-def draw_portrait(startx, starty, game_config, portrait_file):
+def draw_portrait(startx, starty, portrait_file):
 
-    portraits_folder = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                        section='files', parameter='PORTRAITSFOLDER')
+    portraits_folder = constants.FILE_PORTRAITSFOLDER
 
     filepath = portraits_folder + portrait_file
     font_string = "[font=portrait]"
@@ -346,8 +345,7 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
         # draw portrait
         item_displayname = itemsHelp.ItemUtilities.get_item_displayname(gameworld=gameworld, entity=item_entity)
         portrait_file = item_displayname + '.txt'
-        draw_portrait(startx=item_coords[0], starty=item_coords[2], game_config=game_config,
-                      portrait_file=portrait_file)
+        draw_portrait(startx=item_coords[0], starty=item_coords[2], portrait_file=portrait_file)
 
         # draw middle horizontal line
         draw_horizontal_line_after_portrait(x=item_coords[1], y=item_coords[4],
@@ -405,8 +403,7 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
         # draw portrait
         item_displayname = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=item_entity)
         portrait_file = item_displayname + '.txt'
-        draw_portrait(startx=item_coords[0], starty=item_coords[2], game_config=game_config,
-                      portrait_file=portrait_file)
+        draw_portrait(startx=item_coords[0], starty=item_coords[2], portrait_file=portrait_file)
 
         # draw middle horizontal line
         draw_horizontal_line_after_portrait(x=item_coords[1], y=item_coords[4],

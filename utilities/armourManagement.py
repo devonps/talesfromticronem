@@ -3,7 +3,7 @@ from loguru import logger
 from components import items, mobiles, spells
 from newGame.Items import ItemManager
 from utilities import configUtilities, jsonUtilities, itemsHelp, mobileHelp
-
+from static.data import constants
 
 class ArmourUtilities:
 
@@ -163,9 +163,8 @@ class ArmourUtilities:
         return spell_component.entity
 
     @staticmethod
-    def get_all_armour_modifiers(game_config):
-        armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                    parameter='ARMOURSETFILE')
+    def get_all_armour_modifiers():
+        armourset_file = constants.FILE_ARMOURSETFILE
         armour_file = jsonUtilities.read_json_file(armourset_file)
 
         pxstring = 'prefix'
@@ -302,8 +301,7 @@ class ArmourUtilities:
     @staticmethod
     def create_piece_of_armour(gameworld, bodylocation, setname, prefix):
         game_config = configUtilities.load_config()
-        armour_set_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                     parameter='ARMOURSETFILE')
+        armour_set_path = constants.FILE_ARMOURSETFILE
 
         armour_set_file = jsonUtilities.read_json_file(armour_set_path)
 

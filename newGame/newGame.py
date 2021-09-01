@@ -1,16 +1,17 @@
 from newGame.start_game_screen import StartGame
 from loguru import logger
+
+from static.data import constants
 from utilities import configUtilities, externalfileutilities
 
 
 def new_game():
-    game_config = configUtilities.load_config()
 
     logger.info('*********************')
     logger.info('* Initialising game *')
     logger.info('*********************')
 
-    file_name = configUtilities.get_config_value_as_string(game_config, 'files', 'BUILDLIBRARYFILE')
+    file_name = constants.FILE_BUILDLIBRARYFILE
 
     # does file exist
     file_exists = externalfileutilities.Externalfiles.does_file_exist(file_name)

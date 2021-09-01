@@ -5,7 +5,7 @@ from components import mobiles, items
 from utilities import configUtilities, display, gamemap, input_handlers, itemsHelp, jsonUtilities, spellHelp
 from utilities.common import CommonUtils
 from utilities.mobileHelp import MobileUtilities
-
+from static.data import constants
 
 class Debug:
 
@@ -89,8 +89,7 @@ class Debug:
 
         if entity_id > 0:
             # get outerframe coords from json file
-            es_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                 parameter='ENTITYSPYFILE')
+            es_file = constants.FILE_ENTITYSPYFILE
             entity_spy_file = jsonUtilities.read_json_file(es_file)
             frame_coords_list = []
             for section in entity_spy_file['es']:
@@ -288,8 +287,7 @@ class Debug:
     @staticmethod
     def helper_get_section_layout_details(game_config):
         # read Json file for on-screen placement
-        es_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                             parameter='ENTITYSPYFILE')
+        es_file = constants.FILE_ENTITYSPYFILE
         entity_spy_file = jsonUtilities.read_json_file(es_file)
 
         section_title, section_heading, section_lines, section_width, section_posx, section_posy = Debug.helper_populate_es_lists(

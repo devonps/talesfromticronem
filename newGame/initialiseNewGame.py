@@ -1,12 +1,11 @@
 import random
 
 from loguru import logger
-
 from components import items
 from newGame import CreateSpells, Items
 from utilities import configUtilities, jsonUtilities, world, itemsHelp, randomNumberGenerator, externalfileutilities
 from newGame.Entities import NewEntity
-
+from static.data import constants
 
 def create_world():
     gameconfig = configUtilities.load_config()
@@ -42,8 +41,7 @@ def generate_world_seed(game_config):
 
 
 def store_world_seed(game_config, world_seed):
-    action_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                             parameter='GAME_ACTIONS_FILE')
+    action_file = constants.FILE_GAME_ACTIONS_FILE
 
     externalfileutilities.Externalfiles.new_file(filename=action_file)
     value = 'world_seed:' + str(world_seed)
@@ -53,9 +51,7 @@ def store_world_seed(game_config, world_seed):
 
 
 def create_jewellery_entities(gameworld):
-    game_config = configUtilities.load_config()
-    jewellery_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                     parameter='JEWELLERYFILE')
+    jewellery_file_path = constants.FILE_JEWELLERYFILE
 
     jewellery_file = jsonUtilities.read_json_file(jewellery_file_path)
 

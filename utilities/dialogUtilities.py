@@ -2,6 +2,7 @@ from bearlibterminal import terminal
 from loguru import logger
 from components import mobiles
 from newGame.CreateSpells import AsEntities
+from static.data import constants
 from ui import shopkeeper_armour, shopkeeper_jewellery
 from utilities import common, display, input_handlers, jsonUtilities, mobileHelp, formulas, configUtilities
 from utilities.mobileHelp import MobileUtilities
@@ -39,7 +40,7 @@ def initiate_dialog(gameworld, game_config):
                 chain_id = 0
 
             dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=entity_to_talk_with,
-                                                     game_config=game_config, chain_id=chain_id)
+                                                     chain_id=chain_id)
             logger.info(dialog_chain)
             handle_chained_dialog(dialog_chain=dialog_chain, game_config=game_config, speaker_name=name_details[0],
                                   gameworld=gameworld, speaker_id=entity_to_talk_with)
@@ -72,8 +73,7 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
     selected_response_option = 0
     while dialog_chain != '':
         # get dialog chain details
-        this_dialog_chain = process_rules_tag(current_dialog_chain=dialog_chain,
-                                              game_config=game_config, npc_name=speaker_name)
+        this_dialog_chain = process_rules_tag(current_dialog_chain=dialog_chain, npc_name=speaker_name)
         dialog_chain = this_dialog_chain
         number_responses = len(dialog_chain) - 4
         intro_text = dialog_chain[2]
@@ -122,7 +122,7 @@ def process_dialog_options_after_player_presses_enter(responses, selected_respon
     if next_step.isalnum():
         next_step_id = int(next_step)
         dialog_chain = load_entity_dialog_chains(gameworld=gameworld, entity_id=speaker_id,
-                                                 game_config=game_config, dialog_steps_id=next_step_id)
+                                                 dialog_steps_id=next_step_id)
         selected_response_option = 0
     else:
         process_end_of_dialog(gameworld=gameworld, dialogue_action=next_step, entity_just_spoken=speaker_id)
@@ -166,9 +166,8 @@ def build_menu_responses(number_responses, responses, response_text):
     return mnu
 
 
-def load_entity_dialog_chains(gameworld, entity_id, game_config, dialog_steps_id=0, chain_id=0):
-    dialog_chains_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                    parameter='DIALOGFILE')
+def load_entity_dialog_chains(gameworld, entity_id, dialog_steps_id=0, chain_id=0):
+    dialog_chains_file = constants.FILE_DIALOGFILE
     name_details = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_id)
     npc_first_name = name_details[0]
     dialog_chain = []
@@ -261,15 +260,14 @@ def get_list_of_valid_targets(gameworld, player_entity, entities_list):
     return valid_targets, entity_count
 
 
-def process_rules_tag(current_dialog_chain, game_config, npc_name):
+def process_rules_tag(current_dialog_chain, npc_name):
     new_dialogue_chain = 'nothing'
     # get dialog chain details
     rules_tag = current_dialog_chain[-1]
     if rules_tag != '':
         logger.warning('dialog chain {}', current_dialog_chain)
         logger.warning('rules tag {}', rules_tag)
-        dialog_rules_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                       parameter='DIALOGUERULESFULE')
+        dialog_rules_file = constants.FILE_DIALOGUERULESFULE
 
         rules_file = jsonUtilities.read_json_file(dialog_rules_file)
 

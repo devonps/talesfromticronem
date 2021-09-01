@@ -95,7 +95,7 @@ def game_loop(gameworld):
         if event_to_be_processed == 'keypress':
             if event_action == 'quit':
                 value = 'exit:true'
-                replayGame.ReplayGame.update_game_replay_file(game_config, value)
+                replayGame.ReplayGame.update_game_replay_file(value)
                 # Externalfiles.write_full_game_log(gameworld=gameworld, log_id=message_log_id)
                 playing_game = False
                 logger.info('Player has quit the game.')

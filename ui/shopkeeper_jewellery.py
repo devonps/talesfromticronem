@@ -36,7 +36,7 @@ def shopkeeper_jewellery(gameworld, shopkeeper_id):
     current_package = []
 
     defensive_package, balanced_package, offensive_package = jewelleryManagement.JewelleryUtilities.load_jewellery_package_based_on_class(
-        playable_class=player_class, game_config=game_config)
+        playable_class=player_class)
 
     current_package.append(defensive_package)
     current_package.append(balanced_package)

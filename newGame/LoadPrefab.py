@@ -1,13 +1,11 @@
+from static.data import constants
 from utilities import configUtilities, externalfileutilities
 from loguru import logger
 
 
 def load_prefab():
-    game_config = configUtilities.load_config()
     file_name = 'startArea.csv'
-
-    prefab_folder = configUtilities.get_config_value_as_string(game_config, 'files', 'PREFABFOLDER')
-
+    prefab_folder = constants.FILE_PREFABFOLDER
     filepath = prefab_folder + file_name
 
     # does file exist

@@ -60,7 +60,7 @@ class MoveEntities(esper.Processor):
 
                     mobileHelp.MobileUtilities.set_mobile_has_moved(self.gameworld, ent, True)
                     value = 'move:' + str(ent) + ':' + svx + ':' + svy
-                    replayGame.ReplayGame.update_game_replay_file(game_config, value)
+                    replayGame.ReplayGame.update_game_replay_file(value)
             else:
                 logger.debug(' cannot move to x/y {}/{}', position.x + velocity.dx, position.y + velocity.dy)
             # regardless of making the move - reduce the velocity to zero

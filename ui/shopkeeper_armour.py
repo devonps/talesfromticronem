@@ -24,7 +24,7 @@ def shopkeeper_armour(gameworld, shopkeeper_id):
 
     common.CommonUtils.draw_dialog_ui(gameworld=gameworld, game_config=game_config, entity_speaking=shopkeeper_id)
 
-    armour_details, as_prefix_list, px_att_bonus, px_att_name, px_flavour = armourManagement.ArmourUtilities.get_all_armour_modifiers(game_config=game_config)
+    armour_details, as_prefix_list, px_att_bonus, px_att_name, px_flavour = armourManagement.ArmourUtilities.get_all_armour_modifiers()
 
     as_display_name = armour_details[0]
     as_material = armour_details[1]

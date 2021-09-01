@@ -3,6 +3,7 @@ import random
 from mapRelated.gameMap import GameMap
 from newGame.Entities import NewEntity
 from processors import castSpells, move_entities, renderUI, updateEntities, renderMessageLog, renderSpellInfoPanel
+from static.data import constants
 from utilities import configUtilities, externalfileutilities, jsonUtilities, mobileHelp, scorekeeper
 from loguru import logger
 
@@ -95,7 +96,7 @@ class SceneManager:
         significant_npcs = this_scene['npcs']
         all_races = this_scene['races']
         game_config = configUtilities.load_config()
-        prefab_folder = configUtilities.get_config_value_as_string(game_config, 'files', 'PREFABFOLDER')
+        prefab_folder = constants.FILE_PREFABFOLDER
         tile_type_wall = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                      parameter='TILE_TYPE_WALL')
         tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',

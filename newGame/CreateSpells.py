@@ -1,6 +1,7 @@
 from loguru import logger
 
 from components import spells, addStatusEffects
+from static.data import constants
 from utilities import configUtilities, world, jsonUtilities
 from utilities.spellHelp import SpellUtilities
 
@@ -12,8 +13,7 @@ class AsEntities:
         # cycle through ALL classes
         game_config = configUtilities.load_config()
 
-        all_classes_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                      parameter='CLASSESFILE')
+        all_classes_file = constants.FILE_CLASSESFILE
 
         class_file = jsonUtilities.read_json_file(all_classes_file)
 

@@ -1,15 +1,15 @@
 import random
 from loguru import logger
 from components import items
+from static.data import constants
 from utilities import configUtilities, jsonUtilities, spellHelp
 
 
 class WeaponUtilities:
 
     @staticmethod
-    def get_available_weapons_for_class(selected_class, game_config):
-        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                       parameter='CLASSESFILE')
+    def get_available_weapons_for_class(selected_class):
+        player_class_file = constants.FILE_CLASSESFILE
         class_file = jsonUtilities.read_json_file(player_class_file)
         available_weapons = []
 
@@ -28,9 +28,8 @@ class WeaponUtilities:
         return available_weapons
 
     @staticmethod
-    def get_weapon_flavour_info(game_config, available_weapons):
-        weapon_flavour_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                       parameter='WEAPONSFILE')
+    def get_weapon_flavour_info(available_weapons):
+        weapon_flavour_file = constants.FILE_WEAPONSFILE
         weapon_file = jsonUtilities.read_json_file(weapon_flavour_file)
         weapon_description = []
         weapon_wielded = []

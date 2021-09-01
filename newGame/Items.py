@@ -1,4 +1,5 @@
 from components import items
+from static.data import constants
 from utilities import jsonUtilities, itemsHelp, configUtilities, world
 
 
@@ -33,8 +34,7 @@ class ItemManager:
         :type gameworld: esper.world
         :type weapon_type: the type of weapon to be created, e.g. sword
         """
-        weapon_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                      parameter='WEAPONSFILE')
+        weapon_file_path = constants.FILE_WEAPONSFILE
 
         weapon_file = jsonUtilities.read_json_file(weapon_file_path)
 

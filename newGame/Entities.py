@@ -3,13 +3,12 @@ import random
 from components import mobiles, scorekeeper, items
 from newGame.CreateSpells import AsEntities
 from newGame.Items import ItemManager
-from utilities import configUtilities, armourManagement, itemsHelp, jewelleryManagement, jsonUtilities, \
+from utilities import configUtilities, armourManagement, itemsHelp, jsonUtilities, \
     spellHelp, weaponManagement, world, colourUtilities
 from loguru import logger
-
 from utilities.jewelleryManagement import JewelleryUtilities
 from utilities.mobileHelp import MobileUtilities
-
+from static.data import constants
 
 class NewEntity:
 
@@ -22,11 +21,9 @@ class NewEntity:
         NewEntity.add_enemy_components_to_entity(gameworld=gameworld, entity_id=new_entity, max_attack='long',
                                                  min_attack='medium', game_config=game_config)
 
-        NewEntity.choose_race_for_mobile(race_choice=this_npc['race'], entity_id=new_entity, gameworld=gameworld,
-                                         game_config=game_config)
+        NewEntity.choose_race_for_mobile(race_choice=this_npc['race'], entity_id=new_entity, gameworld=gameworld)
 
-        NewEntity.choose_class_for_mobile(class_choice=this_npc['class'], entity_id=new_entity, gameworld=gameworld,
-                                          game_config=game_config)
+        NewEntity.choose_class_for_mobile(class_choice=this_npc['class'], entity_id=new_entity, gameworld=gameworld)
 
         NewEntity.choose_name_for_mobile(name_choice=this_npc['name'], entity_id=new_entity, gameworld=gameworld)
 
@@ -61,10 +58,8 @@ class NewEntity:
 
     @staticmethod
     def build_random_enemy(gameworld, cell, game_config, posx, posy, chosen_race_name):
-        ai_roles_file_path = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                        section='files', parameter='NPCROLES')
-        combat_kits_file_path = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                           section='files', parameter='COMBATKITS')
+        ai_roles_file_path = constants.FILE_NPCROLES
+        combat_kits_file_path = constants.FILE_COMBATKITS
         # choose an enemy role
         enemy_roles = ['bomber', 'bully', 'sniper']
         npc_race = chosen_race_name
@@ -137,11 +132,9 @@ class NewEntity:
                 NewEntity.set_enemy_fg_color(gameworld=gameworld, entity=new_entity, color_string=combat_kit_chosen['glyph-colour'])
 
                 # set race for enemy
-                NewEntity.choose_race_for_mobile(race_choice=npc_race, entity_id=new_entity, gameworld=gameworld,
-                                                 game_config=game_config)
+                NewEntity.choose_race_for_mobile(race_choice=npc_race, entity_id=new_entity, gameworld=gameworld)
                 # set class for enemy
-                NewEntity.choose_class_for_mobile(class_choice=npc_class, entity_id=new_entity, gameworld=gameworld,
-                                                  game_config=game_config)
+                NewEntity.choose_class_for_mobile(class_choice=npc_class, entity_id=new_entity, gameworld=gameworld)
                 # choose a name for the enemy
                 NewEntity.choose_name_for_mobile(name_choice=npc_name, entity_id=new_entity, gameworld=gameworld)
 
@@ -265,10 +258,9 @@ class NewEntity:
             MobileUtilities.set_talk_to_me_flag(gameworld=gameworld, target_entity=entity_id)
 
     @staticmethod
-    def choose_race_for_mobile(race_choice, entity_id, game_config, gameworld):
+    def choose_race_for_mobile(race_choice, entity_id, gameworld):
 
-        player_race_file = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                      section='files', parameter='RACESFILE')
+        player_race_file = constants.FILE_RACESFILE
         race_file = jsonUtilities.read_json_file(player_race_file)
         selected_race = ''
         selected_race_size = ''
@@ -312,10 +304,9 @@ class NewEntity:
         return selected_race
 
     @staticmethod
-    def choose_class_for_mobile(class_choice, entity_id, game_config, gameworld):
+    def choose_class_for_mobile(class_choice, entity_id, gameworld):
 
-        enemy_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                      parameter='CLASSESFILE')
+        enemy_class_file = constants.FILE_CLASSESFILE
         class_file = jsonUtilities.read_json_file(enemy_class_file)
         class_name = []
         class_health = []
@@ -511,12 +502,10 @@ class NewEntity:
     @staticmethod
     def select_main_hand_weapon(main_hand, selected_class, game_config):
         weapon_choices = []
-        weapon_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                       parameter='WEAPONSFILE')
+        weapon_class_file = constants.FILE_WEAPONSFILE
 
         if main_hand == 'random':
-            available_weapons = NewEntity.build_available_weapons(selected_class=selected_class,
-                                                                  game_config=game_config)
+            available_weapons = NewEntity.build_available_weapons(selected_class=selected_class)
             logger.info('weapons available {}', available_weapons)
             weapon_file = jsonUtilities.read_json_file(weapon_class_file)
             for weapon in available_weapons:
@@ -535,12 +524,10 @@ class NewEntity:
     @staticmethod
     def select_off_hand_weapon(off_hand, selected_class, game_config):
         weapon_choices = []
-        weapon_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                       parameter='WEAPONSFILE')
+        weapon_class_file = constants.FILE_WEAPONSFILE
 
         if off_hand == 'random':
-            available_weapons = NewEntity.build_available_weapons(selected_class=selected_class,
-                                                                  game_config=game_config)
+            available_weapons = NewEntity.build_available_weapons(selected_class=selected_class)
             weapon_file = jsonUtilities.read_json_file(weapon_class_file)
             for weapon in available_weapons:
                 for wpn in weapon_file['weapons']:
@@ -558,12 +545,10 @@ class NewEntity:
     @staticmethod
     def select_both_hands_weapon(both_hands, selected_class, game_config):
         weapon_choices = []
-        weapon_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                       parameter='WEAPONSFILE')
+        weapon_class_file = constants.FILE_WEAPONSFILE
 
         if both_hands == 'random':
-            available_weapons = NewEntity.build_available_weapons(selected_class=selected_class,
-                                                                  game_config=game_config)
+            available_weapons = NewEntity.build_available_weapons(selected_class=selected_class)
             weapon_file = jsonUtilities.read_json_file(weapon_class_file)
             for weapon in available_weapons:
                 for wpn in weapon_file['weapons']:
@@ -579,9 +564,8 @@ class NewEntity:
         return weapon_to_create, 'both'
 
     @staticmethod
-    def build_available_weapons(selected_class, game_config):
-        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                       parameter='CLASSESFILE')
+    def build_available_weapons(selected_class):
+        player_class_file = constants.FILE_CLASSESFILE
         class_file = jsonUtilities.read_json_file(player_class_file)
         available_weapons = []
 
@@ -618,15 +602,14 @@ class NewEntity:
             jewellery_packages = configUtilities.get_config_value_as_list(configfile=game_config, section='newgame',
                                                                           parameter='JEWELLERY_PACKAGES')
 
-            npc_class_file = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                        section='files', parameter='CLASSESFILE')
+            npc_class_file = constants.FILE_CLASSESFILE
             if jewellery_file_option == 'random':
                 jewellery_set = random.choice(jewellery_packages)
             else:
                 jewellery_set = jewellery_file_option.lower()
 
             logger.info('Their jewellery package is {}', jewellery_set)
-            jewelleryManagement.JewelleryUtilities.create_and_equip_jewellery_for_npc(gameworld=gameworld,
+            JewelleryUtilities.create_and_equip_jewellery_for_npc(gameworld=gameworld,
                                                                                       entity_id=entity_id,
                                                                                       jewellery_set=jewellery_set,
                                                                                       npc_class_file=npc_class_file)
@@ -636,8 +619,7 @@ class NewEntity:
     @staticmethod
     def choose_armourset_for_mobile(armour_file_option, entity_id, game_config, gameworld):
         if armour_file_option != 'none':
-            armourset_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                        parameter='ARMOURSETFILE')
+            armourset_file = constants.FILE_ARMOURSETFILE
             armour_file = jsonUtilities.read_json_file(armourset_file)
             as_display_name = ''
             as_prefix_list = []

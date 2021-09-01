@@ -3,6 +3,7 @@ import textwrap
 from bearlibterminal import terminal
 from loguru import logger
 from newGame import Items, initialiseNewGame
+from static.data import constants
 from utilities import configUtilities, namegenUtilities, armourManagement, display, input_handlers, jsonUtilities, \
     mobileHelp, common, spellHelp, weaponManagement, world, colourUtilities
 from ticronem import game_loop
@@ -75,7 +76,7 @@ class CharacterCreation:
         # LOAD PLAYABLE RACES FROM DISK
         #
 
-        race_name, race_flavour, race_bg_colour, race_size, race_benefits, race_name_desc = CharacterCreation.read_playable_races(game_config=game_config)
+        race_name, race_flavour, race_bg_colour, race_size, race_benefits, race_name_desc = CharacterCreation.read_playable_races()
 
         selected_menu_option = 0
         max_menu_option = len(race_name) - 1
@@ -135,7 +136,7 @@ class CharacterCreation:
         unicode_attribute_flavour = dungeon_font + '[color=CREATE_CHARACTER_ATTRIBUTE_FLAVOUR]'
         posy = 0
         # read race attributes from disk
-        attribute_name, attribute_flavour = CharacterCreation.read_race_attributes(game_config=game_config)
+        attribute_name, attribute_flavour = CharacterCreation.read_race_attributes()
 
         for benefit in race_benefits:
             if benefit[0] == selected_menu_option + 1:
@@ -166,8 +167,7 @@ class CharacterCreation:
         #
         # LOAD PLAYABLE CLASSES FROM DISK
         #
-        character_class_name, character_class_flavour, class_health, class_spell_file = CharacterCreation.read_playable_classes(
-            game_config=game_config)
+        character_class_name, character_class_flavour, class_health, class_spell_file = CharacterCreation.read_playable_classes()
 
         selected_menu_option = 0
         start_row = configUtilities.get_config_value_as_integer(configfile=game_config, section='newCharacter',
@@ -215,9 +215,8 @@ class CharacterCreation:
         return selected_menu_option
 
     @staticmethod
-    def read_playable_classes(game_config):
-        player_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                       parameter='CLASSESFILE')
+    def read_playable_classes():
+        player_class_file = constants.FILE_CLASSESFILE
         class_file = jsonUtilities.read_json_file(player_class_file)
 
         character_class_name = []
@@ -277,10 +276,9 @@ class CharacterCreation:
                                       width=spell_infobox_width)
 
     @staticmethod
-    def read_race_attributes(game_config):
+    def read_race_attributes():
 
-        attribute_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                    parameter='ATTRIBUTES')
+        attribute_file = constants.FILE_ATTRIBUTES
         attribute_file = jsonUtilities.read_json_file(attribute_file)
 
         attribute_name = []
@@ -293,9 +291,8 @@ class CharacterCreation:
         return attribute_name, attribute_flavour
 
     @staticmethod
-    def read_playable_races(game_config):
-        player_race_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                      parameter='RACESFILE')
+    def read_playable_races():
+        player_race_file = constants.FILE_RACESFILE
         race_file = jsonUtilities.read_json_file(player_race_file)
 
         race_name = []

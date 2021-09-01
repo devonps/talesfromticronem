@@ -273,7 +273,6 @@ class SpellUtilities:
         enemy_list = []
         if spell_has_aoe:
             cursor_height, cursor_width, cursor_shape = SpellUtilities.read_spell_aoe_cursors_file(gameworld=gameworld,
-                                                                                                   game_config=game_config,
                                                                                                    spell_entity=spell_entity)
             cursor_info.append(cursor_height)
             cursor_info.append(cursor_width)
@@ -485,10 +484,9 @@ class SpellUtilities:
         return enemies_list
 
     @staticmethod
-    def read_spell_aoe_cursors_file(gameworld, game_config, spell_entity):
+    def read_spell_aoe_cursors_file(gameworld, spell_entity):
         aoe_shape = SpellUtilities.get_spell_aoe_shape(gameworld=gameworld, spell_entity=spell_entity)
-        aoe_cursors_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                      parameter='AOECURSORSFILE')
+        aoe_cursors_file = constants.FILE_AOECURSORSFILE
         cursor_width = 0
         cursor_height = 0
         cursor_shape = []
@@ -928,17 +926,13 @@ class SpellUtilities:
 
     @staticmethod
     def apply_condis_to_target(gameworld, target_entity, list_of_condis):
-
-        game_config = configUtilities.load_config()
-
         current_condis = mobileHelp.MobileUtilities.get_current_condis_applied_to_mobile(gameworld=gameworld,
                                                                                          entity=target_entity)
         target_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=target_entity)
         target_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=target_entity)
 
         # read the conditions.json file
-        conditions_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                          parameter='CONDITIONSFILE')
+        conditions_file_path = constants.FILE_CONDITIONSFILE
         conditions_file = jsonUtilities.read_json_file(conditions_file_path)
 
         if target_class == '':
@@ -970,17 +964,13 @@ class SpellUtilities:
 
     @staticmethod
     def apply_boons_to_target(gameworld, target_entity, list_of_boons, spell_caster):
-
-        game_config = configUtilities.load_config()
-
         current_boons = mobileHelp.MobileUtilities.get_current_boons_applied_to_mobile(gameworld=gameworld,
                                                                                        entity=target_entity)
         target_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=target_entity)
         target_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=target_entity)
 
         # read the boons.json file
-        boons_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                     parameter='BOONSFILE')
+        boons_file_path = constants.FILE_BOONSFILE
         boons_file = jsonUtilities.read_json_file(boons_file_path)
 
         if target_class == '':

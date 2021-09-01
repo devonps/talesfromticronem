@@ -95,9 +95,7 @@ class JewelleryUtilities:
 
     @staticmethod
     def get_gemstone_details(this_gemstone):
-        game_config = configUtilities.load_config()
-        playable_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                         parameter='GEMSTONESFILE')
+        playable_class_file = constants.FILE_GEMSTONESFILE
         gemstone_file = jsonUtilities.read_json_file(playable_class_file)
 
         gem_details = []
@@ -112,9 +110,8 @@ class JewelleryUtilities:
         return gem_details
 
     @staticmethod
-    def load_jewellery_package_based_on_class(playable_class, game_config):
-        playable_class_file = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                         parameter='CLASSESFILE')
+    def load_jewellery_package_based_on_class(playable_class):
+        playable_class_file = constants.FILE_CLASSESFILE
         class_file = jsonUtilities.read_json_file(playable_class_file)
 
         balanced = []
@@ -240,11 +237,7 @@ class JewelleryUtilities:
 
     @staticmethod
     def create_jewellery_for_utility_spells(gameworld, game_config, jewellery_set):
-
-
-
-        npc_class_file = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                    section='files', parameter='CLASSESFILE')
+        npc_class_file = constants.FILE_CLASSESFILE
         entity_id = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
 
         class_file = jsonUtilities.read_json_file(npc_class_file)
@@ -326,13 +319,11 @@ class JewelleryUtilities:
 
     @staticmethod
     def create_jewellery_item(gameworld, e_setting, e_hook, e_activator):
-        game_config = configUtilities.load_config()
         trinket_setting = e_setting.lower()
         trinket_hook = e_hook.lower()
         trinket_activator = e_activator.lower()
 
-        gemstones_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                         parameter='GEMSTONESFILE')
+        gemstones_file_path = constants.FILE_GEMSTONESFILE
         if trinket_setting == '' or trinket_activator == '' or trinket_hook == '':
             logger.debug('At least one base component is missing')
             return 0
@@ -372,13 +363,11 @@ class JewelleryUtilities:
         :param e_activator: the gemstone used in the jewellery, drives the attribute bonus
         :return:
         """
-        game_config = configUtilities.load_config()
         trinket_setting = e_setting.lower()
         trinket_hook = e_hook.lower()
         trinket_activator = e_activator.lower()
 
-        gemstones_file_path = configUtilities.get_config_value_as_string(configfile=game_config, section='files',
-                                                                         parameter='GEMSTONESFILE')
+        gemstones_file_path = constants.FILE_GEMSTONESFILE
         if trinket_setting == '' or trinket_activator == '' or trinket_hook == '':
             logger.debug('At least one base component is missing')
             return 0
