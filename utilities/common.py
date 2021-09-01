@@ -37,7 +37,7 @@ class CommonUtils:
 
     @staticmethod
     def calculate_camera_position(gameworld, game_config, camera_width, camera_height, game_map):
-        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        player_entity = MobileUtilities.get_player_entity(gameworld)
         player_map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         player_map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
         x = int(player_map_pos_x - (camera_width / 2))
@@ -90,7 +90,7 @@ class CommonUtils:
         :param kwargs: see method definition
         """
         game_config = configUtilities.load_config()
-        player = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player = MobileUtilities.get_player_entity(gameworld=gameworld)
         message_log_entity = MobileUtilities.get_MessageLog_id(gameworld=gameworld, entity=player)
         current_turn = ScorekeeperUtilities.get_meta_event_value(gameworld=gameworld,
                                                                  event_name='game_turn')
@@ -571,7 +571,7 @@ class CommonUtils:
 
     @staticmethod
     def camera_to_game_map_position(caster_screen_coords, game_config, gameworld, coords_to_check):
-        player_entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        player_entity = MobileUtilities.get_player_entity(gameworld)
         player_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         player_map_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
 

@@ -238,7 +238,7 @@ class JewelleryUtilities:
     @staticmethod
     def create_jewellery_for_utility_spells(gameworld, game_config, jewellery_set):
         npc_class_file = constants.FILE_CLASSESFILE
-        entity_id = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        entity_id = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
 
         class_file = jsonUtilities.read_json_file(npc_class_file)
         entity_class = mobileHelp.MobileUtilities.get_character_class(gameworld=gameworld, entity=entity_id)

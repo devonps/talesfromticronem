@@ -37,7 +37,7 @@ class NewEntity:
                                  weapon_file_option_off=this_npc['weapons-off'], entity_id=new_entity,
                                  gameworld=gameworld, game_config=game_config)
 
-        NewEntity.set_entity_ai_level(game_config=game_config, gameworld=gameworld, entity_id=new_entity)
+        NewEntity.set_entity_ai_level(gameworld=gameworld, entity_id=new_entity)
         NewEntity.is_entity_a_shopkeeper(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
         NewEntity.is_entity_a_tutor(gameworld=gameworld, entity_id=new_entity, this_entity=this_npc)
         NewEntity.create_empty_spell_bar(gameworld=gameworld, entity_id=new_entity)
@@ -180,7 +180,7 @@ class NewEntity:
                                                        weapons=available_weapons)
 
                 # set enemy AI
-                NewEntity.set_entity_ai_level(game_config=game_config, gameworld=gameworld, entity_id=new_entity)
+                NewEntity.set_entity_ai_level(gameworld=gameworld, entity_id=new_entity)
                 # create spellbar for enemy
                 NewEntity.create_empty_spell_bar(gameworld=gameworld, entity_id=new_entity)
 
@@ -194,7 +194,7 @@ class NewEntity:
     @staticmethod
     def create_base_entity(gameworld, game_config, npc_glyph, posx, posy, min_range='earshot', max_range='long'):
         entity_id = world.get_next_entity_id(gameworld=gameworld)
-        MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=entity_id)
+        MobileUtilities.create_base_mobile(gameworld=gameworld, entity_id=entity_id)
         MobileUtilities.set_mobile_description(gameworld=gameworld, entity=entity_id, value='nothing to say')
         MobileUtilities.set_mobile_glyph(gameworld=gameworld, entity=entity_id, value=npc_glyph)
         MobileUtilities.set_mobile_visible(gameworld=gameworld, entity=entity_id)
@@ -709,9 +709,8 @@ class NewEntity:
                                                        player_entity=entity_id)
 
     @staticmethod
-    def set_entity_ai_level(game_config, gameworld, entity_id):
-        entity_ai = configUtilities.get_config_value_as_string(configfile=game_config, section='game',
-                                                               parameter='AI_LEVEL_MONSTER')
+    def set_entity_ai_level(gameworld, entity_id):
+        entity_ai = constants.AI_LEVEL_MONSTER
         MobileUtilities.set_mobile_ai_level(gameworld=gameworld, entity=entity_id, value=int(entity_ai))
         MobileUtilities.set_mobile_ai_description(gameworld=gameworld, entity=entity_id, value='monster')
 

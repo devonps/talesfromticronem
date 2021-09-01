@@ -129,7 +129,7 @@ class SceneManager:
                 if player_placed:
                     SceneManager.setup_viewport(gameworld=gameworld, posx=posx, posy=posy)
 
-                    player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+                    player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
                     GameMapUtilities.set_entity_at_this_map_location(game_map=game_map, x=posx, y=posy, entity=player_entity)
 
                 # add named NPCs to scene
@@ -216,5 +216,5 @@ class SceneManager:
     @staticmethod
     def setup_viewport(gameworld, posx, posy):
         game_config = configUtilities.load_config()
-        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
         mobileHelp.MobileUtilities.set_mobile_position(gameworld=gameworld, entity=player_entity, posx=posx, posy=posy)

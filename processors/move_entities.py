@@ -23,8 +23,7 @@ class MoveEntities(esper.Processor):
 
     def process(self, game_config, advance_game_turn):
         if advance_game_turn:
-            player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld,
-                                                                         game_config=game_config)
+            player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=self.gameworld)
 
             message_log_just_viewed = mobileHelp.MobileUtilities.get_view_message_log_value(gameworld=self.gameworld,
                                                                                             entity=player_entity)

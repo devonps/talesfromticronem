@@ -358,7 +358,7 @@ class ArmourUtilities:
         gameworld.add_component(armour_piece, items.ArmourBeingWorn(status=False))
 
         # add spell to piece of armour
-        player = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
         player_class = mobileHelp.MobileUtilities.get_character_class(gameworld, player)
         ArmourUtilities.add_spell_to_piece_of_armour(gameworld=gameworld, bodylocation=bodylocation,
                                                      armour_piece=armour_piece, playable_class=player_class)

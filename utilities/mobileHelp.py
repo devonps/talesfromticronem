@@ -3,6 +3,7 @@ from abc import ABC
 from components import mobiles, items
 from loguru import logger
 from mapRelated import fov
+from static.data import constants
 from utilities import world, configUtilities
 
 import numbers
@@ -93,9 +94,8 @@ class MobileUtilities(numbers.Real, ABC):
         gameworld.component_for_entity(player, mobiles.CharacterClass).base_health = health
 
     @staticmethod
-    def get_player_entity(gameworld, game_config):
-        player_ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
-                                                                parameter='AI_LEVEL_PLAYER')
+    def get_player_entity(gameworld):
+        player_ai = constants.AI_LEVEL_PLAYER
 
         player = 0
         for ent, ai in gameworld.get_component(mobiles.AILevel):
@@ -122,7 +122,7 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def has_player_moved(gameworld, game_config):
-        entity = MobileUtilities.get_player_entity(gameworld, game_config)
+        entity = MobileUtilities.get_player_entity(gameworld)
 
         position_component = gameworld.component_for_entity(entity, mobiles.Position)
 
@@ -146,7 +146,7 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_direction_velocity_towards_player(gameworld, game_config, enemy_entity):
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld)
 
         current_player_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         current_player_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
@@ -166,7 +166,7 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_direction_velocity_away_from_player(gameworld, game_config, enemy_entity):
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld)
 
         current_player_xpos = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         current_player_ypos = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
@@ -307,9 +307,8 @@ class MobileUtilities(numbers.Real, ABC):
         return entity
 
     @staticmethod
-    def create_base_mobile(gameworld, game_config, entity_id):
-        ai = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
-                                                         parameter='AI_LEVEL_NONE')
+    def create_base_mobile(gameworld, entity_id):
+        ai = constants.AI_LEVEL_NONE
 
         gameworld.add_component(entity_id, mobiles.MobileGender())
         gameworld.add_component(entity_id, mobiles.MobileDescription())

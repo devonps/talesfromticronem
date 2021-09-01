@@ -9,7 +9,7 @@ class GameOver:
     @staticmethod
     def process_game_over(player_died, gameworld):
         game_config = configUtilities.load_config()
-        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
         dump_meta_data = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
                                                                   parameter='GO_DUMP_META_DATA')
         visible_panel = 0

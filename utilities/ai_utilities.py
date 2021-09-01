@@ -69,7 +69,7 @@ class AIUtilities:
     @staticmethod
     def pick_random_spell_to_cast(gameworld, entity_id, remaining_spells, game_config, game_map):
 
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld)
         target_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         target_map_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
         cast_spell = False
@@ -209,7 +209,7 @@ class AIUtilities:
         # Spell to cast has already been decided upon, based on current AI values/settings
         # get list of enemies at map target location
         # do spell casting visual effects at screen coords
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld)
         # get map position of target
         tg_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         tg_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)

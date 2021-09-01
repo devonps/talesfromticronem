@@ -1,7 +1,9 @@
 from bearlibterminal import terminal
 from loguru import logger
-from utilities import configUtilities, armourManagement, common, externalfileutilities, input_handlers, itemsHelp, jewelleryManagement, spellHelp
+from utilities import configUtilities, armourManagement, common, externalfileutilities, input_handlers, itemsHelp, \
+    jewelleryManagement, spellHelp
 from static.data import constants
+
 
 def display_spell_info_popup(menu_selection, gameworld, player_entity):
     logger.info('Items and spells info panel accessed')
@@ -16,14 +18,11 @@ def display_spell_info_popup(menu_selection, gameworld, player_entity):
     item_entity = 0
     spell_entity = 0
 
-    armour_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
-                                                                   parameter='ARMOUR_KEYS')
+    armour_selection_keys = constants.KEYS_ARMOUR_KEYS
 
-    jewellery_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
-                                                                   parameter='JEWELLERY_KEYS')
+    jewellery_selection_keys = constants.KEYS_JEWELLERY_KEYS
 
-    spell_selection_keys = configUtilities.get_config_value_as_list(configfile=game_config, section='spellInfoPopup',
-                                                                    parameter='SPELL_KEYS')
+    spell_selection_keys = constants.KEYS_SPELL_KEYS
 
     spell_item_info_start_x = configUtilities.get_config_value_as_integer(configfile=game_config,
                                                                           section='spellInfoPopup',
@@ -39,14 +38,14 @@ def display_spell_info_popup(menu_selection, gameworld, player_entity):
                                                                         section='spellInfoPopup',
                                                                         parameter='SP_DEPTH')
 
-
     # clear the area under the panel
     terminal.clear_area(spell_item_info_start_x, spell_item_info_start_y, spell_item_info_width,
                         spell_item_info_depth)
 
     # draw outer frame
 
-    draw_outer_frame(startx=spell_item_info_start_x, starty=spell_item_info_start_y, width=spell_item_info_width, frame_colour=unicode_frame_colour, depth=spell_item_info_depth)
+    draw_outer_frame(startx=spell_item_info_start_x, starty=spell_item_info_start_y, width=spell_item_info_width,
+                     frame_colour=unicode_frame_colour, depth=spell_item_info_depth)
 
     # display control message
     terminal.printf(x=spell_item_info_start_x + 2, y=(spell_item_info_start_y + spell_item_info_depth) - 2,
@@ -57,21 +56,30 @@ def display_spell_info_popup(menu_selection, gameworld, player_entity):
     #
     if str(menu_selection) in spell_selection_keys:
         logger.info('Spell selected')
-        spell_entity = display_spell_information(gameworld=gameworld, game_config=game_config, player_entity=player_entity, menu_selection=menu_selection, key_colour=key_colour_string, value_colour=value_colour_string)
+        spell_entity = display_spell_information(gameworld=gameworld, game_config=game_config,
+                                                 player_entity=player_entity, menu_selection=menu_selection,
+                                                 key_colour=key_colour_string, value_colour=value_colour_string)
     #
     # DISPLAY ARMOUR INFORMATION
     #
     elif menu_selection in armour_selection_keys:
         logger.info('Armour selected')
 
-        item_entity = display_armour_information(gameworld=gameworld, game_config=game_config, player_entity=player_entity, bodylocation=armour_map[menu_selection], key_colour=key_colour_string, value_colour=value_colour_string, frame_colour=unicode_frame_colour)
+        item_entity = display_armour_information(gameworld=gameworld, game_config=game_config,
+                                                 player_entity=player_entity, bodylocation=armour_map[menu_selection],
+                                                 key_colour=key_colour_string, value_colour=value_colour_string,
+                                                 frame_colour=unicode_frame_colour)
 
     #
     # DISPLAY JEWELLERY INFORMATION
     #
     elif menu_selection in jewellery_selection_keys:
 
-        item_entity = display_jewellery_information(gameworld=gameworld, game_config=game_config, player_entity=player_entity, bodylocation=jewellery_map[menu_selection], key_colour=key_colour_string, value_colour=value_colour_string, frame_colour=unicode_frame_colour)
+        item_entity = display_jewellery_information(gameworld=gameworld, game_config=game_config,
+                                                    player_entity=player_entity,
+                                                    bodylocation=jewellery_map[menu_selection],
+                                                    key_colour=key_colour_string, value_colour=value_colour_string,
+                                                    frame_colour=unicode_frame_colour)
 
     selected_entity = item_entity + spell_entity
     if selected_entity > 0:
@@ -173,7 +181,8 @@ def draw_outer_frame(startx, width, starty, frame_colour, depth):
 
         terminal.printf(x=(startx + width), y=starty, s=frame_colour + spell_item_info_cross_junction + ']')
 
-        terminal.printf(x=(startx + width), y=(starty + depth) - 1, s=frame_colour + spell_item_info_bottom_right_t_junction + ']')
+        terminal.printf(x=(startx + width), y=(starty + depth) - 1,
+                        s=frame_colour + spell_item_info_bottom_right_t_junction + ']')
 
 
 def is_tile_string_plural(spell_range):
@@ -186,7 +195,6 @@ def is_tile_string_plural(spell_range):
 
 
 def draw_portrait(startx, starty, portrait_file):
-
     portraits_folder = constants.FILE_PORTRAITSFOLDER
 
     filepath = portraits_folder + portrait_file
@@ -200,7 +208,6 @@ def draw_portrait(startx, starty, portrait_file):
 
 
 def draw_spell_info(startx, starty, gameworld, spell_entity):
-
     key_colour_string = "[color=DISPLAY_ITEM_EQUIPPED]"
     value_colour_string = "[/color][color=PLAYER_DEBUG]"
     effects_title = key_colour_string + 'Effects...'
@@ -213,14 +220,15 @@ def draw_spell_info(startx, starty, gameworld, spell_entity):
     else:
         spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
         spell_cooldown = spellHelp.SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
-                                                                           spell_entity=spell_entity)
+                                                                                     spell_entity=spell_entity)
         spell_range = spellHelp.SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
         spell_condi_effects_list = spellHelp.SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
-                                                                           spell_entity=spell_entity)
+                                                                                     spell_entity=spell_entity)
         spell_boon_effects_list = spellHelp.SpellUtilities.get_all_boons_for_spell(gameworld=gameworld,
-                                                                         spell_entity=spell_entity)
+                                                                                   spell_entity=spell_entity)
         terminal.printf(x=startx, y=starty + 7, s=key_colour_string + 'Name:' + value_colour_string + spell_name)
-        terminal.printf(x=startx, y=starty + 8, s=key_colour_string + 'Cooldown:' + value_colour_string + str(spell_cooldown))
+        terminal.printf(x=startx, y=starty + 8,
+                        s=key_colour_string + 'Cooldown:' + value_colour_string + str(spell_cooldown))
         terminal.printf(x=startx, y=starty + 9, s=key_colour_string + 'Range:' + value_colour_string + str(spell_range))
         terminal.printf(x=startx, y=starty + 11, s=effects_title)
 
@@ -233,7 +241,6 @@ def draw_spell_info(startx, starty, gameworld, spell_entity):
 
 
 def display_spell_information(gameworld, menu_selection, player_entity, game_config, key_colour, value_colour):
-
     spell_key_colour_string = key_colour
     spell_value_colour_string = value_colour
     effects_title = spell_key_colour_string + 'Effects...'
@@ -255,22 +262,26 @@ def display_spell_information(gameworld, menu_selection, player_entity, game_con
                                                                         section='spellInfoPopup',
                                                                         parameter='SP_WIDTH')
 
-    spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=menu_selection - 1,
-                                                                      player_entity=player_entity)
+    spell_entity = spellHelp.SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld,
+                                                                                slot=menu_selection - 1,
+                                                                                player_entity=player_entity)
     if spell_entity > 0:
         spell_name = spellHelp.SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
         spell_cooldown = spellHelp.SpellUtilities.get_spell_cooldown_remaining_turns(gameworld=gameworld,
-                                                                           spell_entity=spell_entity)
+                                                                                     spell_entity=spell_entity)
         spell_type = spellHelp.SpellUtilities.get_spell_type(gameworld=gameworld, spell_entity=spell_entity)
         spell_range = spellHelp.SpellUtilities.get_spell_max_range(gameworld=gameworld, spell_entity=spell_entity)
-        spell_description = spellHelp.SpellUtilities.get_spell_description(gameworld=gameworld, spell_entity=spell_entity)
-        spell_condi_effects_list = spellHelp.SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
+        spell_description = spellHelp.SpellUtilities.get_spell_description(gameworld=gameworld,
                                                                            spell_entity=spell_entity)
-        spell_boon_effects_list = spellHelp.SpellUtilities.get_all_boons_for_spell(gameworld=gameworld, spell_entity=spell_entity)
+        spell_condi_effects_list = spellHelp.SpellUtilities.get_all_condis_for_spell(gameworld=gameworld,
+                                                                                     spell_entity=spell_entity)
+        spell_boon_effects_list = spellHelp.SpellUtilities.get_all_boons_for_spell(gameworld=gameworld,
+                                                                                   spell_entity=spell_entity)
 
         spell_resources_list = spellHelp.SpellUtilities.get_all_resources_for_spell(gameworld=gameworld,
+                                                                                    spell_entity=spell_entity)
+        spell_no_targets = spellHelp.SpellUtilities.get_spell_max_targets(gameworld=gameworld,
                                                                           spell_entity=spell_entity)
-        spell_no_targets = spellHelp.SpellUtilities.get_spell_max_targets(gameworld=gameworld, spell_entity=spell_entity)
 
         y_pos = spell_item_info_start_y + 1
 
@@ -321,7 +332,8 @@ def display_spell_information(gameworld, menu_selection, player_entity, game_con
     return spell_entity
 
 
-def display_armour_information(gameworld, game_config, player_entity, bodylocation, key_colour, value_colour, frame_colour):
+def display_armour_information(gameworld, game_config, player_entity, bodylocation, key_colour, value_colour,
+                               frame_colour):
     armour_key_colour_string = key_colour
     armour_value_colour_string = value_colour
     # unicode strings of colours
@@ -338,8 +350,9 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
     spell_item_info_left_t_junction = constants.ASCII_SINGLE_LEFT_T_JUNCTION
     spell_item_info_right_t_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
 
-    item_entity = armourManagement.ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld, entity=player_entity,
-                                                                     bodylocation=bodylocation)
+    item_entity = armourManagement.ArmourUtilities.get_armour_entity_from_body_location(gameworld=gameworld,
+                                                                                        entity=player_entity,
+                                                                                        bodylocation=bodylocation)
     if item_entity > 0:
         logger.debug('Armour entity is {}', item_entity)
         # draw portrait
@@ -355,7 +368,8 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
                                             right_t_glyph=spell_item_info_right_t_junction)
 
         # draw armour stuff
-        defense_value = armourManagement.ArmourUtilities.get_armour_defense_value(gameworld=gameworld, entity=item_entity)
+        defense_value = armourManagement.ArmourUtilities.get_armour_defense_value(gameworld=gameworld,
+                                                                                  entity=item_entity)
         armourset_value = armourManagement.ArmourUtilities.get_armour_set_name(gameworld=gameworld, entity=item_entity)
         quality_value = itemsHelp.ItemUtilities.get_item_quality(gameworld=gameworld, entity=item_entity)
         spell_entity = itemsHelp.ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
@@ -379,7 +393,8 @@ def display_armour_information(gameworld, game_config, player_entity, bodylocati
     return item_entity
 
 
-def display_jewellery_information(gameworld, game_config, player_entity, bodylocation, key_colour, value_colour, frame_colour):
+def display_jewellery_information(gameworld, game_config, player_entity, bodylocation, key_colour, value_colour,
+                                  frame_colour):
     jewellery_key_colour_string = key_colour
     jewellery_value_colour_string = value_colour
     # unicode strings of colours
@@ -397,8 +412,8 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
     spell_item_info_right_t_junction = constants.ASCII_SINGLE_RIGHT_T_JUNCTION
 
     item_entity = jewelleryManagement.JewelleryUtilities.get_jewellery_entity_from_body_location(gameworld=gameworld,
-                                                                        entity=player_entity,
-                                                                        bodylocation=bodylocation)
+                                                                                                 entity=player_entity,
+                                                                                                 bodylocation=bodylocation)
     if item_entity > 0:
         # draw portrait
         item_displayname = itemsHelp.ItemUtilities.get_item_name(gameworld=gameworld, entity=item_entity)
@@ -414,7 +429,7 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
 
         # draw important text
         jewellery_statbonus = jewelleryManagement.JewelleryUtilities.get_jewellery_stat_bonus(gameworld=gameworld,
-                                                                     jewellery_entity=item_entity)
+                                                                                              jewellery_entity=item_entity)
         spell_entity = itemsHelp.ItemUtilities.get_spell_from_item(gameworld=gameworld, item_entity=item_entity)
         jewellery_description = itemsHelp.ItemUtilities.get_item_description(gameworld=gameworld, entity=item_entity)
 
@@ -433,5 +448,6 @@ def display_jewellery_information(gameworld, game_config, player_entity, bodyloc
         # draw fluff text
         draw_fluff_text(x=item_coords[0], y=spell_item_info_item_imp_text + 15,
                         width=item_coords[3], fluff_text=jewellery_description,
-                        key_colour_string=jewellery_key_colour_string, value_colour_string=jewellery_value_colour_string)
+                        key_colour_string=jewellery_key_colour_string,
+                        value_colour_string=jewellery_value_colour_string)
     return item_entity

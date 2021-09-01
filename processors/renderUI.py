@@ -128,7 +128,7 @@ class RenderUI(esper.Processor):
                                                                       parameter='TILE_TYPE_FLOOR')
 
         player_has_moved = mobileHelp.MobileUtilities.has_player_moved(gameworld, game_config)
-        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld, game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld)
         player_map_pos_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         player_map_pos_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
 
@@ -235,7 +235,7 @@ class RenderUI(esper.Processor):
 
     @staticmethod
     def render_mobiles(game_config, gameworld, game_map, fov_map):
-        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
         visible_entities = []
         screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='SCREEN_OFFSET_X')

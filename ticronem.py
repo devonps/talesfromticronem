@@ -14,7 +14,7 @@ def game_loop(gameworld):
     # turn zero setup
     game_turn = 0
     game_config = configUtilities.load_config()
-    player = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+    player = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
     terminal.clear()
     initialiseNewGame.setup_gameworld(game_config)
 

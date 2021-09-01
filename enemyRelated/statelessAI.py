@@ -3,6 +3,7 @@ import random
 from loguru import logger
 
 from components import mobiles
+from static.data import constants
 from utilities import configUtilities
 from utilities.ai_utilities import AIUtilities
 from utilities.mobileHelp import MobileUtilities
@@ -45,8 +46,7 @@ class StatelessAI:
 
     @staticmethod
     def do_something(gameworld, game_config, player_entity, game_map):
-        mobile_ai_level = configUtilities.get_config_value_as_integer(configfile=game_config, section='game',
-                                                                      parameter='AI_LEVEL_MONSTER')
+        mobile_ai_level = constants.AI_LEVEL_MONSTER
         for entity, ai in gameworld.get_component(mobiles.AILevel):
             entity_ai = MobileUtilities.get_mobile_ai_level(gameworld=gameworld, entity_id=entity)
             if entity_ai == mobile_ai_level:

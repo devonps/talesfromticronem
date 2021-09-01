@@ -24,7 +24,7 @@ class CastSpells(esper.Processor):
 
     def check_for_spells_to_be_cast_this_turn(self, game_config):
         current_area_tag = scorekeeper.ScorekeeperUtilities.get_current_area(gameworld=self.gameworld)
-        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld, game_config=game_config)
+        player_entity = MobileUtilities.get_player_entity(gameworld=self.gameworld)
         for ent, mob in self.gameworld.get_component(mobiles.SpellCast):
             if mob.has_cast_a_spell:
                 spell_entity = mob.spell_entity

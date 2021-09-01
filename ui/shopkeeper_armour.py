@@ -8,7 +8,7 @@ def shopkeeper_armour(gameworld, shopkeeper_id):
     game_config = configUtilities.load_config()
     selected_menu_option = 0
     flavour_column_text = []
-    player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+    player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
     player_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player_entity)
     player_first_name = player_names[0]
 

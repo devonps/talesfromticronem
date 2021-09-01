@@ -75,7 +75,7 @@ class ScorekeeperUtilities:
 
     @staticmethod
     def build_scorecard(gameworld, game_config):
-        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_entity = MobileUtilities.get_player_entity(gameworld=gameworld)
         all_areas_visited = ScorekeeperUtilities.get_all_areas_visited(gameworld=gameworld)
         dump_scores = configUtilities.get_config_value_as_integer(configfile=game_config, section='gameOver',
                                                                   parameter='GO_DUMP_SCORES')

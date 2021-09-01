@@ -22,7 +22,7 @@ class CharacterCreation:
         gameworld = initialiseNewGame.create_world()
         # setup base player entity
         player = world.get_next_entity_id(gameworld=gameworld)
-        mobileHelp.MobileUtilities.create_base_mobile(gameworld=gameworld, game_config=game_config, entity_id=player)
+        mobileHelp.MobileUtilities.create_base_mobile(gameworld=gameworld, entity_id=player)
         mobileHelp.MobileUtilities.create_player_character(gameworld=gameworld, game_config=game_config,
                                                 player_entity=player)
         logger.info('Player character stored as entity {}', player)
@@ -333,7 +333,7 @@ class CharacterCreation:
         game_config = configUtilities.load_config()
 
         # get player entity
-        player = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
 
         # get race details for character
         racial_details = mobileHelp.MobileUtilities.get_mobile_race_details(gameworld=gameworld, entity=player)
@@ -415,7 +415,7 @@ class CharacterCreation:
         unicode_help_messages = dungeon_font + '[color=NAME_CHAR_HELP_MESSAGE]'
         unicode_name_letters_left = dungeon_font + '[color=NAME_CHAR_LETTERS_LEFT]'
 
-        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
         terminal.clear()
         display.draw_simple_frame(start_panel_frame_x=txt_panel_write_x, start_panel_frame_y=txt_panel_write_y, start_panel_frame_width=35, start_panel_frame_height=6, title='Name Your Character')
         terminal.printf(x=txt_panel_write_x + 1, y=txt_panel_write_y + 4, s=unicode_help_messages + 'valid chars:A-Z and a-z')

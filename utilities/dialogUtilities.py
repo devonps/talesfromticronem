@@ -56,7 +56,7 @@ def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id):
 
 
 def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, speaker_id):
-    player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+    player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
     player_names = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=player_entity)
     player_first_name = player_names[0]
     response_text = 0
@@ -197,7 +197,7 @@ def load_entity_dialog_chains(gameworld, entity_id, dialog_steps_id=0, chain_id=
 
 
 def check_for_nearby_valid_mobiles_to_speak_with(gameworld, game_config):
-    player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld, game_config=game_config)
+    player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
 
     # check map surrounding player_entity 1x1 square deep
     visible_entities_list = mobileHelp.MobileUtilities.get_ai_visible_entities(gameworld=gameworld, target_entity=player_entity)

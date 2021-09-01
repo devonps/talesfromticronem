@@ -16,7 +16,7 @@ class RenderMessageLog(esper.Processor):
         unicode_string_to_print = '[font=dungeon][color=MSGPANEL_FRAME_COLOUR]['
 
         # get message log entity id
-        player_entity = mobileHelp.MobileUtilities.get_player_entity(self.gameworld, game_config)
+        player_entity = mobileHelp.MobileUtilities.get_player_entity(self.gameworld)
         message_panel_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
                                                                             parameter='MSG_PANEL_WIDTH')
         message_panel_depth = configUtilities.get_config_value_as_integer(configfile=game_config, section='messagePanel',
