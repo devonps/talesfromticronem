@@ -588,9 +588,7 @@ class SpellUtilities:
             tile = GameMapUtilities.get_type_of_tile(game_map=game_map, x=oldx, y=oldy)
             if tile == tile_type_floor:
                 char_to_display = constants.ASCII_DNG_FLOOR_0
-                colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                         section='colorCodes',
-                                                                         parameter='FLOOR_INSIDE_FOV')
+                colour_code = constants.COLOUR_CODES_FLOOR_INSIDE_FOV
                 string_to_print = colour_code + '[' + char_to_display + ']'
 
         return string_to_print
@@ -1046,9 +1044,7 @@ class SpellUtilities:
 
     @staticmethod
     def render_off_hand_spells(gameworld, player_entity, game_config, this_row):
-        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                             section='colorCodes',
-                                                                             parameter='SPELL_UI_SECTION_HEADERS')
+        unicode_section_headers = constants.COLOUR_CODES_SPELL_UI_SECTION_HEADERS
         slot = 3
         this_letter = 52
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
@@ -1082,14 +1078,9 @@ class SpellUtilities:
 
     @staticmethod
     def render_spells_in_hand(gameworld, slot, player_entity, start_list_x, this_row, this_letter, game_config):
-        unicode_cooldown_disabled = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                               section='colorCodes',
-                                                                               parameter='SPELL_COOLDOWN_DISABLED')
-        unicode_cooldown_enabled = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                              section='colorCodes',
-                                                                              parameter='SPELL_COOLDOWN_ENABLED')
-        unicode_white_colour = configUtilities.get_config_value_as_string(configfile=game_config, section='colorCodes',
-                                                                          parameter='SPELL_CURRENTLY_ACTIVE')
+        unicode_cooldown_disabled = constants.COLOUR_CODES_SPELL_COOLDOWN_DISABLED
+        unicode_cooldown_enabled = constants.COLOUR_CODES_SPELL_COOLDOWN_ENABLED
+        unicode_white_colour = constants.COLOUR_CODES_SPELL_CURRENTLY_ACTIVE
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                                player_entity=player_entity)
         if slot_spell_entity > 0:
@@ -1119,9 +1110,7 @@ class SpellUtilities:
     def render_main_hand_spells(gameworld, player_entity, game_config, this_row):
         this_letter = 49
         slot = 0
-        unicode_section_headers = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                             section='colorCodes',
-                                                                             parameter='SPELL_UI_SECTION_HEADERS')
+        unicode_section_headers = constants.COLOUR_CODES_SPELL_UI_SECTION_HEADERS
 
         slot_spell_entity = SpellUtilities.get_spell_entity_from_spellbar_slot(gameworld=gameworld, slot=slot,
                                                                                player_entity=player_entity)

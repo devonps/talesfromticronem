@@ -16,8 +16,6 @@ class CharacterCreation:
         race_name_selected, race_size, race_bg_colour, race_name_desc = CharacterCreation.choose_race()
         class_selected, class_health, class_spell_file = CharacterCreation.choose_class()
 
-        game_config = configUtilities.load_config()
-
         # it's a brave new world
         gameworld = initialiseNewGame.create_world()
         # setup base player entity

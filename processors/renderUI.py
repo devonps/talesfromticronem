@@ -32,7 +32,7 @@ class RenderUI(esper.Processor):
 
     @staticmethod
     def render_aoe_effects(gameworld, game_config, game_map):
-        colour_code = "[color=SPELL_AOE_GENERAL_EFFECT]"
+        colour_code = constants.COLOUR_CODES_SPELL_AOE_GENERAL_EFFECT
         camera_width = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                    parameter='VIEWPORT_WIDTH')
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
@@ -173,9 +173,7 @@ class RenderUI(esper.Processor):
                     game_map.tiles[map_x][map_y].explored = True
                     if tile == tile_type_floor:
                         char_to_display = constants.ASCII_DNG_FLOOR_0
-                        colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                                 section='colorCodes',
-                                                                                 parameter='FLOOR_INSIDE_FOV')
+                        colour_code = constants.COLOUR_CODES_FLOOR_INSIDE_FOV
 
                     if tile == tile_type_wall:
                         char_to_display = common.CommonUtils.get_unicode_ascii_char(game_config=game_config,
@@ -189,9 +187,7 @@ class RenderUI(esper.Processor):
                     print_char = True
                     if tile == tile_type_floor:
                         char_to_display = constants.ASCII_DNG_FLOOR_0
-                        colour_code = configUtilities.get_config_value_as_string(configfile=game_config,
-                                                                                 section='colorCodes',
-                                                                                 parameter='FLOOR_OUTSIDE_FOV')
+                        colour_code = constants.COLOUR_CODES_FLOOR_OUTSIDE_FOV
                     if tile == tile_type_wall:
                         char_to_display = common.CommonUtils.get_unicode_ascii_char(game_config=game_config,
                                                                                     config_prefix=config_prefix_wall,
