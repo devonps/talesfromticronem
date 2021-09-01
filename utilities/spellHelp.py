@@ -551,8 +551,7 @@ class SpellUtilities:
         colour_choice = ['[font=dungeon][color=FLOOR_DISPLAYED_INSIDE_FOV]',
                          '[font=dungeon][color=SPELLINFO_WEAPON_EQUIPPED]']
         colour_code = colour_choice[mode_flag]
-        targeting_cursor = CommonUtils.get_ascii_to_unicode(game_config=game_config,
-                                                            parameter='ASCII_SPELL_TARGETING_CURSOR')
+        targeting_cursor = constants.ASCII_SPELL_TARGETING_CURSOR
         screen_offset_x = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='SCREEN_OFFSET_X')
         screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',

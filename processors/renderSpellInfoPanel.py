@@ -146,8 +146,8 @@ class RenderSpellInfoPanel(esper.Processor):
 
         ascii_prefix = 'ASCII_SINGLE_'
 
-        health_lost_fill = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_LOST')
-        health_remiaing_fill = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'HEALTH_REMAINING')
+        health_lost_fill = constants.ASCII_SINGLE_HEALTH_LOST
+        health_remiaing_fill = constants.ASCII_SINGLE_HEALTH_REMAINING
 
         unicode_mechanic_health_lost = '[font=dungeon][color=ENERGY_HEALTH_LOST]['
         unicode_mechanic_health_remaining = '[font=dungeon][color=ENERGY_HEALTH_REMAINING]['
@@ -203,7 +203,7 @@ class RenderSpellInfoPanel(esper.Processor):
         mechanic_info_horizontal = constants.ASCII_SINGLE_HORIZONTAL
         mechanic_info_vertical = constants.ASCII_SINGLE_VERTICAL
 
-        mechanic_background_fill = common.CommonUtils.get_ascii_to_unicode(game_config=self.game_config, parameter=ascii_prefix + 'MECHANIC_FILL')
+        mechanic_background_fill = constants.ASCII_SINGLE_MECHANIC_FILL
 
         mechanic_depth = 10
         mechanic_width = 1
