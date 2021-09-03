@@ -21,7 +21,7 @@ class SceneManager:
 
         for scene_id, scene_name in enumerate(scene_list, 1):
             if scene_id == currentscene:
-                logger.debug('Current scene set to {}', scene_name)
+                logger.debug('Current scene changed to {}', scene_name)
                 scene_found = True
                 this_scene = scene_name
         return scene_found, this_scene
@@ -29,12 +29,13 @@ class SceneManager:
     @staticmethod
     def new_scene(currentscene, gameworld):
 
-        gm, mx, my, scene_exit = SceneManager.load_scene_card(currentscene=currentscene, gameworld=gameworld)
+        game_map, mx, my, scene_exit = SceneManager.load_scene_card(currentscene=currentscene, gameworld=gameworld)
+        logger.info('Current scene is {}', currentscene)
         if scene_exit == 0:
             logger.warning('No valid scene exits from current scene')
         else:
             logger.debug('CURRENT SCENE EXIT IS {}', scene_exit)
-        return gm, scene_exit
+        return game_map, scene_exit
 
     @staticmethod
     def load_scene_card(currentscene, gameworld):
@@ -44,6 +45,7 @@ class SceneManager:
         scene_exit = 0
         game_map = []
         scene_found, this_scene = SceneManager.get_current_scene(currentscene=currentscene)
+        logger.info('Scene found set to {}, this scene is {}', scene_found, this_scene)
         current_area_tag = ''
         if scene_found:
             map_area_file = ''
@@ -126,8 +128,7 @@ class SceneManager:
                 SceneManager.place_empty_tile_yes_no(cell=cell, game_map=game_map, posx=posx, posy=posy,
                                                      tile_type=tile_type_empty)
                 player_placed = SceneManager.place_player_tile_yes_no(cell=cell, game_map=game_map, posx=posx,
-                                                                      posy=posy,
-                                                                      tile_type=tile_type_floor)
+                                                                      posy=posy, tile_type=tile_type_floor)
 
                 if player_placed:
                     SceneManager.setup_viewport(gameworld=gameworld, posx=posx, posy=posy)

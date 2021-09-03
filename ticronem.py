@@ -34,12 +34,12 @@ def game_loop(gameworld):
                                   player_race=player_race[3])
 
     # call scene manager
-    game_map, scene_exits = SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)
+    # game_map, scene_exits = SceneManager.new_scene(currentscene=current_scene, gameworld=gameworld)
     mobileHelp.MobileUtilities.set_player_current_scene(gameworld=gameworld, current_scene=current_scene,
                                                         player_entity=player)
-    mobileHelp.MobileUtilities.set_player_current_scene_exit(gameworld=gameworld, scene_exit=scene_exits,
+    mobileHelp.MobileUtilities.set_player_current_scene_exit(gameworld=gameworld, scene_exit=1,
                                                              player_entity=player)
-    mobileHelp.MobileUtilities.set_player_scene_change(gameworld=gameworld, player_entity=player, value=False)
+    mobileHelp.MobileUtilities.set_player_scene_change(gameworld=gameworld, player_entity=player, value=True)
     advance_game_turn = False
 
     spell_list2 = spellHelp.SpellUtilities.get_current_spellbar_spells(gameworld=gameworld, player_entity=player)
@@ -58,9 +58,9 @@ def game_loop(gameworld):
     scorekeeper.ScorekeeperUtilities.register_damage_types_for_current_area(gameworld=gameworld,
                                                                             current_area_tag=current_area_tag)
     # process all intended actions
-    gameworld.process(game_config, advance_game_turn)
-    # blit the console
-    terminal.refresh()
+    # gameworld.process(game_config, advance_game_turn)
+    # # blit the console
+    # terminal.refresh()
 
     scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name='game_turn',
                                                                      event_starting_value=1)
@@ -77,15 +77,18 @@ def game_loop(gameworld):
             new_scene = mobileHelp.MobileUtilities.get_player_current_scene_exit(gameworld=gameworld, player_entity=player)
             logger.debug('Changing to scene {}', new_scene)
             # call scene manager
+            game_map = None
             game_map, scene_exits = SceneManager.new_scene(currentscene=new_scene, gameworld=gameworld)
 
             if scene_exits == 0:
                 logger.warning('No valid scene exits from current scene')
             else:
-                logger.debug('CURRENT SCENE EXIT IS {}', scene_exit)
-
+                logger.debug('CURRENT SCENE EXIT IS {}', scene_exits)
 
             mobileHelp.MobileUtilities.set_player_scene_change(gameworld=gameworld, player_entity=player, value=False)
+        # blit the console
+        gameworld.process(game_config, advance_game_turn)
+        terminal.refresh()
         #
         # get player action aka their intent to do something
         #
@@ -166,7 +169,7 @@ def game_loop(gameworld):
             gameworld.process(game_config, advance_game_turn)
 
         # blit the console
-        terminal.refresh()
+        # terminal.refresh()
 
     # player has died or quit the game
     GameOver.GameOver.process_game_over(player_died=player_died, gameworld=gameworld)

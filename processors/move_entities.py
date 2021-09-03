@@ -62,6 +62,8 @@ class MoveEntities(esper.Processor):
                         logger.info('Entity standing on a spell')
                         mobileHelp.MobileUtilities.set_player_scene_change(gameworld=self.gameworld,
                                                                            player_entity=ent, value=True)
+                        mobileHelp.MobileUtilities.set_player_current_scene_exit(gameworld=self.gameworld, scene_exit=2,
+                                                                                 player_entity=ent)
 
                     svx, svy = check_velocity(velocity=velocity, cvx=svx, cvy=svy)
 

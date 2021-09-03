@@ -473,7 +473,8 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_player_current_scene(gameworld, current_scene, player_entity):
-        gameworld.add_component(player_entity, mobiles.Scene(current_scene=current_scene))
+        player_scene_component = gameworld.component_for_entity(player_entity, mobiles.Scene)
+        player_scene_component.current_scene = current_scene
 
     @staticmethod
     def get_player_current_scene(gameworld, player_entity):
@@ -484,7 +485,6 @@ class MobileUtilities(numbers.Real, ABC):
     def set_player_current_scene_exit(gameworld, scene_exit, player_entity):
         scene_component = gameworld.component_for_entity(player_entity, mobiles.Scene)
         scene_component.scene_exit = scene_exit
-        # gameworld.add_component(player_entity, mobiles.Scene(scene_exit=scene_exit))
 
     @staticmethod
     def get_player_current_scene_exit(gameworld, player_entity):
@@ -493,7 +493,8 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_player_scene_change(gameworld, player_entity, value):
-        gameworld.add_component(player_entity, mobiles.Scene(scene_change=value))
+        scene_component = gameworld.component_for_entity(player_entity, mobiles.Scene)
+        scene_component.scene_change = value
 
     @staticmethod
     def get_player_scene_change(gameworld, player_entity):
