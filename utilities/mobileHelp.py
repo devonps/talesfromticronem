@@ -482,7 +482,9 @@ class MobileUtilities(numbers.Real, ABC):
 
     @staticmethod
     def set_player_current_scene_exit(gameworld, scene_exit, player_entity):
-        gameworld.add_component(player_entity, mobiles.Scene(scene_exit=scene_exit))
+        scene_component = gameworld.component_for_entity(player_entity, mobiles.Scene)
+        scene_component.scene_exit = scene_exit
+        # gameworld.add_component(player_entity, mobiles.Scene(scene_exit=scene_exit))
 
     @staticmethod
     def get_player_current_scene_exit(gameworld, player_entity):

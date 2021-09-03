@@ -30,7 +30,10 @@ class SceneManager:
     def new_scene(currentscene, gameworld):
 
         gm, mx, my, scene_exit = SceneManager.load_scene_card(currentscene=currentscene, gameworld=gameworld)
-
+        if scene_exit == 0:
+            logger.warning('No valid scene exits from current scene')
+        else:
+            logger.debug('CURRENT SCENE EXIT IS {}', scene_exit)
         return gm, scene_exit
 
     @staticmethod

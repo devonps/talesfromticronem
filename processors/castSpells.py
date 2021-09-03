@@ -64,6 +64,7 @@ class CastSpells(esper.Processor):
         if spell_name == 'area portal':
             logger.debug('++++++++++++++++++++++++++')
             logger.debug('Area Portal spell has been cast')
+            logger.debug('Spell entity is {}', spell_entity)
             logger.debug('++++++++++++++++++++++++++')
 
             spell_cast_at = spellHelp.SpellUtilities.get_spell_cast_center_coords(gameworld=self.gameworld, mobile_entity=caster_entity)

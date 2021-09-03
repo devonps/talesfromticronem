@@ -36,7 +36,7 @@ class CommonUtils:
         return found_condi, condi_count
 
     @staticmethod
-    def calculate_camera_position(gameworld, game_config, camera_width, camera_height, game_map):
+    def calculate_camera_position(gameworld, camera_width, camera_height, game_map):
         player_entity = MobileUtilities.get_player_entity(gameworld)
         player_map_pos_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         player_map_pos_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
@@ -569,7 +569,7 @@ class CommonUtils:
         terminal.printf(x=dialog_frame_start_x + 3, y=dialog_frame_start_y, s="[[ " + entity_names[0] + " ]]")
 
     @staticmethod
-    def camera_to_game_map_position(caster_screen_coords, game_config, gameworld, coords_to_check):
+    def camera_to_game_map_position(caster_screen_coords, gameworld, coords_to_check):
         player_entity = MobileUtilities.get_player_entity(gameworld)
         player_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         player_map_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
@@ -600,9 +600,8 @@ class CommonUtils:
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='VIEWPORT_HEIGHT')
 
-        camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                   camera_height=camera_height, gameworld=gameworld, game_config=game_config,
-                                                                   game_map=game_map)
+        camera_x, camera_y = CommonUtils.calculate_camera_position(gameworld=gameworld, camera_width=camera_width,
+                                                                   camera_height=camera_height, game_map=game_map)
 
         (x, y) = (x - camera_x, y - camera_y)
 

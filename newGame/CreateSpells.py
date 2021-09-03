@@ -139,21 +139,21 @@ class AsEntities:
 
     @staticmethod
     def generate_portal_transition_spell(gameworld):
-        thisspell = world.get_next_entity_id(gameworld=gameworld)
-        gameworld.add_component(thisspell, spells.Name("area portal"))
-        gameworld.add_component(thisspell, spells.Description(""))
-        gameworld.add_component(thisspell, spells.ShortDescription(""))
-        gameworld.add_component(thisspell, spells.CastTime("0"))
-        gameworld.add_component(thisspell, spells.CoolDown(0))
-        gameworld.add_component(thisspell, spells.ClassName("undefined"))
-        gameworld.add_component(thisspell, spells.SpellType("utility"))
-        gameworld.add_component(thisspell, spells.StatusEffect(condis=[], boons=[], controls=[]))
-        gameworld.add_component(thisspell, spells.MaxTargets("0"))
-        gameworld.add_component(thisspell, spells.AreaOfEffect(True))
-        gameworld.add_component(thisspell, spells.AreaOfEffectShape(area_of_effect_shape="1x1_square"))
-        gameworld.add_component(thisspell, spells.MaxRange(2))
-        gameworld.add_component(thisspell, spells.ItemLocation("earring1"))
-        gameworld.add_component(thisspell, spells.ItemType("jewellery"))
-        gameworld.add_component(thisspell, spells.LivesFor(number_of_turns=8))
+        this_spell = world.get_next_entity_id(gameworld=gameworld)
+        gameworld.add_component(this_spell, spells.Name("area portal"))
+        gameworld.add_component(this_spell, spells.Description(""))
+        gameworld.add_component(this_spell, spells.ShortDescription(""))
+        gameworld.add_component(this_spell, spells.CastTime("0"))
+        gameworld.add_component(this_spell, spells.CoolDown(0))
+        gameworld.add_component(this_spell, spells.ClassName("undefined"))
+        gameworld.add_component(this_spell, spells.SpellType("utility"))
+        gameworld.add_component(this_spell, spells.StatusEffect(condis=[], boons=[], controls=[]))
+        gameworld.add_component(this_spell, spells.MaxTargets("0"))
+        gameworld.add_component(this_spell, spells.AreaOfEffect(True))
+        gameworld.add_component(this_spell, spells.AreaOfEffectShape(area_of_effect_shape="1x1_square"))
+        gameworld.add_component(this_spell, spells.MaxRange(2))
+        gameworld.add_component(this_spell, spells.ItemLocation("earring1"))
+        gameworld.add_component(this_spell, spells.ItemType("jewellery"))
+        gameworld.add_component(this_spell, spells.LivesFor(number_of_turns=8))
 
-        return thisspell
+        return this_spell

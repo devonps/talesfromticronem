@@ -3,6 +3,8 @@ from components import mobiles
 from utilities import gamemap, mobileHelp, replayGame
 from loguru import logger
 
+from utilities.gamemap import GameMapUtilities
+
 
 def check_velocity(velocity, cvx, cvy):
     if velocity.dx != 0:
@@ -28,9 +30,9 @@ class MoveEntities(esper.Processor):
             message_log_just_viewed = mobileHelp.MobileUtilities.get_view_message_log_value(gameworld=self.gameworld,
                                                                                             entity=player_entity)
             if not message_log_just_viewed:
-                self.attempt_to_move_entities(game_config=game_config)
+                self.attempt_to_move_entities()
 
-    def attempt_to_move_entities(self, game_config):
+    def attempt_to_move_entities(self):
         #
         # this works off the game map positioning AND NOT THE SCREEN POSITION
         #
@@ -54,6 +56,12 @@ class MoveEntities(esper.Processor):
                     gamemap.GameMapUtilities.set_entity_at_this_map_location(game_map=self.game_map, x=position.x,
                                                                              y=position.y,
                                                                              entity=ent)
+                    spell_entities_at_map_location = GameMapUtilities.get_list_of_spells_at_this_map_location(game_map=self.game_map, x=position.x, y=position.y)
+                    if len(spell_entities_at_map_location) > 0:
+                        # do some checking around what do to for spells at this location
+                        logger.info('Entity standing on a spell')
+                        mobileHelp.MobileUtilities.set_player_scene_change(gameworld=self.gameworld,
+                                                                           player_entity=ent, value=True)
 
                     svx, svy = check_velocity(velocity=velocity, cvx=svx, cvy=svy)
 

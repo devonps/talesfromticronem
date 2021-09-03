@@ -59,10 +59,8 @@ class Debug:
         screen_offset_y = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                       parameter='SCREEN_OFFSET_Y')
 
-        camera_x, camera_y = CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                   camera_height=camera_height, gameworld=gameworld,
-                                                                   game_config=game_config,
-                                                                   game_map=game_map)
+        camera_x, camera_y = CommonUtils.calculate_camera_position(gameworld=gameworld, camera_width=camera_width,
+                                                                   camera_height=camera_height, game_map=game_map)
 
         posx = coords_clicked[0] + camera_x - screen_offset_x
         posy = coords_clicked[1] + camera_y - screen_offset_y

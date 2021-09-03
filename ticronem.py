@@ -73,9 +73,18 @@ def game_loop(gameworld):
         #
         scene_change = mobileHelp.MobileUtilities.get_player_scene_change(gameworld=gameworld, player_entity=player)
         if scene_change:
+
             new_scene = mobileHelp.MobileUtilities.get_player_current_scene_exit(gameworld=gameworld, player_entity=player)
+            logger.debug('Changing to scene {}', new_scene)
             # call scene manager
             game_map, scene_exits = SceneManager.new_scene(currentscene=new_scene, gameworld=gameworld)
+
+            if scene_exits == 0:
+                logger.warning('No valid scene exits from current scene')
+            else:
+                logger.debug('CURRENT SCENE EXIT IS {}', scene_exit)
+
+
             mobileHelp.MobileUtilities.set_player_scene_change(gameworld=gameworld, player_entity=player, value=False)
         #
         # get player action aka their intent to do something

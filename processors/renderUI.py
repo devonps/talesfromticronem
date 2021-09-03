@@ -49,8 +49,9 @@ class RenderUI(esper.Processor):
         aoe_vertical = constants.ASCII_SINGLE_VERTICAL
 
         # this holds the start x/y map positions left of the players current position
-        camera_x, camera_y = common.CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                          camera_height=camera_height, gameworld=gameworld, game_config=game_config,
+        camera_x, camera_y = common.CommonUtils.calculate_camera_position(gameworld=gameworld,
+                                                                          camera_width=camera_width,
+                                                                          camera_height=camera_height,
                                                                           game_map=game_map)
 
         for scr_pos_y in range(camera_height):
@@ -142,8 +143,9 @@ class RenderUI(esper.Processor):
                                                                       parameter='SCREEN_OFFSET_Y')
 
         # this holds the start x/y map positions left of the players current position
-        camera_x, camera_y = common.CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                          camera_height=camera_height, gameworld=gameworld, game_config=game_config,
+        camera_x, camera_y = common.CommonUtils.calculate_camera_position(gameworld=gameworld,
+                                                                          camera_width=camera_width,
+                                                                          camera_height=camera_height,
                                                                           game_map=game_map)
 
         config_prefix = 'ASCII_'
@@ -218,8 +220,9 @@ class RenderUI(esper.Processor):
         camera_height = configUtilities.get_config_value_as_integer(configfile=game_config, section='gui',
                                                                     parameter='VIEWPORT_HEIGHT')
 
-        camera_x, camera_y = common.CommonUtils.calculate_camera_position(camera_width=camera_width,
-                                                                          camera_height=camera_height, gameworld=gameworld, game_config=game_config,
+        camera_x, camera_y = common.CommonUtils.calculate_camera_position(gameworld=gameworld,
+                                                                          camera_width=camera_width,
+                                                                          camera_height=camera_height,
                                                                           game_map=game_map)
 
         (x, y) = (x - camera_x, y - camera_y)

@@ -13,24 +13,32 @@ def initiate_dialog(gameworld, game_config):
     entity_to_talk_with = check_for_nearby_valid_mobiles_to_speak_with(gameworld=gameworld, game_config=game_config)
 
     if entity_to_talk_with > 0:
-        name_details = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld, entity=entity_to_talk_with)
+        name_details = mobileHelp.MobileUtilities.get_mobile_name_details(gameworld=gameworld,
+                                                                          entity=entity_to_talk_with)
         common.CommonUtils.fire_event('dialog-general', gameworld=gameworld,
-                               dialog='Going to speak with...' + name_details[0])
+                                      dialog='Going to speak with...' + name_details[0])
 
-        am_i_a_shopkeeper = mobileHelp.MobileUtilities.is_mobile_a_shopkeeper(gameworld=gameworld, target_entity=entity_to_talk_with)
+        am_i_a_shopkeeper = mobileHelp.MobileUtilities.is_mobile_a_shopkeeper(gameworld=gameworld,
+                                                                              target_entity=entity_to_talk_with)
         if am_i_a_shopkeeper:
-            what_type_of_shopkeeper = mobileHelp.MobileUtilities.get_type_of_shopkeeper(gameworld=gameworld, target_entity=entity_to_talk_with)
-            open_the_shop(gameworld=gameworld, type_of_shopkeeper=what_type_of_shopkeeper, shopkeeper_id=entity_to_talk_with)
-        am_i_a_tutor = mobileHelp.MobileUtilities.is_mobile_a_tutor(gameworld=gameworld, target_entity=entity_to_talk_with)
+            what_type_of_shopkeeper = mobileHelp.MobileUtilities.get_type_of_shopkeeper(gameworld=gameworld,
+                                                                                        target_entity=entity_to_talk_with)
+            open_the_shop(gameworld=gameworld, type_of_shopkeeper=what_type_of_shopkeeper,
+                          shopkeeper_id=entity_to_talk_with)
+        am_i_a_tutor = mobileHelp.MobileUtilities.is_mobile_a_tutor(gameworld=gameworld,
+                                                                    target_entity=entity_to_talk_with)
         if am_i_a_tutor:
-            what_type_of_tutor = mobileHelp.MobileUtilities.get_type_of_tutor(gameworld=gameworld, target_entity=entity_to_talk_with)
+            what_type_of_tutor = mobileHelp.MobileUtilities.get_type_of_tutor(gameworld=gameworld,
+                                                                              target_entity=entity_to_talk_with)
             open_the_shop(gameworld=gameworld, type_of_shopkeeper=what_type_of_tutor, shopkeeper_id=entity_to_talk_with)
         if not am_i_a_shopkeeper and not am_i_a_tutor:
-            mobileHelp.MobileUtilities.set_dialog_welcome_flag_to_false(gameworld=gameworld, target_entity=entity_to_talk_with)
+            mobileHelp.MobileUtilities.set_dialog_welcome_flag_to_false(gameworld=gameworld,
+                                                                        target_entity=entity_to_talk_with)
             spoken_to_before = mobileHelp.MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld,
-                                                                         target_entity=entity_to_talk_with)
+                                                                                    target_entity=entity_to_talk_with)
 
-            speak = mobileHelp.MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld, target_entity=entity_to_talk_with)
+            speak = mobileHelp.MobileUtilities.get_spoken_to_before_flag(gameworld=gameworld,
+                                                                         target_entity=entity_to_talk_with)
             logger.debug('Speaking with{}', entity_to_talk_with)
             logger.debug('spoken to flag is {}', speak)
 
@@ -47,7 +55,6 @@ def initiate_dialog(gameworld, game_config):
 
 
 def open_the_shop(type_of_shopkeeper, gameworld, shopkeeper_id):
-
     if type_of_shopkeeper == 'armour':
         shopkeeper_armour.shopkeeper_armour(gameworld=gameworld, shopkeeper_id=shopkeeper_id)
 
@@ -90,7 +97,8 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
         menu_response = build_menu_responses(number_responses=number_responses, responses=responses,
                                              response_text=response_text)
         display.pointy_vertical_menu(header='', menu_options=menu_response, menu_start_x=dialog_frame_start_x + 3,
-                             menu_start_y=dialog_frame_start_y + 5, blank_line=True, selected_option=selected_response_option)
+                                     menu_start_y=dialog_frame_start_y + 5, blank_line=True,
+                                     selected_option=selected_response_option)
 
         # blit the console
         terminal.refresh()
@@ -105,8 +113,8 @@ def handle_chained_dialog(dialog_chain, game_config, speaker_name, gameworld, sp
                 valid_event = True
             if event_action in ('up', 'down'):
                 selected_response_option = common.CommonUtils.move_menu_selection(event_action=event_action,
-                                                                           selected_menu_option=selected_response_option,
-                                                                           max_menu_option=2)
+                                                                                  selected_menu_option=selected_response_option,
+                                                                                  max_menu_option=2)
                 valid_event = True
             if event_action == 'enter':
                 valid_event = True
@@ -143,7 +151,6 @@ def process_end_of_dialog(gameworld, dialogue_action, entity_just_spoken):
                                                    spell_entity=spell_entity,
                                                    spell_target_entity=[entity_just_spoken], slot=0,
                                                    map_coords_list=spell_cast_at)
-
 
     if dialogue_action == 'shopkeeper_intro':
         # set shopkeeper mobiles want to talk to player
@@ -200,12 +207,13 @@ def check_for_nearby_valid_mobiles_to_speak_with(gameworld, game_config):
     player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
 
     # check map surrounding player_entity 1x1 square deep
-    visible_entities_list = mobileHelp.MobileUtilities.get_ai_visible_entities(gameworld=gameworld, target_entity=player_entity)
+    visible_entities_list = mobileHelp.MobileUtilities.get_ai_visible_entities(gameworld=gameworld,
+                                                                               target_entity=player_entity)
     target_entity = get_entity_id_to_talk_to(gameworld=gameworld, player_entity=player_entity,
                                              entities_list=visible_entities_list, game_config=game_config)
     if target_entity == 0:
         common.CommonUtils.fire_event('dialog-general', gameworld=gameworld,
-                               dialog='There is no one near enough to speak with.')
+                                      dialog='There is no one near enough to speak with.')
     return target_entity
 
 
@@ -220,8 +228,9 @@ def get_entity_id_to_talk_to(gameworld, player_entity, entities_list, game_confi
             target_entity = valid_targets[0]
         else:
             # display popup
-            target_letters = common.CommonUtils.helper_print_valid_targets(gameworld=gameworld, valid_targets=valid_targets,
-                                                                    game_config=game_config)
+            target_letters = common.CommonUtils.helper_print_valid_targets(gameworld=gameworld,
+                                                                           valid_targets=valid_targets,
+                                                                           game_config=game_config)
             # blit the terminal
             terminal.refresh()
             # get player input
@@ -278,7 +287,7 @@ def process_rules_tag(current_dialog_chain, npc_name):
                 if this_tag == rules_tag:
                     rules_options = rules['options']
                     new_dialogue_chain = evaluate_dialog_rules(rules_to_evaluate=rules_options,
-                                                              current_dialog_chain=current_dialog_chain)
+                                                               current_dialog_chain=current_dialog_chain)
     if new_dialogue_chain == 'nothing':
         new_dialogue_chain = current_dialog_chain
 

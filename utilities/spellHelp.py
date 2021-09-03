@@ -318,7 +318,7 @@ class SpellUtilities:
                 # get map position of target
                 map_x, map_y = CommonUtils.camera_to_game_map_position(
                     caster_screen_coords=(caster_screen_x, caster_screen_y), gameworld=gameworld,
-                    game_config=game_config, coords_to_check=(targeting_cursor_centre_x, targeting_cursor_centre_y))
+                    coords_to_check=(targeting_cursor_centre_x, targeting_cursor_centre_y))
                 logger.debug('Caster map position is {} / {}', map_x, map_y)
 
                 # get list of enemies at map target location
