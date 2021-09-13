@@ -142,10 +142,10 @@ def process_dialog_options_after_player_presses_enter(responses, selected_respon
 def process_end_of_dialog(gameworld, dialogue_action, entity_just_spoken):
     if dialogue_action == 'open_portal_step':
         # cast "open portal to new area/scene spell
-        target_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=entity_just_spoken) + 5
+        target_map_x = MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=entity_just_spoken)
         target_map_y = MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=entity_just_spoken)
-        spell_entity = AsEntities.generate_portal_transition_spell(gameworld=gameworld)
         spell_cast_at = [target_map_x, target_map_y]
+        spell_entity = AsEntities.generate_portal_transition_spell(gameworld=gameworld, cast_at=spell_cast_at)
 
         SpellUtilities.set_spell_to_cast_this_turn(gameworld=gameworld, mobile_entity=entity_just_spoken,
                                                    spell_entity=spell_entity,

@@ -138,7 +138,7 @@ class AsEntities:
         return thisspell
 
     @staticmethod
-    def generate_portal_transition_spell(gameworld):
+    def generate_portal_transition_spell(gameworld, cast_at):
         this_spell = world.get_next_entity_id(gameworld=gameworld)
         gameworld.add_component(this_spell, spells.Name("area portal"))
         gameworld.add_component(this_spell, spells.Description(""))
@@ -155,5 +155,6 @@ class AsEntities:
         gameworld.add_component(this_spell, spells.ItemLocation("earring1"))
         gameworld.add_component(this_spell, spells.ItemType("jewellery"))
         gameworld.add_component(this_spell, spells.LivesFor(number_of_turns=8))
+        gameworld.add_component(this_spell, spells.AoECastAt(posx=cast_at[0], posy=cast_at[1]))
 
         return this_spell

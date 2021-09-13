@@ -54,9 +54,9 @@ class RenderUI(esper.Processor):
                                                                           camera_height=camera_height,
                                                                           game_map=game_map)
 
-        for scr_pos_y in range(camera_height):
+        for _ in range(camera_height):
             cam_x = camera_x
-            for scr_pos_x in range(camera_width):
+            for _ in range(camera_width):
                 map_x = cam_x
                 map_y = camera_y
                 spell_entity_list = GameMapUtilities.get_list_of_spells_at_this_map_location(game_map=game_map, x=map_x, y=map_y)
@@ -65,59 +65,51 @@ class RenderUI(esper.Processor):
                         rem_turns = SpellUtilities.get_spell_lives_for_counter(gameworld=gameworld,
                                                                                spell_entity=spell_entity)
                         if rem_turns > 0:
-                            aoe_shape = SpellUtilities.get_spell_aoe_shape(gameworld=gameworld, spell_entity=spell_entity)
-                            aoe_components = aoe_shape.split('_')
-                            aoe_dims = aoe_components[0]
-                            aoe_width = int(aoe_dims[0])
-                            aoe_depth = int(aoe_dims[2])
-                            sx = scr_pos_x - aoe_width
-                            ex = scr_pos_x + aoe_width
-                            sy = scr_pos_y - aoe_depth
-                            ey = scr_pos_y - aoe_depth
+                            aoe_central_x = SpellUtilities.get_spell_aoe_central_x(gameworld=gameworld, spell_entity=spell_entity)
+                            aoe_central_y = SpellUtilities.get_spell_aoe_central_y(gameworld=gameworld, spell_entity=spell_entity)
 
                             # top left
                             RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
                                                               char_to_display=aoe_top_left_corner,
-                                                              scr_pos_x=(sx + screen_offset_x) - 1,
-                                                              scr_pos_y=(sy + screen_offset_y) - 1)
+                                                              scr_pos_x=(aoe_central_x + screen_offset_x) - 1,
+                                                              scr_pos_y=(aoe_central_y + screen_offset_y) - 1)
                             # top middle
                             RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
                                                               char_to_display=aoe_horizontal,
-                                                              scr_pos_x=(sx + screen_offset_x),
-                                                              scr_pos_y=(sy + screen_offset_y) - 1)
+                                                              scr_pos_x=(aoe_central_x + screen_offset_x),
+                                                              scr_pos_y=(aoe_central_y + screen_offset_y) - 1)
                             # top right
                             RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
                                                               char_to_display=aoe_top_right_corner,
-                                                              scr_pos_x=(ex + screen_offset_x) - 1,
-                                                              scr_pos_y=(sy + screen_offset_y) - 1)
+                                                              scr_pos_x=(aoe_central_x + screen_offset_x) + 1,
+                                                              scr_pos_y=(aoe_central_y + screen_offset_y) - 1)
                             # middle left
                             RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
                                                               char_to_display=aoe_vertical,
-                                                              scr_pos_x=(sx + screen_offset_x) - 1,
-                                                              scr_pos_y=sy + screen_offset_y)
+                                                              scr_pos_x=(aoe_central_x + screen_offset_x) - 1,
+                                                              scr_pos_y=aoe_central_y + screen_offset_y)
                             # middle right
                             RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
                                                               char_to_display=aoe_vertical,
-                                                              scr_pos_x=(ex + screen_offset_x) - 1,
-                                                              scr_pos_y=sy + screen_offset_y)
+                                                              scr_pos_x=(aoe_central_x + screen_offset_x) + 1,
+                                                              scr_pos_y=aoe_central_y + screen_offset_y)
                             # bottom left
                             RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
                                                               char_to_display=aoe_bottom_left_corner,
-                                                              scr_pos_x=(sx + screen_offset_x) - 1,
-                                                              scr_pos_y=(ey + screen_offset_y) + 1)
+                                                              scr_pos_x=(aoe_central_x + screen_offset_x) - 1,
+                                                              scr_pos_y=(aoe_central_y + screen_offset_y) + 1)
                             # bottom middle
                             RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
                                                               char_to_display=aoe_horizontal,
-                                                              scr_pos_x=sx + screen_offset_x,
-                                                              scr_pos_y=(ey + screen_offset_y) + 1)
+                                                              scr_pos_x=aoe_central_x + screen_offset_x,
+                                                              scr_pos_y=(aoe_central_y + screen_offset_y) + 1)
                             # bottom right
                             RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
                                                               char_to_display=aoe_bottom_right_corner,
-                                                              scr_pos_x=(ex + screen_offset_x) - 1,
-                                                              scr_pos_y=(ey + screen_offset_y) + 1)
+                                                              scr_pos_x=(aoe_central_x + screen_offset_x) + 1,
+                                                              scr_pos_y=(aoe_central_y + screen_offset_y) + 1)
                 cam_x += 1
             camera_y += 1
-
 
     @staticmethod
     def render_map(gameworld, game_config, game_map):

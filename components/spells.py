@@ -70,6 +70,12 @@ class MaxRange:
         self.max_range = max_range
 
 
+class AoECastAt:
+    def __init__(self, posx=None, posy=None):
+        self.posx = posx
+        self.posy = posy
+
+
 class AreaOfEffect:
     def __init__(self, use_area_of_effect=False):
         self.use_area_of_effect = use_area_of_effect

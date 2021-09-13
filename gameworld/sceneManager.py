@@ -61,7 +61,7 @@ class SceneManager:
                         map_area_max_x = int(scene_key['mapx'])
                         map_area_max_y = int(scene_key['mapy'])
                         game_map = GameMap(mapwidth=map_area_max_x, mapheight=map_area_max_y)
-
+                        logger.info('Map Area File is set to {}', map_area_file)
                     if map_area_file != '':
                         SceneManager.build_static_scene(gameworld=gameworld, game_map=game_map,
                                                         map_area_file=map_area_file, this_scene=scene_key)
@@ -80,15 +80,16 @@ class SceneManager:
             update_entities_processor = updateEntities.UpdateEntitiesProcessor(gameworld=gameworld, game_map=game_map)
             move_entities_processor = move_entities.MoveEntities(gameworld=gameworld, game_map=game_map)
             cast_spells_processor = castSpells.CastSpells(gameworld=gameworld, game_map=game_map)
-            render_ui_processor = renderUI.RenderUI(game_map=game_map, gameworld=gameworld)
             render_message_log_processor = renderMessageLog.RenderMessageLog(gameworld=gameworld)
             spell_info_processor = renderSpellInfoPanel.RenderSpellInfoPanel(gameworld=gameworld, game_map=game_map)
             gameworld.add_processor(cast_spells_processor, priority=100)
             gameworld.add_processor(update_entities_processor, priority=90)
             gameworld.add_processor(move_entities_processor, priority=80)
-            gameworld.add_processor(render_ui_processor, priority=70)
             gameworld.add_processor(render_message_log_processor, priority=60)
             gameworld.add_processor(spell_info_processor, priority=50)
+
+        render_ui_processor = renderUI.RenderUI(game_map=game_map, gameworld=gameworld)
+        gameworld.add_processor(render_ui_processor, priority=70)
 
     @staticmethod
     # haven't created the proc-gen routines for this

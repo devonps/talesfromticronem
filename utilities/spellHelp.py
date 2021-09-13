@@ -245,6 +245,18 @@ class SpellUtilities:
                 spell_name = SpellUtilities.get_spell_name(gameworld=gameworld, spell_entity=spell_entity)
                 CommonUtils.fire_event("spell-notarget", gameworld=gameworld, spell_name=spell_name)
 
+
+    @staticmethod
+    def get_spell_aoe_central_x(gameworld, spell_entity):
+        spell_aoe_component = gameworld.component_for_entity(spell_entity, spells.AoECastAt)
+        return spell_aoe_component.posx
+
+    @staticmethod
+    def get_spell_aoe_central_y(gameworld, spell_entity):
+        spell_aoe_component = gameworld.component_for_entity(spell_entity, spells.AoECastAt)
+        return spell_aoe_component.posy
+
+
     @staticmethod
     def get_spell_aoe_shape(gameworld, spell_entity):
         spell_aoe_component = gameworld.component_for_entity(spell_entity, spells.AreaOfEffectShape)
