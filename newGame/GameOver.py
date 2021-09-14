@@ -21,7 +21,7 @@ class GameOver:
             scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag='dg2')
             scorekeeper.ScorekeeperUtilities.set_current_area(gameworld=gameworld, current_area_tag='dg3')
             meta_events = scorekeeper.ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
-            logger.warning('list of meta events:{}', meta_events)
+            logger.info('list of meta events:{}', meta_events)
 
         scorekeeper.ScorekeeperUtilities.build_scorecard(gameworld=gameworld, game_config=game_config)
 

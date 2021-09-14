@@ -51,14 +51,9 @@ def game_loop(gameworld):
             scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld,
                                                                              event_name=updated_spell_name.lower(),
                                                                              event_starting_value=0)
-    # register damage types for this area
-    scorekeeper.ScorekeeperUtilities.register_damage_types_for_current_area(gameworld=gameworld,
-                                                                            current_area_tag=current_area_tag)
 
     scorekeeper.ScorekeeperUtilities.register_scorekeeper_meta_event(gameworld=gameworld, event_name='game_turn',
                                                                      event_starting_value=1)
-    meta_events = scorekeeper.ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
-    logger.warning('list of meta events:{}', meta_events)
 
     while playing_game:
         #
@@ -67,7 +62,8 @@ def game_loop(gameworld):
         scene_change = mobileHelp.MobileUtilities.get_player_scene_change(gameworld=gameworld, player_entity=player)
         if scene_change:
             advance_game_turn = False
-            new_scene = mobileHelp.MobileUtilities.get_player_current_scene_exit(gameworld=gameworld, player_entity=player)
+            new_scene = mobileHelp.MobileUtilities.get_player_current_scene_exit(gameworld=gameworld,
+                                                                                 player_entity=player)
             logger.debug('Changing to scene {}', new_scene)
             # call scene manager
             game_map, scene_exits = SceneManager.new_scene(currentscene=new_scene, gameworld=gameworld)
@@ -78,6 +74,12 @@ def game_loop(gameworld):
                 logger.debug('CURRENT SCENE EXIT IS {}', scene_exits)
 
             mobileHelp.MobileUtilities.set_player_scene_change(gameworld=gameworld, player_entity=player, value=False)
+            current_area_tag = scorekeeper.ScorekeeperUtilities.get_current_area(gameworld=gameworld)
+            # register damage types for this area
+            scorekeeper.ScorekeeperUtilities.register_damage_types_for_current_area(gameworld=gameworld,
+                                                                                    current_area_tag=current_area_tag)
+            meta_events = scorekeeper.ScorekeeperUtilities.get_list_of_meta_events(gameworld=gameworld)
+            logger.warning('list of meta events:{}', meta_events)
 
         # blit the console
         gameworld.process(game_config, advance_game_turn)
@@ -157,12 +159,6 @@ def game_loop(gameworld):
         if current_health <= 0:
             playing_game = False
             player_died = True
-        # else:
-        #     # process all intended actions for player and enemies
-        #     gameworld.process(game_config, advance_game_turn)
-
-        # blit the console
-        # terminal.refresh()
 
     # player has died or quit the game
     GameOver.GameOver.process_game_over(player_died=player_died, gameworld=gameworld)
