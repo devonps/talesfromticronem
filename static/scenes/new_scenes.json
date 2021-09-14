@@ -308,18 +308,7 @@
           "cellula": false
         }
       ],
-      "prefabs": [
-        {
-          "throne_room": 23,
-          "width": 25,
-          "height": 15
-        },
-        {
-          "exit": 32,
-          "width": 12,
-          "height": 10
-        }
-      ],
+      "prefabs": [],
       "sceneExits": "99"
     }
   ]

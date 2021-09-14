@@ -28,6 +28,12 @@ class GameMapUtilities:
         existing_spell_list.append(spell_entity)
         game_map.tiles[x][y].placed_spells = existing_spell_list
 
+    @staticmethod
+    def remove_spell_entity_from_map_location(game_map, x, y, spell_entity):
+        existing_spell_list = GameMapUtilities.get_list_of_spells_at_this_map_location(game_map=game_map, x=x, y=y)
+        existing_spell_list.remove(spell_entity)
+        game_map.tiles[x][y].placed_spells = existing_spell_list
+
     # get entity at this location
     @staticmethod
     def get_entity_at_this_location(game_map, x, y):

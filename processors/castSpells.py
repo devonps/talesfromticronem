@@ -71,14 +71,6 @@ class CastSpells(esper.Processor):
             logger.debug('++++++++++++++++++++++++++')
 
             GameMapUtilities.add_spell_entity_to_this_map_location(game_map=self.game_map, x=spell_cast_at[0], y=spell_cast_at[1], spell_entity=spell_entity)
-            # # get exit details
-            # current_scene = mobileHelp.MobileUtilities.get_player_current_scene(gameworld=self.gameworld, player_entity=player_entity)
-            # logger.info('Current scene is {}', current_scene)
-            # scene_exit = mobileHelp.MobileUtilities.get_player_current_scene_exit(gameworld=self.gameworld, player_entity=player_entity)
-            # logger.info('Scene exit is {}', scene_exit)
-            # # store exit details
-            # mobileHelp.MobileUtilities.set_player_current_scene_exit(gameworld=self.gameworld, player_entity=player_entity, scene_exit=scene_exit)
-            # mobileHelp.MobileUtilities.set_player_scene_change(gameworld=self.gameworld, player_entity=player_entity, value=True)
 
     def process_combat_spells(self, target_entities, caster_entity, spell_entity, spell_status_effects):
         boons_to_apply = spell_status_effects[0]

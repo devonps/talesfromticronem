@@ -26,9 +26,11 @@ class RenderUI(esper.Processor):
         self.render_aoe_effects(gameworld=self.gameworld, game_config=game_config, game_map=self.game_map)
 
     @staticmethod
-    def clear_map_layer():
-        terminal.bkcolor('black')
-        terminal.clear_area(0, 0, terminal.state(terminal.TK_WIDTH), terminal.state(terminal.TK_HEIGHT))
+    def clear_map_layer(gameworld, game_config):
+        player_has_moved = mobileHelp.MobileUtilities.has_player_moved(gameworld, game_config)
+        if player_has_moved:
+            terminal.bkcolor('black')
+            terminal.clear_area(0, 0, terminal.state(terminal.TK_WIDTH), terminal.state(terminal.TK_HEIGHT))
 
     @staticmethod
     def render_aoe_effects(gameworld, game_config, game_map):
@@ -64,9 +66,11 @@ class RenderUI(esper.Processor):
                     for spell_entity in spell_entity_list:
                         rem_turns = SpellUtilities.get_spell_lives_for_counter(gameworld=gameworld,
                                                                                spell_entity=spell_entity)
+                        aoe_central_x = SpellUtilities.get_spell_aoe_central_x(gameworld=gameworld,
+                                                                               spell_entity=spell_entity)
+                        aoe_central_y = SpellUtilities.get_spell_aoe_central_y(gameworld=gameworld,
+                                                                               spell_entity=spell_entity)
                         if rem_turns > 0:
-                            aoe_central_x = SpellUtilities.get_spell_aoe_central_x(gameworld=gameworld, spell_entity=spell_entity)
-                            aoe_central_y = SpellUtilities.get_spell_aoe_central_y(gameworld=gameworld, spell_entity=spell_entity)
 
                             # top left
                             RenderUI.print_char_to_the_screen(print_char=99, tile=99, colour_code=colour_code,
@@ -108,6 +112,8 @@ class RenderUI(esper.Processor):
                                                               char_to_display=aoe_bottom_right_corner,
                                                               scr_pos_x=(aoe_central_x + screen_offset_x) + 1,
                                                               scr_pos_y=(aoe_central_y + screen_offset_y) + 1)
+                        else:
+                            GameMapUtilities.remove_spell_entity_from_map_location(game_map=game_map, x=aoe_central_x, y=aoe_central_y, spell_entity=spell_entity)
                 cam_x += 1
             camera_y += 1
 
@@ -120,7 +126,6 @@ class RenderUI(esper.Processor):
         tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                       parameter='TILE_TYPE_FLOOR')
 
-        player_has_moved = mobileHelp.MobileUtilities.has_player_moved(gameworld, game_config)
         player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld)
         player_map_pos_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
         player_map_pos_y = mobileHelp.MobileUtilities.get_mobile_y_position(gameworld=gameworld, entity=player_entity)
@@ -148,8 +153,7 @@ class RenderUI(esper.Processor):
         player_fov = fov.FieldOfView.create_fov_from_raycasting(fov_map, startx=player_map_pos_x, starty=player_map_pos_y,
                                                                 game_config=game_config)
 
-        if player_has_moved:
-            RenderUI.clear_map_layer()
+        RenderUI.clear_map_layer(gameworld=gameworld, game_config=game_config)
 
         for scr_pos_y in range(camera_height):
             cam_x = camera_x
@@ -197,6 +201,7 @@ class RenderUI(esper.Processor):
             camera_y += 1
 
         return player_fov
+
 
     @staticmethod
     def print_char_to_the_screen(print_char, tile, colour_code, char_to_display, scr_pos_x, scr_pos_y):
