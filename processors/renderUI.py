@@ -125,6 +125,10 @@ class RenderUI(esper.Processor):
                                                                      parameter='TILE_TYPE_DOOR')
         tile_type_floor = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                       parameter='TILE_TYPE_FLOOR')
+        tile_type_dungeon_entrance = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='TILE_TYPE_DUNGEON_ENTRANCE')
+        tile_type_guard_hut = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='TILE_TYPE_GUARD_HUT')
 
         player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld)
         player_map_pos_x = mobileHelp.MobileUtilities.get_mobile_x_position(gameworld=gameworld, entity=player_entity)
@@ -180,6 +184,10 @@ class RenderUI(esper.Processor):
 
                     if tile == tile_type_door:
                         char_to_display = constants.ASCII_DNG_DOOR_0
+
+                    if tile == tile_type_dungeon_entrance:
+                        char_to_display = constants.ASCII_DNG_GUARD_HUT
+
                 elif game_map.tiles[map_x][map_y].explored:
                     colour_code = "[color=grey]"
                     print_char = True

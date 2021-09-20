@@ -111,7 +111,10 @@ class SceneManager:
                                                                      parameter='TILE_TYPE_DOOR')
         tile_type_empty = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
                                                                       parameter='TILE_TYPE_EMPTY')
-
+        tile_type_dungeon_entrance = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='TILE_TYPE_DUNGEON_ENTRANCE')
+        tile_type_guard_hut = configUtilities.get_config_value_as_integer(configfile=game_config, section='dungeon',
+                                                                      parameter='TILE_TYPE_GUARD_HUT')
         # now load the game_map from the external file/csv
         filepath = prefab_folder + map_area_file + '.txt'
 
@@ -150,6 +153,15 @@ class SceneManager:
                                                                          entity=new_entity)
                         SceneManager.place_floor_tile_yes_no(cell=cell, posx=posx, posy=posy, tile_type=tile_type_floor,
                                                              game_map=game_map)
+                # add stationary building
+                buildings = "123456789"
+                if cell in buildings:
+                    this_building = int(cell)
+                    if this_building == tile_type_dungeon_entrance:
+                        SceneManager.place_dungeon_entrance_yes_or_no(cell=this_building, game_map=game_map, posx=posx, posy=posy, tile_type=tile_type_dungeon_entrance)
+                    else:
+                        SceneManager.place_guard_hut_yes_or_no(cell=this_building, game_map=game_map, posx=posx, posy=posy, tile_type=tile_type_guard_hut)
+
 
                     # create random enemy
                 if cell.upper() == 'X':
@@ -174,6 +186,22 @@ class SceneManager:
                                                              game_map=game_map)
                 posx += 1
             posy += 1
+
+    @staticmethod
+    def place_guard_hut_yes_or_no(cell, game_map, posx, posy, tile_type):
+        if cell == 9:
+            game_map.tiles[posx][posy].type_of_tile = tile_type
+            game_map.tiles[posx][posy].image = 10
+            game_map.tiles[posx][posy].blocked = True
+            game_map.tiles[posx][posy].block_sight = True
+
+    @staticmethod
+    def place_dungeon_entrance_yes_or_no(cell, game_map, posx, posy, tile_type):
+        if cell == 9:
+            game_map.tiles[posx][posy].type_of_tile = tile_type
+            game_map.tiles[posx][posy].image = 11
+            game_map.tiles[posx][posy].blocked = True
+            game_map.tiles[posx][posy].block_sight = True
 
     @staticmethod
     def place_empty_tile_yes_no(cell, game_map, posx, posy, tile_type):
