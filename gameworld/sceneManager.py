@@ -135,10 +135,10 @@ class SceneManager:
                                                                       posy=posy, tile_type=tile_type_floor)
 
                 if player_placed:
-                    SceneManager.setup_viewport(gameworld=gameworld, posx=posx, posy=posy)
-
                     player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
+                    SceneManager.setup_viewport(gameworld=gameworld, posx=posx, posy=posy, player_entity=player_entity)
                     GameMapUtilities.set_entity_at_this_map_location(game_map=game_map, x=posx, y=posy, entity=player_entity)
+                    logger.debug('Player placed at map pos {} / {}', posx, posy)
 
                 # add named NPCs to scene
                 npc_list_ids = "ABCEDFG"
@@ -162,8 +162,7 @@ class SceneManager:
                     else:
                         SceneManager.place_guard_hut_yes_or_no(cell=this_building, game_map=game_map, posx=posx, posy=posy, tile_type=tile_type_guard_hut)
 
-
-                    # create random enemy
+                # create random enemy
                 if cell.upper() == 'X':
                     # set enemy race
                     allowed_races = []
@@ -247,6 +246,5 @@ class SceneManager:
         return player_placed
 
     @staticmethod
-    def setup_viewport(gameworld, posx, posy):
-        player_entity = mobileHelp.MobileUtilities.get_player_entity(gameworld=gameworld)
+    def setup_viewport(gameworld, posx, posy, player_entity):
         mobileHelp.MobileUtilities.set_mobile_position(gameworld=gameworld, entity=player_entity, posx=posx, posy=posy)

@@ -48,3 +48,4 @@ class GameMapUtilities:
     @staticmethod
     def set_entity_at_this_map_location(game_map, x, y, entity):
         game_map.tiles[x][y].entity = entity
+
