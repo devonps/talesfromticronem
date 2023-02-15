@@ -7,7 +7,7 @@ better-exceptions-fork==0.2.1.post6
 cffi==1.14.6
 colorama==0.4.4
 coverage==6.0
-Django==3.2.7
+Django==3.2.18
 esper==1.5
 future==0.18.2
 image==1.5.33
