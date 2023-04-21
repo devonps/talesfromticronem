@@ -29,6 +29,6 @@ pytest==6.2.5
 pytest-cov==3.0.0
 pytz==2021.3
 six==1.16.0
-sqlparse==0.4.2
+sqlparse==0.4.4
 terminal==0.4.0
 zipp==3.6.0
